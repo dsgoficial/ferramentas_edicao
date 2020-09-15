@@ -1,0 +1,1 @@
+Plugin de edicao QGIS

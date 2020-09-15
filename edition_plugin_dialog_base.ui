@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>395</width>
+    <height>388</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Edition Tools - V 1.0</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Cartas</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Selecione o tipo de produto:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_tipo_produto">
+           <item>
+            <property name="text">
+             <string>Carta Ortoimagem Tipo I</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Selecione o arquivo .qpt corresponde ao &quot;Cabeçalho&quot;:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsFileWidget" name="mQgsFileWidget_cabecalho"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Selecione o arquivo .qpt corresponde aos &quot;Projeto e Créditos&quot;:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsFileWidget" name="mQgsFileWidget_projeto"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Selecione os arquivos com as configurações de exportação:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsFileWidget" name="mQgsFileWidget_json_cartas">
+           <property name="storageMode">
+            <enum>QgsFileWidget::GetMultipleFiles</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Selecione a pasta onde deseja que os arquivos exportados sejam salvos:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsFileWidget" name="mQgsFileWidget_pasta_exportar">
+           <property name="storageMode">
+            <enum>QgsFileWidget::GetDirectory</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Configurações de exportação:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_exportar_geotiff">
+           <property name="text">
+            <string>Exportar GeoTIFF</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_exportar_padrao_bdgex">
+           <property name="text">
+            <string>Exportar padrão BDGEx</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_gerar_cartas">
+         <property name="text">
+          <string>Gerar cartas</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Ajuda</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

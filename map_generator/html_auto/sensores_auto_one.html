@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+	<meta name="viewport" content="maximum-scale=1">
+</head>
+<style>
+page, body, div {
+		 width:100%;/*104,0mm*/
+		 height:100%;/*134,5mm*/
+		 margin: 0px 0px 0px 0px; 
+	 	 margin-right:0mm;
+		 padding: 0px 0px 0px 0px;
+}
+table#producao {
+  		width: 100%;/*105mm*/
+		border-collapse: collapse;	            
+		border: 0.06em solid;
+        font-size: 0.7em;
+		columns: 3;
+}
+table#producao tr td.lef{
+		width: 37%;
+		border: 0.06em solid;
+		text-align: left;
+		padding-top: 0.18em;
+	    padding-bottom:0.18em;
+	    padding-left: 0.4em;
+	    padding-right: 0;
+}
+table#producao tr td.rig{
+		border: 0.06em solid;
+		text-align: left;
+		padding-top: 0.18em;
+	    padding-bottom:0.18em;
+	    padding-left: 0.4em;
+	    padding-right: 0;
+}
+table#obs {
+    width: 100%;
+    border-collapse: collapse;
+    border:0px solid;
+    font-size: 0.64em;
+    columns: 1;
+    font-family: Arial;
+
+}
+table#obs tr td.fases {
+    border:0px solid;
+    color:black;
+    padding-top: 0.4em;
+    padding-bottom:0.3em;
+    padding-left: 0.4em;
+    padding-right: 0;
+}
+table th {
+    font-weight:bold;
+    font-size: 1.39em;
+    text-transform: uppercase;
+    padding: 0.34em;
+}
+
+</style>
+<page id="rodamao" style="
+    width: 104mm;" >
+ <body id = "direito">
+  <div align="center">
+   <table id="producao" >
+    <tr>
+    	<span>
+	 		<th colspan="2" style="font-size: 3.8mm;">Informações Técnicas da Ortoimagem</th>
+		</span>
+	</tr>                  
+    <tr>
+        <td class = "lef" rowspan="3" >Sistema Sensor</td>
+        <td class = "rig" >Tipo de sensor: {tipo}</td>
+    </tr>
+       <tr>
+        <td class = "rig" rowspan="1" >Tipo de plataforma: {plataforma}</td>
+    </tr>
+    <tr>
+        <td class = "rig" rowspan="1" >Nome: {nome}</td>
+    </tr>
+
+    <tr>
+        <td class = "lef" rowspan="2" >Características da Imagem</td>
+        <td class = "rig" >Resolução espacial: {resolucao} </td> 
+    </tr>
+    <tr>
+        <td class = "rig" rowspan="1">Bandas utilizadas: {bandas}</td>
+    </tr>
+
+    <tr>
+        <td class = "lef" >Método de Ortoretificação</td>
+        <td class = "rig" >Nível do produto: {nivel_do_produto}</td>
+    </tr>
+
+   </table>
+ 
+  </div>
+ </body>
+</page>
+</html>

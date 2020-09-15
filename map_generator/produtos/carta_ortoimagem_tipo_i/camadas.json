@@ -1,0 +1,526 @@
+{
+    "25": {
+        "carta_mini": [
+            {
+                "tabela": "aux_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ],
+        "carta": [
+            {
+                "tabela": "aux_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "constr_edificacao_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_elemento_energia_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_pista_pouso_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_elemento_hidrografico_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_ilha_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_ponto_cotado_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_curva_nivel_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ]
+    },
+    "50": {
+        "carta_mini": [
+            {
+                "tabela": "aux_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ],
+        "carta": [
+            {
+                "tabela": "aux_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "constr_edificacao_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_elemento_energia_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_pista_pouso_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_elemento_hidrografico_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_ilha_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_ponto_cotado_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_curva_nivel_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ]
+    },
+    "100": {
+        "carta_mini": [
+            {
+                "tabela": "edicao_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ],
+        "carta": [
+            {
+                "tabela": "edicao_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "constr_edificacao_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_elemento_energia_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_pista_pouso_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_elemento_hidrografico_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_ilha_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_ponto_cotado_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_curva_nivel_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ]
+    },
+    "250": {
+        "carta_mini": [
+            {
+                "tabela": "edicao_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ],
+        "carta": [
+            {
+                "tabela": "edicao_moldura_edicao_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_pista_pouso_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_ilha_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_ponto_cotado_p",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_ferrovia_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "infra_via_deslocamento_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_trecho_drenagem_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "elemnat_curva_nivel_l",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aquisicao_localidade_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_especial_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "cobter_massa_dagua_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "llp_limite_legal_a",
+                "schema": "edgv"
+            },
+            {
+                "tabela": "aux_area_nao_mapeada_a",
+                "schema": "edgv"
+            }
+        ]
+    }
+}
