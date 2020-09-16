@@ -114,14 +114,17 @@ class MapTools:
         layers_db = []
         layersId_db = []        
         style_folder = os.path.join(os.path.dirname(__file__),'produtos', tipo_produto,'estilos',escala, grupo)
-        for dict_layer in tables_dict:			
-            layer_db = self.getLayer(connectedUri, dict_layer, grupo)   
-            QgsProject.instance().addMapLayer(layer_db, False)         			
-            style_file = os.path.join(style_folder, dict_layer['tabela'] + '.qml'  )
-            layer_db.loadNamedStyle(style_file)
-            layer_db.triggerRepaint()
-            layers_db.append(layer_db)
-            layersId_db.append(layer_db.id())
+        if connectedUri is not None:
+            for dict_layer in tables_dict:			
+                layer_db = self.getLayer(connectedUri, dict_layer, grupo)   
+                if (layer_db.isValid()):
+                    QgsProject.instance().addMapLayer(layer_db, False)         			
+                    style_file = os.path.join(style_folder, dict_layer['tabela'] + '.qml'  )
+                    if os.path.exists(style_file):
+                        layer_db.loadNamedStyle(style_file)
+                    layer_db.triggerRepaint()
+                    layers_db.append(layer_db)
+                    layersId_db.append(layer_db.id())
         return layers_db, layersId_db
 
     def checkSelectedLayerFeatures(self, layer):
