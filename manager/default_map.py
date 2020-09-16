@@ -181,7 +181,7 @@ class DefaultMap(MapManager):
 		if len(caminho_pasta_exportar)>0:
 			self.baseSaveFolder = caminho_pasta_exportar[0]
 		else:
-			self.baseSaveFolder = os.path.join(os.path.dirname(__file__),'..', 'includes', 'output')
+			self.baseSaveFolder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'includes', 'output')
 
 	def editCompositions(self, tipo_produto, dict_compositions):
 		for escala, compositor in dict_compositions.items():			
@@ -199,7 +199,6 @@ class DefaultMap(MapManager):
 				list_dict_qpts.append(dict_cabecalho)		
 			self.htmlData.editQpts(compositor, list_dict_qpts)
 	
-
 	def setCartaConfig(self, path_json_carta, connectedUri,  dict_compositions):
 		# Obtendo o dict do caminho json	
 		if os.path.exists(path_json_carta):
@@ -218,7 +217,7 @@ class DefaultMap(MapManager):
 			self.htmlData.setComposition(composition)
 			
 			# Camadas para o produto
-			path_json_produto = os.path.join(os.path.dirname(__file__),'..','map_generator', 'produtos', tipo_produto, 'camadas.json')
+			path_json_produto = os.path.join(os.path.dirname(os.path.dirname(__file__)),'map_generator', 'produtos', tipo_produto, 'camadas.json')
 			dict_camadas_produto = self.readJsonFromPath(path_json_produto)
 
 			# Maptables e Minimaptables
@@ -245,7 +244,8 @@ class DefaultMap(MapManager):
 
 			# Banco
 			dict_conexao = dict_carta['banco']
-			connectedUri.setDatabase(dict_conexao['nome'])
+			if connectedUri is not None:
+				connectedUri.setDatabase(dict_conexao['nome'])
 			
 			# Carrega camadas do banco
 			map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db = self.getMapLayers(connectedUri,  list_dict_maptables, list_dict_minimaptables , tipo_produto, str(scale))
@@ -258,20 +258,19 @@ class DefaultMap(MapManager):
 			image_layers, image_layersId = self.MapC.createLayersRasters(list_dict_images, key_image, key_style, key_epsg)
 			
 			# Adiciona camadas e imagens para serem mostradas no mapa e minimapa
-			map_layers = image_layers.copy()
-			minimap_layers = image_layers.copy()
-			map_layers.extend(map_layers_db)
-			minimap_layers.extend(minimap_layers_db)
-						
-			self.map.setLayersToLock(map_layers)
-			self.miniMap.setLayersToLock(minimap_layers)
-			
-			#qgisfdr = '//10.25.163.3/areaDeTransferencias/AC_RONALDO/PRODUTOS/CARTA_ORTOIMAGEM/output'
-			#self.baseSaveFolder = qgisfdr + '/'
+			layers = {
+				'map':map_layers_db,
+				'id_map':map_layersId_db,
+				'minimap':minimap_layers_db,
+				'id_minimap':minimap_layersId_db,
+				'images':image_layers,
+				'id_images':image_layersId,
 
-			return True, inom
+			}
+
+			return True, inom, layers
 		else:
-			return False , None
+			return False , None, None
 		
 	def createCompositions(self, list_of_scales, tipo_produto):
 		dict_compositions = {}
@@ -374,7 +373,7 @@ class DefaultMap(MapManager):
 			for caminho_json_carta in caminhos_json_carta:
 				if self.checkJsonCarta(caminho_json_carta):
 					# Set config for html labels
-					success, inomen = self.setCartaConfig(caminho_json_carta, connectedUri,  dict_compositions)										
+					success, inomen, layers = self.setCartaConfig(caminho_json_carta, connectedUri,  dict_compositions)										
 					# Get feature data for maps
 					self.getDefaultFeatureData(inomen)	
 					
@@ -384,5 +383,5 @@ class DefaultMap(MapManager):
 
 					self.setElementsConfig(tipo_produto)
 					composition = dict_compositions[str(self.utm_grid.getScale(inomen))]
-					self.createAll(composition, self.nome, feature_inom, grid_layer)
+					self.createAll(composition, self.nome, feature_inom, grid_layer, layers)
 		self.mc.setProjectProjection(oldProjValue)

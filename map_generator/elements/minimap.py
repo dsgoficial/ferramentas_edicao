@@ -47,16 +47,21 @@ class MiniMap(MapParent):
 	def setParams(self):
 		pass
 
-	def make(self, composition, selected_feature):	
+	def make(self, composition, selected_feature, layers):	
 		self.deleteGroups(['minimap'])	
 
 		root = QgsProject.instance().layerTreeRoot()		
 		miniMapGroup_node = QgsLayerTreeGroup(self.group_name)									
 		
 		map_extent = selected_feature.geometry().convexHull().boundingBox()
-		self.updateMapItem(composition, map_extent)		
+		
+		# Creating layers to lock map
+		layers_to_lock = []
+        layers_to_lock.extend(layers['minimap'])
+        layers_to_lock.extend(layers['images'])
+		self.updateMapItem(composition, map_extent, layers_to_lock)		
 
-		return [ layer_to_lock.id() for layer_to_lock in self.layers_to_lock]
+		return layers['id_minimap']
 		
 		#  quando as camadas forem passadas como parametro
 		# miniMapGroup_node.setItemVisibilityChecked(False)
@@ -79,7 +84,7 @@ class MiniMap(MapParent):
 		if self.mapItem is not None:
 			mapSize = self.mapItem.sizeWithUnits()
 			self.mapItem.setFixedSize(mapSize)			
-			if hasattr(self, 'layers_to_lock'):		 	
-				self.mapItem.setLayers(self.layers_to_lock)
+			if is not None:		 	
+				self.mapItem.setLayers(layers_to_lock)
 			self.mapItem.setExtent(map_extent)		
 			self.mapItem.refresh()

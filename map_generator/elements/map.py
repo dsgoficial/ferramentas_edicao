@@ -145,7 +145,7 @@ class Map(MapParent):
         print('Creating style')
         self.GLC.styleCreator( feature_geometry, layer_bound, utmSRID, self.id_attr, self.id_value, self.spacing, self.crossX, self.crossY, self.scale, self.fontSize, self.font, self.fontLL, self.llcolor, self.linwidth_geo, self.linwidth_utm, self.linwidth_buffer_geo, self.linwidth_buffer_utm, self.geo_grid_color, self.utm_grid_color, self.geo_grid_buffer_color, self.utm_grid_buffer_color)
 
-    def make(self, composition, grid_layer, selected_feature):
+    def make(self, composition, grid_layer, selected_feature, layers):
         # Deletendo o grupo		
         map_layers = []
         self.deleteGroups(['map'])
@@ -164,8 +164,12 @@ class Map(MapParent):
 
         mapGroup_node.addLayer(layer_grid_styled)		
         
-        self.updateMapItem2(composition, map_extent, map_extent_transformed, layer_grid_styled)
-        map_layers.extend([ layer_to_lock.id() for layer_to_lock in self.layers_to_lock])
+        layers_to_lock = []
+        layers_to_lock.extend(layers['map'])
+        layers_to_lock.extend(layers['images'])
+        self.updateMapItem2(composition, map_extent, map_extent_transformed, layer_grid_styled, layers_to_lock)
+        map_layers.extend(layers['id_map'])
+        
         #  quando as camadas forem passadas como parametro
         # mapGroup_node.setItemVisibilityChecked(False)
         # QgsProject.instance().addMapLayer(camadaAdicionada, False)
@@ -175,7 +179,7 @@ class Map(MapParent):
 
         return map_layers
 
-    def updateMapItem2(self, composition, map_extent, map_extent_transformed, layer_auxiliarMoldura):  
+    def updateMapItem2(self, composition, map_extent, map_extent_transformed, layer_auxiliarMoldura, layers_to_lock):  
         theScale = self.scale*1000.0
         if self.mapItem is None:
             self.mapItem = composition.itemById("the_map")
@@ -183,9 +187,8 @@ class Map(MapParent):
             self.mapItem.setExtent(map_extent)
             self.mapItem.setScale(theScale)
             layers_return = [layer_auxiliarMoldura]
-            if hasattr(self,"layers_to_lock"):                
-                self.mapItem.setLayers([layer_auxiliarMoldura] + self.layers_to_lock[::-1])
-                layers_return.extend(self.layers_to_lock)
+            if layers_to_lock is not None:                
+                self.mapItem.setLayers([layer_auxiliarMoldura].extend(layers_to_lock))                
             else:                
                 self.mapItem.setLayers([layer_auxiliarMoldura])
             self.mapItem.refresh()
@@ -198,8 +201,7 @@ class Map(MapParent):
             self.mapItem.attemptResize(QgsLayoutSize(self.map_width,  self.map_height, QgsUnitTypes.LayoutMillimeters))
             self.mapItem.setScale(theScale)
             self.mapItem.refresh()
-            self.centerMapInAreaCarta(composition)  
-            return layers_return
+            self.centerMapInAreaCarta(composition)              
              
 
     def centerMapInAreaCarta(self, composition):		

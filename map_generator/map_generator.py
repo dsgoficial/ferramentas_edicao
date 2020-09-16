@@ -139,20 +139,19 @@ class MapManager(MapTools):
 			for caminho_json_carta in caminhos_json_carta:				
 				dict_carta = self.readJsonFromPath(caminho_json_carta)
 				dict_conexao = dict_carta['banco']
-				if dict_conexao != []:
+				if dict_conexao != {}:
 					success, uri = self.getDBConnection(dict_conexao)
 					break
 				else:
 					continue
 		return success, uri
 			
-
-	def createMap(self, composition, grid_layer, selected_feature):
+	def createMap(self, composition, grid_layer, selected_feature, layers):
 		map_layers = []
 		self.map.setEPSG(self.hemisferio, self.fuso)
 		self.map.setCustomMode()
 		self.map.setSpacingFromScale(self.scale)				
-		map_layers = self.map.make(composition, grid_layer, selected_feature)
+		map_layers = self.map.make(composition, grid_layer, selected_feature, layers)
 		return map_layers
 
 	def createGridLayer(self, inom):		
@@ -161,7 +160,7 @@ class MapManager(MapTools):
 		QgsProject.instance().addMapLayer(grid_layer, False)
 		return grid_layer, grid_layerId, center_feat
 
-	def createAll(self, composition, nome,  selected_feature, grid_layer):		
+	def createAll(self, composition, nome,  selected_feature, grid_layer, layers):		
 		# Store temporary map layers ids
 		ids_maplayers = []
 
@@ -170,13 +169,16 @@ class MapManager(MapTools):
 		print('Project Variable Changed - ' + str(self.mi))
 			
 		if composition.itemById("the_map") is not None:
-			ids_maplayers.extend(self.createMap(composition, grid_layer, selected_feature))
+			ids_maplayers.extend(self.createMap(composition, grid_layer, selected_feature, layers))
 
 		# Mini mapa
 		if composition.itemById("map_miniMap") is not None:
 			if False:
-				ids_maplayers.extend(self.miniMap.make(composition, selected_feature))
+				ids_maplayers.extend(self.miniMap.make(composition, selected_feature, layers))
 				self.miniMapCoordAndOthers.make(composition, selected_feature, addDataToMarginal = False)	
+
+		# Adicionando as imagens nos ids para remover
+		ids_maplayers.extend(layers['id_images'])
 
 		# Mapa de Divisão
 		if composition.itemById("map_divisao") is not None:
@@ -196,7 +198,7 @@ class MapManager(MapTools):
 		self.dados_de_escala.setScale(self.scale*1000)
 		self.dados_de_escala.setComposition(composition)
 		self.dados_de_escala.changeScaleLabels()	
-		editMapName(composition=composition, nome=nome, mi=self.mi, inom=self.inom)
+		editMapName(composition=composition, nome, self.mi, self.inom)
 
 		# Mapa de Localização
 		if composition.itemById("map_localizacao") is not None:
