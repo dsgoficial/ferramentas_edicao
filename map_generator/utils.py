@@ -122,7 +122,7 @@ class MapTools:
                     style_file = os.path.join(style_folder, dict_layer['tabela'] + '.qml'  )
                     if os.path.exists(style_file):
                         layer_db.loadNamedStyle(style_file)
-                    layer_db.triggerRepaint()
+                        layer_db.triggerRepaint()
                     layers_db.append(layer_db)
                     layersId_db.append(layer_db.id())
         return layers_db, layersId_db
@@ -146,10 +146,15 @@ class MapTools:
             return False
 
     def exportMap(self, composition):        			
-        pdf_filename = os.path.join(self.saveFolder,self.inom + ".pdf") 
-        tiff_filename = os.path.join(self.saveFolder, self.inom + ".tif")
+        basename = self.mi + '_' + self.inom 
+        pdf_filename = os.path.join(self.saveFolder,basename + ".pdf") 
+        tiff_filename = os.path.join(self.saveFolder, basename + ".tif")
         exporter = QgsLayoutExporter(composition)        
-        pdfExport_result = exporter.exportToPdf(pdf_filename, QgsLayoutExporter.PdfExportSettings())				
+        exportPdf = True
+        if exportPdf:
+            pdf_settings = QgsLayoutExporter.PdfExportSettings()            
+            pdf_settings.rasterizeWholeImage = True
+            pdfExport_result = exporter.exportToPdf(pdf_filename, pdf_settings)				
         if self.dlg.checkBox_exportar_geotiff.isChecked():
             imageExport_result = exporter.exportToImage(tiff_filename, QgsLayoutExporter.ImageExportSettings())		
 
@@ -198,9 +203,9 @@ class MapTools:
             for id_mapLayer in ids_maplayers:
                 QgsProject.instance().removeMapLayer(id_mapLayer)
 
-    def changeProjectVariable(self):
+    def changeProjectVariable(self, str_escala, mi):
         project = QgsProject.instance()
         scope = QgsExpressionContextUtils.projectScope(project)
-        QgsExpressionContextUtils.setProjectVariable(project, "escala", str(int(self.scale)))
-        QgsExpressionContextUtils.setProjectVariable(project, "mi", self.mi)
+        QgsExpressionContextUtils.setProjectVariable(project, "escala", str_escala)
+        QgsExpressionContextUtils.setProjectVariable(project, "mi", mi)
         self.iface.mapCanvas().refreshAllLayers() 
