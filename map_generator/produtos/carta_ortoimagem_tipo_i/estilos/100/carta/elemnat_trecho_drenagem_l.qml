@@ -10,7 +10,7 @@
       <symbol name="0" clip_to_extent="1" type="line" alpha="1" force_rhr="0">
         <layer enabled="1" class="GeometryGenerator" pass="0" locked="0">
           <prop k="SymbolType" v="Line"/>
-          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa; &#xd;&#xa; &#xd;&#xa;"/>
+          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a_carta', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa; &#xd;&#xa; &#xd;&#xa;"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>
@@ -53,7 +53,7 @@
   </renderer-v2>
   <labeling type="rule-based">
     <rules key="{8ccfd70f-7a68-481d-93bf-1efb1e0eecfd}">
-      <rule filter=" &quot;situacao_em_poligono&quot; in (1,2) and length(intersection($geometry,  geometry(get_feature('aux_moldura_edicao_a', 'mi', @mi)))) > 10*@escala" key="{2ce51912-d66f-4594-8f45-a15beb7fc9d4}">
+      <rule filter=" &quot;situacao_em_poligono&quot; in (1,2) and length(intersection($geometry,  geometry(get_feature('aux_moldura_edicao_a_carta', 'mi', @mi)))) > 10*@escala" key="{2ce51912-d66f-4594-8f45-a15beb7fc9d4}">
         <settings calloutType="simple">
           <text-style isExpression="1" textColor="255,255,255,255" fontItalic="0" fontFamily="Times New Roman" fontSizeUnit="MM" textOrientation="horizontal" fontCapitals="0" blendMode="0" fontWordSpacing="0.09375" multilineHeight="1" previewBkgrdColor="255,255,255,255" textOpacity="1" fieldName="&quot;nome&quot;" fontLetterSpacing="0.15625" fontWeight="50" fontSize="3" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontUnderline="0" namedStyle="Normal" fontStrikeout="0" fontKerning="1" useSubstitutions="0">
             <text-buffer bufferDraw="1" bufferJoinStyle="128" bufferColor="0,153,255,255" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="0.45" bufferBlendMode="0" bufferNoFill="0" bufferSizeUnits="MM">
@@ -177,7 +177,7 @@
             <substitutions/>
           </text-style>
           <text-format placeDirectionSymbol="0" wrapChar="" rightDirectionSymbol=">" plussign="0" multilineAlign="4294967295" reverseDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" autoWrapLength="0" decimals="3" formatNumbers="0" useMaxLineLengthForAutoWrap="1"/>
-          <placement preserveRotation="0" xOffset="0" maxCurvedCharAngleOut="-30" quadOffset="4" placementFlags="14" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="300" layerType="LineGeometry" repeatDistanceUnits="MM" fitInPolygonOnly="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null&#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )" distUnits="MM" geometryGeneratorType="LineGeometry" dist="0.7" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" centroidWhole="0" rotationAngle="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" overrunDistance="0" placement="3" offsetType="0" centroidInside="0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" priority="9" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" yOffset="0" maxCurvedCharAngleIn="30"/>
+          <placement preserveRotation="0" xOffset="0" maxCurvedCharAngleOut="-30" quadOffset="4" placementFlags="14" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="300" layerType="LineGeometry" repeatDistanceUnits="MM" fitInPolygonOnly="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a_carta', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null&#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )" distUnits="MM" geometryGeneratorType="LineGeometry" dist="0.7" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" centroidWhole="0" rotationAngle="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" overrunDistance="0" placement="3" offsetType="0" centroidInside="0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" priority="9" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" yOffset="0" maxCurvedCharAngleIn="30"/>
           <rendering scaleMin="0" fontLimitPixelSize="0" minFeatureSize="30" labelPerPart="0" obstacle="0" scaleVisibility="0" fontMaxPixelSize="10000" displayAll="0" drawLabels="1" mergeLines="1" limitNumLabels="0" scaleMax="0" maxNumLabels="2" obstacleFactor="2" upsidedownLabels="0" fontMinPixelSize="3" obstacleType="0" zIndex="0"/>
           <dd_properties>
             <Option type="Map">
@@ -185,7 +185,7 @@
               <Option name="properties" type="Map">
                 <Option name="Show" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="intersects($geometry,  geometry(get_feature('aux_moldura_edicao_a', 'mi', @mi)))"/>
+                  <Option name="expression" type="QString" value="intersects($geometry,  geometry(get_feature('aux_moldura_edicao_a_carta', 'mi', @mi)))"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>

@@ -53,7 +53,7 @@
         <substitutions/>
       </text-style>
       <text-format placeDirectionSymbol="0" wrapChar="" rightDirectionSymbol=">" plussign="0" multilineAlign="1" reverseDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" autoWrapLength="18" decimals="3" formatNumbers="0" useMaxLineLengthForAutoWrap="1"/>
-      <placement preserveRotation="0" xOffset="0" maxCurvedCharAngleOut="-25" quadOffset="4" placementFlags="10" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="0" layerType="PolygonGeometry" repeatDistanceUnits="MM" fitInPolygonOnly="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;" distUnits="MM" geometryGeneratorType="PolygonGeometry" dist="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" centroidWhole="0" rotationAngle="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" overrunDistance="0" placement="0" offsetType="0" centroidInside="1" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" priority="9" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" yOffset="0" maxCurvedCharAngleIn="25"/>
+      <placement preserveRotation="0" xOffset="0" maxCurvedCharAngleOut="-25" quadOffset="4" placementFlags="10" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="0" layerType="PolygonGeometry" repeatDistanceUnits="MM" fitInPolygonOnly="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a_carta_carta', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;" distUnits="MM" geometryGeneratorType="PolygonGeometry" dist="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" centroidWhole="0" rotationAngle="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" overrunDistance="0" placement="0" offsetType="0" centroidInside="1" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" priority="9" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" yOffset="0" maxCurvedCharAngleIn="25"/>
       <rendering scaleMin="0" fontLimitPixelSize="0" minFeatureSize="0" labelPerPart="0" obstacle="0" scaleVisibility="0" fontMaxPixelSize="10000" displayAll="0" drawLabels="1" mergeLines="0" limitNumLabels="0" scaleMax="0" maxNumLabels="2000" obstacleFactor="1" upsidedownLabels="0" fontMinPixelSize="3" obstacleType="0" zIndex="0"/>
       <dd_properties>
         <Option type="Map">
@@ -61,7 +61,7 @@
           <Option name="properties" type="Map">
             <Option name="Show" type="Map">
               <Option name="active" type="bool" value="true"/>
-              <Option name="expression" type="QString" value="intersects($geometry,  geometry(get_feature('aux_moldura_edicao_a', 'mi', @mi)))"/>
+              <Option name="expression" type="QString" value="intersects($geometry,  geometry(get_feature('aux_moldura_edicao_a_carta_carta', 'mi', @mi)))"/>
               <Option name="type" type="int" value="3"/>
             </Option>
           </Option>
