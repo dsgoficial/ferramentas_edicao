@@ -52,20 +52,22 @@ class Divisao(MapParent):
 		self.n_maxlines = 6
 		#self.itemname_tableMunicipios = 'label_divisao_municipios'
 
-	def make(self, composition, selected_feature):
+	def make(self, composition, selected_feature, showLayers = False):
 		# Deletando as variaveis
 		self.deleteGroups(['divisao'])
 		map_layers = []
 		
 		# Adiciona os layers de municipios, estado e limite internacional
 		divisaoGroup_node = QgsLayerTreeGroup('divisao')			
-		municipios_layer, estados_layer, internacional_layer = self.createLayersGroup()
-		map_layers.extend([municipios_layer.id(), estados_layer.id(), internacional_layer.id()])
+		divisaoGroup_node.setItemVisibilityChecked(False)	
 
+		municipios_layer, estados_layer, internacional_layer, oceano_layer, paises_layer = self.createLayersGroup()
+		map_layers.extend([municipios_layer.id(), estados_layer.id(), internacional_layer.id(), oceano_layer.id(), paises_layer.id()])
+		
 		# Cria o layer da área do mapa
 		grid_bound = selected_feature.geometry().boundingBox()
 		grid_rectangleLayer = self.createGridRectangle(grid_bound, 'auxiliar_divisao')
-		map_layers.append(grid_rectangleLayer.id())
+		map_layers.append(grid_rectangleLayer.id())		
 
 		# Get map extent for intersections
 		map_extent = self.getExtent(grid_bound, selected_feature)
@@ -76,16 +78,16 @@ class Divisao(MapParent):
 		html_tabledata = self.customcreateHtmlTableData(sorted_municipios)
 		self.setMunicipiosTable(composition,  html_tabledata)		
 
-		for layer in [ grid_rectangleLayer, internacional_layer, estados_layer, municipios_layer]:
+		for layer in [ grid_rectangleLayer, oceano_layer, paises_layer, internacional_layer, estados_layer, municipios_layer]:
 			QgsProject.instance().addMapLayer(layer, False)
 			divisaoGroup_node.addLayer(layer)
 		
-		divisaoGroup_node.setItemVisibilityChecked(False)		
-		root = QgsProject.instance().layerTreeRoot()		
-		#root.addChildNode(divisaoGroup_node)
+		if showLayers:		
+			root = QgsProject.instance().layerTreeRoot()		
+			root.addChildNode(divisaoGroup_node)
 
 		# Update map
-		layers_to_show = [grid_rectangleLayer, internacional_layer, estados_layer, municipios_layer ] # baixo -> cima
+		layers_to_show = [grid_rectangleLayer, oceano_layer, paises_layer, internacional_layer, estados_layer, municipios_layer ] # baixo -> cima
 		self.updateMapItem(composition, map_extent[0], layers_to_show)
 		return map_layers		
 
@@ -109,7 +111,17 @@ class Divisao(MapParent):
 		internacional_layer = QgsVectorLayer(internacional_uri,'limite_internacional','ogr')
 		internacional_layer.loadNamedStyle(internacional_style_file)
 
-		return municipios_layer, estados_layer, internacional_layer
+		oceano_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','oceano.shp')
+		oceano_style_file = os.path.join(self.folder_estilos, 'oceano.qml')
+		oceano_layer = QgsVectorLayer(oceano_uri,'oceano','ogr')
+		oceano_layer.loadNamedStyle(oceano_style_file)
+
+		paises_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','paises.shp')
+		paises_style_file = os.path.join(self.folder_estilos, 'paises.qml')
+		paises_layer = QgsVectorLayer(paises_uri,'paises','ogr')
+		paises_layer.loadNamedStyle(paises_style_file)
+
+		return municipios_layer, estados_layer, internacional_layer, oceano_layer, paises_layer
 
 	def getExtent(self, grid_bound, selected_feature):
 		self.ext = []				
