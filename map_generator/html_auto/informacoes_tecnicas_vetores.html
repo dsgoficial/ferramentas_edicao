@@ -14,50 +14,50 @@ page, body, div {
 }
 table#producao {
   		width: 100%;/*105mm*/
-		border-collapse: collapse;
-		font-size:2.75mm;		
-	    font-family: ;
-		border: 0.25mm solid;
+		border-collapse: collapse;	            
+		border: 0.09em solid;
+        font-size: 0.7em;
 		columns: 3;
 }
 table#producao tr td.lef{
 		width: 37%;
-		border: 0.13mm solid;
+		border: 0.06em solid;
 		text-align: left;
-		padding-top: 0.51mm;
-	    padding-bottom:0.51mm;
-	    padding-left: 1.1mm;
+		padding-top: 0.18em;
+	    padding-bottom:0.18em;
+	    padding-left: 0.4em;
 	    padding-right: 0;
 }
 table#producao tr td.rig{
-		border: 0.13mm solid;
+		border: 0.06em solid;
 		text-align: left;
-		padding-top: 0.51mm;
-	    padding-bottom:0.51mm;
-	    padding-left: 1.1mm;
+		padding-top: 0.18em;
+	    padding-bottom:0.18em;
+	    padding-left: 0.4em;
 	    padding-right: 0;
 }
 table#obs {
-  		width: 100%;
-		border-collapse: collapse;
-		border:0px solid;
-		columns: 1;
-		font-family: ;
+    width: 100%;
+    border-collapse: collapse;
+    border:0px solid;
+    font-size: 0.64em;
+    columns: 1;
+    font-family: Arial;
 
 }
 table#obs tr td.fases {
-		border:0px solid;
-		color:black;
-		padding-top: 0.8mm;
-	    padding-bottom:2mm;
-	    padding-left: 1.1mm;
-	    padding-right: 0;
+    border:0px solid;
+    color:black;
+    padding-top: 0.4em;
+    padding-bottom:0.3em;
+    padding-left: 0.4em;
+    padding-right: 0;
 }
 table th {
-  	  	 font-weight:bold;
-
-		 text-transform: uppercase;
-		 padding: 1.35mm;
+    font-weight:bold;
+    font-size: 1.39em;
+    text-transform: uppercase;
+    padding: 0.34em;
 }
 
 </style>
@@ -68,7 +68,7 @@ table th {
    <table id="producao" >
     <tr>
     	<span>
-	 		<th colspan="2" style="font-size: 3.8mm;">informaçoes técnicas da Carta</th>
+	 		<th colspan="2">informações técnicas da Carta</th>
 		</span>
 	</tr>
     <tr>
@@ -117,7 +117,7 @@ table th {
         <td class = "rig" >{origem_dados_altimetricos}</td>
     </tr>
     <tr>
-        <td class = "lef" rowspan="5" >Origem dos dados geoespaciais fornecidos por terceiros</td>
+        <td class = "lef" rowspan="6" >Origem dos dados geoespaciais fornecidos por terceiros</td>
         <td class = "rig" >Limites internacionais: PCDL**</td> 
     </tr>
     <tr>
@@ -132,11 +132,13 @@ table th {
     <tr>
         <td class = "rig">Modelo geoidal: MAPGEO2015 - IBGE</td>
     </tr>                      
-
+    <tr>
+        <td class = "rig">Declinação magnética: NOAA</td>
+    </tr>  
    </table>
    <table id="obs">
 	<tr>
-	 <td class = "fases" style="font-size:2.5mm;">
+	 <td class = "fases">
 	 	** Limites sujeitos  à homologação do referido órgão.
 		<br>
 		Para maiores informações consulte o arquivo de metadados.
