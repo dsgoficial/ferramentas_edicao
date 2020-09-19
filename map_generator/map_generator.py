@@ -80,7 +80,7 @@ class MapManager(MapTools):
 		self.scale_selected = False		
 		self.utm_grid		= UtmGrid()
 		
-	def setProductParameters(self, products_parameters):
+	def set_products_parameters(self, products_parameters):
 		self.products_parameters = products_parameters
 	
 	def setElementsConfig(self, product):
@@ -95,7 +95,7 @@ class MapManager(MapTools):
 				
 		self.articulacao.setGridMode(True)								
 				
-	def createMapInstances(self):
+	def create_map_instances(self):
 		# Map
 		self.map = Map(self.iface, self.GLC)		
 		# Minimapa
@@ -125,6 +125,7 @@ class MapManager(MapTools):
 		self.selectEpsg(self.hemisferio, self.fuso)				
 		self.scale 	= self.utm_grid.getScale(inom)
 		self.scale_selected = False
+		return self.scale, self.mi
 	
 	def getScaleHemisferioFusoFromInom(self, inom):
 		hemisferio = inom[0]
@@ -146,12 +147,12 @@ class MapManager(MapTools):
 					continue
 		return success, uri
 			
-	def createMap(self, composition, grid_layer, selected_feature, layers):
+	def createMap(self, composition, grid_layer, selected_feature, layers, showLayers=False):
 		map_layers = []
 		self.map.setEPSG(self.hemisferio, self.fuso)
 		self.map.setCustomMode()
 		self.map.setSpacingFromScale(self.scale)				
-		map_layers = self.map.make(composition, grid_layer, selected_feature, layers)
+		map_layers = self.map.make(composition, grid_layer, selected_feature, layers, showLayers)
 		return map_layers
 
 	def createGridLayer(self, inom):		
@@ -160,22 +161,17 @@ class MapManager(MapTools):
 		QgsProject.instance().addMapLayer(grid_layer, False)
 		return grid_layer, grid_layerId, center_feat
 
-	def createAll(self, composition, nome,  selected_feature, grid_layer, layers):		
+	def createAll(self, composition, nome,  selected_feature, grid_layer, layers, showLayers = False):		
 		# Store temporary map layers ids
 		ids_maplayers = []
-
-	    # Composition Map Item     
-		self.changeProjectVariable()
-		print('Project Variable Changed - ' + str(self.mi))
 			
 		if composition.itemById("the_map") is not None:
-			ids_maplayers.extend(self.createMap(composition, grid_layer, selected_feature, layers))
+			ids_maplayers.extend(self.createMap(composition, grid_layer, selected_feature, layers, showLayers))
 
 		# Mini mapa
-		if composition.itemById("map_miniMap") is not None:
-			if False:
-				ids_maplayers.extend(self.miniMap.make(composition, selected_feature, layers))
-				self.miniMapCoordAndOthers.make(composition, selected_feature, addDataToMarginal = False)	
+		if composition.itemById("map_miniMap") is not None:			
+			ids_maplayers.extend(self.miniMap.make(composition, selected_feature, layers, showLayers))
+			self.miniMapCoordAndOthers.make(composition, selected_feature, addDataToMarginal = False)	
 
 		# Adicionando as imagens nos ids para remover
 		ids_maplayers.extend(layers['id_images'])
@@ -183,13 +179,13 @@ class MapManager(MapTools):
 		# Mapa de Divisão
 		if composition.itemById("map_divisao") is not None:
 			self.divisao.setEPSG(self.hemisferio, self.fuso)
-			ids_maplayers.extend(self.divisao.make(composition, selected_feature))
+			ids_maplayers.extend(self.divisao.make(composition, selected_feature, showLayers))
 
 		# Mapa de Articulação		
 		if composition.itemById("map_articulacao") is not None: 			
 			self.articulacao.setScale(self.scale)
 			gridMode = True				
-			ids_maplayers.extend(self.articulacao.make(composition, grid_layer, selected_feature, gridMode))					
+			ids_maplayers.extend(self.articulacao.make(composition, grid_layer, selected_feature, gridMode, showLayers))					
 
 		# Diagrama de convergência e declinação				
 		self.handle_angles.make(composition, selected_feature)		
@@ -198,17 +194,19 @@ class MapManager(MapTools):
 		self.dados_de_escala.setScale(self.scale*1000)
 		self.dados_de_escala.setComposition(composition)
 		self.dados_de_escala.changeScaleLabels()	
-		editMapName(composition=composition, nome, self.mi, self.inom)
+		editMapName(composition, nome, self.mi, self.inom)
 
 		# Mapa de Localização
 		if composition.itemById("map_localizacao") is not None:
-			mapLayers_loocalizacao = self.localizacao.make(composition, selected_feature)
+			adaptacaoNome = False
+			mapLayers_loocalizacao = self.localizacao.make(composition, selected_feature, adaptacaoNome, showLayers)
 			ids_maplayers.extend(mapLayers_loocalizacao)	
 			regioes = self.localizacao.regioes
 			replaceLabelRegiao(composition, regioes)	
 
 		# Exporta os mapas
-		self.exportMap(composition)
+		if not showLayers:
+			self.exportMap(composition)
 
 		# Reprojeta se for o caso
 		if self.dlg.checkBox_exportar_padrao_bdgex.isChecked():
@@ -216,4 +214,6 @@ class MapManager(MapTools):
 
 		# Add grid layer
 		ids_maplayers.extend([grid_layer.id()])
-		self.deleteMaps(ids_maplayers, True)
+		
+		if not showLayers:
+			self.deleteMaps(ids_maplayers, True)
