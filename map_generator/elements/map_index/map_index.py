@@ -487,10 +487,8 @@ class UtmGrid(QObject):
             self.MIRdict = self.getDict("MIR250.csv")
         return self.MIRdict    
     
-    def getDict(self, file_name):    
-        folder = 'C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/teste_interface/map_generator/utils/'
-        # csvFile = open(os.path.join(os.path.dirname(__file__),file_name))
-        csvFile = open(os.path.join(folder,file_name))
+    def getDict(self, file_name):            
+        csvFile = open(os.path.join(os.path.dirname(__file__),file_name))        
         data = csvFile.readlines()
         csvFile.close()
         l1 = [(x.strip()).split(';') for x in data]
@@ -607,7 +605,7 @@ class UtmGrid(QObject):
 
         inomenList = self.getNeighbors(inom)
         feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields) for map_index in inomenList]
-        center_feat = feats[4]
+        center_feat = self.getNewGridFeat(inom,self.getQgsPolygonFrame(inom), fields)
         provider = layer.dataProvider()
         provider.addFeatures(feats)
         layer.startEditing()
