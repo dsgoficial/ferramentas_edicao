@@ -42,9 +42,11 @@ import shapely.geometry
 class MapTools:
     def __init__(self, iface, plugin_dir, dlg):
         self.iface 			= iface
-        self.plugin_dir 	= plugin_dir
         self.dlg 			= dlg       
         self.selectedMapItem = None 
+
+    def check_files_existence(self, filepaths):
+        pass
 
     def readJsonFromPath(self, path_json):        
         json_file = open(path_json)
@@ -142,4 +144,4 @@ class MapTools:
         scope = QgsExpressionContextUtils.projectScope(project)
         QgsExpressionContextUtils.setProjectVariable(project, "escala", str(int(self.scale)))
         QgsExpressionContextUtils.setProjectVariable(project, "mi", self.mi)
-        self.iface.mapCanvas().refreshAllLayers() 
+        self.iface.mapCanvas().refreshAllLayers()
