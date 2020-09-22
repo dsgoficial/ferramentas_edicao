@@ -46,21 +46,21 @@ class Articulacao(MapParent):
 		self.mapItem = None
 		self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','articulacao')
 
-	def make(self,composition, grid_layer, selected_feature, gridMode):
+	def make(self,composition, grid_layer, selected_feature, gridMode, showLayers):
 		# Deletando as variaveis
 		self.deleteGroups(['articulacao'])
 		map_layers = []
 		
-		root = QgsProject.instance().layerTreeRoot()		
-		# divisaoGroup_node.addLayer(estados_layer)
 		articulacaoGroup_node = QgsLayerTreeGroup('articulacao')		
+		articulacaoGroup_node.setItemVisibilityChecked(False)
+
 		layer_moldura_mi, moldura_layer_name = self.addLayerMoldura_v2(grid_layer)
 		map_layers.append(layer_moldura_mi.id())
 
 		# Adicionamos o layer ao mapa e ao grupo 
 		QgsProject.instance().addMapLayer(layer_moldura_mi, False)
 		articulacaoGroup_node.addLayer(layer_moldura_mi)
-		articulacaoGroup_node.setItemVisibilityChecked(False)
+		
 
 		# Seleciona a articulação central e a extensão do mapa
 		self.setLayerROI(grid_layer)
@@ -80,8 +80,10 @@ class Articulacao(MapParent):
 		# Atualiza o map item
 		self.specialMapUpdateMapItem(composition, map_extent, layer_moldura_mi)	
 
-		root = QgsProject.instance().layerTreeRoot()		
-		# root.addChildNode(articulacaoGroup_node)
+		
+		if showLayers:
+			root = QgsProject.instance().layerTreeRoot()								
+			root.addChildNode(articulacaoGroup_node)
 		return map_layers
 
 	def addLayerMoldura_v2(self, grid_layer):		
@@ -168,15 +170,15 @@ class Articulacao(MapParent):
 		layer_moldura_mi.setRenderer(renderer)
 		layer_moldura_mi.triggerRepaint()
 
-	def specialMapUpdateMapItem(self, composition, map_extent, layer_moldura_mi):
-		if self.mapItem is None:
-			self.mapItem = composition.itemById("map_articulacao")
-		if self.mapItem is not None:	
-			mapSize = self.mapItem.sizeWithUnits()
-			self.mapItem.setFixedSize(mapSize)
-			self.mapItem.setExtent(map_extent)	
+	def specialMapUpdateMapItem(self, composition, map_extent, layer_moldura_mi, mapItem=None):
+		if mapItem is None:
+			mapItem = composition.itemById("map_articulacao")
+		if mapItem is not None:	
+			mapSize = mapItem.sizeWithUnits()
+			mapItem.setFixedSize(mapSize)
+			mapItem.setExtent(map_extent)	
 			if self.gridMode:	
-				self.mapItem.setLayers([ layer_moldura_mi])
+				mapItem.setLayers([ layer_moldura_mi])
 			else:
-				self.mapItem.setLayers([ layer_moldura_mi, self.layer_roi])
-			self.mapItem.refresh()
+				mapItem.setLayers([ layer_moldura_mi, self.layer_roi])
+			mapItem.refresh()

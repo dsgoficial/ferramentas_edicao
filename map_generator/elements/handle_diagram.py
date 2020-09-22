@@ -56,7 +56,7 @@ class HandleAngles:	#
 
 	def getWGSPoint(self, pt):
 		crsSrc  = self.iface.mapCanvas().mapSettings().destinationCrs()
-		crsDest = QgsCoordinateReferenceSystem(4326)
+		crsDest = QgsCoordinateReferenceSystem(4326,QgsCoordinateReferenceSystem.EpsgCrsId)
 
 		coordinateTransformer = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
 		wgsPt = coordinateTransformer.transform(pt)
@@ -84,7 +84,7 @@ class HandleAngles:	#
         
 
 	def generateDMS(self, ang):
-		print(ang)
+		# print(ang)
 		xg = format( math.modf( ang )[1], '.0f' )		
 		sign = -1 if ang < 0 else 1
 		xm = format( sign * math.modf( math.modf( ang )[0] * 60 )[1], '.0f' )

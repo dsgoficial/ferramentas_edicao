@@ -285,10 +285,10 @@ class Divisao(MapParent):
 		f = open(txt_file, "r")
 		base_html = f.read()
 		font_size = '0.6'
-		if n_municipios > 6:
-			font_size = '0.60'
-		if n_municipios > 12:
-			font_size = '0.60'
+		if 6 < n_municipios < 13:
+			font_size = '0.55'
+		elif  12 < n_municipios:
+			font_size = '0.50'
 	
 		n_columns, n_column1, n_column2, n_column3 = self.getNColums(n_municipios)
 				
@@ -387,11 +387,11 @@ class Divisao(MapParent):
 		municipios_layer.setLabelsEnabled(True)
 		municipios_layer.triggerRepaint()
 
-	def updateMapItem(self, composition, map_extent, layers_to_show):	
-		if self.mapItem is None:
-			self.mapItem = composition.itemById("map_divisao")
-		if self.mapItem is not None:	
-			self.mapItem.setExtent(map_extent)
-			self.mapItem.refresh()		
-			self.mapItem.setLayers(layers_to_show) 
-			self.mapItem.refresh()
+	def updateMapItem(self, composition, map_extent, layers_to_show, mapItem=None):	
+		if mapItem is None:
+			mapItem = composition.itemById("map_divisao")
+		if mapItem is not None:	
+			mapItem.setExtent(map_extent)
+			mapItem.refresh()		
+			mapItem.setLayers(layers_to_show) 
+			mapItem.refresh()

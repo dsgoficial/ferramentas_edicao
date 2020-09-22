@@ -51,6 +51,7 @@ class Map(MapParent):
         self.layer_auxiliarMoldura = None
         self.boundTeste = None
         self.mapItem = None
+        self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','map')
 
     def setMapSize(self, map_width=588, map_height=588):
         self.map_width = map_width
@@ -92,8 +93,10 @@ class Map(MapParent):
         boundingBox_transformed = convexhull.boundingBox()			
 
         # Adiciono a feição do contorno
-        fet = QgsFeature()			
-        fet.setGeometry(convexhull)                
+        fet = QgsFeature(layer_auxiliarMoldura.fields())			
+        fet.setGeometry(convexhull)
+        fet['id'] = '1'
+        '''
         fet_attributes = selected_feature.attributes()
         
         # coloco como id um caso não tenha id 
@@ -102,6 +105,7 @@ class Map(MapParent):
             idx = -1			
         fet_attributes[idx] = '1'			
         fet.setAttributes(fet_attributes)
+        '''
         pr.addFeatures([fet])			
 
         # Commit changes
@@ -141,11 +145,10 @@ class Map(MapParent):
         feature_bound = [feat for feat in layer_auxiliarMoldura.getFeatures()][0]
         feature_geometry = feature_bound.geometry()
         
-        # self.GLC.geo_test(feature_geometry, layer_bound, utmSRID, self.id_attr, self.grid_id_value, self.spacing, self.crossX, self.crossY, self.scale, self.color, self.fontSize, self.font, self.fontLL, self.llcolor, self.linwidth_geo, self.linwidth_utm)
-        print('Creating style')
+        # self.GLC.geo_test(feature_geometry, layer_bound, utmSRID, self.id_attr, self.grid_id_value, self.spacing, self.crossX, self.crossY, self.scale, self.color, self.fontSize, self.font, self.fontLL, self.llcolor, self.linwidth_geo, self.linwidth_utm)        
         self.GLC.styleCreator( feature_geometry, layer_bound, utmSRID, self.id_attr, self.id_value, self.spacing, self.crossX, self.crossY, self.scale, self.fontSize, self.font, self.fontLL, self.llcolor, self.linwidth_geo, self.linwidth_utm, self.linwidth_buffer_geo, self.linwidth_buffer_utm, self.geo_grid_color, self.utm_grid_color, self.geo_grid_buffer_color, self.utm_grid_buffer_color)
 
-    def make(self, composition, grid_layer, selected_feature, layers):
+    def make(self, composition, grid_layer, selected_feature, layers, showLayers=False):
         # Deletendo o grupo		
         map_layers = []
         self.deleteGroups(['map'])
@@ -155,55 +158,71 @@ class Map(MapParent):
         mapGroup_node = QgsLayerTreeGroup('map')
         mapGroup_node.setItemVisibilityChecked(False)	
                     
+        # Criando o layer do grid e estilizando
         map_extent = self.getExtent(selected_feature)
         layer_grid_styled, map_extent_transformed = self.createLayerForGrid(grid_layer, selected_feature)	
         QgsProject.instance().addMapLayer(layer_grid_styled, False)
-        map_layers.append(layer_grid_styled.id())
-        
+        map_layers.append(layer_grid_styled.id())        
         self.generateGridStyleForLayer(layer_grid_styled)
+        mapGroup_node.addLayer(layer_grid_styled)	
 
-        mapGroup_node.addLayer(layer_grid_styled)		
+        # Criando o layer de mascara de rotulos
+        layer_mascara_rotulo = self.createMaskLayer(selected_feature)
+        QgsProject.instance().addMapLayer(layer_mascara_rotulo, False)        
+        map_layers.append(layer_mascara_rotulo.id())        
         
-        layers_to_lock = []
+        layers_to_lock = [layer_mascara_rotulo]
         layers_to_lock.extend(layers['map'])
         layers_to_lock.extend(layers['images'])
         self.updateMapItem2(composition, map_extent, map_extent_transformed, layer_grid_styled, layers_to_lock)
         map_layers.extend(layers['id_map'])
         
-        #  quando as camadas forem passadas como parametro
-        # mapGroup_node.setItemVisibilityChecked(False)
-        # QgsProject.instance().addMapLayer(camadaAdicionada, False)
-        # mapGroup_node.addLayer(camadaAdicionada)
-        # root = QgsProject.instance().layerTreeRoot()		
-        # root.addChildNode(mapGroup_node)
+        if showLayers:            
+            for map_layer in layers_to_lock:
+                mapGroup_node.addLayer(map_layer)
+            
+            root = QgsProject.instance().layerTreeRoot()		
+            root.addChildNode(mapGroup_node)
 
         return map_layers
 
-    def updateMapItem2(self, composition, map_extent, map_extent_transformed, layer_auxiliarMoldura, layers_to_lock):  
+    def createMaskLayer(self, selected_feature):
+        bound = selected_feature.geometry()
+        buffered_bound = bound.buffer(0.3,2)
+        dif_bound = buffered_bound.difference(bound)
+        layer_mascara_rotulo = self.createGridRectangleLayer( 'mascara_rotulo', [dif_bound ])  
+        caminho_estilo_mascara = os.path.join(self.folder_estilos, 'mascara_rotulos.qml')		
+        layer_mascara_rotulo.loadNamedStyle(caminho_estilo_mascara)
+        layer_mascara_rotulo.triggerRepaint()
+        return layer_mascara_rotulo  
+        # QgsProject.instance().addMapLayer(grid_rectangle_layer, True)
+
+    def updateMapItem2(self, composition, map_extent, map_extent_transformed, layer_auxiliarMoldura, layers_to_lock, mapItem=None):  
         theScale = self.scale*1000.0
-        if self.mapItem is None:
-            self.mapItem = composition.itemById("the_map")
-        if self.mapItem is not None:		
-            self.mapItem.setExtent(map_extent)
-            self.mapItem.setScale(theScale)
+        if mapItem is None:
+            mapItem = composition.itemById("the_map")
+        if mapItem is not None:		
+            mapItem.setExtent(map_extent)
+            mapItem.setScale(theScale)
             layers_return = [layer_auxiliarMoldura]
-            if layers_to_lock is not None:                
-                self.mapItem.setLayers([layer_auxiliarMoldura].extend(layers_to_lock))                
+            if layers_to_lock is not None:
+                layers_to_set = [layer_auxiliarMoldura]
+                layers_to_set.extend(layers_to_lock)
+                mapItem.setLayers(layers_to_set)
             else:                
-                self.mapItem.setLayers([layer_auxiliarMoldura])
-            self.mapItem.refresh()
-            self.mapItem.setCrs(self.crs_moldura)
-            self.mapItem.setExtent(map_extent_transformed)
-            self.mapItem.setScale(theScale)
+                mapItem.setLayers([layer_auxiliarMoldura])
+            mapItem.refresh()
+            mapItem.setCrs(self.crs_moldura)
+            mapItem.setExtent(map_extent_transformed)
+            mapItem.setScale(theScale)
             if theScale == 250000:
                 self.map_height = 494
                 self.map_width = 724
-            self.mapItem.attemptResize(QgsLayoutSize(self.map_width,  self.map_height, QgsUnitTypes.LayoutMillimeters))
-            self.mapItem.setScale(theScale)
-            self.mapItem.refresh()
+            mapItem.attemptResize(QgsLayoutSize(self.map_width,  self.map_height, QgsUnitTypes.LayoutMillimeters))
+            mapItem.setScale(theScale)
+            mapItem.refresh()
             self.centerMapInAreaCarta(composition)              
              
-
     def centerMapInAreaCarta(self, composition):		
         item_area_reservada_carta = composition.itemById('area_reservada_carta') 
         if item_area_reservada_carta is not None:

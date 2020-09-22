@@ -142,7 +142,8 @@ class MapManager(MapTools):
 				dict_conexao = dict_carta['banco']
 				if dict_conexao != {}:
 					success, uri = self.getDBConnection(dict_conexao)
-					break
+					if success:
+						break														
 				else:
 					continue
 		return success, uri
@@ -164,7 +165,8 @@ class MapManager(MapTools):
 	def createAll(self, composition, nome,  selected_feature, grid_layer, layers, showLayers = False):		
 		# Store temporary map layers ids
 		ids_maplayers = []
-			
+
+		QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(4326,QgsCoordinateReferenceSystem.EpsgCrsId))			
 		if composition.itemById("the_map") is not None:
 			ids_maplayers.extend(self.createMap(composition, grid_layer, selected_feature, layers, showLayers))
 
@@ -191,9 +193,8 @@ class MapManager(MapTools):
 		self.handle_angles.make(composition, selected_feature)		
 
 		# Dados de escala e nome
-		self.dados_de_escala.setScale(self.scale*1000)
-		self.dados_de_escala.setComposition(composition)
-		self.dados_de_escala.changeScaleLabels()	
+		self.dados_de_escala.setScale(self.scale*1000)		
+		self.dados_de_escala.changeScaleLabels(composition)	
 		editMapName(composition, nome, self.mi, self.inom)
 
 		# Mapa de Localização
@@ -204,13 +205,9 @@ class MapManager(MapTools):
 			regioes = self.localizacao.regioes
 			replaceLabelRegiao(composition, regioes)	
 
-		# Exporta os mapas
+		# Exporta os mapas				
 		if not showLayers:
 			self.exportMap(composition)
-
-		# Reprojeta se for o caso
-		if self.dlg.checkBox_exportar_padrao_bdgex.isChecked():
-			self.reprojectTiffs()
 
 		# Add grid layer
 		ids_maplayers.extend([grid_layer.id()])

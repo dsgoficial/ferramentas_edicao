@@ -44,7 +44,7 @@ class Localizacao(MapParent):
 		self.mapItem = None
 		self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','localizacao')
 
-	def changeMapGrid(self):
+	def changeMapGrid(self, mapItem):
 		parameters = [
 			{
 				'estados':['RS'],
@@ -117,15 +117,15 @@ class Localizacao(MapParent):
 			intervalY = grid_data['intervalY']
 			OffsetX = grid_data['OffsetX']
 			OffsetY = grid_data['OffsetY']		
-			self.mapItem.grid().setIntervalX(intervalX)
-			self.mapItem.grid().setIntervalY(intervalY)
-			self.mapItem.grid().setOffsetX(OffsetX)
-			self.mapItem.grid().setOffsetY(OffsetY)
+			mapItem.grid().setIntervalX(intervalX)
+			mapItem.grid().setIntervalY(intervalY)
+			mapItem.grid().setOffsetX(OffsetX)
+			mapItem.grid().setOffsetY(OffsetY)
 		else:
-			self.mapItem.grid().setIntervalX(3)
-			self.mapItem.grid().setIntervalY(3)
-			self.mapItem.grid().setOffsetX(0)
-			self.mapItem.grid().setOffsetY(0)
+			mapItem.grid().setIntervalX(3)
+			mapItem.grid().setIntervalY(3)
+			mapItem.grid().setOffsetX(0)
+			mapItem.grid().setOffsetY(0)
 		
 	def setAdaptacaoNome(self, adaptacaoNome):
 		self.adaptacaoNome = adaptacaoNome
@@ -143,8 +143,7 @@ class Localizacao(MapParent):
 
 		# Criamos layer para a área do mapa
 		#grid_bound = selected_feature.geometry().convexHull()
-		grid_bound = selected_feature.geometry().boundingBox()
-		print('testando a escala', self.scale)
+		grid_bound = selected_feature.geometry().boundingBox()		
 		grid_rectangleLayer = self.createGridRectangle(grid_bound, 'localizacao_gridbound')				
 		map_layers.append(grid_rectangleLayer.id())
 
@@ -429,16 +428,17 @@ class Localizacao(MapParent):
 		estados_layer.setLabelsEnabled(True)
 		estados_layer.triggerRepaint()
 
-	def updateMapItem(self,composition, layer_estados_frente, estados_layer, grid_rectangleLayer, bound):
-		if self.mapItem is None:
-			self.mapItem = composition.itemById("map_localizacao")
-		if self.mapItem is not None:
-			mapSize = self.mapItem.sizeWithUnits()
-			self.mapItem.setFixedSize(mapSize)		
-			self.mapItem.setExtent(bound)		
-			self.mapItem.refresh()	
-			self.changeMapGrid()	
-			self.mapItem.setLayers([layer_estados_frente, grid_rectangleLayer, estados_layer])
+	def updateMapItem(self,composition, layer_estados_frente, estados_layer, grid_rectangleLayer, bound, mapItem=None):		
+		if mapItem is None:
+			mapItem = composition.itemById("map_localizacao")
+		if mapItem is not None:
+			mapSize = mapItem.sizeWithUnits()
+			mapItem.setFixedSize(mapSize)		
+			mapItem.setCrs(QgsCoordinateReferenceSystem(4326,QgsCoordinateReferenceSystem.EpsgCrsId))
+			mapItem.setExtent(bound)		
+			mapItem.refresh()	
+			self.changeMapGrid(mapItem)	
+			mapItem.setLayers([layer_estados_frente, grid_rectangleLayer, estados_layer])
 
 	def updateNameEstadosMapItem(self, composition, bound, layer_estadosnames):
 		nameEstadosMapItem = composition.itemById("map_localizacao_adaptacao")

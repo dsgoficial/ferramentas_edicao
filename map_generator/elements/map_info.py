@@ -184,7 +184,7 @@ class HtmlData:
             width = dict_qpt['width']
             height = dict_qpt['height']
             caminho_qpt = dict_qpt['caminho']
-            print(caminho_qpt)
+            #print(caminho_qpt)
             if caminho_qpt is not None:
                 copied_qpt = copyQptToCompositor(caminho_qpt, composition, x_0, y_0, width, height)
         
@@ -316,7 +316,7 @@ class HtmlData:
                 if n_sensores == 1:
                     # Single Sensor - Done text!
                     edited = self.replaceStr(base_html,dados_sensor)                        
-                elif 1 < n_sensores < 3:
+                elif 1 < n_sensores < 4:
                     base_row_multiple = '<tr >\
                         <td class = "lef" >{tipo}</td>\
                         <td class = "lef" >{plataforma}</td>\
@@ -328,7 +328,7 @@ class HtmlData:
                     rows.append(self.replaceStr(base_row_multiple,dados_sensor))
             
             # Multiple sensors
-            if 1 < n_sensores < 3:
+            if 1 < n_sensores < 4:
                 str_sensores = '\n'.join(rows)
                 edited = self.replaceStr(base_html ,{'{sensores}': str_sensores})            
             label_tabela_info_ortoimagem.setText(edited)     
@@ -349,7 +349,7 @@ class HtmlData:
             # Add info_tecnica to dict
             corrected_info_tecnica = { "{" + k + "}": v for k, v in info_tecnica.items() }
             corrected_info_tecnica.update({"{tipo_produto}":tipo_produto})
-            print(corrected_info_tecnica)
+            # (corrected_info_tecnica)
             dados_data.update(**corrected_info_tecnica)
             
             # Get curves info            
