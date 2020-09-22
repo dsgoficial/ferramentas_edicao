@@ -10,7 +10,7 @@
       <symbol name="0" clip_to_extent="1" type="line" alpha="1" force_rhr="0">
         <layer enabled="1" class="GeometryGenerator" pass="0" locked="0">
           <prop k="SymbolType" v="Line"/>
-          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;simplify_vw(intersection($geometry,  @moldura), @map_scale*0.001)&#xd;&#xa;ELSE&#xd;&#xa;simplify_vw($geometry, @map_scale*0.001)&#xd;&#xa;END&#xd;&#xa; )"/>
+          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;simplify_vw(intersection($geometry,  @moldura), @map_scale*0.001)&#xd;&#xa;ELSE&#xd;&#xa;simplify_vw($geometry, @map_scale*0.001)&#xd;&#xa;END&#xd;&#xa; )"/>
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" type="QString" value=""/>

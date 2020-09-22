@@ -10,7 +10,7 @@
       <symbol type="fill" alpha="1" clip_to_extent="1" name="0" force_rhr="0">
         <layer class="GeometryGenerator" locked="0" enabled="1" pass="0">
           <prop k="SymbolType" v="Fill"/>
-          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a_carta_carta', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;"/>
+          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura_carta', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;"/>
           <data_defined_properties>
             <Option type="Map">
               <Option type="QString" value="" name="name"/>
@@ -93,7 +93,7 @@
         <substitutions/>
       </text-style>
       <text-format reverseDirectionSymbol="0" useMaxLineLengthForAutoWrap="1" autoWrapLength="18" addDirectionSymbol="0" placeDirectionSymbol="0" leftDirectionSymbol="&lt;" decimals="3" wrapChar="" rightDirectionSymbol=">" formatNumbers="0" multilineAlign="1" plussign="0"/>
-      <placement dist="0" overrunDistance="0" preserveRotation="1" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" overrunDistanceUnit="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" yOffset="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleOut="-25" maxCurvedCharAngleIn="25" priority="9" repeatDistance="0" distUnits="MM" xOffset="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" centroidInside="1" geometryGeneratorType="PolygonGeometry" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_moldura_edicao_a_carta', 'mi', @mi)),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;" offsetUnits="MM" offsetType="0" rotationAngle="0" placementFlags="10" quadOffset="4" layerType="PolygonGeometry" centroidWhole="0" repeatDistanceUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" placement="0" fitInPolygonOnly="1" geometryGeneratorEnabled="1"/>
+      <placement dist="0" overrunDistance="0" preserveRotation="1" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" overrunDistanceUnit="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" yOffset="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleOut="-25" maxCurvedCharAngleIn="25" priority="9" repeatDistance="0" distUnits="MM" xOffset="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" centroidInside="1" geometryGeneratorType="PolygonGeometry" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;" offsetUnits="MM" offsetType="0" rotationAngle="0" placementFlags="10" quadOffset="4" layerType="PolygonGeometry" centroidWhole="0" repeatDistanceUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" placement="0" fitInPolygonOnly="1" geometryGeneratorEnabled="1"/>
       <rendering fontMinPixelSize="3" fontMaxPixelSize="10000" scaleVisibility="0" zIndex="0" labelPerPart="0" scaleMax="0" drawLabels="1" fontLimitPixelSize="0" obstacle="0" obstacleType="1" limitNumLabels="0" minFeatureSize="0" obstacleFactor="1" displayAll="0" upsidedownLabels="0" mergeLines="0" maxNumLabels="2000" scaleMin="0"/>
       <dd_properties>
         <Option type="Map">
@@ -101,7 +101,7 @@
           <Option type="Map" name="properties">
             <Option type="Map" name="Show">
               <Option type="bool" value="true" name="active"/>
-              <Option type="QString" value="intersects($geometry,  geometry(get_feature('aux_moldura_edicao_a_carta', 'mi', @mi)))" name="expression"/>
+              <Option type="QString" value="intersects($geometry,  geometry(get_feature('auxiliar_moldura', 'id', '1')))" name="expression"/>
               <Option type="int" value="3" name="type"/>
             </Option>
           </Option>
