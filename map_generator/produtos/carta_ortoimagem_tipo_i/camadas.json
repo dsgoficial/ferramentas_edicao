@@ -2,10 +2,6 @@
     "25": {
         "carta_mini": [
             {
-                "tabela": "aux_moldura_edicao_a",
-                "schema": "edgv"
-            },
-            {
                 "tabela": "llp_localidade_p",
                 "schema": "edgv"
             },
@@ -47,10 +43,6 @@
             }
         ],
         "carta": [
-            {
-                "tabela": "aux_moldura_edicao_a",
-                "schema": "edgv"
-            },
             {
                 "tabela": "constr_edificacao_p",
                 "schema": "edgv"
@@ -136,10 +128,6 @@
     "50": {
         "carta_mini": [
             {
-                "tabela": "aux_moldura_edicao_a",
-                "schema": "edgv"
-            },
-            {
                 "tabela": "llp_localidade_p",
                 "schema": "edgv"
             },
@@ -181,10 +169,6 @@
             }
         ],
         "carta": [
-            {
-                "tabela": "aux_moldura_edicao_a",
-                "schema": "edgv"
-            },
             {
                 "tabela": "constr_edificacao_p",
                 "schema": "edgv"
@@ -270,10 +254,6 @@
     "100": {
         "carta_mini": [
             {
-                "tabela": "edicao_moldura_edicao_a",
-                "schema": "edgv"
-            },
-            {
                 "tabela": "llp_localidade_p",
                 "schema": "edgv"
             },
@@ -315,10 +295,6 @@
             }
         ],
         "carta": [
-            {
-                "tabela": "edicao_moldura_edicao_a",
-                "schema": "edgv"
-            },
             {
                 "tabela": "constr_edificacao_p",
                 "schema": "edgv"
@@ -404,10 +380,6 @@
     "250": {
         "carta_mini": [
             {
-                "tabela": "edicao_moldura_edicao_a",
-                "schema": "edgv"
-            },
-            {
                 "tabela": "llp_localidade_p",
                 "schema": "edgv"
             },
@@ -449,10 +421,6 @@
             }
         ],
         "carta": [
-            {
-                "tabela": "edicao_moldura_edicao_a",
-                "schema": "edgv"
-            },
             {
                 "tabela": "infra_pista_pouso_p",
                 "schema": "edgv"
