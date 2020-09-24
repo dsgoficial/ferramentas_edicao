@@ -192,13 +192,19 @@ class EditionPlugin:
         pass
 
     def setTestData(self):        
+        self.dlg.mQgsFileWidget_cabecalho.setFilter("Composer Template (*.qpt)")
         caminho_cabecalho = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem_tipo_i', 'cabecalho.qpt')        
+        self.dlg.mQgsFileWidget_cabecalho.setFilePath(caminho_cabecalho)
+        
+        self.dlg.mQgsFileWidget_projeto.setFilter("Composer Template (*.qpt)")
         caminho_projeto = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem_tipo_i', 'projeto_mif_creditos_dsg.qpt')
+        self.dlg.mQgsFileWidget_projeto.setFilePath(caminho_projeto)
+        
+        self.dlg.mQgsFileWidget_json_cartas.setFilter("JSON (*.json)")
+        #self.dlg.mQgsFileWidget_json_cartas.setFilePath(caminho_json_carta)
+        
         # caminho_pasta_exportar = 'C:\\Users\\apotheosis\\Documents\\jsons'
         # caminho_json_carta = 'C:\\Users\\apotheosis\\Documents\\jsons\\cartaortoimagem_SG-21-X-B_teste.json'
-        self.dlg.mQgsFileWidget_cabecalho.setFilePath(caminho_cabecalho)
-        self.dlg.mQgsFileWidget_projeto.setFilePath(caminho_projeto)
-        #self.dlg.mQgsFileWidget_json_cartas.setFilePath(caminho_json_carta)
         # self.dlg.mQgsFileWidget_pasta_exportar.setFilePath(caminho_pasta_exportar)
 
     def initializeVariables(self):
