@@ -216,14 +216,21 @@ class DefaultMap(MapManager):
 		if os.path.exists(path_json_carta):
 			dict_carta = self.readJsonFromPath(path_json_carta)
 
+			inomen = 'Especial'
+			mi = 'Especial'
 			# inom 
-			inomen = dict_carta['inom']
-			mi 		= self.utm_grid.get_MI_MIR_from_inom(inomen)
-			escala = str(self.utm_grid.getScale(inomen))
+			if 'inom' in dict_carta:
+				inomen = dict_carta['inom']
+				mi 		= self.utm_grid.get_MI_MIR_from_inom(inomen)
+				escala = str(self.utm_grid.getScale(inomen))
+			
+			if 'center' in dict_carta:
+				escala = dict_carta['escala'] # transformar para 250000
+				center = dict_carta['center']
+				longitude = center['longitude']
+				latitude = center['latitude']
+				inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, int(escala/1000))			
 
-			# Composition Map Item     
-			self.changeProjectVariable(escala,mi)
-			print('Project Variable Changed - ' + str(mi))
 
 			# Tipo de produto
 			str_tipo_produto = self.dlg.comboBox_tipo_produto.currentText()
@@ -255,9 +262,8 @@ class DefaultMap(MapManager):
 			list_dict_sensores = dict_carta['sensores']
 			self.htmlData.customSensores( composition,list_dict_sensores)
 			
-			# Info tecnica carta
-			inom = dict_carta["inom"]	
-			scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inom)
+			# Info tecnica carta			
+			scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
 			dict_info_tecnica = dict_carta['info_tecnica']
 			self.htmlData.editHTMLInfoTecCarta(composition, scale, hemisferio, fuso, str_tipo_produto, dict_info_tecnica)
 
@@ -287,9 +293,9 @@ class DefaultMap(MapManager):
 
 			}
 
-			return True, composition, inom, layers
+			return True, composition, dict_carta, inomen, layers
 		else:
-			return False , None, None, None
+			return False ,None, None, None, None
 		
 	def createCompositions(self, list_of_scales, tipo_produto):
 		dict_compositions = {}		
@@ -344,6 +350,11 @@ class DefaultMap(MapManager):
 					escala = str(self.utm_grid.getScale(dict_carta['inom']))
 					if escala not in list_of_scales:
 						list_of_scales.append(escala)
+				elif 'escala' in dict_carta:
+					escala = str(int(dict_carta['denominador_escala'])/1000)
+					if escala not in list_of_scales:
+						list_of_scales.append(escala)
+
 					
 				# Verificar se todos possuem a chave etapas
 				if 'fases' in dict_carta:
@@ -356,6 +367,17 @@ class DefaultMap(MapManager):
 				# Verificar se todos possuem a chave info tecnica
 				logs.append(error)
 		return success, logs, list_of_scales
+
+	def create_temporary_folder(self):
+		path_temporary_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'includes', 'output', 'temporary')
+		if not os.path.isdir(path_temporary_folder):
+			os.mkdir(path_temporary_folder)
+			return path_temporary_folder
+
+	def delete_temporary_folder(self):
+		path_temporary_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'includes', 'output', 'temporary')
+		if os.path.isdir(path_temporary_folder):
+			os.remove(path_temporary_folder)
 
 	def createMaps(self):
 		test_noLayers = True
@@ -390,6 +412,7 @@ class DefaultMap(MapManager):
 		self.editCompositions(tipo_produto, dict_compositions)		
 		
 		if success:
+			path_temporary_folder = self.create_temporary_folder()
 			success_connection, connectedUri = self.getFirstConnection( caminhos_json_carta)			
 			if success_connection:
 				self.saveFolder = os.path.join(self.baseSaveFolder, dt.now().strftime('%Y_%m_%d_%H_%M_%S'))
@@ -399,27 +422,26 @@ class DefaultMap(MapManager):
 				for caminho_json_carta in caminhos_json_carta:
 					if self.checkJsonCarta(caminho_json_carta):
 						# Set config for html labels					
-						success, composition, inomen, layers = self.setCartaConfig(caminho_json_carta, connectedUri,  dict_compositions, test_noLayers)															
+						success, composition, dict_carta, inomen, layers = self.setCartaConfig(caminho_json_carta, connectedUri,  dict_compositions, test_noLayers)															
 						
 						# Get feature data for maps
-						int_escala, mi = self.getDefaultFeatureData(inomen)							
-						self.changeProjectVariable(str(int_escala), mi)
-						
-						# Create grid layer
-						grid_layer, grid_layerId, feature_inom = self.createGridLayer(inomen)
-						QgsProject.instance().addMapLayer(grid_layer, False)
-
-						self.setElementsConfig(tipo_produto)
-						# composition = dict_compositions[str(self.utm_grid.getScale(inomen))]						
-						self.createAll(composition, self.nome, feature_inom, grid_layer, layers, showLayers)
-						if showLayers:						
-							manager = QgsProject.instance().layoutManager()						
-							composition.setName(str_tipo_produto)
-							manager.addLayout(composition)
-							break
+						if dict_carta:
+							feature_map_extent, layer_feature_map_extent = self.getDefaultFeatureData(dict_carta)													
+							QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
+							
+							self.setElementsConfig(tipo_produto)
+							# composition = dict_compositions[str(self.utm_grid.getScale(inomen))]						
+							self.createAll(composition, self.nome, inomen, feature_map_extent, layer_feature_map_extent, layers, showLayers)
+							if showLayers:						
+								manager = QgsProject.instance().layoutManager()						
+								composition.setName(str_tipo_produto)
+								manager.addLayout(composition)
+								break
 				# Reprojeta se for o caso		
 				if self.dlg.checkBox_exportar_geotiff.isChecked():
 					self.reprojectTiffs()
+			
 		if not showLayers:
 			self.mc.setProjectProjection(oldProjValue)
+			self.delete_temporary_folder()
 			pass

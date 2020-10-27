@@ -58,6 +58,15 @@ class UtmGrid(QObject):
         self.MIdict=[]
         self.MIRdict=[]
         
+    def get_INOM_from_lat_lon(self, lon, lat):
+        """
+        Returns Inom with the nearest lower left lon lat.
+        """
+        INOM = 'N' if lat >= 0 else 'S'
+        INOM += string.ascii_uppercase[math.floor(abs(lat/4.)) % 26] + '-'
+        utm_zone = math.floor(31 + lon/6)
+        return INOM+str(utm_zone)
+    
     def __del__(self):
         """Destructor."""
         pass
@@ -546,6 +555,31 @@ class UtmGrid(QObject):
         utm_zone = math.floor(31 + lon/6)
         return INOM+str(utm_zone)
     
+    def get_INOM_from_lat_lon(self, lon, lat, scale=250):
+        # Initial part 
+        INOM = 'N' if lat >= 0 else 'S'        
+        INOM += string.ascii_uppercase[math.floor(abs(lat/4.)) % 26] + '-'
+        utm_zone = math.floor(31 + lon/6)
+        INOM += str(utm_zone)
+        # division         
+        div_lat = 4
+        div_lon = 6
+        next_lat = abs(lat) % div_lat
+        next_lon = abs(lon) % div_lon        
+        for i in range(1,self.scales.index(scale)+1):
+            div_lat = div_lat/len(self.scaleText[i])            
+            n_lat = len(self.scaleText[i])-1
+            n_lon = len(self.scaleText[i][0])-1
+            div_lon = div_lon/len(self.scaleText[i][0])
+            index_lat = math.floor(next_lat / div_lat) if lat <= 0 else n_lat - math.floor(next_lat / div_lat)
+            index_lon = math.floor(next_lon / div_lon) if lon >= 0 else n_lon- math.floor(next_lon / div_lon)
+            part_inom = self.scaleText[i][index_lat][index_lon]
+            INOM += '-' + part_inom
+            next_lat = abs(next_lat) % div_lat
+            next_lon = abs(next_lon) % div_lon
+        return INOM
+
+
     def get_INOM_range_from_BB(self, xmin, ymin, xmax, ymax):
         """
         Returns a set of INOM that intersect bbRect formed by 
@@ -600,6 +634,16 @@ class UtmGrid(QObject):
             layer.updateFields()
             return layer, fields
 
+    def get_new_grid_layer_from_inoms_list(self, list_inom):
+        layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')
+        feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields) for map_index in list_inom]
+        provider = layer.dataProvider()
+        provider.addFeatures(feats)
+        layer.startEditing()
+        provider = layer.dataProvider()       
+        layer.commitChanges()        
+        return layer, feats
+
     def get_neighbors_inom(self, inom):
         layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')
 
@@ -641,7 +685,15 @@ class UtmGrid(QObject):
     def testTwo(self, inom):         
         grid_rectangleLayer, center_feat = self.get_neighbors_inom(inom)
         QgsProject.instance().addMapLayer(grid_rectangleLayer)
-
+    
+    def get_degrees_from_scale(self, scale):
+        degrees_lat = 4
+        degrees_lon = 6
+        for i in range(1,self.scales.index(scale)+1):
+            degrees_lat = degrees_lat/len(self.scaleText[i])            
+            degrees_lon = degrees_lon/len(self.scaleText[i][0])            
+        return degrees_lat, degrees_lon
+        
 if __name__ == "__main__":    
     x = UtmGrid()
     inom = 'SH-21-Z-D-I-1'

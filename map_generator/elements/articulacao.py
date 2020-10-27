@@ -39,14 +39,15 @@ import json
 
 from .map_utils import MapParent
 class Articulacao(MapParent):
-	def __init__(self):				
+	def __init__(self):		
+		super().__init__()		
 		self.customMode = True
 		self.gridMode = True
 		self.group_name = 'articulacao'
 		self.mapItem = None
 		self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','articulacao')
 
-	def make(self,composition, grid_layer, selected_feature, gridMode, showLayers):
+	def make(self,composition,inomen, layer_feature_map_extent, gridMode, showLayers):
 		# Deletando as variaveis
 		self.deleteGroups(['articulacao'])
 		map_layers = []
@@ -54,22 +55,39 @@ class Articulacao(MapParent):
 		articulacaoGroup_node = QgsLayerTreeGroup('articulacao')		
 		articulacaoGroup_node.setItemVisibilityChecked(False)
 
+		# Create the grid layer
+		grid_layer, grid_layerId = self.createGridLayer(inomen)		
+		map_layers.append(grid_layerId)
+
 		layer_moldura_mi, moldura_layer_name = self.addLayerMoldura_v2(grid_layer)
 		map_layers.append(layer_moldura_mi.id())
 
 		# Adicionamos o layer ao mapa e ao grupo 
 		QgsProject.instance().addMapLayer(layer_moldura_mi, False)
 		articulacaoGroup_node.addLayer(layer_moldura_mi)
-		
 
+		# Criar um layer para o map_extent_feature
+		print('layer_map_extent')
+		print(layer_feature_map_extent)
+		print([feat for feat in layer_feature_map_extent.getFeatures()])
+		layer_map_extent = self.createLocalizacaoMILayer('map_extent', [feat for feat in layer_feature_map_extent.getFeatures()])		
+		self.loadStyleToLayer(layer_map_extent,os.path.join(self.folder_estilos, 'roi_2.qml') )
+		QgsProject.instance().addMapLayer(layer_map_extent, False)
+		articulacaoGroup_node.addLayer(layer_map_extent)
+		map_layers.append(layer_map_extent.id())
+		print('layer_map_extent')
+		# Alterar o estilo do layer do map_extent_feature
 		# Seleciona a articulação central e a extensão do mapa
-		self.setLayerROI(grid_layer)
-		
-		map_extent = self.getExtentFromCenter(selected_feature, layer_moldura_mi)				
+		# self.setLayerROI(grid_layer)
+
+		# Adicionar o id do layer map_extent_feature para map_layers
+
+		# articulacao_map_extent = self.getExtentFromCenter(map_extent_feature, layer_moldura_mi)				
+		articulacao_map_extent = grid_layer.extent()
 		# map_extent = self.getExtentFromGrid()
 		
-		# Adicionamos a simbologia
-		self.setSymbol(selected_feature,  layer_moldura_mi)								
+		# Adicionamos a simbologia		
+		# self.setSymbol(map_extent_feature,  layer_moldura_mi)								
 
 		if not gridMode:							
 			self.setLayerROI(grid_layer)
@@ -78,13 +96,13 @@ class Articulacao(MapParent):
 			self.loadStyleToLayer(self.layer_roi, style_file)				
 		
 		# Atualiza o map item
-		self.specialMapUpdateMapItem(composition, map_extent, layer_moldura_mi)	
-
+		self.specialMapUpdateMapItem(composition, articulacao_map_extent,layer_map_extent,  layer_moldura_mi)	
 		
 		if showLayers:
 			root = QgsProject.instance().layerTreeRoot()								
 			root.addChildNode(articulacaoGroup_node)
 		return map_layers
+
 
 	def addLayerMoldura_v2(self, grid_layer):		
 		layer_file = ''			
@@ -170,7 +188,7 @@ class Articulacao(MapParent):
 		layer_moldura_mi.setRenderer(renderer)
 		layer_moldura_mi.triggerRepaint()
 
-	def specialMapUpdateMapItem(self, composition, map_extent, layer_moldura_mi, mapItem=None):
+	def specialMapUpdateMapItem(self, composition, map_extent, layer_roi,  layer_moldura_mi, mapItem=None):
 		if mapItem is None:
 			mapItem = composition.itemById("map_articulacao")
 		if mapItem is not None:	
@@ -178,7 +196,7 @@ class Articulacao(MapParent):
 			mapItem.setFixedSize(mapSize)
 			mapItem.setExtent(map_extent)	
 			if self.gridMode:	
-				mapItem.setLayers([ layer_moldura_mi])
+				mapItem.setLayers([layer_roi, layer_moldura_mi])
 			else:
 				mapItem.setLayers([ layer_moldura_mi, self.layer_roi])
 			mapItem.refresh()

@@ -44,11 +44,13 @@ import shapely.wkt
 import shapely.geometry
 import json
 from qgis.core import QgsVectorLayer, QgsDataSourceUri
+from .map_index.map_index import UtmGrid
 
 class MapParent:
 	def __init__(self):
 		self.mapItem = None
 		self.selectedMapItem = None
+		self.utm_grid		= UtmGrid()
 
 	def setFeatureId(self, id):
 		self.selectedFeatureId = id
@@ -104,6 +106,20 @@ class MapParent:
 		self.update_qpt_variables(created_layout, novo_valor)
 		return created_layout
 
+	def create_Multipolygon_layer_copy(self, new_layer_name, layer_to_copy):		
+		attr_to_copy = layer_to_copy.dataProvider().fields().toList()
+		#new_layer = QgsVectorLayer("Multipolygon?crs=epsg:{epsg}".format(epsg=layer_to_copy.crs().postgisSrid()),new_layer_name, "memory")
+		new_layer = QgsVectorLayer("Polygon?crs=EPSG:4326",new_layer_name, "memory")
+		new_layer.startEditing()  
+		new_layer_provider = new_layer.dataProvider()
+		new_layer.startEditing()  
+		new_layer_provider.addAttributes(attr_to_copy)
+		new_layer.updateFields()		
+		new_layer_provider.addFeatures([feat for feat in layer_to_copy.getFeatures()])
+		new_layer.commitChanges()
+		return new_layer
+
+		
 	def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):        
 		if 'variableNames' in composition.customProperties():
 			chaves = composition.customProperty('variableNames')
@@ -270,6 +286,36 @@ class MapParent:
 		obj = json.loads(data)
 		return obj
 
+	def createGridLayer(self, inom):		
+		grid_layer, center_feat = self.utm_grid.get_neighbors_inom(inom)
+		grid_layerId = grid_layer.id()
+		QgsProject.instance().addMapLayer(grid_layer, False)
+		return grid_layer, grid_layerId
+
+	def createLocalizacaoMILayer(self, layer_name, feats):
+		baseuri = "Polygon"
+		uri = baseuri + "?crs=EPSG:4326"   
+		grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
+
+		# Start Editing
+		grid_rectangleLayer.startEditing()    
+		pr = grid_rectangleLayer.dataProvider()
+		grid_rectangleLayer.startEditing()
+
+		# Feature
+		# Create feature 
+		# n_feats		
+		n_feats = []
+		for feat in feats:
+			fet = QgsFeature()
+			fet.setGeometry(feat.geometry())
+			n_feats.append(fet)
+		pr.addFeatures(n_feats)
+
+		# Commit changes
+		grid_rectangleLayer.commitChanges()
+		return grid_rectangleLayer
+
 	def createGridRectangleLayer(self, layer_name, geometries):
 		baseuri = "Polygon"
 		uri = baseuri + "?crs=EPSG:4326"   
@@ -287,6 +333,24 @@ class MapParent:
 			fet = QgsFeature()
 			fet.setGeometry(geom)
 			feats.append(fet)
+		pr.addFeatures(feats)
+
+		# Commit changes
+		grid_rectangleLayer.commitChanges()
+		return grid_rectangleLayer
+
+	def create_layer_from_features(self, layer_name, feats):
+		baseuri = "Polygon"
+		uri = baseuri + "?crs=EPSG:4326"   
+		grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
+
+		# Start Editing
+		grid_rectangleLayer.startEditing()    
+		pr = grid_rectangleLayer.dataProvider()
+		grid_rectangleLayer.startEditing()
+
+		# Feature
+		# Create feature 
 		pr.addFeatures(feats)
 
 		# Commit changes

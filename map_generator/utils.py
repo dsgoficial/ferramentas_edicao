@@ -40,11 +40,12 @@ import shapely.wkt
 import shapely.geometry
 import json
 import codecs
-
+from .elements.map_index.map_index import UtmGrid
 class MapTools:
     def __init__(self, iface, dlg):
         self.iface 			= iface        
-        self.dlg 			= dlg       
+        self.dlg 			= dlg 
+        self.utm_grid		= UtmGrid()
         self.selectedMapItem = None         
 
     def readJsonFromPath(self, path_json):        
@@ -55,6 +56,44 @@ class MapTools:
         json_data = json.load(json_file)
         json_file.close()
         return json_data
+    
+    def create_layer_from_center_and_escala(self, longitude, latitude,escala):        
+        x = longitude
+        spacing_x = self.utm_grid.getSpacingX(escala)
+        x_min = x - spacing_x/2
+        x_max = x + spacing_x/2
+        y = latitude
+        spacing_y = self.utm_grid.getSpacingX(escala)
+        y_min = y - spacing_y/2
+        y_max = y + spacing_y/2
+        rect = qgis.core.QgsRectangle(x_min,y_min,x_max,y_max)
+        geom = QgsGeometry.fromRect(rect)
+        layer, feat = self.create_layer_from_geometry('map_extent', geom)
+        return layer, feat
+
+    def create_layer_from_geometry(self, name, geom, layerType='Multipolygon', crsAuthId='4326'):
+        layer = QgsVectorLayer('%s?crs=EPSG:%s'% (layerType, crsAuthId), name, 'memory')
+        if not layer.isValid():
+            return None
+        else:
+            provider = layer.dataProvider()
+            fields = QgsFields()
+            fields.append(QgsField('inom', QVariant.String))
+            fields.append(QgsField('mi', QVariant.String))
+            fields.append(QgsField('id', QVariant.String))
+            provider.addAttributes(fields)
+            layer.updateFields()
+
+            layer.startEditing()            
+            fet = QgsFeature(fields)
+            fet['id'] = '1'
+            fet.setGeometry(geom)
+            feats.append(fet)
+            provider.addFeatures([fet])
+
+            # Commit changes
+            layer.commitChanges()
+            return layer, fet    
 
     def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):        
         if 'variableNames' in composition.customProperties():

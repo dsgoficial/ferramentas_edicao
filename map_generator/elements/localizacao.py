@@ -142,7 +142,6 @@ class Localizacao(MapParent):
 		localizacaoNomeEstadoGroup_node.setItemVisibilityChecked(False)	
 
 		# Criamos layer para a área do mapa
-		#grid_bound = selected_feature.geometry().convexHull()
 		grid_bound = selected_feature.geometry().boundingBox()		
 		grid_rectangleLayer = self.createGridRectangle(grid_bound, 'localizacao_gridbound')				
 		map_layers.append(grid_rectangleLayer.id())
