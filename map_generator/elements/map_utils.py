@@ -162,8 +162,9 @@ class MapParent:
 					estados_layer.triggerRepaint()
 				estados_layer.setProviderEncoding(u'UTF-8')
 				estados_layer.dataProvider().setEncoding(u'UTF-8')                
-		return estados_layer
-	
+			return estados_layer
+		else:
+			return None
 	def setConnectedUri(self, connected_uri):
 		self.connected_uri = connected_uri
 

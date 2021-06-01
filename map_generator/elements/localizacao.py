@@ -42,7 +42,11 @@ class Localizacao(MapParent):
 		self.scale = 25000
 		self.adaptacao_nome = True		
 		self.mapItem = None
+		self.pais_analisado = 'paisA'
 		self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','localizacao')
+		self.shp_paises_exterior = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020')
+		self.attr_name_shp_paises = 'nome'
+		self.attr_name_unidade_federativa_shp_pais_intersecta = 'NAME_1'
 
 	def changeMapGrid(self, mapItem):
 		parameters = [
@@ -150,16 +154,24 @@ class Localizacao(MapParent):
 		caminho_shp_estado = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','estados_2019.shp')
 		caminho_estilo_estado = os.path.join(self.folder_estilos, 'no_labels_style.qml')		
 		estados_layer_fundo = self.load_shp_layer(caminho_shp_estado, caminho_estilo_estado, 'estados')
-		map_layers.append(estados_layer_fundo.id())				
+		map_layers.append(estados_layer_fundo.id())			
+		
+		
+		# Obtemos os limites e intersecçõescom limites entre países
+		caminho_shp_internacional = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','Paises_2020.shp')
+		caminho_estilo_internacional = os.path.join(self.folder_estilos, 'no_labels_style.qml')		
+		internacional_layer_fundo = self.load_shp_layer(caminho_shp_internacional, caminho_estilo_internacional, 'estados')
+		#map_layers.append(internacional_layer_fundo.id())	
 		
 		# Obtemos extent do mapa de localização e intersecoes de estados com a área do mapa e o 
-		map_extent = self.getExtent(selected_feature, estados_layer_fundo) 		
+		map_extent = self.getExtent(selected_feature, estados_layer_fundo, internacional_layer_fundo) 		
 		self.setSymbol(estados_layer_fundo)						
 		estados_layer_fundo.loadNamedStyle(os.path.join(self.folder_estilos, 'localizacao_cinza_estado_sem_traco.qml'))
 		estados_layer_fundo.triggerRepaint()
 		self.setFilter(estados_layer_fundo)
 
 		caminho_estilo_estado_frente = os.path.join(self.folder_estilos, 'contorno_linha_simples_traco_fino.qml')		
+		#caminho_estilo_estado_frente = os.path.join(self.folder_estilos, 'contorno_linha_simples_traco_fino_2.qml') #estilo novo
 		layer_estados_frente = self.load_shp_layer(caminho_shp_estado, caminho_estilo_estado_frente, 'estados_frente')
 		map_layers.append(layer_estados_frente.id())
 		self.setFilter(layer_estados_frente)		
@@ -209,17 +221,45 @@ class Localizacao(MapParent):
 			layer_estadosnames.dataProvider().setEncoding(u'UTF-8')
 		return layer_estadosnames
 
-	def getExtent(self, selectedFeature, estados_layer):
+	def load_intersection_country_layers(self, names):
+		list_layer_paises = []
+		for name in names:
+			caminho_shp_internacional = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites', name + '.shp')
+			caminho_estilo_internacional = os.path.join(self.folder_estilos, 'no_labels_style.qml')		
+			internacional_layer_fundo = self.load_shp_layer(caminho_shp_internacional, caminho_estilo_internacional, name  + '_unidades_federativas')
+			list_layer_paises.append(internacional_layer_fundo)
+		return list_layer_paises
+
+
+	def getExtent(self, selectedFeature, estados_layer, internacional_layer = None):
 		bounding = []
 		self.estados = []
 		self.regioes = []		
 		self.grid_bound = selectedFeature.geometry().convexHull()
+		'''
+		# Verifica se no exterior
+		if internacional_layer is not None:
+			for count, pais_feature in enumerate(internacional_layer.getFeatures()):
+				if selectedFeature.geometry().intersects(pais_feature.geometry()):
+					self.paises.append(pais_feature['nome'])
+		
+		# Load shape of countries that intersect
+		if len(self.paises)>0:
+			list_layer_paises = self.load_intersection_country_layers(self.paises)
+			for layer_unidades_federativas_pais_intersecta in list_layer_paises:							
+				for count, unidades_federativas_pais_intersecta in enumerate(layer_unidades_federativas_pais_intersecta.getFeatures()):
+					if selectedFeature.geometry().intersects(unidades_federativas_pais_intersecta.geometry()):
+						self.unidades_federativas_pais_analise.append(unidades_federativas_pais_intersecta[self.attr_name_unidade_federativa_shp_pais_intersecta])
+						bounding.append(unidades_federativas_pais_intersecta.geometry().boundingBox())
+		''' 
+		
 		for count, estado_feature in enumerate(estados_layer.getFeatures()):
 			if selectedFeature.geometry().intersects(estado_feature.geometry()):
 				self.regioes.append(estado_feature['REGIAO'])				
 				self.estados.append(estado_feature['UF'])
 				bounding.append(estado_feature.geometry().boundingBox())
 		self.regioes = list(set(self.regioes))
+		
 		bound = bounding[0]
 		if len(bounding) > 1: 
 			for estado_bound in bounding[1:]:
@@ -394,14 +434,16 @@ class Localizacao(MapParent):
 		label = 'Estados'
 		settings = QgsPalLayerSettings()
 		settings.fieldName = 'upper("nome")'
-		'''
-		settings.Placement = QgsPalLayerSettings.OrderedPositionsAroundPoint 
-		settings.OrderedPositionsAroundPoint = QgsPalLayerSettings.MiddleLeft 
-		settings.centroidInside = True
-		'''
-		#settings.Placement = QgsPalLayerSettings.OverPoint
-		settings.placement = 1
-		settings.quadOffset = 7
+		test = True
+		if test:
+			settings.Placement = QgsPalLayerSettings.OrderedPositionsAroundPoint 
+			#settings.OrderedPositionsAroundPoint = QgsPalLayerSettings.MiddleLeft 			
+
+		else:
+			settings.placement = 1
+			settings.quadOffset = 7
+
+		
 		settings.centroidInside = True
 		settings.isExpression = True
 		textFormat = QgsTextFormat()
@@ -436,7 +478,7 @@ class Localizacao(MapParent):
 			mapItem.setCrs(QgsCoordinateReferenceSystem(4326,QgsCoordinateReferenceSystem.EpsgCrsId))
 			mapItem.setExtent(bound)		
 			mapItem.refresh()	
-			self.changeMapGrid(mapItem)	
+			#self.changeMapGrid(mapItem)	
 			mapItem.setLayers([layer_estados_frente, grid_rectangleLayer, estados_layer])
 
 	def updateNameEstadosMapItem(self, composition, bound, layer_estadosnames):

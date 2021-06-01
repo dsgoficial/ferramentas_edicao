@@ -1,1 +1,1 @@
-Plugin de edicao QGIS
+Plugin de edição no QGIS

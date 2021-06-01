@@ -81,6 +81,43 @@ product_parameters = {
 			"utm_grid_buffer_color" : QColor('black')
 		}
 	},
+	'carta_topografica':{
+		"nome_produto":"Carta Topográfica",
+		"required_files":[],
+		"grid":{
+			"crossX":4,
+			"crossY":4,        
+			"fontSize" : 1.9,
+			"font" : QFont("Arial"),
+			"fontLL" : QFont("Arial"),
+			"llcolor" : QColor('black'),
+			"linwidth_geo" : 0.12,
+			"linwidth_utm" : 0.1,
+			"linwidth_buffer_geo" : 0,
+			"linwidth_buffer_utm" : 0,
+			"geo_grid_color"			: QColor('black'),
+			"utm_grid_color"			: QColor('black'),
+			"geo_grid_buffer_color" : QColor('black'),
+			"utm_grid_buffer_color" : QColor('black')
+		},
+		"qpt":{
+			"50":{
+				"projeto":{
+					"x_0":7,
+					"y_0":487,
+					"width":110,
+					"height":70,				
+				},
+				"cabecalho":{
+					"x_0":7,
+					"y_0":7,
+					"width":110,
+					"height":22,
+				}
+			}
+		}
+		
+	},
 	'carta_ortoimagem_tipo_i':{
 		"nome_produto":"Carta Ortoimagem Tipo I",
 		"required_files":[
@@ -235,6 +272,8 @@ class DefaultMap(MapManager):
 			# Tipo de produto
 			str_tipo_produto = self.dlg.comboBox_tipo_produto.currentText()
 			tipo_produto = '_'.join(str_tipo_produto.lower().split(' '))
+			if str_tipo_produto == 'Carta Topográfica':
+				tipo_produto = 'carta_topografica'
 
 			# Print Layout para o produto
 			composition = dict_compositions[escala]
@@ -265,6 +304,7 @@ class DefaultMap(MapManager):
 			# Info tecnica carta			
 			scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
 			dict_info_tecnica = dict_carta['info_tecnica']
+			
 			self.htmlData.editHTMLInfoTecCarta(composition, scale, hemisferio, fuso, str_tipo_produto, dict_info_tecnica)
 
 			# Banco
@@ -380,8 +420,8 @@ class DefaultMap(MapManager):
 			os.remove(path_temporary_folder)
 
 	def createMaps(self):
-		test_noLayers = True
-		showLayers = True
+		test_noLayers = False
+		showLayers = False
 
 		# Set project crs		
 		oldProjValue = self.mc.setProjectProjection()		
@@ -392,6 +432,8 @@ class DefaultMap(MapManager):
 		# Obtem o tipo de produto selecionado na Ui
 		str_tipo_produto = self.dlg.comboBox_tipo_produto.currentText()
 		tipo_produto = '_'.join(str_tipo_produto.lower().split(' '))
+		if str_tipo_produto == 'Carta Topográfica':
+			tipo_produto = 'carta_topografica'
 		
 		success, return_param = self.setProdutoConfig()		
 		

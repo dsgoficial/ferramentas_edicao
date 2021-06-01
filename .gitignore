@@ -1,6 +1,3 @@
 __pycache__
 *.pyc
-camadas_test
-old
-backup
-output_test
+.vscode/

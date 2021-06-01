@@ -501,7 +501,7 @@ class UtmGrid(QObject):
         data = csvFile.readlines()
         csvFile.close()
         l1 = [(x.strip()).split(';') for x in data]
-        dicionario = dict((a[1].lstrip('0'),a[0]) for a in l1)
+        dicionario = dict((a[1],a[0]) for a in l1)
         return dicionario
 
     def getINomenFromMI(self,mi):

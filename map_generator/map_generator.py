@@ -222,18 +222,21 @@ class MapManager(MapTools):
 		self.dados_de_escala.changeScaleLabels(composition)	
 		editMapName(composition, nome, self.mi, self.inom)
 
+		if composition.itemById("label_regiao")	is not None:
+			pass
+
 		# Mapa de Localização
 		if composition.itemById("map_localizacao") is not None:
 			adaptacaoNome = False
 			mapLayers_loocalizacao = self.localizacao.make(composition, map_extent_feature, adaptacaoNome, showLayers)
 			ids_maplayers.extend(mapLayers_loocalizacao)	
-			regioes = self.localizacao.regioes
+			regioes = self.localizacao.regioes			
 			replaceLabelRegiao(composition, regioes)	
 
 		# Generating qrcode
 		camadas_adicionar = ["localidades", "mosaico_topograficas"]
-		#success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, nome )
-		#replace_qrCode(composition, path_qrCode)
+		success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, nome )
+		replace_qrCode(composition, path_qrCode)
 
 		# Exporta os mapas				
 		if not showLayers:

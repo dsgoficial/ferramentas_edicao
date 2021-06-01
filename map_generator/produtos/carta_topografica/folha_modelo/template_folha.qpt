@@ -1,0 +1,47 @@
+<Layout printResolution="300" name="Final" units="mm" worldFileMap="">
+ <Snapper snapToGuides="1" tolerance="5" snapToGrid="0" snapToItems="1"/>
+ <Grid resUnits="mm" offsetY="0" offsetX="0" resolution="10" offsetUnits="mm"/>
+ <PageCollection>
+  <symbol force_rhr="0" clip_to_extent="1" alpha="1" type="fill" name="">
+   <layer pass="0" class="SimpleFill" locked="0" enabled="1">
+    <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+    <prop k="color" v="255,255,255,255"/>
+    <prop k="joinstyle" v="miter"/>
+    <prop k="offset" v="0,0"/>
+    <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+    <prop k="offset_unit" v="MM"/>
+    <prop k="outline_color" v="35,35,35,255"/>
+    <prop k="outline_style" v="no"/>
+    <prop k="outline_width" v="0.26"/>
+    <prop k="outline_width_unit" v="MM"/>
+    <prop k="style" v="solid"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option value="" type="QString" name="name"/>
+      <Option name="properties"/>
+      <Option value="collection" type="QString" name="type"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <LayoutItem type="65638" positionOnPage="0,0,mm" groupUuid="" position="0,0,mm" uuid="{e065b026-ae89-4d11-b4c6-e8df7847d17f}" blendMode="0" opacity="1" background="true" zValue="0" excludeFromExports="0" positionLock="false" templateUuid="{e065b026-ae89-4d11-b4c6-e8df7847d17f}" referencePoint="0" frameJoinStyle="miter" visibility="1" frame="false" size="844,602,mm" id="" itemRotation="0" outlineWidthM="0.3,mm">
+   <FrameColor alpha="255" green="0" red="0" blue="0"/>
+   <BackgroundColor alpha="255" green="255" red="255" blue="255"/>
+   <LayoutObject>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option value="" type="QString" name="name"/>
+      <Option name="properties"/>
+      <Option value="collection" type="QString" name="type"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </LayoutObject>
+  </LayoutItem>
+  <GuideCollection visible="1"/>
+ </PageCollection>
+ <customproperties>
+  <property value="png" key="atlasRasterFormat"/>
+ </customproperties>
+ <Atlas coverageLayer="" sortFeatures="0" enabled="0" filterFeatures="0" pageNameExpression="" filenamePattern="'output_'||@atlas_featurenumber" hideCoverage="0"/>
+</Layout>

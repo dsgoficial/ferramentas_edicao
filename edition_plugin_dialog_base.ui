@@ -27,6 +27,11 @@
       <widget class="QComboBox" name="comboBox_tipo_produto">
        <item>
         <property name="text">
+         <string>Carta Topográfica</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Carta Ortoimagem Tipo I</string>
         </property>
        </item>

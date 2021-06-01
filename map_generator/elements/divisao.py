@@ -44,12 +44,21 @@ class Divisao(MapParent):
 	def __init__(self):			
 		self.itemname_tableMunicipios = 'label_divisao_municipios'
 		self.mapItem = None
-		self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','divisao')
+		self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','divisao')		
+		
 		self.setVariables()
 
 	def setVariables(self):
 		self.file_basehtmltable = 'divisao.html'
 		self.n_maxlines = 6
+		# 2019
+		self.attr_nome = 'nome_abre'
+		self.attr_codigo = 'codigo'
+		self.attr_sigla = 'sigla_uf'
+		# 2020
+		self.attr_nome = 'NM_MUN'
+		self.attr_codigo = 'CD_MUN'
+		self.attr_sigla = 'SIGLA_UF'
 		#self.itemname_tableMunicipios = 'label_divisao_municipios'
 
 	def make(self, composition, selected_feature, showLayers = False):
@@ -93,31 +102,41 @@ class Divisao(MapParent):
 
 	def createLayersGroup(self):
 		layer_name = 'municipios'
-		uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','municipios_2019.shp')
-		style_file = os.path.join(self.folder_estilos, 'limite_municipal.qml')
+		# uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','municipios_2019.shp')
+		uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Municipios_2020.shp')
+		#style_file = os.path.join(self.folder_estilos, 'limite_municipal.qml')
+		style_file = os.path.join(self.folder_estilos, 'carta_topografica_rdg', 'municipio_rdg.qml')
 		municipios_layer = QgsVectorLayer(uri,layer_name,'ogr')
         
 		if (municipios_layer.isValid()):
 			municipios_layer.loadNamedStyle(style_file)
 			# QgsProject.instance().addMapLayer(municipios_layer)
 		
-		estado_uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','estados_2019.shp')
-		estado_style_file = os.path.join(self.folder_estilos, 'limite_estadual_vf.qml')
+		# estado_uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','estados_2019.shp')
+		estado_uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Estados_2020.shp')
+		#estado_style_file = os.path.join(self.folder_estilos, 'limite_estadual_vf.qml')
+		estado_style_file = os.path.join(self.folder_estilos, 'carta_topografica_rdg', 'estados_rdg.qml')
 		estados_layer = QgsVectorLayer(estado_uri,'limite_estado','ogr')
 		estados_layer.loadNamedStyle(estado_style_file)		
 		
-		internacional_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','internacional.shp')
-		internacional_style_file = os.path.join(self.folder_estilos, 'limite_internacional_vf.qml')
-		internacional_layer = QgsVectorLayer(internacional_uri,'limite_internacional','ogr')
+		# internacional_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','internacional.shp')
+		internacional_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Brasil_2020.shp')
+		#internacional_style_file = os.path.join(self.folder_estilos, 'limite_internacional_vf.qml')
+		internacional_style_file = os.path.join(self.folder_estilos,'carta_topografica_rdg', 'internacional_rdg.qml')
+		internacional_layer = QgsVectorLayer(internacional_uri, 'internacional_rdg','ogr')
 		internacional_layer.loadNamedStyle(internacional_style_file)
 
-		oceano_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','oceano.shp')
-		oceano_style_file = os.path.join(self.folder_estilos, 'oceano.qml')
+		# oceano_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','oceano.shp')
+		oceano_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Oceano_2020.shp')
+		#oceano_style_file = os.path.join(self.folder_estilos, 'oceano.qml')
+		oceano_style_file = os.path.join(self.folder_estilos, 'carta_topografica_rdg', 'oceano_rdg.qml')
 		oceano_layer = QgsVectorLayer(oceano_uri,'oceano','ogr')
 		oceano_layer.loadNamedStyle(oceano_style_file)
 
-		paises_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','paises.shp')
-		paises_style_file = os.path.join(self.folder_estilos, 'paises.qml')
+		# paises_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','paises.shp')
+		paises_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Paises_2020.shp')
+		#paises_style_file = os.path.join(self.folder_estilos, 'paises.qml')
+		paises_style_file = os.path.join(self.folder_estilos, 'carta_topografica_rdg', 'paises_rdg.qml')
 		paises_layer = QgsVectorLayer(paises_uri,'paises','ogr')
 		paises_layer.loadNamedStyle(paises_style_file)
 
@@ -179,7 +198,8 @@ class Divisao(MapParent):
 
 	def getIntersections(self, municipios_layer, map_extent, selected_feature):
 		max_municipios = 27
-		attr_nome = 'nome_abre'
+		
+
 		d = QgsDistanceArea()
 		extent_geometry = QgsGeometry.fromRect(map_extent)
 		linhaContorno_moldura = self.convertPolygonToMultilineGeometry(extent_geometry)
@@ -192,8 +212,8 @@ class Divisao(MapParent):
 		for count, feature_municipio in enumerate(municipios_layer.getFeatures()):
 			# municipio dentro dos limites da carta
 			if feature_municipio.geometry().intersects(extent_geometry):
-				if (feature_municipio[attr_nome] is not None) and (not isinstance(feature_municipio[attr_nome], QVariant)):
-					municipio = (feature_municipio[attr_nome]) + ' - ' + feature_municipio['sigla_uf']					
+				if (feature_municipio[self.attr_nome] is not None) and (not isinstance(feature_municipio[self.attr_nome], QVariant)):
+					municipio = (feature_municipio[self.attr_nome]) + ' - ' + feature_municipio[self.attr_sigla]					
 					if municipio is not None:						
 						# municipio intersecta os limites da carta
 						radius_per_map_area = 'inside'
@@ -206,7 +226,7 @@ class Divisao(MapParent):
 						municipio_centroid = feature_municipio.geometry().centroid().asPoint()                    
 						objeto_municipio = {    'label': municipio,
 												'area':d.measureArea(feature_municipio.geometry()),
-												'codigo':feature_municipio['codigo'],
+												self.attr_codigo:feature_municipio[self.attr_codigo],
 												'poleOfInaccessibility': radius_per_map_area,
 												'distancia_centroid':self.getDistance(moldura_centroid, municipio_centroid),
 												'distancia_centroid_borda_polygon':selected_feature.geometry().centroid().distance(feature_municipio.geometry())}
@@ -379,7 +399,8 @@ class Divisao(MapParent):
 		# self.sorted_municipios = sorted(self.municipios_ordenados, key=self.municipios_ordenados.get, reverse=True)
 		for count, municipio in enumerate(sorted_municipios):
 			n = count + 1
-			rule = self.createRules(municipios_layer, symbol, renderer,  "'{}'".format(str(n)), ' \"codigo\" = \'{}\''.format(municipios_datalist[count]['codigo']), 'black')
+			#rule = self.createRules(municipios_layer, symbol, renderer,  "'{}'".format(str(n)), ' \"codigo\" = \'{}\''.format(municipios_datalist[count]['codigo']), 'black')
+			rule = self.createRules(municipios_layer, symbol, renderer,  "'{}'".format(str(n)), ' \"{}\" = \'{}\''.format(self.attr_codigo, municipios_datalist[count][self.attr_codigo]), 'black')
 			root.appendChild(rule)
 		rules = QgsRuleBasedLabeling(root)
 		#root.setActive(True)

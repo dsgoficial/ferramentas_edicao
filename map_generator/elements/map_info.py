@@ -24,6 +24,7 @@ import datetime
 
 from .map_utils import copyQptToCompositor
 import os
+from .map_utils import MapParent
 
 curvas = {	
     "25":	{
@@ -56,7 +57,7 @@ curvas = {
 }
 
 
-class HtmlData:
+class HtmlData(MapParent):
     def __init__(self):        
         pass
 
@@ -187,8 +188,35 @@ class HtmlData:
             #print(caminho_qpt)
             if caminho_qpt is not None:
                 copied_qpt = copyQptToCompositor(caminho_qpt, composition, x_0, y_0, width, height)
-        
-        
+                
+    def load_intersection_country_layers(self, names):
+        list_layer_paises = []
+        for name in names:
+            caminho_shp_internacional = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites', name + '.shp')
+            caminho_estilo_internacional = None
+            internacional_layer_fundo = self.load_shp_layer(caminho_shp_internacional, caminho_estilo_internacional, name  + '_unidades_federativas')
+            list_layer_paises.append(internacional_layer_fundo)
+        return list_layer_paises
+
+    '''
+    def get_regioes_info(self, composition, map_extent_feature):      
+        self.estados = []
+		self.regioes = []	
+
+        # Verifica se no exterior
+		if internacional_layer is not None:
+			for count, pais_feature in enumerate(internacional_layer.getFeatures()):
+				if selectedFeature.geometry().intersects(pais_feature.geometry()):
+					self.paises.append(pais_feature['nome'])
+
+		caminho_shp_estado = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Estados_2020.shp')		
+		estados_layer_fundo = self.load_shp_layer(caminho_shp_estado, None, 'estados')
+
+
+        list_layer_paises = self.load_intersection_country_layers(names)
+
+        map_extent = self.getExtent(map_extent_feature, estados_layer_fundo, internacional_layer_fundo) 
+    '''
 
     def editHeaderProjectCredits(self, composition, caminho_projetoECreditos, caminho_cabecalho):
         # Configurações dos creditos e projeto
@@ -361,7 +389,7 @@ class HtmlData:
             # Update hemisferio e false North
             hemisferio = 'Norte' if hemisferio == 'N' else 'Sul'
             dados_data.update({"{hemisferio}":hemisferio})
-            falseNorth = '0' if hemisferio == 'N' else '10.000'
+            falseNorth = '0' if hemisferio == 'Norte' else '+10.000'
             dados_data.update({"{falseNorth}":falseNorth})
 
             # Update fuso            
