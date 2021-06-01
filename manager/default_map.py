@@ -58,6 +58,8 @@ import math
 import os
 import shapely.wkt
 import shapely.geometry
+import tempfile
+from pathlib import Path
 
 # external libraries
 from ..map_generator.elements.map_index.map_index import UtmGrid
@@ -409,15 +411,8 @@ class DefaultMap(MapManager):
 		return success, logs, list_of_scales
 
 	def create_temporary_folder(self):
-		path_temporary_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'includes', 'output', 'temporary')
-		if not os.path.isdir(path_temporary_folder):
-			os.mkdir(path_temporary_folder)
-			return path_temporary_folder
-
-	def delete_temporary_folder(self):
-		path_temporary_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'includes', 'output', 'temporary')
-		if os.path.isdir(path_temporary_folder):
-			os.remove(path_temporary_folder)
+		directory = tempfile.TemporaryDirectory()
+		return Path(directory.name)
 
 	def createMaps(self):
 		test_noLayers = False
@@ -485,5 +480,4 @@ class DefaultMap(MapManager):
 			
 		if not showLayers:
 			self.mc.setProjectProjection(oldProjValue)
-			self.delete_temporary_folder()
 			pass

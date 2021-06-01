@@ -69,7 +69,7 @@ import json
 from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
 
 from .elements.map_index.map_index import UtmGrid
-from .elements.qrcode_picture import create_qrcode_from_feature, delete_file, replace_qrCode
+from .elements.qrcode_picture import create_qrcode_from_feature, replace_qrCode
 
 
 class MapManager(MapTools):
