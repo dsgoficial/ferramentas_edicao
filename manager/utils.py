@@ -1,52 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- EditionPlugin
-                                 A QGIS plugin
- This plugin helps the edition of maps.
-                              -------------------
-        begin                : 2020-09-13
-        git sha              : $Format:%H$
-        copyright            : (C) 2020 by Ronaldo Martins da Silva Junior
-        email                : ronaldo.rmsjr@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-# qgis libraris
-from qgis.core import *
-from qgis.gui import *
-
-# PyQT5 libraries
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QAbstractTableModel, Qt, QVariant
-from PyQt5.QtGui import QIcon, QFont, QColor, QImage, QPainter
-from PyQt5.QtWidgets import QAction, QTableView
-
-# Other libraries
 from datetime import datetime as dt
-from collections import Counter
-import datetime
-import time
-import math
 import os
-import shapely.wkt
-import shapely.geometry
+import json
+from qgis.core import QgsLayoutExporter, QgsProject, QgsRasterLayer, Qgis, QgsExpressionContextUtils
 
 class MapTools:
     def __init__(self, iface, plugin_dir, dlg):
-        self.iface 			= iface
-        self.dlg 			= dlg       
-        self.selectedMapItem = None 
-
-    def check_files_existence(self, filepaths):
-        pass
+        self.iface = iface
+        self.dlg = dlg       
 
     def readJsonFromPath(self, path_json):        
         json_file = open(path_json)
@@ -111,10 +71,7 @@ class MapTools:
                 source_epsg = CRS.postgisSrid()
                 del rlayer
 
-                rasterSource = rasterPath
-                # rasterSource = provider.dataSourceUri()
-
-                source_path = " -of GTiff " + rasterSource				
+                source_path = " -of GTiff " + rasterPath				
                 target_path  = self.saveFolder + dt.now().strftime('%Y_%m_%d_%H_%M_%S') + '.tif'
 
                 new_espg = 4674
@@ -128,20 +85,7 @@ class MapTools:
                 target_path										
                 os.system(cmd)
 
-    def createTifPdfFolders(self, saveFolder, createPDF, createImage ):
-        if createImage or createPDF:
-            os.mkdir(saveFolder)				
-            os.mkdir(os.path.join(saveFolder, 'Images'))
-            os.mkdir(os.path.join(saveFolder, 'PDFs'))
-
     def deleteMaps(self, ids_maplayers, remove=False):	
         if remove:	
             for id_mapLayer in ids_maplayers:
                 QgsProject.instance().removeMapLayer(id_mapLayer)
-
-    def changeProjectVariable(self):
-        project = QgsProject.instance()
-        scope = QgsExpressionContextUtils.projectScope(project)
-        QgsExpressionContextUtils.setProjectVariable(project, "escala", str(int(self.scale)))
-        QgsExpressionContextUtils.setProjectVariable(project, "mi", self.mi)
-        self.iface.mapCanvas().refreshAllLayers()

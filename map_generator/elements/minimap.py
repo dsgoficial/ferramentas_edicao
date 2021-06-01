@@ -1,41 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- EditionPlugin
-                                 A QGIS plugin
- This plugin helps the edition of maps.
-                              -------------------
-        begin                : 2020-09-13
-        git sha              : $Format:%H$
-        copyright            : (C) 2020 by Ronaldo Martins da Silva Junior
-        email                : ronaldo.rmsjr@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-import qgis  # NOQA
-from qgis.core import *
-from qgis.gui import *
-#subprocess.check_call(['pip', 'install', 'pyshp'])
-from qgis.PyQt import sip
-import os
-import re
-from datetime import datetime
-from qgis.utils import iface
-from PyQt5.QtGui import QColor
+from qgis.core import QgsProject, QgsLayerTreeGroup
 from PyQt5.QtGui import * 
-from PyQt5.QtCore import QSettings, QVariant
-from qgis.core import QgsApplication
-import math
-import json
-
 from .map_utils import MapParent
 
 class MiniMap(MapParent):

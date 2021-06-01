@@ -1,60 +1,26 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- EditionPlugin
-                                 A QGIS plugin
- This plugin helps the edition of maps.
-                              -------------------
-        begin                : 2020-09-13
-        git sha              : $Format:%H$
-        copyright            : (C) 2020 by Ronaldo Martins da Silva Junior
-        email                : ronaldo.rmsjr@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-# qgis libraris
-from qgis.core import *
-from qgis.gui import *
-
-# PyQT5 libraries
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QAbstractTableModel, Qt, QVariant
-from PyQt5.QtGui import QIcon, QFont, QColor, QImage, QPainter
-from PyQt5.QtWidgets import QAction, QTableView
-
-# Other libraries
-from datetime import datetime as dt
-from collections import Counter
-import datetime
-import time
-import math
 import os
-import shapely.wkt
-import shapely.geometry
 import json
 import codecs
+
+from PyQt5.QtCore import QVariant
+from qgis.core import (
+    QgsGeometry, QgsRectangle, QgsVectorLayer, QgsFields,
+    QgsField, QgsFeature, QgsDataSourceUri, QgsCredentials,
+    QgsProject, QgsLayoutExporter, Qgis, QgsExpressionContextUtils,
+    QgsRasterLayer
+)
+
 from .elements.map_index.map_index import UtmGrid
+
 class MapTools:
     def __init__(self, iface, dlg):
-        self.iface 			= iface        
-        self.dlg 			= dlg 
-        self.utm_grid		= UtmGrid()
-        self.selectedMapItem = None         
+        self.iface = iface
+        self.dlg = dlg
+        self.utm_grid = UtmGrid()
 
-    def readJsonFromPath(self, path_json):        
-        # json_file = open(path_json)
-        json_file = codecs.open(path_json, 'r', 'utf-8-sig')
-        #json_str = json_file.read()
-        #json_data = json.loads(json_str)
-        json_data = json.load(json_file)
-        json_file.close()
+    def readJsonFromPath(self, path_json):
+        with codecs.open(path_json, 'r', 'utf-8-sig') as json_file:
+            json_data = json.load(json_file)
         return json_data
     
     def create_layer_from_center_and_escala(self, longitude, latitude,escala):        
@@ -66,7 +32,7 @@ class MapTools:
         spacing_y = self.utm_grid.getSpacingX(escala)
         y_min = y - spacing_y/2
         y_max = y + spacing_y/2
-        rect = qgis.core.QgsRectangle(x_min,y_min,x_max,y_max)
+        rect = QgsRectangle(x_min,y_min,x_max,y_max)
         geom = QgsGeometry.fromRect(rect)
         layer, feat = self.create_layer_from_geometry('map_extent', geom)
         return layer, feat
@@ -85,15 +51,14 @@ class MapTools:
             layer.updateFields()
 
             layer.startEditing()            
-            fet = QgsFeature(fields)
-            fet['id'] = '1'
-            fet.setGeometry(geom)
-            feats.append(fet)
-            provider.addFeatures([fet])
+            feat = QgsFeature(fields)
+            feat['id'] = '1'
+            feat.setGeometry(geom)
+            provider.addFeatures([feat])
 
             # Commit changes
             layer.commitChanges()
-            return layer, fet    
+            return layer, feat    
 
     def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):        
         if 'variableNames' in composition.customProperties():
@@ -270,7 +235,6 @@ class MapTools:
                 source_epsg = CRS.postgisSrid()
                 del rlayer
 
-                rasterSource = rasterPath
                 filename_without_ext = (file.split('.'))[0]
                 caminho_reprojetado = os.path.join(folder_reprojetado,filename_without_ext + '_reprojetado.tif') 
                 self.reproject(rasterPath, caminho_reprojetado, source_epsg ,4674)
@@ -281,18 +245,8 @@ class MapTools:
                 self.convert_ycbcr(caminho_rgb, target_path)
                 os.remove(caminho_reprojetado)
                 os.remove(caminho_rgb)
-
-    def createTifPdfFolders(self, saveFolder):        
-            os.mkdir(saveFolder)
             
     def deleteMaps(self, ids_maplayers, remove=False):	
         if remove:	
             for id_mapLayer in ids_maplayers:
                 QgsProject.instance().removeMapLayer(id_mapLayer)
-
-    def changeProjectVariable(self, str_escala, mi):
-        project = QgsProject.instance()
-        scope = QgsExpressionContextUtils.projectScope(project)
-        QgsExpressionContextUtils.setProjectVariable(project, "escala", str_escala)
-        QgsExpressionContextUtils.setProjectVariable(project, "mi", mi)
-        self.iface.mapCanvas().refreshAllLayers() 

@@ -1,67 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- EditionPlugin
-                                 A QGIS plugin
- This plugin helps the edition of maps.
-                              -------------------
-        begin                : 2020-09-13
-        git sha              : $Format:%H$
-        copyright            : (C) 2020 by Ronaldo Martins da Silva Junior
-        email                : ronaldo.rmsjr@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-# Custom libraries - refatored
-from ..map_generator.elements.MiniMapCoordAndOthers import MiniMapCoordAndOthers
-from ..map_generator.elements.escala_carta import EscalaCarta as HandleScale
-from ..map_generator.elements.localizacao import Localizacao
-from ..map_generator.elements.divisao import Divisao
-from ..map_generator.elements.articulacao import Articulacao
-from ..map_generator.elements.map_info import HtmlData
-from ..map_generator.elements.minimap import MiniMap
-from ..map_generator.elements.map import Map
-from ..map_generator.elements.handle_diagram import HandleAngles
-
-# Custom libraries
-# Functions
-from ..map_generator.elements.map_identification import editMapName
-from ..map_generator.elements.map_identification import replaceLabelRegiao
-# Classes
-from ..map_generator.elements.map_utils import MapParent as MapConnection
-from ..map_generator.map_generator import MapManager
-
-# qgis libraris
-from qgis.core import *
-from qgis.gui import *
-
-# PyQT5 libraries
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QAbstractTableModel, Qt, QVariant
-from PyQt5.QtGui import QIcon, QFont, QColor, QImage, QPainter
-from PyQt5.QtWidgets import QAction, QTableView
-
-# Other libraries
-from datetime import datetime as dt
-from collections import Counter
-import json
-import datetime
-import time
-import math
+from datetime import datetime
 import os
-import shapely.wkt
-import shapely.geometry
 import tempfile
 from pathlib import Path
 
-# external libraries
+from qgis.core import QgsProject
+from PyQt5.QtGui import QFont, QColor
+
+from ..map_generator.elements.map_utils import MapParent as MapConnection
+from ..map_generator.map_generator import MapManager
 from ..map_generator.elements.map_index.map_index import UtmGrid
 
 product_parameters = {
@@ -213,11 +159,10 @@ class DefaultMap(MapManager):
 	def __init__(self, iface, dlg, GLC):			
 		super().__init__(iface, dlg, GLC)
 		self.MapC = MapConnection()
-		self.GLC 			= GLC
-		self.map_height 	= 570-15*2 # milimiters
-		self.epsg_selected 	= False
+		self.GLC = GLC
+		self.map_height = 570-15*2 # milimiters
 		self.scale_selected = False
-		self.utm_grid 		= UtmGrid()
+		self.utm_grid = UtmGrid()
 		self.set_products_parameters(product_parameters)		
 	
 	def setProdutoConfig(self):
@@ -415,8 +360,8 @@ class DefaultMap(MapManager):
 		return Path(directory.name)
 
 	def createMaps(self):
-		test_noLayers = False
-		showLayers = False
+		test_noLayers = True
+		showLayers = True
 
 		# Set project crs		
 		oldProjValue = self.mc.setProjectProjection()		
@@ -438,9 +383,9 @@ class DefaultMap(MapManager):
 				manager.removeLayout(manager.layoutByName(str_tipo_produto))
 		
 		# Obtendo os arquivos de carta da Ui
-		caminhos_json_carta 	= self.dlg.mQgsFileWidget_json_cartas.splitFilePaths(self.dlg.mQgsFileWidget_json_cartas.filePath())
+		caminhos_json_carta = self.dlg.mQgsFileWidget_json_cartas.splitFilePaths(self.dlg.mQgsFileWidget_json_cartas.filePath())
 		
-		# checando o json da carta		
+		# checando o json da carta
 		success, logs, list_of_scales = self.checkJsonsCarta(caminhos_json_carta)
 		# success = True
 		
@@ -449,13 +394,11 @@ class DefaultMap(MapManager):
 		self.editCompositions(tipo_produto, dict_compositions)		
 		
 		if success:
-			path_temporary_folder = self.create_temporary_folder()
+			# TODO: getFirstConnection reads the json file(s) again
 			success_connection, connectedUri = self.getFirstConnection( caminhos_json_carta)			
 			if success_connection:
-				self.saveFolder = os.path.join(self.baseSaveFolder, dt.now().strftime('%Y_%m_%d_%H_%M_%S'))
+				self.saveFolder = os.path.join(self.baseSaveFolder, datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
 				os.mkdir(self.saveFolder)
-
-				logs = []
 				for caminho_json_carta in caminhos_json_carta:
 					if self.checkJsonCarta(caminho_json_carta):
 						# Set config for html labels					

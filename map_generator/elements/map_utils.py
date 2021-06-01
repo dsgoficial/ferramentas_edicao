@@ -1,92 +1,21 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- EditionPlugin
-                                 A QGIS plugin
- This plugin helps the edition of maps.
-                              -------------------
-        begin                : 2020-09-13
-        git sha              : $Format:%H$
-        copyright            : (C) 2020 by Ronaldo Martins da Silva Junior
-        email                : ronaldo.rmsjr@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-import qgis  # NOQA
-import subprocess
-from qgis.core import *
-from qgis.gui import *
-#subprocess.check_call(['pip', 'install', 'pyshp'])
-from qgis.PyQt import sip
-import tempfile
-import shutil
-import os
-from datetime import datetime
-import re
-from datetime import datetime
-from qgis.utils import iface
-from PyQt5.QtGui import QColor
-from PyQt5.QtGui import * 
-from PyQt5.QtCore import QSettings, QVariant, QPoint
-from PyQt5.QtXml import QDomDocument
-from qgis.core import QgsApplication
-import processing
-import math
-import shapely.wkt
-import shapely.geometry
 import json
-from qgis.core import QgsVectorLayer, QgsDataSourceUri
+import os
+
+from qgis.core import (
+	QgsVectorLayer, QgsReadWriteContext, QgsProject, QgsPrintLayout,
+	QgsCoordinateReferenceSystem, QgsRasterLayer, QgsFeature, QgsLayerTreeLayer,
+	QgsLayerTreeGroup, QgsLayoutItem, QgsLayoutPoint, QgsLayout
+)
+from PyQt5.QtCore import QSettings,  QPoint
+from PyQt5.QtXml import QDomDocument
+
 from .map_index.map_index import UtmGrid
 
 class MapParent:
 	def __init__(self):
 		self.mapItem = None
-		self.selectedMapItem = None
-		self.utm_grid		= UtmGrid()
-
-	def setFeatureId(self, id):
-		self.selectedFeatureId = id
+		self.utm_grid = UtmGrid()
 	
-	def getLayersFrom(self):
-		orders = {		
-			'grupo':[
-				{
-					"schema": "",
-					"tabela": "",
-				},
-				{
-					"schema": "",
-					"tabela": "",
-				},
-				{
-					"schema": "",
-					"tabela": "",
-				}				
-			],
-			'grupo2':[
-				{
-					"schema": "",
-					"tabela": "",
-				},
-				{
-					"schema": "",
-					"tabela": "",
-				},
-				{
-					"schema": "",
-					"tabela": "",
-				}				
-			]
-		}
-
 	def getPrintLayoutFromQptPath(self, path, novo_valor):
 		project = QgsProject.instance()
 

@@ -1,4 +1,3 @@
-import os
 import tempfile
 from pathlib import Path
 from ...qrcode.main import make
@@ -29,7 +28,6 @@ def createQRCode(dest_path, latitude, longitude, camadas_adicionar, escala, nive
         nivel_de_zoom = niveis_de_zoom[escala]
 
     # https://bdgex.eb.mil.br/bdgex/mobile/?l=963,953&c=-53.708451,-26.680751&z=10
-    # Substituindo os dados
     original_path = "https://bdgex.eb.mil.br/bdgexapp/mobile/?l={layers}&c={longitude},{latitude}&z={nivel_de_zoom}"
     custom_path = original_path.format(layers=layers, latitude=latitude, longitude=longitude, nivel_de_zoom=nivel_de_zoom)    
 

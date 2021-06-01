@@ -1,26 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- EditionPlugin
-                                 A QGIS plugin
- This plugin helps the edition of maps.
-                              -------------------
-        begin                : 2020-09-13
-        git sha              : $Format:%H$
-        copyright            : (C) 2020 by Ronaldo Martins da Silva Junior
-        email                : ronaldo.rmsjr@gmail.com
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-# Custom libraries - refatored
+from qgis.core import QgsProject, QgsCoordinateReferenceSystem
+
+from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
+
 from .elements.MiniMapCoordAndOthers import MiniMapCoordAndOthers
 from .elements.escala_carta import EscalaCarta as HandleScale
 from .elements.localizacao import Localizacao
@@ -31,56 +13,21 @@ from .elements.minimap import MiniMap
 from .elements.map import Map
 from .elements.handle_diagram import HandleAngles
 from .elements.map_utils import MapParent
-from .elements.map_utils import MapCreator
-
-# Custom libraries
-# Functions
 from .elements.map_identification import editMapName
 from .elements.map_identification import replaceLabelRegiao
-
-# Classes
-from .utils import MapTools
-
-# qgis libraris
-from qgis.core import *
-from qgis.gui import *
-
-# PyQT5 libraries
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QAbstractTableModel, Qt, QVariant
-from PyQt5.QtGui import QIcon, QFont, QColor, QImage, QPainter
-from PyQt5.QtWidgets import QAction, QTableView
-
-# Other libraries
-from datetime import datetime as dt
-from collections import Counter
-import datetime
-import time
-import math
-import os
-import shapely.wkt
-import shapely.geometry
-import re
-from qgis.PyQt import sip
-import subprocess
-import tempfile
-import shutil
-import json
-
-from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
-
 from .elements.map_index.map_index import UtmGrid
 from .elements.qrcode_picture import create_qrcode_from_feature, replace_qrCode
-
+from .utils import MapTools
 
 class MapManager(MapTools):
 	def __init__(self, iface, dlg, GLC):
 		super().__init__(iface, dlg)	
 		self.mc = MapParent()	
 		self.GLC = GLC
-		self.map_height 	= 570-15*2 # milimiters		
-		self.epsg_selected 	= False
+		self.map_height = 570-15*2 # milimiters		
+		self.epsg_selected = False
 		self.scale_selected = False		
-		self.utm_grid		= UtmGrid()
+		self.utm_grid = UtmGrid()
 		
 	def set_products_parameters(self, products_parameters):
 		self.products_parameters = products_parameters
