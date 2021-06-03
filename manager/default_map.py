@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import tempfile
 from pathlib import Path
+from collections import namedtuple
 
 from qgis.core import QgsProject
 from PyQt5.QtGui import QFont, QColor
@@ -9,7 +10,6 @@ from PyQt5.QtGui import QFont, QColor
 from ..map_generator.elements.map_utils import MapParent as MapConnection
 from ..map_generator.map_generator import MapManager
 from ..map_generator.elements.map_index.map_index import UtmGrid
-
 product_parameters = {
 	'topo':{
 		"grid":{
@@ -102,6 +102,12 @@ product_parameters = {
 					"y_0":7,
 					"width":110,
 					"height":22,
+				},
+				"classified":{
+					"x_0":110,
+					"y_0":220,
+					"width":20,
+					"height":120				
 				}
 			},
 			"100":{
@@ -163,42 +169,38 @@ class DefaultMap(MapManager):
 		self.map_height = 570-15*2 # milimiters
 		self.scale_selected = False
 		self.utm_grid = UtmGrid()
-		self.set_products_parameters(product_parameters)		
-	
-	def setProdutoConfig(self):
-		success = True
-		return_param = None
-		# Define a pasta onde serao salvos os arquivos de saida
-		caminho_pasta_exportar 	= self.dlg.mQgsFileWidget_pasta_exportar.splitFilePaths(self.dlg.mQgsFileWidget_pasta_exportar.filePath())
-		if len(caminho_pasta_exportar)>0:
-			if os.path.isdir(caminho_pasta_exportar[0]):
-				self.baseSaveFolder = caminho_pasta_exportar[0]
-			else:
-				success = False
-		else:
-			self.baseSaveFolder = os.path.join(os.path.dirname(os.path.dirname(__file__)),'includes', 'output')
-		return success, return_param
+		self.set_products_parameters(product_parameters)
 
-	def editCompositions(self, tipo_produto, dict_compositions):
-		for escala, compositor in dict_compositions.items():			
-			# Atualiza o compositor adicionando o qpt de creditos e do projeto
-			caminho_qpt_cabecalho 	= self.dlg.mQgsFileWidget_cabecalho.splitFilePaths(self.dlg.mQgsFileWidget_cabecalho.filePath())[0]
-			caminho_qpt_projeto 	= self.dlg.mQgsFileWidget_projeto.splitFilePaths(self.dlg.mQgsFileWidget_projeto.filePath())[0]		
-			list_dict_qpts = []
-			if len(caminho_qpt_projeto)>0:				
-				dict_projeto = (self.products_parameters[tipo_produto]['qpt'][escala]['projeto']).copy()
-				dict_projeto.update({'caminho':caminho_qpt_projeto})
-				list_dict_qpts.append(dict_projeto)
-			if len(caminho_qpt_cabecalho)>0:
-				dict_cabecalho = (self.products_parameters[tipo_produto]['qpt'][escala]['cabecalho']).copy()
-				dict_cabecalho.update({'caminho':caminho_qpt_cabecalho})
-				list_dict_qpts.append(dict_cabecalho)		
-			self.htmlData.editQpts(compositor, list_dict_qpts)
+	def editCompositions(self, productType, dict_compositions):
+		'''
+		Atualiza o compositor adicionando os arquivos .qpt indicados na interface (créditos e projeto),
+		além de carregar o qpt de arquivo classificado, caso indicado no json de configuração
+		'''
+		qptList = []
+		for scale, compositor in dict_compositions.items():			
+			headerPath = Path(self.dlg.mapHeader.filePath())
+			footerPath = Path(self.dlg.mapFooter.filePath())
+			if headerPath.suffix == '.qpt':
+				dictHeader = (self.products_parameters[productType]['qpt'][scale]['cabecalho']).copy()
+				dictHeader.update({'caminho': headerPath})
+				qptList.append(dictHeader)
+			if footerPath.suffix == '.qpt':
+				dictFooter = (self.products_parameters[productType]['qpt'][scale]['projeto']).copy()
+				dictFooter.update({'caminho': footerPath})
+				qptList.append(dictFooter)
+			# TODO: get info from json
+			if True:
+				dict_classified = (self.products_parameters[productType]['qpt'][scale]['classified']).copy()
+				dict_classified.update({'caminho':Path(__file__).parent.parent / 'map_generator' / 'produtos' / productType / 'classified.qpt'})
+				qptList.append(dict_classified)
+			self.htmlData.editQpts(compositor, qptList)
 	
-	def setCartaConfig(self, path_json_carta, connectedUri,  dict_compositions, teste_no_layers=False):
-		# Obtendo o dict do caminho json	
-		if os.path.exists(path_json_carta):
-			dict_carta = self.readJsonFromPath(path_json_carta)
+	def setCartaConfig(self, jsonPath, connectedUri,  dict_compositions, teste_no_layers=False):
+		'''
+		Setting map configurations
+		'''
+		if os.path.exists(jsonPath):
+			dict_carta = self.readJsonFromPath(jsonPath)
 
 			inomen = 'Especial'
 			mi = 'Especial'
@@ -217,7 +219,7 @@ class DefaultMap(MapManager):
 
 
 			# Tipo de produto
-			str_tipo_produto = self.dlg.comboBox_tipo_produto.currentText()
+			str_tipo_produto = self.dlg.productType.currentText()
 			tipo_produto = '_'.join(str_tipo_produto.lower().split(' '))
 			if str_tipo_produto == 'Carta Topográfica':
 				tipo_produto = 'carta_topografica'
@@ -277,17 +279,16 @@ class DefaultMap(MapManager):
 				'id_minimap':minimap_layersId_db,
 				'images':image_layers,
 				'id_images':image_layersId,
-
 			}
 
 			return True, composition, dict_carta, inomen, layers
 		else:
 			return False ,None, None, None, None
 		
-	def createCompositions(self, list_of_scales, tipo_produto):
+	def createCompositions(self, scales, tipo_produto):
 		dict_compositions = {}		
 		novo_valor = os.path.join(os.path.dirname(__file__),'..','map_generator','produtos', tipo_produto)
-		for scale in list(set(list_of_scales)):
+		for scale in scales:
 			if scale == '250':			
 				caminho_layout = os.path.join(os.path.dirname(__file__),'..','map_generator','produtos', tipo_produto, tipo_produto + '_250' +'.qpt')		
 				composition = self.MapC.getPrintLayoutFromQptPath(caminho_layout, novo_valor)					
@@ -300,64 +301,51 @@ class DefaultMap(MapManager):
 				dict_compositions[scale] = composition
 		return dict_compositions				
 
-	def checkJsonCarta(self, caminho_json_carta):		
-		return True
+	def checkJsonFiles(self, jsonFilesPaths):
+		'''
+		Verify consistency of JSON files
+		'''
+		logs = list()
+		scales = set()
+		_required_keys = ['inom', 'nome', 'imagens', 'banco', 'fases','sensores', 'info_tecnica']
+		if len(jsonFilesPaths)>0:
+			for jsonPath in jsonFilesPaths:
+				jsonErrors = namedtuple(jsonPath, 'errors')
+				jsonErrors.errors = []
 
-	def checkJsonsCarta(self, caminhos_json_carta):
-		# Checa se foi selecionado algum arquivo:
-		logs = []
-		list_of_dict_conexoes = []
-		list_of_scales = []
-		success = True
-		if len(caminhos_json_carta)<0:
-			success = False			
-		else:
-			for caminho_json_carta in caminhos_json_carta:
-				error = {
-					'caminho':caminho_json_carta,
-					'errors':[]}
+				jsonMapData = self.readJsonFromPath(jsonPath)
+				_jsonKeys = jsonMapData.keys()
 
-				dict_carta = self.readJsonFromPath(caminho_json_carta)
-
-				# Checar se todos elementos possuem as chaves
-				required_keys = ['inom', 'nome', 'imagens', 'banco', 'fases','sensores', 'info_tecnica']
-				carta_keys = dict_carta.keys()
-				if set(required_keys) == set(carta_keys):
-					test_required_keys = { 'required_keys': True}
-					error['errors'].append(test_required_keys)
+				# Checks if has required fields
+				if set(_required_keys) != set(_jsonKeys):
+					jsonErrors.errors.append(f'Missing keys: {set(_required_keys).difference(_jsonKeys)}')
 				
-				# Checar se todos elementos possuem nome
-				if 'nome' in dict_carta:
-					if dict_carta['nome'] == '':
-						test_name = { 'nome_nao_nulo': True}
-						error['errors'].append(test_name)
+				# Checks if 'name' field is not empty
+				if not jsonMapData.get('nome'):
+					jsonErrors.errors.append(f'Missing name field')
 
-				# Checar se todos possuem inom e válido		
-				if 'inom' in dict_carta:
-					escala = str(self.utm_grid.getScale(dict_carta['inom']))
-					if escala not in list_of_scales:
-						list_of_scales.append(escala)
-				elif 'escala' in dict_carta:
-					escala = str(int(dict_carta['denominador_escala'])/1000)
-					if escala not in list_of_scales:
-						list_of_scales.append(escala)
+				# Verify if MI or INOM are correct	
+				if jsonMapData.get('inom'):
+					_scale = str(self.utm_grid.getScale(jsonMapData['inom']))
+					scales.add(_scale)
+				elif jsonMapData.get('escala'):
+					_scale = str(int(jsonMapData['denominador_escala'])/1000)
+					scales.add(_scale)
+				else:
+					jsonErrors.errors.append(f'Missing MI or INOM')
 
-					
-				# Verificar se todos possuem a chave etapas
-				if 'fases' in dict_carta:
-					if dict_carta['fases'] == []:
-						test_name = { 'etapas_vazio': True}
-						error['errors'].append(test_name)
+				# Verify if field 'fases' exists
+				if not jsonMapData.get('fases'):
+					jsonErrors.errors.append(f'Empty key: fases')
+
+				logs.append(jsonErrors)
 
 				# Verificar se todos possuem a chave sensores
 
 				# Verificar se todos possuem a chave info tecnica
-				logs.append(error)
-		return success, logs, list_of_scales
-
-	def create_temporary_folder(self):
-		directory = tempfile.TemporaryDirectory()
-		return Path(directory.name)
+			return True, logs, scales
+		else:
+			return False, None, None
 
 	def createMaps(self):
 		test_noLayers = True
@@ -366,57 +354,56 @@ class DefaultMap(MapManager):
 		# Set project crs		
 		oldProjValue = self.mc.setProjectProjection()		
 		
-		# Cria as instancias do mapa
+		# Creating map instances
 		self.create_map_instances()
 
-		# Obtem o tipo de produto selecionado na Ui
-		str_tipo_produto = self.dlg.comboBox_tipo_produto.currentText()
-		tipo_produto = '_'.join(str_tipo_produto.lower().split(' '))
-		if str_tipo_produto == 'Carta Topográfica':
-			tipo_produto = 'carta_topografica'
+		# Getting product type from ui
+		productType = self.dlg.productType.currentText()
+		strProductType = '_'.join(productType.lower().split(' '))
+		if productType == 'Carta Topográfica':
+			strProductType = 'carta_topografica'
 		
-		success, return_param = self.setProdutoConfig()		
+		# Setting export folder
+		exportFolder = Path(self.dlg.exportFolder.filePath())
 		
+		# Refreshing layout
 		if showLayers:						
 			manager = QgsProject.instance().layoutManager()
-			if manager.layoutByName(str_tipo_produto):
-				manager.removeLayout(manager.layoutByName(str_tipo_produto))
+			if manager.layoutByName(productType):
+				manager.removeLayout(manager.layoutByName(productType))
 		
-		# Obtendo os arquivos de carta da Ui
-		caminhos_json_carta = self.dlg.mQgsFileWidget_json_cartas.splitFilePaths(self.dlg.mQgsFileWidget_json_cartas.filePath())
-		
-		# checando o json da carta
-		success, logs, list_of_scales = self.checkJsonsCarta(caminhos_json_carta)
-		# success = True
-		
+		# Obtaining json config files and checking their consistency
+		jsonFilesPaths = self.dlg.jsonConfigs.splitFilePaths(self.dlg.jsonConfigs.filePath())
+		success, logs, list_of_scales = self.checkJsonFiles(jsonFilesPaths)
+				
 		# Edit composition with project and credits qpt
-		dict_compositions = self.createCompositions(list_of_scales, tipo_produto)
-		self.editCompositions(tipo_produto, dict_compositions)		
+		dict_compositions = self.createCompositions(list_of_scales, strProductType)
+		self.editCompositions(strProductType, dict_compositions)		
 		
 		if success:
 			# TODO: getFirstConnection reads the json file(s) again
-			success_connection, connectedUri = self.getFirstConnection( caminhos_json_carta)			
+			# TODO: getFirstConnection should get a new connection for every json, except when args are the same
+			success_connection, connectedUri = self.getFirstConnection(jsonFilesPaths)			
 			if success_connection:
-				self.saveFolder = os.path.join(self.baseSaveFolder, datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
-				os.mkdir(self.saveFolder)
-				for caminho_json_carta in caminhos_json_carta:
-					if self.checkJsonCarta(caminho_json_carta):
-						# Set config for html labels					
-						success, composition, dict_carta, inomen, layers = self.setCartaConfig(caminho_json_carta, connectedUri,  dict_compositions, test_noLayers)															
+				exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+				exportFolder.mkdir()
+				for jsonPath in jsonFilesPaths:
+					# Set config for html labels					
+					success, composition, dict_carta, inomen, layers = self.setCartaConfig(jsonPath, connectedUri,  dict_compositions, test_noLayers)															
+					
+					# Get feature data for maps
+					if dict_carta:
+						feature_map_extent, layer_feature_map_extent = self.getDefaultFeatureData(dict_carta)													
+						QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
 						
-						# Get feature data for maps
-						if dict_carta:
-							feature_map_extent, layer_feature_map_extent = self.getDefaultFeatureData(dict_carta)													
-							QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
-							
-							self.setElementsConfig(tipo_produto)
-							# composition = dict_compositions[str(self.utm_grid.getScale(inomen))]						
-							self.createAll(composition, self.nome, inomen, feature_map_extent, layer_feature_map_extent, layers, showLayers)
-							if showLayers:						
-								manager = QgsProject.instance().layoutManager()						
-								composition.setName(str_tipo_produto)
-								manager.addLayout(composition)
-								break
+						self.setElementsConfig(strProductType)
+						# composition = dict_compositions[str(self.utm_grid.getScale(inomen))]						
+						self.createAll(composition, self.nome, inomen, feature_map_extent, layer_feature_map_extent, layers, showLayers)
+						if showLayers:						
+							manager = QgsProject.instance().layoutManager()						
+							composition.setName(productType)
+							manager.addLayout(composition)
+							break
 				# Reprojeta se for o caso		
 				if self.dlg.checkBox_exportar_geotiff.isChecked():
 					self.reprojectTiffs()

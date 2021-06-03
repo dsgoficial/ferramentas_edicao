@@ -389,10 +389,10 @@ def copyQptToCompositor(path_sourceQpt, composition_dest, x_0, y_0, qpt_width, q
 	items, ok = l.loadFromTemplate(doc, QgsReadWriteContext(), False)
 	if ok:
 		str_size = str(qpt_width) + "," +  str(qpt_height) + "," + "mm" # "110,70,mm"
-		if qptSizeOk(doc,str_size):
-			for item in items:
-				cloneItem(item, composition_dest, x_0, y_0 )
-			return True
-		else:
-			return False
+		# if qptSizeOk(doc,str_size):
+		for item in items:
+			cloneItem(item, composition_dest, x_0, y_0 )
+		return True
+		# else:
+		# 	return False
 		
