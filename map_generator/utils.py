@@ -101,16 +101,21 @@ class MapTools:
         minimap_layers_db, minimap_layersId_db = self.getLayersFromDB(connectedUri, list_dict_minimaptables, "carta_mini",   tipo_produto, escala)
         return map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db
 
-    def getDBConnection(self,dict_conexao):
-        host = dict_conexao['servidor']
-        port = dict_conexao['porta']
-        db_name = dict_conexao['nome']
+    def getDBConnection(self, connectionDict, oldUri=None):
+        if not connectionDict:
+            return False, None
+        
+        host = connectionDict.get('servidor')
+        port = connectionDict.get('porta')
+        db_name = connectionDict.get('nome')
+
+        if oldUri and oldUri.host() == host and oldUri.port() == port and oldUri.db_name() == db_name:
+            return True, oldUri
         
         uri = QgsDataSourceUri()
-        # assign this information before you query the QgsCredentials data store
         uri.setConnection(host, port, db_name, None, None)
         connInfo = uri.connectionInfo()
-        (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
+        success, user, passwd = QgsCredentials.instance().get(connInfo, None, None)
         if success:
             uri.setPassword(passwd)
             uri.setUsername(user)

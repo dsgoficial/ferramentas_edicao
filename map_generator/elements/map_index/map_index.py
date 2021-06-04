@@ -634,15 +634,26 @@ class UtmGrid(QObject):
             layer.updateFields()
             return layer, fields
 
-    def get_new_grid_layer_from_inoms_list(self, list_inom):
+    def get_new_grid_layer_from_inoms_list(self, inomList):
         layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')
-        feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields) for map_index in list_inom]
+        feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields) for map_index in inomList]
         provider = layer.dataProvider()
         provider.addFeatures(feats)
         layer.startEditing()
-        provider = layer.dataProvider()       
-        layer.commitChanges()        
+        provider = layer.dataProvider()
+        layer.commitChanges()
         return layer, feats
+
+    def getNewGridFromInom(self, inom):
+        layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')
+        feat = self.getNewGridFeat(inom, self.getQgsPolygonFrame(inom), fields)
+        provider = layer.dataProvider()
+        provider.addFeatures([feat])
+        # layer.startEditing()
+        # provider = layer.dataProvider()
+        # layer.commitChanges()
+        return layer, feat
+
 
     def get_neighbors_inom(self, inom):
         layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')

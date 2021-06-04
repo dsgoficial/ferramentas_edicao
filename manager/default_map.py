@@ -167,7 +167,6 @@ class DefaultMap(MapManager):
 		self.MapC = MapConnection()
 		self.GLC = GLC
 		self.map_height = 570-15*2 # milimiters
-		self.scale_selected = False
 		self.utm_grid = UtmGrid()
 		self.set_products_parameters(product_parameters)
 
@@ -195,95 +194,82 @@ class DefaultMap(MapManager):
 				qptList.append(dict_classified)
 			self.htmlData.editQpts(compositor, qptList)
 	
-	def setCartaConfig(self, jsonPath, connectedUri,  dict_compositions, teste_no_layers=False):
+	def setCartaConfig(self, jsonData, connectedUri, dict_compositions, teste_no_layers=False):
 		'''
 		Setting map configurations
 		'''
-		if os.path.exists(jsonPath):
-			dict_carta = self.readJsonFromPath(jsonPath)
+		inomen = 'Especial'
+		mi = 'Especial'
+		# inom 
+		if 'inom' in jsonData:
+			inomen = jsonData['inom']
+			mi = self.utm_grid.get_MI_MIR_from_inom(inomen)
+			escala = str(self.utm_grid.getScale(inomen))
+		
+		if 'center' in jsonData:
+			escala = jsonData['escala'] # transformar para 250000
+			center = jsonData['center']
+			longitude = center['longitude']
+			latitude = center['latitude']
+			inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, int(escala/1000))			
 
-			inomen = 'Especial'
-			mi = 'Especial'
-			# inom 
-			if 'inom' in dict_carta:
-				inomen = dict_carta['inom']
-				mi 		= self.utm_grid.get_MI_MIR_from_inom(inomen)
-				escala = str(self.utm_grid.getScale(inomen))
-			
-			if 'center' in dict_carta:
-				escala = dict_carta['escala'] # transformar para 250000
-				center = dict_carta['center']
-				longitude = center['longitude']
-				latitude = center['latitude']
-				inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, int(escala/1000))			
+		# Tipo de produto
+		str_tipo_produto = self.dlg.productType.currentText()
+		tipo_produto = '_'.join(str_tipo_produto.lower().split(' '))
+		if str_tipo_produto == 'Carta Topográfica':
+			tipo_produto = 'carta_topografica'
 
-
-			# Tipo de produto
-			str_tipo_produto = self.dlg.productType.currentText()
-			tipo_produto = '_'.join(str_tipo_produto.lower().split(' '))
-			if str_tipo_produto == 'Carta Topográfica':
-				tipo_produto = 'carta_topografica'
-
-			# Print Layout para o produto
-			composition = dict_compositions[escala]
-			self.htmlData.setComposition(composition)
-			
-			# Camadas para o produto
+		# Print Layout para o produto
+		composition = dict_compositions[escala]
+		self.htmlData.setComposition(composition)
+		
+		# Camadas para o produto
+		path_json_produto = os.path.join(os.path.dirname(os.path.dirname(__file__)),'map_generator', 'produtos', tipo_produto, 'camadas.json')
+		if teste_no_layers:
 			path_json_produto = os.path.join(os.path.dirname(os.path.dirname(__file__)),'map_generator', 'produtos', tipo_produto, 'camadas.json')
-			if teste_no_layers:
-				path_json_produto = os.path.join(os.path.dirname(os.path.dirname(__file__)),'map_generator', 'produtos', tipo_produto, 'camadas.json')
-			dict_camadas_produto = self.readJsonFromPath(path_json_produto)
+		productLayersDict = self.readJsonFromPath(path_json_produto)
 
-			# Maptables e Minimaptables
-			list_dict_maptables = dict_camadas_produto[escala]['carta']
-			list_dict_minimaptables = dict_camadas_produto[escala]['carta_mini']
+		# Maptables e Minimaptables
+		list_dict_maptables = productLayersDict[escala]['carta']
+		list_dict_minimaptables = productLayersDict[escala]['carta_mini']
 
-			# Nome
-			nome = dict_carta['nome']
-			self.nome = nome
-								
-			# Etapas
-			list_dict_etapas = dict_carta['fases']
-			self.htmlData.customEtapa( composition,list_dict_etapas)		
-					
-			# Sensores
-			list_dict_sensores = dict_carta['sensores']
-			self.htmlData.customSensores( composition,list_dict_sensores)
-			
-			# Info tecnica carta			
-			scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
-			dict_info_tecnica = dict_carta['info_tecnica']
-			
-			self.htmlData.editHTMLInfoTecCarta(composition, scale, hemisferio, fuso, str_tipo_produto, dict_info_tecnica)
+		# Nome
+		self.nome = jsonData['nome']
 
-			# Banco
-			dict_conexao = dict_carta['banco']
-			if connectedUri is not None:
-				connectedUri.setDatabase(dict_conexao['nome'])
-			
-			# Carrega camadas do banco
-			map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db = self.getMapLayers(connectedUri,  list_dict_maptables, list_dict_minimaptables , tipo_produto, str(scale))
-			
-			# Carrega imagens
-			list_dict_images = dict_carta['imagens']
-			key_image = 'caminho_imagem'
-			key_style = 'caminho_estilo'
-			key_epsg = 'epsg'
-			image_layers, image_layersId = self.MapC.createLayersRasters(list_dict_images, key_image, key_style, key_epsg)
-			
-			# Adiciona camadas e imagens para serem mostradas no mapa e minimapa
-			layers = {
-				'map':map_layers_db,
-				'id_map':map_layersId_db,
-				'minimap':minimap_layers_db,
-				'id_minimap':minimap_layersId_db,
-				'images':image_layers,
-				'id_images':image_layersId,
-			}
+		# Etapas
+		self.htmlData.customEtapa(composition, jsonData['fases'])		
+				
+		# Sensores
+		self.htmlData.customSensores(composition, jsonData['sensores'])
+		
+		# Info tecnica carta			
+		scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)		
+		self.htmlData.editHTMLInfoTecCarta(composition, scale, hemisferio, fuso, str_tipo_produto, jsonData['info_tecnica'])
 
-			return True, composition, dict_carta, inomen, layers
-		else:
-			return False ,None, None, None, None
+		# Banco
+		if connectedUri:
+			connectedUri.setDatabase(jsonData['banco']['nome'])
+		
+		# Carrega camadas do banco
+		map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db = self.getMapLayers(connectedUri,  list_dict_maptables, list_dict_minimaptables , tipo_produto, str(scale))
+		
+		# Carrega imagens
+		key_image = 'caminho_imagem'
+		key_style = 'caminho_estilo'
+		key_epsg = 'epsg'
+		image_layers, image_layersId = self.MapC.createLayersRasters(jsonData['imagens'], key_image, key_style, key_epsg)
+		
+		# Adiciona camadas e imagens para serem mostradas no mapa e minimapa
+		layers = {
+			'map':map_layers_db,
+			'id_map':map_layersId_db,
+			'minimap':minimap_layers_db,
+			'id_minimap':minimap_layersId_db,
+			'images':image_layers,
+			'id_images':image_layersId,
+		}
+
+		return composition, inomen, layers
 		
 	def createCompositions(self, scales, tipo_produto):
 		dict_compositions = {}		
@@ -310,7 +296,8 @@ class DefaultMap(MapManager):
 		_required_keys = ['inom', 'nome', 'imagens', 'banco', 'fases','sensores', 'info_tecnica']
 		if len(jsonFilesPaths)>0:
 			for jsonPath in jsonFilesPaths:
-				jsonErrors = namedtuple(jsonPath, 'errors')
+				jsonPath = Path(jsonPath)
+				jsonErrors = namedtuple(jsonPath.stem, 'errors')
 				jsonErrors.errors = []
 
 				jsonMapData = self.readJsonFromPath(jsonPath)
@@ -378,35 +365,33 @@ class DefaultMap(MapManager):
 				
 		# Edit composition with project and credits qpt
 		dict_compositions = self.createCompositions(list_of_scales, strProductType)
-		self.editCompositions(strProductType, dict_compositions)		
+		self.editCompositions(strProductType, dict_compositions)
 		
 		if success:
 			# TODO: getFirstConnection reads the json file(s) again
 			# TODO: getFirstConnection should get a new connection for every json, except when args are the same
-			success_connection, connectedUri = self.getFirstConnection(jsonFilesPaths)			
-			if success_connection:
-				exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-				exportFolder.mkdir()
-				for jsonPath in jsonFilesPaths:
-					# Set config for html labels					
-					success, composition, dict_carta, inomen, layers = self.setCartaConfig(jsonPath, connectedUri,  dict_compositions, test_noLayers)															
-					
-					# Get feature data for maps
-					if dict_carta:
-						feature_map_extent, layer_feature_map_extent = self.getDefaultFeatureData(dict_carta)													
-						QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
-						
-						self.setElementsConfig(strProductType)
-						# composition = dict_compositions[str(self.utm_grid.getScale(inomen))]						
-						self.createAll(composition, self.nome, inomen, feature_map_extent, layer_feature_map_extent, layers, showLayers)
-						if showLayers:						
-							manager = QgsProject.instance().layoutManager()						
-							composition.setName(productType)
-							manager.addLayout(composition)
-							break
-				# Reprojeta se for o caso		
-				if self.dlg.checkBox_exportar_geotiff.isChecked():
-					self.reprojectTiffs()
+			exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+			exportFolder.mkdir()
+			for jsonPath in jsonFilesPaths:
+				jsonData = self.readJsonFromPath(jsonPath)
+				feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
+				connectionSucess, connectedUri = self.getDBConnection(jsonData['banco'], connectedUri) if 'connectedUri' in locals() else self.getDBConnection(jsonData['banco'])
+				# Set config for html labels
+				composition, inomen, layers = self.setCartaConfig(jsonData, connectedUri, dict_compositions, test_noLayers)															
+				
+				# Get feature data for maps
+				QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
+				
+				self.setElementsConfig(strProductType)
+				self.createAll(composition, self.nome, inomen, feature_map_extent, layer_feature_map_extent, layers, showLayers)
+				if showLayers:
+					manager = QgsProject.instance().layoutManager()						
+					composition.setName(productType)
+					manager.addLayout(composition)
+					break
+			# Reprojeta se for o caso		
+			if self.dlg.checkBox_exportar_geotiff.isChecked():
+				self.reprojectTiffs()
 			
 		if not showLayers:
 			self.mc.setProjectProjection(oldProjValue)
