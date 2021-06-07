@@ -9658,7 +9658,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option value="true" name="active" type="bool"/>
-       <Option value="to_string( @edition_folder) + '/simbologia/classes/Hidro_01.svg'" name="expression" type="QString"/>
+       <Option value="to_string( @edition_folder) + '/simbologia/classes/Hidro_default.svg'" name="expression" type="QString"/>
        <Option value="3" name="type" type="int"/>
       </Option>
      </Option>
