@@ -1,0 +1,125 @@
+<Layout printResolution="300" name="Layout 1" units="mm" worldFileMap="">
+ <Snapper snapToGuides="1" tolerance="5" snapToGrid="0" snapToItems="1"/>
+ <Grid offsetY="0" resolution="10" offsetUnits="mm" resUnits="mm" offsetX="0"/>
+ <PageCollection>
+  <symbol type="fill" name="" alpha="1" clip_to_extent="1" force_rhr="0">
+   <data_defined_properties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </data_defined_properties>
+   <layer locked="0" pass="0" class="SimpleFill" enabled="1">
+    <Option type="Map">
+     <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+     <Option type="QString" name="color" value="255,255,255,255"/>
+     <Option type="QString" name="joinstyle" value="miter"/>
+     <Option type="QString" name="offset" value="0,0"/>
+     <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+     <Option type="QString" name="offset_unit" value="MM"/>
+     <Option type="QString" name="outline_color" value="35,35,35,255"/>
+     <Option type="QString" name="outline_style" value="no"/>
+     <Option type="QString" name="outline_width" value="0.26"/>
+     <Option type="QString" name="outline_width_unit" value="MM"/>
+     <Option type="QString" name="style" value="solid"/>
+    </Option>
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="255,255,255,255" k="color"/>
+    <prop v="miter" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="35,35,35,255" k="outline_color"/>
+    <prop v="no" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <LayoutItem type="65638" positionOnPage="0,0,mm" position="0,0,mm" templateUuid="{0b2f8aa4-0383-48d5-90ca-7e67a596d487}" zValue="0" visibility="1" blendMode="0" uuid="{0b2f8aa4-0383-48d5-90ca-7e67a596d487}" frameJoinStyle="miter" itemRotation="0" outlineWidthM="0.3,mm" excludeFromExports="0" positionLock="false" id="" groupUuid="" frame="false" opacity="1" size="297,210,mm" background="true" referencePoint="0">
+   <FrameColor blue="0" red="0" green="0" alpha="255"/>
+   <BackgroundColor blue="255" red="255" green="255" alpha="255"/>
+   <LayoutObject>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </LayoutObject>
+   <symbol type="fill" name="" alpha="1" clip_to_extent="1" force_rhr="0">
+    <data_defined_properties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </data_defined_properties>
+    <layer locked="0" pass="0" class="SimpleFill" enabled="1">
+     <Option type="Map">
+      <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+      <Option type="QString" name="color" value="255,255,255,255"/>
+      <Option type="QString" name="joinstyle" value="miter"/>
+      <Option type="QString" name="offset" value="0,0"/>
+      <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+      <Option type="QString" name="offset_unit" value="MM"/>
+      <Option type="QString" name="outline_color" value="35,35,35,255"/>
+      <Option type="QString" name="outline_style" value="no"/>
+      <Option type="QString" name="outline_width" value="0.26"/>
+      <Option type="QString" name="outline_width_unit" value="MM"/>
+      <Option type="QString" name="style" value="solid"/>
+     </Option>
+     <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+     <prop v="255,255,255,255" k="color"/>
+     <prop v="miter" k="joinstyle"/>
+     <prop v="0,0" k="offset"/>
+     <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+     <prop v="MM" k="offset_unit"/>
+     <prop v="35,35,35,255" k="outline_color"/>
+     <prop v="no" k="outline_style"/>
+     <prop v="0.26" k="outline_width"/>
+     <prop v="MM" k="outline_width_unit"/>
+     <prop v="solid" k="style"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option type="QString" name="name" value=""/>
+       <Option name="properties"/>
+       <Option type="QString" name="type" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+  </LayoutItem>
+  <GuideCollection visible="1"/>
+ </PageCollection>
+ <LayoutItem type="65641" positionOnPage="0.5,0.5,mm" position="0.5,0.5,mm" templateUuid="{762b1401-4f28-419f-a638-82a0b94a9db0}" zValue="2" visibility="1" htmlState="0" valign="32" blendMode="0" marginX="0" uuid="{762b1401-4f28-419f-a638-82a0b94a9db0}" halign="4" labelText="MATERIAL DE ACESSO RESTRITO&#xa;&#xa;Art. 44 e 45 do Decreto n 7.845, de 14 de novembro de 2012&#xa;" frameJoinStyle="miter" itemRotation="0" outlineWidthM="1,mm" excludeFromExports="0" positionLock="false" id="" groupUuid="" frame="true" opacity="1" size="110,20,mm" background="false" referencePoint="0" marginY="3">
+  <FrameColor blue="0" red="255" green="0" alpha="255"/>
+  <BackgroundColor blue="255" red="255" green="255" alpha="255"/>
+  <LayoutObject>
+   <dataDefinedProperties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </dataDefinedProperties>
+   <customproperties/>
+  </LayoutObject>
+  <LabelFont style="Bold" description="Times New Roman,10,-1,5,75,0,0,0,0,0,Bold"/>
+  <FontColor blue="0" red="255" green="0" alpha="255"/>
+ </LayoutItem>
+ <customproperties>
+  <property value="png" key="atlasRasterFormat"/>
+ </customproperties>
+ <Atlas pageNameExpression="" coverageLayer="" filenamePattern="'output_'||@atlas_featurenumber" enabled="0" sortFeatures="0" hideCoverage="0" filterFeatures="0"/>
+</Layout>

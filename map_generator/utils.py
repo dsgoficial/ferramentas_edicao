@@ -115,10 +115,12 @@ class MapTools:
         uri = QgsDataSourceUri()
         uri.setConnection(host, port, db_name, None, None)
         connInfo = uri.connectionInfo()
-        success, user, passwd = QgsCredentials.instance().get(connInfo, None, None)
+        instance =  QgsCredentials.instance()
+        success, user, passwd = instance.get(connInfo, None, None)
         if success:
-            uri.setPassword(passwd)
             uri.setUsername(user)
+            uri.setPassword(passwd)
+            instance.put(connInfo, user, passwd)
             return success, uri
         else:
             return success, None

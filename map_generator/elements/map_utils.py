@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 
 from qgis.core import (
 	QgsVectorLayer, QgsReadWriteContext, QgsProject, QgsPrintLayout,
@@ -80,20 +81,20 @@ class MapParent:
 	def setComposition(self, composition):
 		self.composition = composition
 
-	def load_shp_layer(self, caminho_shp, caminho_estilo, nome_camada):
-		if os.path.exists(caminho_shp):
-			estados_layer = QgsVectorLayer(caminho_shp,nome_camada,'ogr')
+	def loadShapeLayer(self, pathShp, pathStyle, lyrName):
+		if Path(pathShp).is_file():
+			layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
 			#QgsProject.instance().addMapLayer(estados_layer)
-			if (estados_layer.isValid()):
-								
-				if os.path.exists(caminho_estilo):
-					estados_layer.loadNamedStyle(caminho_estilo)
-					estados_layer.triggerRepaint()
-				estados_layer.setProviderEncoding(u'UTF-8')
-				estados_layer.dataProvider().setEncoding(u'UTF-8')                
-			return estados_layer
+			if layer.isValid():
+				if Path(pathStyle).is_file():
+					layer.loadNamedStyle(pathStyle)
+					layer.triggerRepaint()
+				layer.setProviderEncoding(u'UTF-8')
+				layer.dataProvider().setEncoding(u'UTF-8')
+			return layer
 		else:
 			return None
+
 	def setConnectedUri(self, connected_uri):
 		self.connected_uri = connected_uri
 

@@ -1,34 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- LoadByClass
-                                 A QGIS plugin
- Load database classes.
-                             -------------------
-        begin                : 2014-12-18
-        git sha              : $Format:%H$
-        copyright            : (C) 2014 by Luiz Andrade - Cartographic Engineer @ Brazilian Army
-        email                : luiz.claudio@dsg.eb.mil.br
-        mod history          : 2014-12-17 by Leonardo Lourenço - Computing Engineer @ Brazilian Army
-        mod history          : 2014-12-17 by Maurício de Paulo - Cartographic Engineer @ Brazilian Army
-        mod history          : 2020-04-01 by Philipe Borba - Cartographic Engineer @ Brazilian Army
-        mod history          : 2020-09-14 by Ronaldo Martins - Cartographic Engineer @ Brazilian Army
- ***************************************************************************/
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-from builtins import range
-from qgis.core import QgsPointXY, QgsGeometry, QgsFeature, QgsVectorLayer,QgsFields, QgsField
-import string, os, math, itertools
-from qgis.PyQt.QtCore import QObject, QVariant 
+import string
+import os
+import math
+import itertools
 
-# C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/teste_interface/map_generator/utils/map_index.py
+from qgis.core import QgsPointXY, QgsGeometry, QgsFeature, QgsVectorLayer,QgsFields, QgsField, QgsProject
+from qgis.PyQt.QtCore import QObject, QVariant 
 
 letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60']

@@ -153,14 +153,14 @@ class Localizacao(MapParent):
 		# Criamos o layer para os estados e adicionamos no grupo 
 		caminho_shp_estado = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','estados_2019.shp')
 		caminho_estilo_estado = os.path.join(self.folder_estilos, 'no_labels_style.qml')		
-		estados_layer_fundo = self.load_shp_layer(caminho_shp_estado, caminho_estilo_estado, 'estados')
+		estados_layer_fundo = self.loadShapeLayer(caminho_shp_estado, caminho_estilo_estado, 'estados')
 		map_layers.append(estados_layer_fundo.id())			
 		
 		
 		# Obtemos os limites e intersecçõescom limites entre países
 		caminho_shp_internacional = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','Paises_2020.shp')
 		caminho_estilo_internacional = os.path.join(self.folder_estilos, 'no_labels_style.qml')		
-		internacional_layer_fundo = self.load_shp_layer(caminho_shp_internacional, caminho_estilo_internacional, 'estados')
+		internacional_layer_fundo = self.loadShapeLayer(caminho_shp_internacional, caminho_estilo_internacional, 'estados')
 		#map_layers.append(internacional_layer_fundo.id())	
 		
 		# Obtemos extent do mapa de localização e intersecoes de estados com a área do mapa e o 
@@ -172,7 +172,7 @@ class Localizacao(MapParent):
 
 		caminho_estilo_estado_frente = os.path.join(self.folder_estilos, 'contorno_linha_simples_traco_fino.qml')		
 		#caminho_estilo_estado_frente = os.path.join(self.folder_estilos, 'contorno_linha_simples_traco_fino_2.qml') #estilo novo
-		layer_estados_frente = self.load_shp_layer(caminho_shp_estado, caminho_estilo_estado_frente, 'estados_frente')
+		layer_estados_frente = self.loadShapeLayer(caminho_shp_estado, caminho_estilo_estado_frente, 'estados_frente')
 		map_layers.append(layer_estados_frente.id())
 		self.setFilter(layer_estados_frente)		
 
@@ -226,7 +226,7 @@ class Localizacao(MapParent):
 		for name in names:
 			caminho_shp_internacional = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites', name + '.shp')
 			caminho_estilo_internacional = os.path.join(self.folder_estilos, 'no_labels_style.qml')		
-			internacional_layer_fundo = self.load_shp_layer(caminho_shp_internacional, caminho_estilo_internacional, name  + '_unidades_federativas')
+			internacional_layer_fundo = self.loadShapeLayer(caminho_shp_internacional, caminho_estilo_internacional, name  + '_unidades_federativas')
 			list_layer_paises.append(internacional_layer_fundo)
 		return list_layer_paises
 

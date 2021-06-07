@@ -1,5 +1,3 @@
-
-import json
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem
 
 from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
@@ -17,15 +15,16 @@ from .elements.map_utils import MapParent
 from .elements.map_identification import editMapName
 from .elements.map_identification import replaceLabelRegiao
 from .elements.map_index.map_index import UtmGrid
+from .elements.subtitulo import Subtitulo
 from .elements.qrcode_picture import create_qrcode_from_feature, replace_qrCode
 from .utils import MapTools
 
 class MapManager(MapTools):
 	def __init__(self, iface, dlg, GLC):
-		super().__init__(iface, dlg)	
+		super().__init__(iface, dlg)
 		self.mc = MapParent()
 		self.GLC = GLC
-		self.map_height = 570-15*2 # milimiters		
+		self.map_height = 570-15*2 # milimiters
 		self.epsg_selected = False
 		self.utm_grid = UtmGrid()
 		
@@ -37,16 +36,16 @@ class MapManager(MapTools):
 		self.inom_attr = 'inom'
 		self.nome_attr = 'nome'
 		self.escala_attr = 'escala'
-		self.feature_selection_mode = 'json' # layer		
+		self.feature_selection_mode = 'json' # layer
 				
 		self.map.setGridAndLabelParameters(**self.products_parameters[product]['grid'])
 		self.map.setMapSize(588,588)
 				
-		self.articulacao.setGridMode(True)								
+		self.articulacao.setGridMode(True)
 				
 	def create_map_instances(self):
 		# Map
-		self.map = Map(self.iface, self.GLC)		
+		self.map = Map(self.iface, self.GLC)
 		# Minimapa
 		self.miniMap = MiniMap()
 		# Coordenadas do Minimapa
@@ -63,6 +62,8 @@ class MapManager(MapTools):
 		self.htmlData = HtmlData()
 		# Dados de escala
 		self.dados_de_escala = HandleScale()
+		# Subtítulo
+		self.subtitulo = Subtitulo()
 
 	# Obtem as informacoes do mapa: inom, nome, mi, escala..
 	def setDefaultFeatureData(self, jsonData):
@@ -115,7 +116,7 @@ class MapManager(MapTools):
 		QgsProject.instance().addMapLayer(grid_layer, False)
 		return grid_layer, grid_layerId, center_feat
 
-	def createAll(self, composition, nome, inomen,  map_extent_feature, layer_feature_map_extent, layers, showLayers = False):
+	def createAll(self, composition, nome, inomen,  map_extent_feature, layer_feature_map_extent, layers, jsonData, showLayers = False):
 		# Store temporary map layers ids
 		ids_maplayers = []
 			
@@ -160,13 +161,31 @@ class MapManager(MapTools):
 			adaptacaoNome = False
 			mapLayers_loocalizacao = self.localizacao.make(composition, map_extent_feature, adaptacaoNome, showLayers)
 			ids_maplayers.extend(mapLayers_loocalizacao)
-			regioes = self.localizacao.regioes
-			replaceLabelRegiao(composition, regioes)
+			# linhas para comentar quando subtitulo estiver funcionado
+			#regioes = self.localizacao.regioes
+			#replaceLabelRegiao(composition, regioes)
+
+		# Mapa de Localização
+		if composition.itemById("label_regiao") is not None:			
+			pass
+			self.subtitulo.make(composition, map_extent_feature)			
 
 		# Generating qrcode
-		camadas_adicionar = ["localidades", "mosaico_topograficas"]
-		success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, nome )
-		replace_qrCode(composition, path_qrCode)
+		if jsonData.get('acesso_restrito'):
+			composition.itemById('label_bdgexQR').setVisible(False)
+			composition.itemById('label_bdgexWeb').setVisible(False)
+			composition.itemById('label_classified').setVisible(True)
+		
+		else:
+			try:
+				composition.itemById('label_classified').setVisible(False)
+			except Exception:
+				pass
+			composition.itemById('label_bdgexQR').setVisible(True)
+			composition.itemById('label_bdgexWeb').setVisible(True)
+			camadas_adicionar = ["localidades", "mosaico_topograficas"]
+			success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, nome )
+			replace_qrCode(composition, path_qrCode)
 
 		# Exporta os mapas
 		if not showLayers:

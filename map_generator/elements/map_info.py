@@ -194,7 +194,7 @@ class HtmlData(MapParent):
         for name in names:
             caminho_shp_internacional = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites', name + '.shp')
             caminho_estilo_internacional = None
-            internacional_layer_fundo = self.load_shp_layer(caminho_shp_internacional, caminho_estilo_internacional, name  + '_unidades_federativas')
+            internacional_layer_fundo = self.loadShapeLayer(caminho_shp_internacional, caminho_estilo_internacional, name  + '_unidades_federativas')
             list_layer_paises.append(internacional_layer_fundo)
         return list_layer_paises
 
@@ -210,7 +210,7 @@ class HtmlData(MapParent):
 					self.paises.append(pais_feature['nome'])
 
 		caminho_shp_estado = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Estados_2020.shp')		
-		estados_layer_fundo = self.load_shp_layer(caminho_shp_estado, None, 'estados')
+		estados_layer_fundo = self.loadShapeLayer(caminho_shp_estado, None, 'estados')
 
 
         list_layer_paises = self.load_intersection_country_layers(names)

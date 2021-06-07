@@ -56,8 +56,8 @@ class Divisao(MapParent):
 		self.attr_codigo = 'codigo'
 		self.attr_sigla = 'sigla_uf'
 		# 2020
-		self.attr_nome = 'NM_MUN'
-		self.attr_codigo = 'CD_MUN'
+		self.attr_nome = 'NOME'
+		self.attr_codigo = 'SIGLA_PAIS'
 		self.attr_sigla = 'SIGLA_UF'
 		#self.itemname_tableMunicipios = 'label_divisao_municipios'
 

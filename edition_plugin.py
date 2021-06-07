@@ -163,12 +163,8 @@ class EditionPlugin:
             pass
 
     def connectingButtons(self):
-        print(os.path.dirname(__file__))
         self.defaultMap = DefaultMap(self.iface, self.dlg, self.GLC)
         self.dlg.pushButton_gerar_cartas.clicked.connect(self.defaultMap.createMaps)
-        # ("Qgis Composer Template (*.qpt )")
-        # ("Qgis Composer Template (*.json )")
-        pass
 
     def setTestData(self):        
         self.dlg.mapHeader.setFilter("Composer Template (*.qpt)")
@@ -180,7 +176,7 @@ class EditionPlugin:
         self.dlg.mapFooter.setFilePath(caminho_projeto)
         
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\carta_topografica_mi_0102_2_50k.json')
+        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\JSON_EDICAO\\carta_topografica_NB-20-Z-D-II-2.json')
         
         exportFolder = 'C:\\Users\\eliton\\Documents\\edicao'
         self.dlg.exportFolder.setFilePath(exportFolder)
