@@ -204,20 +204,69 @@ class HtmlData(MapParent):
     def customTecnicalInfo(self, composition, scale, hemisferio, fuso, tipo_produto, tecnicalInfo={}):
         label = composition.itemById("label_tabela_info_carta")
         if label:
-            # htmlData = label.text()
-            hemisferio = 'Norte' if hemisferio == 'N' else 'Sul'
+            hemisphere = 'Norte' if hemisferio == 'N' else 'Sul'
             falseNorth = '0' if hemisferio == 'Norte' else '+10.000'
+            centralMeridian = -180+(int(fuso)-1)*6 + 3
+            curveData = [x for x in curvas[str(scale)].values()]
+            position = 'W' if centralMeridian < 0 else 'E'
+            thirdPartyData = tecnicalInfo.get('dados_terceiros')
+            lenThirdData = 2 + len(thirdPartyData)
+
 
             htmlPath = Path(__file__).parent.parent / 'html_auto' / 'technicalInfoBarebone.html'
             htmlData = et.parse(str(htmlPath))
             root = htmlData.getroot()
-            firstTable = next(root.iter('table'))
-            tr1 = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(tr1, 'td', {'class':'left'}, 'Projeção')
-            _ = self.generateElement(tr1, 'td', {'class':'right'}, 'Universal Transversa de Mercator')
-            tr2 = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(tr2, 'td', {'class':'left', 'rowspan':'2'}, 'Origem UTM')
-            _ = self.generateElement(tr2, 'td', {'class':'right'}, f'Hemisfério {hemisferio}. Equador: {falseNorth} Km')
+            tables = root.iter('table')
+
+            firstTable = next(tables)
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Projeção')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Universal Transversa de Mercator')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Origem UTM')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Hemisfério {hemisphere}. Equador: {falseNorth} Km')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Zona {fuso}. Meridiano Central {centralMeridian} º {position} Gr.: + 500 Km')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum vertical')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('datum_vertical'))
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum horizontal')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'SIRGAS2000 (Época 2000.4)')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Equidistância das curvas de nível')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Normal: {curveData[1]} metros')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Mestra: {curveData[2]} metros')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Erro gráfico')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, '0,2 mm na escala da carta')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Padrão de Exatidão Cartográfica (PEC)')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'PEC Planimétrico: {tecnicalInfo.get("pec_planimetrico")}')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}')
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Descrição do produto de Conjuntos de Dados Geoespaciais')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tipo_produto)
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Origem dos dados altimétricos')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('origem_dados_altimetricos'))
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':f'{lenThirdData}'}, 'Origem dos dados geoespaciais fornecidos por terceiros')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL**')
+            for info in thirdPartyData:
+                _tmp = self.generateElement(firstTable, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, info)
+            _tmp = self.generateElement(firstTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Declinação magnética: NOAA (WMM 2020-2025)')
+
+            secondTable = next(tables)
+            _tmp = self.generateElement(secondTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '** Limites sujeitos  à homologação do referido órgão.')
+            _tmp = self.generateElement(secondTable, 'tr')
+            _ = self.generateElement(_tmp, 'td', {'class':'phases'}, 'Para maiores informações consulte o arquivo de metadados.')
+
             label.setText(et.tostring(root, encoding='unicode', method='html'))
 
 
