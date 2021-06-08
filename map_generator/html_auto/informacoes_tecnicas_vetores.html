@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-<meta charset="utf-8" />
-	<meta name="viewport" content="maximum-scale=1">
+<meta name="viewport" content="maximum-scale=1" charset="utf-8" />
 </head>
 <style>
 page, body, div {
@@ -59,13 +58,12 @@ table th {
     text-transform: uppercase;
     padding: 0.34em;
 }
-
 </style>
-<page id="rodamao" style="
-    width: 104mm;" >
- <body id = "direito">
+
+<page id="rodamao" style="width: 104mm;">
+ <body>
   <div align="center">
-   <table id="producao" >
+   <table id="producao">
     <tr>
     	<span>
 	 		<th colspan="2">informações técnicas da Carta</th>
@@ -80,7 +78,7 @@ table th {
         <td class = "rig" >Hemisfério {hemisferio}. Equador: {falseNorth} Km</td> 
     </tr>
     <tr>
-        <td class = "rig" id="zona">Zona {fuso}. Meridiano Central {meridianoCentral} º {posicao} Gr.: + 500 Km</td>
+        <td class = "rig">Zona {fuso}. Meridiano Central {meridianoCentral} º {posicao} Gr.: + 500 Km</td>
     </tr>
     <tr>
         <td class = "lef" >Datum vertical</td>
@@ -93,10 +91,10 @@ table th {
     <tr>
         <td class = "lef" rowspan="2">Equidistância das curvas de nível</td>
         <td class = "rig" >Normal: {equidistancia_curva_normal} metros</td>
-    </tr>    
+    </tr>
 	<tr>
         <td class = "rig" >Mestra: {equidistancia_curva_mestra} metros</td>
-    </tr>      
+    </tr>
     <tr>
         <td class = "lef" >Erro gráfico</td>
         <td class = "rig" >0,2 mm na escala da carta</td>
@@ -107,11 +105,11 @@ table th {
     </tr>
     <tr>
         <td class = "rig">PEC Altimétrico: {pec_altimetrico}</td>
-    </tr>   
+    </tr>
     <tr>
         <td class = "lef" >Descrição do produto de Conjuntos de Dados Geoespaciais</td>
         <td class = "rig" >{tipo_produto}</td>
-    </tr>     
+    </tr>
     <tr>
         <td class = "lef" rowspan="1">Origem dos dados altimétricos</td>
         <td class = "rig" >{origem_dados_altimetricos}</td>
@@ -122,29 +120,28 @@ table th {
     </tr>
     <tr>
         <td class = "rig">Limites estaduais e municipais: IBGE **</td>
-    </tr>  
+    </tr>
     <tr>
         <td class = "rig">Áreas indígenas: FUNAI**</td>
-    </tr>  
+    </tr>
     <tr>
         <td class = "rig">Unidades de conservação: IBAMA**</td>
-    </tr>  
+    </tr>
     <tr>
         <td class = "rig">Modelo geoidal: MAPGEO2015 - IBGE</td>
-    </tr>                      
+    </tr>
     <tr>
         <td class = "rig">Declinação magnética: NOAA (WMM 2020-2025)</td>
-    </tr>  
+    </tr>
    </table>
    <table id="obs">
 	<tr>
 	 <td class = "fases">
 	 	** Limites sujeitos  à homologação do referido órgão.
-		<br>
 		Para maiores informações consulte o arquivo de metadados.
 	 </td>
 	</tr>
-   </table>   
+   </table>
   </div>
  </body>
 </page>

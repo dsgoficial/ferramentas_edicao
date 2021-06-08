@@ -15,7 +15,6 @@ class Localizacao(MapParent):
     def __init__(self):
         self.scale = 25000
         self.adaptacao_nome = True
-        self.mapItem = None
         self.pais_analisado = 'paisA'
         self.folder_estilos = os.path.join(os.path.dirname(
             os.path.dirname(__file__)), 'estilos', 'localizacao')
@@ -469,7 +468,6 @@ class Localizacao(MapParent):
         nameEstadosMapItem = composition.itemById("map_localizacao_adaptacao")
         if nameEstadosMapItem is not None:
             nameEstadosMapItem.setVisibility(True)
-            mapSize = self.mapItem.sizeWithUnits()
             nameEstadosMapItem.setBackgroundEnabled(False)
             nameEstadosMapItem.setFixedSize(QgsLayoutSize(74, 74))
             nameEstadosMapItem.setExtent(bound)

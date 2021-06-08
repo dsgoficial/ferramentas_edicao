@@ -2,398 +2,374 @@ import json
 import os
 from pathlib import Path
 
-from qgis.core import (
-	QgsVectorLayer, QgsReadWriteContext, QgsProject, QgsPrintLayout,
-	QgsCoordinateReferenceSystem, QgsRasterLayer, QgsFeature, QgsLayerTreeLayer,
-	QgsLayerTreeGroup, QgsLayoutItem, QgsLayoutPoint, QgsLayout
-)
-from PyQt5.QtCore import QSettings,  QPoint
+from PyQt5.QtCore import QPoint, QSettings
 from PyQt5.QtXml import QDomDocument
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
+                       QgsLayerTreeGroup, QgsLayerTreeLayer, QgsLayout,
+                       QgsLayoutItem, QgsLayoutPoint, QgsPrintLayout,
+                       QgsProject, QgsRasterLayer, QgsReadWriteContext,
+                       QgsVectorLayer)
 
 from .map_index.map_index import UtmGrid
 
+
 class MapParent:
-	def __init__(self):
-		self.mapItem = None
-		self.utm_grid = UtmGrid()
-	
-	def getPrintLayoutFromQptPath(self, path, novo_valor):
-		project = QgsProject.instance()
+    def __init__(self):
+        self.utm_grid = UtmGrid()
 
-		# Load template from file
-		created_layout = QgsPrintLayout(project)
-		# self.update_qpt_variables(created_layout, novo_valor)
-		# created_layout.initializeDefaults()		
-		myTemplateFile = open(path, 'rt')
-		myTemplateContent = myTemplateFile.read()
-		myTemplateFile.close()
-		doc = QDomDocument()
-		doc.setContent(myTemplateContent)
+    def getPrintLayoutFromQptPath(self, path, novo_valor):
+        project = QgsProject.instance()
 
-		# adding to existing items
-		#items, ok = created_layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
-		created_layout.loadFromTemplate(doc, QgsReadWriteContext())
-		self.update_qpt_variables(created_layout, novo_valor)
-		return created_layout
+        # Load template from file
+        created_layout = QgsPrintLayout(project)
+        # self.update_qpt_variables(created_layout, novo_valor)
+        # created_layout.initializeDefaults()
+        myTemplateFile = open(path, 'rt')
+        myTemplateContent = myTemplateFile.read()
+        myTemplateFile.close()
+        doc = QDomDocument()
+        doc.setContent(myTemplateContent)
 
-	def create_Multipolygon_layer_copy(self, new_layer_name, layer_to_copy):		
-		attr_to_copy = layer_to_copy.dataProvider().fields().toList()
-		#new_layer = QgsVectorLayer("Multipolygon?crs=epsg:{epsg}".format(epsg=layer_to_copy.crs().postgisSrid()),new_layer_name, "memory")
-		new_layer = QgsVectorLayer("Polygon?crs=EPSG:4326",new_layer_name, "memory")
-		new_layer.startEditing()  
-		new_layer_provider = new_layer.dataProvider()
-		new_layer.startEditing()  
-		new_layer_provider.addAttributes(attr_to_copy)
-		new_layer.updateFields()		
-		new_layer_provider.addFeatures([feat for feat in layer_to_copy.getFeatures()])
-		new_layer.commitChanges()
-		return new_layer
+        # adding to existing items
+        #items, ok = created_layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        created_layout.loadFromTemplate(doc, QgsReadWriteContext())
+        self.update_qpt_variables(created_layout, novo_valor)
+        return created_layout
 
-		
-	def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):        
-		if 'variableNames' in composition.customProperties():
-			chaves = composition.customProperty('variableNames')
-			valores = composition.customProperty('variableValues')
-			index_of_key = -1
-			if chave in chaves:
-				index_of_key = chaves.index(chave)		
-				if isinstance(valores, str):
-					valores = novo_valor
-				else:
-					valores[index_of_key] = novo_valor
-				composition.setCustomProperty('variableValues', valores)
-			else:
-				chaves.append(chave)
-				valores.append(novo_valor)
-				composition.setCustomProperty('variableNames', chaves)
-				composition.setCustomProperty('variableValues', valores)
-		else:
-			composition.setCustomProperty('variableNames', [chave] )
-			composition.setCustomProperty('variableValues', [novo_valor])
+    def create_Multipolygon_layer_copy(self, new_layer_name, layer_to_copy):
+        attr_to_copy = layer_to_copy.dataProvider().fields().toList()
+        #new_layer = QgsVectorLayer("Multipolygon?crs=epsg:{epsg}".format(epsg=layer_to_copy.crs().postgisSrid()),new_layer_name, "memory")
+        new_layer = QgsVectorLayer("Polygon?crs=EPSG:4326", new_layer_name, "memory")
+        new_layer.startEditing()
+        new_layer_provider = new_layer.dataProvider()
+        new_layer.startEditing()
+        new_layer_provider.addAttributes(attr_to_copy)
+        new_layer.updateFields()
+        new_layer_provider.addFeatures([feat for feat in layer_to_copy.getFeatures()])
+        new_layer.commitChanges()
+        return new_layer
 
-	def setGridLayerAndComposition(self, grid_layer, composition):
-		self.grid_layer = grid_layer
-		self.composition = composition
+    def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):
+        if 'variableNames' in composition.customProperties():
+            chaves = composition.customProperty('variableNames')
+            valores = composition.customProperty('variableValues')
+            index_of_key = -1
+            if chave in chaves:
+                index_of_key = chaves.index(chave)
+                if isinstance(valores, str):
+                    valores = novo_valor
+                else:
+                    valores[index_of_key] = novo_valor
+                composition.setCustomProperty('variableValues', valores)
+            else:
+                chaves.append(chave)
+                valores.append(novo_valor)
+                composition.setCustomProperty('variableNames', chaves)
+                composition.setCustomProperty('variableValues', valores)
+        else:
+            composition.setCustomProperty('variableNames', [chave])
+            composition.setCustomProperty('variableValues', [novo_valor])
 
-	def setGridLayer(self, grid_layer):
-		self.grid_layer = grid_layer	
-	
-	def setComposition(self, composition):
-		self.composition = composition
+    def setGridLayerAndComposition(self, grid_layer, composition):
+        self.grid_layer = grid_layer
+        self.composition = composition
 
-	def loadShapeLayer(self, pathShp, pathStyle, lyrName):
-		if Path(pathShp).is_file():
-			layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
-			#QgsProject.instance().addMapLayer(estados_layer)
-			if layer.isValid():
-				if Path(pathStyle).is_file():
-					layer.loadNamedStyle(pathStyle)
-					layer.triggerRepaint()
-				layer.setProviderEncoding(u'UTF-8')
-				layer.dataProvider().setEncoding(u'UTF-8')
-			return layer
-		else:
-			return None
+    def setGridLayer(self, grid_layer):
+        self.grid_layer = grid_layer
 
-	def setConnectedUri(self, connected_uri):
-		self.connected_uri = connected_uri
+    def setComposition(self, composition):
+        self.composition = composition
 
-	def createLayersRasters(self, list_dict_images, key_image, key_style, key_epsg):
-		layers_image = []
-		layersId_image = []
-		for dict_image in list_dict_images:
-			path_raster = dict_image[key_image]
-			# Estilo
-			path_style = None			
-			if key_style in dict_image:
-				if dict_image[key_style] != "":
-					path_style 	= dict_image[key_style]	
-			layername_raster = os.path.basename(path_raster).split('.')[0] 		
-			success, layer_raster = self.createLayerRaster(path_raster, path_style)
-			if success:
-				# EPSG
-				if dict_image[key_epsg] != "":
-					epsg 	= dict_image[key_epsg]						
-					layer_raster.setCrs( QgsCoordinateReferenceSystem(int(epsg), QgsCoordinateReferenceSystem.EpsgCrsId) )
-				layers_image.insert(0, (layer_raster))
-				layersId_image.insert(0,(layer_raster.id()))
-				QgsProject.instance().addMapLayer(layer_raster, False)
-		return layers_image, layersId_image
+    def loadShapeLayer(self, pathShp, pathStyle, lyrName):
+        if Path(pathShp).is_file():
+            layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
+            # QgsProject.instance().addMapLayer(estados_layer)
+            if layer.isValid():
+                if Path(pathStyle).is_file():
+                    layer.loadNamedStyle(pathStyle)
+                    layer.triggerRepaint()
+                layer.setProviderEncoding(u'UTF-8')
+                layer.dataProvider().setEncoding(u'UTF-8')
+            return layer
+        else:
+            return None
 
-	def createLayerRaster(self,path_raster, path_style=None):
-		rasterBasename = os.path.basename(path_raster).split('.')[0]
-		layer_raster = QgsRasterLayer(path_raster, rasterBasename)
-		if not layer_raster.isValid():
-			return False, None
-		else:
-			# CRS = layer_raster.crs()
-			# source_epsg = CRS.postgisSrid()
-			if path_style is not None:						
-				layer_raster.loadNamedStyle(path_style)
-				layer_raster.triggerRepaint()
-			return True, layer_raster	
+    def setConnectedUri(self, connected_uri):
+        self.connected_uri = connected_uri
 
-	def createLayerVector(self,path_vector, path_style):
-		baseName_vector = os.path.basename(path_vector).split('.')[0]
-		layer_vector = QgsVectorLayer(path_vector, baseName_vector)
-		if not layer_vector.isValid():
-			print("Layer failed to load!")
-			return None
-		else:
-			CRS = layer_vector.crs()
-			source_epsg = CRS.postgisSrid()
-			if path_style is not None:						
-				layer_vector.loadNamedStyle(path_style)
-				layer_vector.triggerRepaint()
-			return layer_vector
+    def createLayersRasters(self, list_dict_images, key_image, key_style, key_epsg):
+        layers_image = []
+        layersId_image = []
+        for dict_image in list_dict_images:
+            path_raster = dict_image[key_image]
+            # Estilo
+            path_style = None
+            if key_style in dict_image:
+                if dict_image[key_style] != "":
+                    path_style = dict_image[key_style]
+            layername_raster = os.path.basename(path_raster).split('.')[0]
+            success, layer_raster = self.createLayerRaster(path_raster, path_style)
+            if success:
+                # EPSG
+                if dict_image[key_epsg] != "":
+                    epsg = dict_image[key_epsg]
+                    layer_raster.setCrs(QgsCoordinateReferenceSystem(
+                        int(epsg), QgsCoordinateReferenceSystem.EpsgCrsId))
+                layers_image.insert(0, (layer_raster))
+                layersId_image.insert(0, (layer_raster.id()))
+                QgsProject.instance().addMapLayer(layer_raster, False)
+        return layers_image, layersId_image
 
-	def deleteGroups(self, groups):
-		root = QgsProject.instance().layerTreeRoot()
-		for group_to_delete in groups:			
-			root.removeChildNode (root.findGroup(group_to_delete))
+    def createLayerRaster(self, path_raster, path_style=None):
+        rasterBasename = os.path.basename(path_raster).split('.')[0]
+        layer_raster = QgsRasterLayer(path_raster, rasterBasename)
+        if not layer_raster.isValid():
+            return False, None
+        else:
+            # CRS = layer_raster.crs()
+            # source_epsg = CRS.postgisSrid()
+            if path_style is not None:
+                layer_raster.loadNamedStyle(path_style)
+                layer_raster.triggerRepaint()
+            return True, layer_raster
 
-	def setCustomMode(self):
-		self.customMode = True	
+    def createLayerVector(self, path_vector, path_style):
+        baseName_vector = os.path.basename(path_vector).split('.')[0]
+        layer_vector = QgsVectorLayer(path_vector, baseName_vector)
+        if not layer_vector.isValid():
+            return None
+        else:
+            CRS = layer_vector.crs()
+            source_epsg = CRS.postgisSrid()
+            if path_style is not None:
+                layer_vector.loadNamedStyle(path_style)
+                layer_vector.triggerRepaint()
+            return layer_vector
 
-	def setMapItem(self, mapItem):
-		self.mapItem = mapItem
+    def deleteGroups(self, groups):
+        root = QgsProject.instance().layerTreeRoot()
+        for group_to_delete in groups:
+            root.removeChildNode(root.findGroup(group_to_delete))
 
-	def loadStyleToLayer(self, layer, style_file):
-		if (layer.isValid()):				
-			layer.loadNamedStyle(style_file)
-			layer.triggerRepaint()
+    def setCustomMode(self):
+        self.customMode = True
 
-	def setGridMode(self, gridMode = True):
-		self.gridMode = gridMode
+    def loadStyleToLayer(self, layer, style_file):
+        if (layer.isValid()):
+            layer.loadNamedStyle(style_file)
+            layer.triggerRepaint()
 
-	def setFuso(self, fuso):
-		self.fuso = fuso
+    def setGridMode(self, gridMode=True):
+        self.gridMode = gridMode
 
-	def setEPSG(self, hemisferio, fuso):
-		self.epsg = "319"
-		if hemisferio == 'N':
-			self.epsg = self.epsg + str(72 + fuso-18)
-		elif hemisferio == 'S':
-			self.epsg = self.epsg + str(78 + fuso-18)
-		#self.GLC.setFusoHemisferio(fuso,hemisferio)
+    def setFuso(self, fuso):
+        self.fuso = fuso
 
-	def insertLayersToGroup(self):
-		for layer_name in self.layers_toshow:
-			legend_layer_name = self.group_name + '_' + layer_name 
-			self.mp.insertLayerToGroup(self.group_name,legend_layer_name)
+    def setEPSG(self, hemisferio, fuso):
+        self.epsg = "319"
+        if hemisferio == 'N':
+            self.epsg = self.epsg + str(72 + fuso-18)
+        elif hemisferio == 'S':
+            self.epsg = self.epsg + str(78 + fuso-18)
+        # self.GLC.setFusoHemisferio(fuso,hemisferio)
 
-	def setLayerData(self, path_shp, id_attr):
-		self.path_principalShp = path_shp
-		self.idAttr_principalShp = id_attr
+    def insertLayersToGroup(self):
+        for layer_name in self.layers_toshow:
+            legend_layer_name = self.group_name + '_' + layer_name
+            self.mp.insertLayerToGroup(self.group_name, legend_layer_name)
 
-	def setImageLayerName(self, image_layername):
-		self.image_layername = image_layername
+    def setLayerData(self, path_shp, id_attr):
+        self.path_principalShp = path_shp
+        self.idAttr_principalShp = id_attr
 
-	def setLayersToLock(self, layers_to_lock):
-		self.layers_to_lock = layers_to_lock
+    def setImageLayerName(self, image_layername):
+        self.image_layername = image_layername
 
-	def setLayerToShow(self, layers_to_show):
-		self.layers_to_show = layers_to_show
+    def setLayersToLock(self, layers_to_lock):
+        self.layers_to_lock = layers_to_lock
 
-	def setQueryId(self, id_attr, id_value):
-		self.id_attr = id_attr
-		self.id_value = id_value
+    def setLayerToShow(self, layers_to_show):
+        self.layers_to_show = layers_to_show
 
-	def setScale(self, scale):
-		self.scale = scale
+    def setQueryId(self, id_attr, id_value):
+        self.id_attr = id_attr
+        self.id_value = id_value
 
-	def setProjectProjection(self, projection = "useProject"):
-		settings = QSettings()
-		oldProjValue = settings.value("/Projections/defaultBehavior", "prompt", type=str)
-		settings.setValue( "/Projections/defaultBehavior", projection)
-		return oldProjValue
+    def setScale(self, scale):
+        self.scale = scale
 
-	def setLayerROI(self,layer_roi):
-		self.layer_roi = layer_roi
+    def setProjectProjection(self, projection="useProject"):
+        settings = QSettings()
+        oldProjValue = settings.value("/Projections/defaultBehavior", "prompt", type=str)
+        settings.setValue("/Projections/defaultBehavior", projection)
+        return oldProjValue
 
-	def readConfigFile(self, configFilePath):
-		with open(configFilePath, 'r') as myfile:
-			data=myfile.read()
-		obj = json.loads(data)
-		return obj
+    def setLayerROI(self, layer_roi):
+        self.layer_roi = layer_roi
 
-	def createGridLayer(self, inom):		
-		grid_layer, center_feat = self.utm_grid.get_neighbors_inom(inom)
-		grid_layerId = grid_layer.id()
-		QgsProject.instance().addMapLayer(grid_layer, False)
-		return grid_layer, grid_layerId
+    def readConfigFile(self, configFilePath):
+        with open(configFilePath, 'r') as myfile:
+            data = myfile.read()
+        obj = json.loads(data)
+        return obj
 
-	def createLocalizacaoMILayer(self, layer_name, feats):
-		baseuri = "Polygon"
-		uri = baseuri + "?crs=EPSG:4326"   
-		grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
+    def createGridLayer(self, inom):
+        grid_layer, center_feat = self.utm_grid.get_neighbors_inom(inom)
+        grid_layerId = grid_layer.id()
+        QgsProject.instance().addMapLayer(grid_layer, False)
+        return grid_layer, grid_layerId
 
-		# Start Editing
-		grid_rectangleLayer.startEditing()    
-		pr = grid_rectangleLayer.dataProvider()
-		grid_rectangleLayer.startEditing()
+    def createLocalizacaoMILayer(self, layer_name, feats):
+        baseuri = "Polygon"
+        uri = baseuri + "?crs=EPSG:4326"
+        grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
 
-		# Feature
-		# Create feature 
-		# n_feats		
-		n_feats = []
-		for feat in feats:
-			fet = QgsFeature()
-			fet.setGeometry(feat.geometry())
-			n_feats.append(fet)
-		pr.addFeatures(n_feats)
+        # Start Editing
+        grid_rectangleLayer.startEditing()
+        pr = grid_rectangleLayer.dataProvider()
+        grid_rectangleLayer.startEditing()
 
-		# Commit changes
-		grid_rectangleLayer.commitChanges()
-		return grid_rectangleLayer
+        # Feature
+        # Create feature
+        # n_feats
+        n_feats = []
+        for feat in feats:
+            fet = QgsFeature()
+            fet.setGeometry(feat.geometry())
+            n_feats.append(fet)
+        pr.addFeatures(n_feats)
 
-	def createGridRectangleLayer(self, layer_name, geometries):
-		baseuri = "Polygon"
-		uri = baseuri + "?crs=EPSG:4326"   
-		grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
+        # Commit changes
+        grid_rectangleLayer.commitChanges()
+        return grid_rectangleLayer
 
-		# Start Editing
-		grid_rectangleLayer.startEditing()    
-		pr = grid_rectangleLayer.dataProvider()
-		grid_rectangleLayer.startEditing()
+    def createGridRectangleLayer(self, layer_name, geometries):
+        baseuri = "Polygon"
+        uri = baseuri + "?crs=EPSG:4326"
+        grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
 
-		# Feature
-		# Create feature 
-		feats = []
-		for geom in geometries:
-			fet = QgsFeature()
-			fet.setGeometry(geom)
-			feats.append(fet)
-		pr.addFeatures(feats)
+        # Start Editing
+        grid_rectangleLayer.startEditing()
+        pr = grid_rectangleLayer.dataProvider()
+        grid_rectangleLayer.startEditing()
 
-		# Commit changes
-		grid_rectangleLayer.commitChanges()
-		return grid_rectangleLayer
+        # Feature
+        # Create feature
+        feats = []
+        for geom in geometries:
+            fet = QgsFeature()
+            fet.setGeometry(geom)
+            feats.append(fet)
+        pr.addFeatures(feats)
 
-	def create_layer_from_features(self, layer_name, feats):
-		baseuri = "Polygon"
-		uri = baseuri + "?crs=EPSG:4326"   
-		grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
+        # Commit changes
+        grid_rectangleLayer.commitChanges()
+        return grid_rectangleLayer
 
-		# Start Editing
-		grid_rectangleLayer.startEditing()    
-		pr = grid_rectangleLayer.dataProvider()
-		grid_rectangleLayer.startEditing()
+    def create_layer_from_features(self, layer_name, feats):
+        baseuri = "Polygon"
+        uri = baseuri + "?crs=EPSG:4326"
+        grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
 
-		# Feature
-		# Create feature 
-		pr.addFeatures(feats)
+        # Start Editing
+        grid_rectangleLayer.startEditing()
+        pr = grid_rectangleLayer.dataProvider()
+        grid_rectangleLayer.startEditing()
 
-		# Commit changes
-		grid_rectangleLayer.commitChanges()
-		return grid_rectangleLayer
+        # Feature
+        # Create feature
+        pr.addFeatures(feats)
 
-	def getFeature(self):
-		if self.customMode:
-			self.grid_layer.selectByIds(self.selectedFeatureId)
-			self.selectedFeature = self.grid_layer.selectedFeatures()[0]
-		else:
-			self.selectedFeature = self.grid_layer.selectedFeatures()[0]
+        # Commit changes
+        grid_rectangleLayer.commitChanges()
+        return grid_rectangleLayer
 
-	def defaultCreateGroup(self, layernames_layer_to_remove_ = [], groupVisibility = True):
-		self.groupNode = (self.mp.groupExists(self.group_name))
-		if self.groupNode: 	
-			for layername_layer_to_remove in layernames_layer_to_remove_:
-				layer_to_remove = QgsProject.instance().mapLayersByName(layername_layer_to_remove)
-				if len(layer_to_remove)>0:
-					self.mp.removeChildFromGroup(self.group_name, layer_to_remove[0])
-					# QgsProject.instance().removeMapLayers( [(layer_to_remove[0]).id()] )
-			self.groupNode.setItemVisibilityChecked(True)			
-		else:
-			self.mp.createGroup(self.group_name)
-			self.mp.bringGroupFirst(self.group_name)
+    def getFeature(self):
+        if self.customMode:
+            self.grid_layer.selectByIds(self.selectedFeatureId)
+            self.selectedFeature = self.grid_layer.selectedFeatures()[0]
+        else:
+            self.selectedFeature = self.grid_layer.selectedFeatures()[0]
 
-	def lockLegendItems(self):
-		self.groupNode = (self.mp.groupExists(self.group_name))
-		self.groupNode.setItemVisibilityChecked(False)
-		#self.mp.hideGroup(self.groupNode, True)
+    def defaultCreateGroup(self, layernames_layer_to_remove_=[], groupVisibility=True):
+        self.groupNode = (self.mp.groupExists(self.group_name))
+        if self.groupNode:
+            for layername_layer_to_remove in layernames_layer_to_remove_:
+                layer_to_remove = QgsProject.instance().mapLayersByName(layername_layer_to_remove)
+                if len(layer_to_remove) > 0:
+                    self.mp.removeChildFromGroup(self.group_name, layer_to_remove[0])
+                    # QgsProject.instance().removeMapLayers( [(layer_to_remove[0]).id()] )
+            self.groupNode.setItemVisibilityChecked(True)
+        else:
+            self.mp.createGroup(self.group_name)
+            self.mp.bringGroupFirst(self.group_name)
+
+    def lockLegendItems(self):
+        self.groupNode = (self.mp.groupExists(self.group_name))
+        self.groupNode.setItemVisibilityChecked(False)
+        #self.mp.hideGroup(self.groupNode, True)
+
 
 class MapCreator:
-	def __init__(self, iface):
-		"""Constructor.
+    def __init__(self, iface):
+        """Constructor.
 
-		:param iface: An interface instance that will be passed to this class
-		which provides the hook by which you can manipulate the QGIS
-		application at run time.
-		:type iface: QgsInterface
-		"""
-		# Save reference to the QGIS interface
-		self.iface = iface
-		pass
+        :param iface: An interface instance that will be passed to this class
+        which provides the hook by which you can manipulate the QGIS
+        application at run time.
+        :type iface: QgsInterface
+        """
+        # Save reference to the QGIS interface
+        self.iface = iface
+        pass
 
-	def hideGroup(self, node, bHide=True):
-		ltv = self.iface.layerTreeView()
-		model = ltv.model()
-		root = QgsProject.instance().layerTreeRoot()
-		if type( node ) in ( QgsLayerTreeLayer, QgsLayerTreeGroup ):
-			index = model.node2index( node )
-			ltv.setRowHidden( index.row(), index.parent(), bHide )
-			node.setCustomProperty( 'nodeHidden', 'true' if bHide else 'false' )
-			ltv.setCurrentIndex( model.node2index( root ) )
+    def hideGroup(self, node, bHide=True):
+        ltv = self.iface.layerTreeView()
+        model = ltv.model()
+        root = QgsProject.instance().layerTreeRoot()
+        if type(node) in (QgsLayerTreeLayer, QgsLayerTreeGroup):
+            index = model.node2index(node)
+            ltv.setRowHidden(index.row(), index.parent(), bHide)
+            node.setCustomProperty('nodeHidden', 'true' if bHide else 'false')
+            ltv.setCurrentIndex(model.node2index(root))
 
-
-	def removeGroup(self, group_name):
-		root = QgsProject.instance().layerTreeRoot()
-		parent = root.findGroup(group_name)
-		root.removeChildNode(parent)
-		pass
-
+    def removeGroup(self, group_name):
+        root = QgsProject.instance().layerTreeRoot()
+        parent = root.findGroup(group_name)
+        root.removeChildNode(parent)
+        pass
 
 
-def qptSizeOk(doc, str_size="110,70,mm"):   
-	layoutItems = doc.elementsByTagName('LayoutItem')     
-	page_layout = layoutItems.at(0)
-	pg_attr = page_layout.attributes()
-	size_attr = pg_attr.namedItem('size')
-	size_value = size_attr.nodeValue()
-	if size_value == str_size:
-		return True
-	else:
-		return False        
+def cloneItem(item, composition_dest, x_0, y_0):
+    ref_point = item.referencePoint()
+    item.setReferencePoint(QgsLayoutItem.UpperLeft)
+    original_x = item.pagePos().x()
+    original_y = item.pagePos().y()
+    final_x = original_x + x_0
+    final_y = original_y + y_0
 
-def cloneItem(item, composition_dest, x_0, y_0 ):
-	ref_point = item.referencePoint()
-	item.setReferencePoint(QgsLayoutItem.UpperLeft)    
-	original_x = item.pagePos().x()
-	original_y = item.pagePos().y()
-	final_x = original_x  + x_0
-	final_y = original_y  + y_0
+    # Create doc xml
+    doc = QDomDocument('Clipboard')
+    element = doc.createElement('Copied items')
+    context = QgsReadWriteContext()
+    item.writeXml(element, doc, context)
 
-	# Create doc xml
-	doc = QDomDocument('Clipboard')
-	element = doc.createElement('Copied items')
-	context = QgsReadWriteContext()
-	item.writeXml(element, doc, context)
-	
-	# Add doc xml
-	composition_dest.addItemsFromXml(element, doc, context, QPoint(final_x,final_y))        
-	composition_dest.itemById(item.id()).attemptMove(QgsLayoutPoint (final_x, final_y))
-	composition_dest.itemById(item.id()).refresh()
-	item.setReferencePoint(ref_point)
+    # Add doc xml
+    composition_dest.addItemsFromXml(element, doc, context, QPoint(final_x, final_y))
+    composition_dest.itemById(item.id()).attemptMove(QgsLayoutPoint(final_x, final_y))
+    composition_dest.itemById(item.id()).refresh()
+    item.setReferencePoint(ref_point)
 
 
-def copyQptToCompositor(path_sourceQpt, composition_dest, x_0, y_0, qpt_width, qpt_height):
-	p = QgsProject()
-	l = QgsLayout(p)
-	myTemplateFile = open(path_sourceQpt, 'rt')
-	myTemplateContent = myTemplateFile.read()
-	myTemplateFile.close()
+def copyQptToCompositor(composition_dest, qptDict):
+    project = QgsProject()
+    layout = QgsLayout(project)
+    with open(qptDict['caminho'], 'rt') as myTemplateFile:
+        myTemplateContent = myTemplateFile.read()
+    doc = QDomDocument()
+    doc.setContent(myTemplateContent)
 
-	doc = QDomDocument()
-	doc.setContent(myTemplateContent)   
-
-	items, ok = l.loadFromTemplate(doc, QgsReadWriteContext(), False)
-	if ok:
-		str_size = str(qpt_width) + "," +  str(qpt_height) + "," + "mm" # "110,70,mm"
-		# if qptSizeOk(doc,str_size):
-		for item in items:
-			cloneItem(item, composition_dest, x_0, y_0 )
-		return True
-		# else:
-		# 	return False
-		
+    items, sucess = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
+    if sucess:
+        for item in items:
+            cloneItem(item, composition_dest, qptDict['x_0'], qptDict['y_0'])

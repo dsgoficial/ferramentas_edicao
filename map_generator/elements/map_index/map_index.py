@@ -184,7 +184,6 @@ class UtmGrid(QObject):
                     else:
                         letra = letters[letters.index(letra)+1]
                     vertical = fuso + letra
-                    print('vertical',vertical)
                 else:
                     vertical = 'SA'
                 nextInom = vertical + '-' + inom_splited[1] + '-'+inom_splited[2]

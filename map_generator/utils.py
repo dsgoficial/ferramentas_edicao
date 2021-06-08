@@ -236,8 +236,6 @@ class MapTools:
             if file.endswith(".tif"):				
                 rasterPath = os.path.join(self.saveFolder, file)
                 rlayer = QgsRasterLayer(rasterPath, "reproject")
-                if not rlayer.isValid():
-                    print("Layer failed to load!")
                 CRS = rlayer.crs()
                 source_epsg = CRS.postgisSrid()
                 del rlayer

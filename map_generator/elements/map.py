@@ -21,7 +21,6 @@ class Map(MapParent):
         self.layerName_auxiliarMoldura = "auxiliar_moldura"
         self.layer_auxiliarMoldura = None
         self.boundTeste = None
-        self.mapItem = None
         self.folder_estilos = os.path.join(os.path.dirname(os.path.dirname(__file__)),'estilos','map')
 
     def setMapSize(self, map_width=588, map_height=588):
@@ -90,7 +89,7 @@ class Map(MapParent):
         self.scale = scale
         self.spacing = int(40*scale)                
 
-    def setGridAndLabelParameters(self, crossX, crossY, fontSize, font, fontLL, llcolor, linwidth_geo, linwidth_utm, linwidth_buffer_geo, linwidth_buffer_utm, geo_grid_color, utm_grid_color, geo_grid_buffer_color, utm_grid_buffer_color):   
+    def setGridAndLabelParameters(self, crossX, crossY, fontSize, font, fontLL, llcolor, linwidth_geo, linwidth_utm, linwidth_buffer_geo, linwidth_buffer_utm, geo_grid_color, utm_grid_color, geo_grid_buffer_color, utm_grid_buffer_color, masks_check):   
         self.crossX = crossX
         self.crossY = crossY        
         self.fontSize = fontSize
@@ -105,6 +104,7 @@ class Map(MapParent):
         self.utm_grid_color = utm_grid_color
         self.geo_grid_buffer_color = geo_grid_buffer_color
         self.utm_grid_buffer_color = utm_grid_buffer_color
+        self.masks_check = masks_check
 
     def generateGridStyleForLayer(self, layer_auxiliarMoldura):
         layer = layer_auxiliarMoldura
@@ -117,7 +117,7 @@ class Map(MapParent):
         feature_geometry = feature_bound.geometry()
         
         # self.GLC.geo_test(feature_geometry, layer_bound, utmSRID, self.id_attr, self.grid_id_value, self.spacing, self.crossX, self.crossY, self.scale, self.color, self.fontSize, self.font, self.fontLL, self.llcolor, self.linwidth_geo, self.linwidth_utm)        
-        self.GLC.styleCreator( feature_geometry, layer_bound, utmSRID, self.id_attr, self.id_value, self.spacing, self.crossX, self.crossY, self.scale, self.fontSize, self.font, self.fontLL, self.llcolor, self.linwidth_geo, self.linwidth_utm, self.linwidth_buffer_geo, self.linwidth_buffer_utm, self.geo_grid_color, self.utm_grid_color, self.geo_grid_buffer_color, self.utm_grid_buffer_color)
+        self.GLC.styleCreator( feature_geometry, layer_bound, utmSRID, self.id_attr, self.id_value, self.spacing, self.crossX, self.crossY, self.scale, self.fontSize, self.font, self.fontLL, self.llcolor, self.linwidth_geo, self.linwidth_utm, self.linwidth_buffer_geo, self.linwidth_buffer_utm, self.geo_grid_color, self.utm_grid_color, self.geo_grid_buffer_color, self.utm_grid_buffer_color, self.masks_check)
 
     def make(self, composition, grid_layer, selected_feature, layers, showLayers=False):
         # Deletendo o grupo		
@@ -200,7 +200,6 @@ class Map(MapParent):
             item_area_reservada_carta.setReferencePoint(QgsLayoutItem.Middle)
             item_area_reservada_carta.refresh()
             position_area_reservada_carta = item_area_reservada_carta.positionWithUnits()
-            #print(position_area_reservada_carta)
 
             item_the_map = composition.itemById('the_map') 
             item_the_map.setReferencePoint(QgsLayoutItem.Middle)

@@ -35,18 +35,19 @@ product_parameters = {
         "grid": {
             "crossX": 4,
             "crossY": 4,
-				"fontSize": 1.9,
-				"font": QFont("Arial"),
-				"fontLL": QFont("Arial"),
-				"llcolor": QColor('black'),
-				"linwidth_geo": 0.12,
-				"linwidth_utm": 0.1,
-				"linwidth_buffer_geo": 0,
-				"linwidth_buffer_utm": 0,
-				"geo_grid_color": QColor('black'),
-				"utm_grid_color": QColor('black'),
-				"geo_grid_buffer_color": QColor('black'),
-				"utm_grid_buffer_color": QColor('black')
+            "fontSize": 1.9,
+            "font": QFont("Arial"),
+            "fontLL": QFont("Arial"),
+            "llcolor": QColor('black'),
+            "linwidth_geo": 0.12,
+            "linwidth_utm": 0.1,
+            "linwidth_buffer_geo": 0,
+            "linwidth_buffer_utm": 0,
+            "geo_grid_color": QColor('black'),
+            "utm_grid_color": QColor('black'),
+            "geo_grid_buffer_color": QColor('black'),
+            "utm_grid_buffer_color": QColor('black'),
+            "masks_check": True
         },
         "qpt": {
             "50": {
@@ -159,10 +160,11 @@ product_parameters = {
             "linwidth_utm": 0.2,
             "linwidth_buffer_geo": 0.1,
             "linwidth_buffer_utm": 0.1,
-            "geo_grid_color"			: QColor('black'),
-            "utm_grid_color"			: QColor('black'),
+            "geo_grid_color": QColor('black'),
+            "utm_grid_color": QColor('black'),
             "geo_grid_buffer_color": QColor('white'),
-            "utm_grid_buffer_color": QColor('white')
+            "utm_grid_buffer_color": QColor('white'),
+            "masks_check": True
         }
     }
 }
@@ -254,7 +256,9 @@ class DefaultMap(MapManager):
 
         # Info tecnica carta
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
-        self.htmlData.editHTMLInfoTecCarta(
+        # self.htmlData.editHTMLInfoTecCarta(
+        #     composition, scale, hemisferio, fuso, str_tipo_produto, jsonData['info_tecnica'])
+        self.htmlData.customTecnicalInfo(
             composition, scale, hemisferio, fuso, str_tipo_produto, jsonData['info_tecnica'])
 
         # Banco

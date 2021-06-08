@@ -166,16 +166,14 @@ class MapManager(MapTools):
 			#replaceLabelRegiao(composition, regioes)
 
 		# Mapa de Localização
-		if composition.itemById("label_regiao") is not None:			
-			pass
-			self.subtitulo.make(composition, map_extent_feature)			
+		if composition.itemById("label_regiao") is not None:
+			self.subtitulo.make(composition, map_extent_feature)
 
 		# Generating qrcode
 		if jsonData.get('acesso_restrito'):
 			composition.itemById('label_bdgexQR').setVisible(False)
 			composition.itemById('label_bdgexWeb').setVisible(False)
 			composition.itemById('label_classified').setVisible(True)
-		
 		else:
 			try:
 				composition.itemById('label_classified').setVisible(False)

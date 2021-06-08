@@ -6,7 +6,6 @@ class MiniMap(MapParent):
 	def __init__(self):		
 		self.group_name = 'minimap'
 		self.layers_to_show = []
-		self.mapItem = None
 
 	def setParams(self):
 		pass

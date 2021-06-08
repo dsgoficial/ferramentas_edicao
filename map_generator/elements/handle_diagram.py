@@ -11,7 +11,6 @@ import datetime
 class HandleAngles:	#
 	def __init__(self, iface):
 		self.iface = iface		
-		#self.mapItem = mapItem
 		self.auxiliar = Auxiliar(iface)
 
 	def setComposition(self, composition):
@@ -40,8 +39,6 @@ class HandleAngles:	#
 		year_ago 		= time + relativedelta(years=1)
 		decl_yearago 	= gm.GeoMag(wgsPoint.y(),wgsPoint.x(),height,year_ago)
 		yearlydelta_declination = decl_yearago.dec-decl_today.dec
-		#print('delta')
-		#print(self.generateDeltaSTR(yearlydelta_declination))
 		#decl = geomag.declination(wgsPoint.y(), wgsPoint.x())
 
 		#self.setConvergencia(convergencia)
@@ -84,7 +81,6 @@ class HandleAngles:	#
         
 
 	def generateDMS(self, ang):
-		# print(ang)
 		xg = format( math.modf( ang )[1], '.0f' )		
 		sign = -1 if ang < 0 else 1
 		xm = format( sign * math.modf( math.modf( ang )[0] * 60 )[1], '.0f' )
@@ -132,14 +128,9 @@ class HandleAngles:	#
 		convergence_id = visible_ids + '-cm_textLabel'
 		label_convergence = composition.itemById(convergence_id)
 		if label_convergence is not None:
-			# print('convergence')
-			# print(convergencia)
-			# print(self.generateDMS(convergencia))
 			label_convergence.setText(self.generateDMS(convergencia))
 			label_convergence.refresh()
 
-		#print('delta')
-		#print(self.generateDeltaSTR(yearlydelta_declination))
 		composition_list = (composition.items())        
 		for compositionItem in composition_list:
 			check_label = (compositionItem).__class__.__name__== 'QgsLayoutItemLabel'

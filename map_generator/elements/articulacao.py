@@ -15,7 +15,6 @@ class Articulacao(MapParent):
         self.customMode = True
         self.gridMode = True
         self.group_name = 'articulacao'
-        self.mapItem = None
         self.folder_estilos = os.path.join(os.path.dirname(
             os.path.dirname(__file__)), 'estilos', 'articulacao')
 
@@ -39,16 +38,12 @@ class Articulacao(MapParent):
         articulacaoGroup_node.addLayer(layer_moldura_mi)
 
         # Criar um layer para o map_extent_feature
-        print('layer_map_extent')
-        print(layer_feature_map_extent)
-        print([feat for feat in layer_feature_map_extent.getFeatures()])
         layer_map_extent = self.createLocalizacaoMILayer(
             'map_extent', [feat for feat in layer_feature_map_extent.getFeatures()])
         self.loadStyleToLayer(layer_map_extent, os.path.join(self.folder_estilos, 'roi_2.qml'))
         QgsProject.instance().addMapLayer(layer_map_extent, False)
         articulacaoGroup_node.addLayer(layer_map_extent)
         map_layers.append(layer_map_extent.id())
-        print('layer_map_extent')
         # Alterar o estilo do layer do map_extent_feature
         # Seleciona a articulação central e a extensão do mapa
         # self.setLayerROI(grid_layer)

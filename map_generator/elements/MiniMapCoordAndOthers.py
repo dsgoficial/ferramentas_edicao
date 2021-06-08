@@ -128,7 +128,6 @@ class MiniMapCoordAndOthers(MapParent):
 			for count, vertice in enumerate(geom.vertices()):
 				if count ==4:
 					break
-				#print(vertice.x())
 				point = {}
 				point['x'] = vertice.x()
 				point['y'] = vertice.y()

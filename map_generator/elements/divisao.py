@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import math
 
 from qgis.core import (
@@ -18,9 +19,7 @@ from .map_utils import MapParent
 class Divisao(MapParent):
     def __init__(self):
         self.itemname_tableMunicipios = 'label_divisao_municipios'
-        self.mapItem = None
-        self.folder_estilos = os.path.join(os.path.dirname(
-            os.path.dirname(__file__)), 'estilos', 'divisao')
+        self.styleFolder = Path(__file__).parent.parent / 'estilos' / 'divisao'
 
         self.setVariables()
 
@@ -76,55 +75,36 @@ class Divisao(MapParent):
         return map_layers
 
     def createLayersGroup(self):
-        layer_name = 'municipios'
-        # uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','municipios_2019.shp')
-        uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                           'limites', '2020', 'Municipios_2020.shp')
-        #style_file = os.path.join(self.folder_estilos, 'limite_municipal.qml')
-        style_file = os.path.join(self.folder_estilos, 'carta_topografica_rdg', 'municipio_rdg.qml')
-        municipios_layer = QgsVectorLayer(uri, layer_name, 'ogr')
+        '''
+        Creates QgsVectorLayer and sets up its style for five inputs: County, State, Brazil, Ocean and Contry.
+        '''
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Municipios_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'municipio_rdg.qml'
+        layerCounty = QgsVectorLayer(str(uriPath), 'municipios', 'ogr')
+        layerCounty.loadNamedStyle(str(stylePath))
+        # QgsProject.instance().addMapLayer(municipios_layer)
 
-        if (municipios_layer.isValid()):
-            municipios_layer.loadNamedStyle(style_file)
-            # QgsProject.instance().addMapLayer(municipios_layer)
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'estados_rdg.qml'
+        layerState = QgsVectorLayer(str(uriPath), 'limite_estado', 'ogr')
+        layerState.loadNamedStyle(str(stylePath))
 
-        # estado_uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','estados_2019.shp')
-        estado_uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                  'limites', '2020', 'Estados_2020.shp')
-        #estado_style_file = os.path.join(self.folder_estilos, 'limite_estadual_vf.qml')
-        estado_style_file = os.path.join(
-            self.folder_estilos, 'carta_topografica_rdg', 'estados_rdg.qml')
-        estados_layer = QgsVectorLayer(estado_uri, 'limite_estado', 'ogr')
-        estados_layer.loadNamedStyle(estado_style_file)
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Brasil_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'internacional_rdg.qml'
+        layerBrazil = QgsVectorLayer(str(uriPath), 'internacional_rdg', 'ogr')
+        layerBrazil.loadNamedStyle(str(stylePath))
 
-        # internacional_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','internacional.shp')
-        internacional_uri = os.path.join(os.path.dirname(
-            os.path.dirname(__file__)), 'limites', '2020', 'Brasil_2020.shp')
-        #internacional_style_file = os.path.join(self.folder_estilos, 'limite_internacional_vf.qml')
-        internacional_style_file = os.path.join(
-            self.folder_estilos, 'carta_topografica_rdg', 'internacional_rdg.qml')
-        internacional_layer = QgsVectorLayer(internacional_uri, 'internacional_rdg', 'ogr')
-        internacional_layer.loadNamedStyle(internacional_style_file)
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Oceano_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'oceano_rdg.qml'
+        layerOcean = QgsVectorLayer(str(uriPath), 'oceano', 'ogr')
+        layerOcean.loadNamedStyle(str(stylePath))
 
-        # oceano_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','oceano.shp')
-        oceano_uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                  'limites', '2020', 'Oceano_2020.shp')
-        #oceano_style_file = os.path.join(self.folder_estilos, 'oceano.qml')
-        oceano_style_file = os.path.join(
-            self.folder_estilos, 'carta_topografica_rdg', 'oceano_rdg.qml')
-        oceano_layer = QgsVectorLayer(oceano_uri, 'oceano', 'ogr')
-        oceano_layer.loadNamedStyle(oceano_style_file)
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Paises_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'paises_rdg.qml'
+        layerCountry = QgsVectorLayer(str(uriPath), 'paises', 'ogr')
+        layerCountry.loadNamedStyle(str(stylePath))
 
-        # paises_uri =  os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','paises.shp')
-        paises_uri = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                  'limites', '2020', 'Paises_2020.shp')
-        #paises_style_file = os.path.join(self.folder_estilos, 'paises.qml')
-        paises_style_file = os.path.join(
-            self.folder_estilos, 'carta_topografica_rdg', 'paises_rdg.qml')
-        paises_layer = QgsVectorLayer(paises_uri, 'paises', 'ogr')
-        paises_layer.loadNamedStyle(paises_style_file)
-
-        return municipios_layer, estados_layer, internacional_layer, oceano_layer, paises_layer
+        return layerCounty, layerState, layerBrazil, layerOcean, layerCountry
 
     def getExtent(self, grid_bound, selected_feature):
         self.ext = []
@@ -198,7 +178,6 @@ class Divisao(MapParent):
                         radius_per_map_area = 'inside'
                         show = True
                         if feature_municipio.geometry().intersects(linhaContorno_moldura):
-                            # print('intersect')
                             radius_per_map_area, show = self.checkRadiusPoleForLabel(
                                 feature_municipio, extent_geometry, moldura_area)
                             testeGeometries.append(
@@ -279,8 +258,6 @@ class Divisao(MapParent):
     def customcreateHtmlTableData(self, sorted_municipios):
         n_municipios = len(sorted_municipios)
         n_columns = math.ceil(n_municipios/self.n_maxlines)
-        # print(n_municipios)
-        # print(n_columns)
         if n_columns == 0:
             n_columns = 1
 
@@ -372,7 +349,7 @@ class Divisao(MapParent):
             root_rule.removeChildAt(0)
             grid_rectangleLayer.setRenderer(renderer)
         else:
-            style_file = os.path.join(self.folder_estilos, 'divisao_grid_bound_vf.qml')
+            style_file = os.path.join(self.styleFolder, 'divisao_grid_bound_vf.qml')
             grid_rectangleLayer.loadNamedStyle(style_file)
         grid_rectangleLayer.triggerRepaint()
         return grid_rectangleLayer
