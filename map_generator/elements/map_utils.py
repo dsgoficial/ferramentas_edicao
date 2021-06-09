@@ -244,26 +244,15 @@ class MapParent:
         return grid_rectangleLayer
 
     def createGridRectangleLayer(self, layer_name, geometries):
-        baseuri = "Polygon"
-        uri = baseuri + "?crs=EPSG:4326"
+        uri = "Polygon?crs=EPSG:4326"
         grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
-
-        # Start Editing
-        grid_rectangleLayer.startEditing()
         pr = grid_rectangleLayer.dataProvider()
-        grid_rectangleLayer.startEditing()
-
-        # Feature
-        # Create feature
         feats = []
         for geom in geometries:
             fet = QgsFeature()
             fet.setGeometry(geom)
             feats.append(fet)
         pr.addFeatures(feats)
-
-        # Commit changes
-        grid_rectangleLayer.commitChanges()
         return grid_rectangleLayer
 
     def create_layer_from_features(self, layer_name, feats):

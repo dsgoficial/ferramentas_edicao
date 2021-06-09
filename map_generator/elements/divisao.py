@@ -32,7 +32,7 @@ class Divisao(MapParent):
         self.attr_sigla = 'SIGLA_UF'
         #self.itemname_tableMunicipios = 'label_divisao_municipios'
 
-    def make(self, composition, selected_feature, showLayers=False):
+    def make(self, composition, mapArea, showLayers=False):
         # Deletando as variaveis
         self.deleteGroups(['divisao'])
         map_layers = []
@@ -41,26 +41,26 @@ class Divisao(MapParent):
         divisaoGroup_node = QgsLayerTreeGroup('divisao')
         divisaoGroup_node.setItemVisibilityChecked(False)
 
-        municipios_layer, estados_layer, internacional_layer, oceano_layer, paises_layer = self.createLayersGroup()
-        map_layers.extend([municipios_layer.id(), estados_layer.id(),
-                          internacional_layer.id(), oceano_layer.id(), paises_layer.id()])
+        layerCounty, layerState, layerBrazil, layerOcean, layerCountry = self.createLayersGroup()
+        map_layers.extend([layerCounty.id(), layerState.id(),
+                          layerBrazil.id(), layerOcean.id(), layerCountry.id()])
 
         # Cria o layer da área do mapa
-        grid_bound = selected_feature.geometry().boundingBox()
-        grid_rectangleLayer = self.createGridRectangle(grid_bound, 'auxiliar_divisao')
-        map_layers.append(grid_rectangleLayer.id())
+        gridBound = mapArea.geometry().boundingBox()
+        gridRectangleLayer = self.createGridRectangle(gridBound, 'auxiliar_divisao')
+        map_layers.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
-        map_extent = self.getExtent(grid_bound, selected_feature)
+        map_extent = self.getExtent(gridBound, mapArea)
         municipios_datalist, sorted_municipios = self.getIntersections(
-            municipios_layer, map_extent[0], selected_feature)
+            layerCounty, map_extent, mapArea)
 
         # Set styles and html table data for municipios que intersectam
-        self.setStyles(municipios_layer, municipios_datalist, sorted_municipios)
+        self.setStyles(layerCounty, municipios_datalist, sorted_municipios)
         html_tabledata = self.customcreateHtmlTableData(sorted_municipios)
         self.setMunicipiosTable(composition,  html_tabledata)
 
-        for layer in [grid_rectangleLayer, oceano_layer, paises_layer, internacional_layer, estados_layer, municipios_layer]:
+        for layer in (gridRectangleLayer, layerOcean, layerCountry, layerBrazil, layerState, layerCounty):
             QgsProject.instance().addMapLayer(layer, False)
             divisaoGroup_node.addLayer(layer)
 
@@ -68,10 +68,9 @@ class Divisao(MapParent):
             root = QgsProject.instance().layerTreeRoot()
             root.addChildNode(divisaoGroup_node)
 
-        # Update map
-        layers_to_show = [grid_rectangleLayer, oceano_layer, paises_layer,
-                          internacional_layer, estados_layer, municipios_layer]  # baixo -> cima
-        self.updateMapItem(composition, map_extent[0], layers_to_show)
+        # Update map in correct sequence
+        layers_to_show = (gridRectangleLayer, layerOcean, layerCountry, layerBrazil, layerState, layerCounty)
+        self.updateMapItem(composition, map_extent, layers_to_show)
         return map_layers
 
     def createLayersGroup(self):
@@ -106,21 +105,18 @@ class Divisao(MapParent):
 
         return layerCounty, layerState, layerBrazil, layerOcean, layerCountry
 
-    def getExtent(self, grid_bound, selected_feature):
-        self.ext = []
-        x_min = grid_bound.xMinimum()
-        x_max = grid_bound.xMaximum()
-        delta = round(abs((x_max-x_min)*60))
+    def getExtent(self, gridBound, selected_feature):
+        x_min, x_max = gridBound.xMinimum(), gridBound.xMaximum()
+        delta = round(abs(x_max-x_min)*60)
         angle_spliter = delta
-        centroide = selected_feature.geometry().centroid()
-        x = (centroide.asPoint().x())
+        centroid = selected_feature.geometry().centroid()
+        x = centroid.asPoint().x()
         x_min = x - (1/60)*angle_spliter
         x_max = x + (1/60)*angle_spliter
-        y = (centroide.asPoint().y())
+        y = centroid.asPoint().y()
         y_min = y - (1/60)*angle_spliter
         y_max = y + (1/60)*angle_spliter
-        self.ext.append(QgsRectangle(x_min, y_min, x_max, y_max))
-        return self.ext
+        return QgsRectangle(x_min, y_min, x_max, y_max)
 
     def getDistance(self, geomOne, geomTwo):
         distance = QgsDistanceArea()
@@ -145,9 +141,9 @@ class Divisao(MapParent):
             show = False
         return radius_per_map_area, show
 
-    def convertPolygonToMultilineGeometry(self, moldura_geometry):
-        feat_geom = moldura_geometry.asWkt()
-        loaded_poly = shapely.wkt.loads(feat_geom)
+    def convertPolygonToMultilineGeometry(self, geom):
+        _geom = geom.asWkt()
+        loaded_poly = shapely.wkt.loads(_geom)
         shapely_multipoly = shapely.geometry.Polygon(loaded_poly)
         shapely_multipoly_boundary = shapely_multipoly.boundary
         boundary_polyline = QgsLineString()
@@ -155,7 +151,7 @@ class Divisao(MapParent):
         boundary_geom = QgsGeometry(boundary_polyline)
         return boundary_geom
 
-    def getIntersections(self, municipios_layer, map_extent, selected_feature):
+    def getIntersections(self, layerCounty, map_extent, selected_feature):
         max_municipios = 27
 
         d = QgsDistanceArea()
@@ -167,7 +163,7 @@ class Divisao(MapParent):
         municipios_intersectam = []
         moldura_centroid = selected_feature.geometry().centroid().asPoint()
         testeGeometries = []
-        for count, feature_municipio in enumerate(municipios_layer.getFeatures()):
+        for count, feature_municipio in enumerate(layerCounty.getFeatures()):
             # municipio dentro dos limites da carta
             if feature_municipio.geometry().intersects(extent_geometry):
                 if (feature_municipio[self.attr_nome] is not None) and (not isinstance(feature_municipio[self.attr_nome], QVariant)):
@@ -336,23 +332,11 @@ class Divisao(MapParent):
 
     def createGridRectangle(self, grid_bound, layer_name):
         geometries = [QgsGeometry.fromRect(grid_bound)]
-        grid_rectangleLayer = self.createGridRectangleLayer(layer_name, geometries)
-        # Setting configuration
-        if False:
-            symbol = QgsSymbol.defaultSymbol(grid_rectangleLayer.geometryType())
-            renderer = QgsRuleBasedRenderer(symbol)
-            root_rule = renderer.rootRule()
-            mi_rule = root_rule.children()[0].clone()
-            mi_rule.symbol().setColor(QColor(171, 230, 171))
-            mi_rule.symbol().setOpacity(0.7)
-            root_rule.appendChild(mi_rule)
-            root_rule.removeChildAt(0)
-            grid_rectangleLayer.setRenderer(renderer)
-        else:
-            style_file = os.path.join(self.styleFolder, 'divisao_grid_bound_vf.qml')
-            grid_rectangleLayer.loadNamedStyle(style_file)
-        grid_rectangleLayer.triggerRepaint()
-        return grid_rectangleLayer
+        rectangleLayer = self.createGridRectangleLayer(layer_name, geometries)
+        style_file = os.path.join(self.styleFolder, 'divisao_grid_bound_vf.qml')
+        rectangleLayer.loadNamedStyle(style_file)
+        rectangleLayer.triggerRepaint()
+        return rectangleLayer
 
     def setStyles(self, municipios_layer, municipios_datalist, sorted_municipios):
         #municipios_layer = QgsProject.instance().mapLayersByName('municipios')[0]
