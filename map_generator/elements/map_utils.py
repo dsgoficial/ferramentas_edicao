@@ -83,10 +83,9 @@ class MapParent:
     def loadShapeLayer(self, pathShp, pathStyle, lyrName):
         if Path(pathShp).is_file():
             layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
-            # QgsProject.instance().addMapLayer(estados_layer)
             if layer.isValid():
                 if Path(pathStyle).is_file():
-                    layer.loadNamedStyle(pathStyle)
+                    layer.loadNamedStyle(str(pathStyle))
                     layer.triggerRepaint()
                 layer.setProviderEncoding(u'UTF-8')
                 layer.dataProvider().setEncoding(u'UTF-8')

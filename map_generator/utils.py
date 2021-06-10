@@ -189,7 +189,7 @@ class MapTools:
         del exporter
         # QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(int(self.epsg),QgsCoordinateReferenceSystem.EpsgCrsId))
 
-    def removeCreationDataGroups(self, map_groups = ['localizacao' , 'articulacao', 'map','minimap',  'divisao', 'localizacao_nome_estado']):
+    def removeCreationDataGroups(self, map_groups = ['localizacao' , 'articulacao', 'map','minimap',  'divisao']):
         root = QgsProject.instance().layerTreeRoot()
         for group in map_groups:
             group_localizacao = root.findGroup(group)

@@ -54,7 +54,7 @@ class MapTools:
         if self.dlg.checkBox_exportTIF.isChecked():
             imageExport_result = exporter.exportToImage(tiff_filename, QgsLayoutExporter.ImageExportSettings())		
 
-    def removeCreationDataGroups(self, map_groups = ['localizacao' , 'articulacao', 'map','minimap',  'divisao', 'localizacao_nome_estado']):
+    def removeCreationDataGroups(self, map_groups = ['localizacao' , 'articulacao', 'map','minimap',  'divisao']):
         root = QgsProject.instance().layerTreeRoot()
         for group in map_groups:
             group_localizacao = root.findGroup(group)

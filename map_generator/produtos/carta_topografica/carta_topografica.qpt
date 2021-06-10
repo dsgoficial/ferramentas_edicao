@@ -11646,28 +11646,6 @@
   <LabelFont style="" description="Arial,10,-1,5,75,0,0,0,0,0"/>
   <FontColor red="0" alpha="255" blue="0" green="0"/>
  </LayoutItem>
- <LayoutItem outlineWidthM="0.2,mm" position="25,212.33,mm" referencePoint="0" isTemporal="0" size="74,74,mm" followPresetName="" positionOnPage="25,212.33,mm" background="true" excludeFromExports="0" zValue="46" id="map_localizacao_adaptacao" keepLayerSet="false" mapFlags="0" frame="true" labelMargin="0,mm" frameJoinStyle="miter" drawCanvasItems="true" blendMode="0" followPreset="false" itemRotation="0" uuid="{b971f00c-de39-4678-a73b-be94082e53f5}" type="65639" groupUuid="" mapRotation="0" opacity="1" templateUuid="{b971f00c-de39-4678-a73b-be94082e53f5}" visibility="1" positionLock="false">
-  <FrameColor red="0" alpha="255" blue="0" green="0"/>
-  <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option name="name" type="QString" value=""/>
-     <Option name="properties"/>
-     <Option name="type" type="QString" value="collection"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties/>
-  </LayoutObject>
-  <Extent xmax="10668555.98923036828637123" ymin="-987583.56246961292345077" ymax="987583.56246961292345077" xmin="8693388.86429114267230034"/>
-  <LayerSet/>
-  <AtlasMap scalingMode="2" atlasDriven="0" margin="0.10000000000000001"/>
-  <labelBlockingItems/>
-  <atlasClippingSettings forceLabelsInside="0" restrictLayers="0" enabled="0" clippingType="0">
-   <layersToClip/>
-  </atlasClippingSettings>
-  <itemClippingSettings forceLabelsInside="0" enabled="0" clipSource="" clippingType="0"/>
- </LayoutItem>
  <LayoutItem outlineWidthM="0.2,mm" position="25,212.33,mm" referencePoint="0" isTemporal="0" size="74,74,mm" followPresetName="" positionOnPage="25,212.33,mm" background="true" excludeFromExports="0" zValue="45" id="map_localizacao" keepLayerSet="false" mapFlags="0" frame="true" labelMargin="0,mm" frameJoinStyle="miter" drawCanvasItems="true" blendMode="0" followPreset="false" itemRotation="0" uuid="{dfbe8532-8622-41d2-bb71-0ecb69fa134a}" type="65639" groupUuid="" mapRotation="0" opacity="1" templateUuid="{dfbe8532-8622-41d2-bb71-0ecb69fa134a}" visibility="1" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
