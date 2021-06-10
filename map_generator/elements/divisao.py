@@ -1,13 +1,15 @@
 import os
 from pathlib import Path
 import math
+import itertools
 
 from qgis.core import (
-	QgsLayerTreeGroup, QgsProject, QgsVectorLayer, QgsGeometry,
-	QgsDistanceArea, QgsCoordinateReferenceSystem, QgsLineString,
-	QgsCoordinateTransform, QgsRectangle, QgsLayoutItemLabel,
-	QgsPalLayerSettings, QgsTextFormat, QgsRuleBasedLabeling,
-	QgsTextBufferSettings, QgsRuleBasedRenderer, QgsSymbol
+    QgsLayerTreeGroup, QgsProject, QgsVectorLayer, QgsGeometry,
+    QgsDistanceArea, QgsCoordinateReferenceSystem, QgsLineString,
+    QgsCoordinateTransform, QgsRectangle, QgsLayoutItemLabel,
+    QgsPalLayerSettings, QgsTextFormat, QgsRuleBasedLabeling,
+    QgsTextBufferSettings, QgsRuleBasedRenderer, QgsSymbol,
+    QgsFeatureRequest
 )
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QVariant
@@ -19,20 +21,20 @@ from .map_utils import MapParent
 class Divisao(MapParent):
     def __init__(self):
         self.itemname_tableMunicipios = 'label_divisao_municipios'
+        self.maxCountiesToDisplay = 27
         self.styleFolder = Path(__file__).parent.parent / 'estilos' / 'divisao'
-
         self.setVariables()
 
     def setVariables(self):
         self.file_basehtmltable = 'divisao.html'
         self.n_maxlines = 6
         # 2020
-        self.attr_nome = 'NOME'
-        self.attr_codigo = 'SIGLA_PAIS'
-        self.attr_sigla = 'SIGLA_UF'
+        self.nameAttribute = 'NOME'
+        self.countyAttribute = 'SIGLA_UF'
+        self.countryAttribute = 'SIGLA_PAIS'
         #self.itemname_tableMunicipios = 'label_divisao_municipios'
 
-    def make(self, composition, mapArea, showLayers=False):
+    def make(self, composition, mapArea, showLayers=False, isInternational=False):
         # Deletando as variaveis
         self.deleteGroups(['divisao'])
         map_layers = []
@@ -51,9 +53,10 @@ class Divisao(MapParent):
         map_layers.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
-        map_extent = self.getExtent(gridBound, mapArea)
+        # TODO: Check possible refactor on getExtent
+        outerExtents = self.getExtent(gridBound, mapArea)
         municipios_datalist, sorted_municipios = self.getIntersections(
-            layerCounty, map_extent, mapArea)
+            layerCounty, outerExtents, mapArea, isInternational)
 
         # Set styles and html table data for municipios que intersectam
         self.setStyles(layerCounty, municipios_datalist, sorted_municipios)
@@ -69,8 +72,9 @@ class Divisao(MapParent):
             root.addChildNode(divisaoGroup_node)
 
         # Update map in correct sequence
-        layers_to_show = (gridRectangleLayer, layerOcean, layerCountry, layerBrazil, layerState, layerCounty)
-        self.updateMapItem(composition, map_extent, layers_to_show)
+        layers_to_show = (gridRectangleLayer, layerOcean, layerCountry,
+                          layerBrazil, layerState, layerCounty)
+        self.updateMapItem(composition, outerExtents, layers_to_show)
         return map_layers
 
     def createLayersGroup(self):
@@ -124,22 +128,22 @@ class Divisao(MapParent):
         m = round(distance.measureLine(geomOne, geomTwo), 2)
         return m
 
-    def checkRadiusPoleForLabel(self, feature_municipio, moldura_geometry, moldura_area):
-        show = True
-        max_radius_per_map_area = 2300
-        intersection_geometry = feature_municipio.geometry().intersection(moldura_geometry)
-        # mudando o epsg
-        crsSrc = QgsCoordinateReferenceSystem(4326)    # WGS 84
-        crs_moldura = QgsCoordinateReferenceSystem(
-            int(self.epsg), QgsCoordinateReferenceSystem.EpsgCrsId)  # WGS 84 / UTM zone 33N
-        geom_transformation = QgsCoordinateTransform(crsSrc, crs_moldura, QgsProject.instance())
-        intersection_geometry.transform(geom_transformation)
-        pole = intersection_geometry.poleOfInaccessibility(10)
-        radius = pole[1]
-        radius_per_map_area = radius/moldura_area
-        if radius_per_map_area < max_radius_per_map_area:
-            show = False
-        return radius_per_map_area, show
+    def checkRadiusPoleForLabel(self, countyFeature, outerExtentsGeometry):
+        '''
+        Uses poleOfInaccessibility to decide the renderization of countyFeature if it intersects outerExtentsGeometry
+        '''
+        maxRadiusPerMapArea = 2300
+        outerExtentsArea = math.sqrt(outerExtentsGeometry.area())
+        intersectionGeometry = countyFeature.geometry().intersection(outerExtentsGeometry)
+        crsSrc = QgsCoordinateReferenceSystem(4326)  # WGS 84
+        crsExtents = QgsCoordinateReferenceSystem(
+            int(self.epsg), QgsCoordinateReferenceSystem.EpsgCrsId)  # WGS 84 / UTM
+        transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
+        intersectionGeometry.transform(transform)
+        _, radius = intersectionGeometry.poleOfInaccessibility(10)
+        radiusPerMapArea = radius/outerExtentsArea
+        show = False if radiusPerMapArea < maxRadiusPerMapArea else True
+        return radiusPerMapArea, show
 
     def convertPolygonToMultilineGeometry(self, geom):
         _geom = geom.asWkt()
@@ -151,60 +155,43 @@ class Divisao(MapParent):
         boundary_geom = QgsGeometry(boundary_polyline)
         return boundary_geom
 
-    def getIntersections(self, layerCounty, map_extent, selected_feature):
-        max_municipios = 27
-
+    def getIntersections(self, layerCounty, outerExtents, mapAreaFeature, isInternational=False):
+        '''
+        Gets every county that intersects the outerExtents and decides if the county will be displayed or not.
+        '''
         d = QgsDistanceArea()
-        extent_geometry = QgsGeometry.fromRect(map_extent)
-        linhaContorno_moldura = self.convertPolygonToMultilineGeometry(extent_geometry)
-        moldura_area = math.sqrt(extent_geometry.area())
-        self.municipios = []
-        self.municipios_ordenados = {}
-        municipios_intersectam = []
-        moldura_centroid = selected_feature.geometry().centroid().asPoint()
-        testeGeometries = []
-        for count, feature_municipio in enumerate(layerCounty.getFeatures()):
-            # municipio dentro dos limites da carta
-            if feature_municipio.geometry().intersects(extent_geometry):
-                if (feature_municipio[self.attr_nome] is not None) and (not isinstance(feature_municipio[self.attr_nome], QVariant)):
-                    municipio = (feature_municipio[self.attr_nome]) + \
-                        ' - ' + feature_municipio[self.attr_sigla]
-                    if municipio is not None:
-                        # municipio intersecta os limites da carta
-                        radius_per_map_area = 'inside'
-                        show = True
-                        if feature_municipio.geometry().intersects(linhaContorno_moldura):
-                            radius_per_map_area, show = self.checkRadiusPoleForLabel(
-                                feature_municipio, extent_geometry, moldura_area)
-                            testeGeometries.append(
-                                feature_municipio.geometry().intersection(extent_geometry))
-
-                        municipio_centroid = feature_municipio.geometry().centroid().asPoint()
-                        objeto_municipio = {'label': municipio,
-                                            'area': d.measureArea(feature_municipio.geometry()),
-                                            self.attr_codigo: feature_municipio[self.attr_codigo],
-                                            'poleOfInaccessibility': radius_per_map_area,
-                                            'distancia_centroid': self.getDistance(moldura_centroid, municipio_centroid),
-                                            'distancia_centroid_borda_polygon': selected_feature.geometry().centroid().distance(feature_municipio.geometry())}
+        outerExtentsGeometry = QgsGeometry.fromRect(outerExtents)
+        contourOuterExtents = self.convertPolygonToMultilineGeometry(outerExtentsGeometry)
+        toOrderCounties = {}
+        countiesToDisplay = []
+        mapAreaCentroid = mapAreaFeature.geometry().centroid().asPoint()
+        request = QgsFeatureRequest().setFilterRect(outerExtents)
+        for countyFeature in layerCounty.getFeatures(request):
+            # Inside map extents
+            if countyFeature.geometry().intersects(outerExtentsGeometry):
+                if countyFeature[self.nameAttribute] and not isinstance(countyFeature[self.nameAttribute], QVariant):
+                    countyName = f'{countyFeature[self.nameAttribute]} - {countyFeature[self.countyAttribute]}'
+                    if isInternational:
+                        countyName = f'{countyName} / {countyFeature[self.countryAttribute]}'
+                    # Intersects map extents
+                    if countyFeature.geometry().intersects(contourOuterExtents):
+                        _, show = self.checkRadiusPoleForLabel(countyFeature, outerExtentsGeometry)
                         if show:
-                            municipios_intersectam.append(objeto_municipio)
-                            self.municipios_ordenados[municipio] = d.measureArea(
-                                feature_municipio.geometry())
-                            self.municipios.append(municipio)
-        # createIntersections_layer
-        self.intersectionsLayer = self.createGridRectangleLayer(
-            'intersections_municipio', testeGeometries)
-        sorted_municipios = sorted(self.municipios_ordenados,
-                                   key=self.municipios_ordenados.get, reverse=True)
-        newlist = sorted(municipios_intersectam,
-                         key=lambda k: k['distancia_centroid_borda_polygon'], reverse=False)
-        newlist_names = [municipio['label'] for municipio in newlist]
-        sorted_municipios = newlist_names
+                            countyCentroid = countyFeature.geometry().centroid().asPoint()
+                            countyDict = {'label': countyName,
+                                            'area': d.measureArea(countyFeature.geometry()),
+                                            self.countryAttribute: countyFeature[self.countryAttribute],
+                                            'centroidDistance': d.measureLine(mapAreaCentroid, countyCentroid)}
+                            countiesToDisplay.append(countyDict)
+                            toOrderCounties[countyName] = d.measureArea(countyFeature.geometry())
+        orderedCountiesNamesByArea = sorted(countiesToDisplay, key=lambda x: x['area'], reverse=True)
+        orderedCountiesNamesByArea = [x['label'] for x in orderedCountiesNamesByArea ]
+        orderedCountiesByCentroidDistance = sorted(countiesToDisplay, key=lambda x: x['centroidDistance'], reverse=False)
 
-        if len(sorted_municipios) >= max_municipios:
-            sorted_municipios = sorted_municipios[0:max_municipios]
+        if len(orderedCountiesNamesByArea) >= self.maxCountiesToDisplay:
+            orderedCountiesNamesByArea = orderedCountiesNamesByArea[:self.maxCountiesToDisplay]
 
-        return newlist, sorted_municipios
+        return orderedCountiesByCentroidDistance, orderedCountiesNamesByArea
 
     def getNColums(self, n_total):
         n_columns = 1
@@ -344,10 +331,11 @@ class Divisao(MapParent):
         renderer = QgsRuleBasedRenderer(symbol)
         root = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
         # self.sorted_municipios = sorted(self.municipios_ordenados, key=self.municipios_ordenados.get, reverse=True)
-        for count, municipio in enumerate(sorted_municipios):
+        for count in range(len(sorted_municipios)):
             n = count + 1
             #rule = self.createRules(municipios_layer, symbol, renderer,  "'{}'".format(str(n)), ' \"codigo\" = \'{}\''.format(municipios_datalist[count]['codigo']), 'black')
-            rule = self.createRules(municipios_layer, symbol, renderer,  f"'{n}'", ' \"{}\" = \'{}\''.format(self.attr_codigo, municipios_datalist[count][self.attr_codigo]), 'black')
+            rule = self.createRules(municipios_layer, symbol, renderer,  f"'{n}'", ' \"{}\" = \'{}\''.format(
+                self.countryAttribute, municipios_datalist[count][self.countryAttribute]), 'black')
             root.appendChild(rule)
         rules = QgsRuleBasedLabeling(root)
         # root.setActive(True)

@@ -137,7 +137,7 @@ class MapManager(MapTools):
 		# Mapa de Divisão
 		if composition.itemById("map_divisao") is not None:
 			self.divisao.setEPSG(self.hemisferio, self.fuso)
-			ids_maplayers.extend(self.divisao.make(composition, map_extent_feature, showLayers))
+			ids_maplayers.extend(self.divisao.make(composition, map_extent_feature, showLayers, jsonData['territorio_internacional']))
 
 		# Mapa de Articulação
 		if composition.itemById("map_articulacao") is not None:
