@@ -55,12 +55,12 @@ class Divisao(MapParent):
         # Get map extent for intersections
         # TODO: Check possible refactor on getExtent
         outerExtents = self.getExtent(gridBound, mapArea)
-        municipios_datalist, sorted_municipios = self.getIntersections(
+        orderedCountiesByCentroidDistance, orderedCountiesNamesByArea = self.getIntersections(
             layerCounty, outerExtents, mapArea, isInternational)
 
         # Set styles and html table data for municipios que intersectam
-        self.setStyles(layerCounty, municipios_datalist, sorted_municipios)
-        html_tabledata = self.customcreateHtmlTableData(sorted_municipios)
+        self.setStyles(layerCounty, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea)
+        html_tabledata = self.customcreateHtmlTableData(orderedCountiesNamesByArea)
         self.setMunicipiosTable(composition,  html_tabledata)
 
         for layer in (gridRectangleLayer, layerOcean, layerCountry, layerBrazil, layerState, layerCounty):
@@ -162,29 +162,33 @@ class Divisao(MapParent):
         d = QgsDistanceArea()
         outerExtentsGeometry = QgsGeometry.fromRect(outerExtents)
         contourOuterExtents = self.convertPolygonToMultilineGeometry(outerExtentsGeometry)
-        toOrderCounties = {}
         countiesToDisplay = []
         mapAreaCentroid = mapAreaFeature.geometry().centroid().asPoint()
         request = QgsFeatureRequest().setFilterRect(outerExtents)
         for countyFeature in layerCounty.getFeatures(request):
             # Inside map extents
             if countyFeature.geometry().intersects(outerExtentsGeometry):
-                if countyFeature[self.nameAttribute] and not isinstance(countyFeature[self.nameAttribute], QVariant):
-                    countyName = f'{countyFeature[self.nameAttribute]} - {countyFeature[self.countyAttribute]}'
+                name = countyFeature[self.nameAttribute]
+                county = countyFeature[self.countyAttribute]
+                country = countyFeature[self.countryAttribute]
+                if name and not isinstance(name, QVariant):
+                    labelTable = f'{name} - {county}'
                     if isInternational:
-                        countyName = f'{countyName} / {countyFeature[self.countryAttribute]}'
+                        labelTable = f'{labelTable} / {country}'
                     # Intersects map extents
                     if countyFeature.geometry().intersects(contourOuterExtents):
                         _, show = self.checkRadiusPoleForLabel(countyFeature, outerExtentsGeometry)
                         if show:
                             countyCentroid = countyFeature.geometry().centroid().asPoint()
-                            countyDict = {'label': countyName,
-                                            'area': d.measureArea(countyFeature.geometry()),
-                                            self.countryAttribute: countyFeature[self.countryAttribute],
-                                            'centroidDistance': d.measureLine(mapAreaCentroid, countyCentroid)}
+                            countyDict = {
+                                self.nameAttribute: name,
+                                self.countyAttribute: county,
+                                self.countryAttribute: country,
+                                'label': labelTable,
+                                'area': d.measureArea(countyFeature.geometry()),
+                                'centroidDistance': d.measureLine(mapAreaCentroid, countyCentroid)}
                             countiesToDisplay.append(countyDict)
-                            toOrderCounties[countyName] = d.measureArea(countyFeature.geometry())
-        orderedCountiesNamesByArea = sorted(countiesToDisplay, key=lambda x: x['area'], reverse=True)
+        orderedCountiesNamesByArea = sorted(countiesToDisplay, key=lambda x: x['area'], reverse=False)
         orderedCountiesNamesByArea = [x['label'] for x in orderedCountiesNamesByArea ]
         orderedCountiesByCentroidDistance = sorted(countiesToDisplay, key=lambda x: x['centroidDistance'], reverse=False)
 
@@ -290,10 +294,11 @@ class Divisao(MapParent):
             compositionItem.setMode(QgsLayoutItemLabel.ModeHtml)
             compositionItem.refresh()
 
-    def createRules(self, layer, symbol, renderer, label, expression, color):
-        # Configure label settings
+    def createRules(self, label, expression):
+        '''
+        Returns a QgsRuleBasedLabeling based on label and expression
+        '''
         settings = QgsPalLayerSettings()
-        #settings.fieldName = "'{}'".format(str(n))
         settings.fieldName = label
         settings.Placement = QgsPalLayerSettings.OverPoint
         settings.centroidInside = True
@@ -307,12 +312,9 @@ class Divisao(MapParent):
         textBuffer.setSize(0.4)
         textBuffer.setEnabled(True)
         textFormat.setBuffer(textBuffer)
-
         settings.setFormat(textFormat)
-        # create and append a new rule
-        #root = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
+
         rule = QgsRuleBasedLabeling.Rule(settings)
-        # rule.setDescription(fieldName)
         rule.setFilterExpression(expression)
         rule.setActive(True)
         return rule
@@ -325,23 +327,17 @@ class Divisao(MapParent):
         rectangleLayer.triggerRepaint()
         return rectangleLayer
 
-    def setStyles(self, municipios_layer, municipios_datalist, sorted_municipios):
-        #municipios_layer = QgsProject.instance().mapLayersByName('municipios')[0]
-        symbol = QgsSymbol.defaultSymbol(municipios_layer.geometryType())
-        renderer = QgsRuleBasedRenderer(symbol)
-        root = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
-        # self.sorted_municipios = sorted(self.municipios_ordenados, key=self.municipios_ordenados.get, reverse=True)
-        for count in range(len(sorted_municipios)):
-            n = count + 1
-            #rule = self.createRules(municipios_layer, symbol, renderer,  "'{}'".format(str(n)), ' \"codigo\" = \'{}\''.format(municipios_datalist[count]['codigo']), 'black')
-            rule = self.createRules(municipios_layer, symbol, renderer,  f"'{n}'", ' \"{}\" = \'{}\''.format(
-                self.countryAttribute, municipios_datalist[count][self.countryAttribute]), 'black')
-            root.appendChild(rule)
-        rules = QgsRuleBasedLabeling(root)
-        # root.setActive(True)
-        municipios_layer.setLabeling(rules)
-        municipios_layer.setLabelsEnabled(True)
-        municipios_layer.triggerRepaint()
+    def setStyles(self, layerCounty, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea):
+        rulesRoot = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
+        for n in range(len(orderedCountiesNamesByArea)):
+            rule = self.createRules(
+                f"'{n+1}'",
+                f'"{self.nameAttribute}" = \'{orderedCountiesByCentroidDistance[n][self.nameAttribute]}\'')
+            rulesRoot.appendChild(rule)
+        rules = QgsRuleBasedLabeling(rulesRoot)
+        layerCounty.setLabeling(rules)
+        layerCounty.setLabelsEnabled(True)
+        layerCounty.triggerRepaint()
 
     def updateMapItem(self, composition, map_extent, layers_to_show, mapItem=None):
         if mapItem is None:
