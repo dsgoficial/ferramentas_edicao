@@ -1,518 +1,498 @@
-<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis simplifyLocal="1" styleCategories="AllStyleCategories" version="3.12.2-București" readOnly="0" hasScaleBasedVisibilityFlag="0" minScale="100000000" simplifyDrawingTol="1" simplifyDrawingHints="0" labelsEnabled="1" simplifyMaxScale="1" simplifyAlgorithm="0" maxScale="0">
-  <flags>
-    <Identifiable>1</Identifiable>
-    <Removable>1</Removable>
-    <Searchable>1</Searchable>
-  </flags>
-  <renderer-v2 enableorderby="0" type="RuleRenderer" symbollevels="0" forceraster="0">
-    <rules key="{0c50da6b-5910-4147-a3ea-8c238d3309eb}">
-      <rule symbol="0" label="Campo de pouso" filter=" &quot;tipo&quot;  = 9" key="{235c1580-f85a-4f78-a13f-3c6474ef9f3d}"/>
-      <rule symbol="1" label="Heliponto" filter=" &quot;tipo&quot;  = 11" key="{1208c0ae-d088-4ac6-acea-f69ea0317fdf}"/>
-    </rules>
-    <symbols>
-      <symbol name="0" clip_to_extent="1" type="marker" alpha="1" force_rhr="0">
-        <layer enabled="1" class="GeometryGenerator" pass="0" locked="0">
-          <prop k="SymbolType" v="Marker"/>
-          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;"/>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </data_defined_properties>
-          <symbol name="@0@0" clip_to_extent="1" type="marker" alpha="1" force_rhr="0">
-            <layer enabled="1" class="SimpleMarker" pass="0" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="255,255,255,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="square"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="solid"/>
-              <prop k="outline_width" v="0.2"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="3.5"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option name="name" type="QString" value=""/>
-                  <Option name="properties"/>
-                  <Option name="type" type="QString" value="collection"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-            <layer enabled="1" class="SvgMarker" pass="0" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="0,0,0,255"/>
-              <prop k="fixedAspectRatio" v="0"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="name" v="base64:PHN2ZyBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1ODAgNTgwIiBoZWlnaHQ9IjU4MCIgdmlld0JveD0iMCAwIDU4MCA1ODAiIHdpZHRoPSI1ODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Im01MTYuNzQ5IDQwMC4zNjR2LTUyLjcxN2wtMTk5Ljc2NS0xMjAuMDYzdi0xNDIuNjkyYy4wMzQtMzQuOTU4LTUxLjIxNS0zNC45NTgtNTEuMjc0LS45NTh2MTQzLjY1bC0xOTYuOTEgMTIwLjA2NHY1Mi43MTdsMTk4LjgyNy02NS40M3YxMDYuNjQ2bC00NS41MjkgMzUuOTQ0djQxLjY5NGw3MC45MjgtMjIuMDQ3IDcwLjkyNyAyMi4wNDd2LTQxLjY5NGwtNDYuMDA5LTM1Ljk0NHYtMTA2LjY0NnoiIGZpbGw9InBhcmFtKGZpbGwpIiBmaWxsLW9wYWNpdHk9InBhcmFtKGZpbGwtb3BhY2l0eSkiIHN0cm9rZT0icGFyYW0ob3V0bGluZSkiIHN0cm9rZS1vcGFjaXR5PSJwYXJhbShvdXRsaW5lLW9wYWNpdHkpIiBzdHJva2Utd2lkdGg9InBhcmFtKG91dGxpbmUtd2lkdGgpIi8+Cjwvc3ZnPgo="/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="255,255,255,255"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="3.5"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option name="name" type="QString" value=""/>
-                  <Option name="properties"/>
-                  <Option name="type" type="QString" value="collection"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-        </layer>
-      </symbol>
-      <symbol name="1" clip_to_extent="1" type="marker" alpha="1" force_rhr="0">
-        <layer enabled="1" class="GeometryGenerator" pass="0" locked="0">
-          <prop k="SymbolType" v="Marker"/>
-          <prop k="geometryModifier" v="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;"/>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </data_defined_properties>
-          <symbol name="@1@0" clip_to_extent="1" type="marker" alpha="1" force_rhr="0">
-            <layer enabled="1" class="SimpleMarker" pass="0" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="255,255,255,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0.10000000000000001,0.40000000000000002"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="solid"/>
-              <prop k="outline_width" v="0.2"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="3.5"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option name="name" type="QString" value=""/>
-                  <Option name="properties"/>
-                  <Option name="type" type="QString" value="collection"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-            <layer enabled="1" class="FontMarker" pass="0" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="chr" v="H"/>
-              <prop k="color" v="0,0,0,255"/>
-              <prop k="font" v="Arial"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="miter"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="size" v="2.8"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option name="name" type="QString" value=""/>
-                  <Option name="properties"/>
-                  <Option name="type" type="QString" value="collection"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-        </layer>
-      </symbol>
-    </symbols>
-  </renderer-v2>
-  <labeling type="simple">
-    <settings calloutType="simple">
-      <text-style isExpression="0" textColor="255,255,255,255" fontItalic="0" fontFamily="Arial" fontSizeUnit="MM" textOrientation="horizontal" fontCapitals="0" blendMode="0" fontWordSpacing="0" multilineHeight="1" previewBkgrdColor="255,255,255,255" textOpacity="1" fieldName="nome" fontLetterSpacing="0" fontWeight="50" fontSize="3" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontUnderline="0" namedStyle="Normal" fontStrikeout="0" fontKerning="1" useSubstitutions="0">
-        <text-buffer bufferDraw="1" bufferJoinStyle="128" bufferColor="0,0,0,255" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="0.6" bufferBlendMode="0" bufferNoFill="1" bufferSizeUnits="MM"/>
-        <text-mask maskEnabled="0" maskedSymbolLayers="" maskOpacity="1" maskSize="0" maskSizeUnits="MM" maskJoinStyle="128" maskType="0" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
-        <background shapeBorderColor="128,128,128,255" shapeRadiiUnit="MM" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeRotation="0" shapeType="0" shapeBorderWidth="0" shapeRadiiY="0" shapeSizeX="0" shapeRadiiX="0" shapeFillColor="255,255,255,255" shapeSVGFile="" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeOffsetUnit="MM" shapeDraw="0" shapeBlendMode="0" shapeRotationType="0" shapeSizeUnit="MM" shapeOffsetY="0" shapeSizeY="0" shapeOffsetX="0" shapeSizeType="0" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidthUnit="MM" shapeJoinStyle="64" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeOpacity="1">
-          <symbol name="markerSymbol" clip_to_extent="1" type="marker" alpha="1" force_rhr="0">
-            <layer enabled="1" class="SimpleMarker" pass="0" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="229,182,54,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="solid"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="2"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option name="name" type="QString" value=""/>
-                  <Option name="properties"/>
-                  <Option name="type" type="QString" value="collection"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-        </background>
-        <shadow shadowOffsetAngle="135" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowOffsetUnit="MM" shadowScale="100" shadowBlendMode="6" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowRadiusAlphaOnly="0" shadowUnder="0" shadowRadiusUnit="MM" shadowOpacity="0.7" shadowDraw="0" shadowOffsetGlobal="1" shadowRadius="1.5" shadowColor="0,0,0,255" shadowOffsetDist="1"/>
-        <dd_properties>
-          <Option type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-        </dd_properties>
-        <substitutions/>
-      </text-style>
-      <text-format placeDirectionSymbol="0" wrapChar="" rightDirectionSymbol=">" plussign="0" multilineAlign="3" reverseDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" autoWrapLength="18" decimals="3" formatNumbers="0" useMaxLineLengthForAutoWrap="1"/>
-      <placement preserveRotation="0" xOffset="2.5" maxCurvedCharAngleOut="-25" quadOffset="2" placementFlags="10" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="0" layerType="PointGeometry" repeatDistanceUnits="MM" fitInPolygonOnly="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )&#xd;&#xa;" distUnits="MM" geometryGeneratorType="PointGeometry" dist="3.2" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" centroidWhole="0" rotationAngle="0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" overrunDistance="0" placement="0" offsetType="0" centroidInside="0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" priority="8" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" yOffset="-1.5" maxCurvedCharAngleIn="25"/>
-      <rendering scaleMin="0" fontLimitPixelSize="0" minFeatureSize="0" labelPerPart="0" obstacle="1" scaleVisibility="0" fontMaxPixelSize="10000" displayAll="0" drawLabels="1" mergeLines="0" limitNumLabels="0" scaleMax="0" maxNumLabels="2000" obstacleFactor="2" upsidedownLabels="0" fontMinPixelSize="3" obstacleType="0" zIndex="0"/>
-      <dd_properties>
-        <Option type="Map">
-          <Option name="name" type="QString" value=""/>
-          <Option name="properties" type="Map">
-            <Option name="Show" type="Map">
-              <Option name="active" type="bool" value="true"/>
-              <Option name="expression" type="QString" value="intersects($geometry,  geometry(get_feature('auxiliar_moldura', 'id', '1')))&#xd;&#xa;and @escala != '250'"/>
-              <Option name="type" type="int" value="3"/>
-            </Option>
-          </Option>
-          <Option name="type" type="QString" value="collection"/>
-        </Option>
-      </dd_properties>
-      <callout type="simple">
-        <Option type="Map">
-          <Option name="anchorPoint" type="QString" value="pole_of_inaccessibility"/>
-          <Option name="ddProperties" type="Map">
-            <Option name="name" type="QString" value=""/>
-            <Option name="properties"/>
-            <Option name="type" type="QString" value="collection"/>
-          </Option>
-          <Option name="drawToAllParts" type="bool" value="false"/>
-          <Option name="enabled" type="QString" value="0"/>
-          <Option name="lineSymbol" type="QString" value="&lt;symbol name=&quot;symbol&quot; clip_to_extent=&quot;1&quot; type=&quot;line&quot; alpha=&quot;1&quot; force_rhr=&quot;0&quot;>&lt;layer enabled=&quot;1&quot; class=&quot;SimpleLine&quot; pass=&quot;0&quot; locked=&quot;0&quot;>&lt;prop k=&quot;capstyle&quot; v=&quot;square&quot;/>&lt;prop k=&quot;customdash&quot; v=&quot;5;2&quot;/>&lt;prop k=&quot;customdash_map_unit_scale&quot; v=&quot;3x:0,0,0,0,0,0&quot;/>&lt;prop k=&quot;customdash_unit&quot; v=&quot;MM&quot;/>&lt;prop k=&quot;draw_inside_polygon&quot; v=&quot;0&quot;/>&lt;prop k=&quot;joinstyle&quot; v=&quot;bevel&quot;/>&lt;prop k=&quot;line_color&quot; v=&quot;60,60,60,255&quot;/>&lt;prop k=&quot;line_style&quot; v=&quot;solid&quot;/>&lt;prop k=&quot;line_width&quot; v=&quot;0.3&quot;/>&lt;prop k=&quot;line_width_unit&quot; v=&quot;MM&quot;/>&lt;prop k=&quot;offset&quot; v=&quot;0&quot;/>&lt;prop k=&quot;offset_map_unit_scale&quot; v=&quot;3x:0,0,0,0,0,0&quot;/>&lt;prop k=&quot;offset_unit&quot; v=&quot;MM&quot;/>&lt;prop k=&quot;ring_filter&quot; v=&quot;0&quot;/>&lt;prop k=&quot;use_custom_dash&quot; v=&quot;0&quot;/>&lt;prop k=&quot;width_map_unit_scale&quot; v=&quot;3x:0,0,0,0,0,0&quot;/>&lt;data_defined_properties>&lt;Option type=&quot;Map&quot;>&lt;Option name=&quot;name&quot; type=&quot;QString&quot; value=&quot;&quot;/>&lt;Option name=&quot;properties&quot;/>&lt;Option name=&quot;type&quot; type=&quot;QString&quot; value=&quot;collection&quot;/>&lt;/Option>&lt;/data_defined_properties>&lt;/layer>&lt;/symbol>"/>
-          <Option name="minLength" type="double" value="0"/>
-          <Option name="minLengthMapUnitScale" type="QString" value="3x:0,0,0,0,0,0"/>
-          <Option name="minLengthUnit" type="QString" value="MM"/>
-          <Option name="offsetFromAnchor" type="double" value="0"/>
-          <Option name="offsetFromAnchorMapUnitScale" type="QString" value="3x:0,0,0,0,0,0"/>
-          <Option name="offsetFromAnchorUnit" type="QString" value="MM"/>
-          <Option name="offsetFromLabel" type="double" value="0"/>
-          <Option name="offsetFromLabelMapUnitScale" type="QString" value="3x:0,0,0,0,0,0"/>
-          <Option name="offsetFromLabelUnit" type="QString" value="MM"/>
-        </Option>
-      </callout>
-    </settings>
-  </labeling>
-  <customproperties>
-    <property value="id" key="dualview/previewExpressions"/>
-    <property value="0" key="embeddedWidgets/count"/>
-    <property key="variableNames"/>
-    <property key="variableValues"/>
-  </customproperties>
-  <blendMode>0</blendMode>
-  <featureBlendMode>0</featureBlendMode>
-  <layerOpacity>1</layerOpacity>
-  <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
-    <DiagramCategory maxScaleDenominator="1e+08" direction="1" scaleDependency="Area" barWidth="5" showAxis="0" lineSizeType="MM" minScaleDenominator="0" sizeType="MM" backgroundColor="#ffffff" opacity="1" penWidth="0" minimumSize="0" rotationOffset="270" enabled="0" sizeScale="3x:0,0,0,0,0,0" width="15" spacing="0" scaleBasedVisibility="0" height="15" spacingUnit="MM" lineSizeScale="3x:0,0,0,0,0,0" labelPlacementMethod="XHeight" diagramOrientation="Up" penColor="#000000" penAlpha="255" backgroundAlpha="255" spacingUnitScale="3x:0,0,0,0,0,0">
-      <fontProperties style="" description="MS Shell Dlg 2,15.75,-1,5,50,0,0,0,0,0"/>
-      <attribute color="#000000" label="" field=""/>
-      <axisSymbol>
-        <symbol name="" clip_to_extent="1" type="line" alpha="1" force_rhr="0">
-          <layer enabled="1" class="SimpleLine" pass="0" locked="0">
-            <prop k="capstyle" v="square"/>
-            <prop k="customdash" v="5;2"/>
-            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <prop k="customdash_unit" v="MM"/>
-            <prop k="draw_inside_polygon" v="0"/>
-            <prop k="joinstyle" v="bevel"/>
-            <prop k="line_color" v="35,35,35,255"/>
-            <prop k="line_style" v="solid"/>
-            <prop k="line_width" v="0.26"/>
-            <prop k="line_width_unit" v="MM"/>
-            <prop k="offset" v="0"/>
-            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <prop k="offset_unit" v="MM"/>
-            <prop k="ring_filter" v="0"/>
-            <prop k="use_custom_dash" v="0"/>
-            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-            <data_defined_properties>
-              <Option type="Map">
-                <Option name="name" type="QString" value=""/>
-                <Option name="properties"/>
-                <Option name="type" type="QString" value="collection"/>
-              </Option>
-            </data_defined_properties>
-          </layer>
-        </symbol>
-      </axisSymbol>
-    </DiagramCategory>
-  </SingleCategoryDiagramRenderer>
-  <DiagramLayerSettings zIndex="0" dist="0" priority="0" placement="0" showAll="1" obstacle="0" linePlacementFlags="18">
-    <properties>
-      <Option type="Map">
-        <Option name="name" type="QString" value=""/>
-        <Option name="properties"/>
-        <Option name="type" type="QString" value="collection"/>
-      </Option>
-    </properties>
-  </DiagramLayerSettings>
-  <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
-    <activeChecks/>
-    <checkConfiguration/>
-  </geometryOptions>
-  <referencedLayers/>
-  <referencingLayers/>
-  <fieldConfiguration>
-    <field name="id">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="nome">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="tipo">
-      <editWidget type="ValueMap">
-        <config>
-          <Option type="Map">
-            <Option name="map" type="Map">
-              <Option name="A SER PREENCHIDO (9999)" type="QString" value="9999"/>
-              <Option name="Heliponto (11)" type="QString" value="11"/>
-              <Option name="Pista de pouso (9)" type="QString" value="9"/>
-              <Option name="Pista de táxi (10)" type="QString" value="10"/>
-            </Option>
-          </Option>
-        </config>
-      </editWidget>
-    </field>
-    <field name="revestimento">
-      <editWidget type="ValueMap">
-        <config>
-          <Option type="Map">
-            <Option name="map" type="Map">
-              <Option name="A SER PREENCHIDO (9999)" type="QString" value="9999"/>
-              <Option name="Leito natural (1)" type="QString" value="1"/>
-              <Option name="Pavimentado (3)" type="QString" value="3"/>
-              <Option name="Revestimento primário (solto) (2)" type="QString" value="2"/>
-            </Option>
-          </Option>
-        </config>
-      </editWidget>
-    </field>
-    <field name="uso_pista">
-      <editWidget type="ValueMap">
-        <config>
-          <Option type="Map">
-            <Option name="map" type="Map">
-              <Option name="A SER PREENCHIDO (9999)" type="QString" value="9999"/>
-              <Option name="Desconhecido (0)" type="QString" value="0"/>
-              <Option name="Militar (12)" type="QString" value="12"/>
-              <Option name="Particular (6)" type="QString" value="6"/>
-              <Option name="Público (11)" type="QString" value="11"/>
-              <Option name="Público/Militar (13)" type="QString" value="13"/>
-            </Option>
-          </Option>
-        </config>
-      </editWidget>
-    </field>
-    <field name="situacao_fisica">
-      <editWidget type="ValueMap">
-        <config>
-          <Option type="Map">
-            <Option name="map" type="Map">
-              <Option name="A SER PREENCHIDO (9999)" type="QString" value="9999"/>
-              <Option name="Abandonada (1)" type="QString" value="1"/>
-              <Option name="Construída (3)" type="QString" value="3"/>
-              <Option name="Desconhecida (0)" type="QString" value="0"/>
-              <Option name="Destruída (2)" type="QString" value="2"/>
-              <Option name="Em construção (4)" type="QString" value="4"/>
-            </Option>
-          </Option>
-        </config>
-      </editWidget>
-    </field>
-    <field name="observacao">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="data_modificacao">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="controle_uuid">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="usuario_criacao">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="usuario_atualizacao">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="insumo">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-    <field name="data_insumo">
-      <editWidget type="TextEdit">
-        <config>
-          <Option/>
-        </config>
-      </editWidget>
-    </field>
-  </fieldConfiguration>
-  <aliases>
-    <alias name="" index="0" field="id"/>
-    <alias name="" index="1" field="nome"/>
-    <alias name="" index="2" field="tipo"/>
-    <alias name="" index="3" field="revestimento"/>
-    <alias name="" index="4" field="uso_pista"/>
-    <alias name="" index="5" field="situacao_fisica"/>
-    <alias name="" index="6" field="observacao"/>
-    <alias name="" index="7" field="data_modificacao"/>
-    <alias name="" index="8" field="controle_uuid"/>
-    <alias name="" index="9" field="usuario_criacao"/>
-    <alias name="" index="10" field="usuario_atualizacao"/>
-    <alias name="" index="11" field="insumo"/>
-    <alias name="" index="12" field="data_insumo"/>
-  </aliases>
-  <excludeAttributesWMS/>
-  <excludeAttributesWFS/>
-  <defaults>
-    <default expression="" applyOnUpdate="0" field="id"/>
-    <default expression="" applyOnUpdate="0" field="nome"/>
-    <default expression="" applyOnUpdate="0" field="tipo"/>
-    <default expression="" applyOnUpdate="0" field="revestimento"/>
-    <default expression="" applyOnUpdate="0" field="uso_pista"/>
-    <default expression="" applyOnUpdate="0" field="situacao_fisica"/>
-    <default expression="" applyOnUpdate="0" field="observacao"/>
-    <default expression="" applyOnUpdate="0" field="data_modificacao"/>
-    <default expression="" applyOnUpdate="0" field="controle_uuid"/>
-    <default expression="" applyOnUpdate="0" field="usuario_criacao"/>
-    <default expression="" applyOnUpdate="0" field="usuario_atualizacao"/>
-    <default expression="" applyOnUpdate="0" field="insumo"/>
-    <default expression="" applyOnUpdate="0" field="data_insumo"/>
-  </defaults>
-  <constraints>
-    <constraint unique_strength="1" field="id" constraints="3" exp_strength="0" notnull_strength="1"/>
-    <constraint unique_strength="0" field="nome" constraints="0" exp_strength="0" notnull_strength="0"/>
-    <constraint unique_strength="0" field="tipo" constraints="1" exp_strength="0" notnull_strength="1"/>
-    <constraint unique_strength="0" field="revestimento" constraints="1" exp_strength="0" notnull_strength="1"/>
-    <constraint unique_strength="0" field="uso_pista" constraints="1" exp_strength="0" notnull_strength="1"/>
-    <constraint unique_strength="0" field="situacao_fisica" constraints="1" exp_strength="0" notnull_strength="1"/>
-    <constraint unique_strength="0" field="observacao" constraints="0" exp_strength="0" notnull_strength="0"/>
-    <constraint unique_strength="0" field="data_modificacao" constraints="0" exp_strength="0" notnull_strength="0"/>
-    <constraint unique_strength="0" field="controle_uuid" constraints="0" exp_strength="0" notnull_strength="0"/>
-    <constraint unique_strength="0" field="usuario_criacao" constraints="0" exp_strength="0" notnull_strength="0"/>
-    <constraint unique_strength="0" field="usuario_atualizacao" constraints="0" exp_strength="0" notnull_strength="0"/>
-    <constraint unique_strength="0" field="insumo" constraints="0" exp_strength="0" notnull_strength="0"/>
-    <constraint unique_strength="0" field="data_insumo" constraints="0" exp_strength="0" notnull_strength="0"/>
-  </constraints>
-  <constraintExpressions>
-    <constraint desc="" field="id" exp=""/>
-    <constraint desc="" field="nome" exp=""/>
-    <constraint desc="" field="tipo" exp=""/>
-    <constraint desc="" field="revestimento" exp=""/>
-    <constraint desc="" field="uso_pista" exp=""/>
-    <constraint desc="" field="situacao_fisica" exp=""/>
-    <constraint desc="" field="observacao" exp=""/>
-    <constraint desc="" field="data_modificacao" exp=""/>
-    <constraint desc="" field="controle_uuid" exp=""/>
-    <constraint desc="" field="usuario_criacao" exp=""/>
-    <constraint desc="" field="usuario_atualizacao" exp=""/>
-    <constraint desc="" field="insumo" exp=""/>
-    <constraint desc="" field="data_insumo" exp=""/>
-  </constraintExpressions>
-  <expressionfields/>
-  <attributeactions>
-    <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
-  </attributeactions>
-  <attributetableconfig actionWidgetStyle="dropDown" sortOrder="1" sortExpression="&quot;nome&quot;">
-    <columns>
-      <column width="-1" name="id" type="field" hidden="0"/>
-      <column width="378" name="nome" type="field" hidden="0"/>
-      <column width="-1" name="tipo" type="field" hidden="0"/>
-      <column width="-1" name="revestimento" type="field" hidden="0"/>
-      <column width="-1" name="uso_pista" type="field" hidden="0"/>
-      <column width="-1" name="situacao_fisica" type="field" hidden="0"/>
-      <column width="-1" name="observacao" type="field" hidden="0"/>
-      <column width="-1" name="data_modificacao" type="field" hidden="0"/>
-      <column width="-1" name="usuario_criacao" type="field" hidden="0"/>
-      <column width="-1" name="usuario_atualizacao" type="field" hidden="0"/>
-      <column width="-1" name="insumo" type="field" hidden="0"/>
-      <column width="-1" name="data_insumo" type="field" hidden="0"/>
-      <column width="-1" type="actions" hidden="1"/>
-      <column width="-1" name="controle_uuid" type="field" hidden="0"/>
-    </columns>
-  </attributetableconfig>
-  <conditionalstyles>
-    <rowstyles/>
-    <fieldstyles/>
-  </conditionalstyles>
-  <storedexpressions/>
-  <editform tolerant="1"></editform>
-  <editforminit/>
-  <editforminitcodesource>0</editforminitcodesource>
-  <editforminitfilepath></editforminitfilepath>
-  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+<qgis version="3.18.1-Zürich" hasScaleBasedVisibilityFlag="0" minScale="100000000" styleCategories="AllStyleCategories" simplifyDrawingHints="0" simplifyDrawingTol="1" simplifyLocal="1" simplifyMaxScale="1" readOnly="0" labelsEnabled="0" simplifyAlgorithm="0" maxScale="0">
+<flags>
+<Identifiable>1</Identifiable>
+<Removable>1</Removable>
+<Searchable>1</Searchable>
+<Private>0</Private>
+</flags>
+<temporal startField="" accumulate="0" endField="" durationUnit="min" mode="0" startExpression="" enabled="0" endExpression="" durationField="" fixedDuration="0">
+<fixedRange>
+<start></start>
+<end></end>
+</fixedRange>
+</temporal>
+<renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" enableorderby="0">
+<symbols>
+<symbol name="0" alpha="1" clip_to_extent="1" type="marker" force_rhr="0">
+<data_defined_properties>
+<Option type="Map">
+<Option value="" name="name" type="QString"/>
+<Option name="properties"/>
+<Option value="collection" name="type" type="QString"/>
+</Option>
+</data_defined_properties>
+<layer class="SvgMarker" locked="0" pass="0" enabled="1">
+<Option type="Map">
+<Option value="0" name="angle" type="QString"/>
+<Option value="255,158,23,255" name="color" type="QString"/>
+<Option value="0" name="fixedAspectRatio" type="QString"/>
+<Option value="1" name="horizontal_anchor_point" type="QString"/>
+<Option value="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iCiAgIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiCiAgIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIgogICB3aWR0aD0iM21tIgogICBoZWlnaHQ9IjNtbSIKICAgdmlld0JveD0iMCAwIDMuMDAwMDAwMSAyLjk5OTk5OTciCiAgIHZlcnNpb249IjEuMSIKICAgaWQ9InN2ZzEyNjYiCiAgIGlua3NjYXBlOnZlcnNpb249IjAuOTIuMiA1YzNlODBkLCAyMDE3LTA4LTA2IgogICBzb2RpcG9kaTpkb2NuYW1lPSJQMTA5MDJDLnN2ZyI+CiAgPGRlZnMKICAgICBpZD0iZGVmczEyNjAiIC8+CiAgPHNvZGlwb2RpOm5hbWVkdmlldwogICAgIGlkPSJiYXNlIgogICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIKICAgICBib3JkZXJjb2xvcj0iIzY2NjY2NiIKICAgICBib3JkZXJvcGFjaXR5PSIxLjAiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAuMCIKICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOnpvb209IjUuNiIKICAgICBpbmtzY2FwZTpjeD0iMjAuNTg3NTMzIgogICAgIGlua3NjYXBlOmN5PSIzNi40ODU1NiIKICAgICBpbmtzY2FwZTpkb2N1bWVudC11bml0cz0ibW0iCiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ibGF5ZXIxIgogICAgIHNob3dncmlkPSJmYWxzZSIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE5MjAiCiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iMTAxMyIKICAgICBpbmtzY2FwZTp3aW5kb3cteD0iMCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMCIKICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIiAvPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTEyNjMiPgogICAgPHJkZjpSREY+CiAgICAgIDxjYzpXb3JrCiAgICAgICAgIHJkZjphYm91dD0iIj4KICAgICAgICA8ZGM6Zm9ybWF0PmltYWdlL3N2Zyt4bWw8L2RjOmZvcm1hdD4KICAgICAgICA8ZGM6dHlwZQogICAgICAgICAgIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiIC8+CiAgICAgICAgPGRjOnRpdGxlPjwvZGM6dGl0bGU+CiAgICAgIDwvY2M6V29yaz4KICAgIDwvcmRmOlJERj4KICA8L21ldGFkYXRhPgogIDxnCiAgICAgaW5rc2NhcGU6bGFiZWw9IkNhbWFkYSAxIgogICAgIGlua3NjYXBlOmdyb3VwbW9kZT0ibGF5ZXIiCiAgICAgaWQ9ImxheWVyMSIKICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzNS40OTk1MDMsLTExNC43NDYxNCkiPgogICAgPGcKICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xMzUuNDY4MzksNDAuNDQ0MTY3KSIKICAgICAgIGlkPSJnMTA5MSI+CiAgICAgIDxjaXJjbGUKICAgICAgICAgcj0iMS4zNzUiCiAgICAgICAgIGN5PSI3NS44MDE5NzEiCiAgICAgICAgIGN4PSIxMDEuNDY4ODkiCiAgICAgICAgIGlkPSJjaXJjbGUxMDE2IgogICAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6bm9uZTtmaWxsLW9wYWNpdHk6MTtzdHJva2U6IzM5NDg5ZTtzdHJva2Utd2lkdGg6MC4yNTtzdHJva2UtbGluZWNhcDpidXR0O3N0cm9rZS1saW5lam9pbjptaXRlcjtzdHJva2UtbWl0ZXJsaW1pdDo0O3N0cm9rZS1kYXNoYXJyYXk6bm9uZTtzdHJva2UtZGFzaG9mZnNldDowO3N0cm9rZS1vcGFjaXR5OjE7cGFpbnQtb3JkZXI6bWFya2VycyBmaWxsIHN0cm9rZSIgLz4KICAgICAgPGcKICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTAuMDMxMTIyNjcsMC4wMzExMjA0NCkiCiAgICAgICAgIGlkPSJnMTA4NCI+CiAgICAgICAgPHBhdGgKICAgICAgICAgICBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eTowO3N0cm9rZTojMzk0ODllO3N0cm9rZS13aWR0aDowLjI1O3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1vcGFjaXR5OjEiCiAgICAgICAgICAgZD0ibSAxMDEuMDI1MDEsNzUuMDIwODUxIHYgMS41IgogICAgICAgICAgIGlkPSJwYXRoMTAxOCIKICAgICAgICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIiAvPgogICAgICAgIDxwYXRoCiAgICAgICAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIKICAgICAgICAgICBpZD0icGF0aDEwMjAiCiAgICAgICAgICAgZD0ibSAxMDIuMTAwMDEsNzUuNzcwODUgLTEuMiwyZS02IgogICAgICAgICAgIHN0eWxlPSJmaWxsOiMwMDAwMDA7ZmlsbC1vcGFjaXR5OjA7c3Ryb2tlOiMzOTQ4OWU7c3Ryb2tlLXdpZHRoOjAuMjU7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmU7c3Ryb2tlLW9wYWNpdHk6MSIgLz4KICAgICAgICA8cGF0aAogICAgICAgICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgICAgICAgaWQ9InBhdGgxMDI3IgogICAgICAgICAgIGQ9Im0gMTAxLjk3NTAxLDc1LjAyMDg1MSB2IDEuNSIKICAgICAgICAgICBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eTowO3N0cm9rZTojMzk0ODllO3N0cm9rZS13aWR0aDowLjI1O3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1vcGFjaXR5OjEiIC8+CiAgICAgIDwvZz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPgo=" name="name" type="QString"/>
+<Option value="0,0" name="offset" type="QString"/>
+<Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
+<Option value="MM" name="offset_unit" type="QString"/>
+<Option value="35,35,35,255" name="outline_color" type="QString"/>
+<Option value="0" name="outline_width" type="QString"/>
+<Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>
+<Option value="MM" name="outline_width_unit" type="QString"/>
+<Option name="parameters"/>
+<Option value="diameter" name="scale_method" type="QString"/>
+<Option value="3" name="size" type="QString"/>
+<Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>
+<Option value="MM" name="size_unit" type="QString"/>
+<Option value="1" name="vertical_anchor_point" type="QString"/>
+</Option>
+<prop k="angle" v="0"/>
+<prop k="color" v="255,158,23,255"/>
+<prop k="fixedAspectRatio" v="0"/>
+<prop k="horizontal_anchor_point" v="1"/>
+<prop k="name" v="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iCiAgIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiCiAgIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIgogICB3aWR0aD0iM21tIgogICBoZWlnaHQ9IjNtbSIKICAgdmlld0JveD0iMCAwIDMuMDAwMDAwMSAyLjk5OTk5OTciCiAgIHZlcnNpb249IjEuMSIKICAgaWQ9InN2ZzEyNjYiCiAgIGlua3NjYXBlOnZlcnNpb249IjAuOTIuMiA1YzNlODBkLCAyMDE3LTA4LTA2IgogICBzb2RpcG9kaTpkb2NuYW1lPSJQMTA5MDJDLnN2ZyI+CiAgPGRlZnMKICAgICBpZD0iZGVmczEyNjAiIC8+CiAgPHNvZGlwb2RpOm5hbWVkdmlldwogICAgIGlkPSJiYXNlIgogICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIKICAgICBib3JkZXJjb2xvcj0iIzY2NjY2NiIKICAgICBib3JkZXJvcGFjaXR5PSIxLjAiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAuMCIKICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOnpvb209IjUuNiIKICAgICBpbmtzY2FwZTpjeD0iMjAuNTg3NTMzIgogICAgIGlua3NjYXBlOmN5PSIzNi40ODU1NiIKICAgICBpbmtzY2FwZTpkb2N1bWVudC11bml0cz0ibW0iCiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ibGF5ZXIxIgogICAgIHNob3dncmlkPSJmYWxzZSIKICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE5MjAiCiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iMTAxMyIKICAgICBpbmtzY2FwZTp3aW5kb3cteD0iMCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMCIKICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIiAvPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTEyNjMiPgogICAgPHJkZjpSREY+CiAgICAgIDxjYzpXb3JrCiAgICAgICAgIHJkZjphYm91dD0iIj4KICAgICAgICA8ZGM6Zm9ybWF0PmltYWdlL3N2Zyt4bWw8L2RjOmZvcm1hdD4KICAgICAgICA8ZGM6dHlwZQogICAgICAgICAgIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiIC8+CiAgICAgICAgPGRjOnRpdGxlPjwvZGM6dGl0bGU+CiAgICAgIDwvY2M6V29yaz4KICAgIDwvcmRmOlJERj4KICA8L21ldGFkYXRhPgogIDxnCiAgICAgaW5rc2NhcGU6bGFiZWw9IkNhbWFkYSAxIgogICAgIGlua3NjYXBlOmdyb3VwbW9kZT0ibGF5ZXIiCiAgICAgaWQ9ImxheWVyMSIKICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzNS40OTk1MDMsLTExNC43NDYxNCkiPgogICAgPGcKICAgICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xMzUuNDY4MzksNDAuNDQ0MTY3KSIKICAgICAgIGlkPSJnMTA5MSI+CiAgICAgIDxjaXJjbGUKICAgICAgICAgcj0iMS4zNzUiCiAgICAgICAgIGN5PSI3NS44MDE5NzEiCiAgICAgICAgIGN4PSIxMDEuNDY4ODkiCiAgICAgICAgIGlkPSJjaXJjbGUxMDE2IgogICAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6bm9uZTtmaWxsLW9wYWNpdHk6MTtzdHJva2U6IzM5NDg5ZTtzdHJva2Utd2lkdGg6MC4yNTtzdHJva2UtbGluZWNhcDpidXR0O3N0cm9rZS1saW5lam9pbjptaXRlcjtzdHJva2UtbWl0ZXJsaW1pdDo0O3N0cm9rZS1kYXNoYXJyYXk6bm9uZTtzdHJva2UtZGFzaG9mZnNldDowO3N0cm9rZS1vcGFjaXR5OjE7cGFpbnQtb3JkZXI6bWFya2VycyBmaWxsIHN0cm9rZSIgLz4KICAgICAgPGcKICAgICAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTAuMDMxMTIyNjcsMC4wMzExMjA0NCkiCiAgICAgICAgIGlkPSJnMTA4NCI+CiAgICAgICAgPHBhdGgKICAgICAgICAgICBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eTowO3N0cm9rZTojMzk0ODllO3N0cm9rZS13aWR0aDowLjI1O3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1vcGFjaXR5OjEiCiAgICAgICAgICAgZD0ibSAxMDEuMDI1MDEsNzUuMDIwODUxIHYgMS41IgogICAgICAgICAgIGlkPSJwYXRoMTAxOCIKICAgICAgICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIiAvPgogICAgICAgIDxwYXRoCiAgICAgICAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIKICAgICAgICAgICBpZD0icGF0aDEwMjAiCiAgICAgICAgICAgZD0ibSAxMDIuMTAwMDEsNzUuNzcwODUgLTEuMiwyZS02IgogICAgICAgICAgIHN0eWxlPSJmaWxsOiMwMDAwMDA7ZmlsbC1vcGFjaXR5OjA7c3Ryb2tlOiMzOTQ4OWU7c3Ryb2tlLXdpZHRoOjAuMjU7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmU7c3Ryb2tlLW9wYWNpdHk6MSIgLz4KICAgICAgICA8cGF0aAogICAgICAgICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgICAgICAgaWQ9InBhdGgxMDI3IgogICAgICAgICAgIGQ9Im0gMTAxLjk3NTAxLDc1LjAyMDg1MSB2IDEuNSIKICAgICAgICAgICBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eTowO3N0cm9rZTojMzk0ODllO3N0cm9rZS13aWR0aDowLjI1O3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1vcGFjaXR5OjEiIC8+CiAgICAgIDwvZz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPgo="/>
+<prop k="offset" v="0,0"/>
+<prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="offset_unit" v="MM"/>
+<prop k="outline_color" v="35,35,35,255"/>
+<prop k="outline_width" v="0"/>
+<prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="outline_width_unit" v="MM"/>
+<prop k="parameters" v=""/>
+<prop k="scale_method" v="diameter"/>
+<prop k="size" v="3"/>
+<prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="size_unit" v="MM"/>
+<prop k="vertical_anchor_point" v="1"/>
+<data_defined_properties>
+<Option type="Map">
+<Option value="" name="name" type="QString"/>
+<Option name="properties"/>
+<Option value="collection" name="type" type="QString"/>
+</Option>
+</data_defined_properties>
+</layer>
+</symbol>
+</symbols>
+<rotation/>
+<sizescale/>
+</renderer-v2>
+<customproperties>
+<property value="&quot;nome&quot;" key="dualview/previewExpressions"/>
+<property value="0" key="embeddedWidgets/count"/>
+<property key="variableNames"/>
+<property key="variableValues"/>
+</customproperties>
+<blendMode>0</blendMode>
+<featureBlendMode>0</featureBlendMode>
+<layerOpacity>1</layerOpacity>
+<SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
+<DiagramCategory penWidth="0" backgroundColor="#ffffff" penAlpha="255" penColor="#000000" direction="0" scaleDependency="Area" maxScaleDenominator="1e+08" height="15" sizeScale="3x:0,0,0,0,0,0" scaleBasedVisibility="0" enabled="0" sizeType="MM" width="15" backgroundAlpha="255" diagramOrientation="Up" minimumSize="0" minScaleDenominator="0" showAxis="1" rotationOffset="270" barWidth="5" lineSizeType="MM" opacity="1" spacing="5" spacingUnitScale="3x:0,0,0,0,0,0" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0" spacingUnit="MM">
+<fontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+<attribute color="#000000" label="" field=""/>
+<axisSymbol>
+<symbol name="" alpha="1" clip_to_extent="1" type="line" force_rhr="0">
+<data_defined_properties>
+<Option type="Map">
+<Option value="" name="name" type="QString"/>
+<Option name="properties"/>
+<Option value="collection" name="type" type="QString"/>
+</Option>
+</data_defined_properties>
+<layer class="SimpleLine" locked="0" pass="0" enabled="1">
+<Option type="Map">
+<Option value="0" name="align_dash_pattern" type="QString"/>
+<Option value="square" name="capstyle" type="QString"/>
+<Option value="5;2" name="customdash" type="QString"/>
+<Option value="3x:0,0,0,0,0,0" name="customdash_map_unit_scale" type="QString"/>
+<Option value="MM" name="customdash_unit" type="QString"/>
+<Option value="0" name="dash_pattern_offset" type="QString"/>
+<Option value="3x:0,0,0,0,0,0" name="dash_pattern_offset_map_unit_scale" type="QString"/>
+<Option value="MM" name="dash_pattern_offset_unit" type="QString"/>
+<Option value="0" name="draw_inside_polygon" type="QString"/>
+<Option value="bevel" name="joinstyle" type="QString"/>
+<Option value="35,35,35,255" name="line_color" type="QString"/>
+<Option value="solid" name="line_style" type="QString"/>
+<Option value="0.26" name="line_width" type="QString"/>
+<Option value="MM" name="line_width_unit" type="QString"/>
+<Option value="0" name="offset" type="QString"/>
+<Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
+<Option value="MM" name="offset_unit" type="QString"/>
+<Option value="0" name="ring_filter" type="QString"/>
+<Option value="0" name="tweak_dash_pattern_on_corners" type="QString"/>
+<Option value="0" name="use_custom_dash" type="QString"/>
+<Option value="3x:0,0,0,0,0,0" name="width_map_unit_scale" type="QString"/>
+</Option>
+<prop k="align_dash_pattern" v="0"/>
+<prop k="capstyle" v="square"/>
+<prop k="customdash" v="5;2"/>
+<prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="customdash_unit" v="MM"/>
+<prop k="dash_pattern_offset" v="0"/>
+<prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="dash_pattern_offset_unit" v="MM"/>
+<prop k="draw_inside_polygon" v="0"/>
+<prop k="joinstyle" v="bevel"/>
+<prop k="line_color" v="35,35,35,255"/>
+<prop k="line_style" v="solid"/>
+<prop k="line_width" v="0.26"/>
+<prop k="line_width_unit" v="MM"/>
+<prop k="offset" v="0"/>
+<prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="offset_unit" v="MM"/>
+<prop k="ring_filter" v="0"/>
+<prop k="tweak_dash_pattern_on_corners" v="0"/>
+<prop k="use_custom_dash" v="0"/>
+<prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<data_defined_properties>
+<Option type="Map">
+<Option value="" name="name" type="QString"/>
+<Option name="properties"/>
+<Option value="collection" name="type" type="QString"/>
+</Option>
+</data_defined_properties>
+</layer>
+</symbol>
+</axisSymbol>
+</DiagramCategory>
+</SingleCategoryDiagramRenderer>
+<DiagramLayerSettings priority="0" zIndex="0" showAll="1" placement="0" linePlacementFlags="18" dist="0" obstacle="0">
+<properties>
+<Option type="Map">
+<Option value="" name="name" type="QString"/>
+<Option name="properties"/>
+<Option value="collection" name="type" type="QString"/>
+</Option>
+</properties>
+</DiagramLayerSettings>
+<geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+<activeChecks/>
+<checkConfiguration/>
+</geometryOptions>
+<legend type="default-vector"/>
+<referencedLayers/>
+<fieldConfiguration>
+<field configurationFlags="None" name="id">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="nome">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="tipo">
+<editWidget type="ValueMap">
+<config>
+<Option type="Map">
+<Option name="map" type="Map">
+<Option value="9999" name="A SER PREENCHIDO (9999)" type="QString"/>
+<Option value="11" name="Heliponto (11)" type="QString"/>
+<Option value="9" name="Pista de pouso (9)" type="QString"/>
+<Option value="10" name="Pista de táxi (10)" type="QString"/>
+</Option>
+</Option>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="revestimento">
+<editWidget type="ValueMap">
+<config>
+<Option type="Map">
+<Option name="map" type="Map">
+<Option value="9999" name="A SER PREENCHIDO (9999)" type="QString"/>
+<Option value="0" name="Desconhecido (0)" type="QString"/>
+<Option value="1" name="Leito natural (1)" type="QString"/>
+<Option value="3" name="Pavimentado (3)" type="QString"/>
+<Option value="2" name="Revestimento primário (solto) (2)" type="QString"/>
+</Option>
+</Option>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="uso_pista">
+<editWidget type="ValueMap">
+<config>
+<Option type="Map">
+<Option name="map" type="Map">
+<Option value="9999" name="A SER PREENCHIDO (9999)" type="QString"/>
+<Option value="0" name="Desconhecido (0)" type="QString"/>
+<Option value="12" name="Militar (12)" type="QString"/>
+<Option value="6" name="Particular (6)" type="QString"/>
+<Option value="11" name="Público (11)" type="QString"/>
+<Option value="13" name="Público/Militar (13)" type="QString"/>
+</Option>
+</Option>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="situacao_fisica">
+<editWidget type="ValueMap">
+<config>
+<Option type="Map">
+<Option name="map" type="Map">
+<Option value="9999" name="A SER PREENCHIDO (9999)" type="QString"/>
+<Option value="1" name="Abandonada (1)" type="QString"/>
+<Option value="3" name="Construída (3)" type="QString"/>
+<Option value="0" name="Desconhecida (0)" type="QString"/>
+<Option value="2" name="Destruída (2)" type="QString"/>
+<Option value="4" name="Em construção (4)" type="QString"/>
+</Option>
+</Option>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="observacao">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="data_modificacao">
+<editWidget type="DateTime">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="controle_uuid">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="usuario_criacao">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="usuario_atualizacao">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="insumo">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="data_insumo">
+<editWidget type="DateTime">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="visivel">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="texto_edicao">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="carta_mini">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="label_x">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="label_y">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="justificativa_txt">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="simb_x">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="simb_y">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+<field configurationFlags="None" name="simb_rot">
+<editWidget type="TextEdit">
+<config>
+<Option/>
+</config>
+</editWidget>
+</field>
+</fieldConfiguration>
+<aliases>
+<alias name="" field="id" index="0"/>
+<alias name="" field="nome" index="1"/>
+<alias name="" field="tipo" index="2"/>
+<alias name="" field="revestimento" index="3"/>
+<alias name="" field="uso_pista" index="4"/>
+<alias name="" field="situacao_fisica" index="5"/>
+<alias name="" field="observacao" index="6"/>
+<alias name="" field="data_modificacao" index="7"/>
+<alias name="" field="controle_uuid" index="8"/>
+<alias name="" field="usuario_criacao" index="9"/>
+<alias name="" field="usuario_atualizacao" index="10"/>
+<alias name="" field="insumo" index="11"/>
+<alias name="" field="data_insumo" index="12"/>
+<alias name="" field="visivel" index="13"/>
+<alias name="" field="texto_edicao" index="14"/>
+<alias name="" field="carta_mini" index="15"/>
+<alias name="" field="label_x" index="16"/>
+<alias name="" field="label_y" index="17"/>
+<alias name="" field="justificativa_txt" index="18"/>
+<alias name="" field="simb_x" index="19"/>
+<alias name="" field="simb_y" index="20"/>
+<alias name="" field="simb_rot" index="21"/>
+</aliases>
+<defaults>
+<default applyOnUpdate="0" expression="" field="id"/>
+<default applyOnUpdate="0" expression="" field="nome"/>
+<default applyOnUpdate="0" expression="" field="tipo"/>
+<default applyOnUpdate="0" expression="" field="revestimento"/>
+<default applyOnUpdate="0" expression="" field="uso_pista"/>
+<default applyOnUpdate="0" expression="" field="situacao_fisica"/>
+<default applyOnUpdate="0" expression="" field="observacao"/>
+<default applyOnUpdate="0" expression="" field="data_modificacao"/>
+<default applyOnUpdate="0" expression="" field="controle_uuid"/>
+<default applyOnUpdate="0" expression="" field="usuario_criacao"/>
+<default applyOnUpdate="0" expression="" field="usuario_atualizacao"/>
+<default applyOnUpdate="0" expression="" field="insumo"/>
+<default applyOnUpdate="0" expression="" field="data_insumo"/>
+<default applyOnUpdate="0" expression="" field="visivel"/>
+<default applyOnUpdate="0" expression="" field="texto_edicao"/>
+<default applyOnUpdate="0" expression="" field="carta_mini"/>
+<default applyOnUpdate="0" expression="" field="label_x"/>
+<default applyOnUpdate="0" expression="" field="label_y"/>
+<default applyOnUpdate="0" expression="" field="justificativa_txt"/>
+<default applyOnUpdate="0" expression="" field="simb_x"/>
+<default applyOnUpdate="0" expression="" field="simb_y"/>
+<default applyOnUpdate="0" expression="" field="simb_rot"/>
+</defaults>
+<constraints>
+<constraint exp_strength="0" notnull_strength="1" unique_strength="1" constraints="3" field="id"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="nome"/>
+<constraint exp_strength="0" notnull_strength="1" unique_strength="0" constraints="1" field="tipo"/>
+<constraint exp_strength="0" notnull_strength="1" unique_strength="0" constraints="1" field="revestimento"/>
+<constraint exp_strength="0" notnull_strength="1" unique_strength="0" constraints="1" field="uso_pista"/>
+<constraint exp_strength="0" notnull_strength="1" unique_strength="0" constraints="1" field="situacao_fisica"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="observacao"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="data_modificacao"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="controle_uuid"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="usuario_criacao"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="usuario_atualizacao"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="insumo"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="data_insumo"/>
+<constraint exp_strength="0" notnull_strength="1" unique_strength="0" constraints="1" field="visivel"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="texto_edicao"/>
+<constraint exp_strength="0" notnull_strength="1" unique_strength="0" constraints="1" field="carta_mini"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="label_x"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="label_y"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="justificativa_txt"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="simb_x"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="simb_y"/>
+<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="simb_rot"/>
+</constraints>
+<constraintExpressions>
+<constraint desc="" field="id" exp=""/>
+<constraint desc="" field="nome" exp=""/>
+<constraint desc="" field="tipo" exp=""/>
+<constraint desc="" field="revestimento" exp=""/>
+<constraint desc="" field="uso_pista" exp=""/>
+<constraint desc="" field="situacao_fisica" exp=""/>
+<constraint desc="" field="observacao" exp=""/>
+<constraint desc="" field="data_modificacao" exp=""/>
+<constraint desc="" field="controle_uuid" exp=""/>
+<constraint desc="" field="usuario_criacao" exp=""/>
+<constraint desc="" field="usuario_atualizacao" exp=""/>
+<constraint desc="" field="insumo" exp=""/>
+<constraint desc="" field="data_insumo" exp=""/>
+<constraint desc="" field="visivel" exp=""/>
+<constraint desc="" field="texto_edicao" exp=""/>
+<constraint desc="" field="carta_mini" exp=""/>
+<constraint desc="" field="label_x" exp=""/>
+<constraint desc="" field="label_y" exp=""/>
+<constraint desc="" field="justificativa_txt" exp=""/>
+<constraint desc="" field="simb_x" exp=""/>
+<constraint desc="" field="simb_y" exp=""/>
+<constraint desc="" field="simb_rot" exp=""/>
+</constraintExpressions>
+<expressionfields/>
+<attributeactions>
+<defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+</attributeactions>
+<attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
+<columns>
+<column width="-1" hidden="0" name="id" type="field"/>
+<column width="-1" hidden="0" name="nome" type="field"/>
+<column width="-1" hidden="0" name="tipo" type="field"/>
+<column width="-1" hidden="0" name="revestimento" type="field"/>
+<column width="-1" hidden="0" name="uso_pista" type="field"/>
+<column width="-1" hidden="0" name="situacao_fisica" type="field"/>
+<column width="-1" hidden="0" name="observacao" type="field"/>
+<column width="-1" hidden="0" name="data_modificacao" type="field"/>
+<column width="-1" hidden="0" name="controle_uuid" type="field"/>
+<column width="-1" hidden="0" name="usuario_criacao" type="field"/>
+<column width="-1" hidden="0" name="usuario_atualizacao" type="field"/>
+<column width="-1" hidden="0" name="insumo" type="field"/>
+<column width="-1" hidden="0" name="data_insumo" type="field"/>
+<column width="-1" hidden="0" name="visivel" type="field"/>
+<column width="-1" hidden="0" name="texto_edicao" type="field"/>
+<column width="-1" hidden="0" name="carta_mini" type="field"/>
+<column width="-1" hidden="0" name="label_x" type="field"/>
+<column width="-1" hidden="0" name="label_y" type="field"/>
+<column width="-1" hidden="0" name="justificativa_txt" type="field"/>
+<column width="-1" hidden="0" name="simb_x" type="field"/>
+<column width="-1" hidden="0" name="simb_y" type="field"/>
+<column width="-1" hidden="0" name="simb_rot" type="field"/>
+<column width="-1" hidden="1" type="actions"/>
+</columns>
+</attributetableconfig>
+<conditionalstyles>
+<rowstyles/>
+<fieldstyles/>
+</conditionalstyles>
+<storedexpressions/>
+<editform tolerant="1"></editform>
+<editforminit/>
+<editforminitcodesource>0</editforminitcodesource>
+<editforminitfilepath></editforminitfilepath>
+<editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
 QGIS forms can have a Python function that is called when the form is
 opened.
@@ -529,48 +509,59 @@ def my_form_open(dialog, layer, feature):
 	geom = feature.geometry()
 	control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
-  <featformsuppress>0</featformsuppress>
-  <editorlayout>generatedlayout</editorlayout>
-  <editable>
-    <field name="altitude" editable="1"/>
-    <field name="controle_id" editable="1"/>
-    <field name="controle_uuid" editable="1"/>
-    <field name="data_insumo" editable="1"/>
-    <field name="data_modificacao" editable="1"/>
-    <field name="homologacao" editable="1"/>
-    <field name="id" editable="1"/>
-    <field name="insumo" editable="1"/>
-    <field name="largura" editable="1"/>
-    <field name="nome" editable="1"/>
-    <field name="observacao" editable="1"/>
-    <field name="revestimento" editable="1"/>
-    <field name="situacao_fisica" editable="1"/>
-    <field name="tipo" editable="1"/>
-    <field name="uso_pista" editable="1"/>
-    <field name="usuario_atualizacao" editable="1"/>
-    <field name="usuario_criacao" editable="1"/>
-  </editable>
-  <labelOnTop>
-    <field name="altitude" labelOnTop="0"/>
-    <field name="controle_id" labelOnTop="0"/>
-    <field name="controle_uuid" labelOnTop="0"/>
-    <field name="data_insumo" labelOnTop="0"/>
-    <field name="data_modificacao" labelOnTop="0"/>
-    <field name="homologacao" labelOnTop="0"/>
-    <field name="id" labelOnTop="0"/>
-    <field name="insumo" labelOnTop="0"/>
-    <field name="largura" labelOnTop="0"/>
-    <field name="nome" labelOnTop="0"/>
-    <field name="observacao" labelOnTop="0"/>
-    <field name="revestimento" labelOnTop="0"/>
-    <field name="situacao_fisica" labelOnTop="0"/>
-    <field name="tipo" labelOnTop="0"/>
-    <field name="uso_pista" labelOnTop="0"/>
-    <field name="usuario_atualizacao" labelOnTop="0"/>
-    <field name="usuario_criacao" labelOnTop="0"/>
-  </labelOnTop>
-  <widgets/>
-  <previewExpression>id</previewExpression>
-  <mapTip></mapTip>
-  <layerGeometryType>0</layerGeometryType>
+<featformsuppress>0</featformsuppress>
+<editorlayout>generatedlayout</editorlayout>
+<editable>
+<field editable="1" name="carta_mini"/>
+<field editable="1" name="controle_uuid"/>
+<field editable="1" name="data_insumo"/>
+<field editable="1" name="data_modificacao"/>
+<field editable="1" name="id"/>
+<field editable="1" name="insumo"/>
+<field editable="1" name="justificativa_txt"/>
+<field editable="1" name="label_x"/>
+<field editable="1" name="label_y"/>
+<field editable="1" name="nome"/>
+<field editable="1" name="observacao"/>
+<field editable="1" name="revestimento"/>
+<field editable="1" name="simb_rot"/>
+<field editable="1" name="simb_x"/>
+<field editable="1" name="simb_y"/>
+<field editable="1" name="situacao_fisica"/>
+<field editable="1" name="texto_edicao"/>
+<field editable="1" name="tipo"/>
+<field editable="1" name="uso_pista"/>
+<field editable="1" name="usuario_atualizacao"/>
+<field editable="1" name="usuario_criacao"/>
+<field editable="1" name="visivel"/>
+</editable>
+<labelOnTop>
+<field name="carta_mini" labelOnTop="0"/>
+<field name="controle_uuid" labelOnTop="0"/>
+<field name="data_insumo" labelOnTop="0"/>
+<field name="data_modificacao" labelOnTop="0"/>
+<field name="id" labelOnTop="0"/>
+<field name="insumo" labelOnTop="0"/>
+<field name="justificativa_txt" labelOnTop="0"/>
+<field name="label_x" labelOnTop="0"/>
+<field name="label_y" labelOnTop="0"/>
+<field name="nome" labelOnTop="0"/>
+<field name="observacao" labelOnTop="0"/>
+<field name="revestimento" labelOnTop="0"/>
+<field name="simb_rot" labelOnTop="0"/>
+<field name="simb_x" labelOnTop="0"/>
+<field name="simb_y" labelOnTop="0"/>
+<field name="situacao_fisica" labelOnTop="0"/>
+<field name="texto_edicao" labelOnTop="0"/>
+<field name="tipo" labelOnTop="0"/>
+<field name="uso_pista" labelOnTop="0"/>
+<field name="usuario_atualizacao" labelOnTop="0"/>
+<field name="usuario_criacao" labelOnTop="0"/>
+<field name="visivel" labelOnTop="0"/>
+</labelOnTop>
+<dataDefinedFieldProperties/>
+<widgets/>
+<previewExpression>"nome"</previewExpression>
+<mapTip></mapTip>
+<layerGeometryType>0</layerGeometryType>
 </qgis>

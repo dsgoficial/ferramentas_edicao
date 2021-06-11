@@ -252,7 +252,7 @@ class DefaultMap(MapManager):
         self.htmlData.customEtapa(composition, jsonData['fases'])
 
         # Sensores
-        self.htmlData.customSensores(composition, jsonData['sensores'])
+        self.htmlData.customSensores(composition, jsonData.get('sensores'))
 
         # Info tecnica carta
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
