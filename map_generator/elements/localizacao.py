@@ -1,12 +1,11 @@
 import os
-from pathlib import Path
 
 from PyQt5.QtGui import QColor
-from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
-                       QgsLayerTreeGroup, QgsLayoutSize, QgsPalLayerSettings,
-                       QgsProject, QgsRectangle, QgsRuleBasedLabeling,
-                       QgsRuleBasedRenderer, QgsSymbol, QgsSymbolLayerRegistry,
-                       QgsTextBufferSettings, QgsTextFormat, QgsVectorLayer)
+from qgis.core import (QgsFeature, QgsGeometry, QgsLayerTreeGroup,
+                       QgsPalLayerSettings, QgsProject, QgsRectangle,
+                       QgsRuleBasedRenderer, QgsSymbol, QgsVectorLayer,
+					   QgsRuleBasedLabeling, QgsTextFormat, QgsTextBufferSettings,
+					   QgsSymbolLayerRegistry, QgsCoordinateReferenceSystem, QgsLayoutSize)
 from qgis.gui import *
 
 from .map_utils import MapParent
@@ -17,8 +16,12 @@ class Localizacao(MapParent):
         self.scale = 25000
         self.adaptacao_nome = True
         self.pais_analisado = 'paisA'
-        self.stylesFolder = Path(__file__).parent.parent / 'estilos' / 'localizacao'
-        self.shp_paises_exterior = Path(__file__).parent.parent / 'limites' / '2020'
+        self.folder_estilos = os.path.join(os.path.dirname(
+            os.path.dirname(__file__)), 'estilos', 'localizacao')
+        self.shp_paises_exterior = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), 'limites', '2020')
+        self.attr_name_shp_paises = 'nome'
+        self.attr_name_unidade_federativa_shp_pais_intersecta = 'NAME_1'
 
     def changeMapGrid(self, mapItem):
         parameters = [
@@ -107,61 +110,141 @@ class Localizacao(MapParent):
     def setAdaptacaoNome(self, adaptacaoNome):
         self.adaptacaoNome = adaptacaoNome
 
-    def make(self, composition, mapArea, showLayers=False):
+    def make(self, composition, selected_feature, adaptacaoNome=False, showLayers=False, isInternational=False):
         # Deletando as variaveis
-        self.deleteGroups(['localizacao'])
-        mapLayers = []
+        self.deleteGroups(['localizacao', 'localizacao_nome_estado'])
+        map_layers = []
 
-        # Creating layer group
-        localizationGroupNode = QgsLayerTreeGroup('localizacao')
-        localizationGroupNode.setItemVisibilityChecked(False)
+        # Criando novas
+        localizacaoGroup_node = QgsLayerTreeGroup('localizacao')
+        localizacaoGroup_node.setItemVisibilityChecked(False)
+        localizacaoNomeEstadoGroup_node = QgsLayerTreeGroup('localizacao_nome_estado')
+        localizacaoNomeEstadoGroup_node.setItemVisibilityChecked(False)
 
-        # Layer for map area
-        grid_bound = mapArea.geometry().boundingBox()
-        mapBoundsRectangle = self.createGridRectangle(grid_bound, 'mapBounds')
-        mapLayers.append(mapBoundsRectangle.id())
+        # Criamos layer para a área do mapa
+        grid_bound = selected_feature.geometry().boundingBox()
+        grid_rectangleLayer = self.createGridRectangle(grid_bound, 'localizacao_gridbound')
+        map_layers.append(grid_rectangleLayer.id())
 
-        # Inserting the states layer
-        stateVectorPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
-        stateVectorStylePath = self.stylesFolder / 'stateStyle.qml'
-        stateVectorLayer = self.loadShapeLayer(
-            stateVectorPath, stateVectorStylePath, 'estados')
-        mapLayers.append(stateVectorLayer.id())
+        # Criamos o layer para os estados e adicionamos no grupo
+        caminho_shp_estado = os.path.join(os.path.dirname(
+            os.path.dirname(__file__)), 'limites', '2020', 'Estados_2020.shp')
+        caminho_estilo_estado = os.path.join(self.folder_estilos, 'no_labels_style.qml')
+        estados_layer_fundo = self.loadShapeLayer(
+            caminho_shp_estado, caminho_estilo_estado, 'estados')
+        map_layers.append(estados_layer_fundo.id())
+
+        # Obtemos os limites e intersecçõescom limites entre países
+        caminho_shp_internacional = os.path.join(os.path.dirname(
+            os.path.dirname(__file__)), 'limites', 'Paises_2020.shp')
+        caminho_estilo_internacional = os.path.join(self.folder_estilos, 'no_labels_style.qml')
+        internacional_layer_fundo = self.loadShapeLayer(
+            caminho_shp_internacional, caminho_estilo_internacional, 'estados')
+        # map_layers.append(internacional_layer_fundo.id())
 
         # Obtemos extent do mapa de localização e intersecoes de estados com a área do mapa e o
-        mapExtents = self.getExtent(mapArea, stateVectorLayer)
-        self.setSymbol(stateVectorLayer)
-        stateVectorLayer.loadNamedStyle(os.path.join(
-            self.stylesFolder, 'localizacao_cinza_estado_sem_traco.qml'))
-        self.setFilter(stateVectorLayer)
-        stateVectorLayer.triggerRepaint()
+        map_extent = self.getExtent(selected_feature, estados_layer_fundo,
+                                    internacional_layer_fundo)
+        self.setSymbol(estados_layer_fundo)
+        estados_layer_fundo.loadNamedStyle(os.path.join(
+            self.folder_estilos, 'localizacao_cinza_estado_sem_traco.qml'))
+        estados_layer_fundo.triggerRepaint()
+        self.setFilter(estados_layer_fundo)
+
+        caminho_estilo_estado_frente = os.path.join(
+            self.folder_estilos, 'contorno_linha_simples_traco_fino.qml')
+        # caminho_estilo_estado_frente = os.path.join(self.folder_estilos, 'contorno_linha_simples_traco_fino_2.qml') #estilo novo
+        layer_estados_frente = self.loadShapeLayer(
+            caminho_shp_estado, caminho_estilo_estado_frente, 'estados_frente')
+        map_layers.append(layer_estados_frente.id())
+        self.setFilter(layer_estados_frente)
 
         # Adiciona layers aos grupos
-        localizationGroupNode.addLayer(mapBoundsRectangle)
-        localizationGroupNode.addLayer(stateVectorLayer)
+        localizacaoGroup_node.addLayer(layer_estados_frente)
+        localizacaoGroup_node.addLayer(grid_rectangleLayer)
+        localizacaoGroup_node.addLayer(estados_layer_fundo)
 
         # Atualizamos o mapa
-        QgsProject.instance().addMapLayer(mapBoundsRectangle, False)
-        QgsProject.instance().addMapLayer(stateVectorLayer, False)
+        QgsProject.instance().addMapLayer(estados_layer_fundo, False)
+        QgsProject.instance().addMapLayer(layer_estados_frente, False)
+        QgsProject.instance().addMapLayer(grid_rectangleLayer, False)
 
         # self.changeMapGrid()
-        self.updateMapItem(composition, None,
-                           stateVectorLayer, mapBoundsRectangle, mapExtents)
+        self.updateMapItem(composition, layer_estados_frente,
+                           estados_layer_fundo, grid_rectangleLayer, map_extent)
 
+        # Lidando com adaptação para os nomes
+        if adaptacaoNome:
+            layer_estadosnames = self.createLayerNomeGroup('estados_nome')
+            map_layers.append(layer_estadosnames.id())
+            QgsProject.instance().addMapLayer(layer_estadosnames, False)
+            localizacaoNomeEstadoGroup_node.addLayer(layer_estadosnames)
+
+            self.setFilterAndStyleNameLayer(layer_estadosnames)
+
+            self.updateNameEstadosMapItem(composition, map_extent, layer_estadosnames)
+        else:
+            nameEstadosMapItem = composition.itemById("map_localizacao_adaptacao")
+            if nameEstadosMapItem is not None:
+                nameEstadosMapItem.setVisibility(False)
+            self.setLabel(estados_layer_fundo, isInternational)
         if showLayers:
             root = QgsProject.instance().layerTreeRoot()
-            root.addChildNode(localizationGroupNode)
+            root.addChildNode(localizacaoGroup_node)
+            root.addChildNode(localizacaoNomeEstadoGroup_node)
 
-        return mapLayers
+        return map_layers
 
-    def getExtent(self, selectedFeature, estados_layer):
+    def createLayerNomeGroup(self, layername_estadosnames):
+        estado_uri = os.path.join(os.path.dirname(
+            os.path.dirname(__file__)), 'limites', 'estados_2019.shp')
+        layer_estadosnames = QgsVectorLayer(estado_uri, layername_estadosnames, 'ogr')
+        # QgsProject.instance().addMapLayer(self.estados_layer)
+        if (layer_estadosnames.isValid()):
+            layer_estadosnames.setProviderEncoding(u'UTF-8')
+            layer_estadosnames.dataProvider().setEncoding(u'UTF-8')
+        return layer_estadosnames
+
+    def load_intersection_country_layers(self, names):
+        list_layer_paises = []
+        for name in names:
+            caminho_shp_internacional = os.path.join(os.path.dirname(
+                os.path.dirname(__file__)), 'limites', name + '.shp')
+            caminho_estilo_internacional = os.path.join(self.folder_estilos, 'no_labels_style.qml')
+            internacional_layer_fundo = self.loadShapeLayer(
+                caminho_shp_internacional, caminho_estilo_internacional, name + '_unidades_federativas')
+            list_layer_paises.append(internacional_layer_fundo)
+        return list_layer_paises
+
+    def getExtent(self, selectedFeature, estados_layer, internacional_layer=None):
         bounding = []
         self.estados = []
+        self.regioes = []
         self.grid_bound = selectedFeature.geometry().convexHull()
+        '''
+		# Verifica se no exterior
+		if internacional_layer is not None:
+			for count, pais_feature in enumerate(internacional_layer.getFeatures()):
+				if selectedFeature.geometry().intersects(pais_feature.geometry()):
+					self.paises.append(pais_feature['nome'])
+		
+		# Load shape of countries that intersect
+		if len(self.paises)>0:
+			list_layer_paises = self.load_intersection_country_layers(self.paises)
+			for layer_unidades_federativas_pais_intersecta in list_layer_paises:							
+				for count, unidades_federativas_pais_intersecta in enumerate(layer_unidades_federativas_pais_intersecta.getFeatures()):
+					if selectedFeature.geometry().intersects(unidades_federativas_pais_intersecta.geometry()):
+						self.unidades_federativas_pais_analise.append(unidades_federativas_pais_intersecta[self.attr_name_unidade_federativa_shp_pais_intersecta])
+						bounding.append(unidades_federativas_pais_intersecta.geometry().boundingBox())
+		'''
+
         for count, estado_feature in enumerate(estados_layer.getFeatures()):
             if selectedFeature.geometry().intersects(estado_feature.geometry()):
+                self.regioes.append(estado_feature['REGIAO'])
                 self.estados.append(estado_feature['SIGLA_UF'])
                 bounding.append(estado_feature.geometry().boundingBox())
+        self.regioes = list(set(self.regioes))
+
         bound = bounding[0]
         if len(bounding) > 1:
             for estado_bound in bounding[1:]:
@@ -169,12 +252,30 @@ class Localizacao(MapParent):
         bound.grow(0.8)
         return bound
 
+    def createTemporaryRectangleStyle(self):
+        symbol = QgsSymbol.defaultSymbol(self.auxiliarRectangleLayer.geometryType())
+        renderer = QgsRuleBasedRenderer(symbol)
+        root_rule = renderer.rootRule()
+        rule = root_rule.children()[0].clone()
+        rule.symbol().setColor(QColor('white'))
+        root_rule.appendChild(rule)
+        root_rule.removeChildAt(0)
+        self.auxiliarRectangleLayer.setRenderer(renderer)
+        self.auxiliarRectangleLayer.triggerRepaint()
+
+    def createAuxiliarRectFeat(self):
+        self.auxiliarRectFeat = QgsFeature()
+        auxiliarRectangleLayer_bound = QgsRectangle(self.bound)
+        auxiliarRectangleLayer_bound.grow(10)
+        self.auxiliarRectFeat.setGeometry(QgsGeometry.fromRect(auxiliarRectangleLayer_bound))
+
     def createGridRectangle(self, grid_bound, layer_name):
+        # geometries = [QgsGeometry.fromRect(grid_bound)]
         geometries = [QgsGeometry.fromRect(grid_bound)]
-        mapBoundsRectangle = self.createGridRectangleLayer(layer_name, geometries)
+        grid_rectangleLayer = self.createGridRectangleLayer(layer_name, geometries)
 
         # Setting configuration
-        symbol = QgsSymbol.defaultSymbol(mapBoundsRectangle.geometryType())
+        symbol = QgsSymbol.defaultSymbol(grid_rectangleLayer.geometryType())
 
         renderer = QgsRuleBasedRenderer(symbol)
         root_rule = renderer.rootRule()
@@ -182,25 +283,25 @@ class Localizacao(MapParent):
         mi_rule.symbol().setColor(QColor(213, 242, 213))
         root_rule.appendChild(mi_rule)
         root_rule.removeChildAt(0)
-        mapBoundsRectangle.setRenderer(renderer)
-        mapBoundsRectangle.triggerRepaint()
+        grid_rectangleLayer.setRenderer(renderer)
+        grid_rectangleLayer.triggerRepaint()
 
         # Testing mini scale
         if self.scale < 10000:
-            style_file = os.path.join(self.stylesFolder, 'simbologia_localizacao.qml')
-            self.loadStyleToLayer(mapBoundsRectangle, style_file)
+            style_file = os.path.join(self.folder_estilos, 'simbologia_localizacao.qml')
+            self.loadStyleToLayer(grid_rectangleLayer, style_file)
         elif self.scale == 25000:
-            # style_file = os.path.join(self.stylesFolder, 'simbologia_localizacao_moldura_grandes_escalas_v2.qml')
-            style_file = os.path.join(self.stylesFolder, 'simbologia_roi_em_escala.qml')
-            self.loadStyleToLayer(mapBoundsRectangle, style_file)
+            # style_file = os.path.join(self.folder_estilos, 'simbologia_localizacao_moldura_grandes_escalas_v2.qml')
+            style_file = os.path.join(self.folder_estilos, 'simbologia_roi_em_escala.qml')
+            self.loadStyleToLayer(grid_rectangleLayer, style_file)
         else:
-            # style_file = os.path.join(self.stylesFolder, 'simbologia_localizacao_ge_v3.qml')
-            style_file = os.path.join(self.stylesFolder, 'simbologia_roi_em_escala.qml')
-            self.loadStyleToLayer(mapBoundsRectangle, style_file)
-        return mapBoundsRectangle
+            # style_file = os.path.join(self.folder_estilos, 'simbologia_localizacao_ge_v3.qml')
+            style_file = os.path.join(self.folder_estilos, 'simbologia_roi_em_escala.qml')
+            self.loadStyleToLayer(grid_rectangleLayer, style_file)
+        return grid_rectangleLayer
 
     def setFilterAndStyleNameLayer(self, layer):
-        style_file = os.path.join(self.stylesFolder, 'no_symbology_style.qml')
+        style_file = os.path.join(self.folder_estilos, 'no_symbology_style.qml')
         layer.loadNamedStyle(style_file)
         layer.triggerRepaint()
 
@@ -233,7 +334,7 @@ class Localizacao(MapParent):
             # create and append a new rule
             #root = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
             rule = QgsRuleBasedLabeling.Rule(settings)
-            expression = ' \"UF\" = \'{}\''.format(uf_estado)
+            expression = ' \"SIGLA_UF\" = \'{}\''.format(uf_estado)
             rule.setFilterExpression(expression)
             rule.setActive(True)
 
@@ -270,7 +371,7 @@ class Localizacao(MapParent):
         rule = root_rule.children()[0].clone()
         # set the label, expression and color
         rule.setLabel(label)
-        expression = ' \"UF\" = \'{}\''.format(uf_estado)
+        expression = ' \"SIGLA_UF\" = \'{}\''.format(uf_estado)
         rule.setFilterExpression(expression)
         # rule.symbol().setColor(QColor(color_name))
         return rule
@@ -281,7 +382,7 @@ class Localizacao(MapParent):
 
         # Line layer
         lineMeta = registry.symbolLayerMetadata("SimpleLine")
-        lineLayer = lineMeta.createSymbolLayer({'line_width': '0.20', 'color': '0,0,0', 'offset': '0',
+        lineLayer = lineMeta.createSymbolLayer({'line_width': '0.00', 'color': '0,0,0', 'offset': '0',
                                                'penstyle': 'solid', 'use_custom_dash': '0', 'joinstyle': 'bevel', 'capstyle': 'square'})
 
         fillMeta = registry.symbolLayerMetadata("SimpleFill")
@@ -308,7 +409,7 @@ class Localizacao(MapParent):
         estados_layer.setRenderer(renderer)
         estados_layer.triggerRepaint()
 
-    def setLabel(self, estados_layer):
+    def setLabel(self, estados_layer, isInternational):
         # Getting base rule
         symbol = QgsSymbol.defaultSymbol(estados_layer.geometryType())
         renderer = QgsRuleBasedRenderer(symbol)
@@ -316,7 +417,10 @@ class Localizacao(MapParent):
         # Creating Rule
         label = 'Estados'
         settings = QgsPalLayerSettings()
-        settings.fieldName = 'upper("nome")'
+        if isInternational:
+            settings.fieldName = 'concat(upper("nome"), \' - \', upper("SIGLA_PAIS"))'
+        else:
+            settings.fieldName = 'upper("nome")'
         test = True
         if test:
             settings.Placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
@@ -350,7 +454,7 @@ class Localizacao(MapParent):
         estados_layer.setLabelsEnabled(True)
         estados_layer.triggerRepaint()
 
-    def updateMapItem(self, composition, layer_estados_frente, estados_layer, mapBoundsRectangle, bound, mapItem=None):
+    def updateMapItem(self, composition, layer_estados_frente, estados_layer, grid_rectangleLayer, bound, mapItem=None):
         if mapItem is None:
             mapItem = composition.itemById("map_localizacao")
         if mapItem is not None:
@@ -361,14 +465,14 @@ class Localizacao(MapParent):
             mapItem.setExtent(bound)
             mapItem.refresh()
             # self.changeMapGrid(mapItem)
-            mapItem.setLayers([mapBoundsRectangle, estados_layer])
+            mapItem.setLayers([layer_estados_frente, grid_rectangleLayer, estados_layer])
 
     def updateNameEstadosMapItem(self, composition, bound, layer_estadosnames):
         nameEstadosMapItem = composition.itemById("map_localizacao_adaptacao")
         if nameEstadosMapItem is not None:
-            nameEstadosMapItem.setVisibility(False)
-        #     nameEstadosMapItem.setBackgroundEnabled(False)
-        #     nameEstadosMapItem.setFixedSize(QgsLayoutSize(74, 74))
-        #     nameEstadosMapItem.setExtent(bound)
-        #     nameEstadosMapItem.refresh()
-        #     nameEstadosMapItem.setLayers([layer_estadosnames])
+            nameEstadosMapItem.setVisibility(True)
+            nameEstadosMapItem.setBackgroundEnabled(False)
+            nameEstadosMapItem.setFixedSize(QgsLayoutSize(74, 74))
+            nameEstadosMapItem.setExtent(bound)
+            nameEstadosMapItem.refresh()
+            nameEstadosMapItem.setLayers([layer_estadosnames])

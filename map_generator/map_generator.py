@@ -137,7 +137,7 @@ class MapManager(MapTools):
 		# Mapa de Divisão
 		if composition.itemById("map_divisao") is not None:
 			self.divisao.setEPSG(self.hemisferio, self.fuso)
-			ids_maplayers.extend(self.divisao.make(composition, map_extent_feature, showLayers, jsonData['territorio_internacional']))
+			ids_maplayers.extend(self.divisao.make(composition, map_extent_feature, showLayers, jsonData.get('territorio_internacional')))
 
 		# Mapa de Articulação
 		if composition.itemById("map_articulacao") is not None:
@@ -158,7 +158,7 @@ class MapManager(MapTools):
 
 		# Mapa de Localização
 		if composition.itemById("map_localizacao") is not None:
-			mapLayers_loocalizacao = self.localizacao.make(composition, map_extent_feature, showLayers)
+			mapLayers_loocalizacao = self.localizacao.make(composition, map_extent_feature, False,  showLayers, jsonData.get('territorio_internacional'))
 			ids_maplayers.extend(mapLayers_loocalizacao)
 			# linhas para comentar quando subtitulo estiver funcionado
 			#regioes = self.localizacao.regioes
