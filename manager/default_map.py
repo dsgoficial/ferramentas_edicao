@@ -204,7 +204,7 @@ class DefaultMap(MapManager):
             #     qptList.append(dict_classified)
             self.htmlData.editQpts(compositor, qptList)
 
-    def setCartaConfig(self, jsonData, connectedUri, dict_compositions, teste_no_layers=False):
+    def setCartaConfig(self, jsonData, connectedUri, dict_compositions, mapAreaFeature, teste_no_layers=False):
         '''
         Setting map configurations
         '''
@@ -236,9 +236,6 @@ class DefaultMap(MapManager):
         # Camadas para o produto
         path_json_produto = os.path.join(os.path.dirname(os.path.dirname(
             __file__)), 'map_generator', 'produtos', tipo_produto, 'camadas.json')
-        if teste_no_layers:
-            path_json_produto = os.path.join(os.path.dirname(os.path.dirname(
-                __file__)), 'map_generator', 'produtos', tipo_produto, 'camadas.json')
         productLayersDict = self.readJsonFromPath(path_json_produto)
 
         # Maptables e Minimaptables
@@ -256,10 +253,8 @@ class DefaultMap(MapManager):
 
         # Info tecnica carta
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
-        # self.htmlData.editHTMLInfoTecCarta(
-        #     composition, scale, hemisferio, fuso, str_tipo_produto, jsonData['info_tecnica'])
         self.htmlData.customTecnicalInfo(
-            composition, scale, hemisferio, fuso, str_tipo_produto, jsonData['info_tecnica'])
+            composition, scale, hemisferio, fuso, str_tipo_produto, jsonData.get('info_tecnica'), mapAreaFeature)
 
         # Banco
         if connectedUri:
@@ -274,7 +269,7 @@ class DefaultMap(MapManager):
         key_style = 'caminho_estilo'
         key_epsg = 'epsg'
         image_layers, image_layersId = self.MapC.createLayersRasters(
-            jsonData['imagens'], key_image, key_style, key_epsg)
+            jsonData.get('imagens', []), key_image, key_style, key_epsg)
 
         # Adiciona camadas e imagens para serem mostradas no mapa e minimapa
         layers = {
@@ -398,7 +393,7 @@ class DefaultMap(MapManager):
                     jsonData['banco'], connectedUri) if 'connectedUri' in locals() else self.getDBConnection(jsonData['banco'])
                 # Set config for html labels
                 composition, inomen, layers = self.setCartaConfig(
-                    jsonData, connectedUri, dict_compositions, test_noLayers)
+                    jsonData, connectedUri, dict_compositions, feature_map_extent, test_noLayers)
 
                 # Get feature data for maps
                 QgsProject.instance().addMapLayer(layer_feature_map_extent, False)

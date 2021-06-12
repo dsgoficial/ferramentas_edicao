@@ -2,6 +2,7 @@ import datetime
 import os
 import xml.etree.ElementTree as et
 from pathlib import Path
+from qgis.core import QgsFeatureRequest
 
 from .map_utils import MapParent, copyQptToCompositor
 
@@ -201,17 +202,18 @@ class HtmlData(MapParent):
                 edited = self.replaceStr(base_html, {'{sensores}': str_sensores})
             label_tabela_info_ortoimagem.setText(edited)
 
-    def customTecnicalInfo(self, composition, scale, hemisferio, fuso, tipo_produto, tecnicalInfo={}):
+    def customTecnicalInfo(self, composition, scale, hemisphere, fuso, tipo_produto, tecnicalInfo={}, mapAreaFeature=None):
         label = composition.itemById("label_tabela_info_carta")
         if label:
-            hemisphere = 'Norte' if hemisferio == 'N' else 'Sul'
-            falseNorth = '0' if hemisferio == 'Norte' else '+10.000'
+            hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
+            falseNorth = '0' if hemisphere == 'Norte' else '+10.000'
             centralMeridian = -180+(int(fuso)-1)*6 + 3
             curveData = [x for x in curvas[str(scale)].values()]
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros')
-            lenThirdData = 2 + len(thirdPartyData)
+            lenThirdData = 3 + len(thirdPartyData)
 
+            intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
 
             htmlPath = Path(__file__).parent.parent / 'html_auto' / 'technicalInfoBarebone.html'
             htmlData = et.parse(str(htmlPath))
@@ -254,7 +256,18 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('origem_dados_altimetricos'))
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':f'{lenThirdData}'}, 'Origem dos dados geoespaciais fornecidos por terceiros')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL**')
+            if intersectionStatus == 'inside':
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL**')
+                _tmp = self.generateElement(_tmp, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020')
+            elif intersectionStatus == 'intersecs':
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: GADM 3.6')
+                _tmp = self.generateElement(_tmp, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: GADM 3.6')
+            else:
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL** e GADM 3.6')
+                _tmp = self.generateElement(_tmp, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020 e GADM 3.6')
             for info in thirdPartyData:
                 _tmp = self.generateElement(firstTable, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, info)
@@ -269,6 +282,18 @@ class HtmlData(MapParent):
 
             label.setText(et.tostring(root, encoding='unicode', method='html'))
 
+
+    def getIntersectionStatus(self, mapAreaFeature):
+        pathBrazilLayer = Path(__file__).parent.parent / 'limites' / '2020' / 'Brasil_2020.shp'
+        _brazilLayer = self.loadShapeLayer(pathBrazilLayer, '', '_tmp')
+        _brazilGeom = next(_brazilLayer.getFeatures()).geometry()
+        _mapAreaGeom = mapAreaFeature.geometry()
+        if _mapAreaGeom.within(_brazilGeom):
+            return 'inside'
+        elif _mapAreaGeom.intersects(_brazilGeom):
+            return 'intersects'
+        else:
+            return 'outside'
 
     def editHTMLInfoTecCarta(self, composition, scale, hemisferio, fuso, tipo_produto, tecnicalInfo={}):
         '''
