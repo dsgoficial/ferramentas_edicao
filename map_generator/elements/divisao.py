@@ -1,15 +1,13 @@
 import os
 from pathlib import Path
 import math
-import itertools
 
 from qgis.core import (
     QgsLayerTreeGroup, QgsProject, QgsVectorLayer, QgsGeometry,
     QgsDistanceArea, QgsCoordinateReferenceSystem, QgsLineString,
     QgsCoordinateTransform, QgsRectangle, QgsLayoutItemLabel,
     QgsPalLayerSettings, QgsTextFormat, QgsRuleBasedLabeling,
-    QgsTextBufferSettings, QgsRuleBasedRenderer, QgsSymbol,
-    QgsFeatureRequest
+    QgsTextBufferSettings, QgsFeatureRequest, QgsVectorLayerSimpleLabeling
 )
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QVariant
@@ -62,6 +60,9 @@ class Divisao(MapParent):
         self.setStyles(layerCounty, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea)
         html_tabledata = self.customcreateHtmlTableData(orderedCountiesNamesByArea)
         self.setMunicipiosTable(composition,  html_tabledata)
+
+        if not isInternational:
+            self.unsetLabel(layerCountry)
 
         for layer in (gridRectangleLayer, layerOcean, layerCountry, layerBrazil, layerState, layerCounty):
             QgsProject.instance().addMapLayer(layer, False)
@@ -347,3 +348,7 @@ class Divisao(MapParent):
             mapItem.refresh()
             mapItem.setLayers(layers_to_show)
             mapItem.refresh()
+
+    def unsetLabel(self, layer):
+        rule = QgsVectorLayerSimpleLabeling(QgsPalLayerSettings())
+        layer.setLabeling(rule)
