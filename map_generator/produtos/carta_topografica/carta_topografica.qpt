@@ -6346,7 +6346,7 @@
    <node x="17.908" y="0"/>
   </nodes>
  </LayoutItem>
- <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="784,172.621,mm" valign="32" referencePoint="0" size="18,2.4,mm" halign="1" positionOnPage="784,172.621,mm" background="false" excludeFromExports="0" zValue="183" id="categoria_4_linha_3_column_right" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" visibility="1" labelText="Habitação indígena" positionLock="false">
+ <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="784,172.621,mm" valign="32" referencePoint="0" size="18,2.4,mm" halign="1" positionOnPage="784,172.621,mm" background="false" excludeFromExports="0" zValue="183" id="categoria_4_linha_3_column_right" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" visibility="1" labelText="Habitação indígena coletiva" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>
@@ -10554,7 +10554,7 @@
    <node x="12.508" y="0"/>
   </nodes>
  </LayoutItem>
- <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="735,40.801,mm" valign="32" referencePoint="0" size="16.4,2.4,mm" halign="1" positionOnPage="735,40.801,mm" background="false" excludeFromExports="0" zValue="81" id="categoria_1_linha_5_column_left" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{26aafb13-a6a7-4752-811a-7e88c97f587b}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{26aafb13-a6a7-4752-811a-7e88c97f587b}" visibility="1" labelText="Tráfego períodico" positionLock="false">
+ <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="735,40.801,mm" valign="32" referencePoint="0" size="16.4,2.4,mm" halign="1" positionOnPage="735,40.801,mm" background="false" excludeFromExports="0" zValue="81" id="categoria_1_linha_5_column_left" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{26aafb13-a6a7-4752-811a-7e88c97f587b}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{26aafb13-a6a7-4752-811a-7e88c97f587b}" visibility="1" labelText="Tráfego periódico" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>
@@ -11398,7 +11398,7 @@
   <LabelFont style="" description="Arial,6,-1,5,50,0,0,0,0,0"/>
   <FontColor red="0" alpha="255" blue="0" green="0"/>
  </LayoutItem>
- <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="726,18.151,mm" valign="32" referencePoint="0" size="112,4,mm" halign="132" positionOnPage="726,18.151,mm" background="false" excludeFromExports="0" zValue="58" id="categoria_1" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{7d478e43-8491-479f-a341-c388edda9903}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{7d478e43-8491-479f-a341-c388edda9903}" visibility="1" labelText="SISTEMAS DE TRANSPORTE" positionLock="false">
+ <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="726,18.151,mm" valign="32" referencePoint="0" size="112,4,mm" halign="132" positionOnPage="726,18.151,mm" background="false" excludeFromExports="0" zValue="58" id="categoria_1" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{7d478e43-8491-479f-a341-c388edda9903}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{7d478e43-8491-479f-a341-c388edda9903}" visibility="1" labelText="SISTEMA DE TRANSPORTE" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>
