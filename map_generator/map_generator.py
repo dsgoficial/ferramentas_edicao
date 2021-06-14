@@ -1,7 +1,5 @@
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem
 
-from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
-
 from .elements.MiniMapCoordAndOthers import MiniMapCoordAndOthers
 from .elements.escala_carta import EscalaCarta as HandleScale
 from .elements.localizacao import Localizacao
