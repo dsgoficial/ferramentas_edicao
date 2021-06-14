@@ -246,6 +246,10 @@
                 "schema": "edgv"
             },
             {
+                "tabela": "edicao_borda_elemento_hidrografico_l",
+                "schema": "edgv"
+            },
+            {
                 "tabela": "elemnat_elemento_hidrografico_a",
                 "schema": "edgv"
             },
