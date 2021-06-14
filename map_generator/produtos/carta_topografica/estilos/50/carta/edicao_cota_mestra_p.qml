@@ -1,70 +1,70 @@
-<qgis version="3.18.1-Zürich" hasScaleBasedVisibilityFlag="0" minScale="100000000" styleCategories="AllStyleCategories" simplifyDrawingHints="0" simplifyDrawingTol="1" simplifyLocal="1" simplifyMaxScale="1" readOnly="0" labelsEnabled="0" simplifyAlgorithm="0" maxScale="0">
+<qgis maxScale="0" simplifyAlgorithm="0" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" labelsEnabled="0" simplifyDrawingHints="0" styleCategories="AllStyleCategories" simplifyDrawingTol="1" simplifyMaxScale="1" minScale="100000000" version="3.18.3-Zürich" readOnly="0">
 <flags>
 <Identifiable>1</Identifiable>
 <Removable>1</Removable>
 <Searchable>1</Searchable>
 <Private>0</Private>
 </flags>
-<temporal startField="" accumulate="0" endField="" durationUnit="min" mode="0" startExpression="" enabled="0" endExpression="" durationField="" fixedDuration="0">
+<temporal mode="0" startExpression="" endExpression="" accumulate="0" startField="" durationUnit="min" fixedDuration="0" enabled="0" durationField="" endField="">
 <fixedRange>
 <start></start>
 <end></end>
 </fixedRange>
 </temporal>
-<renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" enableorderby="0">
+<renderer-v2 symbollevels="0" type="singleSymbol" forceraster="0" enableorderby="0">
 <symbols>
-<symbol name="0" alpha="1" clip_to_extent="1" type="marker" force_rhr="0">
+<symbol alpha="1" name="0" clip_to_extent="1" type="marker" force_rhr="0">
 <data_defined_properties>
 <Option type="Map">
-<Option value="" name="name" type="QString"/>
+<Option name="name" value="" type="QString"/>
 <Option name="properties"/>
-<Option value="collection" name="type" type="QString"/>
+<Option name="type" value="collection" type="QString"/>
 </Option>
 </data_defined_properties>
-<layer class="SimpleMarker" locked="0" pass="0" enabled="1">
+<layer pass="0" enabled="1" locked="0" class="SimpleMarker">
 <Option type="Map">
-<Option value="0" name="angle" type="QString"/>
-<Option value="190,207,80,255" name="color" type="QString"/>
-<Option value="1" name="horizontal_anchor_point" type="QString"/>
-<Option value="bevel" name="joinstyle" type="QString"/>
-<Option value="circle" name="name" type="QString"/>
-<Option value="0,0" name="offset" type="QString"/>
-<Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
-<Option value="MM" name="offset_unit" type="QString"/>
-<Option value="35,35,35,255" name="outline_color" type="QString"/>
-<Option value="solid" name="outline_style" type="QString"/>
-<Option value="0" name="outline_width" type="QString"/>
-<Option value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale" type="QString"/>
-<Option value="MM" name="outline_width_unit" type="QString"/>
-<Option value="diameter" name="scale_method" type="QString"/>
-<Option value="2" name="size" type="QString"/>
-<Option value="3x:0,0,0,0,0,0" name="size_map_unit_scale" type="QString"/>
-<Option value="MM" name="size_unit" type="QString"/>
-<Option value="1" name="vertical_anchor_point" type="QString"/>
+<Option name="angle" value="0" type="QString"/>
+<Option name="color" value="219,30,42,255" type="QString"/>
+<Option name="horizontal_anchor_point" value="1" type="QString"/>
+<Option name="joinstyle" value="bevel" type="QString"/>
+<Option name="name" value="diamond" type="QString"/>
+<Option name="offset" value="0,0" type="QString"/>
+<Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+<Option name="offset_unit" value="MM" type="QString"/>
+<Option name="outline_color" value="128,17,25,255" type="QString"/>
+<Option name="outline_style" value="solid" type="QString"/>
+<Option name="outline_width" value="0.4" type="QString"/>
+<Option name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+<Option name="outline_width_unit" value="MM" type="QString"/>
+<Option name="scale_method" value="diameter" type="QString"/>
+<Option name="size" value="4.4" type="QString"/>
+<Option name="size_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+<Option name="size_unit" value="MM" type="QString"/>
+<Option name="vertical_anchor_point" value="1" type="QString"/>
 </Option>
 <prop k="angle" v="0"/>
-<prop k="color" v="190,207,80,255"/>
+<prop k="color" v="219,30,42,255"/>
 <prop k="horizontal_anchor_point" v="1"/>
 <prop k="joinstyle" v="bevel"/>
-<prop k="name" v="circle"/>
+<prop k="name" v="diamond"/>
 <prop k="offset" v="0,0"/>
 <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
 <prop k="offset_unit" v="MM"/>
-<prop k="outline_color" v="35,35,35,255"/>
+<prop k="outline_color" v="128,17,25,255"/>
 <prop k="outline_style" v="solid"/>
-<prop k="outline_width" v="0"/>
+<prop k="outline_width" v="0.4"/>
 <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
 <prop k="outline_width_unit" v="MM"/>
 <prop k="scale_method" v="diameter"/>
-<prop k="size" v="2"/>
+<prop k="size" v="4.4"/>
 <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
 <prop k="size_unit" v="MM"/>
 <prop k="vertical_anchor_point" v="1"/>
 <data_defined_properties>
 <Option type="Map">
-<Option value="" name="name" type="QString"/>
+<Option name="name" value="" type="QString"/>
 <Option name="properties"/>
-<Option value="collection" name="type" type="QString"/>
+<Option name="type" value="collection" type="QString"/>
 </Option>
 </data_defined_properties>
 </layer>
@@ -73,28 +73,109 @@
 <rotation/>
 <sizescale/>
 </renderer-v2>
-<customproperties/>
+<customproperties>
+<property value="0" key="embeddedWidgets/count"/>
+<property key="variableNames"/>
+<property key="variableValues"/>
+</customproperties>
 <blendMode>0</blendMode>
 <featureBlendMode>0</featureBlendMode>
 <layerOpacity>1</layerOpacity>
+<SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
+<DiagramCategory width="15" maxScaleDenominator="1e+08" spacing="5" penAlpha="255" backgroundColor="#ffffff" scaleBasedVisibility="0" rotationOffset="270" direction="0" lineSizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" lineSizeType="MM" opacity="1" sizeType="MM" showAxis="1" penWidth="0" scaleDependency="Area" penColor="#000000" diagramOrientation="Up" barWidth="5" minimumSize="0" minScaleDenominator="0" height="15" enabled="0" sizeScale="3x:0,0,0,0,0,0" spacingUnit="MM" spacingUnitScale="3x:0,0,0,0,0,0" labelPlacementMethod="XHeight">
+<fontProperties style="" description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0"/>
+<attribute color="#000000" label="" field=""/>
+<axisSymbol>
+<symbol alpha="1" name="" clip_to_extent="1" type="line" force_rhr="0">
+<data_defined_properties>
+<Option type="Map">
+<Option name="name" value="" type="QString"/>
+<Option name="properties"/>
+<Option name="type" value="collection" type="QString"/>
+</Option>
+</data_defined_properties>
+<layer pass="0" enabled="1" locked="0" class="SimpleLine">
+<Option type="Map">
+<Option name="align_dash_pattern" value="0" type="QString"/>
+<Option name="capstyle" value="square" type="QString"/>
+<Option name="customdash" value="5;2" type="QString"/>
+<Option name="customdash_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+<Option name="customdash_unit" value="MM" type="QString"/>
+<Option name="dash_pattern_offset" value="0" type="QString"/>
+<Option name="dash_pattern_offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+<Option name="dash_pattern_offset_unit" value="MM" type="QString"/>
+<Option name="draw_inside_polygon" value="0" type="QString"/>
+<Option name="joinstyle" value="bevel" type="QString"/>
+<Option name="line_color" value="35,35,35,255" type="QString"/>
+<Option name="line_style" value="solid" type="QString"/>
+<Option name="line_width" value="0.26" type="QString"/>
+<Option name="line_width_unit" value="MM" type="QString"/>
+<Option name="offset" value="0" type="QString"/>
+<Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+<Option name="offset_unit" value="MM" type="QString"/>
+<Option name="ring_filter" value="0" type="QString"/>
+<Option name="tweak_dash_pattern_on_corners" value="0" type="QString"/>
+<Option name="use_custom_dash" value="0" type="QString"/>
+<Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
+</Option>
+<prop k="align_dash_pattern" v="0"/>
+<prop k="capstyle" v="square"/>
+<prop k="customdash" v="5;2"/>
+<prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="customdash_unit" v="MM"/>
+<prop k="dash_pattern_offset" v="0"/>
+<prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="dash_pattern_offset_unit" v="MM"/>
+<prop k="draw_inside_polygon" v="0"/>
+<prop k="joinstyle" v="bevel"/>
+<prop k="line_color" v="35,35,35,255"/>
+<prop k="line_style" v="solid"/>
+<prop k="line_width" v="0.26"/>
+<prop k="line_width_unit" v="MM"/>
+<prop k="offset" v="0"/>
+<prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<prop k="offset_unit" v="MM"/>
+<prop k="ring_filter" v="0"/>
+<prop k="tweak_dash_pattern_on_corners" v="0"/>
+<prop k="use_custom_dash" v="0"/>
+<prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+<data_defined_properties>
+<Option type="Map">
+<Option name="name" value="" type="QString"/>
+<Option name="properties"/>
+<Option name="type" value="collection" type="QString"/>
+</Option>
+</data_defined_properties>
+</layer>
+</symbol>
+</axisSymbol>
+</DiagramCategory>
+</SingleCategoryDiagramRenderer>
+<DiagramLayerSettings dist="0" linePlacementFlags="18" priority="0" showAll="1" placement="0" zIndex="0" obstacle="0">
+<properties>
+<Option type="Map">
+<Option name="name" value="" type="QString"/>
+<Option name="properties"/>
+<Option name="type" value="collection" type="QString"/>
+</Option>
+</properties>
+</DiagramLayerSettings>
 <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
-<activeChecks type="StringList">
-<Option value="" type="QString"/>
-</activeChecks>
+<activeChecks/>
 <checkConfiguration/>
 </geometryOptions>
 <legend type="default-vector"/>
 <referencedLayers/>
 <fieldConfiguration>
-<field configurationFlags="None" name="id">
-<editWidget type="">
+<field name="id" configurationFlags="None">
+<editWidget type="TextEdit">
 <config>
 <Option/>
 </config>
 </editWidget>
 </field>
-<field configurationFlags="None" name="cota">
-<editWidget type="">
+<field name="cota" configurationFlags="None">
+<editWidget type="Range">
 <config>
 <Option/>
 </config>
@@ -102,27 +183,31 @@
 </field>
 </fieldConfiguration>
 <aliases>
-<alias name="" field="id" index="0"/>
-<alias name="" field="cota" index="1"/>
+<alias name="" index="0" field="id"/>
+<alias name="" index="1" field="cota"/>
 </aliases>
 <defaults>
-<default applyOnUpdate="0" expression="" field="id"/>
-<default applyOnUpdate="0" expression="" field="cota"/>
+<default field="id" expression="" applyOnUpdate="0"/>
+<default field="cota" expression="" applyOnUpdate="0"/>
 </defaults>
 <constraints>
-<constraint exp_strength="0" notnull_strength="1" unique_strength="1" constraints="3" field="id"/>
-<constraint exp_strength="0" notnull_strength="0" unique_strength="0" constraints="0" field="cota"/>
+<constraint unique_strength="1" field="id" constraints="3" notnull_strength="1" exp_strength="0"/>
+<constraint unique_strength="0" field="cota" constraints="0" notnull_strength="0" exp_strength="0"/>
 </constraints>
 <constraintExpressions>
-<constraint desc="" field="id" exp=""/>
-<constraint desc="" field="cota" exp=""/>
+<constraint field="id" exp="" desc=""/>
+<constraint field="cota" exp="" desc=""/>
 </constraintExpressions>
 <expressionfields/>
 <attributeactions>
 <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
 </attributeactions>
 <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
-<columns/>
+<columns>
+<column name="id" width="-1" type="field" hidden="0"/>
+<column name="cota" width="-1" type="field" hidden="0"/>
+<column width="-1" type="actions" hidden="1"/>
+</columns>
 </attributetableconfig>
 <conditionalstyles>
 <rowstyles/>
@@ -133,14 +218,36 @@
 <editforminit/>
 <editforminitcodesource>0</editforminitcodesource>
 <editforminitfilepath></editforminitfilepath>
-<editforminitcode><![CDATA[]]></editforminitcode>
+<editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
 <featformsuppress>0</featformsuppress>
 <editorlayout>generatedlayout</editorlayout>
-<editable/>
-<labelOnTop/>
+<editable>
+<field name="cota" editable="1"/>
+<field name="id" editable="1"/>
+</editable>
+<labelOnTop>
+<field name="cota" labelOnTop="0"/>
+<field name="id" labelOnTop="0"/>
+</labelOnTop>
 <dataDefinedFieldProperties/>
 <widgets/>
-<previewExpression></previewExpression>
+<previewExpression>"id"</previewExpression>
 <mapTip></mapTip>
 <layerGeometryType>0</layerGeometryType>
 </qgis>

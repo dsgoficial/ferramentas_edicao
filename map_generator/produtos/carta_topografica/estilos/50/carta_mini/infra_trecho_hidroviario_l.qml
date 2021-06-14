@@ -12,10 +12,9 @@
 </fixedRange>
 </temporal>
 <renderer-v2 symbollevels="0" type="RuleRenderer" forceraster="0" enableorderby="0">
-<rules key="{ec7e5b7e-0649-43c5-98ad-c84f432d69cd}">
-<rule filter="&quot;indice&quot; = 1 and &quot;depressao&quot; = 2" symbol="0" label="L10606A" key="{726ee8af-3df0-44d0-90db-829b9792358b}"/>
-<rule filter="&quot;indice&quot; = 2 and &quot;depressao&quot; = 2" symbol="1" label="L10606B" key="{25710cad-1fb3-44d5-9456-1335a0349db3}"/>
-<rule filter="ELSE" symbol="2" key="{90eed580-d46b-4494-8c3f-0df6b08824c7}"/>
+<rules key="{1d7422bf-70f7-4ad1-9f57-2f77792cb04d}">
+<rule filter="&quot;tipo&quot; = 1" symbol="0" label="Balsa" key="{ca40f577-44d7-4ee8-9374-b931ba44499f}"/>
+<rule filter="ELSE" symbol="1" key="{eaf08c88-bc9e-459e-b11e-03ff397dc4b6}"/>
 </rules>
 <symbols>
 <symbol alpha="1" name="0" clip_to_extent="1" type="line" force_rhr="0">
@@ -30,7 +29,7 @@
 <Option type="Map">
 <Option name="align_dash_pattern" value="0" type="QString"/>
 <Option name="capstyle" value="square" type="QString"/>
-<Option name="customdash" value="5;2" type="QString"/>
+<Option name="customdash" value="1;0.5" type="QString"/>
 <Option name="customdash_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
 <Option name="customdash_unit" value="MM" type="QString"/>
 <Option name="dash_pattern_offset" value="0" type="QString"/>
@@ -38,7 +37,7 @@
 <Option name="dash_pattern_offset_unit" value="MM" type="QString"/>
 <Option name="draw_inside_polygon" value="0" type="QString"/>
 <Option name="joinstyle" value="bevel" type="QString"/>
-<Option name="line_color" value="149,80,88,255" type="QString"/>
+<Option name="line_color" value="0,0,0,255" type="QString"/>
 <Option name="line_style" value="solid" type="QString"/>
 <Option name="line_width" value="0.2" type="QString"/>
 <Option name="line_width_unit" value="MM" type="QString"/>
@@ -47,12 +46,12 @@
 <Option name="offset_unit" value="MM" type="QString"/>
 <Option name="ring_filter" value="0" type="QString"/>
 <Option name="tweak_dash_pattern_on_corners" value="0" type="QString"/>
-<Option name="use_custom_dash" value="0" type="QString"/>
+<Option name="use_custom_dash" value="1" type="QString"/>
 <Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
 </Option>
 <prop k="align_dash_pattern" v="0"/>
 <prop k="capstyle" v="square"/>
-<prop k="customdash" v="5;2"/>
+<prop k="customdash" v="1;0.5"/>
 <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
 <prop k="customdash_unit" v="MM"/>
 <prop k="dash_pattern_offset" v="0"/>
@@ -60,7 +59,7 @@
 <prop k="dash_pattern_offset_unit" v="MM"/>
 <prop k="draw_inside_polygon" v="0"/>
 <prop k="joinstyle" v="bevel"/>
-<prop k="line_color" v="149,80,88,255"/>
+<prop k="line_color" v="0,0,0,255"/>
 <prop k="line_style" v="solid"/>
 <prop k="line_width" v="0.2"/>
 <prop k="line_width_unit" v="MM"/>
@@ -69,7 +68,7 @@
 <prop k="offset_unit" v="MM"/>
 <prop k="ring_filter" v="0"/>
 <prop k="tweak_dash_pattern_on_corners" v="0"/>
-<prop k="use_custom_dash" v="0"/>
+<prop k="use_custom_dash" v="1"/>
 <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
 <data_defined_properties>
 <Option type="Map">
@@ -100,9 +99,9 @@
 <Option name="dash_pattern_offset_unit" value="MM" type="QString"/>
 <Option name="draw_inside_polygon" value="0" type="QString"/>
 <Option name="joinstyle" value="bevel" type="QString"/>
-<Option name="line_color" value="149,80,88,255" type="QString"/>
+<Option name="line_color" value="255,1,5,255" type="QString"/>
 <Option name="line_style" value="solid" type="QString"/>
-<Option name="line_width" value="0.1" type="QString"/>
+<Option name="line_width" value="2" type="QString"/>
 <Option name="line_width_unit" value="MM" type="QString"/>
 <Option name="offset" value="0" type="QString"/>
 <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
@@ -122,71 +121,9 @@
 <prop k="dash_pattern_offset_unit" v="MM"/>
 <prop k="draw_inside_polygon" v="0"/>
 <prop k="joinstyle" v="bevel"/>
-<prop k="line_color" v="149,80,88,255"/>
+<prop k="line_color" v="255,1,5,255"/>
 <prop k="line_style" v="solid"/>
-<prop k="line_width" v="0.1"/>
-<prop k="line_width_unit" v="MM"/>
-<prop k="offset" v="0"/>
-<prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-<prop k="offset_unit" v="MM"/>
-<prop k="ring_filter" v="0"/>
-<prop k="tweak_dash_pattern_on_corners" v="0"/>
-<prop k="use_custom_dash" v="0"/>
-<prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-<data_defined_properties>
-<Option type="Map">
-<Option name="name" value="" type="QString"/>
-<Option name="properties"/>
-<Option name="type" value="collection" type="QString"/>
-</Option>
-</data_defined_properties>
-</layer>
-</symbol>
-<symbol alpha="1" name="2" clip_to_extent="1" type="line" force_rhr="0">
-<data_defined_properties>
-<Option type="Map">
-<Option name="name" value="" type="QString"/>
-<Option name="properties"/>
-<Option name="type" value="collection" type="QString"/>
-</Option>
-</data_defined_properties>
-<layer pass="0" enabled="1" locked="0" class="SimpleLine">
-<Option type="Map">
-<Option name="align_dash_pattern" value="0" type="QString"/>
-<Option name="capstyle" value="square" type="QString"/>
-<Option name="customdash" value="5;2" type="QString"/>
-<Option name="customdash_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-<Option name="customdash_unit" value="MM" type="QString"/>
-<Option name="dash_pattern_offset" value="0" type="QString"/>
-<Option name="dash_pattern_offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-<Option name="dash_pattern_offset_unit" value="MM" type="QString"/>
-<Option name="draw_inside_polygon" value="0" type="QString"/>
-<Option name="joinstyle" value="bevel" type="QString"/>
-<Option name="line_color" value="219,30,42,255" type="QString"/>
-<Option name="line_style" value="solid" type="QString"/>
-<Option name="line_width" value="1.66" type="QString"/>
-<Option name="line_width_unit" value="MM" type="QString"/>
-<Option name="offset" value="0" type="QString"/>
-<Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-<Option name="offset_unit" value="MM" type="QString"/>
-<Option name="ring_filter" value="0" type="QString"/>
-<Option name="tweak_dash_pattern_on_corners" value="0" type="QString"/>
-<Option name="use_custom_dash" value="0" type="QString"/>
-<Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-</Option>
-<prop k="align_dash_pattern" v="0"/>
-<prop k="capstyle" v="square"/>
-<prop k="customdash" v="5;2"/>
-<prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-<prop k="customdash_unit" v="MM"/>
-<prop k="dash_pattern_offset" v="0"/>
-<prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-<prop k="dash_pattern_offset_unit" v="MM"/>
-<prop k="draw_inside_polygon" v="0"/>
-<prop k="joinstyle" v="bevel"/>
-<prop k="line_color" v="219,30,42,255"/>
-<prop k="line_style" v="solid"/>
-<prop k="line_width" v="1.66"/>
+<prop k="line_width" v="2"/>
 <prop k="line_width_unit" v="MM"/>
 <prop k="offset" v="0"/>
 <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -206,11 +143,13 @@
 </symbol>
 </symbols>
 </renderer-v2>
-<labeling type="simple">
+<labeling type="rule-based">
+<rules key="{27997e39-1076-4c57-9846-3bdce541bbd6}">
+<rule filter="&quot;tipo&quot; = 1 and &quot;carta_mini&quot; is false" description="Balsa" key="{63d0c6d9-0b13-4ac4-802d-dd2b3b31e99a}">
 <settings calloutType="simple">
-<text-style fontUnderline="0" fontSize="6" blendMode="0" namedStyle="Condensed Italic" capitalization="1" textOpacity="1" textOrientation="horizontal" fieldName="if(&quot;indice&quot; = 1 and&#xd;&#xa; $length > 400, &quot;cota&quot;, null)&#xd;" useSubstitutions="0" fontSizeUnit="Point" allowHtml="0" fontStrikeout="0" isExpression="1" fontWordSpacing="0" fontLetterSpacing="0" textColor="149,80,88,255" multilineHeight="1" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontWeight="50" fontKerning="1">
+<text-style fontUnderline="0" fontSize="6" blendMode="0" namedStyle="Condensed" capitalization="0" textOpacity="1" textOrientation="horizontal" fieldName="texto_edicao" useSubstitutions="0" fontSizeUnit="Point" allowHtml="0" fontStrikeout="0" isExpression="0" fontWordSpacing="0" fontLetterSpacing="0" textColor="0,0,0,255" multilineHeight="1" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="0" fontWeight="50" fontKerning="1">
 <text-buffer bufferSize="1" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="128" bufferBlendMode="0" bufferOpacity="1" bufferColor="255,255,255,255" bufferNoFill="1" bufferDraw="0"/>
-<text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskJoinStyle="128" maskSizeUnits="MM" maskOpacity="1" maskedSymbolLayers="elemnat_curva_nivel_l_b6f00372_ea99_42ec_a460_8b2d49f75168,{726ee8af-3df0-44d0-90db-829b9792358b},0;elemnat_curva_nivel_l_07eba696_3eb3_4834_b55c_16a2640e595f,{25710cad-1fb3-44d5-9456-1335a0349db3},0;elemnat_curva_nivel_l_07eba696_3eb3_4834_b55c_16a2640e595f,{726ee8af-3df0-44d0-90db-829b9792358b},0" maskEnabled="1" maskType="0" maskSize="0.6"/>
+<text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskJoinStyle="128" maskSizeUnits="MM" maskOpacity="1" maskedSymbolLayers="" maskEnabled="1" maskType="0" maskSize="0.2"/>
 <background shapeSizeY="0" shapeFillColor="255,255,255,255" shapeBorderWidthUnit="MM" shapeRotationType="0" shapeRadiiX="0" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeType="0" shapeSizeType="0" shapeOffsetUnit="MM" shapeRotation="0" shapeRadiiUnit="MM" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeSizeX="0" shapeBorderColor="128,128,128,255" shapeJoinStyle="64" shapeSizeUnit="MM" shapeDraw="0" shapeOffsetX="0" shapeBlendMode="0" shapeRadiiY="0" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeOpacity="1" shapeOffsetY="0" shapeSVGFile="" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidth="0">
 <symbol alpha="1" name="markerSymbol" clip_to_extent="1" type="marker" force_rhr="0">
 <data_defined_properties>
@@ -223,7 +162,7 @@
 <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
 <Option type="Map">
 <Option name="angle" value="0" type="QString"/>
-<Option name="color" value="114,155,111,255" type="QString"/>
+<Option name="color" value="141,90,153,255" type="QString"/>
 <Option name="horizontal_anchor_point" value="1" type="QString"/>
 <Option name="joinstyle" value="bevel" type="QString"/>
 <Option name="name" value="circle" type="QString"/>
@@ -242,7 +181,7 @@
 <Option name="vertical_anchor_point" value="1" type="QString"/>
 </Option>
 <prop k="angle" v="0"/>
-<prop k="color" v="114,155,111,255"/>
+<prop k="color" v="141,90,153,255"/>
 <prop k="horizontal_anchor_point" v="1"/>
 <prop k="joinstyle" v="bevel"/>
 <prop k="name" v="circle"/>
@@ -280,8 +219,8 @@
 <substitutions/>
 </text-style>
 <text-format rightDirectionSymbol=">" formatNumbers="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" decimals="3" plussign="0" wrapChar="" useMaxLineLengthForAutoWrap="1" multilineAlign="0" reverseDirectionSymbol="0" autoWrapLength="0" placeDirectionSymbol="0"/>
-<placement centroidWhole="0" repeatDistance="2000" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" fitInPolygonOnly="0" rotationAngle="0" lineAnchorPercent="0.5" overrunDistance="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" geometryGeneratorType="LineGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" placement="2" maxCurvedCharAngleIn="25" polygonPlacementFlags="2" yOffset="0" maxCurvedCharAngleOut="-25" repeatDistanceUnits="MM" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" dist="0" quadOffset="4" offsetType="0" distUnits="MM" preserveRotation="1" priority="5" centroidInside="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" layerType="LineGeometry" placementFlags="9"/>
-<rendering fontLimitPixelSize="0" drawLabels="1" obstacleType="1" limitNumLabels="0" upsidedownLabels="0" fontMinPixelSize="3" obstacle="1" minFeatureSize="0" scaleVisibility="1" fontMaxPixelSize="10000" mergeLines="1" scaleMin="1000" obstacleFactor="1" maxNumLabels="2000" scaleMax="100000" labelPerPart="0" displayAll="0" zIndex="0"/>
+<placement centroidWhole="0" repeatDistance="0" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" fitInPolygonOnly="0" rotationAngle="0" lineAnchorPercent="0.5" overrunDistance="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" geometryGeneratorType="LineGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" placement="3" maxCurvedCharAngleIn="25" polygonPlacementFlags="2" yOffset="0" maxCurvedCharAngleOut="-25" repeatDistanceUnits="MM" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" dist="0" quadOffset="4" offsetType="0" distUnits="MM" preserveRotation="1" priority="5" centroidInside="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" layerType="LineGeometry" placementFlags="10"/>
+<rendering fontLimitPixelSize="0" drawLabels="1" obstacleType="1" limitNumLabels="0" upsidedownLabels="0" fontMinPixelSize="3" obstacle="1" minFeatureSize="0" scaleVisibility="0" fontMaxPixelSize="10000" mergeLines="0" scaleMin="0" obstacleFactor="1" maxNumLabels="2000" scaleMax="0" labelPerPart="0" displayAll="1" zIndex="0"/>
 <dd_properties>
 <Option type="Map">
 <Option name="name" value="" type="QString"/>
@@ -313,9 +252,10 @@
 </Option>
 </callout>
 </settings>
+</rule>
+</rules>
 </labeling>
 <customproperties>
-<property value="&quot;id&quot;" key="dualview/previewExpressions"/>
 <property value="0" key="embeddedWidgets/count"/>
 <property key="variableNames"/>
 <property key="variableValues"/>
@@ -416,35 +356,36 @@
 </config>
 </editWidget>
 </field>
-<field name="cota" configurationFlags="None">
-<editWidget type="Range">
+<field name="nome" configurationFlags="None">
+<editWidget type="TextEdit">
 <config>
 <Option/>
 </config>
 </editWidget>
 </field>
-<field name="indice" configurationFlags="None">
+<field name="tipo" configurationFlags="None">
 <editWidget type="ValueMap">
 <config>
 <Option type="Map">
-<Option name="map" type="Map">
-<Option name="A SER PREENCHIDO (9999)" value="9999" type="QString"/>
-<Option name="Auxiliar (3)" value="3" type="QString"/>
-<Option name="Mestra (1)" value="1" type="QString"/>
-<Option name="Normal (2)" value="2" type="QString"/>
-</Option>
-</Option>
-</config>
-</editWidget>
-</field>
-<field name="depressao" configurationFlags="None">
-<editWidget type="ValueMap">
-<config>
+<Option name="map" type="List">
 <Option type="Map">
-<Option name="map" type="Map">
 <Option name="A SER PREENCHIDO (9999)" value="9999" type="QString"/>
-<Option name="Não (2)" value="2" type="QString"/>
-<Option name="Sim (1)" value="1" type="QString"/>
+</Option>
+<Option type="Map">
+<Option name="Balsa (1)" value="1" type="QString"/>
+</Option>
+<Option type="Map">
+<Option name="Desconhecido (0)" value="0" type="QString"/>
+</Option>
+<Option type="Map">
+<Option name="Embarcação de pequeno porte (2)" value="2" type="QString"/>
+</Option>
+<Option type="Map">
+<Option name="Empurrador-balsa (3)" value="3" type="QString"/>
+</Option>
+<Option type="Map">
+<Option name="Lancha (4)" value="4" type="QString"/>
+</Option>
 </Option>
 </Option>
 </config>
@@ -551,29 +492,27 @@
 </fieldConfiguration>
 <aliases>
 <alias name="" index="0" field="id"/>
-<alias name="" index="1" field="cota"/>
-<alias name="" index="2" field="indice"/>
-<alias name="" index="3" field="depressao"/>
-<alias name="" index="4" field="observacao"/>
-<alias name="" index="5" field="data_modificacao"/>
-<alias name="" index="6" field="controle_uuid"/>
-<alias name="" index="7" field="usuario_criacao"/>
-<alias name="" index="8" field="usuario_atualizacao"/>
-<alias name="" index="9" field="insumo"/>
-<alias name="" index="10" field="data_insumo"/>
-<alias name="" index="11" field="visivel"/>
-<alias name="" index="12" field="texto_edicao"/>
-<alias name="" index="13" field="carta_mini"/>
-<alias name="" index="14" field="label_x"/>
-<alias name="" index="15" field="label_y"/>
-<alias name="" index="16" field="justificativa_txt"/>
-<alias name="" index="17" field="lenght_otf"/>
+<alias name="" index="1" field="nome"/>
+<alias name="" index="2" field="tipo"/>
+<alias name="" index="3" field="observacao"/>
+<alias name="" index="4" field="data_modificacao"/>
+<alias name="" index="5" field="controle_uuid"/>
+<alias name="" index="6" field="usuario_criacao"/>
+<alias name="" index="7" field="usuario_atualizacao"/>
+<alias name="" index="8" field="insumo"/>
+<alias name="" index="9" field="data_insumo"/>
+<alias name="" index="10" field="visivel"/>
+<alias name="" index="11" field="texto_edicao"/>
+<alias name="" index="12" field="carta_mini"/>
+<alias name="" index="13" field="label_x"/>
+<alias name="" index="14" field="label_y"/>
+<alias name="" index="15" field="justificativa_txt"/>
+<alias name="" index="16" field="lenght_otf"/>
 </aliases>
 <defaults>
 <default field="id" expression="" applyOnUpdate="0"/>
-<default field="cota" expression="" applyOnUpdate="0"/>
-<default field="indice" expression="" applyOnUpdate="0"/>
-<default field="depressao" expression="" applyOnUpdate="0"/>
+<default field="nome" expression="" applyOnUpdate="0"/>
+<default field="tipo" expression="" applyOnUpdate="0"/>
 <default field="observacao" expression="" applyOnUpdate="0"/>
 <default field="data_modificacao" expression="" applyOnUpdate="0"/>
 <default field="controle_uuid" expression="" applyOnUpdate="0"/>
@@ -591,9 +530,8 @@
 </defaults>
 <constraints>
 <constraint unique_strength="1" field="id" constraints="3" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="cota" constraints="1" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="indice" constraints="1" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="depressao" constraints="1" notnull_strength="1" exp_strength="0"/>
+<constraint unique_strength="0" field="nome" constraints="0" notnull_strength="0" exp_strength="0"/>
+<constraint unique_strength="0" field="tipo" constraints="1" notnull_strength="1" exp_strength="0"/>
 <constraint unique_strength="0" field="observacao" constraints="0" notnull_strength="0" exp_strength="0"/>
 <constraint unique_strength="0" field="data_modificacao" constraints="0" notnull_strength="0" exp_strength="0"/>
 <constraint unique_strength="0" field="controle_uuid" constraints="0" notnull_strength="0" exp_strength="0"/>
@@ -611,9 +549,8 @@
 </constraints>
 <constraintExpressions>
 <constraint field="id" exp="" desc=""/>
-<constraint field="cota" exp="" desc=""/>
-<constraint field="indice" exp="" desc=""/>
-<constraint field="depressao" exp="" desc=""/>
+<constraint field="nome" exp="" desc=""/>
+<constraint field="tipo" exp="" desc=""/>
 <constraint field="observacao" exp="" desc=""/>
 <constraint field="data_modificacao" exp="" desc=""/>
 <constraint field="controle_uuid" exp="" desc=""/>
@@ -631,19 +568,15 @@
 </constraintExpressions>
 <expressionfields>
 <field precision="0" name="lenght_otf" typeName="" comment="" type="6" expression="$length" length="0" subType="0"/>
-<field precision="0" name="lenght_otf" typeName="" comment="" type="6" expression="$length" length="0" subType="0"/>
-<field precision="0" name="lenght_otf" typeName="" comment="" type="6" expression="$length" length="0" subType="0"/>
-<field precision="0" name="lenght_otf" typeName="" comment="" type="6" expression="$length" length="0" subType="0"/>
 </expressionfields>
 <attributeactions>
 <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
 </attributeactions>
-<attributetableconfig sortExpression="&quot;indice&quot;" sortOrder="1" actionWidgetStyle="dropDown">
+<attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
 <columns>
 <column name="id" width="-1" type="field" hidden="0"/>
-<column name="cota" width="-1" type="field" hidden="0"/>
-<column name="indice" width="166" type="field" hidden="0"/>
-<column name="depressao" width="257" type="field" hidden="0"/>
+<column name="nome" width="-1" type="field" hidden="0"/>
+<column name="tipo" width="-1" type="field" hidden="0"/>
 <column name="observacao" width="-1" type="field" hidden="0"/>
 <column name="data_modificacao" width="-1" type="field" hidden="0"/>
 <column name="controle_uuid" width="-1" type="field" hidden="0"/>
@@ -651,14 +584,14 @@
 <column name="usuario_atualizacao" width="-1" type="field" hidden="0"/>
 <column name="insumo" width="-1" type="field" hidden="0"/>
 <column name="data_insumo" width="-1" type="field" hidden="0"/>
-<column name="lenght_otf" width="-1" type="field" hidden="0"/>
-<column width="-1" type="actions" hidden="1"/>
 <column name="visivel" width="-1" type="field" hidden="0"/>
 <column name="texto_edicao" width="-1" type="field" hidden="0"/>
 <column name="carta_mini" width="-1" type="field" hidden="0"/>
 <column name="label_x" width="-1" type="field" hidden="0"/>
 <column name="label_y" width="-1" type="field" hidden="0"/>
 <column name="justificativa_txt" width="-1" type="field" hidden="0"/>
+<column name="lenght_otf" width="-1" type="field" hidden="0"/>
+<column width="-1" type="actions" hidden="1"/>
 </columns>
 </attributetableconfig>
 <conditionalstyles>
@@ -670,20 +603,20 @@
 <editforminit/>
 <editforminitcodesource>0</editforminitcodesource>
 <editforminitfilepath></editforminitfilepath>
-<editforminitcode><![CDATA[# -*- código: utf-8 -*-
+<editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
-Formas QGIS podem ter uma função Python que é chamada quando o formulário é
-aberto.
+QGIS forms can have a Python function that is called when the form is
+opened.
 
-Use esta função para adicionar lógica extra para seus formulários.
+Use this function to add extra logic to your forms.
 
-Digite o nome da função na "função Python Init"
-campo.
-Um exemplo a seguir:
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
 """
-de qgis.PyQt.QtWidgets importar QWidget
+from qgis.PyQt.QtWidgets import QWidget
 
-def my_form_open(diálogo, camada, feição):
+def my_form_open(dialog, layer, feature):
 	geom = feature.geometry()
 	control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
@@ -692,19 +625,18 @@ def my_form_open(diálogo, camada, feição):
 <editable>
 <field name="carta_mini" editable="1"/>
 <field name="controle_uuid" editable="1"/>
-<field name="cota" editable="1"/>
 <field name="data_insumo" editable="1"/>
 <field name="data_modificacao" editable="1"/>
-<field name="depressao" editable="1"/>
 <field name="id" editable="1"/>
-<field name="indice" editable="1"/>
 <field name="insumo" editable="1"/>
 <field name="justificativa_txt" editable="1"/>
 <field name="label_x" editable="1"/>
 <field name="label_y" editable="1"/>
 <field name="lenght_otf" editable="0"/>
+<field name="nome" editable="1"/>
 <field name="observacao" editable="1"/>
 <field name="texto_edicao" editable="1"/>
+<field name="tipo" editable="1"/>
 <field name="usuario_atualizacao" editable="1"/>
 <field name="usuario_criacao" editable="1"/>
 <field name="visivel" editable="1"/>
@@ -712,26 +644,25 @@ def my_form_open(diálogo, camada, feição):
 <labelOnTop>
 <field name="carta_mini" labelOnTop="0"/>
 <field name="controle_uuid" labelOnTop="0"/>
-<field name="cota" labelOnTop="0"/>
 <field name="data_insumo" labelOnTop="0"/>
 <field name="data_modificacao" labelOnTop="0"/>
-<field name="depressao" labelOnTop="0"/>
 <field name="id" labelOnTop="0"/>
-<field name="indice" labelOnTop="0"/>
 <field name="insumo" labelOnTop="0"/>
 <field name="justificativa_txt" labelOnTop="0"/>
 <field name="label_x" labelOnTop="0"/>
 <field name="label_y" labelOnTop="0"/>
 <field name="lenght_otf" labelOnTop="0"/>
+<field name="nome" labelOnTop="0"/>
 <field name="observacao" labelOnTop="0"/>
 <field name="texto_edicao" labelOnTop="0"/>
+<field name="tipo" labelOnTop="0"/>
 <field name="usuario_atualizacao" labelOnTop="0"/>
 <field name="usuario_criacao" labelOnTop="0"/>
 <field name="visivel" labelOnTop="0"/>
 </labelOnTop>
 <dataDefinedFieldProperties/>
 <widgets/>
-<previewExpression>"id"</previewExpression>
+<previewExpression>"nome"</previewExpression>
 <mapTip></mapTip>
 <layerGeometryType>1</layerGeometryType>
 </qgis>

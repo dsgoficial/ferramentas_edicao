@@ -147,9 +147,9 @@ class MapTools:
                 layer_db = self.getLayer(connectedUri, dict_layer, grupo)   
                 if (layer_db.isValid()):
                     QgsProject.instance().addMapLayer(layer_db, False)         			
-                    style_file = os.path.join(style_folder, dict_layer['tabela'] + '.qml'  )
+                    style_file = os.path.join(style_folder, dict_layer['tabela'] + '.qml')
                     if os.path.exists(style_file):
-                        layer_db.loadNamedStyle(style_file)
+                        _, status = layer_db.loadNamedStyle(style_file, True)
                         layer_db.triggerRepaint()
                     layers_db.append(layer_db)
                     layersId_db.append(layer_db.id())

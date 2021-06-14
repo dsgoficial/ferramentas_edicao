@@ -11,75 +11,14 @@
 <end></end>
 </fixedRange>
 </temporal>
-<renderer-v2 symbollevels="0" type="singleSymbol" forceraster="0" enableorderby="0">
-<symbols>
-<symbol alpha="1" name="0" clip_to_extent="1" type="marker" force_rhr="0">
-<data_defined_properties>
-<Option type="Map">
-<Option name="name" value="" type="QString"/>
-<Option name="properties"/>
-<Option name="type" value="collection" type="QString"/>
-</Option>
-</data_defined_properties>
-<layer pass="0" enabled="1" locked="0" class="SimpleMarker">
-<Option type="Map">
-<Option name="angle" value="0" type="QString"/>
-<Option name="color" value="149,80,88,255" type="QString"/>
-<Option name="horizontal_anchor_point" value="1" type="QString"/>
-<Option name="joinstyle" value="bevel" type="QString"/>
-<Option name="name" value="circle" type="QString"/>
-<Option name="offset" value="0,0" type="QString"/>
-<Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-<Option name="offset_unit" value="MM" type="QString"/>
-<Option name="outline_color" value="149,80,88,255" type="QString"/>
-<Option name="outline_style" value="no" type="QString"/>
-<Option name="outline_width" value="0" type="QString"/>
-<Option name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-<Option name="outline_width_unit" value="MM" type="QString"/>
-<Option name="scale_method" value="diameter" type="QString"/>
-<Option name="size" value="0.64" type="QString"/>
-<Option name="size_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-<Option name="size_unit" value="MM" type="QString"/>
-<Option name="vertical_anchor_point" value="1" type="QString"/>
-</Option>
-<prop k="angle" v="0"/>
-<prop k="color" v="149,80,88,255"/>
-<prop k="horizontal_anchor_point" v="1"/>
-<prop k="joinstyle" v="bevel"/>
-<prop k="name" v="circle"/>
-<prop k="offset" v="0,0"/>
-<prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-<prop k="offset_unit" v="MM"/>
-<prop k="outline_color" v="149,80,88,255"/>
-<prop k="outline_style" v="no"/>
-<prop k="outline_width" v="0"/>
-<prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-<prop k="outline_width_unit" v="MM"/>
-<prop k="scale_method" v="diameter"/>
-<prop k="size" v="0.64"/>
-<prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-<prop k="size_unit" v="MM"/>
-<prop k="vertical_anchor_point" v="1"/>
-<data_defined_properties>
-<Option type="Map">
-<Option name="name" value="" type="QString"/>
-<Option name="properties"/>
-<Option name="type" value="collection" type="QString"/>
-</Option>
-</data_defined_properties>
-</layer>
-</symbol>
-</symbols>
-<rotation/>
-<sizescale/>
-</renderer-v2>
+<renderer-v2 type="nullSymbol"/>
 <labeling type="rule-based">
-<rules key="{51b81593-a305-41be-a653-b4e51652cecf}">
-<rule filter=" &quot;cota_mais_alta&quot; is true" description="Cota mais alta" key="{253a2f05-e794-4c64-9ad5-6d01c26225e8}">
+<rules key="{291f5d7d-5d9a-47d8-954b-9d0178d8bbfa}">
+<rule filter="&quot;classe&quot; =  'elemnat_trecho_drenagem_l' &#xd;&#xa;and &quot;carta_mini&quot; is true" description="Trecho de Drenagem" key="{bf1d9e64-e079-427f-96dd-0b7be9cd1a57}">
 <settings calloutType="simple">
-<text-style fontUnderline="0" fontSize="8" blendMode="0" namedStyle="Condensed" capitalization="0" textOpacity="1" textOrientation="horizontal" fieldName="cota" useSubstitutions="0" fontSizeUnit="Point" allowHtml="0" fontStrikeout="0" isExpression="0" fontWordSpacing="0" fontLetterSpacing="0" textColor="149,80,88,255" multilineHeight="1" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="0" fontWeight="50" fontKerning="1">
+<text-style fontUnderline="0" fontSize="10" blendMode="0" namedStyle="Condensed Italic" capitalization="0" textOpacity="1" textOrientation="horizontal" fieldName="texto" useSubstitutions="0" fontSizeUnit="Point" allowHtml="0" fontStrikeout="0" isExpression="0" fontWordSpacing="0" fontLetterSpacing="0" textColor="0,160,223,255" multilineHeight="1" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontWeight="50" fontKerning="1">
 <text-buffer bufferSize="1" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="128" bufferBlendMode="0" bufferOpacity="1" bufferColor="255,255,255,255" bufferNoFill="1" bufferDraw="0"/>
-<text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskJoinStyle="128" maskSizeUnits="MM" maskOpacity="1" maskedSymbolLayers="elemnat_curva_nivel_l_07eba696_3eb3_4834_b55c_16a2640e595f,{25710cad-1fb3-44d5-9456-1335a0349db3},0;elemnat_curva_nivel_l_07eba696_3eb3_4834_b55c_16a2640e595f,{726ee8af-3df0-44d0-90db-829b9792358b},0" maskEnabled="1" maskType="0" maskSize="0.2"/>
+<text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskJoinStyle="128" maskSizeUnits="MM" maskOpacity="1" maskedSymbolLayers="" maskEnabled="1" maskType="0" maskSize="0.2"/>
 <background shapeSizeY="0" shapeFillColor="255,255,255,255" shapeBorderWidthUnit="MM" shapeRotationType="0" shapeRadiiX="0" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeType="0" shapeSizeType="0" shapeOffsetUnit="MM" shapeRotation="0" shapeRadiiUnit="MM" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeSizeX="0" shapeBorderColor="128,128,128,255" shapeJoinStyle="64" shapeSizeUnit="MM" shapeDraw="0" shapeOffsetX="0" shapeBlendMode="0" shapeRadiiY="0" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeOpacity="1" shapeOffsetY="0" shapeSVGFile="" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidth="0">
 <symbol alpha="1" name="markerSymbol" clip_to_extent="1" type="marker" force_rhr="0">
 <data_defined_properties>
@@ -92,7 +31,7 @@
 <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
 <Option type="Map">
 <Option name="angle" value="0" type="QString"/>
-<Option name="color" value="125,139,143,255" type="QString"/>
+<Option name="color" value="164,113,88,255" type="QString"/>
 <Option name="horizontal_anchor_point" value="1" type="QString"/>
 <Option name="joinstyle" value="bevel" type="QString"/>
 <Option name="name" value="circle" type="QString"/>
@@ -111,7 +50,7 @@
 <Option name="vertical_anchor_point" value="1" type="QString"/>
 </Option>
 <prop k="angle" v="0"/>
-<prop k="color" v="125,139,143,255"/>
+<prop k="color" v="164,113,88,255"/>
 <prop k="horizontal_anchor_point" v="1"/>
 <prop k="joinstyle" v="bevel"/>
 <prop k="name" v="circle"/>
@@ -148,22 +87,17 @@
 </dd_properties>
 <substitutions/>
 </text-style>
-<text-format rightDirectionSymbol=">" formatNumbers="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" decimals="3" plussign="0" wrapChar="" useMaxLineLengthForAutoWrap="1" multilineAlign="3" reverseDirectionSymbol="0" autoWrapLength="0" placeDirectionSymbol="0"/>
-<placement centroidWhole="0" repeatDistance="0" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" fitInPolygonOnly="0" rotationAngle="0" lineAnchorPercent="0.5" overrunDistance="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" geometryGeneratorType="PointGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" placement="1" maxCurvedCharAngleIn="25" polygonPlacementFlags="2" yOffset="0" maxCurvedCharAngleOut="-25" repeatDistanceUnits="MM" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" dist="0" quadOffset="2" offsetType="0" distUnits="MM" preserveRotation="1" priority="5" centroidInside="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" layerType="PointGeometry" placementFlags="10"/>
+<text-format rightDirectionSymbol=">" formatNumbers="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" decimals="3" plussign="0" wrapChar="" useMaxLineLengthForAutoWrap="1" multilineAlign="0" reverseDirectionSymbol="0" autoWrapLength="0" placeDirectionSymbol="0"/>
+<placement centroidWhole="0" repeatDistance="0" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" fitInPolygonOnly="0" rotationAngle="0" lineAnchorPercent="0.5" overrunDistance="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" geometryGeneratorType="LineGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" placement="3" maxCurvedCharAngleIn="25" polygonPlacementFlags="2" yOffset="0" maxCurvedCharAngleOut="-25" repeatDistanceUnits="MM" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" dist="0" quadOffset="4" offsetType="0" distUnits="MM" preserveRotation="1" priority="5" centroidInside="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" layerType="LineGeometry" placementFlags="9"/>
 <rendering fontLimitPixelSize="0" drawLabels="1" obstacleType="1" limitNumLabels="0" upsidedownLabels="0" fontMinPixelSize="3" obstacle="1" minFeatureSize="0" scaleVisibility="0" fontMaxPixelSize="10000" mergeLines="0" scaleMin="0" obstacleFactor="1" maxNumLabels="2000" scaleMax="0" labelPerPart="0" displayAll="1" zIndex="0"/>
 <dd_properties>
 <Option type="Map">
 <Option name="name" value="" type="QString"/>
 <Option name="properties" type="Map">
-<Option name="PositionX" type="Map">
+<Option name="Size" type="Map">
 <Option name="active" value="true" type="bool"/>
-<Option name="field" value="label_x" type="QString"/>
-<Option name="type" value="2" type="int"/>
-</Option>
-<Option name="PositionY" type="Map">
-<Option name="active" value="true" type="bool"/>
-<Option name="field" value="label_y" type="QString"/>
-<Option name="type" value="2" type="int"/>
+<Option name="expression" value="CASE&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 80* &quot;escala&quot; /1000&#xd;&#xa;THEN 6.0&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 120* &quot;escala&quot; /1000&#xd;&#xa;THEN 6.0&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 160* &quot;escala&quot; /1000&#xd;&#xa;THEN 7.0&#xd;&#xa;ELSE 8.0&#xd;&#xa;END" type="QString"/>
+<Option name="type" value="3" type="int"/>
 </Option>
 </Option>
 <Option name="type" value="collection" type="QString"/>
@@ -194,11 +128,11 @@
 </callout>
 </settings>
 </rule>
-<rule filter="ELSE" key="{9da3a1dd-f595-4cac-a315-77104f818e59}">
+<rule filter="&quot;classe&quot; = 'cobter_massa_dagua_a'&#xd;&#xa;and &quot;carta_mini&quot; is true" description="Massa dagua" key="{0459aa05-3c61-49f8-98bb-9193a124bd0a}">
 <settings calloutType="simple">
-<text-style fontUnderline="0" fontSize="6" blendMode="0" namedStyle="Condensed" capitalization="0" textOpacity="1" textOrientation="horizontal" fieldName="cota" useSubstitutions="0" fontSizeUnit="Point" allowHtml="0" fontStrikeout="0" isExpression="0" fontWordSpacing="0" fontLetterSpacing="0" textColor="149,80,88,255" multilineHeight="1" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="0" fontWeight="50" fontKerning="1">
+<text-style fontUnderline="0" fontSize="10" blendMode="0" namedStyle="Condensed Italic" capitalization="1" textOpacity="1" textOrientation="horizontal" fieldName="texto" useSubstitutions="0" fontSizeUnit="Point" allowHtml="0" fontStrikeout="0" isExpression="0" fontWordSpacing="0" fontLetterSpacing="0" textColor="0,160,223,255" multilineHeight="1" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontWeight="50" fontKerning="1">
 <text-buffer bufferSize="1" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferJoinStyle="128" bufferBlendMode="0" bufferOpacity="1" bufferColor="255,255,255,255" bufferNoFill="1" bufferDraw="0"/>
-<text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskJoinStyle="128" maskSizeUnits="MM" maskOpacity="1" maskedSymbolLayers="elemnat_curva_nivel_l_07eba696_3eb3_4834_b55c_16a2640e595f,{25710cad-1fb3-44d5-9456-1335a0349db3},0;elemnat_curva_nivel_l_07eba696_3eb3_4834_b55c_16a2640e595f,{726ee8af-3df0-44d0-90db-829b9792358b},0" maskEnabled="1" maskType="0" maskSize="0.2"/>
+<text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskJoinStyle="128" maskSizeUnits="MM" maskOpacity="1" maskedSymbolLayers="" maskEnabled="1" maskType="0" maskSize="0.2"/>
 <background shapeSizeY="0" shapeFillColor="255,255,255,255" shapeBorderWidthUnit="MM" shapeRotationType="0" shapeRadiiX="0" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeType="0" shapeSizeType="0" shapeOffsetUnit="MM" shapeRotation="0" shapeRadiiUnit="MM" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeSizeX="0" shapeBorderColor="128,128,128,255" shapeJoinStyle="64" shapeSizeUnit="MM" shapeDraw="0" shapeOffsetX="0" shapeBlendMode="0" shapeRadiiY="0" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeOpacity="1" shapeOffsetY="0" shapeSVGFile="" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidth="0">
 <symbol alpha="1" name="markerSymbol" clip_to_extent="1" type="marker" force_rhr="0">
 <data_defined_properties>
@@ -211,7 +145,7 @@
 <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
 <Option type="Map">
 <Option name="angle" value="0" type="QString"/>
-<Option name="color" value="125,139,143,255" type="QString"/>
+<Option name="color" value="164,113,88,255" type="QString"/>
 <Option name="horizontal_anchor_point" value="1" type="QString"/>
 <Option name="joinstyle" value="bevel" type="QString"/>
 <Option name="name" value="circle" type="QString"/>
@@ -230,7 +164,7 @@
 <Option name="vertical_anchor_point" value="1" type="QString"/>
 </Option>
 <prop k="angle" v="0"/>
-<prop k="color" v="125,139,143,255"/>
+<prop k="color" v="164,113,88,255"/>
 <prop k="horizontal_anchor_point" v="1"/>
 <prop k="joinstyle" v="bevel"/>
 <prop k="name" v="circle"/>
@@ -267,22 +201,17 @@
 </dd_properties>
 <substitutions/>
 </text-style>
-<text-format rightDirectionSymbol=">" formatNumbers="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" decimals="3" plussign="0" wrapChar="" useMaxLineLengthForAutoWrap="1" multilineAlign="3" reverseDirectionSymbol="0" autoWrapLength="0" placeDirectionSymbol="0"/>
-<placement centroidWhole="0" repeatDistance="0" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" fitInPolygonOnly="0" rotationAngle="0" lineAnchorPercent="0.5" overrunDistance="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" geometryGeneratorType="PointGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" placement="1" maxCurvedCharAngleIn="25" polygonPlacementFlags="2" yOffset="0" maxCurvedCharAngleOut="-25" repeatDistanceUnits="MM" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" dist="0" quadOffset="2" offsetType="0" distUnits="MM" preserveRotation="1" priority="5" centroidInside="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" layerType="PointGeometry" placementFlags="10"/>
+<text-format rightDirectionSymbol=">" formatNumbers="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" decimals="3" plussign="0" wrapChar="" useMaxLineLengthForAutoWrap="1" multilineAlign="0" reverseDirectionSymbol="0" autoWrapLength="0" placeDirectionSymbol="0"/>
+<placement centroidWhole="0" repeatDistance="0" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" fitInPolygonOnly="0" rotationAngle="0" lineAnchorPercent="0.5" overrunDistance="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" geometryGeneratorType="LineGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" placement="3" maxCurvedCharAngleIn="25" polygonPlacementFlags="2" yOffset="0" maxCurvedCharAngleOut="-25" repeatDistanceUnits="MM" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" offsetUnits="MM" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" dist="0" quadOffset="4" offsetType="0" distUnits="MM" preserveRotation="1" priority="5" centroidInside="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" layerType="LineGeometry" placementFlags="9"/>
 <rendering fontLimitPixelSize="0" drawLabels="1" obstacleType="1" limitNumLabels="0" upsidedownLabels="0" fontMinPixelSize="3" obstacle="1" minFeatureSize="0" scaleVisibility="0" fontMaxPixelSize="10000" mergeLines="0" scaleMin="0" obstacleFactor="1" maxNumLabels="2000" scaleMax="0" labelPerPart="0" displayAll="1" zIndex="0"/>
 <dd_properties>
 <Option type="Map">
 <Option name="name" value="" type="QString"/>
 <Option name="properties" type="Map">
-<Option name="PositionX" type="Map">
+<Option name="Size" type="Map">
 <Option name="active" value="true" type="bool"/>
-<Option name="field" value="label_x" type="QString"/>
-<Option name="type" value="2" type="int"/>
-</Option>
-<Option name="PositionY" type="Map">
-<Option name="active" value="true" type="bool"/>
-<Option name="field" value="label_y" type="QString"/>
-<Option name="type" value="2" type="int"/>
+<Option name="expression" value="CASE&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 65* &quot;escala&quot; /1000&#xd;&#xa;THEN 6.0&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 80* &quot;escala&quot; /1000&#xd;&#xa;THEN 7.0&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 100* &quot;escala&quot; /1000&#xd;&#xa;THEN 8.0&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 120* &quot;escala&quot; /1000&#xd;&#xa;THEN 9.0&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 160* &quot;escala&quot; /1000&#xd;&#xa;THEN 10.0&#xd;&#xa;WHEN &quot;tamanho&quot; &lt; 200* &quot;escala&quot; /1000&#xd;&#xa;THEN 12.0&#xd;&#xa;ELSE 14.0&#xd;&#xa;END" type="QString"/>
+<Option name="type" value="3" type="int"/>
 </Option>
 </Option>
 <Option name="type" value="collection" type="QString"/>
@@ -316,7 +245,7 @@
 </rules>
 </labeling>
 <customproperties>
-<property value="&quot;id&quot;" key="dualview/previewExpressions"/>
+<property value="&quot;texto&quot;" key="dualview/previewExpressions"/>
 <property value="0" key="embeddedWidgets/count"/>
 <property key="variableNames"/>
 <property key="variableValues"/>
@@ -394,7 +323,7 @@
 </axisSymbol>
 </DiagramCategory>
 </SingleCategoryDiagramRenderer>
-<DiagramLayerSettings dist="0" linePlacementFlags="18" priority="0" showAll="1" placement="0" zIndex="0" obstacle="0">
+<DiagramLayerSettings dist="0" linePlacementFlags="18" priority="0" showAll="1" placement="2" zIndex="0" obstacle="0">
 <properties>
 <Option type="Map">
 <Option name="name" value="" type="QString"/>
@@ -417,76 +346,51 @@
 </config>
 </editWidget>
 </field>
-<field name="cota" configurationFlags="None">
+<field name="texto" configurationFlags="None">
 <editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="cota_comprovada" configurationFlags="None">
-<editWidget type="ValueMap">
 <config>
 <Option type="Map">
-<Option name="map" type="Map">
-<Option name="A SER PREENCHIDO (9999)" value="9999" type="QString"/>
-<Option name="Não (2)" value="2" type="QString"/>
-<Option name="Sim (1)" value="1" type="QString"/>
-</Option>
+<Option name="IsMultiline" value="false" type="bool"/>
+<Option name="UseHtml" value="false" type="bool"/>
 </Option>
 </config>
 </editWidget>
 </field>
-<field name="observacao" configurationFlags="None">
+<field name="classe" configurationFlags="None">
 <editWidget type="TextEdit">
 <config>
-<Option/>
+<Option type="Map">
+<Option name="IsMultiline" value="false" type="bool"/>
+<Option name="UseHtml" value="false" type="bool"/>
+</Option>
 </config>
 </editWidget>
 </field>
-<field name="data_modificacao" configurationFlags="None">
-<editWidget type="DateTime">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="controle_uuid" configurationFlags="None">
+<field name="tamanho" configurationFlags="None">
 <editWidget type="TextEdit">
 <config>
-<Option/>
+<Option type="Map">
+<Option name="IsMultiline" value="false" type="bool"/>
+<Option name="UseHtml" value="false" type="bool"/>
+</Option>
 </config>
 </editWidget>
 </field>
-<field name="usuario_criacao" configurationFlags="None">
-<editWidget type="TextEdit">
+<field name="escala" configurationFlags="None">
+<editWidget type="Range">
 <config>
-<Option/>
+<Option type="Map">
+<Option name="AllowNull" value="true" type="bool"/>
+<Option name="Max" value="2147483647" type="int"/>
+<Option name="Min" value="-2147483648" type="int"/>
+<Option name="Precision" value="0" type="int"/>
+<Option name="Step" value="1" type="int"/>
+<Option name="Style" value="SpinBox" type="QString"/>
+</Option>
 </config>
 </editWidget>
 </field>
-<field name="usuario_atualizacao" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="insumo" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="data_insumo" configurationFlags="None">
-<editWidget type="DateTime">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="cota_mais_alta" configurationFlags="None">
+<field name="carta_mini" configurationFlags="None">
 <editWidget type="CheckBox">
 <config>
 <Option type="Map">
@@ -497,63 +401,7 @@
 </config>
 </editWidget>
 </field>
-<field name="visivel" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="texto_edicao" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="carta_mini" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="label_x" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="label_y" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="justificativa_txt" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="simb_x" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="simb_y" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option/>
-</config>
-</editWidget>
-</field>
-<field name="simb_rot" configurationFlags="None">
+<field name="lenght_otf" configurationFlags="None">
 <editWidget type="TextEdit">
 <config>
 <Option/>
@@ -563,119 +411,56 @@
 </fieldConfiguration>
 <aliases>
 <alias name="" index="0" field="id"/>
-<alias name="" index="1" field="cota"/>
-<alias name="" index="2" field="cota_comprovada"/>
-<alias name="" index="3" field="observacao"/>
-<alias name="" index="4" field="data_modificacao"/>
-<alias name="" index="5" field="controle_uuid"/>
-<alias name="" index="6" field="usuario_criacao"/>
-<alias name="" index="7" field="usuario_atualizacao"/>
-<alias name="" index="8" field="insumo"/>
-<alias name="" index="9" field="data_insumo"/>
-<alias name="" index="10" field="cota_mais_alta"/>
-<alias name="" index="11" field="visivel"/>
-<alias name="" index="12" field="texto_edicao"/>
-<alias name="" index="13" field="carta_mini"/>
-<alias name="" index="14" field="label_x"/>
-<alias name="" index="15" field="label_y"/>
-<alias name="" index="16" field="justificativa_txt"/>
-<alias name="" index="17" field="simb_x"/>
-<alias name="" index="18" field="simb_y"/>
-<alias name="" index="19" field="simb_rot"/>
+<alias name="" index="1" field="texto"/>
+<alias name="" index="2" field="classe"/>
+<alias name="" index="3" field="tamanho"/>
+<alias name="" index="4" field="escala"/>
+<alias name="" index="5" field="carta_mini"/>
+<alias name="" index="6" field="lenght_otf"/>
 </aliases>
 <defaults>
 <default field="id" expression="" applyOnUpdate="0"/>
-<default field="cota" expression="" applyOnUpdate="0"/>
-<default field="cota_comprovada" expression="" applyOnUpdate="0"/>
-<default field="observacao" expression="" applyOnUpdate="0"/>
-<default field="data_modificacao" expression="" applyOnUpdate="0"/>
-<default field="controle_uuid" expression="" applyOnUpdate="0"/>
-<default field="usuario_criacao" expression="" applyOnUpdate="0"/>
-<default field="usuario_atualizacao" expression="" applyOnUpdate="0"/>
-<default field="insumo" expression="" applyOnUpdate="0"/>
-<default field="data_insumo" expression="" applyOnUpdate="0"/>
-<default field="cota_mais_alta" expression="" applyOnUpdate="0"/>
-<default field="visivel" expression="" applyOnUpdate="0"/>
-<default field="texto_edicao" expression="" applyOnUpdate="0"/>
-<default field="carta_mini" expression="" applyOnUpdate="0"/>
-<default field="label_x" expression="" applyOnUpdate="0"/>
-<default field="label_y" expression="" applyOnUpdate="0"/>
-<default field="justificativa_txt" expression="" applyOnUpdate="0"/>
-<default field="simb_x" expression="" applyOnUpdate="0"/>
-<default field="simb_y" expression="" applyOnUpdate="0"/>
-<default field="simb_rot" expression="" applyOnUpdate="0"/>
+<default field="texto" expression="'Rio Branco'" applyOnUpdate="0"/>
+<default field="classe" expression="'elemnat_trecho_drenagem_l'" applyOnUpdate="0"/>
+<default field="tamanho" expression="'26931.38269139989'" applyOnUpdate="0"/>
+<default field="escala" expression="'50000'" applyOnUpdate="0"/>
+<default field="carta_mini" expression="'False'" applyOnUpdate="0"/>
+<default field="lenght_otf" expression="" applyOnUpdate="0"/>
 </defaults>
 <constraints>
 <constraint unique_strength="1" field="id" constraints="3" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="cota" constraints="1" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="cota_comprovada" constraints="1" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="observacao" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="data_modificacao" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="controle_uuid" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="usuario_criacao" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="usuario_atualizacao" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="insumo" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="data_insumo" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="cota_mais_alta" constraints="1" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="visivel" constraints="1" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="texto_edicao" constraints="0" notnull_strength="0" exp_strength="0"/>
+<constraint unique_strength="0" field="texto" constraints="1" notnull_strength="1" exp_strength="0"/>
+<constraint unique_strength="0" field="classe" constraints="1" notnull_strength="1" exp_strength="0"/>
+<constraint unique_strength="0" field="tamanho" constraints="1" notnull_strength="1" exp_strength="0"/>
+<constraint unique_strength="0" field="escala" constraints="1" notnull_strength="1" exp_strength="0"/>
 <constraint unique_strength="0" field="carta_mini" constraints="1" notnull_strength="1" exp_strength="0"/>
-<constraint unique_strength="0" field="label_x" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="label_y" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="justificativa_txt" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="simb_x" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="simb_y" constraints="0" notnull_strength="0" exp_strength="0"/>
-<constraint unique_strength="0" field="simb_rot" constraints="0" notnull_strength="0" exp_strength="0"/>
+<constraint unique_strength="0" field="lenght_otf" constraints="0" notnull_strength="0" exp_strength="0"/>
 </constraints>
 <constraintExpressions>
 <constraint field="id" exp="" desc=""/>
-<constraint field="cota" exp="" desc=""/>
-<constraint field="cota_comprovada" exp="" desc=""/>
-<constraint field="observacao" exp="" desc=""/>
-<constraint field="data_modificacao" exp="" desc=""/>
-<constraint field="controle_uuid" exp="" desc=""/>
-<constraint field="usuario_criacao" exp="" desc=""/>
-<constraint field="usuario_atualizacao" exp="" desc=""/>
-<constraint field="insumo" exp="" desc=""/>
-<constraint field="data_insumo" exp="" desc=""/>
-<constraint field="cota_mais_alta" exp="" desc=""/>
-<constraint field="visivel" exp="" desc=""/>
-<constraint field="texto_edicao" exp="" desc=""/>
+<constraint field="texto" exp="" desc=""/>
+<constraint field="classe" exp="" desc=""/>
+<constraint field="tamanho" exp="" desc=""/>
+<constraint field="escala" exp="" desc=""/>
 <constraint field="carta_mini" exp="" desc=""/>
-<constraint field="label_x" exp="" desc=""/>
-<constraint field="label_y" exp="" desc=""/>
-<constraint field="justificativa_txt" exp="" desc=""/>
-<constraint field="simb_x" exp="" desc=""/>
-<constraint field="simb_y" exp="" desc=""/>
-<constraint field="simb_rot" exp="" desc=""/>
+<constraint field="lenght_otf" exp="" desc=""/>
 </constraintExpressions>
-<expressionfields/>
+<expressionfields>
+<field precision="0" name="lenght_otf" typeName="" comment="" type="6" expression="$length" length="0" subType="0"/>
+</expressionfields>
 <attributeactions>
 <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
 </attributeactions>
-<attributetableconfig sortExpression="&quot;cota&quot;" sortOrder="1" actionWidgetStyle="dropDown">
+<attributetableconfig sortExpression="&quot;carta_mini&quot;" sortOrder="1" actionWidgetStyle="dropDown">
 <columns>
 <column name="id" width="-1" type="field" hidden="0"/>
-<column name="cota" width="-1" type="field" hidden="0"/>
-<column name="cota_comprovada" width="-1" type="field" hidden="0"/>
-<column name="observacao" width="-1" type="field" hidden="0"/>
-<column name="data_modificacao" width="-1" type="field" hidden="0"/>
-<column name="controle_uuid" width="-1" type="field" hidden="0"/>
-<column name="usuario_criacao" width="-1" type="field" hidden="0"/>
-<column name="usuario_atualizacao" width="-1" type="field" hidden="0"/>
-<column name="insumo" width="-1" type="field" hidden="0"/>
-<column name="data_insumo" width="-1" type="field" hidden="0"/>
-<column width="-1" type="actions" hidden="1"/>
-<column name="cota_mais_alta" width="-1" type="field" hidden="0"/>
-<column name="visivel" width="-1" type="field" hidden="0"/>
-<column name="texto_edicao" width="-1" type="field" hidden="0"/>
+<column name="texto" width="212" type="field" hidden="0"/>
 <column name="carta_mini" width="-1" type="field" hidden="0"/>
-<column name="label_x" width="-1" type="field" hidden="0"/>
-<column name="label_y" width="-1" type="field" hidden="0"/>
-<column name="justificativa_txt" width="-1" type="field" hidden="0"/>
-<column name="simb_x" width="-1" type="field" hidden="0"/>
-<column name="simb_y" width="-1" type="field" hidden="0"/>
-<column name="simb_rot" width="-1" type="field" hidden="0"/>
+<column name="lenght_otf" width="159" type="field" hidden="0"/>
+<column width="-1" type="actions" hidden="1"/>
+<column name="classe" width="179" type="field" hidden="0"/>
+<column name="tamanho" width="-1" type="field" hidden="0"/>
+<column name="escala" width="-1" type="field" hidden="0"/>
 </columns>
 </attributetableconfig>
 <conditionalstyles>
@@ -708,51 +493,29 @@ def my_form_open(diálogo, camada, feição):
 <editorlayout>generatedlayout</editorlayout>
 <editable>
 <field name="carta_mini" editable="1"/>
-<field name="controle_uuid" editable="1"/>
-<field name="cota" editable="1"/>
-<field name="cota_comprovada" editable="1"/>
-<field name="cota_mais_alta" editable="1"/>
-<field name="data_insumo" editable="1"/>
-<field name="data_modificacao" editable="1"/>
+<field name="classe" editable="1"/>
+<field name="escala" editable="1"/>
 <field name="id" editable="1"/>
-<field name="insumo" editable="1"/>
-<field name="justificativa_txt" editable="1"/>
-<field name="label_x" editable="1"/>
-<field name="label_y" editable="1"/>
-<field name="observacao" editable="1"/>
-<field name="simb_rot" editable="1"/>
-<field name="simb_x" editable="1"/>
-<field name="simb_y" editable="1"/>
-<field name="texto_edicao" editable="1"/>
-<field name="usuario_atualizacao" editable="1"/>
-<field name="usuario_criacao" editable="1"/>
-<field name="visivel" editable="1"/>
+<field name="lenght_otf" editable="0"/>
+<field name="massa_dagua" editable="1"/>
+<field name="parte" editable="1"/>
+<field name="tamanho" editable="1"/>
+<field name="texto" editable="1"/>
 </editable>
 <labelOnTop>
 <field name="carta_mini" labelOnTop="0"/>
-<field name="controle_uuid" labelOnTop="0"/>
-<field name="cota" labelOnTop="0"/>
-<field name="cota_comprovada" labelOnTop="0"/>
-<field name="cota_mais_alta" labelOnTop="0"/>
-<field name="data_insumo" labelOnTop="0"/>
-<field name="data_modificacao" labelOnTop="0"/>
+<field name="classe" labelOnTop="0"/>
+<field name="escala" labelOnTop="0"/>
 <field name="id" labelOnTop="0"/>
-<field name="insumo" labelOnTop="0"/>
-<field name="justificativa_txt" labelOnTop="0"/>
-<field name="label_x" labelOnTop="0"/>
-<field name="label_y" labelOnTop="0"/>
-<field name="observacao" labelOnTop="0"/>
-<field name="simb_rot" labelOnTop="0"/>
-<field name="simb_x" labelOnTop="0"/>
-<field name="simb_y" labelOnTop="0"/>
-<field name="texto_edicao" labelOnTop="0"/>
-<field name="usuario_atualizacao" labelOnTop="0"/>
-<field name="usuario_criacao" labelOnTop="0"/>
-<field name="visivel" labelOnTop="0"/>
+<field name="lenght_otf" labelOnTop="0"/>
+<field name="massa_dagua" labelOnTop="0"/>
+<field name="parte" labelOnTop="0"/>
+<field name="tamanho" labelOnTop="0"/>
+<field name="texto" labelOnTop="0"/>
 </labelOnTop>
 <dataDefinedFieldProperties/>
 <widgets/>
-<previewExpression>"id"</previewExpression>
+<previewExpression>"texto"</previewExpression>
 <mapTip></mapTip>
-<layerGeometryType>0</layerGeometryType>
+<layerGeometryType>1</layerGeometryType>
 </qgis>
