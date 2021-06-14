@@ -1,10 +1,14 @@
-import string
-import os
-import math
+import csv
 import itertools
+import math
+import os
+from qrcode import exceptions
+import string
+from pathlib import Path
 
-from qgis.core import QgsPointXY, QgsGeometry, QgsFeature, QgsVectorLayer,QgsFields, QgsField, QgsProject
-from qgis.PyQt.QtCore import QObject, QVariant 
+from qgis.core import (QgsFeature, QgsField, QgsFields, QgsGeometry,
+                       QgsPointXY, QgsProject, QgsVectorLayer)
+from qgis.PyQt.QtCore import QObject, QVariant
 
 letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60']
@@ -589,10 +593,10 @@ class UtmGrid(QObject):
                 )
             )[::multiplier]
 
-    def getNewGridFeat(self, index, geom, fields):
+    def getNewGridFeat(self, index, geom, fields, hasMI=True):
         feat = QgsFeature(fields)
         feat['inom'] = index
-        feat['mi'] = self.get_MI_MIR_from_inom(index)
+        feat['mi'] = self.get_MI_MIR_from_inom(index) if hasMI else None
         feat.setGeometry(geom)
         return feat
 
@@ -632,9 +636,10 @@ class UtmGrid(QObject):
 
     def get_neighbors_inom(self, inom):
         layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')
+        exceptions = self.getMIexceptions()
 
         inomenList = self.getNeighbors(inom)
-        feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields) for map_index in inomenList]
+        feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields, not (map_index in exceptions)) for map_index in inomenList]
         center_feat = self.getNewGridFeat(inom,self.getQgsPolygonFrame(inom), fields)
         provider = layer.dataProvider()
         provider.addFeatures(feats)
@@ -679,6 +684,17 @@ class UtmGrid(QObject):
             degrees_lat = degrees_lat/len(self.scaleText[i])            
             degrees_lon = degrees_lon/len(self.scaleText[i][0])            
         return degrees_lat, degrees_lon
+
+    @staticmethod
+    def getMIexceptions():
+        pathCsvExceptions25k = Path(__file__).parent / 'exclusionList25k.csv'
+        pathCsvExceptions50k = Path(__file__).parent / 'exclusionList50k.csv'
+        with open(pathCsvExceptions25k, 'r') as file:
+            exceptions25k = [x[0] for x in csv.reader(file)]
+        with open(pathCsvExceptions50k, 'r') as file:
+            exceptions50k = [x[0] for x in csv.reader(file)]
+
+        return set((*exceptions25k, *exceptions50k))
         
 if __name__ == "__main__":    
     x = UtmGrid()
