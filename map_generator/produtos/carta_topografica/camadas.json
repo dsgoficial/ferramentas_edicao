@@ -309,15 +309,7 @@
                     "schema": "edgv"
                 },
                 {
-                    "tabela": "infra_vala_l",
-                    "schema": "edgv"
-                },
-                {
                     "tabela": "elemnat_trecho_drenagem_l",
-                    "schema": "edgv"
-                },
-                {
-                    "tabela": "elemnat_terreno_sujeito_inundacao_a",
                     "schema": "edgv"
                 },
                 {
