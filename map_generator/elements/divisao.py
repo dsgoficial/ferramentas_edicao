@@ -195,8 +195,6 @@ class Divisao(MapParent):
         if len(orderedCountiesNamesByCentroidDistance) >= self.maxCountiesToDisplay:
             orderedCountiesNamesByCentroidDistance = orderedCountiesNamesByCentroidDistance[:self.maxCountiesToDisplay]
 
-        print(orderedCountiesByCentroidDistance, orderedCountiesNamesByCentroidDistance)
-
         return orderedCountiesByCentroidDistance, orderedCountiesNamesByCentroidDistance
 
     def getNColums(self, n_total):

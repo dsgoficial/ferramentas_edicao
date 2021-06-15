@@ -1,8 +1,10 @@
 import os
 import json
 import codecs
+from pathlib import Path
 
 from PyQt5.QtCore import QVariant
+from qgis import processing
 from qgis.core import (
     QgsGeometry, QgsRectangle, QgsVectorLayer, QgsFields,
     QgsField, QgsFeature, QgsDataSourceUri, QgsCredentials,
@@ -228,6 +230,15 @@ class MapTools:
         " " + \
         target_path										
         os.system(cmd)
+
+    def setupMasks(self):
+        path_json = Path(__file__).parent / 'estilos' / 'map' / 'mascaras.json'
+        processing.run(
+            'FerramentasExperimentaisProvider:loadmasks',
+            {   'JSON_FILE' : str(path_json), 
+                'GROUP' : 'map'
+            }
+        )
 
     def reprojectTiffs(self):
         folder_reprojetado = os.path.join(self.saveFolder, 'padrao_bdgex')

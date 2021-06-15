@@ -4,6 +4,7 @@ from pathlib import Path
 from collections import namedtuple
 
 from qgis.core import QgsProject
+from qgis import processing
 from PyQt5.QtGui import QFont, QColor
 
 from ..map_generator.elements.map_utils import MapParent as MapConnection
@@ -33,14 +34,14 @@ product_parameters = {
         "nome_produto": "Carta Topográfica",
         "required_files": [],
         "grid": {
-            "crossX": 4,
-            "crossY": 4,
+            "crossX": 6,
+            "crossY": 6,
             "fontSize": 1.9,
             "font": QFont("Arial"),
             "fontLL": QFont("Arial"),
             "llcolor": QColor('black'),
-            "linwidth_geo": 0.12,
-            "linwidth_utm": 0.1,
+            "linwidth_geo": 0.05,
+            "linwidth_utm": 0.03,
             "linwidth_buffer_geo": 0,
             "linwidth_buffer_utm": 0,
             "geo_grid_color": QColor('black'),
@@ -401,6 +402,8 @@ class DefaultMap(MapManager):
                 self.setElementsConfig(strProductType)
                 self.createAll(composition, self.nome, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
+                self.setupMasks()
+                
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)

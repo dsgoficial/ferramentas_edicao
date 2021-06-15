@@ -206,7 +206,7 @@ class HtmlData(MapParent):
         label = composition.itemById("label_tabela_info_carta")
         if label:
             hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
-            falseNorth = '+0' if hemisphere == 'Norte' else '+10.000'
+            falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
             centralMeridian = -180+(int(fuso)-1)*6 + 3
             curveData = [x for x in curvas[str(scale)].values()]
             position = 'W' if centralMeridian < 0 else 'E'
