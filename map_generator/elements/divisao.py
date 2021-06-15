@@ -189,14 +189,15 @@ class Divisao(MapParent):
                                 'area': d.measureArea(countyFeature.geometry()),
                                 'centroidDistance': d.measureLine(mapAreaCentroid, countyCentroid)}
                             countiesToDisplay.append(countyDict)
-        orderedCountiesNamesByArea = sorted(countiesToDisplay, key=lambda x: x['area'], reverse=False)
-        orderedCountiesNamesByArea = [x['label'] for x in orderedCountiesNamesByArea ]
         orderedCountiesByCentroidDistance = sorted(countiesToDisplay, key=lambda x: x['centroidDistance'], reverse=False)
+        orderedCountiesNamesByCentroidDistance = [x['label'] for x in orderedCountiesByCentroidDistance]
 
-        if len(orderedCountiesNamesByArea) >= self.maxCountiesToDisplay:
-            orderedCountiesNamesByArea = orderedCountiesNamesByArea[:self.maxCountiesToDisplay]
+        if len(orderedCountiesNamesByCentroidDistance) >= self.maxCountiesToDisplay:
+            orderedCountiesNamesByCentroidDistance = orderedCountiesNamesByCentroidDistance[:self.maxCountiesToDisplay]
 
-        return orderedCountiesByCentroidDistance, orderedCountiesNamesByArea
+        print(orderedCountiesByCentroidDistance, orderedCountiesNamesByCentroidDistance)
+
+        return orderedCountiesByCentroidDistance, orderedCountiesNamesByCentroidDistance
 
     def getNColums(self, n_total):
         n_columns = 1
