@@ -6266,7 +6266,7 @@
    <customproperties/>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem markerMode="0" outlineWidthM="0.3,mm" outlineWidth="1" position="802.392,174.611,mm" referencePoint="3" size="17.908,0.1,mm" arrowHeadOutlineColor="0,0,0,255" positionOnPage="802.392,174.611,mm" background="false" excludeFromExports="0" zValue="184" id="line_categoria_4_linha_3_column_right" frame="false" frameJoinStyle="miter" blendMode="0" arrowHeadWidth="4" itemRotation="0" endMarkerFile="" uuid="{daca434a-5ec2-41f3-92d3-28fb349be8e0}" type="65645" startMarkerMode="0" groupUuid="" opacity="1" templateUuid="{daca434a-5ec2-41f3-92d3-28fb349be8e0}" visibility="1" startMarkerFile="" positionLock="false" arrowHeadFillColor="0,0,0,255">
+ <LayoutItem markerMode="0" outlineWidthM="0.3,mm" outlineWidth="1" position="810.0,174.611,mm" referencePoint="3" size="10.0,0.1,mm" arrowHeadOutlineColor="0,0,0,255" positionOnPage="802.392,174.611,mm" background="false" excludeFromExports="0" zValue="184" id="line_categoria_4_linha_3_column_right" frame="false" frameJoinStyle="miter" blendMode="0" arrowHeadWidth="4" itemRotation="0" endMarkerFile="" uuid="{daca434a-5ec2-41f3-92d3-28fb349be8e0}" type="65645" startMarkerMode="0" groupUuid="" opacity="1" templateUuid="{daca434a-5ec2-41f3-92d3-28fb349be8e0}" visibility="1" startMarkerFile="" positionLock="false" arrowHeadFillColor="0,0,0,255">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>
@@ -6346,7 +6346,7 @@
    <node x="17.908" y="0"/>
   </nodes>
  </LayoutItem>
- <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="784,172.621,mm" valign="32" referencePoint="0" size="18,2.4,mm" halign="1" positionOnPage="784,172.621,mm" background="false" excludeFromExports="0" zValue="183" id="categoria_4_linha_3_column_right" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" visibility="1" labelText="Habitação indígena coletiva" positionLock="false">
+ <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="784,172.621,mm" valign="32" referencePoint="0" size="26,2.4,mm" halign="1" positionOnPage="784,172.621,mm" background="false" excludeFromExports="0" zValue="183" id="categoria_4_linha_3_column_right" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{d096cadf-2997-4235-a17d-ba50e3543c6e}" visibility="1" labelText="Habitação indígena coletiva" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>
