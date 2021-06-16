@@ -231,8 +231,8 @@ class MapTools:
         target_path										
         os.system(cmd)
 
-    def setupMasks(self):
-        path_json = Path(__file__).parent / 'estilos' / 'map' / 'mascaras.json'
+    def setupMasks(self, produto):
+        path_json = Path(__file__).parent / 'produtos' / produto / 'mascaras.json'
         processing.run(
             'FerramentasExperimentaisProvider:loadmasks',
             {   'JSON_FILE' : str(path_json), 

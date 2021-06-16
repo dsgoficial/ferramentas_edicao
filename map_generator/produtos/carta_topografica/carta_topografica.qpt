@@ -11034,7 +11034,7 @@
    <node x="12.008" y="0"/>
   </nodes>
  </LayoutItem>
- <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="784,28.651,mm" valign="32" referencePoint="0" size="23.9,2.4,mm" halign="1" positionOnPage="784,28.651,mm" background="false" excludeFromExports="0" zValue="68" id="categoria_1_linha_2_column_right" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{c2c6b699-0805-4c18-8228-d18981866182}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{c2c6b699-0805-4c18-8228-d18981866182}" visibility="1" labelText="Ferrovia de multiplas vias" positionLock="false">
+ <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="784,28.651,mm" valign="32" referencePoint="0" size="23.9,2.4,mm" halign="1" positionOnPage="784,28.651,mm" background="false" excludeFromExports="0" zValue="68" id="categoria_1_linha_2_column_right" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{c2c6b699-0805-4c18-8228-d18981866182}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{c2c6b699-0805-4c18-8228-d18981866182}" visibility="1" labelText="Ferrovia de múltiplas vias" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>

@@ -402,7 +402,7 @@ class DefaultMap(MapManager):
                 self.setElementsConfig(strProductType)
                 self.createAll(composition, self.nome, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
-                self.setupMasks()
+                self.setupMasks(strProductType)
                 
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()
