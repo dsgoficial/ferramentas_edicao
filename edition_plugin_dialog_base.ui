@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>371</width>
-    <height>320</height>
+    <height>322</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -104,7 +104,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_6">
+    <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0">
      <item>
       <widget class="QLabel" name="label_5">
        <property name="text">
@@ -113,11 +113,25 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBox_exportar_geotiff">
-       <property name="text">
-        <string>Exportar GeoTIFF</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QCheckBox" name="checkBoxExportGeotiff">
+         <property name="text">
+          <string>Exportar PDF</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxExportPdf">
+         <property name="text">
+          <string>Exportar Geotiff</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

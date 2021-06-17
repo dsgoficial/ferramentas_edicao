@@ -1,18 +1,17 @@
-import os
-import json
 import codecs
+import json
+import os
 from pathlib import Path
 
 from PyQt5.QtCore import QVariant
 from qgis import processing
-from qgis.core import (
-    QgsGeometry, QgsRectangle, QgsVectorLayer, QgsFields,
-    QgsField, QgsFeature, QgsDataSourceUri, QgsCredentials,
-    QgsProject, QgsLayoutExporter, Qgis, QgsExpressionContextUtils,
-    QgsRasterLayer
-)
+from qgis.core import (Qgis, QgsCredentials, QgsDataSourceUri, QgsFeature,
+                       QgsField, QgsFields, QgsGeometry, QgsLayoutExporter,
+                       QgsProject, QgsRasterLayer, QgsRectangle,
+                       QgsVectorLayer)
 
 from .elements.map_index.map_index import UtmGrid
+
 
 class MapTools:
     def __init__(self, iface, dlg):
@@ -24,8 +23,8 @@ class MapTools:
         with codecs.open(path_json, 'r', 'utf-8-sig') as json_file:
             json_data = json.load(json_file)
         return json_data
-    
-    def create_layer_from_center_and_escala(self, longitude, latitude,escala):        
+
+    def create_layer_from_center_and_escala(self, longitude, latitude, escala):
         x = longitude
         spacing_x = self.utm_grid.getSpacingX(escala)
         x_min = x - spacing_x/2
@@ -34,13 +33,13 @@ class MapTools:
         spacing_y = self.utm_grid.getSpacingX(escala)
         y_min = y - spacing_y/2
         y_max = y + spacing_y/2
-        rect = QgsRectangle(x_min,y_min,x_max,y_max)
+        rect = QgsRectangle(x_min, y_min, x_max, y_max)
         geom = QgsGeometry.fromRect(rect)
         layer, feat = self.create_layer_from_geometry('map_extent', geom)
         return layer, feat
 
     def create_layer_from_geometry(self, name, geom, layerType='Multipolygon', crsAuthId='4326'):
-        layer = QgsVectorLayer('%s?crs=EPSG:%s'% (layerType, crsAuthId), name, 'memory')
+        layer = QgsVectorLayer('%s?crs=EPSG:%s' % (layerType, crsAuthId), name, 'memory')
         if not layer.isValid():
             return None
         else:
@@ -52,7 +51,7 @@ class MapTools:
             provider.addAttributes(fields)
             layer.updateFields()
 
-            layer.startEditing()            
+            layer.startEditing()
             feat = QgsFeature(fields)
             feat['id'] = '1'
             feat.setGeometry(geom)
@@ -60,9 +59,9 @@ class MapTools:
 
             # Commit changes
             layer.commitChanges()
-            return layer, feat    
+            return layer, feat
 
-    def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):        
+    def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):
         if 'variableNames' in composition.customProperties():
             chaves = composition.customProperty('variableNames')
             valores = composition.customProperty('variableValues')
@@ -77,11 +76,11 @@ class MapTools:
                 composition.setCustomProperty('variableNames', chaves)
                 composition.setCustomProperty('variableValues', valores)
         else:
-            composition.setCustomProperty('variableNames', [chave] )
+            composition.setCustomProperty('variableNames', [chave])
             composition.setCustomProperty('variableValues', [novo_valor])
 
-    def selectEpsg(self, hemisferio, fuso):		
-        self.epsg_selected = True				
+    def selectEpsg(self, hemisferio, fuso):
+        self.epsg_selected = True
         self.hemisferio = hemisferio
         self.fuso = int(fuso)
         epsg = "319"
@@ -96,28 +95,30 @@ class MapTools:
             for key in equal_keys:
                 if dict_to_check[key] != dict_in_list[key]:
                     continue
-            return dict_in_list        
+            return dict_in_list
 
-    def getMapLayers(self, connectedUri,  list_dict_maptables, list_dict_minimaptables, tipo_produto, escala):		
-        map_layers_db, map_layersId_db = self.getLayersFromDB(connectedUri,  list_dict_maptables, "carta",  tipo_produto, escala)
-        minimap_layers_db, minimap_layersId_db = self.getLayersFromDB(connectedUri, list_dict_minimaptables, "carta_mini",   tipo_produto, escala)
+    def getMapLayers(self, connectedUri,  list_dict_maptables, list_dict_minimaptables, tipo_produto, escala):
+        map_layers_db, map_layersId_db = self.getLayersFromDB(
+            connectedUri,  list_dict_maptables, "carta",  tipo_produto, escala)
+        minimap_layers_db, minimap_layersId_db = self.getLayersFromDB(
+            connectedUri, list_dict_minimaptables, "carta_mini",   tipo_produto, escala)
         return map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db
 
     def getDBConnection(self, connectionDict, oldUri=None):
         if not connectionDict:
             return False, None
-        
+
         host = connectionDict.get('servidor')
         port = connectionDict.get('porta')
         db_name = connectionDict.get('nome')
 
         if oldUri and oldUri.host() == host and oldUri.port() == port and oldUri.database() == db_name:
             return True, oldUri
-        
+
         uri = QgsDataSourceUri()
         uri.setConnection(host, port, db_name, None, None)
         connInfo = uri.connectionInfo()
-        instance =  QgsCredentials.instance()
+        instance = QgsCredentials.instance()
         success, user, passwd = instance.get(connInfo, None, None)
         if success:
             uri.setUsername(user)
@@ -127,28 +128,29 @@ class MapTools:
         else:
             return success, None
 
-    def getLayer(self, connectedUri, dict_layer, grupo):		
+    def getLayer(self, connectedUri, dict_layer, grupo):
         schema = dict_layer['schema']
         tablename = dict_layer['tabela']
         # geometrycol = dict_layer['geometrycol']
         geometrycol = 'geom'
-        layername = tablename + '_' + grupo 
-        
+        layername = tablename + '_' + grupo
+
         # uri.setDataSource('', '(' + sql + ')', 'geom', '', 'id')
         connectedUri.setDataSource(schema, tablename, geometrycol)
-        
-        layer = QgsVectorLayer(connectedUri.uri(False), layername, "postgres")		
+
+        layer = QgsVectorLayer(connectedUri.uri(False), layername, "postgres")
         return layer
 
     def getLayersFromDB(self, connectedUri, tables_dict, grupo, tipo_produto, escala):
         layers_db = []
-        layersId_db = []        
-        style_folder = os.path.join(os.path.dirname(__file__),'produtos', tipo_produto,'estilos',escala, grupo)
+        layersId_db = []
+        style_folder = os.path.join(os.path.dirname(__file__), 'produtos',
+                                    tipo_produto, 'estilos', escala, grupo)
         if connectedUri is not None:
-            for dict_layer in tables_dict:			
-                layer_db = self.getLayer(connectedUri, dict_layer, grupo)   
+            for dict_layer in tables_dict:
+                layer_db = self.getLayer(connectedUri, dict_layer, grupo)
                 if (layer_db.isValid()):
-                    QgsProject.instance().addMapLayer(layer_db, False)         			
+                    QgsProject.instance().addMapLayer(layer_db, False)
                     style_file = os.path.join(style_folder, dict_layer['tabela'] + '.qml')
                     if os.path.exists(style_file):
                         _, status = layer_db.loadNamedStyle(style_file, True)
@@ -172,82 +174,82 @@ class MapTools:
             else:
                 return True
         else:
-            self.iface.messageBar().pushMessage("Layer de moldura não selecionado.", text_message, level=Qgis.Info, duration=3)
+            self.iface.messageBar().pushMessage("Layer de moldura não selecionado.",
+                                                text_message, level=Qgis.Info, duration=3)
             return False
 
-    def exportMap(self, composition):        
-        basename = self.mi + '_' + self.inom 
-        pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf') 
-        tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
-        exporter = QgsLayoutExporter(composition)        
-        exportPdf = True
-        if exportPdf:
+    def exportMap(self, composition):
+        basename = self.mi + '_' + self.inom
+        exporter = QgsLayoutExporter(composition)
+        if self.dlg.checkBoxExportPdf.isChecked():
+            pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
             pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
             pdfExporterSettings.rasterizeWholeImage = True
             pdfExporterSettings.simplifyGeometries = False
             pdfExporterSettings.appendGeoreference = True
             pdfExporterSettings.exportMetadata = False
             pdfExporterSettings.dpi = 300
-            exporter.exportToPdf(pdfFilePath, pdfExporterSettings)				
-        if self.dlg.checkBox_exportar_geotiff.isChecked():
-            imageExport_result = exporter.exportToImage(tiffFilePath, QgsLayoutExporter.ImageExportSettings())		        
+            exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
+        if self.dlg.checkBoxExportGeotiff.isChecked():
+            tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
+            exporter.exportToImage(tiffFilePath, QgsLayoutExporter.ImageExportSettings())
         del exporter
         # QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(int(self.epsg),QgsCoordinateReferenceSystem.EpsgCrsId))
 
-    def removeCreationDataGroups(self, map_groups = ['localizacao' , 'articulacao', 'map','minimap',  'divisao']):
+    def removeCreationDataGroups(self, map_groups=['localizacao', 'articulacao', 'map', 'minimap',  'divisao']):
         root = QgsProject.instance().layerTreeRoot()
         for group in map_groups:
             group_localizacao = root.findGroup(group)
             root.removeChildNode(group_localizacao)
 
-    def reproject(self, origin_path, target_path, source_epsg , target_epsg=4674):
-        source_path = " -of GTiff " + origin_path				            
+    def reproject(self, origin_path, target_path, source_epsg, target_epsg=4674):
+        source_path = " -of GTiff " + origin_path
         sc_target_epsg = " -t_srs EPSG:" + str(target_epsg)
-        #cmd = "gdalwarp  -co COMPRESS=LZW -overwrite -s_srs EPSG:" + \        
+        # cmd = "gdalwarp  -co COMPRESS=LZW -overwrite -s_srs EPSG:" + \
         cmd = "gdalwarp  -co COMPRESS=JPEG -co \"TILED=YES\" -overwrite -s_srs EPSG:" + \
-        str(source_epsg) + \
-        sc_target_epsg + \
-        source_path + \
-        " " + \
-        target_path										
-        os.system(cmd)
-        
-    def remove_alpha_band(self, origin_path, target_path):
-        #cmd = "gdal_translate -b 1 -b 2 -b 3 -co COMPRESS=JPEG " + \
-        cmd = "gdal_translate -b 1 -b 2 -b 3 -co COMPRESS=JPEG -co \"TILED=YES\"  " + \
-        origin_path + \
-        " " + \
-        target_path										
+            str(source_epsg) + \
+            sc_target_epsg + \
+            source_path + \
+            " " + \
+            target_path
         os.system(cmd)
 
-    def convert_ycbcr(self, origin_path, target_path):            
+    def remove_alpha_band(self, origin_path, target_path):
+        # cmd = "gdal_translate -b 1 -b 2 -b 3 -co COMPRESS=JPEG " + \
+        cmd = "gdal_translate -b 1 -b 2 -b 3 -co COMPRESS=JPEG -co \"TILED=YES\"  " + \
+            origin_path + \
+            " " + \
+            target_path
+        os.system(cmd)
+
+    def convert_ycbcr(self, origin_path, target_path):
         cmd = "gdal_translate -co COMPRESS=JPEG -co \"TILED=YES\" -co PHOTOMETRIC=YCBCR " + \
-        origin_path + \
-        " " + \
-        target_path										
+            origin_path + \
+            " " + \
+            target_path
         os.system(cmd)
 
     def convert(self, origin_path, target_path):
         cmd = "gdal_translate  -co PHOTOMETRIC=YCBCR  " + \
-        origin_path + \
-        " " + \
-        target_path										
+            origin_path + \
+            " " + \
+            target_path
         os.system(cmd)
 
     def setupMasks(self, produto):
         path_json = Path(__file__).parent / 'produtos' / produto / 'mascaras.json'
         processing.run(
             'FerramentasExperimentaisProvider:loadmasks',
-            {   'JSON_FILE' : str(path_json), 
-                'GROUP' : 'map'
-            }
+            {'JSON_FILE': str(path_json),
+                'GROUP': 'map'
+             }
         )
 
     def reprojectTiffs(self):
         folder_reprojetado = os.path.join(self.exportFolder, 'padrao_bdgex')
         os.mkdir(folder_reprojetado)
         for file in os.listdir(self.exportFolder):
-            if file.endswith(".tif"):				
+            if file.endswith(".tif"):
                 rasterPath = os.path.join(self.exportFolder, file)
                 rlayer = QgsRasterLayer(rasterPath, "reproject")
                 CRS = rlayer.crs()
@@ -255,17 +257,16 @@ class MapTools:
                 del rlayer
 
                 filename_without_ext = (file.split('.'))[0]
-                caminho_reprojetado = os.path.join(folder_reprojetado,filename_without_ext + '_reprojetado.tif') 
-                self.reproject(rasterPath, caminho_reprojetado, source_epsg ,4674)
-                caminho_rgb = os.path.join(folder_reprojetado, filename_without_ext + '_rgb.tif') 
+                caminho_reprojetado = os.path.join(
+                    folder_reprojetado, filename_without_ext + '_reprojetado.tif')
+                self.reproject(rasterPath, caminho_reprojetado, source_epsg, 4674)
+                caminho_rgb = os.path.join(folder_reprojetado, filename_without_ext + '_rgb.tif')
                 self.remove_alpha_band(rasterPath, caminho_rgb)
 
-                target_path  = os.path.join(folder_reprojetado, filename_without_ext + '.tif') 
+                target_path = os.path.join(folder_reprojetado, filename_without_ext + '.tif')
                 self.convert_ycbcr(caminho_rgb, target_path)
                 os.remove(caminho_reprojetado)
                 os.remove(caminho_rgb)
-            
-    def deleteMaps(self, ids_maplayers, remove=False):	
-        if remove:	
-            for id_mapLayer in ids_maplayers:
-                QgsProject.instance().removeMapLayer(id_mapLayer)
+
+    def deleteMaps(self, idsMapLayers):
+        QgsProject.instance().removeMapLayers(idsMapLayers)

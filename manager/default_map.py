@@ -205,7 +205,7 @@ class DefaultMap(MapManager):
             #     qptList.append(dict_classified)
             self.htmlData.editQpts(compositor, qptList)
 
-    def setCartaConfig(self, jsonData, connectedUri, dict_compositions, mapAreaFeature, teste_no_layers=False):
+    def setCartaConfig(self, jsonData, connectedUri, dict_compositions, mapAreaFeature):
         '''
         Setting map configurations
         '''
@@ -352,8 +352,7 @@ class DefaultMap(MapManager):
             return False, None, None
 
     def createMaps(self):
-        test_noLayers = False
-        showLayers = False
+        showLayers = True
 
         # Set project crs
         oldProjValue = self.mc.setProjectProjection()
@@ -386,7 +385,7 @@ class DefaultMap(MapManager):
 
         if success:
             self.exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-            self.exportFolder.mkdir()
+            self.exportFolder.mkdir(exist_ok=True)
             for jsonPath in jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
@@ -394,7 +393,7 @@ class DefaultMap(MapManager):
                     jsonData['banco'], connectedUri) if 'connectedUri' in locals() else self.getDBConnection(jsonData['banco'])
                 # Set config for html labels
                 composition, inomen, layers = self.setCartaConfig(
-                    jsonData, connectedUri, dict_compositions, feature_map_extent, test_noLayers)
+                    jsonData, connectedUri, dict_compositions, feature_map_extent)
 
                 # Get feature data for maps
                 QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
@@ -402,15 +401,14 @@ class DefaultMap(MapManager):
                 self.setElementsConfig(strProductType)
                 self.createAll(composition, self.nome, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
-                # self.setupMasks(strProductType)
+                self.setupMasks(strProductType)
                 
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    break
             # Reprojeta se for o caso
-            if self.dlg.checkBox_exportar_geotiff.isChecked():
+            if self.dlg.checkBoxExportGeotiff.isChecked():
                 self.reprojectTiffs()
 
         if not showLayers:

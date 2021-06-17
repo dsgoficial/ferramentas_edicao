@@ -185,12 +185,14 @@ class MapManager(MapTools):
 			replace_qrCode(composition, path_qrCode)
 
 		# Exporta os mapas
-		if not showLayers:
+		# if not showLayers:
+		if True:
 			self.exportMap(composition)
 
 		# Add grid layer
 		#ids_maplayers.extend([grid_layer.id()])
 		
-		if not showLayers:
+		# if not showLayers:
+		if False:
 			self.deleteMaps(ids_maplayers, True)						
 			# delete_file(path_qrCode) # deleting qrCode
