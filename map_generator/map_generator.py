@@ -184,15 +184,9 @@ class MapManager(MapTools):
 			success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, nome )
 			replace_qrCode(composition, path_qrCode)
 
-		# Exporta os mapas
-		# if not showLayers:
-		if True:
-			self.exportMap(composition)
-
 		# Add grid layer
 		#ids_maplayers.extend([grid_layer.id()])
 		
 		# if not showLayers:
-		if False:
-			self.deleteMaps(ids_maplayers, True)						
+			# self.deleteMaps(ids_maplayers)
 			# delete_file(path_qrCode) # deleting qrCode

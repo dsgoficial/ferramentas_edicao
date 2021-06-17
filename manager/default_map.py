@@ -353,6 +353,7 @@ class DefaultMap(MapManager):
 
     def createMaps(self):
         showLayers = True
+        maskSetup = False
 
         # Set project crs
         oldProjValue = self.mc.setProjectProjection()
@@ -401,16 +402,20 @@ class DefaultMap(MapManager):
                 self.setElementsConfig(strProductType)
                 self.createAll(composition, self.nome, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
-                self.setupMasks(strProductType)
-                
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-            # Reprojeta se for o caso
-            if self.dlg.checkBoxExportGeotiff.isChecked():
-                self.reprojectTiffs()
+                    if not maskSetup:
+                        self.setupMasks(strProductType)
+                        maskSetup = True
+                self.exportMap(composition)
+        # Reprojeta se for o caso
+        if self.dlg.checkBoxExportGeotiff.isChecked():
+            self.reprojectTiffs()
+
+        # if not showLayers:
+        self.mc.setProjectProjection(oldProjValue)
 
         if not showLayers:
-            self.mc.setProjectProjection(oldProjValue)
-            pass
+            self.cleanLayerTreeRoot()

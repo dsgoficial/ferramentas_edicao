@@ -192,7 +192,9 @@ class MapTools:
             exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
         if self.dlg.checkBoxExportGeotiff.isChecked():
             tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
-            exporter.exportToImage(tiffFilePath, QgsLayoutExporter.ImageExportSettings())
+            tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
+            tiffExporterSettings.dpi = 300
+            exporter.exportToImage(tiffFilePath, tiffExporterSettings)
         del exporter
         # QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(int(self.epsg),QgsCoordinateReferenceSystem.EpsgCrsId))
 
@@ -270,3 +272,6 @@ class MapTools:
 
     def deleteMaps(self, idsMapLayers):
         QgsProject.instance().removeMapLayers(idsMapLayers)
+
+    def cleanLayerTreeRoot(self):
+        QgsProject.instance().layerTreeRoot().removeAllChildren()

@@ -115,7 +115,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QCheckBox" name="checkBoxExportGeotiff">
+        <widget class="QCheckBox" name="checkBoxExportPdf">
          <property name="text">
           <string>Exportar PDF</string>
          </property>
@@ -125,7 +125,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBoxExportPdf">
+        <widget class="QCheckBox" name="checkBoxExportGeotiff">
          <property name="text">
           <string>Exportar Geotiff</string>
          </property>
