@@ -352,8 +352,8 @@ class DefaultMap(MapManager):
             return False, None, None
 
     def createMaps(self):
-        test_noLayers = True
-        showLayers = True
+        test_noLayers = False
+        showLayers = False
 
         # Set project crs
         oldProjValue = self.mc.setProjectProjection()
@@ -385,8 +385,8 @@ class DefaultMap(MapManager):
         self.editCompositions(strProductType, dict_compositions)
 
         if success:
-            exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-            exportFolder.mkdir()
+            self.exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            self.exportFolder.mkdir()
             for jsonPath in jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
@@ -402,7 +402,7 @@ class DefaultMap(MapManager):
                 self.setElementsConfig(strProductType)
                 self.createAll(composition, self.nome, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
-                self.setupMasks(strProductType)
+                # self.setupMasks(strProductType)
                 
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()

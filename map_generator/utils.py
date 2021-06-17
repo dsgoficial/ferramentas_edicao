@@ -111,7 +111,7 @@ class MapTools:
         port = connectionDict.get('porta')
         db_name = connectionDict.get('nome')
 
-        if oldUri and oldUri.host() == host and oldUri.port() == port and oldUri.db_name() == db_name:
+        if oldUri and oldUri.host() == host and oldUri.port() == port and oldUri.database() == db_name:
             return True, oldUri
         
         uri = QgsDataSourceUri()
@@ -177,17 +177,20 @@ class MapTools:
 
     def exportMap(self, composition):        
         basename = self.mi + '_' + self.inom 
-        pdf_filename = os.path.join(self.saveFolder,basename + ".pdf") 
-        tiff_filename = os.path.join(self.saveFolder, basename + ".tif")
+        pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf') 
+        tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
         exporter = QgsLayoutExporter(composition)        
         exportPdf = True
-        
         if exportPdf:
-            pdf_settings = QgsLayoutExporter.PdfExportSettings()            
-            pdf_settings.rasterizeWholeImage = True
-            pdfExport_result = exporter.exportToPdf(pdf_filename, pdf_settings)				
+            pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
+            pdfExporterSettings.rasterizeWholeImage = True
+            pdfExporterSettings.simplifyGeometries = False
+            pdfExporterSettings.appendGeoreference = True
+            pdfExporterSettings.exportMetadata = False
+            pdfExporterSettings.dpi = 300
+            exporter.exportToPdf(pdfFilePath, pdfExporterSettings)				
         if self.dlg.checkBox_exportar_geotiff.isChecked():
-            imageExport_result = exporter.exportToImage(tiff_filename, QgsLayoutExporter.ImageExportSettings())		        
+            imageExport_result = exporter.exportToImage(tiffFilePath, QgsLayoutExporter.ImageExportSettings())		        
         del exporter
         # QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(int(self.epsg),QgsCoordinateReferenceSystem.EpsgCrsId))
 
@@ -241,11 +244,11 @@ class MapTools:
         )
 
     def reprojectTiffs(self):
-        folder_reprojetado = os.path.join(self.saveFolder, 'padrao_bdgex')
+        folder_reprojetado = os.path.join(self.exportFolder, 'padrao_bdgex')
         os.mkdir(folder_reprojetado)
-        for file in os.listdir(self.saveFolder):
+        for file in os.listdir(self.exportFolder):
             if file.endswith(".tif"):				
-                rasterPath = os.path.join(self.saveFolder, file)
+                rasterPath = os.path.join(self.exportFolder, file)
                 rlayer = QgsRasterLayer(rasterPath, "reproject")
                 CRS = rlayer.crs()
                 source_epsg = CRS.postgisSrid()

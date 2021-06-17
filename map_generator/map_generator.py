@@ -171,6 +171,7 @@ class MapManager(MapTools):
 			composition.itemById('label_bdgexQR').setVisible(False)
 			composition.itemById('label_bdgexWeb').setVisible(False)
 			composition.itemById('label_classified').setVisible(True)
+			composition.itemById('symbol_QRCODE').setVisible(False)
 		else:
 			try:
 				composition.itemById('label_classified').setVisible(False)
@@ -178,6 +179,7 @@ class MapManager(MapTools):
 				pass
 			composition.itemById('label_bdgexQR').setVisible(True)
 			composition.itemById('label_bdgexWeb').setVisible(True)
+			composition.itemById('symbol_QRCODE').setVisible(True)
 			camadas_adicionar = ["localidades", "mosaico_topograficas"]
 			success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, nome )
 			replace_qrCode(composition, path_qrCode)
