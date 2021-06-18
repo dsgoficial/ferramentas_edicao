@@ -85,27 +85,32 @@ class Divisao(MapParent):
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Municipios_2020.shp'
         stylePath = self.styleFolder / 'carta_topografica_rdg' / 'municipio_rdg.qml'
         layerCounty = QgsVectorLayer(str(uriPath), 'municipios', 'ogr')
+        layerCounty.setProviderEncoding(u'UTF-8')
         layerCounty.loadNamedStyle(str(stylePath))
         # QgsProject.instance().addMapLayer(municipios_layer)
 
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
         stylePath = self.styleFolder / 'carta_topografica_rdg' / 'estados_rdg.qml'
         layerState = QgsVectorLayer(str(uriPath), 'limite_estado', 'ogr')
+        layerState.setProviderEncoding(u'UTF-8')
         layerState.loadNamedStyle(str(stylePath))
 
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Brasil_2020.shp'
         stylePath = self.styleFolder / 'carta_topografica_rdg' / 'internacional_rdg.qml'
         layerBrazil = QgsVectorLayer(str(uriPath), 'internacional_rdg', 'ogr')
+        layerBrazil.setProviderEncoding(u'UTF-8')
         layerBrazil.loadNamedStyle(str(stylePath))
 
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Oceano_2020.shp'
         stylePath = self.styleFolder / 'carta_topografica_rdg' / 'oceano_rdg.qml'
         layerOcean = QgsVectorLayer(str(uriPath), 'oceano', 'ogr')
+        layerOcean.setProviderEncoding(u'UTF-8')
         layerOcean.loadNamedStyle(str(stylePath))
 
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Paises_2020.shp'
         stylePath = self.styleFolder / 'carta_topografica_rdg' / 'paises_rdg.qml'
         layerCountry = QgsVectorLayer(str(uriPath), 'paises', 'ogr')
+        layerCountry.setProviderEncoding(u'UTF-8')
         layerCountry.loadNamedStyle(str(stylePath))
 
         return layerCounty, layerState, layerBrazil, layerOcean, layerCountry

@@ -414,5 +414,4 @@ class DefaultMap(MapManager):
         # if not showLayers:
         self.mc.setProjectProjection(oldProjValue)
 
-        if not showLayers:
-            self.cleanLayerTreeRoot()
+        self.cleanLayerTreeRoot()
