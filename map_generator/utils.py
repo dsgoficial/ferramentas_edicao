@@ -188,12 +188,12 @@ class MapTools:
             pdfExporterSettings.simplifyGeometries = False
             pdfExporterSettings.appendGeoreference = True
             pdfExporterSettings.exportMetadata = False
-            pdfExporterSettings.dpi = 300
+            pdfExporterSettings.dpi = 400
             exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
         if self.dlg.checkBoxExportGeotiff.isChecked():
             tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
-            tiffExporterSettings.dpi = 300
+            tiffExporterSettings.dpi = 400
             exporter.exportToImage(tiffFilePath, tiffExporterSettings)
         del exporter
         # QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(int(self.epsg),QgsCoordinateReferenceSystem.EpsgCrsId))

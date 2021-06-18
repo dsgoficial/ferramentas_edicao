@@ -2,7 +2,6 @@ import csv
 import itertools
 import math
 import os
-from qrcode import exceptions
 import string
 from pathlib import Path
 

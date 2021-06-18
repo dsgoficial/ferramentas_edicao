@@ -353,7 +353,6 @@ class DefaultMap(MapManager):
 
     def createMaps(self):
         showLayers = True
-        maskSetup = False
 
         # Set project crs
         oldProjValue = self.mc.setProjectProjection()
@@ -406,9 +405,7 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    if not maskSetup:
-                        self.setupMasks(strProductType)
-                        maskSetup = True
+                    self.setupMasks(strProductType)
                 self.exportMap(composition)
         # Reprojeta se for o caso
         if self.dlg.checkBoxExportGeotiff.isChecked():
