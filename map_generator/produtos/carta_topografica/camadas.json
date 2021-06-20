@@ -31,11 +31,13 @@
             },
             {
                 "tabela": "edicao_texto_generico_p",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is false"
             },
             {
                 "tabela": "edicao_texto_generico_l",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is false"
             },
             {
                 "tabela": "edicao_simb_hidrografia_l",
@@ -47,15 +49,18 @@
             },
             {
                 "tabela": "llp_localidade_p",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is false"
             },
             {
                 "tabela": "elemnat_toponimo_fisiografico_natural_p",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is false"
             },
             {
                 "tabela": "elemnat_toponimo_fisiografico_natural_l",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is false"
             },
             {
                 "tabela": "elemnat_ponto_cotado_p",
@@ -273,23 +278,43 @@
         "carta_mini": [
             {
                 "tabela": "edicao_identificador_trecho_rod_p",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
             },
             {
                 "tabela": "edicao_texto_generico_p",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
             },
             {
                 "tabela": "edicao_texto_generico_l",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
             },
             {
                 "tabela": "edicao_simb_hidrografia_l",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
             },
             {
                 "tabela": "edicao_simb_hidrografia_p",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
+            },
+            {
+                "tabela": "llp_localidade_p",
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_p",
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
+            },
+            {
+                "tabela": "elemnat_toponimo_fisiografico_natural_l",
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
             },
             {
                 "tabela": "llp_limite_especial_l",
@@ -305,11 +330,13 @@
             },
             {
                 "tabela": "infra_ferrovia_l",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
             },
             {
                 "tabela": "infra_via_deslocamento_l",
-                "schema": "edgv"
+                "schema": "edgv",
+                "filtro": "carta_mini is true"
             },
             {
                 "tabela": "elemnat_trecho_drenagem_l",
