@@ -384,7 +384,7 @@ class DefaultMap(MapManager):
         self.editCompositions(strProductType, dict_compositions)
 
         if success:
-            self.exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            self.exportFolder = exportFolder
             self.exportFolder.mkdir(exist_ok=True)
             for jsonPath in jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
