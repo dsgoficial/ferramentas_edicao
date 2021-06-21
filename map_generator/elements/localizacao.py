@@ -421,15 +421,9 @@ class Localizacao(MapParent):
             settings.fieldName = 'concat(upper("nome"), \' - \', upper("SIGLA_PAIS"))'
         else:
             settings.fieldName = 'upper("nome")'
-        test = True
-        if test:
-            settings.Placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
-            #settings.OrderedPositionsAroundPoint = QgsPalLayerSettings.MiddleLeft
-
-        else:
-            settings.placement = 1
-            settings.quadOffset = 7
-
+        
+        settings.placement = QgsPalLayerSettings.Horizontal
+        # settings.Placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         settings.centroidInside = True
         settings.isExpression = True
         textFormat = QgsTextFormat()
