@@ -296,7 +296,17 @@ class MapParent:
         self.groupNode = (self.mp.groupExists(self.group_name))
         self.groupNode.setItemVisibilityChecked(False)
         #self.mp.hideGroup(self.groupNode, True)
-
+    
+    @staticmethod
+    def cloneVectorLayer(layer, layerName):
+        dataProviderUri = layer.dataProvider().dataSourceUri()
+        copyLayer = QgsVectorLayer(dataProviderUri, layerName, 'memory')
+        copyLayerDataProvider = copyLayer.dataProvider()
+        renameDict = {x:layer.attributeDisplayName(x) for x in layer.attributeList()}
+        copyLayerDataProvider.renameAttributes(renameDict)
+        copyLayer.updateFields()
+        copyLayerDataProvider.addFeatures(layer.getFeatures())
+        return copyLayer
 
 class MapCreator:
     def __init__(self, iface):

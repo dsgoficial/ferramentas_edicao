@@ -2,6 +2,7 @@ import codecs
 import json
 import os
 from pathlib import Path
+import subprocess
 
 from PyQt5.QtCore import QVariant
 from qgis import processing
@@ -196,7 +197,6 @@ class MapTools:
             tiffExporterSettings.dpi = 400
             exporter.exportToImage(tiffFilePath, tiffExporterSettings)
         del exporter
-        # QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(int(self.epsg),QgsCoordinateReferenceSystem.EpsgCrsId))
 
     def removeCreationDataGroups(self, map_groups=['localizacao', 'articulacao', 'map', 'minimap',  'divisao']):
         root = QgsProject.instance().layerTreeRoot()
@@ -204,39 +204,20 @@ class MapTools:
             group_localizacao = root.findGroup(group)
             root.removeChildNode(group_localizacao)
 
-    def reproject(self, origin_path, target_path, source_epsg, target_epsg=4674):
-        source_path = " -of GTiff " + origin_path
-        sc_target_epsg = " -t_srs EPSG:" + str(target_epsg)
-        # cmd = "gdalwarp  -co COMPRESS=LZW -overwrite -s_srs EPSG:" + \
-        cmd = "gdalwarp  -co COMPRESS=JPEG -co \"TILED=YES\" -overwrite -s_srs EPSG:" + \
-            str(source_epsg) + \
-            sc_target_epsg + \
-            source_path + \
-            " " + \
-            target_path
-        os.system(cmd)
+    def reproject(self, srcPath, dstPath, srcEPSG, dstEPSG=4674):
+        return subprocess.run([
+            'gdalwarp', '-overwrite',
+            '-s_srs', f'EPSG:{srcEPSG}',
+            '-t_srs', f'EPSG:{dstEPSG}',
+            '-of', 'GTiff', srcPath, dstPath
+        ])
 
-    def remove_alpha_band(self, origin_path, target_path):
-        # cmd = "gdal_translate -b 1 -b 2 -b 3 -co COMPRESS=JPEG " + \
-        cmd = "gdal_translate -b 1 -b 2 -b 3 -co COMPRESS=JPEG -co \"TILED=YES\"  " + \
-            origin_path + \
-            " " + \
-            target_path
-        os.system(cmd)
-
-    def convert_ycbcr(self, origin_path, target_path):
-        cmd = "gdal_translate -co COMPRESS=JPEG -co \"TILED=YES\" -co PHOTOMETRIC=YCBCR " + \
-            origin_path + \
-            " " + \
-            target_path
-        os.system(cmd)
-
-    def convert(self, origin_path, target_path):
-        cmd = "gdal_translate  -co PHOTOMETRIC=YCBCR  " + \
-            origin_path + \
-            " " + \
-            target_path
-        os.system(cmd)
+    def compressRaster(self, srcPath, dstPath):
+        return subprocess.run([
+            'gdal_translate', '-b', '1', '-b', '2', '-b', '3', 
+            '-co', 'COMPRESS=JPEG', '-co', 'TILED=YES', '-co', 'PHOTOMETRIC=YCBCR',
+            srcPath, dstPath
+        ])
 
     def setupMasks(self, produto):
         path_json = Path(__file__).parent / 'produtos' / produto / 'mascaras.json'
@@ -248,27 +229,23 @@ class MapTools:
         )
 
     def reprojectTiffs(self):
-        folder_reprojetado = os.path.join(self.exportFolder, 'padrao_bdgex')
-        os.mkdir(folder_reprojetado)
+        dstPath = os.path.join(self.exportFolder, 'padrao_bdgex')
+        os.mkdir(dstPath)
         for file in os.listdir(self.exportFolder):
             if file.endswith(".tif"):
                 rasterPath = os.path.join(self.exportFolder, file)
-                rlayer = QgsRasterLayer(rasterPath, "reproject")
-                CRS = rlayer.crs()
-                source_epsg = CRS.postgisSrid()
-                del rlayer
+                _lyr = QgsRasterLayer(rasterPath, "reproject")
+                srcEPSG = _lyr.crs().postgisSrid()
+                del _lyr
+                filename = (file.split('.'))[0]
+                
+                reprojectPath = os.path.join(dstPath, filename + '_reprojetado.tif')
+                self.reproject(rasterPath, reprojectPath, srcEPSG, 4674)
 
-                filename_without_ext = (file.split('.'))[0]
-                caminho_reprojetado = os.path.join(
-                    folder_reprojetado, filename_without_ext + '_reprojetado.tif')
-                self.reproject(rasterPath, caminho_reprojetado, source_epsg, 4674)
-                caminho_rgb = os.path.join(folder_reprojetado, filename_without_ext + '_rgb.tif')
-                self.remove_alpha_band(rasterPath, caminho_rgb)
+                target_path = os.path.join(dstPath, filename + '.tif')
+                self.compressRaster(reprojectPath, target_path)
 
-                target_path = os.path.join(folder_reprojetado, filename_without_ext + '.tif')
-                self.convert_ycbcr(caminho_rgb, target_path)
-                os.remove(caminho_reprojetado)
-                os.remove(caminho_rgb)
+                os.remove(reprojectPath)
 
     def deleteMaps(self, idsMapLayers):
         QgsProject.instance().removeMapLayers(idsMapLayers)

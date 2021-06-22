@@ -87,7 +87,6 @@ class Divisao(MapParent):
         layerCounty = QgsVectorLayer(str(uriPath), 'municipios', 'ogr')
         layerCounty.setProviderEncoding(u'UTF-8')
         layerCounty.loadNamedStyle(str(stylePath))
-        # QgsProject.instance().addMapLayer(municipios_layer)
 
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
         stylePath = self.styleFolder / 'carta_topografica_rdg' / 'estados_rdg.qml'

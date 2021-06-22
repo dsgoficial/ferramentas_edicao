@@ -3,8 +3,7 @@ import os
 from pathlib import Path
 from collections import namedtuple
 
-from qgis.core import QgsProject
-from qgis import processing
+from qgis.core import QgsProject, Qgis
 from PyQt5.QtGui import QFont, QColor
 
 from ..map_generator.elements.map_utils import MapParent as MapConnection
@@ -384,7 +383,7 @@ class DefaultMap(MapManager):
         self.editCompositions(strProductType, dict_compositions)
 
         if success:
-            self.exportFolder = exportFolder
+            self.exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             self.exportFolder.mkdir(exist_ok=True)
             for jsonPath in jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
@@ -399,7 +398,7 @@ class DefaultMap(MapManager):
                 QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
 
                 self.setElementsConfig(strProductType)
-                self.createAll(composition, self.nome, inomen, feature_map_extent,
+                ids_maplayer = self.createAll(composition, self.nome, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()
@@ -407,6 +406,7 @@ class DefaultMap(MapManager):
                     manager.addLayout(composition)
                     self.setupMasks(strProductType)
                 self.exportMap(composition)
+                QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso
         if self.dlg.checkBoxExportGeotiff.isChecked():
             self.reprojectTiffs()
@@ -414,4 +414,5 @@ class DefaultMap(MapManager):
         # if not showLayers:
         self.mc.setProjectProjection(oldProjValue)
 
+        self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(jsonFilesPaths)} mapas foram exportados', Qgis.Success)
         self.cleanLayerTreeRoot()

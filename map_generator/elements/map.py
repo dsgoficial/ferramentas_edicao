@@ -16,9 +16,6 @@ class Map(MapParent):
         self.GLC = GLC
         self.mp = MapCreator(iface)
         self.group_name = 'map'
-        self.layerName_auxiliarMoldura = "auxiliar_moldura"
-        self.layer_auxiliarMoldura = None
-        self.boundTeste = None
         self.folder_estilos = Path(__file__).parent.parent / 'estilos' / 'map'
 
     def setMapSize(self, map_width=588, map_height=588):
@@ -35,7 +32,7 @@ class Map(MapParent):
         baseuri = uri_shape + "?crs=epsg:"
         crs_epsg = '4326'
         uri = baseuri + self.epsg
-        layer_auxiliarMoldura = QgsVectorLayer(uri, self.layerName_auxiliarMoldura, "memory")
+        layer_auxiliarMoldura = QgsVectorLayer(uri, 'auxiliar_moldura', "memory")
 
         # Start editing memory layer, set all grid fields to memory layer
         layer_auxiliarMoldura.startEditing()
@@ -134,13 +131,16 @@ class Map(MapParent):
         layer_grid_styled, map_extent_transformed = self.createLayerForGrid(
             grid_layer, selected_feature)
         QgsProject.instance().addMapLayer(layer_grid_styled, False)
-        copy = layer_grid_styled.clone()
+        copy = self.cloneVectorLayer(layer_grid_styled, 'aux_moldura')
+        # copy = layer_grid_styled.clone()
         copyStyle = Path(__file__).parent.parent / 'estilos' / 'grid' / 'style.qml'
         copy.loadNamedStyle(str(copyStyle))
         QgsProject.instance().addMapLayer(copy, False)
+        map_layers.append(copy.id())
         map_layers.append(layer_grid_styled.id())
         mapGroup_node.addLayer(layer_grid_styled)
         self.generateGridStyleForLayer(layer_grid_styled)
+        layer_grid_styled.triggerRepaint()
 
         # Criando o layer de mascara de rotulos
         layer_mascara_rotulo = self.createMaskLayer(selected_feature)
@@ -175,32 +175,29 @@ class Map(MapParent):
         return layer_mascara_rotulo
         # QgsProject.instance().addMapLayer(grid_rectangle_layer, True)
 
-    def updateMapItem2(self, composition, map_extent, map_extent_transformed, layer_auxiliarMoldura, layers_to_lock, mapItem=None):
+    def updateMapItem2(self, composition, map_extent, map_extent_transformed, layer_auxiliarMoldura, layers_to_lock):
         theScale = self.scale*1000.0
-        if mapItem is None:
-            mapItem = composition.itemById("the_map")
-        if mapItem is not None:
-            mapItem.setExtent(map_extent)
-            mapItem.setScale(theScale)
-            layers_return = [layer_auxiliarMoldura]
-            if layers_to_lock is not None:
-                layers_to_set = [layer_auxiliarMoldura]
-                layers_to_set.extend(layers_to_lock)
-                mapItem.setLayers(layers_to_set)
-            else:
-                mapItem.setLayers([layer_auxiliarMoldura])
-            mapItem.refresh()
-            mapItem.setCrs(self.crs_moldura)
-            mapItem.setExtent(map_extent_transformed)
-            mapItem.setScale(theScale)
-            if theScale == 250000:
-                self.map_height = 494
-                self.map_width = 724
-            mapItem.attemptResize(QgsLayoutSize(
-                self.map_width,  self.map_height, QgsUnitTypes.LayoutMillimeters))
-            mapItem.setScale(theScale)
-            mapItem.refresh()
-            self.centerMapInAreaCarta(composition)
+        mapItem = composition.itemById("the_map")
+        mapItem.setExtent(map_extent)
+        mapItem.setScale(theScale)
+        if layers_to_lock is not None:
+            layers_to_set = [layer_auxiliarMoldura]
+            layers_to_set.extend(layers_to_lock)
+            mapItem.setLayers(layers_to_set)
+        else:
+            mapItem.setLayers([layer_auxiliarMoldura])
+        mapItem.refresh()
+        mapItem.setCrs(self.crs_moldura)
+        mapItem.setExtent(map_extent_transformed)
+        mapItem.setScale(theScale)
+        if theScale == 250000:
+            self.map_height = 494
+            self.map_width = 724
+        mapItem.attemptResize(QgsLayoutSize(
+            self.map_width,  self.map_height, QgsUnitTypes.LayoutMillimeters))
+        mapItem.setScale(theScale)
+        mapItem.refresh()
+        self.centerMapInAreaCarta(composition)
 
     def centerMapInAreaCarta(self, composition):
         item_area_reservada_carta = composition.itemById('area_reservada_carta')

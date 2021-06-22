@@ -185,6 +185,7 @@ class MapManager(MapTools):
 			replace_qrCode(composition, path_qrCode)
 
 		# Add grid layer
+		return ids_maplayers
 		#ids_maplayers.extend([grid_layer.id()])
 		
 		# if not showLayers:
