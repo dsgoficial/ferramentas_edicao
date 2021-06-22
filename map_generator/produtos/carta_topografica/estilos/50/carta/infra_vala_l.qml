@@ -81,8 +81,8 @@
     <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{f68d9f9a-dddb-41e4-84a4-191905046072}">
-      <rule description="Vala" key="{172302c0-dc5c-4fa4-a65a-852d780591a2}">
+    <rules key="{509a111c-54b2-4d54-a990-65e397bfe02b}">
+      <rule description="Vala" key="{5f93abec-143e-46bb-a1e3-5bfecc79852d}">
         <settings calloutType="simple">
           <text-style fontSizeMapUnitScale="3x:0,0,0,0,0,0" previewBkgrdColor="255,255,255,255" fontLetterSpacing="0" capitalization="0" textOrientation="horizontal" fontSize="6" fontStrikeout="0" fontUnderline="0" fontItalic="1" fieldName="texto_edicao" isExpression="0" useSubstitutions="0" fontSizeUnit="Point" multilineHeight="1" fontWordSpacing="0" namedStyle="Condensed Italic" fontWeight="50" fontFamily="Noto Sans" allowHtml="0" textOpacity="1" fontKerning="1" blendMode="0" textColor="0,160,223,255">
             <text-buffer bufferColor="255,255,255,255" bufferOpacity="1" bufferJoinStyle="128" bufferDraw="0" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferNoFill="1" bufferSize="1" bufferBlendMode="0"/>
@@ -199,7 +199,9 @@
     </rules>
   </labeling>
   <customproperties>
-    <property value="&quot;observacao&quot;" key="dualview/previewExpressions"/>
+    <property key="dualview/previewExpressions">
+      <value>"observacao"</value>
+    </property>
     <property value="0" key="embeddedWidgets/count"/>
     <property key="variableNames"/>
     <property key="variableValues"/>
@@ -474,7 +476,7 @@
   <attributeactions>
     <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
   </attributeactions>
-  <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
+  <attributetableconfig sortExpression="&quot;observacao&quot;" sortOrder="1" actionWidgetStyle="dropDown">
     <columns>
       <column width="-1" hidden="0" name="id" type="field"/>
       <column width="-1" hidden="0" name="observacao" type="field"/>
