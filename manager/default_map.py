@@ -11,30 +11,12 @@ from ..map_generator.map_generator import MapManager
 from ..map_generator.elements.map_index.map_index import UtmGrid
 
 product_parameters = {
-    'topo': {
-        "grid": {
-            "crossX": 4,
-            "crossY": 4,
-            "fontSize": 1.9,
-            "font": QFont("Arial"),
-            "fontLL": QFont("Arial"),
-            "llcolor": QColor('black'),
-            "linwidth_geo": 0.3,
-            "linwidth_utm": 0.2,
-            "linwidth_buffer_geo": 0,
-            "linwidth_buffer_utm": 0,
-            "geo_grid_color": QColor('white'),
-            "utm_grid_color": QColor('black'),
-            "geo_grid_buffer_color": QColor('white'),
-            "utm_grid_buffer_color": QColor('black')
-        }
-    },
     'carta_topografica': {
         "nome_produto": "Carta Topográfica",
         "required_files": [],
         "grid": {
-            "crossX": 6,
-            "crossY": 6,
+            "crossX": 4,
+            "crossY": 4,
             "fontSize": 1.9,
             "font": QFont("Arial"),
             "fontLL": QFont("Arial"),
