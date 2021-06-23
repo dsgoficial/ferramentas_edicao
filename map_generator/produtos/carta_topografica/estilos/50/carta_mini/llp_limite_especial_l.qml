@@ -1,26 +1,26 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis minScale="100000000" hasScaleBasedVisibilityFlag="0" simplifyDrawingTol="1" simplifyLocal="1" version="3.18.3-Zürich" styleCategories="AllStyleCategories" readOnly="0" simplifyMaxScale="1" labelsEnabled="0" simplifyAlgorithm="0" maxScale="0" simplifyDrawingHints="0">
+<qgis hasScaleBasedVisibilityFlag="0" simplifyAlgorithm="0" simplifyDrawingHints="0" styleCategories="AllStyleCategories" simplifyLocal="1" minScale="100000000" simplifyMaxScale="1" readOnly="0" version="3.18.3-Zürich" simplifyDrawingTol="1" labelsEnabled="1" maxScale="0">
   <flags>
     <Identifiable>1</Identifiable>
     <Removable>1</Removable>
     <Searchable>1</Searchable>
     <Private>0</Private>
   </flags>
-  <temporal mode="0" startField="" durationUnit="min" fixedDuration="0" enabled="0" endExpression="" accumulate="0" endField="" durationField="" startExpression="">
+  <temporal enabled="0" startField="" durationField="" mode="0" accumulate="0" endField="" endExpression="" fixedDuration="0" startExpression="" durationUnit="min">
     <fixedRange>
       <start></start>
       <end></end>
     </fixedRange>
   </temporal>
-  <renderer-v2 type="mergedFeatureRenderer" enableorderby="0" forceraster="0">
-    <renderer-v2 symbollevels="0" type="RuleRenderer" enableorderby="0" forceraster="0">
+  <renderer-v2 forceraster="0" type="mergedFeatureRenderer" enableorderby="0">
+    <renderer-v2 forceraster="0" symbollevels="0" type="RuleRenderer" enableorderby="0">
       <rules key="{ff3995e7-5994-44a3-800a-da9a9d3e9d9f}">
-        <rule filter="tipo = 2" key="{4cb62d00-cb4e-430b-9e64-a271c5211c1c}" description="Terra Indigena" symbol="0" label="A10418A"/>
-        <rule filter="tipo = 5" key="{6f8527a2-61b5-4534-8c2f-b780432d5412}" description="Unidade de conservação" symbol="1" label="A10420A"/>
-        <rule filter="ELSE" key="{2baa4cee-ab16-4f3e-852e-823d79eaa55f}" symbol="2"/>
+        <rule label="A10418A" symbol="0" key="{1e2d5c72-25d9-463c-98b6-25688afbcd8e}" description="Terra Indigena" filter="tipo = 2"/>
+        <rule label="A10420A" symbol="1" key="{63b39a76-52b4-4be5-9fcb-60910375814a}" description="Unidade de conservação" filter="tipo = 5"/>
+        <rule symbol="2" key="{2baa4cee-ab16-4f3e-852e-823d79eaa55f}" filter="ELSE"/>
       </rules>
       <symbols>
-        <symbol alpha="1" name="0" clip_to_extent="1" type="line" force_rhr="0">
+        <symbol alpha="1" name="0" force_rhr="0" type="line" clip_to_extent="1">
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" value="" type="QString"/>
@@ -28,7 +28,7 @@
               <Option name="type" value="collection" type="QString"/>
             </Option>
           </data_defined_properties>
-          <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+          <layer enabled="1" class="SimpleLine" locked="0" pass="0">
             <Option type="Map">
               <Option name="align_dash_pattern" value="0" type="QString"/>
               <Option name="capstyle" value="square" type="QString"/>
@@ -52,27 +52,27 @@
               <Option name="use_custom_dash" value="0" type="QString"/>
               <Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             </Option>
-            <prop v="0" k="align_dash_pattern"/>
-            <prop v="square" k="capstyle"/>
-            <prop v="5;2" k="customdash"/>
-            <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-            <prop v="MM" k="customdash_unit"/>
-            <prop v="0" k="dash_pattern_offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="dash_pattern_offset_map_unit_scale"/>
-            <prop v="MM" k="dash_pattern_offset_unit"/>
-            <prop v="0" k="draw_inside_polygon"/>
-            <prop v="bevel" k="joinstyle"/>
-            <prop v="40,168,40,255" k="line_color"/>
-            <prop v="solid" k="line_style"/>
-            <prop v="1" k="line_width"/>
-            <prop v="MM" k="line_width_unit"/>
-            <prop v="0" k="offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-            <prop v="MM" k="offset_unit"/>
-            <prop v="0" k="ring_filter"/>
-            <prop v="0" k="tweak_dash_pattern_on_corners"/>
-            <prop v="0" k="use_custom_dash"/>
-            <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+            <prop k="align_dash_pattern" v="0"/>
+            <prop k="capstyle" v="square"/>
+            <prop k="customdash" v="5;2"/>
+            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="customdash_unit" v="MM"/>
+            <prop k="dash_pattern_offset" v="0"/>
+            <prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="dash_pattern_offset_unit" v="MM"/>
+            <prop k="draw_inside_polygon" v="0"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="line_color" v="40,168,40,255"/>
+            <prop k="line_style" v="solid"/>
+            <prop k="line_width" v="1"/>
+            <prop k="line_width_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="ring_filter" v="0"/>
+            <prop k="tweak_dash_pattern_on_corners" v="0"/>
+            <prop k="use_custom_dash" v="0"/>
+            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
             <data_defined_properties>
               <Option type="Map">
                 <Option name="name" value="" type="QString"/>
@@ -81,7 +81,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+          <layer enabled="1" class="SimpleLine" locked="0" pass="0">
             <Option type="Map">
               <Option name="align_dash_pattern" value="1" type="QString"/>
               <Option name="capstyle" value="square" type="QString"/>
@@ -105,27 +105,27 @@
               <Option name="use_custom_dash" value="1" type="QString"/>
               <Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             </Option>
-            <prop v="1" k="align_dash_pattern"/>
-            <prop v="square" k="capstyle"/>
-            <prop v="3;0.9;0.2;0.9" k="customdash"/>
-            <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-            <prop v="MM" k="customdash_unit"/>
-            <prop v="0" k="dash_pattern_offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="dash_pattern_offset_map_unit_scale"/>
-            <prop v="MM" k="dash_pattern_offset_unit"/>
-            <prop v="0" k="draw_inside_polygon"/>
-            <prop v="bevel" k="joinstyle"/>
-            <prop v="201,201,201,255" k="line_color"/>
-            <prop v="solid" k="line_style"/>
-            <prop v="0.2" k="line_width"/>
-            <prop v="MM" k="line_width_unit"/>
-            <prop v="0" k="offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-            <prop v="MM" k="offset_unit"/>
-            <prop v="0" k="ring_filter"/>
-            <prop v="1" k="tweak_dash_pattern_on_corners"/>
-            <prop v="1" k="use_custom_dash"/>
-            <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+            <prop k="align_dash_pattern" v="1"/>
+            <prop k="capstyle" v="square"/>
+            <prop k="customdash" v="3;0.9;0.2;0.9"/>
+            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="customdash_unit" v="MM"/>
+            <prop k="dash_pattern_offset" v="0"/>
+            <prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="dash_pattern_offset_unit" v="MM"/>
+            <prop k="draw_inside_polygon" v="0"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="line_color" v="201,201,201,255"/>
+            <prop k="line_style" v="solid"/>
+            <prop k="line_width" v="0.2"/>
+            <prop k="line_width_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="ring_filter" v="0"/>
+            <prop k="tweak_dash_pattern_on_corners" v="1"/>
+            <prop k="use_custom_dash" v="1"/>
+            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
             <data_defined_properties>
               <Option type="Map">
                 <Option name="name" value="" type="QString"/>
@@ -135,7 +135,7 @@
             </data_defined_properties>
           </layer>
         </symbol>
-        <symbol alpha="1" name="1" clip_to_extent="1" type="line" force_rhr="0">
+        <symbol alpha="1" name="1" force_rhr="0" type="line" clip_to_extent="1">
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" value="" type="QString"/>
@@ -143,7 +143,7 @@
               <Option name="type" value="collection" type="QString"/>
             </Option>
           </data_defined_properties>
-          <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+          <layer enabled="1" class="SimpleLine" locked="0" pass="0">
             <Option type="Map">
               <Option name="align_dash_pattern" value="0" type="QString"/>
               <Option name="capstyle" value="square" type="QString"/>
@@ -167,27 +167,27 @@
               <Option name="use_custom_dash" value="0" type="QString"/>
               <Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             </Option>
-            <prop v="0" k="align_dash_pattern"/>
-            <prop v="square" k="capstyle"/>
-            <prop v="5;2" k="customdash"/>
-            <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-            <prop v="MM" k="customdash_unit"/>
-            <prop v="0" k="dash_pattern_offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="dash_pattern_offset_map_unit_scale"/>
-            <prop v="MM" k="dash_pattern_offset_unit"/>
-            <prop v="0" k="draw_inside_polygon"/>
-            <prop v="bevel" k="joinstyle"/>
-            <prop v="131,194,164,255" k="line_color"/>
-            <prop v="solid" k="line_style"/>
-            <prop v="1" k="line_width"/>
-            <prop v="MM" k="line_width_unit"/>
-            <prop v="0" k="offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-            <prop v="MM" k="offset_unit"/>
-            <prop v="0" k="ring_filter"/>
-            <prop v="0" k="tweak_dash_pattern_on_corners"/>
-            <prop v="0" k="use_custom_dash"/>
-            <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+            <prop k="align_dash_pattern" v="0"/>
+            <prop k="capstyle" v="square"/>
+            <prop k="customdash" v="5;2"/>
+            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="customdash_unit" v="MM"/>
+            <prop k="dash_pattern_offset" v="0"/>
+            <prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="dash_pattern_offset_unit" v="MM"/>
+            <prop k="draw_inside_polygon" v="0"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="line_color" v="131,194,164,255"/>
+            <prop k="line_style" v="solid"/>
+            <prop k="line_width" v="1"/>
+            <prop k="line_width_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="ring_filter" v="0"/>
+            <prop k="tweak_dash_pattern_on_corners" v="0"/>
+            <prop k="use_custom_dash" v="0"/>
+            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
             <data_defined_properties>
               <Option type="Map">
                 <Option name="name" value="" type="QString"/>
@@ -196,7 +196,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+          <layer enabled="1" class="SimpleLine" locked="0" pass="0">
             <Option type="Map">
               <Option name="align_dash_pattern" value="1" type="QString"/>
               <Option name="capstyle" value="square" type="QString"/>
@@ -220,27 +220,27 @@
               <Option name="use_custom_dash" value="1" type="QString"/>
               <Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             </Option>
-            <prop v="1" k="align_dash_pattern"/>
-            <prop v="square" k="capstyle"/>
-            <prop v="3;0.9;0.2;0.9" k="customdash"/>
-            <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-            <prop v="MM" k="customdash_unit"/>
-            <prop v="0" k="dash_pattern_offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="dash_pattern_offset_map_unit_scale"/>
-            <prop v="MM" k="dash_pattern_offset_unit"/>
-            <prop v="0" k="draw_inside_polygon"/>
-            <prop v="bevel" k="joinstyle"/>
-            <prop v="0,0,0,255" k="line_color"/>
-            <prop v="solid" k="line_style"/>
-            <prop v="0.2" k="line_width"/>
-            <prop v="MM" k="line_width_unit"/>
-            <prop v="0" k="offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-            <prop v="MM" k="offset_unit"/>
-            <prop v="0" k="ring_filter"/>
-            <prop v="1" k="tweak_dash_pattern_on_corners"/>
-            <prop v="1" k="use_custom_dash"/>
-            <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+            <prop k="align_dash_pattern" v="1"/>
+            <prop k="capstyle" v="square"/>
+            <prop k="customdash" v="3;0.9;0.2;0.9"/>
+            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="customdash_unit" v="MM"/>
+            <prop k="dash_pattern_offset" v="0"/>
+            <prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="dash_pattern_offset_unit" v="MM"/>
+            <prop k="draw_inside_polygon" v="0"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="line_color" v="0,0,0,255"/>
+            <prop k="line_style" v="solid"/>
+            <prop k="line_width" v="0.2"/>
+            <prop k="line_width_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="ring_filter" v="0"/>
+            <prop k="tweak_dash_pattern_on_corners" v="1"/>
+            <prop k="use_custom_dash" v="1"/>
+            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
             <data_defined_properties>
               <Option type="Map">
                 <Option name="name" value="" type="QString"/>
@@ -250,7 +250,7 @@
             </data_defined_properties>
           </layer>
         </symbol>
-        <symbol alpha="1" name="2" clip_to_extent="1" type="line" force_rhr="0">
+        <symbol alpha="1" name="2" force_rhr="0" type="line" clip_to_extent="1">
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" value="" type="QString"/>
@@ -258,7 +258,7 @@
               <Option name="type" value="collection" type="QString"/>
             </Option>
           </data_defined_properties>
-          <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+          <layer enabled="1" class="SimpleLine" locked="0" pass="0">
             <Option type="Map">
               <Option name="align_dash_pattern" value="0" type="QString"/>
               <Option name="capstyle" value="square" type="QString"/>
@@ -282,27 +282,27 @@
               <Option name="use_custom_dash" value="0" type="QString"/>
               <Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             </Option>
-            <prop v="0" k="align_dash_pattern"/>
-            <prop v="square" k="capstyle"/>
-            <prop v="5;2" k="customdash"/>
-            <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-            <prop v="MM" k="customdash_unit"/>
-            <prop v="0" k="dash_pattern_offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="dash_pattern_offset_map_unit_scale"/>
-            <prop v="MM" k="dash_pattern_offset_unit"/>
-            <prop v="0" k="draw_inside_polygon"/>
-            <prop v="bevel" k="joinstyle"/>
-            <prop v="255,1,5,255" k="line_color"/>
-            <prop v="solid" k="line_style"/>
-            <prop v="1.86" k="line_width"/>
-            <prop v="MM" k="line_width_unit"/>
-            <prop v="0" k="offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-            <prop v="MM" k="offset_unit"/>
-            <prop v="0" k="ring_filter"/>
-            <prop v="0" k="tweak_dash_pattern_on_corners"/>
-            <prop v="0" k="use_custom_dash"/>
-            <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+            <prop k="align_dash_pattern" v="0"/>
+            <prop k="capstyle" v="square"/>
+            <prop k="customdash" v="5;2"/>
+            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="customdash_unit" v="MM"/>
+            <prop k="dash_pattern_offset" v="0"/>
+            <prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="dash_pattern_offset_unit" v="MM"/>
+            <prop k="draw_inside_polygon" v="0"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="line_color" v="255,1,5,255"/>
+            <prop k="line_style" v="solid"/>
+            <prop k="line_width" v="1.86"/>
+            <prop k="line_width_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="ring_filter" v="0"/>
+            <prop k="tweak_dash_pattern_on_corners" v="0"/>
+            <prop k="use_custom_dash" v="0"/>
+            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
             <data_defined_properties>
               <Option type="Map">
                 <Option name="name" value="" type="QString"/>
@@ -315,8 +315,12 @@
       </symbols>
     </renderer-v2>
   </renderer-v2>
+  <labeling type="rule-based">
+    <rules key="{4b5237bf-ce1a-4e8c-8c3d-f198d4b93cd4}"/>
+  </labeling>
   <customproperties>
-    <property key="embeddedWidgets/count" value="0"/>
+    <property value="&quot;nome&quot;" key="dualview/previewExpressions"/>
+    <property value="0" key="embeddedWidgets/count"/>
     <property key="variableNames"/>
     <property key="variableValues"/>
   </customproperties>
@@ -324,11 +328,11 @@
   <featureBlendMode>0</featureBlendMode>
   <layerOpacity>1</layerOpacity>
   <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
-    <DiagramCategory barWidth="5" opacity="1" backgroundColor="#ffffff" showAxis="1" scaleBasedVisibility="0" rotationOffset="270" labelPlacementMethod="XHeight" width="15" penAlpha="255" minimumSize="0" sizeScale="3x:0,0,0,0,0,0" spacingUnit="MM" enabled="0" spacing="5" penColor="#000000" lineSizeScale="3x:0,0,0,0,0,0" scaleDependency="Area" height="15" spacingUnitScale="3x:0,0,0,0,0,0" direction="0" minScaleDenominator="0" diagramOrientation="Up" penWidth="0" lineSizeType="MM" sizeType="MM" maxScaleDenominator="1e+08" backgroundAlpha="255">
+    <DiagramCategory sizeType="MM" barWidth="5" width="15" diagramOrientation="Up" spacingUnit="MM" penAlpha="255" lineSizeScale="3x:0,0,0,0,0,0" rotationOffset="270" showAxis="1" backgroundAlpha="255" labelPlacementMethod="XHeight" spacing="5" minScaleDenominator="0" backgroundColor="#ffffff" direction="0" height="15" scaleBasedVisibility="0" maxScaleDenominator="1e+08" enabled="0" lineSizeType="MM" spacingUnitScale="3x:0,0,0,0,0,0" penWidth="0" sizeScale="3x:0,0,0,0,0,0" opacity="1" penColor="#000000" minimumSize="0" scaleDependency="Area">
       <fontProperties style="" description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0"/>
-      <attribute color="#000000" field="" label=""/>
+      <attribute color="#000000" label="" field=""/>
       <axisSymbol>
-        <symbol alpha="1" name="" clip_to_extent="1" type="line" force_rhr="0">
+        <symbol alpha="1" name="" force_rhr="0" type="line" clip_to_extent="1">
           <data_defined_properties>
             <Option type="Map">
               <Option name="name" value="" type="QString"/>
@@ -336,7 +340,7 @@
               <Option name="type" value="collection" type="QString"/>
             </Option>
           </data_defined_properties>
-          <layer class="SimpleLine" pass="0" locked="0" enabled="1">
+          <layer enabled="1" class="SimpleLine" locked="0" pass="0">
             <Option type="Map">
               <Option name="align_dash_pattern" value="0" type="QString"/>
               <Option name="capstyle" value="square" type="QString"/>
@@ -360,27 +364,27 @@
               <Option name="use_custom_dash" value="0" type="QString"/>
               <Option name="width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
             </Option>
-            <prop v="0" k="align_dash_pattern"/>
-            <prop v="square" k="capstyle"/>
-            <prop v="5;2" k="customdash"/>
-            <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-            <prop v="MM" k="customdash_unit"/>
-            <prop v="0" k="dash_pattern_offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="dash_pattern_offset_map_unit_scale"/>
-            <prop v="MM" k="dash_pattern_offset_unit"/>
-            <prop v="0" k="draw_inside_polygon"/>
-            <prop v="bevel" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
-            <prop v="solid" k="line_style"/>
-            <prop v="0.26" k="line_width"/>
-            <prop v="MM" k="line_width_unit"/>
-            <prop v="0" k="offset"/>
-            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-            <prop v="MM" k="offset_unit"/>
-            <prop v="0" k="ring_filter"/>
-            <prop v="0" k="tweak_dash_pattern_on_corners"/>
-            <prop v="0" k="use_custom_dash"/>
-            <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+            <prop k="align_dash_pattern" v="0"/>
+            <prop k="capstyle" v="square"/>
+            <prop k="customdash" v="5;2"/>
+            <prop k="customdash_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="customdash_unit" v="MM"/>
+            <prop k="dash_pattern_offset" v="0"/>
+            <prop k="dash_pattern_offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="dash_pattern_offset_unit" v="MM"/>
+            <prop k="draw_inside_polygon" v="0"/>
+            <prop k="joinstyle" v="bevel"/>
+            <prop k="line_color" v="35,35,35,255"/>
+            <prop k="line_style" v="solid"/>
+            <prop k="line_width" v="0.26"/>
+            <prop k="line_width_unit" v="MM"/>
+            <prop k="offset" v="0"/>
+            <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+            <prop k="offset_unit" v="MM"/>
+            <prop k="ring_filter" v="0"/>
+            <prop k="tweak_dash_pattern_on_corners" v="0"/>
+            <prop k="use_custom_dash" v="0"/>
+            <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
             <data_defined_properties>
               <Option type="Map">
                 <Option name="name" value="" type="QString"/>
@@ -393,7 +397,7 @@
       </axisSymbol>
     </DiagramCategory>
   </SingleCategoryDiagramRenderer>
-  <DiagramLayerSettings placement="2" linePlacementFlags="18" showAll="1" dist="0" zIndex="0" priority="0" obstacle="0">
+  <DiagramLayerSettings priority="0" placement="2" dist="0" linePlacementFlags="18" zIndex="0" obstacle="0" showAll="1">
     <properties>
       <Option type="Map">
         <Option name="name" value="" type="QString"/>
@@ -402,28 +406,28 @@
       </Option>
     </properties>
   </DiagramLayerSettings>
-  <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+  <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
     <activeChecks/>
     <checkConfiguration/>
   </geometryOptions>
   <legend type="default-vector"/>
   <referencedLayers/>
   <fieldConfiguration>
-    <field configurationFlags="None" name="id">
+    <field name="id" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="nome">
+    <field name="nome" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="tipo">
+    <field name="tipo" configurationFlags="None">
       <editWidget type="ValueMap">
         <config>
           <Option type="Map">
@@ -452,7 +456,7 @@
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="geometria_aproximada">
+    <field name="geometria_aproximada" configurationFlags="None">
       <editWidget type="ValueMap">
         <config>
           <Option type="Map">
@@ -465,98 +469,108 @@
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="observacao">
+    <field name="observacao" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="data_modificacao">
+    <field name="data_modificacao" configurationFlags="None">
       <editWidget type="DateTime">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="controle_uuid">
+    <field name="controle_uuid" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="usuario_criacao">
+    <field name="usuario_criacao" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="usuario_atualizacao">
+    <field name="usuario_atualizacao" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="insumo">
+    <field name="insumo" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="data_insumo">
+    <field name="data_insumo" configurationFlags="None">
       <editWidget type="DateTime">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="visivel">
+    <field name="visivel" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="texto_edicao">
+    <field name="texto_edicao" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="carta_mini">
+    <field name="carta_mini" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="label_x">
+    <field name="label_x" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="label_y">
+    <field name="label_y" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="justificativa_txt">
+    <field name="justificativa_txt" configurationFlags="None">
+      <editWidget type="TextEdit">
+        <config>
+          <Option type="Map">
+            <Option name="IsMultiline" value="false" type="bool"/>
+            <Option name="UseHtml" value="false" type="bool"/>
+          </Option>
+        </config>
+      </editWidget>
+    </field>
+    <field name="sobreposto" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
         </config>
       </editWidget>
     </field>
-    <field configurationFlags="None" name="lenght_otf">
+    <field name="lenght_otf" configurationFlags="None">
       <editWidget type="TextEdit">
         <config>
           <Option/>
@@ -565,112 +579,119 @@
     </field>
   </fieldConfiguration>
   <aliases>
-    <alias name="" index="0" field="id"/>
-    <alias name="" index="1" field="nome"/>
-    <alias name="" index="2" field="tipo"/>
-    <alias name="" index="3" field="geometria_aproximada"/>
-    <alias name="" index="4" field="observacao"/>
-    <alias name="" index="5" field="data_modificacao"/>
-    <alias name="" index="6" field="controle_uuid"/>
-    <alias name="" index="7" field="usuario_criacao"/>
-    <alias name="" index="8" field="usuario_atualizacao"/>
-    <alias name="" index="9" field="insumo"/>
-    <alias name="" index="10" field="data_insumo"/>
-    <alias name="" index="11" field="visivel"/>
-    <alias name="" index="12" field="texto_edicao"/>
-    <alias name="" index="13" field="carta_mini"/>
-    <alias name="" index="14" field="label_x"/>
-    <alias name="" index="15" field="label_y"/>
-    <alias name="" index="16" field="justificativa_txt"/>
-    <alias name="" index="17" field="lenght_otf"/>
+    <alias index="0" name="" field="id"/>
+    <alias index="1" name="" field="nome"/>
+    <alias index="2" name="" field="tipo"/>
+    <alias index="3" name="" field="geometria_aproximada"/>
+    <alias index="4" name="" field="observacao"/>
+    <alias index="5" name="" field="data_modificacao"/>
+    <alias index="6" name="" field="controle_uuid"/>
+    <alias index="7" name="" field="usuario_criacao"/>
+    <alias index="8" name="" field="usuario_atualizacao"/>
+    <alias index="9" name="" field="insumo"/>
+    <alias index="10" name="" field="data_insumo"/>
+    <alias index="11" name="" field="visivel"/>
+    <alias index="12" name="" field="texto_edicao"/>
+    <alias index="13" name="" field="carta_mini"/>
+    <alias index="14" name="" field="label_x"/>
+    <alias index="15" name="" field="label_y"/>
+    <alias index="16" name="" field="justificativa_txt"/>
+    <alias index="17" name="" field="sobreposto"/>
+    <alias index="18" name="" field="lenght_otf"/>
   </aliases>
   <defaults>
-    <default applyOnUpdate="0" expression="" field="id"/>
-    <default applyOnUpdate="0" expression="" field="nome"/>
-    <default applyOnUpdate="0" expression="" field="tipo"/>
-    <default applyOnUpdate="0" expression="" field="geometria_aproximada"/>
-    <default applyOnUpdate="0" expression="" field="observacao"/>
-    <default applyOnUpdate="0" expression="" field="data_modificacao"/>
-    <default applyOnUpdate="0" expression="" field="controle_uuid"/>
-    <default applyOnUpdate="0" expression="" field="usuario_criacao"/>
-    <default applyOnUpdate="0" expression="" field="usuario_atualizacao"/>
-    <default applyOnUpdate="0" expression="" field="insumo"/>
-    <default applyOnUpdate="0" expression="" field="data_insumo"/>
-    <default applyOnUpdate="0" expression="" field="visivel"/>
-    <default applyOnUpdate="0" expression="" field="texto_edicao"/>
-    <default applyOnUpdate="0" expression="" field="carta_mini"/>
-    <default applyOnUpdate="0" expression="" field="label_x"/>
-    <default applyOnUpdate="0" expression="" field="label_y"/>
-    <default applyOnUpdate="0" expression="" field="justificativa_txt"/>
-    <default applyOnUpdate="0" expression="" field="lenght_otf"/>
+    <default field="id" applyOnUpdate="0" expression=""/>
+    <default field="nome" applyOnUpdate="0" expression=""/>
+    <default field="tipo" applyOnUpdate="0" expression=""/>
+    <default field="geometria_aproximada" applyOnUpdate="0" expression=""/>
+    <default field="observacao" applyOnUpdate="0" expression=""/>
+    <default field="data_modificacao" applyOnUpdate="0" expression=""/>
+    <default field="controle_uuid" applyOnUpdate="0" expression=""/>
+    <default field="usuario_criacao" applyOnUpdate="0" expression=""/>
+    <default field="usuario_atualizacao" applyOnUpdate="0" expression=""/>
+    <default field="insumo" applyOnUpdate="0" expression=""/>
+    <default field="data_insumo" applyOnUpdate="0" expression=""/>
+    <default field="visivel" applyOnUpdate="0" expression=""/>
+    <default field="texto_edicao" applyOnUpdate="0" expression=""/>
+    <default field="carta_mini" applyOnUpdate="0" expression=""/>
+    <default field="label_x" applyOnUpdate="0" expression=""/>
+    <default field="label_y" applyOnUpdate="0" expression=""/>
+    <default field="justificativa_txt" applyOnUpdate="0" expression=""/>
+    <default field="sobreposto" applyOnUpdate="0" expression=""/>
+    <default field="lenght_otf" applyOnUpdate="0" expression=""/>
   </defaults>
   <constraints>
-    <constraint notnull_strength="1" constraints="3" exp_strength="0" unique_strength="1" field="id"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="nome"/>
-    <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="tipo"/>
-    <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="geometria_aproximada"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="observacao"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="data_modificacao"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="controle_uuid"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="usuario_criacao"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="usuario_atualizacao"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="insumo"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="data_insumo"/>
-    <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="visivel"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="texto_edicao"/>
-    <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="carta_mini"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="label_x"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="label_y"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="justificativa_txt"/>
-    <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="lenght_otf"/>
+    <constraint field="id" notnull_strength="1" constraints="3" unique_strength="1" exp_strength="0"/>
+    <constraint field="nome" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="tipo" notnull_strength="1" constraints="1" unique_strength="0" exp_strength="0"/>
+    <constraint field="geometria_aproximada" notnull_strength="1" constraints="1" unique_strength="0" exp_strength="0"/>
+    <constraint field="observacao" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="data_modificacao" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="controle_uuid" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="usuario_criacao" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="usuario_atualizacao" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="insumo" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="data_insumo" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="visivel" notnull_strength="1" constraints="1" unique_strength="0" exp_strength="0"/>
+    <constraint field="texto_edicao" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="carta_mini" notnull_strength="1" constraints="1" unique_strength="0" exp_strength="0"/>
+    <constraint field="label_x" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="label_y" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="justificativa_txt" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
+    <constraint field="sobreposto" notnull_strength="1" constraints="1" unique_strength="0" exp_strength="0"/>
+    <constraint field="lenght_otf" notnull_strength="0" constraints="0" unique_strength="0" exp_strength="0"/>
   </constraints>
   <constraintExpressions>
-    <constraint exp="" desc="" field="id"/>
-    <constraint exp="" desc="" field="nome"/>
-    <constraint exp="" desc="" field="tipo"/>
-    <constraint exp="" desc="" field="geometria_aproximada"/>
-    <constraint exp="" desc="" field="observacao"/>
-    <constraint exp="" desc="" field="data_modificacao"/>
-    <constraint exp="" desc="" field="controle_uuid"/>
-    <constraint exp="" desc="" field="usuario_criacao"/>
-    <constraint exp="" desc="" field="usuario_atualizacao"/>
-    <constraint exp="" desc="" field="insumo"/>
-    <constraint exp="" desc="" field="data_insumo"/>
-    <constraint exp="" desc="" field="visivel"/>
-    <constraint exp="" desc="" field="texto_edicao"/>
-    <constraint exp="" desc="" field="carta_mini"/>
-    <constraint exp="" desc="" field="label_x"/>
-    <constraint exp="" desc="" field="label_y"/>
-    <constraint exp="" desc="" field="justificativa_txt"/>
-    <constraint exp="" desc="" field="lenght_otf"/>
+    <constraint field="id" exp="" desc=""/>
+    <constraint field="nome" exp="" desc=""/>
+    <constraint field="tipo" exp="" desc=""/>
+    <constraint field="geometria_aproximada" exp="" desc=""/>
+    <constraint field="observacao" exp="" desc=""/>
+    <constraint field="data_modificacao" exp="" desc=""/>
+    <constraint field="controle_uuid" exp="" desc=""/>
+    <constraint field="usuario_criacao" exp="" desc=""/>
+    <constraint field="usuario_atualizacao" exp="" desc=""/>
+    <constraint field="insumo" exp="" desc=""/>
+    <constraint field="data_insumo" exp="" desc=""/>
+    <constraint field="visivel" exp="" desc=""/>
+    <constraint field="texto_edicao" exp="" desc=""/>
+    <constraint field="carta_mini" exp="" desc=""/>
+    <constraint field="label_x" exp="" desc=""/>
+    <constraint field="label_y" exp="" desc=""/>
+    <constraint field="justificativa_txt" exp="" desc=""/>
+    <constraint field="sobreposto" exp="" desc=""/>
+    <constraint field="lenght_otf" exp="" desc=""/>
   </constraintExpressions>
   <expressionfields>
-    <field length="0" typeName="" comment="" expression="$length" name="lenght_otf" subType="0" precision="0" type="6"/>
+    <field typeName="" name="lenght_otf" comment="" length="0" type="6" expression="$length" subType="0" precision="0"/>
+    <field typeName="" name="lenght_otf" comment="" length="0" type="6" expression="$length" subType="0" precision="0"/>
+    <field typeName="" name="lenght_otf" comment="" length="0" type="6" expression="$length" subType="0" precision="0"/>
   </expressionfields>
   <attributeactions>
-    <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+    <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
   </attributeactions>
-  <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
+  <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
     <columns>
-      <column width="-1" name="id" hidden="0" type="field"/>
-      <column width="-1" name="nome" hidden="0" type="field"/>
-      <column width="-1" name="tipo" hidden="0" type="field"/>
-      <column width="-1" name="geometria_aproximada" hidden="0" type="field"/>
-      <column width="-1" name="observacao" hidden="0" type="field"/>
-      <column width="-1" name="data_modificacao" hidden="0" type="field"/>
-      <column width="-1" name="controle_uuid" hidden="0" type="field"/>
-      <column width="-1" name="usuario_criacao" hidden="0" type="field"/>
-      <column width="-1" name="usuario_atualizacao" hidden="0" type="field"/>
-      <column width="-1" name="insumo" hidden="0" type="field"/>
-      <column width="-1" name="data_insumo" hidden="0" type="field"/>
-      <column width="-1" name="visivel" hidden="0" type="field"/>
-      <column width="-1" name="texto_edicao" hidden="0" type="field"/>
-      <column width="-1" name="carta_mini" hidden="0" type="field"/>
-      <column width="-1" name="label_x" hidden="0" type="field"/>
-      <column width="-1" name="label_y" hidden="0" type="field"/>
-      <column width="-1" name="justificativa_txt" hidden="0" type="field"/>
-      <column width="-1" name="lenght_otf" hidden="0" type="field"/>
-      <column width="-1" hidden="1" type="actions"/>
+      <column name="id" type="field" width="-1" hidden="0"/>
+      <column name="nome" type="field" width="-1" hidden="0"/>
+      <column name="tipo" type="field" width="-1" hidden="0"/>
+      <column name="geometria_aproximada" type="field" width="-1" hidden="0"/>
+      <column name="observacao" type="field" width="-1" hidden="0"/>
+      <column name="data_modificacao" type="field" width="-1" hidden="0"/>
+      <column name="controle_uuid" type="field" width="-1" hidden="0"/>
+      <column name="usuario_criacao" type="field" width="-1" hidden="0"/>
+      <column name="usuario_atualizacao" type="field" width="-1" hidden="0"/>
+      <column name="insumo" type="field" width="-1" hidden="0"/>
+      <column name="data_insumo" type="field" width="-1" hidden="0"/>
+      <column name="visivel" type="field" width="-1" hidden="0"/>
+      <column name="texto_edicao" type="field" width="-1" hidden="0"/>
+      <column name="carta_mini" type="field" width="-1" hidden="0"/>
+      <column name="label_x" type="field" width="-1" hidden="0"/>
+      <column name="label_y" type="field" width="-1" hidden="0"/>
+      <column name="justificativa_txt" type="field" width="-1" hidden="0"/>
+      <column name="lenght_otf" type="field" width="-1" hidden="0"/>
+      <column type="actions" width="-1" hidden="1"/>
+      <column name="sobreposto" type="field" width="-1" hidden="0"/>
     </columns>
   </attributetableconfig>
   <conditionalstyles>
@@ -682,44 +703,45 @@
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
   <editforminitfilepath></editforminitfilepath>
-  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-QGIS forms can have a Python function that is called when the form is
-opened.
-
-Use this function to add extra logic to your forms.
-
-Enter the name of the function in the "Python Init function"
-field.
-An example follows:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>generatedlayout</editorlayout>
   <editable>
-    <field editable="1" name="carta_mini"/>
-    <field editable="1" name="controle_uuid"/>
-    <field editable="1" name="data_insumo"/>
-    <field editable="1" name="data_modificacao"/>
-    <field editable="1" name="geometria_aproximada"/>
-    <field editable="1" name="id"/>
-    <field editable="1" name="insumo"/>
-    <field editable="1" name="justificativa_txt"/>
-    <field editable="1" name="label_x"/>
-    <field editable="1" name="label_y"/>
-    <field editable="0" name="lenght_otf"/>
-    <field editable="1" name="nome"/>
-    <field editable="1" name="observacao"/>
-    <field editable="1" name="texto_edicao"/>
-    <field editable="1" name="tipo"/>
-    <field editable="1" name="usuario_atualizacao"/>
-    <field editable="1" name="usuario_criacao"/>
-    <field editable="1" name="visivel"/>
+    <field name="carta_mini" editable="1"/>
+    <field name="controle_uuid" editable="1"/>
+    <field name="data_insumo" editable="1"/>
+    <field name="data_modificacao" editable="1"/>
+    <field name="geometria_aproximada" editable="1"/>
+    <field name="id" editable="1"/>
+    <field name="insumo" editable="1"/>
+    <field name="justificativa_txt" editable="1"/>
+    <field name="label_x" editable="1"/>
+    <field name="label_y" editable="1"/>
+    <field name="lenght_otf" editable="0"/>
+    <field name="nome" editable="1"/>
+    <field name="observacao" editable="1"/>
+    <field name="sobreposto" editable="1"/>
+    <field name="texto_edicao" editable="1"/>
+    <field name="tipo" editable="1"/>
+    <field name="usuario_atualizacao" editable="1"/>
+    <field name="usuario_criacao" editable="1"/>
+    <field name="visivel" editable="1"/>
   </editable>
   <labelOnTop>
     <field name="carta_mini" labelOnTop="0"/>
@@ -735,6 +757,7 @@ def my_form_open(dialog, layer, feature):
     <field name="lenght_otf" labelOnTop="0"/>
     <field name="nome" labelOnTop="0"/>
     <field name="observacao" labelOnTop="0"/>
+    <field name="sobreposto" labelOnTop="0"/>
     <field name="texto_edicao" labelOnTop="0"/>
     <field name="tipo" labelOnTop="0"/>
     <field name="usuario_atualizacao" labelOnTop="0"/>
