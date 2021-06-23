@@ -519,8 +519,11 @@ class UtmGrid(QObject):
                 return '-'.join([k]+remains)
     
     def get_MI_MIR_from_inom(self, inom):
+        exceptionSet = self.getMIexceptions()
         if len(inom.split('-')) > 4:
-            return self.getMIfromInom(inom)
+            mi = self.getMIfromInom(inom)
+            mi = mi if (mi not in exceptionSet) else None
+            return mi
         else:
             return self.getMIR(self.getMIRdict(), inom)
 
