@@ -520,7 +520,7 @@ class UtmGrid(QObject):
     
     def get_MI_MIR_from_inom(self, inom):
         if inom in self.getMIexceptions():
-            return None
+            return ''
         elif len(inom.split('-')) > 4:
             return self.getMIfromInom(inom)
         else:

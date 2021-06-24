@@ -38,11 +38,11 @@ def editMapName(composition, nome, mi, inom):
         label_mi = composition.itemById("label_mi")
         if mi:
             label_mi.setVisible(True)
-            text_label_mi = "MI: " + mi if not mi else None
+            text_label_mi = "MI: " + mi
             label_mi.setText(text_label_mi)
-            label_mi.refresh()
         else:
             label_mi.setVisible(False)
+        label_mi.refresh()
 
 
 def editMapType(composition, text_productType):

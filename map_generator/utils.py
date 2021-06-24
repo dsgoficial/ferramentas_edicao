@@ -180,7 +180,7 @@ class MapTools:
             return False
 
     def exportMap(self, composition):
-        basename = self.mi + '_' + self.inom
+        basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
         if self.dlg.checkBoxExportPdf.isChecked():
             pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
