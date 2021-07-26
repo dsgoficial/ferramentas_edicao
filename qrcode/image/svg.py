@@ -5,10 +5,10 @@ try:
     import lxml.etree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
-import qrcode.image.base
 
+from ..image.base import BaseImage
 
-class SvgFragmentImage(qrcode.image.base.BaseImage):
+class SvgFragmentImage(BaseImage):
     """
     SVG image builder
 

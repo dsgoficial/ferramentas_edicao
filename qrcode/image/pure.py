@@ -5,10 +5,10 @@ from pymaging.shapes import Line
 from pymaging.webcolors import Black, White
 from pymaging_png.png import PNG
 
-import qrcode.image.base
+from ..image.base import BaseImage
 
 
-class PymagingImage(qrcode.image.base.BaseImage):
+class PymagingImage(BaseImage):
     """
     pymaging image builder, default format is PNG.
     """

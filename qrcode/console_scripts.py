@@ -8,7 +8,7 @@ a pipe to a file an image is written. The default image format is PNG.
 import sys
 import optparse
 import os
-import qrcode
+from .. import qrcode
 # The next block is added to get the terminal to display properly on MS platforms
 if sys.platform.startswith(('win', 'cygwin')):
     import colorama

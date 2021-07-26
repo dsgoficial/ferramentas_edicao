@@ -4,7 +4,7 @@ import math
 import six
 from six.moves import xrange
 
-from qrcode import base, exceptions, LUT
+from . import base, exceptions, LUT
 
 # QR encoding modes.
 MODE_NUMBER = 1 << 0

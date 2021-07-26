@@ -2,12 +2,12 @@ import sys
 import os
 sys.path.append(os.path.dirname(__file__))
 
-from qrcode.main import QRCode
-from qrcode.main import make  # noqa
-from qrcode.constants import (  # noqa
+from .main import QRCode
+from .main import make  # noqa
+from .constants import (  # noqa
     ERROR_CORRECT_L, ERROR_CORRECT_M, ERROR_CORRECT_Q, ERROR_CORRECT_H)
 
-from qrcode import image  # noqa
+from . import image  # noqa
 
 
 def run_example(data="http://www.lincolnloop.com", *args, **kwargs):
