@@ -11684,7 +11684,7 @@
   <LabelFont style="" description="Arial,10,-1,5,75,0,0,0,0,0"/>
   <FontColor red="0" alpha="255" blue="0" green="0"/>
  </LayoutItem>
- <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="37,190.4,mm" valign="32" referencePoint="0" size="50,5,mm" halign="132" positionOnPage="37,190.4,mm" background="false" excludeFromExports="0" zValue="43" id="label_bdgexWeb" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{ab4ea9fb-3ab7-49df-a8c2-a24314fc1052}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{ab4ea9fb-3ab7-49df-a8c2-a24314fc1052}" visibility="1" labelText="www.bdgex.eb.mil.br" positionLock="false">
+ <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="37,190.4,mm" valign="32" referencePoint="0" size="50,5,mm" halign="132" positionOnPage="37,190.4,mm" background="false" excludeFromExports="0" zValue="43" id="label_bdgexWeb" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{ab4ea9fb-3ab7-49df-a8c2-a24314fc1052}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{ab4ea9fb-3ab7-49df-a8c2-a24314fc1052}" visibility="1" labelText="bdgex.eb.mil.br" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>
@@ -11700,7 +11700,7 @@
   <LabelFont style="" description="Arial,8,-1,5,75,0,0,0,0,0"/>
   <FontColor red="0" alpha="255" blue="0" green="0"/>
  </LayoutItem>
- <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="37,187.2,mm" valign="32" referencePoint="0" size="50,5,mm" halign="132" positionOnPage="37,187.2,mm" background="false" excludeFromExports="0" zValue="42" id="label_bdgexQR" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{82808b2f-571a-4152-aa4d-f58c9d4f0b02}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{82808b2f-571a-4152-aa4d-f58c9d4f0b02}" visibility="1" labelText="BDGEx Mobile" positionLock="false">
+ <LayoutItem marginY="0" outlineWidthM="0.3,mm" position="37,187.2,mm" valign="32" referencePoint="0" size="50,5,mm" halign="132" positionOnPage="37,187.2,mm" background="false" excludeFromExports="0" zValue="42" id="label_bdgexQR" frame="false" frameJoinStyle="miter" blendMode="0" itemRotation="0" uuid="{82808b2f-571a-4152-aa4d-f58c9d4f0b02}" type="65641" marginX="0" groupUuid="" opacity="1" htmlState="0" templateUuid="{82808b2f-571a-4152-aa4d-f58c9d4f0b02}" visibility="1" labelText="BDGEx" positionLock="false">
   <FrameColor red="0" alpha="255" blue="0" green="0"/>
   <BackgroundColor red="255" alpha="255" blue="255" green="255"/>
   <LayoutObject>

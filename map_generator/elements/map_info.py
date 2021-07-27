@@ -202,7 +202,7 @@ class HtmlData(MapParent):
                 edited = self.replaceStr(base_html, {'{sensores}': str_sensores})
             label_tabela_info_ortoimagem.setText(edited)
 
-    def customTecnicalInfo(self, composition, scale, hemisphere, fuso, tipo_produto, tecnicalInfo={}, mapAreaFeature=None):
+    def customTecnicalInfo(self, composition, scale, hemisphere, fuso, tipo_produto, tecnicalInfo={}, isInternational=False, mapAreaFeature=None):
         label = composition.itemById("label_tabela_info_carta")
         if label:
             hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
@@ -229,14 +229,18 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Hemisfério {hemisphere}. Equador: {falseNorth} Km')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Zona {fuso}. Meridiano Central {centralMeridian} º {position} Gr.: + 500 Km')
-            _tmp = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum vertical')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('datum_vertical'))
+            if tecnicalInfo.get('datum_vertical'):
+                _tmp = self.generateElement(firstTable, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum vertical')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('datum_vertical'))
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum horizontal')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'SIRGAS2000 (Época 2000.4)')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Equidistância das curvas de nível')
+            if tecnicalInfo.get('curva_auxiliar'):
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Auxiliar: {curveData[0]} metros')
+                _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Normal: {curveData[1]} metros')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Mestra: {curveData[2]} metros')
@@ -260,11 +264,11 @@ class HtmlData(MapParent):
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL**')
                 _tmp = self.generateElement(_tmp, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020')
-            elif intersectionStatus == 'intersecs':
+            elif isInternational and intersectionStatus == 'intersects':
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: GADM 3.6')
                 _tmp = self.generateElement(_tmp, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: GADM 3.6')
-            else:
+            elif isInternational and intersectionStatus == 'outside':
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL** e GADM 3.6')
                 _tmp = self.generateElement(_tmp, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020 e GADM 3.6')
