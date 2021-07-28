@@ -260,18 +260,19 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('origem_dados_altimetricos'))
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':f'{lenThirdData}'}, 'Origem dos dados geoespaciais fornecidos por terceiros')
-            if intersectionStatus == 'inside':
+            if isInternational:
+                if intersectionStatus in ('inside', 'intersects'):
+                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL** e GADM 3.6')
+                    _tmp = self.generateElement(_tmp, 'tr')
+                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020 e GADM 3.6')
+                else:
+                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: GADM 3.6')
+                    _tmp = self.generateElement(_tmp, 'tr')
+                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: GADM 3.6')
+            else:
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL**')
                 _tmp = self.generateElement(_tmp, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020')
-            elif isInternational and intersectionStatus == 'intersects':
-                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: GADM 3.6')
-                _tmp = self.generateElement(_tmp, 'tr')
-                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: GADM 3.6')
-            elif isInternational and intersectionStatus == 'outside':
-                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL** e GADM 3.6')
-                _tmp = self.generateElement(_tmp, 'tr')
-                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020 e GADM 3.6')
             for info in thirdPartyData:
                 _tmp = self.generateElement(firstTable, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, info)
