@@ -176,7 +176,7 @@ class EditionPlugin:
         self.dlg.mapFooter.setFilePath(caminho_projeto)
         
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\JSON_EDICAO\\NA-20-Z-B-I-2.json')
+        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\NB-20-Z-D-II-3.json')
         
         exportFolder = 'C:\\Users\\eliton\\Documents\\edicao'
         self.dlg.exportFolder.setFilePath(exportFolder)

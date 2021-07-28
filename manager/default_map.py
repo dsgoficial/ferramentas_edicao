@@ -236,7 +236,8 @@ class DefaultMap(MapManager):
         # Info tecnica carta
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
         self.htmlData.customTecnicalInfo(
-            composition, scale, hemisferio, fuso, str_tipo_produto, jsonData.get('info_tecnica'), mapAreaFeature)
+            composition, scale, hemisferio, fuso, str_tipo_produto, jsonData.get('info_tecnica'),
+            jsonData.get('territorio_internacional'), mapAreaFeature)
 
         # Banco
         if connectedUri:
@@ -388,7 +389,7 @@ class DefaultMap(MapManager):
                     manager.addLayout(composition)
                     self.setupMasks(strProductType)
                 self.exportMap(composition)
-                QgsProject.instance().removeMapLayers(ids_maplayer)
+                # QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso
         if self.dlg.checkBoxExportGeotiff.isChecked():
             self.reprojectTiffs()
@@ -397,4 +398,4 @@ class DefaultMap(MapManager):
         self.mc.setProjectProjection(oldProjValue)
 
         self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(jsonFilesPaths)} mapas foram exportados', Qgis.Success)
-        self.cleanLayerTreeRoot()
+        # self.cleanLayerTreeRoot()
