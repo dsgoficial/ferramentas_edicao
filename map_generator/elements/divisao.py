@@ -47,7 +47,7 @@ class Divisao(MapParent):
 
         # Cria o layer da área do mapa
         gridBound = mapArea.geometry().boundingBox()
-        gridRectangleLayer = self.createGridRectangle(gridBound, 'auxiliar_divisao')
+        gridRectangleLayer = self.createGridRectangle(gridBound, 'divisionMapArea')
         map_layers.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
@@ -62,7 +62,8 @@ class Divisao(MapParent):
         self.setMunicipiosTable(composition,  html_tabledata)
 
         if not isInternational:
-            self.unsetLabel(layerCountry)
+            self.hideInternationalCouties(layerCountry)
+            # self.unsetLabel(layerCountry)
 
         for layer in (gridRectangleLayer, layerOcean, layerCountry, layerBrazil, layerState, layerCounty):
             QgsProject.instance().addMapLayer(layer, False)
@@ -177,6 +178,9 @@ class Divisao(MapParent):
             country = countyFeature[self.countryAttribute]
             countyGeometry = countyFeature.geometry()
             if name and not isinstance(name, QVariant):
+                # Does not display international counties if isInternational is False
+                if not isInternational and country != 'BR':
+                    continue
                 labelTable = f'{name} - {county}'
                 if isInternational:
                     labelTable = f'{labelTable} / {country}'
@@ -356,3 +360,9 @@ class Divisao(MapParent):
     def unsetLabel(self, layer):
         rule = QgsVectorLayerSimpleLabeling(QgsPalLayerSettings())
         layer.setLabeling(rule)
+
+    def hideInternationalCouties(self, layerCountry):
+        renderer = layerCountry.renderer()
+        rootRule = renderer.rootRule()
+        rootRule.children()[1].setActive(True)
+        layerCountry.triggerRepaint()
