@@ -364,5 +364,6 @@ class Divisao(MapParent):
     def hideInternationalCouties(self, layerCountry):
         renderer = layerCountry.renderer()
         rootRule = renderer.rootRule()
+        rootRule.children()[0].setActive(False)
         rootRule.children()[1].setActive(True)
         layerCountry.triggerRepaint()

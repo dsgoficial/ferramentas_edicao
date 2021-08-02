@@ -168,17 +168,17 @@ class EditionPlugin:
 
     def setTestData(self):        
         self.dlg.mapHeader.setFilter("Composer Template (*.qpt)")
-        caminho_cabecalho = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem_tipo_i', 'cabecalho.qpt')        
+        caminho_cabecalho = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem', 'cabecalho.qpt')        
         self.dlg.mapHeader.setFilePath(caminho_cabecalho)
         
         self.dlg.mapFooter.setFilter("Composer Template (*.qpt)")
-        caminho_projeto = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem_tipo_i', 'projeto_mif_creditos_dsg.qpt')
+        caminho_projeto = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem', 'projeto_mif_creditos_dsg.qpt')
         self.dlg.mapFooter.setFilePath(caminho_projeto)
         
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
         self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\NB-20-Z-D-II-3.json')
         
-        exportFolder = 'C:\\Users\\eliton\\Documents\\edicao'
+        exportFolder = 'D:\\export'
         self.dlg.exportFolder.setFilePath(exportFolder)
 
     def initializeVariables(self):

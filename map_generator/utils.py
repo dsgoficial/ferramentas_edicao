@@ -220,13 +220,14 @@ class MapTools:
         ])
 
     def setupMasks(self, produto):
-        path_json = Path(__file__).parent / 'produtos' / produto / 'mascaras.json'
-        processing.run(
-            'FerramentasExperimentaisProvider:loadmasks',
-            {'JSON_FILE': str(path_json),
-                'GROUP': 'map'
-             }
-        )
+        pathJson = Path(__file__).parent / 'produtos' / produto / 'mascaras.json'
+        if pathJson.exists():
+            processing.run(
+                'FerramentasExperimentaisProvider:loadmasks',
+                {'JSON_FILE': str(pathJson),
+                    'GROUP': 'map'
+                }
+            )
 
     def reprojectTiffs(self):
         dstPath = os.path.join(self.exportFolder, 'padrao_bdgex')

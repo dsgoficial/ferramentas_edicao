@@ -32,6 +32,20 @@ product_parameters = {
             "masks_check": True
         },
         "qpt": {
+            "25": {
+                "projeto": {
+                    "x_0": 7,
+                    "y_0": 487,
+                    "width": 110,
+                    "height": 70,
+                },
+                "cabecalho": {
+                    "x_0": 7,
+                    "y_0": 7,
+                    "width": 110,
+                    "height": 22,
+                }
+            },
             "50": {
                 "projeto": {
                     "x_0": 7,
@@ -55,8 +69,8 @@ product_parameters = {
         }
 
     },
-    'carta_ortoimagem_tipo_i': {
-        "nome_produto": "Carta Ortoimagem Tipo I",
+    'carta_ortoimagem': {
+        "nome_produto": "Carta Ortoimagem",
         "required_files": [
             ['map_generator', 'limites', 'estados_2019.shp'],
             ['map_generator', 'limites', 'internacional.shp'],
@@ -231,7 +245,7 @@ class DefaultMap(MapManager):
         self.htmlData.customEtapa(composition, jsonData['fases'])
 
         # Sensores
-        self.htmlData.customSensores(composition, jsonData.get('sensores'))
+        self.htmlData.customSensores(composition, jsonData.get('sensores', ()))
 
         # Info tecnica carta
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
@@ -248,11 +262,8 @@ class DefaultMap(MapManager):
             connectedUri,  list_dict_maptables, list_dict_minimaptables, tipo_produto, str(scale))
 
         # Carrega imagens
-        key_image = 'caminho_imagem'
-        key_style = 'caminho_estilo'
-        key_epsg = 'epsg'
-        image_layers, image_layersId = self.MapC.createLayersRasters(
-            jsonData.get('imagens', []), key_image, key_style, key_epsg)
+
+        image_layers, image_layersId = self.MapC.createLayersRasters(jsonData.get('imagens', ()))
 
         # Adiciona camadas e imagens para serem mostradas no mapa e minimapa
         layers = {
@@ -387,7 +398,7 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    self.setupMasks(strProductType)
+                    # self.setupMasks(strProductType)
                 self.exportMap(composition)
                 # QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso

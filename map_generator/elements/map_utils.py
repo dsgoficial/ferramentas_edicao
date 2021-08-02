@@ -96,41 +96,32 @@ class MapParent:
     def setConnectedUri(self, connected_uri):
         self.connected_uri = connected_uri
 
-    def createLayersRasters(self, list_dict_images, key_image, key_style, key_epsg):
-        layers_image = []
-        layersId_image = []
-        for dict_image in list_dict_images:
-            path_raster = dict_image[key_image]
-            # Estilo
-            path_style = None
-            if key_style in dict_image:
-                if dict_image[key_style] != "":
-                    path_style = dict_image[key_style]
-            layername_raster = os.path.basename(path_raster).split('.')[0]
-            success, layer_raster = self.createLayerRaster(path_raster, path_style)
-            if success:
-                # EPSG
-                if dict_image[key_epsg] != "":
-                    epsg = dict_image[key_epsg]
-                    layer_raster.setCrs(QgsCoordinateReferenceSystem(
+    def createLayersRasters(self, listDictImages):
+        imageLayers = []
+        imageLayersIDs = []
+        for dictImage in listDictImages:
+            rasterPath = dictImage.get('caminho_imagem')
+            stylePath = dictImage.get('caminho_estilo')
+            epsg = dictImage.get('epsg')
+            if rasterLayer:= self.createLayerRaster(rasterPath, stylePath):
+                if epsg:
+                    rasterLayer.setCrs(QgsCoordinateReferenceSystem(
                         int(epsg), QgsCoordinateReferenceSystem.EpsgCrsId))
-                layers_image.insert(0, (layer_raster))
-                layersId_image.insert(0, (layer_raster.id()))
-                QgsProject.instance().addMapLayer(layer_raster, False)
-        return layers_image, layersId_image
+                imageLayers.insert(0, (rasterLayer))
+                imageLayersIDs.insert(0, (rasterLayer.id()))
+                QgsProject.instance().addMapLayer(rasterLayer, False)
+        return imageLayers, imageLayersIDs
 
-    def createLayerRaster(self, path_raster, path_style=None):
-        rasterBasename = os.path.basename(path_raster).split('.')[0]
-        layer_raster = QgsRasterLayer(path_raster, rasterBasename)
-        if not layer_raster.isValid():
-            return False, None
+    def createLayerRaster(self, rasterPath, stylePath=None):
+        rasterBasename = os.path.basename(rasterPath).split('.')[0]
+        rasterLayer = QgsRasterLayer(rasterPath, rasterBasename)
+        if not rasterLayer.isValid():
+            return None
         else:
-            # CRS = layer_raster.crs()
-            # source_epsg = CRS.postgisSrid()
-            if path_style is not None:
-                layer_raster.loadNamedStyle(path_style)
-                layer_raster.triggerRepaint()
-            return True, layer_raster
+            if stylePath:
+                rasterLayer.loadNamedStyle(stylePath)
+                rasterLayer.triggerRepaint()
+            return rasterLayer
 
     def createLayerVector(self, path_vector, path_style):
         baseName_vector = os.path.basename(path_vector).split('.')[0]

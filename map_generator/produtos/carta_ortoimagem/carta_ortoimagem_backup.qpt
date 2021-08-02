@@ -334,7 +334,7 @@
   <LabelFont description="Arial,6,-1,5,50,0,0,0,0,0" style=""/>
   <FontColor green="0" blue="0" alpha="255" red="0"/>
  </LayoutItem>
- <LayoutItem frame="false" background="false" opacity="1" marginX="0" zValue="208" labelText="DECLINAÇÃO MAGNÉTICA EM 2020&#xa;E CONVERGÊNCIA MERIDIANA&#xa;DO CENTRO DA FOLHA" templateUuid="{94f13d48-15f9-41a5-a4c0-a01c89d6950e}" frameJoinStyle="miter" halign="132" type="65641" positionOnPage="734,238.33,mm" id="label_declinacao_ano" htmlState="0" valign="32" outlineWidthM="0.3,mm" blendMode="0" visibility="1" uuid="{94f13d48-15f9-41a5-a4c0-a01c89d6950e}" size="37,9,mm" referencePoint="0" positionLock="false" marginY="0" position="734,238.33,mm" groupUuid="" excludeFromExports="0" itemRotation="0">
+ <LayoutItem frame="false" background="false" opacity="1" marginX="0" zValue="208" labelText="DECLINAÇÃO MAGNÉTICA EM 1° DE&#xa;JANEIRO DE 2021 E CONVERGÊNCIA&#xa;MERIDIANA DO CENTRO DA FOLHA" templateUuid="{94f13d48-15f9-41a5-a4c0-a01c89d6950e}" frameJoinStyle="miter" halign="132" type="65641" positionOnPage="734,238.33,mm" id="label_declinacao_ano" htmlState="0" valign="32" outlineWidthM="0.3,mm" blendMode="0" visibility="1" uuid="{94f13d48-15f9-41a5-a4c0-a01c89d6950e}" size="37,9,mm" referencePoint="0" positionLock="false" marginY="0" position="734,238.33,mm" groupUuid="" excludeFromExports="0" itemRotation="0">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -3910,7 +3910,7 @@
   <AtlasMap atlasDriven="0" margin="0.10000000000000001" scalingMode="2"/>
   <labelBlockingItems/>
  </LayoutItem>
- <LayoutItem frame="false" background="false" opacity="1" marginX="0" zValue="51" labelText="DIVISÃO POLÍTICO-ADMINISTRATIVA (IBGE / 2019)" templateUuid="{1711ca4c-d70f-42d6-af7d-1d8b9354afda}" frameJoinStyle="miter" halign="132" type="65641" positionOnPage="20.65,291.03,mm" id="label_divisao" htmlState="0" valign="32" outlineWidthM="0.3,mm" blendMode="0" visibility="1" uuid="{1711ca4c-d70f-42d6-af7d-1d8b9354afda}" size="82.7,4.1,mm" referencePoint="0" positionLock="false" marginY="0" position="20.65,291.03,mm" groupUuid="" excludeFromExports="0" itemRotation="0">
+ <LayoutItem frame="false" background="false" opacity="1" marginX="0" zValue="51" labelText="DIVISÃO POLÍTICO-ADMINISTRATIVA" templateUuid="{1711ca4c-d70f-42d6-af7d-1d8b9354afda}" frameJoinStyle="miter" halign="132" type="65641" positionOnPage="20.65,291.03,mm" id="label_divisao" htmlState="0" valign="32" outlineWidthM="0.3,mm" blendMode="0" visibility="1" uuid="{1711ca4c-d70f-42d6-af7d-1d8b9354afda}" size="82.7,4.1,mm" referencePoint="0" positionLock="false" marginY="0" position="20.65,291.03,mm" groupUuid="" excludeFromExports="0" itemRotation="0">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -4067,7 +4067,7 @@
   <LabelFont description="Arial,7,-1,5,75,0,0,0,0,0" style=""/>
   <FontColor green="0" blue="0" alpha="255" red="0"/>
  </LayoutItem>
- <LayoutItem frame="false" background="false" opacity="1" marginX="0" zValue="46" labelText="BDGEx Mobile" templateUuid="{2f7fb1b3-ac8e-466f-a2dd-9632ef7d8c03}" frameJoinStyle="miter" halign="132" type="65641" positionOnPage="37,185.2,mm" id="label_bdgexQR" htmlState="0" valign="32" outlineWidthM="0.3,mm" blendMode="0" visibility="1" uuid="{2f7fb1b3-ac8e-466f-a2dd-9632ef7d8c03}" size="50,5,mm" referencePoint="0" positionLock="false" marginY="0" position="37,185.2,mm" groupUuid="" excludeFromExports="0" itemRotation="0">
+ <LayoutItem frame="false" background="false" opacity="1" marginX="0" zValue="46" labelText="BDGEx" templateUuid="{2f7fb1b3-ac8e-466f-a2dd-9632ef7d8c03}" frameJoinStyle="miter" halign="132" type="65641" positionOnPage="37,185.2,mm" id="label_bdgexQR" htmlState="0" valign="32" outlineWidthM="0.3,mm" blendMode="0" visibility="1" uuid="{2f7fb1b3-ac8e-466f-a2dd-9632ef7d8c03}" size="50,5,mm" referencePoint="0" positionLock="false" marginY="0" position="37,185.2,mm" groupUuid="" excludeFromExports="0" itemRotation="0">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>

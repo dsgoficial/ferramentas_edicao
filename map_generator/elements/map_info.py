@@ -154,7 +154,7 @@ class HtmlData(MapParent):
             edited = self.replaceStr(base_html, dados_data)
             label_tabela_etapas.setText(edited)
 
-    def customSensores(self, composition, sensores=[]):
+    def customSensores(self, composition, sensores):
         # String to store sensor_txt
         edited = ''
         label_tabela_info_ortoimagem = composition.itemById("label_tabela_info_ortoimagem")
@@ -210,7 +210,7 @@ class HtmlData(MapParent):
             centralMeridian = -180+(int(fuso)-1)*6 + 3
             curveData = [x for x in curvas[str(scale)].values()]
             position = 'W' if centralMeridian < 0 else 'E'
-            thirdPartyData = tecnicalInfo.get('dados_terceiros')
+            thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
             lenThirdData = 3 + len(thirdPartyData)
 
             intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
