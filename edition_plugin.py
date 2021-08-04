@@ -1,12 +1,11 @@
 import os
 
-from sip import getapi
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
 from .resources import *
-from .manager.default_map import DefaultMap
+from .map_generator.manager import DefaultMap
 from .edition_plugin_dialog import EditionPluginDialog
 from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
 

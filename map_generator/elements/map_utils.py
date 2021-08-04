@@ -93,9 +93,6 @@ class MapParent:
         else:
             return None
 
-    def setConnectedUri(self, connected_uri):
-        self.connected_uri = connected_uri
-
     def createLayersRasters(self, listDictImages):
         imageLayers = []
         imageLayersIDs = []
@@ -117,11 +114,10 @@ class MapParent:
         rasterLayer = QgsRasterLayer(rasterPath, rasterBasename)
         if not rasterLayer.isValid():
             return None
-        else:
-            if stylePath:
-                rasterLayer.loadNamedStyle(stylePath)
-                rasterLayer.triggerRepaint()
-            return rasterLayer
+        elif stylePath:
+            rasterLayer.loadNamedStyle(stylePath)
+            rasterLayer.triggerRepaint()
+        return rasterLayer
 
     def createLayerVector(self, path_vector, path_style):
         baseName_vector = os.path.basename(path_vector).split('.')[0]
@@ -152,9 +148,6 @@ class MapParent:
     def setGridMode(self, gridMode=True):
         self.gridMode = gridMode
 
-    def setFuso(self, fuso):
-        self.fuso = fuso
-
     def setEPSG(self, hemisferio, fuso):
         self.epsg = "319"
         if hemisferio == 'N':
@@ -162,28 +155,6 @@ class MapParent:
         elif hemisferio == 'S':
             self.epsg = self.epsg + str(78 + fuso-18)
         # self.GLC.setFusoHemisferio(fuso,hemisferio)
-
-    def insertLayersToGroup(self):
-        for layer_name in self.layers_toshow:
-            legend_layer_name = self.group_name + '_' + layer_name
-            self.mp.insertLayerToGroup(self.group_name, legend_layer_name)
-
-    def setLayerData(self, path_shp, id_attr):
-        self.path_principalShp = path_shp
-        self.idAttr_principalShp = id_attr
-
-    def setImageLayerName(self, image_layername):
-        self.image_layername = image_layername
-
-    def setLayersToLock(self, layers_to_lock):
-        self.layers_to_lock = layers_to_lock
-
-    def setLayerToShow(self, layers_to_show):
-        self.layers_to_show = layers_to_show
-
-    def setQueryId(self, id_attr, id_value):
-        self.id_attr = id_attr
-        self.id_value = id_value
 
     def setScale(self, scale):
         self.scale = scale
@@ -263,13 +234,6 @@ class MapParent:
         grid_rectangleLayer.commitChanges()
         return grid_rectangleLayer
 
-    def getFeature(self):
-        if self.customMode:
-            self.grid_layer.selectByIds(self.selectedFeatureId)
-            self.selectedFeature = self.grid_layer.selectedFeatures()[0]
-        else:
-            self.selectedFeature = self.grid_layer.selectedFeatures()[0]
-
     def defaultCreateGroup(self, layernames_layer_to_remove_=[], groupVisibility=True):
         self.groupNode = (self.mp.groupExists(self.group_name))
         if self.groupNode:
@@ -298,35 +262,6 @@ class MapParent:
         copyLayer.updateFields()
         copyLayerDataProvider.addFeatures(layer.getFeatures())
         return copyLayer
-
-class MapCreator:
-    def __init__(self, iface):
-        """Constructor.
-
-        :param iface: An interface instance that will be passed to this class
-        which provides the hook by which you can manipulate the QGIS
-        application at run time.
-        :type iface: QgsInterface
-        """
-        # Save reference to the QGIS interface
-        self.iface = iface
-        pass
-
-    def hideGroup(self, node, bHide=True):
-        ltv = self.iface.layerTreeView()
-        model = ltv.model()
-        root = QgsProject.instance().layerTreeRoot()
-        if type(node) in (QgsLayerTreeLayer, QgsLayerTreeGroup):
-            index = model.node2index(node)
-            ltv.setRowHidden(index.row(), index.parent(), bHide)
-            node.setCustomProperty('nodeHidden', 'true' if bHide else 'false')
-            ltv.setCurrentIndex(model.node2index(root))
-
-    def removeGroup(self, group_name):
-        root = QgsProject.instance().layerTreeRoot()
-        parent = root.findGroup(group_name)
-        root.removeChildNode(parent)
-        pass
 
 
 def cloneItem(item, composition_dest, x_0, y_0):

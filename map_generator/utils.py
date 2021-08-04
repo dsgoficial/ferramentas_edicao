@@ -39,6 +39,28 @@ class MapTools:
         layer, feat = self.create_layer_from_geometry('map_extent', geom)
         return layer, feat
 
+    def editComposition(self, jsonData, compositionDict, productType, oldQptsPaths):
+        '''
+        Checks if a custom header / footer qpt was included in json. If yes, compositionDict will be refreshed
+        if jsonData provides a new qpt.
+        '''
+        qptList = list()
+        compositor = compositionDict.get(next(iter(compositionDict)))
+        headerQptPath = self.setupPath(jsonData.get('cabecalho')) or self.defaultPaths.header
+        footerQptPath = self.setupPath(jsonData.get('projeto')) or self.defaultPaths.footer
+        if headerQptPath != oldQptsPaths[0]:
+            oldQptsPaths[0] = headerQptPath
+            dictHeader = self.products_parameters[productType]['qpt'][f'{self.scale}']['cabecalho'].copy()
+            dictHeader.update({'caminho': headerQptPath})
+            qptList.append(dictHeader)
+        if footerQptPath != oldQptsPaths[1]:
+            oldQptsPaths[1] = footerQptPath
+            dictFooter = self.products_parameters[productType]['qpt'][f'{self.scale}']['projeto'].copy()
+            dictFooter.update({'caminho': footerQptPath})
+            qptList.append(dictFooter)
+        self.htmlData.editQpts(compositor, qptList)
+        return oldQptsPaths
+
     def create_layer_from_geometry(self, name, geom, layerType='Multipolygon', crsAuthId='4326'):
         layer = QgsVectorLayer('%s?crs=EPSG:%s' % (layerType, crsAuthId), name, 'memory')
         if not layer.isValid():
@@ -253,3 +275,9 @@ class MapTools:
 
     def cleanLayerTreeRoot(self):
         QgsProject.instance().layerTreeRoot().removeAllChildren()
+
+    def setupPath(self, path, isDir=False):
+        pathObj = Path(path) if path else None
+        if pathObj:
+            if (isDir and pathObj.is_dir()) or (not isDir and pathObj.is_file()):
+                return pathObj

@@ -4,166 +4,11 @@ from pathlib import Path
 from collections import namedtuple
 
 from qgis.core import QgsProject, Qgis
-from PyQt5.QtGui import QFont, QColor
 
-from ..map_generator.elements.map_utils import MapParent as MapConnection
-from ..map_generator.map_generator import MapManager
-from ..map_generator.elements.map_index.map_index import UtmGrid
-
-product_parameters = {
-    'carta_topografica': {
-        "nome_produto": "Carta Topográfica",
-        "required_files": [],
-        "grid": {
-            "crossX": 4,
-            "crossY": 4,
-            "fontSize": 1.9,
-            "font": QFont("Arial"),
-            "fontLL": QFont("Arial"),
-            "llcolor": QColor('black'),
-            "linwidth_geo": 0.07,
-            "linwidth_utm": 0.05,
-            "linwidth_buffer_geo": 0,
-            "linwidth_buffer_utm": 0,
-            "geo_grid_color": QColor('black'),
-            "utm_grid_color": QColor('black'),
-            "geo_grid_buffer_color": QColor('black'),
-            "utm_grid_buffer_color": QColor('black'),
-            "masks_check": True
-        },
-        "qpt": {
-            "25": {
-                "projeto": {
-                    "x_0": 7,
-                    "y_0": 487,
-                    "width": 110,
-                    "height": 70,
-                },
-                "cabecalho": {
-                    "x_0": 7,
-                    "y_0": 7,
-                    "width": 110,
-                    "height": 22,
-                }
-            },
-            "50": {
-                "projeto": {
-                    "x_0": 7,
-                    "y_0": 487,
-                    "width": 110,
-                    "height": 70,
-                },
-                "cabecalho": {
-                    "x_0": 7,
-                    "y_0": 7,
-                    "width": 110,
-                    "height": 22,
-                },
-                "classified": {
-                    "x_0": 7,
-                    "y_0": 175,
-                    "width": 110,
-                    "height": 20
-                }
-            }
-        }
-
-    },
-    'carta_ortoimagem': {
-        "nome_produto": "Carta Ortoimagem",
-        "required_files": [
-            ['map_generator', 'limites', 'estados_2019.shp'],
-            ['map_generator', 'limites', 'internacional.shp'],
-            ['map_generator', 'limites', 'municipios_2019.shp'],
-            ['map_generator', 'limites', 'oceano.shp'],
-            ['map_generator', 'limites', 'paises.shp']
-        ],
-        "qpt": {
-            "25": {
-                "projeto": {
-                    "x_0": 7,
-                    "y_0": 487,
-                    "width": 110,
-                    "height": 70,
-                },
-                "cabecalho": {
-                    "x_0": 7,
-                    "y_0": 7,
-                    "width": 110,
-                    "height": 22,
-                }
-            },
-            "50": {
-                "projeto": {
-                    "x_0": 7,
-                    "y_0": 487,
-                    "width": 110,
-                    "height": 70,
-                },
-                "cabecalho": {
-                    "x_0": 7,
-                    "y_0": 7,
-                    "width": 110,
-                    "height": 22,
-                },
-                "classified": {
-                    "x_0": 7,
-                    "y_0": 180,
-                    "width": 120,
-                    "height": 20
-                }
-            },
-            "100": {
-                "projeto": {
-                    "x_0": 7,
-                    "y_0": 487,
-                    "width": 110,
-                    "height": 70,
-                },
-                "cabecalho": {
-                    "x_0": 7,
-                    "y_0": 7,
-                    "width": 110,
-                    "height": 22,
-                }
-            },
-            "250": {
-                "projeto": {
-                    "x_0": 7,
-                    "y_0": 395,
-                    "width": 110,
-                    "height": 70,
-                },
-                "cabecalho": {
-                    "x_0": 7,
-                    "y_0": 7,
-                    "width": 110,
-                    "height": 22,
-                }
-            }
-        },
-        "html": {
-            "info_tecnica": "",
-        },
-        "grid": {
-            "crossX": 4,
-            "crossY": 4,
-            "fontSize": 1.9,
-            "font": QFont("Arial"),
-            "fontLL": QFont("Arial"),
-            "llcolor": QColor('black'),
-            "linwidth_geo": 0.3,
-            "linwidth_utm": 0.2,
-            "linwidth_buffer_geo": 0.1,
-            "linwidth_buffer_utm": 0.1,
-            "geo_grid_color": QColor('black'),
-            "utm_grid_color": QColor('black'),
-            "geo_grid_buffer_color": QColor('white'),
-            "utm_grid_buffer_color": QColor('white'),
-            "masks_check": True
-        }
-    }
-}
+from .elements.map_utils import MapParent as MapConnection
+from .map_generator import MapManager
+from .elements.map_index.map_index import UtmGrid
+from .config.managerConfig import product_parameters, DefaultPaths
 
 
 class DefaultMap(MapManager):
@@ -173,15 +18,16 @@ class DefaultMap(MapManager):
         self.GLC = GLC
         self.map_height = 570-15*2  # milimiters
         self.utm_grid = UtmGrid()
-        self.set_products_parameters(product_parameters)
+        self.defaultPaths = DefaultPaths()
+        self.products_parameters = product_parameters
 
-    def editCompositions(self, productType, dict_compositions):
+    def editCompositions(self, productType, compositionDict):
         '''
-        Atualiza o compositor adicionando os arquivos .qpt indicados na interface (créditos e projeto),
-        além de carregar o qpt de arquivo classificado, caso indicado no json de configuração
+        Searches .qpt files for header and footer layouts, setting its defaults otherwise.
         '''
         qptList = []
-        for scale, compositor in dict_compositions.items():
+        for scale, compositor in compositionDict.items():
+            print(scale, compositor)
             headerPath = Path(self.dlg.mapHeader.filePath())
             footerPath = Path(self.dlg.mapFooter.filePath())
             if headerPath.suffix == '.qpt':
@@ -200,7 +46,7 @@ class DefaultMap(MapManager):
             #     qptList.append(dict_classified)
             self.htmlData.editQpts(compositor, qptList)
 
-    def setCartaConfig(self, jsonData, connectedUri, dict_compositions, mapAreaFeature):
+    def setCartaConfig(self, jsonData, connectedUri, compositionDict, mapAreaFeature):
         '''
         Setting map configurations
         '''
@@ -226,7 +72,7 @@ class DefaultMap(MapManager):
             tipo_produto = 'carta_topografica'
 
         # Print Layout para o produto
-        composition = dict_compositions[escala]
+        composition = compositionDict[escala]
         self.htmlData.setComposition(composition)
 
         # Camadas para o produto
@@ -278,7 +124,7 @@ class DefaultMap(MapManager):
         return composition, inomen, layers
 
     def createCompositions(self, scales, tipo_produto):
-        dict_compositions = {}
+        compositionDict = {}
         novo_valor = os.path.join(os.path.dirname(__file__), '..',
                                   'map_generator', 'produtos', tipo_produto)
         for scale in scales:
@@ -287,14 +133,14 @@ class DefaultMap(MapManager):
                     __file__), '..', 'map_generator', 'produtos', tipo_produto, tipo_produto + '_250' + '.qpt')
                 composition = self.MapC.getPrintLayoutFromQptPath(caminho_layout, novo_valor)
                 composition.refresh()
-                dict_compositions['250'] = composition
+                compositionDict['250'] = composition
             else:
                 caminho_layout = os.path.join(os.path.dirname(
                     __file__), '..', 'map_generator', 'produtos', tipo_produto, tipo_produto + '.qpt')
                 composition = self.MapC.getPrintLayoutFromQptPath(caminho_layout, novo_valor)
                 composition.refresh()
-                dict_compositions[scale] = composition
-        return dict_compositions
+                compositionDict[scale] = composition
+        return compositionDict
 
     def checkJsonFiles(self, jsonFilesPaths):
         '''
@@ -373,8 +219,8 @@ class DefaultMap(MapManager):
         success, logs, list_of_scales = self.checkJsonFiles(jsonFilesPaths)
 
         # Edit composition with project and credits qpt
-        dict_compositions = self.createCompositions(list_of_scales, strProductType)
-        self.editCompositions(strProductType, dict_compositions)
+        compositionDict = self.createCompositions(list_of_scales, strProductType)
+        # self.editCompositions(strProductType, compositionDict)
 
         if success:
             self.exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
@@ -382,11 +228,12 @@ class DefaultMap(MapManager):
             for jsonPath in jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
+                oldQptsPaths = self.editComposition(jsonData, compositionDict, strProductType, oldQptsPaths) if 'oldQptsPaths' in locals() else self.editComposition(jsonData, compositionDict, strProductType, ['',''])
                 connectionSucess, connectedUri = self.getDBConnection(
                     jsonData['banco'], connectedUri) if 'connectedUri' in locals() else self.getDBConnection(jsonData['banco'])
                 # Set config for html labels
                 composition, inomen, layers = self.setCartaConfig(
-                    jsonData, connectedUri, dict_compositions, feature_map_extent)
+                    jsonData, connectedUri, compositionDict, feature_map_extent)
 
                 # Get feature data for maps
                 QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
@@ -398,7 +245,7 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    # self.setupMasks(strProductType)
+                    self.setupMasks(strProductType)
                 self.exportMap(composition)
                 # QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso

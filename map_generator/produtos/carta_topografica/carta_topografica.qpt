@@ -1,4 +1,4 @@
-<Layout units="mm" name="Carta Topográfica2" printResolution="300" worldFileMap="">
+<Layout units="mm" name="Layout Carta Topográfica" printResolution="300" worldFileMap="">
  <Snapper snapToGuides="1" snapToItems="1" snapToGrid="0" tolerance="5"/>
  <Grid resUnits="mm" offsetY="0" resolution="10" offsetX="0" offsetUnits="mm"/>
  <PageCollection>

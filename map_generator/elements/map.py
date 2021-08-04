@@ -9,12 +9,10 @@ from qgis.core import (
 )
 
 from .map_utils import MapParent
-from .map_utils import MapCreator
 
 class Map(MapParent):
     def __init__(self, iface, GLC):
         self.GLC = GLC
-        self.mp = MapCreator(iface)
         self.group_name = 'map'
         self.folder_estilos = Path(__file__).parent.parent / 'estilos' / 'map'
 
