@@ -166,14 +166,6 @@ class EditionPlugin:
         self.dlg.pushButton_gerar_cartas.clicked.connect(self.defaultMap.createMaps)
 
     def setTestData(self):        
-        self.dlg.mapHeader.setFilter("Composer Template (*.qpt)")
-        caminho_cabecalho = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem', 'cabecalho.qpt')        
-        self.dlg.mapHeader.setFilePath(caminho_cabecalho)
-        
-        self.dlg.mapFooter.setFilter("Composer Template (*.qpt)")
-        caminho_projeto = os.path.join(os.path.dirname(__file__),'map_generator', 'produtos', 'carta_ortoimagem', 'projeto_mif_creditos_dsg.qpt')
-        self.dlg.mapFooter.setFilePath(caminho_projeto)
-        
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
         self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\NB-20-Z-D-II-3.json')
         

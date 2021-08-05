@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>371</width>
-    <height>322</height>
+    <height>228</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,34 +36,6 @@
         </property>
        </item>
       </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Selecione o arquivo .qpt corresponde aos &quot;Projeto e Créditos&quot;:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsFileWidget" name="mapFooter"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Selecione o arquivo .qpt corresponde ao &quot;Cabeçalho&quot;:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsFileWidget" name="mapHeader"/>
      </item>
     </layout>
    </item>
