@@ -6,6 +6,7 @@ from pathlib import Path
 class DefaultPaths:
     header: Path = Path(__file__).parent.parent / 'produtos' / 'carta_topografica' / 'cabecalho.qpt'
     footer: Path = Path(__file__).parent.parent / 'produtos' / 'carta_topografica' / 'projeto_mif_creditos_dsg.qpt'
+    bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'carta_ortoimagem' / 'bdgexAcessInfo.qpt'
 
 product_parameters = {
     'carta_topografica': {
@@ -88,6 +89,18 @@ product_parameters = {
                     "y_0": 7,
                     "width": 110,
                     "height": 22,
+                },
+                "classified": {
+                    "x_0": 7,
+                    "y_0": 180,
+                    "width": 120,
+                    "height": 20
+                },
+                "bdgexAcessInfo":{
+                    "x_0": 729,
+                    "y_0": 440,
+                    "width": 105,
+                    "height": 100,
                 }
             },
             "50": {
@@ -108,6 +121,12 @@ product_parameters = {
                     "y_0": 180,
                     "width": 120,
                     "height": 20
+                },
+                "bdgexAcessInfo":{
+                    "x_0": 729,
+                    "y_0": 440,
+                    "width": 105,
+                    "height": 100,
                 }
             },
             "100": {

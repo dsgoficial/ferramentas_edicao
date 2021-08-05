@@ -228,9 +228,10 @@ class DefaultMap(MapManager):
             for jsonPath in jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
-                oldQptsPaths = self.editComposition(jsonData, compositionDict, strProductType, oldQptsPaths) if 'oldQptsPaths' in locals() else self.editComposition(jsonData, compositionDict, strProductType, ['',''])
-                connectionSucess, connectedUri = self.getDBConnection(
-                    jsonData['banco'], connectedUri) if 'connectedUri' in locals() else self.getDBConnection(jsonData['banco'])
+                oldQptsPaths = self.editComposition(jsonData, compositionDict, strProductType, oldQptsPaths) if 'oldQptsPaths' in locals() \
+                    else self.editComposition(jsonData, compositionDict, strProductType, ['','',''])
+                connectionSucess, connectedUri = self.getDBConnection(jsonData['banco'], connectedUri) if 'connectedUri' in locals() \
+                    else self.getDBConnection(jsonData['banco'])
                 # Set config for html labels
                 composition, inomen, layers = self.setCartaConfig(
                     jsonData, connectedUri, compositionDict, feature_map_extent)

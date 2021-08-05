@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from pathlib import Path
 
 from PyQt5.QtCore import QPoint, QSettings
@@ -35,19 +36,6 @@ class MapParent:
         created_layout.loadFromTemplate(doc, QgsReadWriteContext())
         self.update_qpt_variables(created_layout, novo_valor)
         return created_layout
-
-    def create_Multipolygon_layer_copy(self, new_layer_name, layer_to_copy):
-        attr_to_copy = layer_to_copy.dataProvider().fields().toList()
-        #new_layer = QgsVectorLayer("Multipolygon?crs=epsg:{epsg}".format(epsg=layer_to_copy.crs().postgisSrid()),new_layer_name, "memory")
-        new_layer = QgsVectorLayer("Polygon?crs=EPSG:4326", new_layer_name, "memory")
-        new_layer.startEditing()
-        new_layer_provider = new_layer.dataProvider()
-        new_layer.startEditing()
-        new_layer_provider.addAttributes(attr_to_copy)
-        new_layer.updateFields()
-        new_layer_provider.addFeatures([feat for feat in layer_to_copy.getFeatures()])
-        new_layer.commitChanges()
-        return new_layer
 
     def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):
         if 'variableNames' in composition.customProperties():
@@ -110,13 +98,13 @@ class MapParent:
         return imageLayers, imageLayersIDs
 
     def createLayerRaster(self, rasterPath, stylePath=None):
-        rasterBasename = os.path.basename(rasterPath).split('.')[0]
-        rasterLayer = QgsRasterLayer(rasterPath, rasterBasename)
-        if not rasterLayer.isValid():
+        rasterLayer = self.getRasterLayerByType(rasterPath)
+        # rasterBasename = os.path.basename(rasterPath).split('.')[0]
+        if not rasterLayer or not rasterLayer.isValid():
             return None
         elif stylePath:
             rasterLayer.loadNamedStyle(stylePath)
-            rasterLayer.triggerRepaint()
+        rasterLayer.triggerRepaint()
         return rasterLayer
 
     def createLayerVector(self, path_vector, path_style):
@@ -136,6 +124,16 @@ class MapParent:
         root = QgsProject.instance().layerTreeRoot()
         for group_to_delete in groups:
             root.removeChildNode(root.findGroup(group_to_delete))
+
+    def getRasterLayerByType(self, rasterUri):
+        if 'type=xyz' in rasterUri:
+            expression = re.compile(r'type=xyz&url=https?:\/\/(.+?)&zmax=\d{1,2}&zmin=\d{1,2}')
+            found = expression.findall(rasterUri)
+            if found:
+                return QgsRasterLayer(rasterUri, found[0], 'wms')
+        else:
+            rasterPath = Path(rasterUri)
+            return QgsRasterLayer(str(rasterPath), rasterPath.stem) 
 
     def setCustomMode(self):
         self.customMode = True
