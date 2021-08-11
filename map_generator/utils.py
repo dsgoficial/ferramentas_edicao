@@ -46,9 +46,9 @@ class MapTools:
         '''
         qptList = list()
         compositor = compositionDict.get(next(iter(compositionDict)))
-        headerQptPath = self.setupPath(jsonData.get('cabecalho')) or self.defaultPaths.header
-        footerQptPath = self.setupPath(jsonData.get('projeto')) or self.defaultPaths.footer
-        bdgexInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.defaultPaths.bdgexAcessInfo
+        headerQptPath = self.setupPath(jsonData.get('cabecalho')) or self.defaults.header
+        footerQptPath = self.setupPath(jsonData.get('projeto')) or self.defaults.footer
+        bdgexInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.defaults.bdgexAcessInfo
         if headerQptPath != oldQptsPaths[0]:
             oldQptsPaths[0] = headerQptPath
             dictHeader = self.products_parameters[productType]['qpt'][f'{self.scale}']['cabecalho'].copy()

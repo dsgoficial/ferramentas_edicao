@@ -9,6 +9,7 @@ from .elements.map_info import HtmlData
 from .elements.minimap import MiniMap
 from .elements.map import Map
 from .elements.handle_diagram import HandleAngles
+from .elements.legend import Legend
 from .elements.map_utils import MapParent
 from .elements.map_identification import editMapName
 from .elements.map_identification import replaceLabelRegiao
@@ -34,8 +35,7 @@ class MapManager(MapTools):
 		self.inom_attr = 'inom'
 		self.nome_attr = 'nome'
 		self.escala_attr = 'escala'
-		self.feature_selection_mode = 'json' # layer
-				
+		self.productType = product
 		self.map.setGridAndLabelParameters(**self.products_parameters[product]['grid'])
 		self.map.setMapSize(588,588)
 				
@@ -62,6 +62,8 @@ class MapManager(MapTools):
 		self.dados_de_escala = HandleScale()
 		# Subtítulo
 		self.subtitulo = Subtitulo()
+		# Legend
+		self.legend = Legend()
 
 	# Obtem as informacoes do mapa: inom, nome, mi, escala..
 	def setDefaultFeatureData(self, jsonData):
@@ -153,6 +155,9 @@ class MapManager(MapTools):
 
 		if composition.itemById("label_regiao")	is not None:
 			pass
+
+		if composition.itemById('label_convencoes') is not None and self.productType == 'carta_ortoimagem':
+			self.legend.make(composition, self.scale, jsonData.get('classes_complementares', list()), self.defaults)
 
 		# Mapa de Localização
 		if composition.itemById("map_localizacao") is not None:

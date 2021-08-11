@@ -8,7 +8,7 @@ from qgis.core import QgsProject, Qgis
 from .elements.map_utils import MapParent as MapConnection
 from .map_generator import MapManager
 from .elements.map_index.map_index import UtmGrid
-from .config.managerConfig import product_parameters, DefaultPaths
+from .config.managerConfig import product_parameters, Defaults
 
 
 class DefaultMap(MapManager):
@@ -18,7 +18,7 @@ class DefaultMap(MapManager):
         self.GLC = GLC
         self.map_height = 570-15*2  # milimiters
         self.utm_grid = UtmGrid()
-        self.defaultPaths = DefaultPaths()
+        self.defaults = Defaults()
         self.products_parameters = product_parameters
 
     def editCompositions(self, productType, compositionDict):
