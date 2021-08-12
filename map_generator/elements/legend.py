@@ -1,17 +1,17 @@
 import json
-import os
+import os, codecs
 from pathlib import Path
 from typing import List
 
 from PyQt5.QtXml import QDomDocument
 from PyQt5.QtCore import QPoint
-from qgis.core import QgsReadWriteContext, QgsPoint
+from qgis.core import QgsReadWriteContext, QgsPoint, QgsLayoutItem
 
 class Legend():
 
     def __init__(self) -> None:
         _p = Path(__file__).parent.parent / 'produtos' / 'carta_ortoimagem' 
-        self.qptsPath = _p / 'simbolos' / 'qpts'
+        self.qptsPath = _p / 'simbolos' / 'legenda'
         with open(_p / 'mapClassToLegend.json') as mappingData:
             self.legendMappingData = json.load(mappingData)
 
@@ -47,25 +47,28 @@ class Legend():
         return
 
     def buildLegend(self, composition, legendDict):
-        xAnchor, yAnchor = 725, 15
+        xAnchor, yAnchor = 726, 16
         x, y = xAnchor, yAnchor
-        ySpacing = 1
-        xSpacing = 60
-        bigYSpacing = 5
-        width = 120
+        ySpacing = 4.5
+        xSpacingFirstColumn = 2
+        xSpacing = 56
+        bigYSpacing = 10
+        width = 115
         changeColumn = True
         context = QgsReadWriteContext()
         for group, labels in legendDict.items():
             position = QPoint(x,y)
-            domGroup = self.loadQDomComponent(self.qptsPath / f'{group}.qml')
+            domGroup = self.loadQDomComponent(self.qptsPath / f'group_{group}.qpt')
             composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
             y += ySpacing
             for label in labels:
+                x += xSpacingFirstColumn
                 position = QPoint(x,y)
-                domGroup = self.loadQDomComponent(self.qptsPath / f'{label}.qml')
+                domGroup = self.loadQDomComponent(self.qptsPath / f'teste.qpt')
                 composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
                 x = xAnchor + xSpacing if changeColumn else xAnchor
                 y = y + ySpacing if not changeColumn else y
+                changeColumn = not changeColumn
             x = xAnchor
             y += bigYSpacing
             changeColumn = True
@@ -89,7 +92,7 @@ class Legend():
     def loadQDomComponent(self, path):
         doc = QDomDocument()
         with open(path) as content:
-            doc.setContent(content)
+            doc.setContent(content.read())
         return doc
 
     def make(self, composition, scale, cfg, defaults):

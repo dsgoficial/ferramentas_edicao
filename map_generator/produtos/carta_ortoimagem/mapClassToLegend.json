@@ -1,35 +1,35 @@
 {
     "25": {
         "llp_localidade_p": {
-            "group": "Sistema de Transporte",
+            "group": "sistemas_de_transporte",
             "labels": ["vila_texto", "cidade_texto", "capital_texto"]
         },
         "infra_via_deslocamento_l": {
-            "group": "Sistema de Transporte",
+            "group": "sistemas_de_transporte",
             "labels": ["via_pavimentada", "via_nao_pavimentada"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "Sistema de Transporte",
+            "group": "sistemas_de_transporte",
             "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
         },
         "infra_ferrovia_l":{
-            "group": "Sistema de Transporte",
+            "group": "sistemas_de_transporte",
             "labels": ["bitola_metrica", "bitola_internacional"]
         },
         "cobter_massa_dagua_a":{
-            "group:": "",
+            "group:": "hidrografia",
             "labels": []
         },
         "elemnat_trecho_drenagem_l":{
-            "group:": "",
+            "group:": "hidrografia",
             "labels": []
         },
         "aux_area_sem_dados_a":{
-            "group:": "",
+            "group:": "limites",
             "labels": []
         },
         "infra_elemento_energia_l":{
-            "group:": "",
+            "group:": "energia_e_comunicacoes",
             "labels": []
         },
         "infra_elemento_energia_p": {
