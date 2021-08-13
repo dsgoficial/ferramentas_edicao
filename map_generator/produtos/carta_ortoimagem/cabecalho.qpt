@@ -156,7 +156,7 @@
    <value>edition_folder</value>
   </property>
   <property key="variableValues">
-   <value>C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem_tipo_i</value>
+   <value>C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem</value>
   </property>
  </customproperties>
  <Atlas sortFeatures="0" coverageLayer="" hideCoverage="0" filenamePattern="'output_'||@atlas_featurenumber" filterFeatures="0" enabled="0" pageNameExpression=""/>

@@ -1,96 +1,69 @@
 import os
+from pathlib import Path
 
-from qgis.core import (
-	QgsLayerTreeGroup, QgsProject, QgsVectorLayer,
-	QgsSymbol, QgsRuleBasedRenderer
-)
 from PyQt5.QtGui import QColor
+from qgis.core import (QgsLayerTreeGroup, QgsProject, QgsRuleBasedRenderer,
+                       QgsSymbol, QgsVectorLayer)
 
 from .map_utils import MapParent
 
 
-class Articulacao(MapParent):
+class Articulation(MapParent):
     def __init__(self):
         super().__init__()
-        self.customMode = True
-        self.gridMode = True
-        self.group_name = 'articulacao'
-        self.folder_estilos = os.path.join(os.path.dirname(
-            os.path.dirname(__file__)), 'estilos', 'articulacao')
+        self.stylesFolder = Path(__file__).parent.parent / 'styles' / 'articulation'
 
-    def make(self, composition, inomen, layer_feature_map_extent, gridMode, showLayers):
-        # Deletando as variaveis
-        self.deleteGroups(['articulacao'])
-        map_layers = []
+    def make(self, composition, inomen, mapAreaLayer, showLayers):
+        # Cleanup
+        self.deleteGroups(['articulation'])
+        mapIDsToBeDisplayed = []
 
-        articulacaoGroup_node = QgsLayerTreeGroup('articulacao')
-        articulacaoGroup_node.setItemVisibilityChecked(False)
+        articulationNodeGroup = QgsLayerTreeGroup('articulation')
+        articulationNodeGroup.setItemVisibilityChecked(False)
 
-        # Create the grid layer
-        grid_layer, grid_layerId = self.createGridLayer(inomen)
-        map_layers.append(grid_layerId)
+        # Creating the articulation frame
+        gridLayer = self.createGridLayer(inomen)
+        mapIDsToBeDisplayed.append(gridLayer.id())
 
-        layer_moldura_mi, moldura_layer_name = self.addLayerMoldura_v2(grid_layer)
-        map_layers.append(layer_moldura_mi.id())
+        articulationFrameLayer = self.createArticulationFrame(gridLayer)
+        mapIDsToBeDisplayed.append(articulationFrameLayer.id())
+        # QgsProject.instance().addMapLayer(articulationFrameLayer, False)
+        articulationNodeGroup.addLayer(articulationFrameLayer)
 
-        # Adicionamos o layer ao mapa e ao grupo
-        QgsProject.instance().addMapLayer(layer_moldura_mi, False)
-        articulacaoGroup_node.addLayer(layer_moldura_mi)
+        # Creating a copy of mapAreaLayer
+        mapAreaLayer = self.createVectorLayerFromIter(
+            'articulationMapArea', mapAreaLayer.getFeatures()
+        )
+        self.loadStyleToLayer(mapAreaLayer, os.path.join(self.stylesFolder, 'mapExtentStyle.qml'))
+        QgsProject.instance().addMapLayer(mapAreaLayer, False)
+        articulationNodeGroup.addLayer(mapAreaLayer)
+        mapIDsToBeDisplayed.append(mapAreaLayer.id())
 
-        # Criar um layer para o map_extent_feature
-        layer_map_extent = self.createLocalizacaoMILayer(
-            'map_extent', [feat for feat in layer_feature_map_extent.getFeatures()])
-        self.loadStyleToLayer(layer_map_extent, os.path.join(self.folder_estilos, 'roi_2.qml'))
-        QgsProject.instance().addMapLayer(layer_map_extent, False)
-        articulacaoGroup_node.addLayer(layer_map_extent)
-        map_layers.append(layer_map_extent.id())
-        # Alterar o estilo do layer do map_extent_feature
-        # Seleciona a articulação central e a extensão do mapa
-        # self.setLayerROI(grid_layer)
-
-        # Adicionar o id do layer map_extent_feature para map_layers
-
-        # articulacao_map_extent = self.getExtentFromCenter(map_extent_feature, layer_moldura_mi)
-        articulacao_map_extent = grid_layer.extent()
-        # map_extent = self.getExtentFromGrid()
-
-        # Adicionamos a simbologia
-        # self.setSymbol(map_extent_feature,  layer_moldura_mi)
-
-        if not gridMode:
-            self.setLayerROI(grid_layer)
-
-            style_file = os.path.join(self.folder_estilos, 'moldura_feature_carta_especial_v3.qml')
-            self.loadStyleToLayer(self.layer_roi, style_file)
-
-        # Atualiza o map item
-        self.specialMapUpdateMapItem(composition, articulacao_map_extent,
-                                     layer_map_extent,  layer_moldura_mi)
+        # Updates composition
+        self.updateComposition(
+            composition, gridLayer.extent(), mapAreaLayer,  articulationFrameLayer)
 
         if showLayers:
             root = QgsProject.instance().layerTreeRoot()
-            root.addChildNode(articulacaoGroup_node)
-        return map_layers
+            root.addChildNode(articulationNodeGroup)
+        
+        return mapIDsToBeDisplayed
 
-    def addLayerMoldura_v2(self, grid_layer):
-        layer_file = ''
-        moldura_layer_name = 'moldura_articulacao'
-        feats = [feat for feat in grid_layer.getFeatures()]
-        epsg = grid_layer.crs().postgisSrid()
-        self.layer_moldura_mi = QgsVectorLayer(
-            "Polygon?crs=epsg:{epsg}".format(epsg=epsg), moldura_layer_name, "memory")
-        mem_layer_data = self.layer_moldura_mi.dataProvider()
-        attr = grid_layer.dataProvider().fields().toList()
-        mem_layer_data.addAttributes(attr)
-        self.layer_moldura_mi.updateFields()
-        mem_layer_data.addFeatures(feats)
-        QgsProject.instance().addMapLayer(self.layer_moldura_mi, False)
-        style_file = os.path.join(self.folder_estilos, 'articulacao_especial_25k_v6.qml')
+    def createArticulationFrame(self, gridLayer):
+        epsg = gridLayer.crs().postgisSrid()
+        articulationLayer = QgsVectorLayer(f"Polygon?crs=epsg:{epsg}", 'articulationFrame', "memory")
+        articulationLayerProvider = articulationLayer.dataProvider()
+        attr = gridLayer.dataProvider().fields().toList()
+        articulationLayerProvider.addAttributes(attr)
+        articulationLayer.updateFields()
+        articulationLayerProvider.addFeatures(gridLayer.getFeatures())
+        QgsProject.instance().addMapLayer(articulationLayer, False)
+        styleFile = self.stylesFolder / 'articulacao_especial_25k_v6.qml'
         if self.scale == 250:
-            style_file = os.path.join(self.folder_estilos, 'articulacao_especial_25k_v6_250.qml')
-        self.layer_moldura_mi.loadNamedStyle(style_file)
-        self.layer_moldura_mi.triggerRepaint()
-        return self.layer_moldura_mi, moldura_layer_name
+            styleFile = self.stylesFolder / 'articulacao_especial_25k_v6_250.qml'
+        articulationLayer.loadNamedStyle(styleFile)
+        articulationLayer.triggerRepaint()
+        return articulationLayer
 
     def getExtentFromCenter(self, selectedFeature, layer_moldura_mi):
         selection_ids = []
@@ -155,15 +128,10 @@ class Articulacao(MapParent):
         layer_moldura_mi.setRenderer(renderer)
         layer_moldura_mi.triggerRepaint()
 
-    def specialMapUpdateMapItem(self, composition, map_extent, layer_roi,  layer_moldura_mi, mapItem=None):
-        if mapItem is None:
-            mapItem = composition.itemById("map_articulacao")
-        if mapItem is not None:
+    def updateComposition(self, composition, mapExtents, mapAreaLayer,  articulationFrameLayer):
+        if (mapItem:=composition.itemById("map_articulacao")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
-            mapItem.setExtent(map_extent)
-            if self.gridMode:
-                mapItem.setLayers([layer_roi, layer_moldura_mi])
-            else:
-                mapItem.setLayers([layer_moldura_mi, self.layer_roi])
+            mapItem.setExtent(mapExtents)
+            mapItem.setLayers([articulationFrameLayer, mapAreaLayer])
             mapItem.refresh()

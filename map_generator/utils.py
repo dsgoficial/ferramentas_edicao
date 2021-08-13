@@ -51,17 +51,17 @@ class MapTools:
         bdgexInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.defaults.bdgexAcessInfo
         if headerQptPath != oldQptsPaths[0]:
             oldQptsPaths[0] = headerQptPath
-            dictHeader = self.products_parameters[productType]['qpt'][f'{self.scale}']['cabecalho'].copy()
+            dictHeader = self.products_parameters[productType]['qpt'][self.scale]['cabecalho'].copy()
             dictHeader.update({'caminho': headerQptPath})
             qptList.append(dictHeader)
         if footerQptPath != oldQptsPaths[1]:
             oldQptsPaths[1] = footerQptPath
-            dictFooter = self.products_parameters[productType]['qpt'][f'{self.scale}']['projeto'].copy()
+            dictFooter = self.products_parameters[productType]['qpt'][self.scale]['projeto'].copy()
             dictFooter.update({'caminho': footerQptPath})
             qptList.append(dictFooter)
         if productType == 'carta_ortoimagem' and bdgexInfoQptPath != oldQptsPaths[2]:
             oldQptsPaths[2] = bdgexInfoQptPath
-            dictBdgexAcessInfo = self.products_parameters[productType]['qpt'][f'{self.scale}']['bdgexAcessInfo'].copy()
+            dictBdgexAcessInfo = self.products_parameters[productType]['qpt'][self.scale]['bdgexAcessInfo'].copy()
             dictBdgexAcessInfo.update({'caminho': bdgexInfoQptPath})
             qptList.append(dictBdgexAcessInfo)
 
@@ -90,24 +90,6 @@ class MapTools:
             # Commit changes
             layer.commitChanges()
             return layer, feat
-
-    def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):
-        if 'variableNames' in composition.customProperties():
-            chaves = composition.customProperty('variableNames')
-            valores = composition.customProperty('variableValues')
-            index_of_key = -1
-            if chave in chaves:
-                index_of_key = chaves.index(chave)
-                valores[index_of_key] = novo_valor
-                composition.setCustomProperty('variableValues', valores)
-            else:
-                chaves.append(chave)
-                valores.append(novo_valor)
-                composition.setCustomProperty('variableNames', chaves)
-                composition.setCustomProperty('variableValues', valores)
-        else:
-            composition.setCustomProperty('variableNames', [chave])
-            composition.setCustomProperty('variableValues', [novo_valor])
 
     def selectEpsg(self, hemisferio, fuso):
         self.epsg_selected = True
@@ -175,7 +157,7 @@ class MapTools:
         layers_db = []
         layersId_db = []
         style_folder = os.path.join(os.path.dirname(__file__), 'produtos',
-                                    tipo_produto, 'estilos', escala, grupo)
+                                    tipo_produto, 'styles', escala, grupo)
         if connectedUri is not None:
             for dict_layer in tables_dict:
                 layer_db = self.getLayer(connectedUri, dict_layer, grupo)
@@ -227,7 +209,7 @@ class MapTools:
             exporter.exportToImage(tiffFilePath, tiffExporterSettings)
         del exporter
 
-    def removeCreationDataGroups(self, map_groups=['localizacao', 'articulacao', 'map', 'minimap',  'divisao']):
+    def removeCreationDataGroups(self, map_groups=['localizacao', 'articulation', 'map', 'minimap',  'divisao']):
         root = QgsProject.instance().layerTreeRoot()
         for group in map_groups:
             group_localizacao = root.findGroup(group)

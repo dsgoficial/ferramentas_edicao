@@ -1,4 +1,4 @@
-<Layout name="group_sistemas_de_transporte" units="mm" printResolution="300" worldFileMap="">
+<Layout name="group_edificacoes" units="mm" printResolution="300" worldFileMap="">
  <Snapper snapToGuides="1" tolerance="5" snapToGrid="0" snapToItems="1"/>
  <Grid offsetX="0" resUnits="mm" offsetY="0" offsetUnits="mm" resolution="10"/>
  <PageCollection>

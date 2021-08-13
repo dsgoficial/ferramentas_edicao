@@ -17,9 +17,6 @@ class HandleAngles:
     def setComposition(self, composition):
         self.composition = composition
 
-    def setCustomMode(self):
-        self.customMode = True
-
     def make(self, composition, selected_feature):
         point = None
 

@@ -27,7 +27,6 @@ class DefaultMap(MapManager):
         '''
         qptList = []
         for scale, compositor in compositionDict.items():
-            print(scale, compositor)
             headerPath = Path(self.dlg.mapHeader.filePath())
             footerPath = Path(self.dlg.mapFooter.filePath())
             if headerPath.suffix == '.qpt':
@@ -59,11 +58,11 @@ class DefaultMap(MapManager):
             escala = str(self.utm_grid.getScale(inomen))
 
         if 'center' in jsonData:
-            escala = jsonData['escala']  # transformar para 250000
+            escala = int(jsonData['escala']/1000)  # transformar para 250000
             center = jsonData['center']
             longitude = center['longitude']
             latitude = center['latitude']
-            inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, int(escala/1000))
+            inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, escala)
 
         # Tipo de produto
         str_tipo_produto = self.dlg.productType.currentText()
@@ -81,8 +80,8 @@ class DefaultMap(MapManager):
         productLayersDict = self.readJsonFromPath(path_json_produto)
 
         # Maptables e Minimaptables
-        list_dict_maptables = productLayersDict[escala]['carta']
-        list_dict_minimaptables = productLayersDict[escala]['carta_mini']
+        list_dict_maptables = productLayersDict[str(escala)]['carta']
+        list_dict_minimaptables = productLayersDict[str(escala)]['carta_mini']
 
         # Nome
         self.nome = jsonData['nome']
@@ -128,12 +127,12 @@ class DefaultMap(MapManager):
         novo_valor = os.path.join(os.path.dirname(__file__), '..',
                                   'map_generator', 'produtos', tipo_produto)
         for scale in scales:
-            if scale == '250':
+            if scale == 250:
                 caminho_layout = os.path.join(os.path.dirname(
                     __file__), '..', 'map_generator', 'produtos', tipo_produto, tipo_produto + '_250' + '.qpt')
                 composition = self.MapC.getPrintLayoutFromQptPath(caminho_layout, novo_valor)
                 composition.refresh()
-                compositionDict['250'] = composition
+                compositionDict[250] = composition
             else:
                 caminho_layout = os.path.join(os.path.dirname(
                     __file__), '..', 'map_generator', 'produtos', tipo_produto, tipo_produto + '.qpt')
@@ -172,7 +171,7 @@ class DefaultMap(MapManager):
                     _scale = str(self.utm_grid.getScale(jsonMapData['inom']))
                     scales.add(_scale)
                 elif jsonMapData.get('escala'):
-                    _scale = str(int(jsonMapData['denominador_escala'])/1000)
+                    _scale = int(jsonMapData['escala']/1000)
                     scales.add(_scale)
                 else:
                     jsonErrors.errors.append(f'Missing MI or INOM')

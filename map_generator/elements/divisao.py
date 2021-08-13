@@ -20,7 +20,7 @@ class Divisao(MapParent):
     def __init__(self):
         self.itemname_tableMunicipios = 'label_divisao_municipios'
         self.maxCountiesToDisplay = 27
-        self.styleFolder = Path(__file__).parent.parent / 'estilos' / 'divisao'
+        self.styleFolder = Path(__file__).parent.parent / 'styles' / 'divisao'
         self.setVariables()
 
     def setVariables(self):
@@ -329,8 +329,8 @@ class Divisao(MapParent):
         return rule
 
     def createGridRectangle(self, grid_bound, layer_name):
-        geometries = [QgsGeometry.fromRect(grid_bound)]
-        rectangleLayer = self.createGridRectangleLayer(layer_name, geometries)
+        rectangleLayer = self.createVectorLayerFromIter(
+            layer_name, [QgsGeometry.fromRect(grid_bound)])
         style_file = os.path.join(self.styleFolder, 'divisao_grid_bound_vf.qml')
         rectangleLayer.loadNamedStyle(style_file)
         rectangleLayer.triggerRepaint()

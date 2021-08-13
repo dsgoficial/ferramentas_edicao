@@ -46,7 +46,7 @@ product_parameters = {
             "masks_check": True
         },
         "qpt": {
-            "25": {
+            25: {
                 "projeto": {
                     "x_0": 7,
                     "y_0": 487,
@@ -60,7 +60,7 @@ product_parameters = {
                     "height": 22,
                 }
             },
-            "50": {
+            50: {
                 "projeto": {
                     "x_0": 7,
                     "y_0": 487,
@@ -93,7 +93,7 @@ product_parameters = {
             ['map_generator', 'limites', 'paises.shp']
         ],
         "qpt": {
-            "25": {
+            25: {
                 "projeto": {
                     "x_0": 7,
                     "y_0": 487,
@@ -119,7 +119,7 @@ product_parameters = {
                     "height": 100,
                 }
             },
-            "50": {
+            50: {
                 "projeto": {
                     "x_0": 7,
                     "y_0": 487,
@@ -145,7 +145,7 @@ product_parameters = {
                     "height": 100,
                 }
             },
-            "100": {
+            100: {
                 "projeto": {
                     "x_0": 7,
                     "y_0": 487,
@@ -159,7 +159,7 @@ product_parameters = {
                     "height": 22,
                 }
             },
-            "250": {
+            250: {
                 "projeto": {
                     "x_0": 7,
                     "y_0": 395,

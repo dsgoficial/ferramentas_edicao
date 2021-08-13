@@ -5424,7 +5424,7 @@
  <customproperties>
   <property key="atlasRasterFormat" value="png"/>
   <property key="variableNames" value="edition_folder"/>
-  <property key="variableValues" value="C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem_tipo_i"/>
+  <property key="variableValues" value="C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem"/>
  </customproperties>
  <Atlas coverageLayer="" filterFeatures="0" sortFeatures="0" enabled="0" filenamePattern="'output_'||@atlas_featurenumber" hideCoverage="0" pageNameExpression=""/>
 </Layout>

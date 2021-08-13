@@ -15,7 +15,7 @@ from .map_utils import MapParent
 class Localizacao(MapParent):
     def __init__(self):
         self.scale = 25000
-        self.stylesFolder = Path(__file__).parent.parent / 'estilos' / 'localizacao'
+        self.stylesFolder = Path(__file__).parent.parent / 'styles' / 'localizacao'
 
     def make(self, composition, mapAreaFeature, adaptacaoNome=False, showLayers=False, isInternational=False):
         # Deleting ond groups if necessary
@@ -122,8 +122,8 @@ class Localizacao(MapParent):
         return bound
 
     def createGridRectangle(self, mapBounds, layerName):
-        geometries = [QgsGeometry.fromRect(mapBounds)]
-        mapBoundsLayer = self.createGridRectangleLayer(layerName, geometries)
+        mapBoundsLayer = self.createVectorLayerFromIter(
+            layerName, [QgsGeometry.fromRect(mapBounds)])
 
         # Setting configuration
         symbol = QgsSymbol.defaultSymbol(mapBoundsLayer.geometryType())

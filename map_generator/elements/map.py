@@ -13,8 +13,7 @@ from .map_utils import MapParent
 class Map(MapParent):
     def __init__(self, iface, GLC):
         self.GLC = GLC
-        self.group_name = 'map'
-        self.folder_estilos = Path(__file__).parent.parent / 'estilos' / 'map'
+        self.folder_estilos = Path(__file__).parent.parent / 'styles' / 'map'
 
     def setMapSize(self, map_width=588, map_height=588):
         self.map_width = map_width
@@ -131,7 +130,7 @@ class Map(MapParent):
         QgsProject.instance().addMapLayer(layer_grid_styled, False)
         copy = self.cloneVectorLayer(layer_grid_styled, 'aux_moldura')
         # copy = layer_grid_styled.clone()
-        copyStyle = Path(__file__).parent.parent / 'estilos' / 'grid' / 'style.qml'
+        copyStyle = Path(__file__).parent.parent / 'styles' / 'grid' / 'style.qml'
         copy.loadNamedStyle(str(copyStyle))
         QgsProject.instance().addMapLayer(copy, False)
         map_layers.append(copy.id())
@@ -166,7 +165,7 @@ class Map(MapParent):
         bound = selected_feature.geometry()
         buffered_bound = bound.buffer(0.3, 2)
         dif_bound = buffered_bound.difference(bound)
-        layer_mascara_rotulo = self.createGridRectangleLayer('mascara_rotulo', [dif_bound])
+        layer_mascara_rotulo = self.createVectorLayerFromIter('mascara_rotulo', [dif_bound])
         caminho_estilo_mascara = os.path.join(self.folder_estilos, 'mascara_rotulos.qml')
         layer_mascara_rotulo.loadNamedStyle(caminho_estilo_mascara)
         layer_mascara_rotulo.triggerRepaint()

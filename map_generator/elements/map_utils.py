@@ -5,11 +5,9 @@ from pathlib import Path
 
 from PyQt5.QtCore import QPoint, QSettings
 from PyQt5.QtXml import QDomDocument
-from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
-                       QgsLayerTreeGroup, QgsLayerTreeLayer, QgsLayout,
-                       QgsLayoutItem, QgsLayoutPoint, QgsPrintLayout,
-                       QgsProject, QgsRasterLayer, QgsReadWriteContext,
-                       QgsVectorLayer)
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
+                       QgsLayout, QgsLayoutItem, QgsLayoutPoint, QgsPrintLayout,
+                       QgsProject, QgsRasterLayer, QgsReadWriteContext, QgsVectorLayer)
 
 from .map_index.map_index import UtmGrid
 
@@ -18,24 +16,25 @@ class MapParent:
     def __init__(self):
         self.utm_grid = UtmGrid()
 
-    def getPrintLayoutFromQptPath(self, path, novo_valor):
-        project = QgsProject.instance()
-
+    def getPrintLayoutFromQptPath(self, path, newValue):
+        '''
+        Returns a QgsPrintLayout from a template indicated by path.
+        Also sets the composition variable 'variableNames' to newvalue
+        '''
         # Load template from file
-        created_layout = QgsPrintLayout(project)
-        # self.update_qpt_variables(created_layout, novo_valor)
-        # created_layout.initializeDefaults()
-        myTemplateFile = open(path, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
+        layout = QgsPrintLayout(QgsProject.instance())
+        # self.update_qpt_variables(layout, newValue)
+        # layout.initializeDefaults()
+        with open(path) as template:
+            templateContent = template.read()
         doc = QDomDocument()
-        doc.setContent(myTemplateContent)
+        doc.setContent(templateContent)
 
         # adding to existing items
-        #items, ok = created_layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
-        created_layout.loadFromTemplate(doc, QgsReadWriteContext())
-        self.update_qpt_variables(created_layout, novo_valor)
-        return created_layout
+        #items, ok = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        layout.loadFromTemplate(doc, QgsReadWriteContext())
+        self.update_qpt_variables(layout, newValue)
+        return layout
 
     def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):
         if 'variableNames' in composition.customProperties():
@@ -135,16 +134,10 @@ class MapParent:
             rasterPath = Path(rasterUri)
             return QgsRasterLayer(str(rasterPath), rasterPath.stem) 
 
-    def setCustomMode(self):
-        self.customMode = True
-
     def loadStyleToLayer(self, layer, style_file):
-        if (layer.isValid()):
+        if layer.isValid():
             layer.loadNamedStyle(style_file)
             layer.triggerRepaint()
-
-    def setGridMode(self, gridMode=True):
-        self.gridMode = gridMode
 
     def setEPSG(self, hemisferio, fuso):
         self.epsg = "319"
@@ -163,9 +156,6 @@ class MapParent:
         settings.setValue("/Projections/defaultBehavior", projection)
         return oldProjValue
 
-    def setLayerROI(self, layer_roi):
-        self.layer_roi = layer_roi
-
     def readConfigFile(self, configFilePath):
         with open(configFilePath, 'r') as myfile:
             data = myfile.read()
@@ -173,82 +163,29 @@ class MapParent:
         return obj
 
     def createGridLayer(self, inom):
-        grid_layer, center_feat = self.utm_grid.get_neighbors_inom(inom)
-        grid_layerId = grid_layer.id()
-        QgsProject.instance().addMapLayer(grid_layer, False)
-        return grid_layer, grid_layerId
+        gridLayer, _ = self.utm_grid.get_neighbors_inom(inom)
+        QgsProject.instance().addMapLayer(gridLayer, False)
+        return gridLayer
 
-    def createLocalizacaoMILayer(self, layer_name, feats):
-        baseuri = "Polygon"
-        uri = baseuri + "?crs=EPSG:4326"
-        grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
-
-        # Start Editing
-        grid_rectangleLayer.startEditing()
-        pr = grid_rectangleLayer.dataProvider()
-        grid_rectangleLayer.startEditing()
-
-        # Feature
-        # Create feature
-        # n_feats
-        n_feats = []
-        for feat in feats:
-            fet = QgsFeature()
-            fet.setGeometry(feat.geometry())
-            n_feats.append(fet)
-        pr.addFeatures(n_feats)
-
-        # Commit changes
-        grid_rectangleLayer.commitChanges()
-        return grid_rectangleLayer
-
-    def createGridRectangleLayer(self, layer_name, geometries):
-        uri = "Polygon?crs=EPSG:4326"
-        grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
-        pr = grid_rectangleLayer.dataProvider()
-        feats = []
-        for geom in geometries:
-            fet = QgsFeature()
-            fet.setGeometry(geom)
-            feats.append(fet)
-        pr.addFeatures(feats)
-        return grid_rectangleLayer
-
-    def create_layer_from_features(self, layer_name, feats):
-        baseuri = "Polygon"
-        uri = baseuri + "?crs=EPSG:4326"
-        grid_rectangleLayer = QgsVectorLayer(uri, layer_name, "memory")
-
-        # Start Editing
-        grid_rectangleLayer.startEditing()
-        pr = grid_rectangleLayer.dataProvider()
-        grid_rectangleLayer.startEditing()
-
-        # Feature
-        # Create feature
-        pr.addFeatures(feats)
-
-        # Commit changes
-        grid_rectangleLayer.commitChanges()
-        return grid_rectangleLayer
-
-    def defaultCreateGroup(self, layernames_layer_to_remove_=[], groupVisibility=True):
-        self.groupNode = (self.mp.groupExists(self.group_name))
-        if self.groupNode:
-            for layername_layer_to_remove in layernames_layer_to_remove_:
-                layer_to_remove = QgsProject.instance().mapLayersByName(layername_layer_to_remove)
-                if len(layer_to_remove) > 0:
-                    self.mp.removeChildFromGroup(self.group_name, layer_to_remove[0])
-                    # QgsProject.instance().removeMapLayers( [(layer_to_remove[0]).id()] )
-            self.groupNode.setItemVisibilityChecked(True)
-        else:
-            self.mp.createGroup(self.group_name)
-            self.mp.bringGroupFirst(self.group_name)
-
-    def lockLegendItems(self):
-        self.groupNode = (self.mp.groupExists(self.group_name))
-        self.groupNode.setItemVisibilityChecked(False)
-        #self.mp.hideGroup(self.groupNode, True)
+    def createVectorLayerFromIter(self, layerName, iterable):
+        '''
+        Creates a vector layer from an Iterable[QgsGeometry,QgsFeature].
+        Uses EPSG:4674, and has Polygon type.
+        '''
+        layer = QgsVectorLayer('Polygon?crs=EPSG:4674', layerName, 'memory')
+        layerProvider = layer.dataProvider()
+        featsToAdd = list()
+        if hasattr(iterable, '__iter__'):
+            for item in iterable:
+                if isinstance(item, QgsFeature):
+                    feat = QgsFeature(item)
+                    featsToAdd.append(feat)
+                elif isinstance(item, QgsGeometry):
+                    feat = QgsFeature()
+                    feat.setGeometry(item)
+                    featsToAdd.append(feat)
+            layerProvider.addFeatures(featsToAdd)
+        return layer
     
     @staticmethod
     def cloneVectorLayer(layer, layerName):

@@ -4,7 +4,7 @@ from .elements.MiniMapCoordAndOthers import MiniMapCoordAndOthers
 from .elements.escala_carta import EscalaCarta as HandleScale
 from .elements.localizacao import Localizacao
 from .elements.divisao import Divisao
-from .elements.articulacao import Articulacao
+from .elements.articulacao import Articulation
 from .elements.map_info import HtmlData
 from .elements.minimap import MiniMap
 from .elements.map import Map
@@ -31,15 +31,9 @@ class MapManager(MapTools):
 		self.products_parameters = products_parameters
 	
 	def setElementsConfig(self, product):
-		self.mi_attr = 'mi'
-		self.inom_attr = 'inom'
-		self.nome_attr = 'nome'
-		self.escala_attr = 'escala'
 		self.productType = product
 		self.map.setGridAndLabelParameters(**self.products_parameters[product]['grid'])
 		self.map.setMapSize(588,588)
-				
-		self.articulacao.setGridMode(True)
 				
 	def create_map_instances(self):
 		# Map
@@ -53,7 +47,7 @@ class MapManager(MapTools):
 		# Localização
 		self.localizacao = Localizacao()
 		# Articulação		
-		self.articulacao = Articulacao()
+		self.articulacao = Articulation()
 		# Diagrama de convergência e declinação
 		self.handle_angles = HandleAngles(self.iface)				
 		# Dados de info tecnica e orto
@@ -79,12 +73,12 @@ class MapManager(MapTools):
 			layer_feature_map_extent, feature_map_extent = self.utm_grid.getNewGridFromInom(inomen)
 		
 		if jsonData.get('center'):
-			escala = int(jsonData['escala'])/1000 # transformar para 250000
+			escala = int(jsonData['escala']/1000) # transformar para 250000
 			center = jsonData['center']
 			longitude = center['longitude']
 			latitude = center['latitude']
 			inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, escala)	
-			layer_feature_map_extent, features_map_extent = self.create_layer_from_center_and_escala(longitude, latitude,escala)
+			layer_feature_map_extent, feature_map_extent = self.create_layer_from_center_and_escala(longitude, latitude,escala)
 			# layer_feature_map_extent, features_map_extent = self.getNewGridFromInom(longitude, latitude,escala)
 
 		self.inom = inom_text
@@ -93,7 +87,7 @@ class MapManager(MapTools):
 		self.fuso = inomen[3:5]
 		self.selectedFeature_id = 'id'
 		self.selectEpsg(self.hemisferio, self.fuso)
-		self.scale 	= int(escala)
+		self.scale = escala
 		return feature_map_extent, layer_feature_map_extent
 	
 	def getScaleHemisferioFusoFromInom(self, inom):
@@ -105,16 +99,9 @@ class MapManager(MapTools):
 	def createMap(self, composition, grid_layer, selected_feature, layers, showLayers=False):
 		map_layers = []
 		self.map.setEPSG(self.hemisferio, self.fuso)
-		self.map.setCustomMode()
 		self.map.setSpacingFromScale(self.scale)				
 		map_layers = self.map.make(composition, grid_layer, selected_feature, layers, showLayers)
 		return map_layers
-
-	def createGridLayer(self, inom):
-		grid_layer, center_feat = self.utm_grid.get_neighbors_inom(inom)
-		grid_layerId = grid_layer.id()
-		QgsProject.instance().addMapLayer(grid_layer, False)
-		return grid_layer, grid_layerId, center_feat
 
 	def createAll(self, composition, nome, inomen,  map_extent_feature, layer_feature_map_extent, layers, jsonData, showLayers = False):
 		# Store temporary map layers ids
@@ -142,8 +129,7 @@ class MapManager(MapTools):
 		# Mapa de Articulação
 		if composition.itemById("map_articulacao") is not None:
 			self.articulacao.setScale(self.scale)
-			gridMode = True
-			ids_maplayers.extend(self.articulacao.make(composition, inomen, layer_feature_map_extent, gridMode, showLayers))					
+			ids_maplayers.extend(self.articulacao.make(composition, inomen, layer_feature_map_extent, showLayers))					
 
 		# Diagrama de convergência e declinação
 		self.handle_angles.make(composition, map_extent_feature)	

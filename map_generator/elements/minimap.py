@@ -4,7 +4,6 @@ from .map_utils import MapParent
 
 class MiniMap(MapParent):
 	def __init__(self):		
-		self.group_name = 'minimap'
 		self.layers_to_show = []
 
 	def setParams(self):
@@ -15,7 +14,7 @@ class MiniMap(MapParent):
 		self.deleteGroups(['minimap'])	
 
 		root = QgsProject.instance().layerTreeRoot()		
-		miniMapGroup_node = QgsLayerTreeGroup(self.group_name)	
+		miniMapGroup_node = QgsLayerTreeGroup('minimap')	
 		miniMapGroup_node.setItemVisibilityChecked(False)								
 		
 		map_extent = selected_feature.geometry().convexHull().boundingBox()
@@ -40,14 +39,6 @@ class MiniMap(MapParent):
 		# miniMapGroup_node.addLayer(camadaAdicionada)
 		# root = QgsProject.instance().layerTreeRoot()		
 		# root.addChildNode(miniMapGroup_node)
-
-	def make2(self, composition, selected_feature):
-		self.layers_to_show = []		
-		self.defaultCreateGroup()
-		map_extent =selected_feature.geometry().boundingBox()	
-		self.updateMapItem(composition, map_extent)
-		self.lockLegendItems()
-		return [ layer_to_lock.id() for layer_to_lock in self.layers_to_lock]
     
 	def updateMapItem(self, composition, map_extent, layers_to_lock, mapItem=None):    	
 		if mapItem is None:
