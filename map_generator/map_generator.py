@@ -69,7 +69,7 @@ class MapManager(MapTools):
 			inom_text = jsonData['inom']
 			inomen = jsonData['inom']
 			mi = self.utm_grid.get_MI_MIR_from_inom(inomen)
-			escala = str(self.utm_grid.getScale(inomen))
+			escala = self.utm_grid.getScale(inomen)
 			layer_feature_map_extent, feature_map_extent = self.utm_grid.getNewGridFromInom(inomen)
 		elif jsonData.get('center'):
 			escala = int(jsonData['escala']/1000) # transformar para 250000
@@ -102,7 +102,7 @@ class MapManager(MapTools):
 		map_layers = self.map.make(composition, grid_layer, selected_feature, layers, showLayers)
 		return map_layers
 
-	def createAll(self, composition, nome, inomen,  map_extent_feature, layer_feature_map_extent, layers, jsonData, showLayers = False):
+	def createAll(self, composition, inomen,  map_extent_feature, layer_feature_map_extent, layers, jsonData, showLayers = False):
 		# Store temporary map layers ids
 		ids_maplayers = []
 			
@@ -171,7 +171,7 @@ class MapManager(MapTools):
 			composition.itemById('label_bdgexWeb').setVisible(True)
 			composition.itemById('symbol_QRCODE').setVisible(True)
 			camadas_adicionar = ["localidades", "mosaico_topograficas"]
-			success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, nome )
+			success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, jsonData.get('nome') )
 			replace_qrCode(composition, path_qrCode)
 
 		# Add grid layer

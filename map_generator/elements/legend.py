@@ -36,7 +36,7 @@ class Legend():
                 y = y + ySpacing if not changeColumn else y
                 changeColumn = not changeColumn
             x = xAnchor
-            y += 2*ySpacing
+            y += ySpacing if changeColumn else 2*ySpacing
             changeColumn = True
 
     def groupLegend(self, classes):

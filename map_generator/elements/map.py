@@ -80,7 +80,7 @@ class Map(MapParent):
         self.id_attr = 'id'
         self.id_value = 1
         self.scale = scale
-        self.spacing = int(40*scale)
+        self.spacing = 40*scale
 
     def setGridAndLabelParameters(self, crossX, crossY, fontSize, font, fontLL, llcolor, linwidth_geo, linwidth_utm, linwidth_buffer_geo, linwidth_buffer_utm, geo_grid_color, utm_grid_color, geo_grid_buffer_color, utm_grid_buffer_color, masks_check):
         self.crossX = crossX

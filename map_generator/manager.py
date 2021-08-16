@@ -58,7 +58,7 @@ class DefaultMap(MapManager):
             escala = int(jsonData.get('escala')/1000)
             _center = jsonData.get('center')
             longitude = _center.get('longitude')
-            latitude = _center('latitude')
+            latitude = _center.get('latitude')
             inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, escala)
 
         # Tipo de produto
@@ -173,6 +173,13 @@ class DefaultMap(MapManager):
                 # Verify if field 'fases' exists
                 if not jsonMapData.get('fases'):
                     jsonErrors.errors.append(f'Empty key: fases')
+
+                if jsonMapData.get('center'):
+                    if not (_escala:=jsonMapData.get('escala')):
+                        jsonErrors.erros.append('Missing keyword: escala')
+                    else:
+                        if not _escala in (25000, 50000, 100000, 250000):
+                            jsonErrors.erros.append(f'Supported escala values: 25000, 50000, 100000, 250000. Got {_escala}')
 
                 logs.append(jsonErrors)
 
