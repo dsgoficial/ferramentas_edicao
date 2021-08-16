@@ -61,7 +61,7 @@ class Articulation(MapParent):
         styleFile = self.stylesFolder / 'articulacao_especial_25k_v6.qml'
         if self.scale == 250:
             styleFile = self.stylesFolder / 'articulacao_especial_25k_v6_250.qml'
-        articulationLayer.loadNamedStyle(styleFile)
+        articulationLayer.loadNamedStyle(str(styleFile))
         articulationLayer.triggerRepaint()
         return articulationLayer
 

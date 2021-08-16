@@ -104,28 +104,6 @@
   </LayoutItem>
   <GuideCollection visible="1"/>
  </PageCollection>
- <LayoutItem outlineWidthM="0.3,mm" svgBorderColor="0,0,0,255" type="65640" pictureHeight="18" positionLock="false" pictureWidth="104" mode="0" mapUuid="" background="false" svgFillColor="255,255,255,255" templateUuid="{eb13076e-0463-4af3-bebd-99df0e6c7d00}" excludeFromExports="0" resizeMode="1" referencePoint="0" frame="false" frameJoinStyle="miter" blendMode="0" pictureRotation="0" uuid="{eb13076e-0463-4af3-bebd-99df0e6c7d00}" positionOnPage="730,445.33,mm" northOffset="0" file="" opacity="1" itemRotation="0" groupUuid="" svgBorderWidth="0.2" id="imagem_geoportal" visibility="1" zValue="210" anchorPoint="4" position="730,445.33,mm" northMode="0" size="104,18,mm">
-  <FrameColor blue="0" green="0" red="0" alpha="255"/>
-  <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option type="QString" name="name" value=""/>
-     <Option type="Map" name="properties">
-      <Option type="Map" name="dataDefinedSource">
-       <Option type="bool" name="active" value="true"/>
-       <Option type="QString" name="expression" value="to_string( @edition_folder) + '/folha_modelo/banner_geoportal.png'"/>
-       <Option type="int" name="type" value="3"/>
-      </Option>
-     </Option>
-     <Option type="QString" name="type" value="collection"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties>
-    <Option/>
-   </customproperties>
-  </LayoutObject>
- </LayoutItem>
  <LayoutItem outlineWidthM="1,mm" type="65641" positionLock="false" labelText="MATERIAL DE ACESSO RESTRITO&#xa;&#xa;Art. 44 e 45 do Decreto n 7.845, de 14 de novembro de 2012&#xa;" background="false" templateUuid="{6aeda709-4291-402b-9a26-8d38ba902b74}" excludeFromExports="0" referencePoint="4" frame="true" frameJoinStyle="miter" blendMode="0" uuid="{6aeda709-4291-402b-9a26-8d38ba902b74}" positionOnPage="61.5,182.9,mm" htmlState="0" opacity="1" itemRotation="0" valign="32" groupUuid="" marginY="3" id="label_classified" marginX="0" visibility="1" zValue="209" position="61.5,182.9,mm" halign="4" size="110,20,mm">
   <FrameColor blue="0" green="0" red="255" alpha="255"/>
   <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
@@ -201,100 +179,6 @@
     <Option/>
    </customproperties>
   </LayoutObject>
- </LayoutItem>
- <LayoutItem outlineWidthM="0.3,mm" type="65641" positionLock="false" labelText="geoportal.eb.mil.br" background="false" templateUuid="{cb0687e3-b80b-4a64-9666-9ac850d09a68}" excludeFromExports="0" referencePoint="0" frame="false" frameJoinStyle="miter" blendMode="0" uuid="{cb0687e3-b80b-4a64-9666-9ac850d09a68}" positionOnPage="757,531.73,mm" htmlState="0" opacity="1" itemRotation="0" valign="32" groupUuid="" marginY="0" id="label_geoportalWeb" marginX="0" visibility="1" zValue="205" position="757,531.73,mm" halign="132" size="50,5,mm">
-  <FrameColor blue="0" green="0" red="0" alpha="255"/>
-  <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option type="QString" name="name" value=""/>
-     <Option name="properties"/>
-     <Option type="QString" name="type" value="collection"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties>
-    <Option/>
-   </customproperties>
-  </LayoutObject>
-  <LabelFont description="Arial,7,-1,5,75,0,0,0,0,0" style=""/>
-  <FontColor blue="0" green="0" red="0" alpha="255"/>
- </LayoutItem>
- <LayoutItem outlineWidthM="0.3,mm" type="65641" positionLock="false" labelText="Geoportal do Exército Brasileiro" background="false" templateUuid="{1f8870f0-12ff-4647-8d85-d1b7fbc4582c}" excludeFromExports="0" referencePoint="0" frame="false" frameJoinStyle="miter" blendMode="0" uuid="{1f8870f0-12ff-4647-8d85-d1b7fbc4582c}" positionOnPage="759,528.53,mm" htmlState="0" opacity="1" itemRotation="0" valign="32" groupUuid="" marginY="0" id="label_geoportalQR" marginX="0" visibility="1" zValue="204" position="759,528.53,mm" halign="132" size="46,5,mm">
-  <FrameColor blue="0" green="0" red="0" alpha="255"/>
-  <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option type="QString" name="name" value=""/>
-     <Option name="properties"/>
-     <Option type="QString" name="type" value="collection"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties>
-    <Option/>
-   </customproperties>
-  </LayoutObject>
-  <LabelFont description="Arial,7,-1,5,75,0,0,0,0,0" style=""/>
-  <FontColor blue="0" green="0" red="0" alpha="255"/>
- </LayoutItem>
- <LayoutItem outlineWidthM="0.3,mm" svgBorderColor="0,0,0,255" type="65640" pictureHeight="15" positionLock="false" pictureWidth="14.9085" mode="0" mapUuid="" background="false" svgFillColor="255,255,255,255" templateUuid="{9539e71a-cfda-49a5-8ed9-d6d214c3486c}" excludeFromExports="0" resizeMode="0" referencePoint="0" frame="false" frameJoinStyle="miter" blendMode="0" pictureRotation="0" uuid="{9539e71a-cfda-49a5-8ed9-d6d214c3486c}" positionOnPage="774.5,512.93,mm" northOffset="0" file="" opacity="1" itemRotation="0" groupUuid="" svgBorderWidth="0.2" id="symbol_GEOPORTAL" visibility="1" zValue="203" anchorPoint="4" position="774.5,512.93,mm" northMode="0" size="15,15,mm">
-  <FrameColor blue="0" green="0" red="0" alpha="255"/>
-  <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option type="QString" name="name" value=""/>
-     <Option type="Map" name="properties">
-      <Option type="Map" name="dataDefinedSource">
-       <Option type="bool" name="active" value="true"/>
-       <Option type="QString" name="expression" value="to_string( @edition_folder) + '/folha_modelo/qrcode_geoportal.svg'"/>
-       <Option type="int" name="type" value="3"/>
-      </Option>
-     </Option>
-     <Option type="QString" name="type" value="collection"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties>
-    <Option/>
-   </customproperties>
-  </LayoutObject>
- </LayoutItem>
- <LayoutItem outlineWidthM="0.3,mm" type="65641" positionLock="false" labelText="&lt;p style=&quot; text-align: justify;text-justify: inter-word;&quot;>O BDGEx é uma ferramenta para disseminação de produtos geoespaciais matriciais e vetoriais produzidos e/ou adquiridos pela Diretoria do Serviço Geográfico (DSG).&lt;/p>&lt;p style=&quot; text-align: justify;text-justify: inter-word;&quot;>Nesse sistema é possível visualizar e obter os produtos cartográficos em vários formatos digitais (geotiff, shapefile ou pdf),  de forma gratuita, após o cadastro no sistema.&lt;/p>&lt;p>O acesso às  informações  é controlado  no sistema por nível de acesso, que variam de 1 a 4, de acordo com os privilégios e requisitos do usuário.&lt;/p>&lt;p>Para maiores  informações  sobre a política  de  acesso ao sistema acesse  o geoportal do Exército e selecione  a aba Política de Acesso.&lt;/p>" background="false" templateUuid="{e0a4c6c9-bfbc-4ec2-8dea-b5aa63105fad}" excludeFromExports="0" referencePoint="0" frame="false" frameJoinStyle="miter" blendMode="0" uuid="{e0a4c6c9-bfbc-4ec2-8dea-b5aa63105fad}" positionOnPage="730,465.93,mm" htmlState="1" opacity="1" itemRotation="0" valign="32" groupUuid="" marginY="0" id="label_geoportal" marginX="0" visibility="1" zValue="202" position="730,465.93,mm" halign="132" size="104,45,mm">
-  <FrameColor blue="0" green="0" red="0" alpha="255"/>
-  <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option type="QString" name="name" value=""/>
-     <Option name="properties"/>
-     <Option type="QString" name="type" value="collection"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties>
-    <Option/>
-   </customproperties>
-  </LayoutObject>
-  <LabelFont description="Arial,8,-1,5,50,0,0,0,0,0" style=""/>
-  <FontColor blue="0" green="0" red="0" alpha="255"/>
- </LayoutItem>
- <LayoutItem outlineWidthM="0.3,mm" type="65641" positionLock="false" labelText="ACESSO LIVRE À GEOINFORMAÇÃO" background="false" templateUuid="{117ebb62-97b2-41ca-b21c-04244e265018}" excludeFromExports="0" referencePoint="0" frame="false" frameJoinStyle="miter" blendMode="0" uuid="{117ebb62-97b2-41ca-b21c-04244e265018}" positionOnPage="730,434.83,mm" htmlState="0" opacity="1" itemRotation="0" valign="32" groupUuid="" marginY="0" id="label_acesso_geoinfo" marginX="0" visibility="1" zValue="201" position="730,434.83,mm" halign="132" size="104,9,mm">
-  <FrameColor blue="0" green="0" red="0" alpha="255"/>
-  <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option type="QString" name="name" value=""/>
-     <Option name="properties"/>
-     <Option type="QString" name="type" value="collection"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties>
-    <Option/>
-   </customproperties>
-  </LayoutObject>
-  <LabelFont description="Arial,10,-1,5,75,0,0,0,0,0" style=""/>
-  <FontColor blue="0" green="0" red="0" alpha="255"/>
  </LayoutItem>
  <LayoutItem outlineWidthM="0.3,mm" type="65641" positionLock="false" labelText="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;>&#xa;&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;>&#xa;&lt;head>&#xa;&lt;meta charset=&quot;utf-8&quot; />&#xa;&#x9;&lt;meta name=&quot;viewport&quot; content=&quot;maximum-scale=1&quot;>&#xa;&lt;/head>&#xa;&lt;style>&#xa;page, body, div {&#xa;&#x9;&#x9; width:100%;/*104,0mm*/&#xa;&#x9;&#x9; height:100%;/*134,5mm*/&#xa;&#x9;&#x9; margin: 0px 0px 0px 0px; &#xa;&#x9; &#x9; margin-right:0mm;&#xa;&#x9;&#x9; padding: 0px 0px 0px 0px;&#xa;}&#xa;table#producao {&#xa;  &#x9;&#x9;width: 100%;/*105mm*/&#xa;&#x9;&#x9;border-collapse: collapse;&#xa;&#x9;&#x9;font-size:2.75mm;&#x9;&#x9;&#xa;&#x9;    font-family: ;&#xa;&#x9;&#x9;border: 0.25mm solid;&#xa;&#x9;&#x9;columns: 3;&#xa;}&#xa;table#producao tr td.lef{&#xa;&#x9;&#x9;width: 37%;&#xa;&#x9;&#x9;border: 0.13mm solid;&#xa;&#x9;&#x9;text-align: left;&#xa;&#x9;&#x9;padding-top: 0.51mm;&#xa;&#x9;    padding-bottom:0.51mm;&#xa;&#x9;    padding-left: 1.1mm;&#xa;&#x9;    padding-right: 0;&#xa;}&#xa;table#producao tr td.rig{&#xa;&#x9;&#x9;border: 0.13mm solid;&#xa;&#x9;&#x9;text-align: left;&#xa;&#x9;&#x9;padding-top: 0.51mm;&#xa;&#x9;    padding-bottom:0.51mm;&#xa;&#x9;    padding-left: 1.1mm;&#xa;&#x9;    padding-right: 0;&#xa;}&#xa;table#obs {&#xa;  &#x9;&#x9;width: 100%;&#xa;&#x9;&#x9;border-collapse: collapse;&#xa;&#x9;&#x9;border:0px solid;&#xa;&#x9;&#x9;columns: 1;&#xa;&#x9;&#x9;font-family: ;&#xa;&#xa;}&#xa;table#obs tr td.fases {&#xa;&#x9;&#x9;border:0px solid;&#xa;&#x9;&#x9;color:black;&#xa;&#x9;&#x9;padding-top: 2mm;&#xa;&#x9;    padding-bottom:2mm;&#xa;&#x9;    padding-left: 1.1mm;&#xa;&#x9;    padding-right: 0;&#xa;}&#xa;table th {&#xa;  &#x9;  &#x9; font-weight:bold;&#xa;&#xa;&#x9;&#x9; text-transform: uppercase;&#xa;&#x9;&#x9; padding: 1.35mm;&#xa;}&#xa;&#xa;&lt;/style>&#xa;&lt;page id=&quot;rodamao&quot; style=&quot;&#xa;    width: 104mm;&quot; >&#xa; &lt;body id = &quot;direito&quot;>&#xa;  &lt;div align=&quot;center&quot;>&#xa;   &lt;table id=&quot;producao&quot; >&#xa;    &lt;tr>&#xa;    &#x9;&lt;span>&#xa;&#x9; &#x9;&#x9;&lt;th colspan=&quot;2&quot; style=&quot;font-size: 3.8mm;&quot;>informaçoes técnicas da Ortoimagem&lt;/th>&#xa;&#x9;&#x9;&lt;/span>&#xa;&#x9;&lt;/tr>                  &#xa;    &lt;tr>&#xa;        &lt;td class = &quot;lef&quot; rowspan=&quot;3&quot; >Sistema Sensor&lt;/td>&#xa;        &lt;td class = &quot;rig&quot; >Tipo de sensor: Multiespectral&lt;/td>&#xa;    &lt;/tr>&#xa;       &lt;tr>&#xa;        &lt;td class = &quot;rig&quot; rowspan=&quot;1&quot; >Tipo de plataforma: Orbital&lt;/td>&#xa;    &lt;/tr>&#xa;    &lt;tr>&#xa;        &lt;td class = &quot;rig&quot; rowspan=&quot;1&quot; >Nome: WorldView-2&lt;/td>&#xa;    &lt;/tr>&#xa;&#xa;    &lt;tr>&#xa;        &lt;td class = &quot;lef&quot; rowspan=&quot;2&quot; >Características da Imagem&lt;/td>&#xa;        &lt;td class = &quot;rig&quot; >Resolução espacial: 0,5 m &lt;/td> &#xa;    &lt;/tr>&#xa;    &lt;tr>&#xa;        &lt;td class = &quot;rig&quot; rowspan=&quot;1&quot;>Bandas utilizadas: Composição RGB&lt;/td>&#xa;    &lt;/tr>&#xa;&#xa;    &lt;tr>&#xa;        &lt;td class = &quot;lef&quot; >Método de Ortoretificação&lt;/td>&#xa;        &lt;td class = &quot;rig&quot; >Nível do produto: Standard&lt;/td>&#xa;    &lt;/tr>&#xa;&#xa;   &lt;/table>&#xa; &#xa;  &lt;/div>&#xa; &lt;/body>&#xa;&lt;/page>&#xa;&lt;/html>" background="false" templateUuid="{a10de4a1-cf9e-470d-8edf-d84a785fb0b8}" excludeFromExports="0" referencePoint="0" frame="false" frameJoinStyle="miter" blendMode="0" uuid="{a10de4a1-cf9e-470d-8edf-d84a785fb0b8}" positionOnPage="730,402.13,mm" htmlState="1" opacity="1" itemRotation="0" valign="32" groupUuid="" marginY="0" id="label_tabela_info_ortoimagem" marginX="0" visibility="1" zValue="200" position="730,402.13,mm" halign="132" size="104,31,mm">
   <FrameColor blue="0" green="0" red="0" alpha="255"/>

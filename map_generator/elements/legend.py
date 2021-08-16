@@ -1,11 +1,9 @@
 import json
-import os, codecs
 from pathlib import Path
-from typing import List
 
 from PyQt5.QtXml import QDomDocument
 from PyQt5.QtCore import QPoint
-from qgis.core import QgsReadWriteContext, QgsPoint, QgsLayoutItem
+from qgis.core import QgsReadWriteContext
 
 class Legend():
 
@@ -14,45 +12,13 @@ class Legend():
         self.qptsPath = _p / 'simbolos' / 'legenda'
         with open(_p / 'mapClassToLegend.json') as mappingData:
             self.legendMappingData = json.load(mappingData)
-
-    def loadClassQpt(self, name):
-        pass
-
-    def setClassQpt(self, qpt, compositor):
-        item = compositor.itemById('label_convencoes')
     
-    def calculatePositions(self, groupedClasses):
-        # REVER o loop baseado na estrutura do dicionário!
-        positions = list()
-        xAnchor, yAnchor = 0, 0
-        x, y = 0, 0
-        clsYSpacing = 1
-        clsXSpacing = 60
-        macroYClsSpacing = 5
-        width = 120
-        changeY = False
-        for _macroCls, _cls in groupedClasses.values():
-            if _oldMacroCls not in locals() or _oldMacroCls != _macroCls:
-                y = y + macroYClsSpacing
-                positions.append((width/2,y))
-                y = y + clsYSpacing
-                x = xAnchor
-                changeY = False
-                # insert MacroHeader
-            positions.append((x % width, y))
-            x = x + clsXSpacing
-            y = y + clsYSpacing if changeY else y
-            changeY = not changeY
-            _oldMacroCls = _macroCls
-        return
-
     def buildLegend(self, composition, legendDict):
         xAnchor, yAnchor = 726, 16
         x, y = xAnchor, yAnchor
-        ySpacing = 4.5
+        ySpacing = 4.8
         xSpacingFirstColumn = 2
         xSpacing = 56
-        bigYSpacing = 10
         width = 115
         changeColumn = True
         context = QgsReadWriteContext()
@@ -60,17 +26,17 @@ class Legend():
             position = QPoint(x,y)
             domGroup = self.loadQDomComponent(self.qptsPath / f'group_{group}.qpt')
             composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
-            y += ySpacing
+            y += 1.5*ySpacing
             for label in labels:
                 x += xSpacingFirstColumn
                 position = QPoint(x,y)
-                domGroup = self.loadQDomComponent(self.qptsPath / f'teste.qpt')
+                domGroup = self.loadQDomComponent(self.qptsPath / f'{label}.qpt')
                 composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
                 x = xAnchor + xSpacing if changeColumn else xAnchor
                 y = y + ySpacing if not changeColumn else y
                 changeColumn = not changeColumn
             x = xAnchor
-            y += bigYSpacing
+            y += 2*ySpacing
             changeColumn = True
 
     def groupLegend(self, classes):
@@ -96,9 +62,8 @@ class Legend():
         return doc
 
     def make(self, composition, scale, cfg, defaults):
-        self.legendMappingData = self.legendMappingData.get(str(25))
+        self.legendMappingData = self.legendMappingData.get(str(scale))
         legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(cfg)))
         legendClassesGrouped = self.groupLegend(legendClassesToDisplay)
-        print('Organized: ', legendClassesGrouped)
         self.buildLegend(composition, legendClassesGrouped)
             
