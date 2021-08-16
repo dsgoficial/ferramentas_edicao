@@ -23,20 +23,24 @@
 
 
 def editMapName(composition, nome, mi, inom):
-    text_label_nomeCarta = "ESPECIAL"
-    text_label_nomeCarta = (nome).upper()
+    mapName = nome.upper() if nome else 'ESPECIAL'
     if composition.itemById("label_nomeCarta") is not None:
         label_nomeCarta = composition.itemById("label_nomeCarta")
-        label_nomeCarta.setText(text_label_nomeCarta)
+        label_nomeCarta.setText(mapName)
         label_nomeCarta.refresh()
-    text_label_indice = "ÍNDICE: " + inom
     if composition.itemById("label_indice") is not None:
         label_indice = composition.itemById("label_indice")
-        label_indice.setText(text_label_indice)
+        if inom != 'ESPECIAL':
+            text_label_indice = "ÍNDICE: " + inom
+            label_indice.setVisible(True)
+            label_indice.setText(text_label_indice)
+            label_indice.refresh()
+        else:
+            label_indice.setVisible(False)
         label_indice.refresh()
     if composition.itemById("label_mi") is not None:
         label_mi = composition.itemById("label_mi")
-        if mi:
+        if mi and mi != 'ESPECIAL':
             label_mi.setVisible(True)
             text_label_mi = "MI: " + mi
             label_mi.setText(text_label_mi)

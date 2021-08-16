@@ -90,7 +90,6 @@ class Articulation(MapParent):
     def getExtentFromGrid(self, grid_layer):
         selectedFeature = grid_layer.selectedFeatures()[0]
         feature_of_center = selectedFeature
-        self.mi = feature_of_center['inom']
 
         bounding = []
         for moldura_feature in grid_layer.getFeatures():
@@ -111,7 +110,6 @@ class Articulation(MapParent):
         # Regra para o mi analisado
         mi_rule = root_rule.children()[0].clone()
         field = "inom"
-        # value = self.mi
         value = selected_feature[field]
         expression = ' \"{}\" =  \'{}\''.format(field, value)
         mi_rule.setFilterExpression(expression)

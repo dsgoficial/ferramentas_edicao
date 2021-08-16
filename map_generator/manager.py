@@ -50,18 +50,15 @@ class DefaultMap(MapManager):
         Setting map configurations
         '''
         inomen = 'Especial'
-        mi = 'Especial'
-        # inom
         if 'inom' in jsonData:
             inomen = jsonData['inom']
-            mi = self.utm_grid.get_MI_MIR_from_inom(inomen)
             escala = str(self.utm_grid.getScale(inomen))
 
         if 'center' in jsonData:
-            escala = int(jsonData['escala']/1000)  # transformar para 250000
-            center = jsonData['center']
-            longitude = center['longitude']
-            latitude = center['latitude']
+            escala = int(jsonData.get('escala')/1000)
+            _center = jsonData.get('center')
+            longitude = _center.get('longitude')
+            latitude = _center('latitude')
             inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, escala)
 
         # Tipo de produto
@@ -82,9 +79,6 @@ class DefaultMap(MapManager):
         # Maptables e Minimaptables
         list_dict_maptables = productLayersDict[str(escala)]['carta']
         list_dict_minimaptables = productLayersDict[str(escala)]['carta_mini']
-
-        # Nome
-        self.nome = jsonData['nome']
 
         # Etapas
         self.htmlData.customEtapa(composition, jsonData['fases'])
@@ -239,7 +233,7 @@ class DefaultMap(MapManager):
                 QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
 
                 self.setElementsConfig(strProductType)
-                ids_maplayer = self.createAll(composition, self.nome, inomen, feature_map_extent,
+                ids_maplayer = self.createAll(composition, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()

@@ -71,8 +71,7 @@ class MapManager(MapTools):
 			mi = self.utm_grid.get_MI_MIR_from_inom(inomen)
 			escala = str(self.utm_grid.getScale(inomen))
 			layer_feature_map_extent, feature_map_extent = self.utm_grid.getNewGridFromInom(inomen)
-		
-		if jsonData.get('center'):
+		elif jsonData.get('center'):
 			escala = int(jsonData['escala']/1000) # transformar para 250000
 			center = jsonData['center']
 			longitude = center['longitude']
@@ -137,7 +136,7 @@ class MapManager(MapTools):
 		# Dados de escala e nome
 		self.dados_de_escala.setScale(self.scale*1000)
 		self.dados_de_escala.changeScaleLabels(composition)
-		editMapName(composition, nome, self.mi, self.inom)
+		editMapName(composition, jsonData.get('nome'), self.mi, self.inom)
 
 		if composition.itemById("label_regiao")	is not None:
 			pass
