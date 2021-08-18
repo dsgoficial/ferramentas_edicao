@@ -270,3 +270,38 @@ class MapTools:
         if pathObj:
             if (isDir and pathObj.is_dir()) or (not isDir and pathObj.is_file()):
                 return pathObj
+
+    def filterLayers(self, mapLayers, miniMapLayers, jsonData, defaults):
+        '''Filters displayed classes by merging mandatory layers from managerConfig and desired classes from json file.
+        '''
+        _toDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(jsonData)))
+        mapLayersToDisplay = [x for x in mapLayers if x.get('tabela') in _toDisplay]
+        miniMapLayersToDisplay = [x for x in miniMapLayers if x.get('tabela') in _toDisplay]
+        if 'infra_elemento_energia_l' in _toDisplay:
+            mapLayersToDisplay.insert(0, {
+                "tabela": "edicao_simb_torre_energia_p",
+                "schema": "edgv"
+        })
+            miniMapLayersToDisplay.insert(0, {
+                "tabela": "edicao_simb_torre_energia_p",
+                "schema": "edgv"
+        })
+        if 'elemnat_curva_nivel_l' in _toDisplay:
+            mapLayersToDisplay.insert(0, {
+                "tabela": "edicao_simb_cota_mestra_p",
+                "schema": "edgv"
+        })
+            miniMapLayersToDisplay.insert(0, {
+                "tabela": "edicao_simb_cota_mestra_p",
+                "schema": "edgv"
+        })
+            mapLayersToDisplay.insert(0, {
+                "tabela": "edicao_simb_cota_mestra_l",
+                "schema": "edgv"
+        })
+            miniMapLayersToDisplay.insert(0, {
+                "tabela": "edicao_simb_cota_mestra_l",
+                "schema": "edgv"
+        })
+        return mapLayersToDisplay, miniMapLayersToDisplay
+

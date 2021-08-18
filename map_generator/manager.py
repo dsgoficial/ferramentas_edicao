@@ -10,7 +10,6 @@ from .map_generator import MapManager
 from .elements.map_index.map_index import UtmGrid
 from .config.managerConfig import product_parameters, Defaults
 
-
 class DefaultMap(MapManager):
     def __init__(self, iface, dlg, GLC):
         super().__init__(iface, dlg, GLC)
@@ -62,23 +61,24 @@ class DefaultMap(MapManager):
             inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, escala)
 
         # Tipo de produto
-        str_tipo_produto = self.dlg.productType.currentText()
-        tipo_produto = '_'.join(str_tipo_produto.lower().split(' '))
-        if str_tipo_produto == 'Carta Topográfica':
-            tipo_produto = 'carta_topografica'
+        productTypeStr = self.dlg.productType.currentText()
+        productTypeStrC = '_'.join(productTypeStr.lower().split(' '))
+        if productTypeStr == 'Carta Topográfica':
+            productTypeStrC = 'carta_topografica'
 
         # Print Layout para o produto
         composition = compositionDict[escala]
         self.htmlData.setComposition(composition)
 
         # Camadas para o produto
-        path_json_produto = os.path.join(os.path.dirname(os.path.dirname(
-            __file__)), 'map_generator', 'produtos', tipo_produto, 'camadas.json')
-        productLayersDict = self.readJsonFromPath(path_json_produto)
+        productLayerDictPath = Path(__file__).parent / 'produtos' / productTypeStrC / 'camadas.json'        
+        productLayersDict = self.readJsonFromPath(productLayerDictPath)
 
         # Maptables e Minimaptables
-        list_dict_maptables = productLayersDict[str(escala)]['carta']
-        list_dict_minimaptables = productLayersDict[str(escala)]['carta_mini']
+
+        mapLayersDict, miniMapLayersDict = self.filterLayers(
+            productLayersDict.get('carta'), productLayersDict.get('carta_mini'),
+            jsonData.get('classes_complementares', list()), self.defaults)
 
         # Etapas
         self.htmlData.customEtapa(composition, jsonData['fases'])
@@ -89,7 +89,7 @@ class DefaultMap(MapManager):
         # Info tecnica carta
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
         self.htmlData.customTecnicalInfo(
-            composition, scale, hemisferio, fuso, str_tipo_produto, jsonData.get('info_tecnica'),
+            composition, scale, hemisferio, fuso, productTypeStr, jsonData.get('info_tecnica'),
             jsonData.get('territorio_internacional'), mapAreaFeature)
 
         # Banco
@@ -98,7 +98,7 @@ class DefaultMap(MapManager):
 
         # Carrega camadas do banco
         map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db = self.getMapLayers(
-            connectedUri,  list_dict_maptables, list_dict_minimaptables, tipo_produto, str(scale))
+            connectedUri,  mapLayersDict, miniMapLayersDict, productTypeStrC, str(scale))
 
         # Carrega imagens
 

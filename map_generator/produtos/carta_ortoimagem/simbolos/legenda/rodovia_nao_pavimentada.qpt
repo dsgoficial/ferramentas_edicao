@@ -92,7 +92,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" name="active" value="true"/>
-       <Option type="QString" name="expression" value="to_string( @edition_folder) + '/simbolos/classes/L11302J.svg'"/>
+       <Option type="QString" name="expression" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'"/>
        <Option type="int" name="type" value="3"/>
       </Option>
      </Option>
