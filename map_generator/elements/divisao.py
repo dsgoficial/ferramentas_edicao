@@ -184,20 +184,18 @@ class Divisao(MapParent):
                 labelTable = f'{name} - {county}'
                 if isInternational:
                     labelTable = f'{labelTable} / {country}'
-                # Intersects map extents
-                if countyGeometry.intersects(contourOuterExtents):
-                    _, show = self.checkRadiusPoleForLabel(countyFeature, outerExtentsGeometry)
-                    if show:
-                        countyIntersection = countyGeometry.intersection(outerExtentsGeometry)
-                        countyCentroid = countyIntersection.centroid().asPoint()
-                        countyDict = {
-                            self.nameAttribute: name,
-                            self.countyAttribute: county,
-                            self.countryAttribute: country,
-                            'label': labelTable,
-                            'area': d.measureArea(countyGeometry),
-                            'centroidDistance': d.measureLine(mapAreaCentroid, countyCentroid)}
-                        countiesToDisplay.append(countyDict)
+                _, show = self.checkRadiusPoleForLabel(countyFeature, outerExtentsGeometry)
+                if show:
+                    countyIntersection = countyGeometry.intersection(outerExtentsGeometry)
+                    countyCentroid = countyIntersection.centroid().asPoint()
+                    countyDict = {
+                        self.nameAttribute: name,
+                        self.countyAttribute: county,
+                        self.countryAttribute: country,
+                        'label': labelTable,
+                        'area': d.measureArea(countyGeometry),
+                        'centroidDistance': d.measureLine(mapAreaCentroid, countyCentroid)}
+                    countiesToDisplay.append(countyDict)
         orderedCountiesByCentroidDistance = sorted(countiesToDisplay, key=lambda x: x['centroidDistance'], reverse=False)
         orderedCountiesNamesByCentroidDistance = [x['label'] for x in orderedCountiesByCentroidDistance]
 
