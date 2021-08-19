@@ -4075,7 +4075,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/folha_modelo/qrcode_bdgex_v2.png'" name="expression"/>
+       <Option type="QString" value="to_string(@commonPath) + '/bdgexQrcode.png'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>

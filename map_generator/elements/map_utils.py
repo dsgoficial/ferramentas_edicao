@@ -1,13 +1,12 @@
-import json
-import os
 import re
 from pathlib import Path
 
 from PyQt5.QtCore import QPoint, QSettings
 from PyQt5.QtXml import QDomDocument
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
-                       QgsLayout, QgsLayoutItem, QgsLayoutPoint, QgsPrintLayout,
-                       QgsProject, QgsRasterLayer, QgsReadWriteContext, QgsVectorLayer)
+                       QgsLayout, QgsLayoutItem, QgsLayoutPoint,
+                       QgsPrintLayout, QgsProject, QgsRasterLayer,
+                       QgsReadWriteContext, QgsVectorLayer)
 
 from .map_index.map_index import UtmGrid
 
@@ -23,7 +22,7 @@ class MapParent:
         '''
         # Load template from file
         layout = QgsPrintLayout(QgsProject.instance())
-        # self.update_qpt_variables(layout, newValue)
+        # self.updateQptVariables(layout, newValue)
         # layout.initializeDefaults()
         with open(path) as template:
             templateContent = template.read()
@@ -33,36 +32,33 @@ class MapParent:
         # adding to existing items
         #items, ok = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
         layout.loadFromTemplate(doc, QgsReadWriteContext())
-        self.update_qpt_variables(layout, newValue)
+        self.updateQptVariables(layout, newValue)
         return layout
 
-    def update_qpt_variables(self, composition, novo_valor, chave='edition_folder'):
+    def updateQptVariables(self, composition, newValue, defaultKey='edition_folder'):
+        '''Sets composition variables
+        '''
+        commonPathPropertyKey = 'commonPath'
+        commonPathPropertyValue = str(Path(__file__).parent.parent / 'produtos' / 'common')
         if 'variableNames' in composition.customProperties():
-            chaves = composition.customProperty('variableNames')
-            valores = composition.customProperty('variableValues')
-            index_of_key = -1
-            if chave in chaves:
-                index_of_key = chaves.index(chave)
-                if isinstance(valores, str):
-                    valores = novo_valor
+            keys = composition.customProperty('variableNames')
+            values = composition.customProperty('variableValues')
+            keyIndex = -1
+            if defaultKey in keys:
+                keyIndex = keys.index(defaultKey)
+                if isinstance(values, str):
+                    values = newValue
                 else:
-                    valores[index_of_key] = novo_valor
-                composition.setCustomProperty('variableValues', valores)
+                    values[keyIndex] = newValue
+                composition.setCustomProperty('variableValues', values)
             else:
-                chaves.append(chave)
-                valores.append(novo_valor)
-                composition.setCustomProperty('variableNames', chaves)
-                composition.setCustomProperty('variableValues', valores)
+                keys.append(defaultKey)
+                values.append(newValue)
+                composition.setCustomProperty('variableNames', keys)
+                composition.setCustomProperty('variableValues', values)
         else:
-            composition.setCustomProperty('variableNames', [chave])
-            composition.setCustomProperty('variableValues', [novo_valor])
-
-    def setGridLayerAndComposition(self, grid_layer, composition):
-        self.grid_layer = grid_layer
-        self.composition = composition
-
-    def setGridLayer(self, grid_layer):
-        self.grid_layer = grid_layer
+            composition.setCustomProperty('variableNames', [defaultKey, commonPathPropertyKey])
+            composition.setCustomProperty('variableValues', [newValue, commonPathPropertyValue])
 
     def setComposition(self, composition):
         self.composition = composition
@@ -106,23 +102,10 @@ class MapParent:
         rasterLayer.triggerRepaint()
         return rasterLayer
 
-    def createLayerVector(self, path_vector, path_style):
-        baseName_vector = os.path.basename(path_vector).split('.')[0]
-        layer_vector = QgsVectorLayer(path_vector, baseName_vector)
-        if not layer_vector.isValid():
-            return None
-        else:
-            CRS = layer_vector.crs()
-            source_epsg = CRS.postgisSrid()
-            if path_style is not None:
-                layer_vector.loadNamedStyle(path_style)
-                layer_vector.triggerRepaint()
-            return layer_vector
-
     def deleteGroups(self, groups):
         root = QgsProject.instance().layerTreeRoot()
-        for group_to_delete in groups:
-            root.removeChildNode(root.findGroup(group_to_delete))
+        for groupToDelete in groups:
+            root.removeChildNode(root.findGroup(groupToDelete))
 
     def getRasterLayerByType(self, rasterUri):
         if 'type=xyz' in rasterUri:
@@ -155,12 +138,6 @@ class MapParent:
         oldProjValue = settings.value("/Projections/defaultBehavior", "prompt", type=str)
         settings.setValue("/Projections/defaultBehavior", projection)
         return oldProjValue
-
-    def readConfigFile(self, configFilePath):
-        with open(configFilePath, 'r') as myfile:
-            data = myfile.read()
-        obj = json.loads(data)
-        return obj
 
     def createGridLayer(self, inom):
         gridLayer, _ = self.utm_grid.get_neighbors_inom(inom)

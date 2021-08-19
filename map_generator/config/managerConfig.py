@@ -4,9 +4,9 @@ from pathlib import Path
 
 @dataclass
 class Defaults:
-    header: Path = Path(__file__).parent.parent / 'produtos' / 'carta_topografica' / 'cabecalho.qpt'
-    footer: Path = Path(__file__).parent.parent / 'produtos' / 'carta_topografica' / 'projeto_mif_creditos_dsg.qpt'
-    bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'carta_ortoimagem' / 'bdgexAcessInfo.qpt'
+    header: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'header.qpt'
+    footer: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'creditsDSG.qpt'
+    bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'bdgexAcessInfo.qpt'
     orthoMandatoryClasses: set = field(default_factory=lambda: set([
         'llp_localidade_p', 'infra_via_deslocamento_l', 'edicao_identificador_trecho_rod_p', 'infra_ferrovia_l', 
         'cobter_massa_dagua_a', 'elemnat_trecho_drenagem_l', 'aux_area_sem_dados_a'
