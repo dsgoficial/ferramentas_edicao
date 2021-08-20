@@ -143,25 +143,22 @@ class MapTools:
     def getLayerFromPostgres(self, connectedUri, layerDict, group):
         schema = layerDict['schema']
         tableName = layerDict['tabela']
-        layerName = tableName + '_' + group
-        connectedUri.setDataSource(schema, layerName, 'geom')
-        return QgsVectorLayer(connectedUri.uri(False), layerName, "postgres")
+        connectedUri.setDataSource(schema, tableName, 'geom')
+        return QgsVectorLayer(connectedUri.uri(False), tableName, "postgres")
 
     def getLayersFromDB(self, connectedUri, layersDict, group, productType, scale):
         layersList = []
         layersIDsList = []
         stylesFolder = Path(__file__).parent / 'produtos' / productType / 'styles' / group
-        os.path.join(os.path.dirname(__file__), 'produtos',
-                                    productType, 'styles', scale, group)
         if connectedUri is not None:
             for layerDict in layersDict:
                 layer = self.getLayerFromPostgres(connectedUri, layerDict, group)
                 if layer.isValid():
                     QgsProject.instance().addMapLayer(layer, False)
                     styleFile = self.getStylePath(
-                        layerDict.get('tabela'), self.defaults, productType, stylesFolder, scale)
+                        layer.name(), self.defaults, productType, stylesFolder, scale)
                     if styleFile.exists():
-                        layer.loadNamedStyle(styleFile, True)
+                        layer.loadNamedStyle(str(styleFile), True)
                         layer.triggerRepaint()
                     layersList.append(layer)
                     layersIDsList.append(layer.id())
@@ -178,25 +175,6 @@ class MapTools:
             if p.exists():
                 return p
         return stylesFolder / f'{layerName}.qml'
-
-    def checkSelectedLayerFeatures(self, layer):
-        error = False
-        text_message = ""
-        # Check if moldura layer has only one Feature
-        if layer:
-            roi_selected_features = layer.selectedFeatureCount()
-            if roi_selected_features == 0:
-                text_message = "Sem feições selecionadas da camada moldura. A camada moldura deve possuir uma feição selecionada."
-                error = True
-            if error:
-                self.iface.messageBar().pushMessage("Gerar Area:", text_message, level=Qgis.Info, duration=3)
-                return False
-            else:
-                return True
-        else:
-            self.iface.messageBar().pushMessage("Layer de moldura não selecionado.",
-                                                text_message, level=Qgis.Info, duration=3)
-            return False
 
     def exportMap(self, composition):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
