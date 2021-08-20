@@ -111,9 +111,9 @@ class MapTools:
 
     def getMapLayers(self, connectedUri,  list_dict_maptables, list_dict_minimaptables, tipo_produto, escala):
         map_layers_db, map_layersId_db = self.getLayersFromDB(
-            connectedUri,  list_dict_maptables, "carta",  tipo_produto, escala)
+            connectedUri,  list_dict_maptables, "map",  tipo_produto, escala)
         minimap_layers_db, minimap_layersId_db = self.getLayersFromDB(
-            connectedUri, list_dict_minimaptables, "carta_mini",   tipo_produto, escala)
+            connectedUri, list_dict_minimaptables, "miniMap",   tipo_produto, escala)
         return map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db
 
     def getDBConnection(self, connectionDict, oldUri=None):
@@ -140,36 +140,44 @@ class MapTools:
         else:
             return success, None
 
-    def getLayer(self, connectedUri, dict_layer, grupo):
-        schema = dict_layer['schema']
-        tablename = dict_layer['tabela']
-        # geometrycol = dict_layer['geometrycol']
-        geometrycol = 'geom'
-        layername = tablename + '_' + grupo
+    def getLayerFromPostgres(self, connectedUri, layerDict, group):
+        schema = layerDict['schema']
+        tableName = layerDict['tabela']
+        layerName = tableName + '_' + group
+        connectedUri.setDataSource(schema, layerName, 'geom')
+        return QgsVectorLayer(connectedUri.uri(False), layerName, "postgres")
 
-        # uri.setDataSource('', '(' + sql + ')', 'geom', '', 'id')
-        connectedUri.setDataSource(schema, tablename, geometrycol)
-
-        layer = QgsVectorLayer(connectedUri.uri(False), layername, "postgres")
-        return layer
-
-    def getLayersFromDB(self, connectedUri, tables_dict, grupo, tipo_produto, escala):
-        layers_db = []
-        layersId_db = []
-        style_folder = os.path.join(os.path.dirname(__file__), 'produtos',
-                                    tipo_produto, 'styles', escala, grupo)
+    def getLayersFromDB(self, connectedUri, layersDict, group, productType, scale):
+        layersList = []
+        layersIDsList = []
+        stylesFolder = Path(__file__).parent / 'produtos' / productType / 'styles' / group
+        os.path.join(os.path.dirname(__file__), 'produtos',
+                                    productType, 'styles', scale, group)
         if connectedUri is not None:
-            for dict_layer in tables_dict:
-                layer_db = self.getLayer(connectedUri, dict_layer, grupo)
-                if (layer_db.isValid()):
-                    QgsProject.instance().addMapLayer(layer_db, False)
-                    style_file = os.path.join(style_folder, dict_layer['tabela'] + '.qml')
-                    if os.path.exists(style_file):
-                        _, status = layer_db.loadNamedStyle(style_file, True)
-                        layer_db.triggerRepaint()
-                    layers_db.append(layer_db)
-                    layersId_db.append(layer_db.id())
-        return layers_db, layersId_db
+            for layerDict in layersDict:
+                layer = self.getLayerFromPostgres(connectedUri, layerDict, group)
+                if layer.isValid():
+                    QgsProject.instance().addMapLayer(layer, False)
+                    styleFile = self.getStylePath(
+                        layerDict.get('tabela'), self.defaults, productType, stylesFolder, scale)
+                    if styleFile.exists():
+                        layer.loadNamedStyle(styleFile, True)
+                        layer.triggerRepaint()
+                    layersList.append(layer)
+                    layersIDsList.append(layer.id())
+        return layersList, layersIDsList
+
+    @staticmethod
+    def getStylePath(layerName, defaults, productType, stylesFolder, scale):
+        if productType == 'carta_ortoimagem':
+            basedOnScale = defaults.scaleBasedStyleOrtho
+        elif productType == 'carta_topografica':
+            basedOnScale = defaults.scaleBasedStyleTopo
+        if layerName in basedOnScale:
+            p = stylesFolder / f'{layerName}_{scale}.qml'
+            if p.exists():
+                return p
+        return stylesFolder / f'{layerName}.qml'
 
     def checkSelectedLayerFeatures(self, layer):
         error = False

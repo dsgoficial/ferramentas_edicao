@@ -23,6 +23,8 @@ class Defaults:
         'llp_area_pub_militar_a', 'llp_terra_indigena_l', 'llp_terra_indigena_a', 'llp_unidade_conservacao_l',
         'llp_unidade_conservacao_a'
     ]))
+    scaleBasedStyleTopo: set = field(default_factory=lambda: set(['llp_localidade_p']))
+    scaleBasedStyleOrtho: set = field(default_factory=lambda: set(['llp_localidade_p']))
 
 product_parameters = {
     'carta_topografica': {
