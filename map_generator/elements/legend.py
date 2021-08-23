@@ -9,7 +9,7 @@ class Legend():
 
     def __init__(self) -> None:
         _p = Path(__file__).parent.parent / 'produtos' / 'carta_ortoimagem' 
-        self.qptsPath = _p / 'simbolos' / 'legenda'
+        self.qptsPath = _p / 'symbols' / 'legend'
         with open(_p / 'mapClassToLegend.json') as mappingData:
             self.legendMappingData = json.load(mappingData)
     

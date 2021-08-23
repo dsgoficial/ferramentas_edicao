@@ -224,7 +224,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/morro.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/morro.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -289,7 +289,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -325,7 +325,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/ponto_cotado2.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/ponto_cotado2.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -390,7 +390,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -426,7 +426,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/curva_de_nivel_normal_em_depressao.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/curva_de_nivel_normal_em_depressao.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -491,7 +491,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -527,7 +527,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/curva_de_nivel_normal.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/curva_de_nivel_normal.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -592,7 +592,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -628,7 +628,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/curva_de_nivel_mestra_em_depressao.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/curva_de_nivel_mestra_em_depressao.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -693,7 +693,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -729,7 +729,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/curva_de_nivel_mestra.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/curva_de_nivel_mestra.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -794,7 +794,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -882,7 +882,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/limite_de_terra_indigena.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/limite_de_terra_indigena.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -947,7 +947,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -983,7 +983,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/limite_de_campo_de_instrucao.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/limite_de_campo_de_instrucao.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1048,7 +1048,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1084,7 +1084,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/limite_internacional_copia.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/limite_internacional_copia.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1149,7 +1149,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1185,7 +1185,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/limite_de_reserva_ou_parque.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/limite_de_reserva_ou_parque.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1250,7 +1250,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1286,7 +1286,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/limite_estadual_copia.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/limite_estadual_copia.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1351,7 +1351,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1439,7 +1439,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/fazenda.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/fazenda.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1504,7 +1504,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1592,7 +1592,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/estacao_distribuidora_de_energia_eletrica.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/estacao_distribuidora_de_energia_eletrica.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1657,7 +1657,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1693,7 +1693,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/estacao_geradora_de_energia_eletrica.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/estacao_geradora_de_energia_eletrica.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1758,7 +1758,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1846,7 +1846,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/edificacao_militar.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/edificacao_militar.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1911,7 +1911,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -1947,7 +1947,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/edificacao_portuaria.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/edificacao_portuaria.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2012,7 +2012,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2100,7 +2100,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/povoado.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/povoado.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2165,7 +2165,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2201,7 +2201,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/nome_local_3.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/nome_local_3.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2266,7 +2266,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2302,7 +2302,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/cidade.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/cidade.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2367,7 +2367,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2455,7 +2455,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/ilha.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/ilha.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2520,7 +2520,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2556,7 +2556,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/queda_dagua_ou_corredeira.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/queda_dagua_ou_corredeira.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2621,7 +2621,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2657,7 +2657,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/oceano.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/oceano.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2722,7 +2722,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2758,7 +2758,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/rio.PNG'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/rio.PNG'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2823,7 +2823,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2911,7 +2911,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/ferrovia.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/ferrovia.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -2976,7 +2976,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3012,7 +3012,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/heliponto.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/heliponto.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3077,7 +3077,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3113,7 +3113,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/prefixo_de_estrada_estadual.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/prefixo_de_estrada_estadual.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3178,7 +3178,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3214,7 +3214,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/campo_de_pouso.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/campo_de_pouso.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3279,7 +3279,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3315,7 +3315,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/classes/prefixo_de_estrada_federal.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/prefixo_de_estrada_federal.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -3380,7 +3380,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string( @edition_folder) + '/simbolos/fundo/default.svg'" name="expression"/>
+       <Option type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
