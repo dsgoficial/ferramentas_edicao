@@ -171,7 +171,7 @@ class MapManager(MapTools):
 			composition.itemById('label_bdgexWeb').setVisible(True)
 			composition.itemById('symbol_QRCODE').setVisible(True)
 			camadas_adicionar = ["localidades", "mosaico_topograficas"]
-			success, path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar, jsonData.get('nome') )
+			path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar)
 			replace_qrCode(composition, path_qrCode)
 
 		# Add grid layer

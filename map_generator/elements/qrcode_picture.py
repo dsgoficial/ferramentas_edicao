@@ -35,14 +35,13 @@ def createQRCode(dest_path, latitude, longitude, camadas_adicionar, escala, nive
     img = make(custom_path)
     img.save(dest_path)
 
-def create_qrcode_from_feature(selected_feature, escala, camadas_adicionar, inom ):
+def create_qrcode_from_feature(selected_feature, escala, camadas_adicionar):
     centroid_pt = selected_feature.geometry().centroid().asPoint()
     latitude, longitude = centroid_pt.y(), centroid_pt.x()
     dest_path = tempfile.NamedTemporaryFile(suffix='.png')
     dest_path = Path(dest_path.name)
     createQRCode(dest_path, latitude, longitude, camadas_adicionar, escala)
-    success = True
-    return success, dest_path
+    return dest_path
 
 def replace_qrCode(composition, path_qrCode, idPicture_qrCode="symbol_QRCODE"):
     if composition.itemById(idPicture_qrCode) is not None:
