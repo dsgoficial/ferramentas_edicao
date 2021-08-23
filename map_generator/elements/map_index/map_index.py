@@ -474,15 +474,25 @@ class UtmGrid(QObject):
         return dicionario
 
     def getINomenFromMI(self,mi):
-        return self.getINomen(self.getMIdict(), mi)
+        mi = self.checkLeftPadding(mi, 4)
+        inom = self.getINomen(self.getMIdict(), mi)
+        exceptions = self.getMIexceptions()
+        if inom in exceptions or self.checkContainedUpperLevel(inom, exceptions):
+            return None
+        return inom
 
     def getINomenFromMIR(self,mir):
-        return self.getINomen(self.getMIRdict(), mir)
+        mir = self.checkLeftPadding(mir, 3)
+        inom = self.getINomen(self.getMIRdict(), mir)
+        exceptions = self.getMIexceptions()
+        if inom in exceptions or self.checkContainedUpperLevel(inom, exceptions):
+            return None
+        return inom
         
     def getINomen(self, dict, index):
         key = index.split('-')[0]
         otherParts = index.split('-')[1:]
-        if (key in dict):
+        if key in dict:
             if len(otherParts)==0:
                 return dict[key]
             else:
@@ -510,9 +520,10 @@ class UtmGrid(QObject):
                 return '-'.join([k]+remains)
     
     def get_MI_MIR_from_inom(self, inom):
-        if inom in self.getMIexceptions():
-            return ''
-        elif len(inom.split('-')) > 4:
+        exceptions = self.getMIexceptions()
+        if inom in exceptions or self.checkContainedUpperLevel(inom, exceptions):
+            return None
+        if len(inom.split('-')) > 4:
             return self.getMIfromInom(inom)
         else:
             return self.getMIR(self.getMIRdict(), inom)
@@ -616,13 +627,12 @@ class UtmGrid(QObject):
         # layer.commitChanges()
         return layer, feat
 
-
     def get_neighbors_inom(self, inom):
         layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')
         exceptions = self.getMIexceptions()
-
+        noMi = (inom in exceptions) or self.checkContainedUpperLevel(inom, exceptions)
         inomenList = self.getNeighbors(inom)
-        feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields, not (map_index in exceptions)) for map_index in inomenList]
+        feats = [self.getNewGridFeat(map_index,self.getQgsPolygonFrame(map_index), fields, not noMi) for map_index in inomenList]
         center_feat = self.getNewGridFeat(inom,self.getQgsPolygonFrame(inom), fields)
         provider = layer.dataProvider()
         provider.addFeatures(feats)
@@ -678,6 +688,19 @@ class UtmGrid(QObject):
             exceptions50k = [x[0] for x in csv.reader(file)]
 
         return set((*exceptions25k, *exceptions50k))
+
+    @staticmethod
+    def checkLeftPadding(mi, zeroes):
+        leftPart = mi.split('-')[0]
+        if len(leftPart) < zeroes:
+            return f'{"".join("0" for _ in range(zeroes-len(leftPart)))}{mi}'
+        return mi
+
+    @staticmethod
+    def checkContainedUpperLevel(inom, exceptions):
+        if isinstance(inom, str):
+            if '-'.join(inom.split('-')[:-1]) in exceptions:
+                return True
         
 if __name__ == "__main__":    
     x = UtmGrid()
