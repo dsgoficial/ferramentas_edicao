@@ -516,15 +516,6 @@ class UtmGrid(QObject):
             return self.getMIfromInom(inom)
         else:
             return self.getMIR(self.getMIRdict(), inom)
-
-    def get_INOM_from_lat_lon(self, lon, lat):
-        """
-        Returns Inom with the nearest lower left lon lat.
-        """
-        INOM = 'N' if lat >= 0 else 'S'
-        INOM += string.ascii_uppercase[math.floor(abs(lat/4.)) % 26] + '-'
-        utm_zone = math.floor(31 + lon/6)
-        return INOM+str(utm_zone)
     
     def get_INOM_from_lat_lon(self, lon, lat, scale=250):
         # Initial part 
