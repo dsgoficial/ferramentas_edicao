@@ -1,7 +1,7 @@
 {
     "25": {
         "llp_localidade_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
         },
         "infra_via_deslocamento_l": {
@@ -25,7 +25,7 @@
             "labels": ["trecho_drenagem"]
         },
         "aux_area_sem_dados_a":{
-            "group": "limites",
+            "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
@@ -53,7 +53,7 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_limite_legal_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["limite_internacional", "limite_estadual"]
         },
         "elemnat_curva_nivel_l": {
@@ -113,41 +113,41 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["aglomerado_rural"]
         },
         "llp_area_pub_militar_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_terra_indigena_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         }
     },
     "50": {
         "llp_localidade_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
         },
         "infra_via_deslocamento_l": {
@@ -171,7 +171,7 @@
             "labels": ["trecho_drenagem"]
         },
         "aux_area_sem_dados_a":{
-            "group": "limites",
+            "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
@@ -199,7 +199,7 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_limite_legal_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["limite_internacional", "limite_estadual"]
         },
         "elemnat_curva_nivel_l": {
@@ -259,41 +259,41 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["aglomerado_rural"]
         },
         "llp_area_pub_militar_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_terra_indigena_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         }
     },
     "100": {
         "llp_localidade_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
         },
         "infra_via_deslocamento_l": {
@@ -317,7 +317,7 @@
             "labels": ["trecho_drenagem"]
         },
         "aux_area_sem_dados_a":{
-            "group": "limites",
+            "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
@@ -345,7 +345,7 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_limite_legal_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["limite_internacional", "limite_estadual"]
         },
         "elemnat_curva_nivel_l": {
@@ -405,41 +405,41 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["aglomerado_rural"]
         },
         "llp_area_pub_militar_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_terra_indigena_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         }
     },
     "250": {
         "llp_localidade_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["vila_simbolo", "cidade_simbolo", "capital_estadual_simbolo", "capital_federal_simbolo"]
         },
         "infra_via_deslocamento_l": {
@@ -463,7 +463,7 @@
             "labels": ["trecho_drenagem"]
         },
         "aux_area_sem_dados_a":{
-            "group": "limites",
+            "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
@@ -491,7 +491,7 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_limite_legal_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["limite_internacional", "limite_estadual"]
         },
         "elemnat_curva_nivel_l": {
@@ -551,35 +551,35 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "localidades",
+            "group": "limites_e_localidades",
             "labels": ["aglomerado_rural"]
         },
         "llp_area_pub_militar_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["area_publica_militar"]
         },
         "llp_terra_indigena_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_l": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites",
+            "group": "limites_e_localidades",
             "labels": ["unidade_conservacao"]
         }
     }
