@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Ferramentas de Edição. v 0.99.1</string>
+   <string>Ferramentas de Edição. v 1.0</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
@@ -62,7 +62,7 @@
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Selecione a pasta onde deseja que os arquivos exportados sejam salvos:</string>
+        <string>Selecione a pasta para exportação dos arquivos:</string>
        </property>
       </widget>
      </item>
@@ -86,16 +86,6 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QCheckBox" name="checkBoxExportPdf">
-         <property name="text">
-          <string>Exportar PDF</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QCheckBox" name="checkBoxExportGeotiff">
          <property name="text">

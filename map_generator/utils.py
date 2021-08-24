@@ -179,7 +179,7 @@ class MapTools:
     def exportMap(self, composition):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
-        if self.dlg.checkBoxExportPdf.isChecked():
+        if False:
             pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
             pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
             pdfExporterSettings.rasterizeWholeImage = True
@@ -273,14 +273,6 @@ class MapTools:
                 "schema": "edgv"
         })
         if 'elemnat_curva_nivel_l' in _toDisplay:
-            mapLayersToDisplay.insert(0, {
-                "tabela": "edicao_simb_cota_mestra_p",
-                "schema": "edgv"
-        })
-            miniMapLayersToDisplay.insert(0, {
-                "tabela": "edicao_simb_cota_mestra_p",
-                "schema": "edgv"
-        })
             mapLayersToDisplay.insert(0, {
                 "tabela": "edicao_simb_cota_mestra_l",
                 "schema": "edgv"

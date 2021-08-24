@@ -8,8 +8,8 @@ class Defaults:
     footer: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'creditsDSG.qpt'
     bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'bdgexAcessInfo.qpt'
     orthoMandatoryClasses: set = field(default_factory=lambda: set([
-        'llp_localidade_p', 'infra_via_deslocamento_l', 'edicao_identificador_trecho_rod_p', 'infra_ferrovia_l', 
-        'cobter_massa_dagua_a', 'elemnat_trecho_drenagem_l', 'aux_area_sem_dados_a'
+        'llp_localidade_p', 'infra_via_deslocamento_l', 'edicao_identificador_trecho_rod_p', 'infra_ferrovia_l', 'edicao_simb_direcao_corrente_p', 
+        'cobter_massa_dagua_a', 'elemnat_trecho_drenagem_l', 'aux_area_sem_dados_a', 'edicao_texto_generico_p', 'edicao_texto_generico_l'
     ]))
     orthoOptionalClasses: set = field(default_factory=lambda: set([
         'infra_elemento_energia_l', 'infra_elemento_energia_p', 'infra_elemento_energia_a', 'constr_extracao_mineral_a',
