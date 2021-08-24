@@ -74,12 +74,14 @@ class DefaultMap(MapManager):
         productLayerDictPath = Path(__file__).parent / 'produtos' / productTypeStrC / 'camadas.json'        
         productLayersDict = self.readJsonFromPath(productLayerDictPath)
 
-        # Maptables e Minimaptables
-
-        mapLayersDict, miniMapLayersDict = self.filterLayers(
-            productLayersDict.get('carta'), productLayersDict.get('carta_mini'),
-            jsonData.get('classes_complementares', list()), self.defaults)
-
+        # Checks classes_complementares on carta_ortoimagem
+        if productTypeStrC == 'carta_ortoimagem':
+            mapLayersDict, miniMapLayersDict = self.filterLayers(
+                productLayersDict.get('carta'), productLayersDict.get('carta_mini'),
+                jsonData.get('classes_complementares', list()), self.defaults)
+        else:
+            mapLayersDict = productLayersDict.get('carta')
+            miniMapLayersDict = productLayersDict.get('carta_mini')
         # Etapas
         self.htmlData.customEtapa(composition, jsonData['fases'])
 
