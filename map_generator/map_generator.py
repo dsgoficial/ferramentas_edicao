@@ -24,7 +24,6 @@ class MapManager(MapTools):
 		self.mc = MapParent()
 		self.GLC = GLC
 		self.map_height = 570-15*2 # milimiters
-		self.epsg_selected = False
 		self.utm_grid = UtmGrid()
 		
 	def set_products_parameters(self, products_parameters):
@@ -37,7 +36,7 @@ class MapManager(MapTools):
 				
 	def create_map_instances(self):
 		# Map
-		self.map = Map(self.iface, self.GLC)
+		self.map = Map(self.GLC)
 		# Minimapa
 		self.miniMap = MiniMap()
 		# Coordenadas do Minimapa
@@ -138,9 +137,6 @@ class MapManager(MapTools):
 		self.dados_de_escala.changeScaleLabels(composition)
 		editMapName(composition, jsonData.get('nome'), self.mi, self.inom)
 
-		if composition.itemById("label_regiao")	is not None:
-			pass
-
 		if composition.itemById('label_convencoes') is not None and self.productType == 'carta_ortoimagem':
 			self.legend.make(composition, self.scale, jsonData.get('classes_complementares', list()), self.defaults)
 
@@ -152,7 +148,7 @@ class MapManager(MapTools):
 			#regioes = self.localizacao.regioes
 			#replaceLabelRegiao(composition, regioes)
 
-		# Mapa de Localização
+		# Region label
 		if composition.itemById("label_regiao") is not None:
 			self.subtitulo.make(composition, map_extent_feature)
 

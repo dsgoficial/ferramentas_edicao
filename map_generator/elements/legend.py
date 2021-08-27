@@ -13,8 +13,7 @@ class Legend():
             'order': 0,
             'order_classes': ['rodovia_pavimentada', 'prefixo_rodovia_federal', 'rodovia_nao_pavimentada', 'prefixo_rodovia_estadual',
             'ferrovia_bitola_metrica', 'ferrovia_bitola_internacional_larga', 'pista_pouso', 'heliponto', 'atracadouro_terminal']
-        }
-        ,
+        },
         'hidrografia': {
             'order': 1,
             'order_classes': ['massa_dagua', 'trecho_drenagem', 'terreno_sujeito_inundacao', 'queda_dagua_corredeira']

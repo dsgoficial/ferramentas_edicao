@@ -701,11 +701,3 @@ class UtmGrid(QObject):
         if isinstance(inom, str):
             if '-'.join(inom.split('-')[:-1]) in exceptions:
                 return True
-        
-if __name__ == "__main__":    
-    x = UtmGrid()
-    inom = 'SH-21-Z-D-I-1'
-    layer = qgis.utils.iface.activeLayer()
-    selected_features = layer.selectedFeatures()
-    for selected_feat in selected_features:
-        x.testTwo(selected_feat['inom'])

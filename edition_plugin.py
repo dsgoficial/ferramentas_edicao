@@ -186,8 +186,8 @@ class EditionPlugin:
             self.dlg = EditionPluginDialog()
 
         self.initializeVariables()
-        self.connectingButtons()
         self.setTestData()
+        self.connectingButtons()
 
         # show the dialog
         self.dlg.show()

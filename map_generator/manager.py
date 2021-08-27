@@ -61,7 +61,9 @@ class DefaultMap(MapManager):
             inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, escala)
 
         # Tipo de produto
-        productTypeStr = self.dlg.productType.currentText()
+        # productTypeStr = self.dlg.productType.currentText()
+        productTypeStr = 'Carta Topográfica'
+
         productTypeStrC = '_'.join(productTypeStr.lower().split(' '))
         if productTypeStr == 'Carta Topográfica':
             productTypeStrC = 'carta_topografica'
@@ -201,14 +203,14 @@ class DefaultMap(MapManager):
         # Creating map instances
         self.create_map_instances()
 
+        # Get dlgCfg
+        self.dlgCfg = self.getDlgCfg(self.dlg)
+
         # Getting product type from ui
-        productType = self.dlg.productType.currentText()
+        productType = self.dlgCfg.productType
         strProductType = '_'.join(productType.lower().split(' '))
         if productType == 'Carta Topográfica':
             strProductType = 'carta_topografica'
-
-        # Setting export folder
-        exportFolder = Path(self.dlg.exportFolder.filePath())
 
         # Refreshing layout
         if showLayers:
@@ -217,17 +219,16 @@ class DefaultMap(MapManager):
                 manager.removeLayout(manager.layoutByName(productType))
 
         # Obtaining json config files and checking their consistency
-        jsonFilesPaths = self.dlg.jsonConfigs.splitFilePaths(self.dlg.jsonConfigs.filePath())
-        success, logs, list_of_scales = self.checkJsonFiles(jsonFilesPaths)
+        success, logs, list_of_scales = self.checkJsonFiles(self.dlgCfg.jsonFilesPaths)
 
         # Edit composition with project and credits qpt
         compositionDict = self.createCompositions(list_of_scales, strProductType)
         # self.editCompositions(strProductType, compositionDict)
 
         if success:
-            self.exportFolder = exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            self.exportFolder = self.dlgCfg.exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             self.exportFolder.mkdir(exist_ok=True)
-            for jsonPath in jsonFilesPaths:
+            for jsonPath in self.dlgCfg.jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
                 oldQptsPaths = self.editComposition(jsonData, compositionDict, strProductType, oldQptsPaths) if 'oldQptsPaths' in locals() \
@@ -248,15 +249,15 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    self.setupMasks(strProductType)
+                    # self.setupMasks(strProductType)
                 self.exportMap(composition)
                 # QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso
-        if self.dlg.checkBoxExportGeotiff.isChecked():
+        if self.dlgCfg.exportTiff:
             self.reprojectTiffs()
 
         # if not showLayers:
         self.mc.setProjectProjection(oldProjValue)
 
-        self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(jsonFilesPaths)} mapas foram exportados', Qgis.Success)
+        self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
         # self.cleanLayerTreeRoot()

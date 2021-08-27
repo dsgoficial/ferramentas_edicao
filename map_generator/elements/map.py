@@ -11,7 +11,7 @@ from qgis.core import (
 from .map_utils import MapParent
 
 class Map(MapParent):
-    def __init__(self, iface, GLC):
+    def __init__(self, GLC):
         self.GLC = GLC
         self.folder_estilos = Path(__file__).parent.parent / 'styles' / 'map'
 
@@ -206,5 +206,3 @@ class Map(MapParent):
             item_the_map = composition.itemById('the_map')
             item_the_map.setReferencePoint(QgsLayoutItem.Middle)
             item_the_map.attemptMove(position_area_reservada_carta)
-    # spacing = int(40*self.scale)
-    # div.setGridLabelParameters(attribute, id_attr, id_value, spacing, crossX, crossY, self.scale, fontSize, font, fontLL, llcolor, linwidth_geo, linwidth_utm, linwidth_buffer_geo, linwidth_buffer_utm, geo_grid_color, utm_grid_color, geo_grid_buffer_color, utm_grid_buffer_color)

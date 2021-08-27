@@ -1,10 +1,12 @@
 import codecs
+from collections import namedtuple
 import json
 import os
 from pathlib import Path
 import subprocess
 
 from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QDialog
 from qgis import processing
 from qgis.core import (Qgis, QgsCredentials, QgsDataSourceUri, QgsFeature,
                        QgsField, QgsFields, QgsGeometry, QgsLayoutExporter,
@@ -92,7 +94,6 @@ class MapTools:
             return layer, feat
 
     def selectEpsg(self, hemisferio, fuso):
-        self.epsg_selected = True
         self.hemisferio = hemisferio
         self.fuso = int(fuso)
         epsg = "319"
@@ -188,7 +189,7 @@ class MapTools:
             pdfExporterSettings.exportMetadata = False
             pdfExporterSettings.dpi = 400
             exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
-        if self.dlg.checkBoxExportGeotiff.isChecked():
+        if self.dlgCfg.exportTiff:
             tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
             tiffExporterSettings.dpi = 400
@@ -256,6 +257,19 @@ class MapTools:
         if pathObj:
             if (isDir and pathObj.is_dir()) or (not isDir and pathObj.is_file()):
                 return pathObj
+
+    def getDlgCfg(self, dlg):
+        if isinstance(dlg, QDialog):
+            _dlgCfg = namedtuple('dlgCfg', ['productType','jsonFilesPaths','exportFolder','exportTiff'])
+            dlgCfg = _dlgCfg(
+                dlg.productType.currentText(),
+                dlg.jsonConfigs.splitFilePaths(dlg.jsonConfigs.filePath()),
+                Path(dlg.exportFolder.filePath()),
+                dlg.checkBoxExportGeotiff.isChecked()
+            )
+        else:
+            pass
+        return dlgCfg
 
     def filterLayers(self, mapLayers, miniMapLayers, jsonData, defaults):
         '''Filters displayed classes by merging mandatory layers from managerConfig and desired classes from json file.

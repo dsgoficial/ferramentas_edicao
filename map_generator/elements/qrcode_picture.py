@@ -1,5 +1,6 @@
 import tempfile
 from pathlib import Path
+
 from ...qrcode.main import make
 
 
@@ -48,11 +49,3 @@ def replace_qrCode(composition, path_qrCode, idPicture_qrCode="symbol_QRCODE"):
         picture_QRCode = composition.itemById(idPicture_qrCode)
         picture_QRCode.setPicturePath(str(path_qrCode))
         picture_QRCode.refresh()
-
-if __name__ == "__main__":
-    pontos = QgsProject.instance().mapLayersByName('roi')[0]
-    selected_feature = pontos.selectedFeatures()[0]
-    camadas_adicionar = ["localidades", "mosaico_topograficas"]
-    escala = "25"
-    inom = "SG-21"
-    dest_path = create_qrcode_from_feature(selected_feature, escala, camadas_adicionar, inom)
