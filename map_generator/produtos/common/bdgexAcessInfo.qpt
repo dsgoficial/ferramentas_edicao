@@ -1,28 +1,28 @@
-<Layout units="mm" name="bdgexAcessInfo" worldFileMap="" printResolution="300">
- <Snapper tolerance="5" snapToItems="1" snapToGrid="0" snapToGuides="1"/>
- <Grid offsetUnits="mm" resUnits="mm" offsetX="0" resolution="10" offsetY="0"/>
+<Layout units="mm" printResolution="300" name="bdgexAcessInfo" worldFileMap="">
+ <Snapper snapToGuides="1" snapToItems="1" snapToGrid="0" tolerance="5"/>
+ <Grid offsetX="0" offsetUnits="mm" resolution="10" resUnits="mm" offsetY="0"/>
  <PageCollection>
-  <symbol name="" force_rhr="0" alpha="1" clip_to_extent="1" type="fill">
+  <symbol type="fill" clip_to_extent="1" name="" force_rhr="0" alpha="1">
    <data_defined_properties>
     <Option type="Map">
-     <Option name="name" value="" type="QString"/>
+     <Option type="QString" name="name" value=""/>
      <Option name="properties"/>
-     <Option name="type" value="collection" type="QString"/>
+     <Option type="QString" name="type" value="collection"/>
     </Option>
    </data_defined_properties>
-   <layer enabled="1" locked="0" class="SimpleFill" pass="0">
+   <layer class="SimpleFill" enabled="1" pass="0" locked="0">
     <Option type="Map">
-     <Option name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-     <Option name="color" value="255,255,255,255" type="QString"/>
-     <Option name="joinstyle" value="miter" type="QString"/>
-     <Option name="offset" value="0,0" type="QString"/>
-     <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-     <Option name="offset_unit" value="MM" type="QString"/>
-     <Option name="outline_color" value="35,35,35,255" type="QString"/>
-     <Option name="outline_style" value="no" type="QString"/>
-     <Option name="outline_width" value="0.26" type="QString"/>
-     <Option name="outline_width_unit" value="MM" type="QString"/>
-     <Option name="style" value="solid" type="QString"/>
+     <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+     <Option type="QString" name="color" value="255,255,255,255"/>
+     <Option type="QString" name="joinstyle" value="miter"/>
+     <Option type="QString" name="offset" value="0,0"/>
+     <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+     <Option type="QString" name="offset_unit" value="MM"/>
+     <Option type="QString" name="outline_color" value="35,35,35,255"/>
+     <Option type="QString" name="outline_style" value="no"/>
+     <Option type="QString" name="outline_width" value="0.26"/>
+     <Option type="QString" name="outline_width_unit" value="MM"/>
+     <Option type="QString" name="style" value="solid"/>
     </Option>
     <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
     <prop v="255,255,255,255" k="color"/>
@@ -37,49 +37,49 @@
     <prop v="solid" k="style"/>
     <data_defined_properties>
      <Option type="Map">
-      <Option name="name" value="" type="QString"/>
+      <Option type="QString" name="name" value=""/>
       <Option name="properties"/>
-      <Option name="type" value="collection" type="QString"/>
+      <Option type="QString" name="type" value="collection"/>
      </Option>
     </data_defined_properties>
    </layer>
   </symbol>
-  <LayoutItem type="65638" excludeFromExports="0" size="105,100,mm" frameJoinStyle="miter" groupUuid="" frame="false" blendMode="0" zValue="0" uuid="{0283f458-25bc-47ab-a3d3-8be1474fb446}" id="" templateUuid="{0283f458-25bc-47ab-a3d3-8be1474fb446}" positionOnPage="0,0,mm" background="true" opacity="1" visibility="1" outlineWidthM="0.3,mm" position="0,0,mm" positionLock="false" itemRotation="0" referencePoint="0">
-   <FrameColor green="0" blue="0" alpha="255" red="0"/>
-   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
+  <LayoutItem frameJoinStyle="miter" frame="false" templateUuid="{5dba7d6d-c5f2-4963-b9e5-f96e593f05ad}" size="105,100,mm" itemRotation="0" type="65638" positionLock="false" referencePoint="0" zValue="0" position="0,0,mm" background="true" id="" outlineWidthM="0.3,mm" groupUuid="" visibility="1" blendMode="0" opacity="1" uuid="{5dba7d6d-c5f2-4963-b9e5-f96e593f05ad}" excludeFromExports="0" positionOnPage="0,0,mm">
+   <FrameColor red="0" green="0" alpha="255" blue="0"/>
+   <BackgroundColor red="255" green="255" alpha="255" blue="255"/>
    <LayoutObject>
     <dataDefinedProperties>
      <Option type="Map">
-      <Option name="name" value="" type="QString"/>
+      <Option type="QString" name="name" value=""/>
       <Option name="properties"/>
-      <Option name="type" value="collection" type="QString"/>
+      <Option type="QString" name="type" value="collection"/>
      </Option>
     </dataDefinedProperties>
     <customproperties>
      <Option/>
     </customproperties>
    </LayoutObject>
-   <symbol name="" force_rhr="0" alpha="1" clip_to_extent="1" type="fill">
+   <symbol type="fill" clip_to_extent="1" name="" force_rhr="0" alpha="1">
     <data_defined_properties>
      <Option type="Map">
-      <Option name="name" value="" type="QString"/>
+      <Option type="QString" name="name" value=""/>
       <Option name="properties"/>
-      <Option name="type" value="collection" type="QString"/>
+      <Option type="QString" name="type" value="collection"/>
      </Option>
     </data_defined_properties>
-    <layer enabled="1" locked="0" class="SimpleFill" pass="0">
+    <layer class="SimpleFill" enabled="1" pass="0" locked="0">
      <Option type="Map">
-      <Option name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-      <Option name="color" value="255,255,255,255" type="QString"/>
-      <Option name="joinstyle" value="miter" type="QString"/>
-      <Option name="offset" value="0,0" type="QString"/>
-      <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-      <Option name="offset_unit" value="MM" type="QString"/>
-      <Option name="outline_color" value="35,35,35,255" type="QString"/>
-      <Option name="outline_style" value="no" type="QString"/>
-      <Option name="outline_width" value="0.26" type="QString"/>
-      <Option name="outline_width_unit" value="MM" type="QString"/>
-      <Option name="style" value="solid" type="QString"/>
+      <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+      <Option type="QString" name="color" value="255,255,255,255"/>
+      <Option type="QString" name="joinstyle" value="miter"/>
+      <Option type="QString" name="offset" value="0,0"/>
+      <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+      <Option type="QString" name="offset_unit" value="MM"/>
+      <Option type="QString" name="outline_color" value="35,35,35,255"/>
+      <Option type="QString" name="outline_style" value="no"/>
+      <Option type="QString" name="outline_width" value="0.26"/>
+      <Option type="QString" name="outline_width_unit" value="MM"/>
+      <Option type="QString" name="style" value="solid"/>
      </Option>
      <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
      <prop v="255,255,255,255" k="color"/>
@@ -94,9 +94,9 @@
      <prop v="solid" k="style"/>
      <data_defined_properties>
       <Option type="Map">
-       <Option name="name" value="" type="QString"/>
+       <Option type="QString" name="name" value=""/>
        <Option name="properties"/>
-       <Option name="type" value="collection" type="QString"/>
+       <Option type="QString" name="type" value="collection"/>
       </Option>
      </data_defined_properties>
     </layer>
@@ -104,15 +104,15 @@
   </LayoutItem>
   <GuideCollection visible="1"/>
  </PageCollection>
- <LayoutItem type="65641" excludeFromExports="0" size="50,5,mm" frameJoinStyle="miter" groupUuid="" frame="false" blendMode="0" valign="32" zValue="206" uuid="{d34f5b3e-2780-4257-914c-bce7382f0eb4}" id="geoportalEBSite_label" templateUuid="{d34f5b3e-2780-4257-914c-bce7382f0eb4}" positionOnPage="27.5,95,mm" halign="132" background="false" htmlState="0" opacity="1" visibility="1" outlineWidthM="0.3,mm" marginY="0" position="27.5,95,mm" marginX="0" positionLock="false" itemRotation="0" referencePoint="0" labelText="geoportal.eb.mil.br">
-  <FrameColor green="0" blue="0" alpha="255" red="0"/>
-  <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
+ <LayoutItem frameJoinStyle="miter" frame="false" templateUuid="{99ac9aad-d813-4da8-bd33-6f270dd447fd}" size="50,5,mm" itemRotation="0" htmlState="0" labelText="geoportal.eb.mil.br" type="65641" marginX="0" positionLock="false" referencePoint="0" zValue="206" position="27.5,95,mm" background="false" id="geoportalEBSite_label" outlineWidthM="0.3,mm" valign="32" groupUuid="" visibility="1" blendMode="0" opacity="1" uuid="{99ac9aad-d813-4da8-bd33-6f270dd447fd}" halign="132" marginY="0" excludeFromExports="0" positionOnPage="27.5,95,mm">
+  <FrameColor red="0" green="0" alpha="255" blue="0"/>
+  <BackgroundColor red="255" green="255" alpha="255" blue="255"/>
   <LayoutObject>
    <dataDefinedProperties>
     <Option type="Map">
-     <Option name="name" value="" type="QString"/>
+     <Option type="QString" name="name" value=""/>
      <Option name="properties"/>
-     <Option name="type" value="collection" type="QString"/>
+     <Option type="QString" name="type" value="collection"/>
     </Option>
    </dataDefinedProperties>
    <customproperties>
@@ -120,17 +120,17 @@
    </customproperties>
   </LayoutObject>
   <LabelFont style="" description="Arial,7,-1,5,75,0,0,0,0,0"/>
-  <FontColor green="0" blue="0" alpha="255" red="0"/>
+  <FontColor red="0" green="0" alpha="255" blue="0"/>
  </LayoutItem>
- <LayoutItem type="65641" excludeFromExports="0" size="46,5,mm" frameJoinStyle="miter" groupUuid="" frame="false" blendMode="0" valign="32" zValue="205" uuid="{0dccab0d-09f9-47ff-864c-392dcb519403}" id="geoportalEB_label" templateUuid="{0dccab0d-09f9-47ff-864c-392dcb519403}" positionOnPage="29.5,91.8,mm" halign="132" background="false" htmlState="0" opacity="1" visibility="1" outlineWidthM="0.3,mm" marginY="0" position="29.5,91.8,mm" marginX="0" positionLock="false" itemRotation="0" referencePoint="0" labelText="Geoportal do Exército Brasileiro">
-  <FrameColor green="0" blue="0" alpha="255" red="0"/>
-  <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
+ <LayoutItem frameJoinStyle="miter" frame="false" templateUuid="{526b09c4-0781-4dca-bab3-52c139f7399a}" size="46,5,mm" itemRotation="0" htmlState="0" labelText="Geoportal do Exército Brasileiro" type="65641" marginX="0" positionLock="false" referencePoint="0" zValue="205" position="29.5,91.8,mm" background="false" id="geoportalEB_label" outlineWidthM="0.3,mm" valign="32" groupUuid="" visibility="1" blendMode="0" opacity="1" uuid="{526b09c4-0781-4dca-bab3-52c139f7399a}" halign="132" marginY="0" excludeFromExports="0" positionOnPage="29.5,91.8,mm">
+  <FrameColor red="0" green="0" alpha="255" blue="0"/>
+  <BackgroundColor red="255" green="255" alpha="255" blue="255"/>
   <LayoutObject>
    <dataDefinedProperties>
     <Option type="Map">
-     <Option name="name" value="" type="QString"/>
+     <Option type="QString" name="name" value=""/>
      <Option name="properties"/>
-     <Option name="type" value="collection" type="QString"/>
+     <Option type="QString" name="type" value="collection"/>
     </Option>
    </dataDefinedProperties>
    <customproperties>
@@ -138,23 +138,23 @@
    </customproperties>
   </LayoutObject>
   <LabelFont style="" description="Arial,7,-1,5,75,0,0,0,0,0"/>
-  <FontColor green="0" blue="0" alpha="255" red="0"/>
+  <FontColor red="0" green="0" alpha="255" blue="0"/>
  </LayoutItem>
- <LayoutItem type="65640" excludeFromExports="0" size="15,15,mm" frameJoinStyle="miter" northMode="0" northOffset="0" pictureWidth="14.9085" groupUuid="" frame="false" anchorPoint="4" file="" blendMode="0" mode="0" zValue="204" uuid="{af34a738-c39f-4f8b-ad5e-00e322552a16}" pictureHeight="15" id="geoportal_qrcode" templateUuid="{af34a738-c39f-4f8b-ad5e-00e322552a16}" mapUuid="" positionOnPage="45,76.2,mm" background="false" pictureRotation="0" opacity="1" svgBorderWidth="0.2" visibility="1" outlineWidthM="0.3,mm" position="45,76.2,mm" positionLock="false" itemRotation="0" referencePoint="0" resizeMode="0" svgFillColor="255,255,255,255" svgBorderColor="0,0,0,255">
-  <FrameColor green="0" blue="0" alpha="255" red="0"/>
-  <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
+ <LayoutItem frameJoinStyle="miter" frame="false" mode="0" templateUuid="{a9db4f54-9146-4ac7-adfa-4ede2eea0388}" svgBorderColor="0,0,0,255" size="15,15,mm" itemRotation="0" type="65640" positionLock="false" referencePoint="0" zValue="204" position="45,76.2,mm" background="false" resizeMode="0" id="geoportal_qrcode" outlineWidthM="0.3,mm" mapUuid="" groupUuid="" visibility="1" blendMode="0" svgFillColor="255,255,255,255" file="" opacity="1" anchorPoint="4" pictureWidth="14.9085" uuid="{a9db4f54-9146-4ac7-adfa-4ede2eea0388}" pictureRotation="0" pictureHeight="15" northOffset="0" svgBorderWidth="0.2" excludeFromExports="0" northMode="0" positionOnPage="45,76.2,mm">
+  <FrameColor red="0" green="0" alpha="255" blue="0"/>
+  <BackgroundColor red="255" green="255" alpha="255" blue="255"/>
   <LayoutObject>
    <dataDefinedProperties>
     <Option type="Map">
-     <Option name="name" value="" type="QString"/>
-     <Option name="properties" type="Map">
-      <Option name="dataDefinedSource" type="Map">
-       <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string(@commonPath) + '/geoportalQrcode.svg'" type="QString"/>
-       <Option name="type" value="3" type="int"/>
+     <Option type="QString" name="name" value=""/>
+     <Option type="Map" name="properties">
+      <Option type="Map" name="dataDefinedSource">
+       <Option type="bool" name="active" value="true"/>
+       <Option type="QString" name="expression" value="to_string(@commonPath) + '/geoportalQrcode.png'"/>
+       <Option type="int" name="type" value="3"/>
       </Option>
      </Option>
-     <Option name="type" value="collection" type="QString"/>
+     <Option type="QString" name="type" value="collection"/>
     </Option>
    </dataDefinedProperties>
    <customproperties>
@@ -162,15 +162,15 @@
    </customproperties>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem type="65641" excludeFromExports="0" size="104,45,mm" frameJoinStyle="miter" groupUuid="" frame="false" blendMode="0" valign="32" zValue="203" uuid="{5f134b3a-d4c1-4850-894c-6b4e4fe2e7cd}" id="geoportal_label" templateUuid="{5f134b3a-d4c1-4850-894c-6b4e4fe2e7cd}" positionOnPage="0.5,31.1,mm" halign="132" background="false" htmlState="1" opacity="1" visibility="1" outlineWidthM="0.3,mm" marginY="0" position="0.5,31.1,mm" marginX="0" positionLock="false" itemRotation="0" referencePoint="0" labelText="&lt;p style=&quot; text-align: justify;text-justify: inter-word;&quot;>O BDGEx é uma ferramenta para disseminação de produtos geoespaciais matriciais e vetoriais produzidos e/ou adquiridos pela Diretoria do Serviço Geográfico (DSG).&lt;/p>&lt;p style=&quot; text-align: justify;text-justify: inter-word;&quot;>Nesse sistema é possível visualizar e obter os produtos cartográficos em vários formatos digitais (geotiff, shapefile ou pdf),  de forma gratuita, após o cadastro no sistema.&lt;/p>&lt;p>O acesso às  informações  é controlado  no sistema por nível de acesso, que variam de 1 a 4, de acordo com os privilégios e requisitos do usuário.&lt;/p>&lt;p>Para maiores  informações  sobre a política  de  acesso ao sistema acesse  o geoportal do Exército e selecione  a aba Política de Acesso.&lt;/p>">
-  <FrameColor green="0" blue="0" alpha="255" red="0"/>
-  <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
+ <LayoutItem frameJoinStyle="miter" frame="false" templateUuid="{167e68ab-fd92-4400-9a3f-957754262d34}" size="104,45,mm" itemRotation="0" htmlState="1" labelText="&lt;p style=&quot; text-align: justify;text-justify: inter-word;&quot;>O BDGEx é uma ferramenta para disseminação de produtos geoespaciais matriciais e vetoriais produzidos e/ou adquiridos pela Diretoria do Serviço Geográfico (DSG).&lt;/p>&lt;p style=&quot; text-align: justify;text-justify: inter-word;&quot;>Nesse sistema é possível visualizar e obter os produtos cartográficos em vários formatos digitais (geotiff, shapefile ou pdf),  de forma gratuita, após o cadastro no sistema.&lt;/p>&lt;p>O acesso às  informações  é controlado  no sistema por nível de acesso, que variam de 1 a 4, de acordo com os privilégios e requisitos do usuário.&lt;/p>&lt;p>Para maiores  informações  sobre a política  de  acesso ao sistema acesse  o geoportal do Exército e selecione  a aba Política de Acesso.&lt;/p>" type="65641" marginX="0" positionLock="false" referencePoint="0" zValue="203" position="0.5,31.1,mm" background="false" id="geoportal_label" outlineWidthM="0.3,mm" valign="32" groupUuid="" visibility="1" blendMode="0" opacity="1" uuid="{167e68ab-fd92-4400-9a3f-957754262d34}" halign="132" marginY="0" excludeFromExports="0" positionOnPage="0.5,31.1,mm">
+  <FrameColor red="0" green="0" alpha="255" blue="0"/>
+  <BackgroundColor red="255" green="255" alpha="255" blue="255"/>
   <LayoutObject>
    <dataDefinedProperties>
     <Option type="Map">
-     <Option name="name" value="" type="QString"/>
+     <Option type="QString" name="name" value=""/>
      <Option name="properties"/>
-     <Option name="type" value="collection" type="QString"/>
+     <Option type="QString" name="type" value="collection"/>
     </Option>
    </dataDefinedProperties>
    <customproperties>
@@ -178,23 +178,23 @@
    </customproperties>
   </LayoutObject>
   <LabelFont style="" description="Arial,8,-1,5,50,0,0,0,0,0"/>
-  <FontColor green="0" blue="0" alpha="255" red="0"/>
+  <FontColor red="0" green="0" alpha="255" blue="0"/>
  </LayoutItem>
- <LayoutItem type="65640" excludeFromExports="0" size="104,18,mm" frameJoinStyle="miter" northMode="0" northOffset="0" pictureWidth="104" groupUuid="" frame="false" anchorPoint="4" file="" blendMode="0" mode="0" zValue="202" uuid="{080c765d-7a12-4e67-8a46-c519c3cd3620}" pictureHeight="18" id="geoportal_image" templateUuid="{080c765d-7a12-4e67-8a46-c519c3cd3620}" mapUuid="" positionOnPage="0.5,10.5,mm" background="false" pictureRotation="0" opacity="1" svgBorderWidth="0.2" visibility="1" outlineWidthM="0.3,mm" position="0.5,10.5,mm" positionLock="false" itemRotation="0" referencePoint="0" resizeMode="1" svgFillColor="255,255,255,255" svgBorderColor="0,0,0,255">
-  <FrameColor green="0" blue="0" alpha="255" red="0"/>
-  <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
+ <LayoutItem frameJoinStyle="miter" frame="false" mode="0" templateUuid="{8e0f3586-54d5-40c2-9da8-9eac6c2feb4b}" svgBorderColor="0,0,0,255" size="104,18,mm" itemRotation="0" type="65640" positionLock="false" referencePoint="0" zValue="202" position="0.5,10.5,mm" background="false" resizeMode="1" id="geoportal_image" outlineWidthM="0.3,mm" mapUuid="" groupUuid="" visibility="1" blendMode="0" svgFillColor="255,255,255,255" file="" opacity="1" anchorPoint="4" pictureWidth="104" uuid="{8e0f3586-54d5-40c2-9da8-9eac6c2feb4b}" pictureRotation="0" pictureHeight="18" northOffset="0" svgBorderWidth="0.2" excludeFromExports="0" northMode="0" positionOnPage="0.5,10.5,mm">
+  <FrameColor red="0" green="0" alpha="255" blue="0"/>
+  <BackgroundColor red="255" green="255" alpha="255" blue="255"/>
   <LayoutObject>
    <dataDefinedProperties>
     <Option type="Map">
-     <Option name="name" value="" type="QString"/>
-     <Option name="properties" type="Map">
-      <Option name="dataDefinedSource" type="Map">
-       <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string(@commonPath) + '/geoportalBanner.png'" type="QString"/>
-       <Option name="type" value="3" type="int"/>
+     <Option type="QString" name="name" value=""/>
+     <Option type="Map" name="properties">
+      <Option type="Map" name="dataDefinedSource">
+       <Option type="bool" name="active" value="true"/>
+       <Option type="QString" name="expression" value="to_string(@commonPath) + '/geoportalBanner.png'"/>
+       <Option type="int" name="type" value="3"/>
       </Option>
      </Option>
-     <Option name="type" value="collection" type="QString"/>
+     <Option type="QString" name="type" value="collection"/>
     </Option>
    </dataDefinedProperties>
    <customproperties>
@@ -202,15 +202,15 @@
    </customproperties>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem type="65641" excludeFromExports="0" size="104,9,mm" frameJoinStyle="miter" groupUuid="" frame="false" blendMode="0" valign="32" zValue="201" uuid="{4693c3ea-5cb2-40c4-9b04-9c38e614b2c8}" id="geoInfoAcess_label" templateUuid="{4693c3ea-5cb2-40c4-9b04-9c38e614b2c8}" positionOnPage="0.5,2.22045e-16,mm" halign="132" background="false" htmlState="0" opacity="1" visibility="1" outlineWidthM="0.3,mm" marginY="0" position="0.5,2.22045e-16,mm" marginX="0" positionLock="false" itemRotation="0" referencePoint="0" labelText="ACESSO LIVRE À GEOINFORMAÇÃO">
-  <FrameColor green="0" blue="0" alpha="255" red="0"/>
-  <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
+ <LayoutItem frameJoinStyle="miter" frame="false" templateUuid="{c3d834e4-3b59-4384-a0df-43199b60f03e}" size="104,9,mm" itemRotation="0" htmlState="0" labelText="ACESSO LIVRE À GEOINFORMAÇÃO" type="65641" marginX="0" positionLock="false" referencePoint="0" zValue="201" position="0.5,2.22045e-16,mm" background="false" id="geoInfoAcess_label" outlineWidthM="0.3,mm" valign="32" groupUuid="" visibility="1" blendMode="0" opacity="1" uuid="{c3d834e4-3b59-4384-a0df-43199b60f03e}" halign="132" marginY="0" excludeFromExports="0" positionOnPage="0.5,2.22045e-16,mm">
+  <FrameColor red="0" green="0" alpha="255" blue="0"/>
+  <BackgroundColor red="255" green="255" alpha="255" blue="255"/>
   <LayoutObject>
    <dataDefinedProperties>
     <Option type="Map">
-     <Option name="name" value="" type="QString"/>
+     <Option type="QString" name="name" value=""/>
      <Option name="properties"/>
-     <Option name="type" value="collection" type="QString"/>
+     <Option type="QString" name="type" value="collection"/>
     </Option>
    </dataDefinedProperties>
    <customproperties>
@@ -218,12 +218,12 @@
    </customproperties>
   </LayoutObject>
   <LabelFont style="" description="Arial,10,-1,5,75,0,0,0,0,0"/>
-  <FontColor green="0" blue="0" alpha="255" red="0"/>
+  <FontColor red="0" green="0" alpha="255" blue="0"/>
  </LayoutItem>
  <customproperties>
   <Option type="Map">
-   <Option name="atlasRasterFormat" value="png" type="QString"/>
+   <Option type="QString" name="atlasRasterFormat" value="png"/>
   </Option>
  </customproperties>
- <Atlas enabled="0" sortFeatures="0" filenamePattern="'output_'||@atlas_featurenumber" filterFeatures="0" pageNameExpression="" coverageLayer="" hideCoverage="0"/>
+ <Atlas sortFeatures="0" filenamePattern="'output_'||@atlas_featurenumber" enabled="0" hideCoverage="0" pageNameExpression="" coverageLayer="" filterFeatures="0"/>
 </Layout>
