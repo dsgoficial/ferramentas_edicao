@@ -180,7 +180,7 @@ class MapTools:
     def exportMap(self, composition):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
-        if False:
+        if True:
             pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
             pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
             pdfExporterSettings.rasterizeWholeImage = True

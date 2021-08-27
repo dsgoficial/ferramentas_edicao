@@ -250,7 +250,7 @@ class DefaultMap(MapManager):
                     manager.addLayout(composition)
                     # self.setupMasks(strProductType)
                 self.exportMap(composition)
-                # QgsProject.instance().removeMapLayers(ids_maplayer)
+                QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso
         if self.dlgCfg.exportTiff:
             self.reprojectTiffs()
@@ -259,4 +259,4 @@ class DefaultMap(MapManager):
         self.mc.setProjectProjection(oldProjValue)
 
         self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
-        # self.cleanLayerTreeRoot()
+        self.cleanLayerTreeRoot()
