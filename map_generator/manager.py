@@ -70,7 +70,6 @@ class DefaultMap(MapManager):
 
         # Print Layout para o produto
         composition = compositionDict[escala]
-        self.htmlData.setComposition(composition)
 
         # Camadas para o produto
         productLayerDictPath = Path(__file__).parent / 'produtos' / productTypeStrC / 'camadas.json'        

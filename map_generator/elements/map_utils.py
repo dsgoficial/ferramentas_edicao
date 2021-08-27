@@ -60,9 +60,6 @@ class MapParent:
             composition.setCustomProperty('variableNames', [defaultKey, commonPathPropertyKey])
             composition.setCustomProperty('variableValues', [newValue, commonPathPropertyValue])
 
-    def setComposition(self, composition):
-        self.composition = composition
-
     def loadShapeLayer(self, pathShp, pathStyle, lyrName):
         if Path(pathShp).is_file():
             layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')

@@ -150,7 +150,7 @@ class MapManager(MapTools):
 
 		# Region label
 		if composition.itemById("label_regiao") is not None:
-			self.subtitulo.make(composition, map_extent_feature)
+			self.subtitulo.make(composition, map_extent_feature, jsonData.get('territorio_internacional'))
 
 		# Generating qrcode
 		if jsonData.get('acesso_restrito'):

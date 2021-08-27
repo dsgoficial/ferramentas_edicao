@@ -1,20 +1,17 @@
 from pathlib import Path
+
+from qgis.core import QgsFeatureRequest
+
 from ..elements.map_utils import MapParent
+
 
 class Subtitulo(MapParent):
     def __init__(self):		
         pass
 
-    def setComposition(self, composition):
-        self.composition = composition
-
-    def setScale(self, scale):
-        self.scale = scale    
-
     def replaceLabel(self, composition, regionsIntersected, isInternational):				
-        label = composition.itemById("label_regiao")
         regionsIntersected = [regiao.upper() for regiao in regionsIntersected]
-        if label:
+        if label := composition.itemById("label_regiao"):
             if isInternational:
                 labelText = ' E '.join(regionsIntersected)
             else:
@@ -32,33 +29,29 @@ class Subtitulo(MapParent):
             label.setText(labelText)
             label.refresh()
 
-    def getIntersections(self, selectedFeature, lyrStates, lyrCountries=None):
+    def getIntersections(self, mapArea, layer, isInternational):
         '''
-        Checks existence of internacional intersections. 
-        Otherwise, checks intersections between selectedFeature and states.
+        Checks intersections between mapArea and states or countries based on key isInternational. 
         '''
         intersections = set()
-        for feat in lyrCountries.getFeatures():
-            if selectedFeature.geometry().intersects(feat.geometry()):
-                intersections.add(feat['nome'])
-        if len(intersections) == 1 and next(iter(intersections)) == 'Brasil':
-            intersections.pop()
-            for feat in lyrStates.getFeatures():
-                if selectedFeature.geometry().intersects(feat.geometry()):
-                    intersections.add(feat['REGIAO'])
-            return intersections, False
+        request = QgsFeatureRequest().setFilterRect(mapArea.geometry().boundingBox())
+        for feat in layer.getFeatures(request):
+            if isInternational:
+                if name:= feat.attribute('nome'):
+                    intersections.add(name)
+            else:
+                if name:= feat.attribute('REGIAO'):
+                    intersections.add(feat.attribute('REGIAO'))
+        return intersections
+
+
+    def make(self, composition, mapArea, isInternational):
+        if isInternational:
+            pathShpCountries = Path(__file__).parent.parent / 'limites' / '2020' / 'Paises_2020.shp'
+            layer = self.loadShapeLayer(pathShpCountries, '', 'paises')
         else:
-            return intersections, True
+            pathShpStates = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
+            layer = self.loadShapeLayer(pathShpStates, '', 'estados')
 
-
-    def make(self, composition, selected_feature):
-        pathShpStates = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
-        shpStates = self.loadShapeLayer(pathShpStates, '', 'estados')        
-        
-        pathShpCountries = Path(__file__).parent.parent / 'limites' / '2020' / 'Paises_2020.shp'
-        shpCountries = self.loadShapeLayer(pathShpCountries, '', 'paises')
-
-        # Se intersecta
-
-        regionsIntersected, isInternational = self.getIntersections(selected_feature, shpStates, shpCountries)
+        regionsIntersected = self.getIntersections(mapArea, layer, isInternational)
         self.replaceLabel(composition, regionsIntersected, isInternational)

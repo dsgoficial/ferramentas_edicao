@@ -14,9 +14,6 @@ class HandleAngles:
         self.iface = iface
         self.auxiliar = Auxiliar(iface)
 
-    def setComposition(self, composition):
-        self.composition = composition
-
     def make(self, composition, selected_feature):
         point = None
 

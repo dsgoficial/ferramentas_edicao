@@ -2,7 +2,6 @@ import datetime
 import os
 import xml.etree.ElementTree as et
 from pathlib import Path
-from qgis.core import QgsFeatureRequest
 
 from .map_utils import MapParent, copyQptToCompositor
 
@@ -37,9 +36,6 @@ curvas = {
 class HtmlData(MapParent):
     def __init__(self):
         pass
-
-    def setComposition(self, composition):
-        self.composition = composition
 
     def editQpts(self, composition, qptDicts):
         for qptDict in qptDicts:
