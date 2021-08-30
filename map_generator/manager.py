@@ -232,8 +232,7 @@ class DefaultMap(MapManager):
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
                 oldQptsPaths = self.editComposition(jsonData, compositionDict, strProductType, oldQptsPaths) if 'oldQptsPaths' in locals() \
                     else self.editComposition(jsonData, compositionDict, strProductType, ['','',''])
-                connectionSucess, connectedUri = self.getDBConnection(jsonData['banco'], connectedUri) if 'connectedUri' in locals() \
-                    else self.getDBConnection(jsonData['banco'])
+                connectedUri = self.getDBConnection(jsonData['banco'], self.dlgCfg.username, self.dlgCfg.password)
                 # Set config for html labels
                 composition, inomen, layers = self.setCartaConfig(
                     jsonData, connectedUri, compositionDict, feature_map_extent)
@@ -248,9 +247,9 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    # self.setupMasks(strProductType)
+                    self.setupMasks(strProductType)
                 self.exportMap(composition)
-                QgsProject.instance().removeMapLayers(ids_maplayer)
+                # QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso
         if self.dlgCfg.exportTiff:
             self.reprojectTiffs()
@@ -259,4 +258,4 @@ class DefaultMap(MapManager):
         self.mc.setProjectProjection(oldProjValue)
 
         # self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
-        self.cleanLayerTreeRoot()
+        # self.cleanLayerTreeRoot()

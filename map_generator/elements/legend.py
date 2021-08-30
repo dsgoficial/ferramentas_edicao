@@ -75,10 +75,10 @@ class Legend():
             y += ySpacing if changeColumn else 2*ySpacing
             changeColumn = True
 
-    def groupLegend(self, classes):
+    def groupLegend(self, classes, legendMappingData):
         groupedClasses = dict()
         for _cls in classes:
-            _groupInfo = self.legendMappingData.get(_cls)
+            _groupInfo = legendMappingData.get(_cls)
             if _groupInfo is None:
                 continue
             group = _groupInfo.get("group")
@@ -105,9 +105,9 @@ class Legend():
         return doc
 
     def make(self, composition, scale, cfg, defaults):
-        self.legendMappingData = self.legendMappingData.get(str(scale))
+        legendMappingData = self.legendMappingData.get(str(scale))
         legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(cfg)))
-        legendClassesGrouped = self.groupLegend(legendClassesToDisplay)
+        legendClassesGrouped = self.groupLegend(legendClassesToDisplay, legendMappingData)
         legendClassesOrdered = self.orderLegend(legendClassesGrouped)
         self.buildLegend(composition, legendClassesOrdered)
             

@@ -3,6 +3,7 @@ from collections import namedtuple
 import json
 import os
 from pathlib import Path
+from re import U
 import subprocess
 import argparse
 
@@ -21,6 +22,7 @@ class MapTools:
     def __init__(self, dlg):
         self.dlg = dlg
         self.utm_grid = UtmGrid()
+        self.conn = None
 
     def readJsonFromPath(self, path_json):
         with codecs.open(path_json, 'r', 'utf-8-sig') as json_file:
@@ -117,29 +119,20 @@ class MapTools:
             connectedUri, list_dict_minimaptables, "miniMap",   tipo_produto, escala)
         return map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db
 
-    def getDBConnection(self, connectionDict, oldUri=None):
-        if not connectionDict:
-            return False, None
-
+    def getDBConnection(self, connectionDict, user, passwd):
         host = connectionDict.get('servidor')
         port = connectionDict.get('porta')
-        db_name = connectionDict.get('nome')
-
-        if oldUri and oldUri.host() == host and oldUri.port() == port and oldUri.database() == db_name:
-            return True, oldUri
-
-        uri = QgsDataSourceUri()
-        uri.setConnection(host, port, db_name, None, None)
-        connInfo = uri.connectionInfo()
-        instance = QgsCredentials.instance()
-        success, user, passwd = instance.get(connInfo, None, None)
-        if success:
-            uri.setUsername(user)
-            uri.setPassword(passwd)
-            instance.put(connInfo, user, passwd)
-            return success, uri
+        dbName = connectionDict.get('nome')
+        if self.conn and self.conn.host() == host and self.conn.port == port and self.conn.database() == dbName:
+            return self.conn
         else:
-            return success, None
+            uri = QgsDataSourceUri()
+            uri.setConnection(host, port, dbName, user, passwd)
+            connInfo = uri.connectionInfo()
+            instance = QgsCredentials.instance()
+            instance.put(connInfo, user, passwd)
+            self.conn = uri
+            return self.conn
 
     def getLayerFromPostgres(self, connectedUri, layerDict, group):
         schema = layerDict['schema']
@@ -259,12 +252,14 @@ class MapTools:
                 return pathObj
 
     def getDlgCfg(self, dlg):
-        _dlgCfg = namedtuple('dlgCfg', ['productType','jsonFilesPaths','exportFolder','exportTiff'])
+        _dlgCfg = namedtuple('dlgCfg', ['productType','jsonFilesPaths','exportFolder', 'username', 'password','exportTiff'])
         if isinstance(dlg, QDialog):
             dlgCfg = _dlgCfg(
                 dlg.productType.currentText(),
                 dlg.jsonConfigs.splitFilePaths(dlg.jsonConfigs.filePath()),
                 Path(dlg.exportFolder.filePath()),
+                dlg.username.text(),
+                dlg.password.text(),
                 dlg.checkBoxExportGeotiff.isChecked()
             )
         elif isinstance(dlg, argparse.Namespace):
@@ -272,6 +267,8 @@ class MapTools:
                 dlg.tipo,
                 [Path(x) for x in dlg.json],
                 Path(dlg.exportFolder),
+                dlg.username,
+                dlg.password,
                 dlg.exportTiff
             )
         return dlgCfg
