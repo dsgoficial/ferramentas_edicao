@@ -204,12 +204,7 @@ class DefaultMap(MapManager):
 
         # Get dlgCfg
         self.dlgCfg = self.getDlgCfg(self.dlg)
-
-        # Getting product type from ui
-        productType = self.dlgCfg.productType
-        strProductType = '_'.join(productType.lower().split(' '))
-        if productType == 'Carta Topográfica':
-            strProductType = 'carta_topografica'
+        strProductType, productType = self.getProductType(self.dlg.productType)
 
         # Refreshing layout
         if showLayers:

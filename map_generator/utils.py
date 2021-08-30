@@ -252,6 +252,8 @@ class MapTools:
                 return pathObj
 
     def getDlgCfg(self, dlg):
+        '''Organizes the configuration according to its origin (dialog or headless).
+        '''
         _dlgCfg = namedtuple('dlgCfg', ['productType','jsonFilesPaths','exportFolder', 'username', 'password','exportTiff'])
         if isinstance(dlg, QDialog):
             dlgCfg = _dlgCfg(
@@ -272,6 +274,15 @@ class MapTools:
                 dlg.exportTiff
             )
         return dlgCfg
+
+    @staticmethod
+    def getProductType(productType):
+        '''Gets the product type and its string representation
+        '''
+        if productType == 'carta_ortoimagem':
+            return productType, 'Carta Ortoimagem'
+        elif productType == 'carta_topografica':
+            return productType, 'Carta Topográfica'
 
     def filterLayers(self, mapLayers, miniMapLayers, jsonData, defaults):
         '''Filters displayed classes by merging mandatory layers from managerConfig and desired classes from json file.
