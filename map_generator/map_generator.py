@@ -19,8 +19,8 @@ from .elements.qrcode_picture import create_qrcode_from_feature, replace_qrCode
 from .utils import MapTools
 
 class MapManager(MapTools):
-	def __init__(self, iface, dlg, GLC):
-		super().__init__(iface, dlg)
+	def __init__(self, dlg, GLC):
+		super().__init__(dlg)
 		self.mc = MapParent()
 		self.GLC = GLC
 		self.map_height = 570-15*2 # milimiters
@@ -48,7 +48,7 @@ class MapManager(MapTools):
 		# Articulação		
 		self.articulacao = Articulation()
 		# Diagrama de convergência e declinação
-		self.handle_angles = HandleAngles(self.iface)				
+		self.handle_angles = HandleAngles()				
 		# Dados de info tecnica e orto
 		self.htmlData = HtmlData()
 		# Dados de escala

@@ -1,15 +1,13 @@
-# -*- coding: UTF-8 -*-
-#from qgis.core import *
 import math
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import (
+    QgsDistanceArea, QgsCoordinateReferenceSystem, QgsCoordinateTransform,
+    QgsPoint, QgsProject) 
 
-class Auxiliar(object):
+class Auxiliar:
     
-    def __init__(self, iface):
-        super(Auxiliar, self).__init__()
-        self.iface = iface
-        
+    def __init__(self):
+        pass
+
     def calculateKappa(self, point):
         """Calculates the linear deformation factor (Kappa) for UTM projections
         """
@@ -63,7 +61,7 @@ class Auxiliar(object):
         """Obtains the semi major axis and semi minor axis from the used ellipsoid
         """
         distanceArea = QgsDistanceArea()
-        distanceArea.setEllipsoid(self.iface.mapCanvas().mapSettings().destinationCrs().ellipsoidAcronym())
+        distanceArea.setEllipsoid(QgsProject.instance().crs().ellipsoidAcronym())
         a = distanceArea.ellipsoidSemiMajor()
         b = distanceArea.ellipsoidSemiMinor()
         
@@ -72,25 +70,19 @@ class Auxiliar(object):
     def getPlanarCoordinates(self, lon, lat):
         """Transform the geographic coordinates to projected coordinates
         """
-        crsDest = self.iface.mapCanvas().mapSettings().destinationCrs()
+        crsDest = QgsProject.instance().crs()
         crsSrc = QgsCoordinateReferenceSystem(crsDest.geographicCRSAuthId())
-        
         coordinateTransformer = QgsCoordinateTransform(crsSrc, crsDest)
-        
         utmPoint = coordinateTransformer.transform(QgsPoint(lon, lat))
-        
         return utmPoint
 
     def getGeographicCoordinates(self, ponto):
         """Transform the planar coordinates to geographic coordinates
         """
-        crsSrc = self.iface.mapCanvas().mapSettings().destinationCrs()
+        crsSrc = QgsProject.instance().crs()
         crsDest = QgsCoordinateReferenceSystem(crsSrc.geographicCRSAuthId())
-
         coordinateTransformer = QgsCoordinateTransform(crsSrc, crsDest)
-
         geoPoint = coordinateTransformer.transform(ponto)
-
         return geoPoint
 
     def getReprojection(self, ponto, crsSrc, crsDest):

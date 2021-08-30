@@ -11,8 +11,8 @@ from .elements.map_index.map_index import UtmGrid
 from .config.managerConfig import product_parameters, Defaults
 
 class DefaultMap(MapManager):
-    def __init__(self, iface, dlg, GLC):
-        super().__init__(iface, dlg, GLC)
+    def __init__(self, dlg, GLC):
+        super().__init__(dlg, GLC)
         self.MapC = MapConnection()
         self.GLC = GLC
         self.map_height = 570-15*2  # milimiters
@@ -258,5 +258,5 @@ class DefaultMap(MapManager):
         # if not showLayers:
         self.mc.setProjectProjection(oldProjValue)
 
-        self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
+        # self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
         self.cleanLayerTreeRoot()

@@ -10,9 +10,8 @@ from .angles.geomag.geomag import GeoMag
 
 
 class HandleAngles:
-    def __init__(self, iface):
-        self.iface = iface
-        self.auxiliar = Auxiliar(iface)
+    def __init__(self):
+        self.auxiliar = Auxiliar()
 
     def make(self, composition, selected_feature):
         point = None
@@ -47,9 +46,8 @@ class HandleAngles:
         declinacao = self.generateDMS(decl)
 
     def getWGSPoint(self, pt):
-        crsSrc = self.iface.mapCanvas().mapSettings().destinationCrs()
+        crsSrc = QgsProject.instance().crs()
         crsDest = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-
         coordinateTransformer = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
         wgsPt = coordinateTransformer.transform(pt)
         return wgsPt

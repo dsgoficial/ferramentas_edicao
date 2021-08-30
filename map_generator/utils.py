@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import argparse
 
 from PyQt5.QtCore import QVariant
 from qgis.PyQt.QtWidgets import QDialog
@@ -17,8 +18,7 @@ from .elements.map_index.map_index import UtmGrid
 
 
 class MapTools:
-    def __init__(self, iface, dlg):
-        self.iface = iface
+    def __init__(self, dlg):
         self.dlg = dlg
         self.utm_grid = UtmGrid()
 
@@ -180,7 +180,7 @@ class MapTools:
     def exportMap(self, composition):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
-        if True:
+        if False:
             pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
             pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
             pdfExporterSettings.rasterizeWholeImage = True
@@ -259,16 +259,21 @@ class MapTools:
                 return pathObj
 
     def getDlgCfg(self, dlg):
+        _dlgCfg = namedtuple('dlgCfg', ['productType','jsonFilesPaths','exportFolder','exportTiff'])
         if isinstance(dlg, QDialog):
-            _dlgCfg = namedtuple('dlgCfg', ['productType','jsonFilesPaths','exportFolder','exportTiff'])
             dlgCfg = _dlgCfg(
                 dlg.productType.currentText(),
                 dlg.jsonConfigs.splitFilePaths(dlg.jsonConfigs.filePath()),
                 Path(dlg.exportFolder.filePath()),
                 dlg.checkBoxExportGeotiff.isChecked()
             )
-        else:
-            pass
+        elif isinstance(dlg, argparse.Namespace):
+            dlgCfg = _dlgCfg(
+                dlg.tipo,
+                [Path(x) for x in dlg.json],
+                Path(dlg.exportFolder),
+                dlg.exportTiff
+            )
         return dlgCfg
 
     def filterLayers(self, mapLayers, miniMapLayers, jsonData, defaults):

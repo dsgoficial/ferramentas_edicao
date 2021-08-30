@@ -162,7 +162,7 @@ class EditionPlugin:
             pass
 
     def connectingButtons(self):
-        self.defaultMap = DefaultMap(self.iface, self.dlg, self.GLC)
+        self.defaultMap = DefaultMap(self.dlg, self.GLC)
         self.dlg.pushButton_gerar_cartas.clicked.connect(self.defaultMap.createMaps)
 
     def setTestData(self):        
