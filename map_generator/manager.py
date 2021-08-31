@@ -204,7 +204,7 @@ class DefaultMap(MapManager):
 
         # Get dlgCfg
         self.dlgCfg = self.getDlgCfg(self.dlg)
-        strProductType, productType = self.getProductType(self.dlg.productType)
+        strProductType, productType = self.getProductType(self.dlgCfg.productType)
 
         # Refreshing layout
         if showLayers:

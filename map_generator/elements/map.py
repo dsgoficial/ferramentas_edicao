@@ -45,9 +45,8 @@ class Map(MapParent):
         # Adiciona uma feição com o mesmo contorno da moldura
         geom = selected_feature.geometry()
         convexhull = geom.convexHull()
-        crsSrc = QgsCoordinateReferenceSystem(4326)    # WGS 84
-        self.crs_moldura = QgsCoordinateReferenceSystem(
-            int(self.epsg), QgsCoordinateReferenceSystem.EpsgCrsId)  # WGS 84 / UTM zone 33N
+        crsSrc = QgsCoordinateReferenceSystem('EPSG:4326')    # WGS 84
+        self.crs_moldura = QgsCoordinateReferenceSystem(f'EPSG:{self.epsg}')  # WGS 84 / UTM zone 33N
         self.geom_transformation = QgsCoordinateTransform(
             crsSrc, self.crs_moldura, QgsProject.instance())
         convexhull.transform(self.geom_transformation)

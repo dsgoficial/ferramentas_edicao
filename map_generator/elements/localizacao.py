@@ -278,8 +278,7 @@ class Localizacao(MapParent):
         if mapItem is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
-            mapItem.setCrs(QgsCoordinateReferenceSystem(
-                4326, QgsCoordinateReferenceSystem.EpsgCrsId))
+            mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
             mapItem.setExtent(bound)
             mapItem.refresh()
             mapItem.setLayers([stateLayerForeground, mapAreaLayer, stateLayer])

@@ -21,16 +21,10 @@ class Divisao(MapParent):
         self.itemname_tableMunicipios = 'label_divisao_municipios'
         self.maxCountiesToDisplay = 27
         self.styleFolder = Path(__file__).parent.parent / 'styles' / 'divisao'
-        self.setVariables()
-
-    def setVariables(self):
-        self.file_basehtmltable = 'divisao.html'
         self.n_maxlines = 6
-        # 2020
         self.nameAttribute = 'NOME'
         self.countyAttribute = 'SIGLA_UF'
         self.countryAttribute = 'SIGLA_PAIS'
-        #self.itemname_tableMunicipios = 'label_divisao_municipios'
 
     def make(self, composition, mapArea, showLayers=False, isInternational=False):
         # Deletando as variaveis
@@ -141,9 +135,8 @@ class Divisao(MapParent):
         maxRadiusPerMapArea = 2300
         outerExtentsArea = math.sqrt(outerExtentsGeometry.area())
         intersectionGeometry = countyFeature.geometry().intersection(outerExtentsGeometry)
-        crsSrc = QgsCoordinateReferenceSystem(4326)  # WGS 84
-        crsExtents = QgsCoordinateReferenceSystem(
-            int(self.epsg), QgsCoordinateReferenceSystem.EpsgCrsId)  # WGS 84 / UTM
+        crsSrc = QgsCoordinateReferenceSystem('EPSG:4326')  # WGS 84
+        crsExtents = QgsCoordinateReferenceSystem(f'EPSG:{self.epsg}')
         transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
         intersectionGeometry.transform(transform)
         _, radius = intersectionGeometry.poleOfInaccessibility(10)
@@ -249,49 +242,39 @@ class Divisao(MapParent):
         else:
             return False
 
-    def customcreateHtmlTableData(self, sorted_municipios):
-        n_municipios = len(sorted_municipios)
-        n_columns = math.ceil(n_municipios/self.n_maxlines)
-        if n_columns == 0:
-            n_columns = 1
+    def customcreateHtmlTableData(self, sortedCounties):
+        nCounties = len(sortedCounties)
+        nColumns = math.ceil(nCounties/self.n_maxlines)
+        nColumns = 1 if nColumns == 0 else nColumns
+        htmlTablePath = Path(__file__).parent.parent / 'html_auto' / 'divisao.html'
+        with open(htmlTablePath, "r") as f:
+            baseHtml = f.read()
+        fontSize = '0.6'
+        if 6 < nCounties < 13:
+            fontSize = '0.55'
+        elif 12 < nCounties:
+            fontSize = '0.50'
 
-        step = math.ceil(n_municipios/n_columns)
-        txt_file = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                'html_auto', self.file_basehtmltable)
-        #filepath = os.path.join(folder, filer)
-        f = open(txt_file, "r")
-        base_html = f.read()
-        font_size = '0.6'
-        if 6 < n_municipios < 13:
-            font_size = '0.55'
-        elif 12 < n_municipios:
-            font_size = '0.50'
+        nColumns, nColumn1, nColumn2, nColumn3 = self.getNColums(nCounties)
 
-        n_columns, n_column1, n_column2, n_column3 = self.getNColums(n_municipios)
-
-        # baserows_str = '<tr> {}</tr>'
-        # baserows_str = '<tr> {}</tr>'
         baserows_str = '<tr {style}> {}</tr>'
-        style_str = 'style="width: {value}%;"'.replace('{value}', str(round(100/n_columns, 2)))
+        style_str = 'style="width: {value}%;"'.replace('{value}', str(round(100/nColumns, 2)))
         baserows_str = baserows_str.replace('{style}', style_str)
-        # 'style="width: 50%;"'
         basecolumn_str = '<td class = "mid" >{}</td>'
 
-        tablerow_columns = []
-        tablerows_list = []
-        for municipio_index, municipio in enumerate(sorted_municipios):
+        tableColumns = []
+        tableRows = []
+        for municipio_index, municipio in enumerate(sortedCounties):
             n_municipio = municipio_index + 1
             cell_str = f'{n_municipio} - {municipio.upper()}'
-            tablerow_column = basecolumn_str.format(cell_str)
-            tablerow_columns.append(tablerow_column)
-            if self.goNextColumn(municipio_index, n_column1, n_column2, n_column3):
-                tablerow = baserows_str.format('\n'.join(tablerow_columns))
-                tablerows_list.append(tablerow)
-                tablerow_columns = []
-
-        table_content = '\n'.join(tablerows_list)
-
-        edited = base_html.format(font_size=font_size, table_data=table_content)
+            tableColumn = basecolumn_str.format(cell_str)
+            tableColumns.append(tableColumn)
+            if self.goNextColumn(municipio_index, nColumn1, nColumn2, nColumn3):
+                tablerow = baserows_str.format('\n'.join(tableColumns))
+                tableRows.append(tablerow)
+                tableColumns = []
+        tableContent = '\n'.join(tableRows)
+        edited = baseHtml.format(font_size=fontSize, table_data=tableContent)
         return edited
 
     def setMunicipiosTable(self, composition,  html_tabledata):

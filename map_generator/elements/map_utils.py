@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from PyQt5.QtCore import QPoint, QSettings
+from PyQt5.QtCore import QPointF, QSettings
 from PyQt5.QtXml import QDomDocument
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
                        QgsLayout, QgsLayoutItem, QgsLayoutPoint,
@@ -82,8 +82,8 @@ class MapParent:
             epsg = dictImage.get('epsg')
             if rasterLayer:= self.createLayerRaster(rasterPath, stylePath):
                 if epsg:
-                    rasterLayer.setCrs(QgsCoordinateReferenceSystem(
-                        int(epsg), QgsCoordinateReferenceSystem.EpsgCrsId))
+                    epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
+                    rasterLayer.setCrs(epsgId)
                 imageLayers.insert(0, (rasterLayer))
                 imageLayersIDs.insert(0, (rasterLayer.id()))
                 QgsProject.instance().addMapLayer(rasterLayer, False)
@@ -107,8 +107,7 @@ class MapParent:
     def getRasterLayerByType(self, rasterUri):
         if 'type=xyz' in rasterUri:
             expression = re.compile(r'type=xyz&url=https?:\/\/(.+?)&zmax=\d{1,2}&zmin=\d{1,2}')
-            found = expression.findall(rasterUri)
-            if found:
+            if found := expression.findall(rasterUri):
                 return QgsRasterLayer(rasterUri, found[0], 'wms')
         else:
             rasterPath = Path(rasterUri)
@@ -188,7 +187,7 @@ def cloneItem(item, composition_dest, x_0, y_0):
     item.writeXml(element, doc, context)
 
     # Add doc xml
-    composition_dest.addItemsFromXml(element, doc, context, QPoint(final_x, final_y))
+    composition_dest.addItemsFromXml(element, doc, context, QPointF(final_x, final_y))
     composition_dest.itemById(item.id()).attemptMove(QgsLayoutPoint(final_x, final_y))
     composition_dest.itemById(item.id()).refresh()
     item.setReferencePoint(ref_point)

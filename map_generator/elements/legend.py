@@ -3,7 +3,7 @@ from pathlib import Path
 from collections import OrderedDict
 
 from PyQt5.QtXml import QDomDocument
-from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QPointF
 from qgis.core import QgsReadWriteContext
 
 class Legend():
@@ -59,13 +59,13 @@ class Legend():
         changeColumn = True
         context = QgsReadWriteContext()
         for group, labels in legendDict.items():
-            position = QPoint(x,y)
+            position = QPointF(x,y)
             domGroup = self.loadQDomComponent(self.qptsPath / f'group_{group}.qpt')
             composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
             y += 1.5*ySpacing
             for label in labels:
                 x += xSpacingFirstColumn
-                position = QPoint(x,y)
+                position = QPointF(x,y)
                 domGroup = self.loadQDomComponent(self.qptsPath / f'{label}.qpt')
                 composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
                 x = xAnchor + xSpacing if changeColumn else xAnchor

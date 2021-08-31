@@ -35,19 +35,11 @@ class HandleAngles:
         yearlydelta_declination = decl_yearago.dec-decl_today.dec
         #decl = geomag.declination(wgsPoint.y(), wgsPoint.x())
 
-        # self.setConvergencia(convergencia)
-        # self.setDeclinacao(decl_today.dec)
         self.replaceData(composition, convergencia, decl_today.dec, yearlydelta_declination)
-
-    def setConvergencia(self, conv):
-        convergencia = self.generateDMS(conv)
-
-    def setDeclinacao(self, decl):
-        declinacao = self.generateDMS(decl)
 
     def getWGSPoint(self, pt):
         crsSrc = QgsProject.instance().crs()
-        crsDest = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        crsDest = QgsCoordinateReferenceSystem('EPSG:4326')
         coordinateTransformer = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
         wgsPt = coordinateTransformer.transform(pt)
         return wgsPt

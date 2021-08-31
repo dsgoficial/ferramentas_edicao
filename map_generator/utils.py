@@ -254,9 +254,10 @@ class MapTools:
     def getDlgCfg(self, dlg):
         '''Organizes the configuration according to its origin (dialog or headless).
         '''
-        _dlgCfg = namedtuple('dlgCfg', ['productType','jsonFilesPaths','exportFolder', 'username', 'password','exportTiff'])
+        _dlgCfg = namedtuple('dlgCfg', ['isntance','productType','jsonFilesPaths','exportFolder', 'username', 'password','exportTiff'])
         if isinstance(dlg, QDialog):
             dlgCfg = _dlgCfg(
+                'qgis',
                 dlg.productType.currentText(),
                 dlg.jsonConfigs.splitFilePaths(dlg.jsonConfigs.filePath()),
                 Path(dlg.exportFolder.filePath()),
@@ -266,6 +267,7 @@ class MapTools:
             )
         elif isinstance(dlg, argparse.Namespace):
             dlgCfg = _dlgCfg(
+                'headless',
                 dlg.tipo,
                 [Path(x) for x in dlg.json],
                 Path(dlg.exportFolder),
@@ -281,8 +283,12 @@ class MapTools:
         '''
         if productType == 'carta_ortoimagem':
             return productType, 'Carta Ortoimagem'
+        elif productType == 'Carta Ortoimagem':
+            return 'carta_ortoimagem', productType
         elif productType == 'carta_topografica':
             return productType, 'Carta Topográfica'
+        elif productType == 'Carta Topográfica':
+            return 'carta_topografica', productType
 
     def filterLayers(self, mapLayers, miniMapLayers, jsonData, defaults):
         '''Filters displayed classes by merging mandatory layers from managerConfig and desired classes from json file.

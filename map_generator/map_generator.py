@@ -107,7 +107,7 @@ class MapManager(MapTools):
 			
 		ids_maplayers.append(layer_feature_map_extent.id()) # Add layer feature map extent to remove after
 
-		QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(4326,QgsCoordinateReferenceSystem.EpsgCrsId))			
+		QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))			
 		if composition.itemById("the_map") is not None:
 			ids_maplayers.extend(self.createMap(composition, layer_feature_map_extent, map_extent_feature, layers, showLayers))
 
