@@ -13,7 +13,7 @@
 </temporal>
 <renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" enableorderby="0">
 <symbols>
-<symbol force_rhr="0" type="fill" alpha="1" name="0" clip_to_extent="1">
+<symbol force_rhr="0" type="marker" alpha="1" name="0" clip_to_extent="1">
 <data_defined_properties>
 <Option type="Map">
 <Option type="QString" name="name" value=""/>
@@ -21,31 +21,47 @@
 <Option type="QString" name="type" value="collection"/>
 </Option>
 </data_defined_properties>
-<layer enabled="1" locked="0" pass="0" class="SimpleFill">
+<layer enabled="1" locked="0" pass="0" class="SimpleMarker">
 <Option type="Map">
-<Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="color" value="225,89,137,255"/>
+<Option type="QString" name="angle" value="0"/>
+<Option type="QString" name="cap_style" value="square"/>
+<Option type="QString" name="color" value="243,166,178,0"/>
+<Option type="QString" name="horizontal_anchor_point" value="1"/>
 <Option type="QString" name="joinstyle" value="bevel"/>
+<Option type="QString" name="name" value="circle"/>
 <Option type="QString" name="offset" value="0,0"/>
 <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
 <Option type="QString" name="offset_unit" value="MM"/>
 <Option type="QString" name="outline_color" value="35,35,35,255"/>
 <Option type="QString" name="outline_style" value="no"/>
-<Option type="QString" name="outline_width" value="0.26"/>
+<Option type="QString" name="outline_width" value="0"/>
+<Option type="QString" name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
 <Option type="QString" name="outline_width_unit" value="MM"/>
-<Option type="QString" name="style" value="no"/>
+<Option type="QString" name="scale_method" value="diameter"/>
+<Option type="QString" name="size" value="2"/>
+<Option type="QString" name="size_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+<Option type="QString" name="size_unit" value="MM"/>
+<Option type="QString" name="vertical_anchor_point" value="1"/>
 </Option>
-<prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
-<prop v="225,89,137,255" k="color"/>
+<prop v="0" k="angle"/>
+<prop v="square" k="cap_style"/>
+<prop v="243,166,178,0" k="color"/>
+<prop v="1" k="horizontal_anchor_point"/>
 <prop v="bevel" k="joinstyle"/>
+<prop v="circle" k="name"/>
 <prop v="0,0" k="offset"/>
 <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
 <prop v="MM" k="offset_unit"/>
 <prop v="35,35,35,255" k="outline_color"/>
 <prop v="no" k="outline_style"/>
-<prop v="0.26" k="outline_width"/>
+<prop v="0" k="outline_width"/>
+<prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
 <prop v="MM" k="outline_width_unit"/>
-<prop v="no" k="style"/>
+<prop v="diameter" k="scale_method"/>
+<prop v="2" k="size"/>
+<prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+<prop v="MM" k="size_unit"/>
+<prop v="1" k="vertical_anchor_point"/>
 <data_defined_properties>
 <Option type="Map">
 <Option type="QString" name="name" value=""/>
@@ -60,163 +76,12 @@
 <sizescale/>
 </renderer-v2>
 <labeling type="rule-based">
-<rules key="{864999fc-37a6-42d4-abd1-1df89644cb20}">
-<rule key="{98e8add6-c7d7-4800-84b4-f3e5f10b9bd5}" filter=" &quot;tipo&quot; in (4,5,7,6,3,11) and &quot;rotular_carta_mini&quot; = 1">
+<rules key="{b7e360ab-1085-44ee-8601-42d3eec19a5a}">
+<rule key="{d7f18fc3-a273-442c-a884-bdab08dcbdd1}" description="Toponimo Fisiografico P" filter=" &quot;rotular_carta_mini&quot; = 1">
 <settings calloutType="simple">
-<text-style namedStyle="Condensed Italic" fontFamily="Noto Sans" textOrientation="horizontal" fieldName="texto_edicao" fontItalic="1" textColor="255,255,255,255" fontStrikeout="0" textOpacity="1" fontLetterSpacing="0.15625" multilineHeight="1" allowHtml="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" previewBkgrdColor="255,255,255,255" fontWeight="50" legendString="Aa" capitalization="1" fontUnderline="0" blendMode="0" fontWordSpacing="0.09375" useSubstitutions="0" isExpression="0" fontSizeUnit="Point" fontKerning="1" fontSize="6">
+<text-style namedStyle="Italic" fontFamily="Noto Sans" textOrientation="horizontal" fieldName="texto_edicao" fontItalic="1" textColor="255,255,255,255" fontStrikeout="0" textOpacity="1" fontLetterSpacing="0" multilineHeight="1" allowHtml="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" previewBkgrdColor="255,255,255,255" fontWeight="50" legendString="Aa" capitalization="0" fontUnderline="0" blendMode="0" fontWordSpacing="0" useSubstitutions="0" isExpression="0" fontSizeUnit="Point" fontKerning="1" fontSize="16">
 <families/>
-<text-buffer bufferJoinStyle="128" bufferBlendMode="0" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="0,160,223,255" bufferNoFill="0" bufferOpacity="1" bufferDraw="1" bufferSize="1" bufferSizeUnits="Point">
-<effect enabled="0" type="effectStack">
-<effect type="dropShadow">
-<Option type="Map">
-<Option type="QString" name="blend_mode" value="13"/>
-<Option type="QString" name="blur_level" value="2.645"/>
-<Option type="QString" name="blur_unit" value="MM"/>
-<Option type="QString" name="blur_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="color" value="0,0,0,255"/>
-<Option type="QString" name="draw_mode" value="2"/>
-<Option type="QString" name="enabled" value="0"/>
-<Option type="QString" name="offset_angle" value="135"/>
-<Option type="QString" name="offset_distance" value="2"/>
-<Option type="QString" name="offset_unit" value="MM"/>
-<Option type="QString" name="offset_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="opacity" value="1"/>
-</Option>
-<prop v="13" k="blend_mode"/>
-<prop v="2.645" k="blur_level"/>
-<prop v="MM" k="blur_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="blur_unit_scale"/>
-<prop v="0,0,0,255" k="color"/>
-<prop v="2" k="draw_mode"/>
-<prop v="0" k="enabled"/>
-<prop v="135" k="offset_angle"/>
-<prop v="2" k="offset_distance"/>
-<prop v="MM" k="offset_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="offset_unit_scale"/>
-<prop v="1" k="opacity"/>
-</effect>
-<effect type="outerGlow">
-<Option type="Map">
-<Option type="QString" name="blend_mode" value="0"/>
-<Option type="QString" name="blur_level" value="2.645"/>
-<Option type="QString" name="blur_unit" value="MM"/>
-<Option type="QString" name="blur_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="color1" value="0,0,255,255"/>
-<Option type="QString" name="color2" value="0,255,0,255"/>
-<Option type="QString" name="color_type" value="0"/>
-<Option type="QString" name="discrete" value="0"/>
-<Option type="QString" name="draw_mode" value="2"/>
-<Option type="QString" name="enabled" value="0"/>
-<Option type="QString" name="opacity" value="0.5"/>
-<Option type="QString" name="rampType" value="gradient"/>
-<Option type="QString" name="single_color" value="255,255,255,255"/>
-<Option type="QString" name="spread" value="2"/>
-<Option type="QString" name="spread_unit" value="MM"/>
-<Option type="QString" name="spread_unit_scale" value="3x:0,0,0,0,0,0"/>
-</Option>
-<prop v="0" k="blend_mode"/>
-<prop v="2.645" k="blur_level"/>
-<prop v="MM" k="blur_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="blur_unit_scale"/>
-<prop v="0,0,255,255" k="color1"/>
-<prop v="0,255,0,255" k="color2"/>
-<prop v="0" k="color_type"/>
-<prop v="0" k="discrete"/>
-<prop v="2" k="draw_mode"/>
-<prop v="0" k="enabled"/>
-<prop v="0.5" k="opacity"/>
-<prop v="gradient" k="rampType"/>
-<prop v="255,255,255,255" k="single_color"/>
-<prop v="2" k="spread"/>
-<prop v="MM" k="spread_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="spread_unit_scale"/>
-</effect>
-<effect type="blur">
-<Option type="Map">
-<Option type="QString" name="blend_mode" value="0"/>
-<Option type="QString" name="blur_level" value="10"/>
-<Option type="QString" name="blur_method" value="1"/>
-<Option type="QString" name="blur_unit" value="Pixel"/>
-<Option type="QString" name="blur_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="draw_mode" value="2"/>
-<Option type="QString" name="enabled" value="1"/>
-<Option type="QString" name="opacity" value="1"/>
-</Option>
-<prop v="0" k="blend_mode"/>
-<prop v="10" k="blur_level"/>
-<prop v="1" k="blur_method"/>
-<prop v="Pixel" k="blur_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="blur_unit_scale"/>
-<prop v="2" k="draw_mode"/>
-<prop v="1" k="enabled"/>
-<prop v="1" k="opacity"/>
-</effect>
-<effect type="innerShadow">
-<Option type="Map">
-<Option type="QString" name="blend_mode" value="13"/>
-<Option type="QString" name="blur_level" value="2.645"/>
-<Option type="QString" name="blur_unit" value="MM"/>
-<Option type="QString" name="blur_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="color" value="0,0,0,255"/>
-<Option type="QString" name="draw_mode" value="2"/>
-<Option type="QString" name="enabled" value="0"/>
-<Option type="QString" name="offset_angle" value="135"/>
-<Option type="QString" name="offset_distance" value="2"/>
-<Option type="QString" name="offset_unit" value="MM"/>
-<Option type="QString" name="offset_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="opacity" value="1"/>
-</Option>
-<prop v="13" k="blend_mode"/>
-<prop v="2.645" k="blur_level"/>
-<prop v="MM" k="blur_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="blur_unit_scale"/>
-<prop v="0,0,0,255" k="color"/>
-<prop v="2" k="draw_mode"/>
-<prop v="0" k="enabled"/>
-<prop v="135" k="offset_angle"/>
-<prop v="2" k="offset_distance"/>
-<prop v="MM" k="offset_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="offset_unit_scale"/>
-<prop v="1" k="opacity"/>
-</effect>
-<effect type="innerGlow">
-<Option type="Map">
-<Option type="QString" name="blend_mode" value="0"/>
-<Option type="QString" name="blur_level" value="2.645"/>
-<Option type="QString" name="blur_unit" value="MM"/>
-<Option type="QString" name="blur_unit_scale" value="3x:0,0,0,0,0,0"/>
-<Option type="QString" name="color1" value="0,0,255,255"/>
-<Option type="QString" name="color2" value="0,255,0,255"/>
-<Option type="QString" name="color_type" value="0"/>
-<Option type="QString" name="discrete" value="0"/>
-<Option type="QString" name="draw_mode" value="2"/>
-<Option type="QString" name="enabled" value="0"/>
-<Option type="QString" name="opacity" value="0.5"/>
-<Option type="QString" name="rampType" value="gradient"/>
-<Option type="QString" name="single_color" value="255,255,255,255"/>
-<Option type="QString" name="spread" value="2"/>
-<Option type="QString" name="spread_unit" value="MM"/>
-<Option type="QString" name="spread_unit_scale" value="3x:0,0,0,0,0,0"/>
-</Option>
-<prop v="0" k="blend_mode"/>
-<prop v="2.645" k="blur_level"/>
-<prop v="MM" k="blur_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="blur_unit_scale"/>
-<prop v="0,0,255,255" k="color1"/>
-<prop v="0,255,0,255" k="color2"/>
-<prop v="0" k="color_type"/>
-<prop v="0" k="discrete"/>
-<prop v="2" k="draw_mode"/>
-<prop v="0" k="enabled"/>
-<prop v="0.5" k="opacity"/>
-<prop v="gradient" k="rampType"/>
-<prop v="255,255,255,255" k="single_color"/>
-<prop v="2" k="spread"/>
-<prop v="MM" k="spread_unit"/>
-<prop v="3x:0,0,0,0,0,0" k="spread_unit_scale"/>
-</effect>
-</effect>
-</text-buffer>
+<text-buffer bufferJoinStyle="128" bufferBlendMode="0" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="0,0,0,255" bufferNoFill="1" bufferOpacity="1" bufferDraw="1" bufferSize="1" bufferSizeUnits="Point"/>
 <text-mask maskType="0" maskSizeUnits="MM" maskedSymbolLayers="" maskEnabled="1" maskJoinStyle="128" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSize="0.20000000000000001" maskOpacity="1"/>
 <background shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeRadiiY="0" shapeFillColor="255,255,255,255" shapeOffsetX="0" shapeOffsetUnit="MM" shapeRadiiUnit="MM" shapeOpacity="1" shapeRotation="0" shapeSVGFile="" shapeSizeUnit="MM" shapeRadiiX="0" shapeBorderColor="128,128,128,255" shapeBorderWidth="0" shapeBorderWidthUnit="MM" shapeSizeY="0" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeDraw="0" shapeRotationType="0" shapeSizeType="0" shapeBlendMode="0" shapeOffsetY="0" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeJoinStyle="64" shapeType="0" shapeSizeX="0">
 <symbol force_rhr="0" type="marker" alpha="1" name="markerSymbol" clip_to_extent="1">
@@ -231,7 +96,7 @@
 <Option type="Map">
 <Option type="QString" name="angle" value="0"/>
 <Option type="QString" name="cap_style" value="square"/>
-<Option type="QString" name="color" value="114,155,111,255"/>
+<Option type="QString" name="color" value="183,72,75,255"/>
 <Option type="QString" name="horizontal_anchor_point" value="1"/>
 <Option type="QString" name="joinstyle" value="bevel"/>
 <Option type="QString" name="name" value="circle"/>
@@ -251,7 +116,7 @@
 </Option>
 <prop v="0" k="angle"/>
 <prop v="square" k="cap_style"/>
-<prop v="114,155,111,255" k="color"/>
+<prop v="183,72,75,255" k="color"/>
 <prop v="1" k="horizontal_anchor_point"/>
 <prop v="bevel" k="joinstyle"/>
 <prop v="circle" k="name"/>
@@ -331,8 +196,8 @@
 <substitutions/>
 </text-style>
 <text-format addDirectionSymbol="0" leftDirectionSymbol="&lt;" autoWrapLength="0" decimals="3" plussign="0" rightDirectionSymbol=">" formatNumbers="0" multilineAlign="0" placeDirectionSymbol="0" wrapChar="" useMaxLineLengthForAutoWrap="1" reverseDirectionSymbol="0"/>
-<placement repeatDistance="300" lineAnchorPercent="0.5" geometryGeneratorEnabled="1" geometryGeneratorType="PolygonGeometry" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa; )" rotationAngle="0" placementFlags="14" dist="0.69999999999999996" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" overrunDistance="0" priority="9" repeatDistanceUnits="MM" centroidWhole="0" fitInPolygonOnly="0" centroidInside="0" polygonPlacementFlags="2" maxCurvedCharAngleOut="-30" distUnits="MM" preserveRotation="0" overrunDistanceUnit="MM" offsetType="0" layerType="PolygonGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" quadOffset="4" placement="0" lineAnchorClipping="0" maxCurvedCharAngleIn="30" offsetUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" xOffset="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" yOffset="0" distMapUnitScale="3x:0,0,0,0,0,0"/>
-<rendering labelPerPart="0" maxNumLabels="2" zIndex="0" minFeatureSize="30" obstacleFactor="2" upsidedownLabels="0" fontMaxPixelSize="10000" fontMinPixelSize="3" drawLabels="1" scaleMin="0" displayAll="0" scaleMax="0" limitNumLabels="0" mergeLines="1" scaleVisibility="0" obstacle="0" unplacedVisibility="0" obstacleType="0" fontLimitPixelSize="0"/>
+<placement repeatDistance="0" lineAnchorPercent="0.5" geometryGeneratorEnabled="1" geometryGeneratorType="PointGeometry" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" rotationAngle="0" placementFlags="9" dist="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" overrunDistance="0" priority="5" repeatDistanceUnits="MM" centroidWhole="0" fitInPolygonOnly="0" centroidInside="0" polygonPlacementFlags="2" maxCurvedCharAngleOut="-25" distUnits="MM" preserveRotation="1" overrunDistanceUnit="MM" offsetType="0" layerType="PointGeometry" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" lineAnchorType="0" quadOffset="4" placement="0" lineAnchorClipping="0" maxCurvedCharAngleIn="25" offsetUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" xOffset="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" yOffset="0" distMapUnitScale="3x:0,0,0,0,0,0"/>
+<rendering labelPerPart="0" maxNumLabels="2000" zIndex="0" minFeatureSize="0" obstacleFactor="1" upsidedownLabels="0" fontMaxPixelSize="10000" fontMinPixelSize="3" drawLabels="1" scaleMin="0" displayAll="0" scaleMax="0" limitNumLabels="0" mergeLines="0" scaleVisibility="0" obstacle="1" unplacedVisibility="0" obstacleType="1" fontLimitPixelSize="0"/>
 <dd_properties>
 <Option type="Map">
 <Option type="QString" name="name" value=""/>
@@ -340,6 +205,16 @@
 <Option type="Map" name="AlwaysShow">
 <Option type="bool" name="active" value="true"/>
 <Option type="QString" name="expression" value="&quot;label_x&quot; IS NOT NULL AND  &quot;label_y&quot; IS NOT NULL"/>
+<Option type="int" name="type" value="3"/>
+</Option>
+<Option type="Map" name="FontLetterSpacing">
+<Option type="bool" name="active" value="true"/>
+<Option type="QString" name="expression" value="coalesce(  &quot;espacamento&quot;  , 0)"/>
+<Option type="int" name="type" value="3"/>
+</Option>
+<Option type="Map" name="FontWordSpacing">
+<Option type="bool" name="active" value="true"/>
+<Option type="QString" name="expression" value="coalesce(  &quot;espacamento&quot;  , 0)"/>
 <Option type="int" name="type" value="3"/>
 </Option>
 <Option type="Map" name="MultiLineAlignment">
@@ -357,14 +232,9 @@
 <Option type="QString" name="field" value="label_y"/>
 <Option type="int" name="type" value="2"/>
 </Option>
-<Option type="Map" name="Show">
-<Option type="bool" name="active" value="true"/>
-<Option type="QString" name="expression" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)"/>
-<Option type="int" name="type" value="3"/>
-</Option>
 <Option type="Map" name="Size">
 <Option type="bool" name="active" value="true"/>
-<Option type="QString" name="expression" value="coalesce(&quot;tamanho_txt&quot;, 7)"/>
+<Option type="QString" name="expression" value="&quot;tamanho_txt&quot;"/>
 <Option type="int" name="type" value="3"/>
 </Option>
 </Option>
@@ -401,7 +271,6 @@
 </labeling>
 <customproperties>
 <Option type="Map">
-<Option type="QString" name="dualview/previewExpressions" value="&quot;nome&quot;"/>
 <Option type="QString" name="embeddedWidgets/count" value="0"/>
 <Option name="variableNames"/>
 <Option name="variableValues"/>
@@ -492,7 +361,7 @@
 </axisSymbol>
 </DiagramCategory>
 </SingleCategoryDiagramRenderer>
-<DiagramLayerSettings priority="0" obstacle="0" linePlacementFlags="18" showAll="1" placement="1" zIndex="0" dist="0">
+<DiagramLayerSettings priority="0" obstacle="0" linePlacementFlags="18" showAll="1" placement="0" zIndex="0" dist="0">
 <properties>
 <Option type="Map">
 <Option type="QString" name="name" value=""/>
@@ -503,13 +372,7 @@
 </DiagramLayerSettings>
 <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
 <activeChecks/>
-<checkConfiguration type="Map">
-<Option type="Map" name="QgsGeometryGapCheck">
-<Option type="double" name="allowedGapsBuffer" value="0"/>
-<Option type="bool" name="allowedGapsEnabled" value="false"/>
-<Option type="QString" name="allowedGapsLayer" value=""/>
-</Option>
-</checkConfiguration>
+<checkConfiguration/>
 </geometryOptions>
 <legend type="default-vector" showLabelLegend="0"/>
 <referencedLayers/>
@@ -537,56 +400,37 @@
 <Option type="QString" name="A SER PREENCHIDO (9999)" value="9999"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Baía (sem fluxo) (4)" value="4"/>
+<Option type="QString" name="Cabo (11)" value="11"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Canal (com fluxo) (2)" value="2"/>
+<Option type="QString" name="Chapada (4)" value="4"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Enseada (sem fluxo) (5)" value="5"/>
+<Option type="QString" name="Maciço (5)" value="5"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Lago ou Lagoa (sem fluxo) (7)" value="7"/>
+<Option type="QString" name="Montanha (3)" value="3"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Laguna (com fluxo) (9)" value="9"/>
+<Option type="QString" name="Morro (2)" value="2"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Meando Abandonado (sem fluxo) (6)" value="6"/>
+<Option type="QString" name="Península (9)" value="9"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Oceano (sem fluxo) (3)" value="3"/>
+<Option type="QString" name="Pico (17)" value="17"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Represa/açude com fluxo (10)" value="10"/>
+<Option type="QString" name="Planalto (6)" value="6"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Represa/açude sem fluxo (11)" value="11"/>
+<Option type="QString" name="Planície (7)" value="7"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Rio (com fluxo) (1)" value="1"/>
-</Option>
-</Option>
-</Option>
-</config>
-</editWidget>
-</field>
-<field configurationFlags="None" name="regime">
-<editWidget type="ValueMap">
-<config>
-<Option type="Map">
-<Option type="List" name="map">
-<Option type="Map">
-<Option type="QString" name="A SER PREENCHIDO (9999)" value="9999"/>
+<Option type="QString" name="Ponta (10)" value="10"/>
 </Option>
 <Option type="Map">
-<Option type="QString" name="Permanente (1)" value="1"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Seco (5)" value="5"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Temporário (3)" value="3"/>
+<Option type="QString" name="Praia (12)" value="12"/>
 </Option>
 </Option>
 </Option>
@@ -606,7 +450,10 @@
 <field configurationFlags="None" name="label_x">
 <editWidget type="TextEdit">
 <config>
-<Option/>
+<Option type="Map">
+<Option type="bool" name="IsMultiline" value="false"/>
+<Option type="bool" name="UseHtml" value="false"/>
+</Option>
 </config>
 </editWidget>
 </field>
@@ -640,6 +487,16 @@
 </config>
 </editWidget>
 </field>
+<field configurationFlags="None" name="espacamento">
+<editWidget type="TextEdit">
+<config>
+<Option type="Map">
+<Option type="bool" name="IsMultiline" value="false"/>
+<Option type="bool" name="UseHtml" value="false"/>
+</Option>
+</config>
+</editWidget>
+</field>
 <field configurationFlags="None" name="rotular_carta_mini">
 <editWidget type="ValueMap">
 <config>
@@ -656,20 +513,7 @@
 <field configurationFlags="None" name="observacao">
 <editWidget type="TextEdit">
 <config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
-</config>
-</editWidget>
-</field>
-<field configurationFlags="None" name="area_otf">
-<editWidget type="TextEdit">
-<config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
+<Option/>
 </config>
 </editWidget>
 </field>
@@ -678,79 +522,70 @@
 <alias index="0" name="" field="id"/>
 <alias index="1" name="" field="nome"/>
 <alias index="2" name="" field="tipo"/>
-<alias index="3" name="" field="regime"/>
-<alias index="4" name="" field="texto_edicao"/>
-<alias index="5" name="" field="label_x"/>
-<alias index="6" name="" field="label_y"/>
-<alias index="7" name="" field="tamanho_txt"/>
-<alias index="8" name="" field="justificativa_txt"/>
+<alias index="3" name="" field="texto_edicao"/>
+<alias index="4" name="" field="label_x"/>
+<alias index="5" name="" field="label_y"/>
+<alias index="6" name="" field="tamanho_txt"/>
+<alias index="7" name="" field="justificativa_txt"/>
+<alias index="8" name="" field="espacamento"/>
 <alias index="9" name="" field="rotular_carta_mini"/>
 <alias index="10" name="" field="observacao"/>
-<alias index="11" name="" field="area_otf"/>
 </aliases>
 <defaults>
 <default expression="" applyOnUpdate="0" field="id"/>
 <default expression="" applyOnUpdate="0" field="nome"/>
 <default expression="" applyOnUpdate="0" field="tipo"/>
-<default expression="" applyOnUpdate="0" field="regime"/>
 <default expression="" applyOnUpdate="0" field="texto_edicao"/>
 <default expression="" applyOnUpdate="0" field="label_x"/>
 <default expression="" applyOnUpdate="0" field="label_y"/>
 <default expression="" applyOnUpdate="0" field="tamanho_txt"/>
 <default expression="" applyOnUpdate="0" field="justificativa_txt"/>
+<default expression="" applyOnUpdate="0" field="espacamento"/>
 <default expression="" applyOnUpdate="0" field="rotular_carta_mini"/>
 <default expression="" applyOnUpdate="0" field="observacao"/>
-<default expression="" applyOnUpdate="0" field="area_otf"/>
 </defaults>
 <constraints>
 <constraint exp_strength="0" notnull_strength="1" constraints="3" field="id" unique_strength="1"/>
 <constraint exp_strength="0" notnull_strength="0" constraints="0" field="nome" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="1" constraints="1" field="tipo" unique_strength="0"/>
-<constraint exp_strength="0" notnull_strength="1" constraints="1" field="regime" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="0" constraints="0" field="texto_edicao" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="0" constraints="0" field="label_x" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="0" constraints="0" field="label_y" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="0" constraints="0" field="tamanho_txt" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="1" constraints="1" field="justificativa_txt" unique_strength="0"/>
+<constraint exp_strength="0" notnull_strength="0" constraints="0" field="espacamento" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="1" constraints="1" field="rotular_carta_mini" unique_strength="0"/>
 <constraint exp_strength="0" notnull_strength="0" constraints="0" field="observacao" unique_strength="0"/>
-<constraint exp_strength="0" notnull_strength="0" constraints="0" field="area_otf" unique_strength="0"/>
 </constraints>
 <constraintExpressions>
 <constraint exp="" desc="" field="id"/>
 <constraint exp="" desc="" field="nome"/>
 <constraint exp="" desc="" field="tipo"/>
-<constraint exp="" desc="" field="regime"/>
 <constraint exp="" desc="" field="texto_edicao"/>
 <constraint exp="" desc="" field="label_x"/>
 <constraint exp="" desc="" field="label_y"/>
 <constraint exp="" desc="" field="tamanho_txt"/>
 <constraint exp="" desc="" field="justificativa_txt"/>
+<constraint exp="" desc="" field="espacamento"/>
 <constraint exp="" desc="" field="rotular_carta_mini"/>
 <constraint exp="" desc="" field="observacao"/>
-<constraint exp="" desc="" field="area_otf"/>
 </constraintExpressions>
-<expressionfields>
-<field expression="$area" type="6" precision="0" subType="0" name="area_otf" typeName="" comment="" length="0"/>
-<field expression="$area" type="6" precision="0" subType="0" name="area_otf" typeName="" comment="" length="0"/>
-<field expression="$area" type="6" precision="0" subType="0" name="area_otf" typeName="" comment="" length="0"/>
-</expressionfields>
+<expressionfields/>
 <attributeactions>
 <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
 </attributeactions>
-<attributetableconfig sortExpression="&quot;tipo&quot;" sortOrder="0" actionWidgetStyle="dropDown">
+<attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
 <columns>
 <column hidden="0" type="field" width="-1" name="id"/>
 <column hidden="0" type="field" width="-1" name="nome"/>
-<column hidden="0" type="field" width="301" name="tipo"/>
-<column hidden="0" type="field" width="-1" name="regime"/>
+<column hidden="0" type="field" width="-1" name="tipo"/>
 <column hidden="0" type="field" width="-1" name="texto_edicao"/>
 <column hidden="0" type="field" width="-1" name="label_x"/>
 <column hidden="0" type="field" width="-1" name="label_y"/>
 <column hidden="0" type="field" width="-1" name="tamanho_txt"/>
 <column hidden="0" type="field" width="-1" name="justificativa_txt"/>
+<column hidden="0" type="field" width="-1" name="espacamento"/>
 <column hidden="0" type="field" width="-1" name="observacao"/>
-<column hidden="0" type="field" width="-1" name="area_otf"/>
 <column hidden="1" type="actions" width="-1"/>
 <column hidden="0" type="field" width="-1" name="rotular_carta_mini"/>
 </columns>
@@ -784,14 +619,13 @@ def my_form_open(diálogo, camada, feição):
 <featformsuppress>0</featformsuppress>
 <editorlayout>generatedlayout</editorlayout>
 <editable>
-<field editable="0" name="area_otf"/>
+<field editable="1" name="espacamento"/>
 <field editable="1" name="id"/>
 <field editable="1" name="justificativa_txt"/>
 <field editable="1" name="label_x"/>
 <field editable="1" name="label_y"/>
 <field editable="1" name="nome"/>
 <field editable="1" name="observacao"/>
-<field editable="1" name="regime"/>
 <field editable="1" name="rotular_carta_mini"/>
 <field editable="1" name="simbolizar_carta_mini"/>
 <field editable="1" name="tamanho_txt"/>
@@ -799,14 +633,13 @@ def my_form_open(diálogo, camada, feição):
 <field editable="1" name="tipo"/>
 </editable>
 <labelOnTop>
-<field name="area_otf" labelOnTop="0"/>
+<field name="espacamento" labelOnTop="0"/>
 <field name="id" labelOnTop="0"/>
 <field name="justificativa_txt" labelOnTop="0"/>
 <field name="label_x" labelOnTop="0"/>
 <field name="label_y" labelOnTop="0"/>
 <field name="nome" labelOnTop="0"/>
 <field name="observacao" labelOnTop="0"/>
-<field name="regime" labelOnTop="0"/>
 <field name="rotular_carta_mini" labelOnTop="0"/>
 <field name="simbolizar_carta_mini" labelOnTop="0"/>
 <field name="tamanho_txt" labelOnTop="0"/>
@@ -818,5 +651,5 @@ def my_form_open(diálogo, camada, feição):
 <widgets/>
 <previewExpression>"nome"</previewExpression>
 <mapTip></mapTip>
-<layerGeometryType>2</layerGeometryType>
+<layerGeometryType>0</layerGeometryType>
 </qgis>

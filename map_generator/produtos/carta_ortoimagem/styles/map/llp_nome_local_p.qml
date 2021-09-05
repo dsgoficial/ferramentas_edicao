@@ -25,7 +25,7 @@
 <Option type="Map">
 <Option type="QString" name="angle" value="0"/>
 <Option type="QString" name="cap_style" value="square"/>
-<Option type="QString" name="color" value="243,166,178,0"/>
+<Option type="QString" name="color" value="152,125,183,0"/>
 <Option type="QString" name="horizontal_anchor_point" value="1"/>
 <Option type="QString" name="joinstyle" value="bevel"/>
 <Option type="QString" name="name" value="circle"/>
@@ -45,7 +45,7 @@
 </Option>
 <prop k="angle" v="0"/>
 <prop k="cap_style" v="square"/>
-<prop k="color" v="243,166,178,0"/>
+<prop k="color" v="152,125,183,0"/>
 <prop k="horizontal_anchor_point" v="1"/>
 <prop k="joinstyle" v="bevel"/>
 <prop k="name" v="circle"/>
@@ -76,10 +76,10 @@
 <sizescale/>
 </renderer-v2>
 <labeling type="rule-based">
-<rules key="{9f7e32c9-4220-4fc6-94b9-2e865b5be737}">
-<rule description="Toponimo Fisiografico P" key="{c78cd39f-822d-4c15-8c71-5c5425a0a2db}">
+<rules key="{f05f5791-9450-4f58-afde-25a22fea89fb}">
+<rule description="Nome local" key="{40fa325e-caf6-42a5-bbfa-e9ec3096856b}">
 <settings calloutType="simple">
-<text-style fontWordSpacing="0" fontStrikeout="0" textOrientation="horizontal" fontKerning="1" namedStyle="Italic" fontFamily="Noto Sans" textOpacity="1" fontLetterSpacing="0" fontWeight="50" fontSize="16" allowHtml="0" capitalization="0" textColor="255,255,255,255" fontSizeUnit="Point" multilineHeight="1" fieldName="texto_edicao" useSubstitutions="0" fontItalic="1" blendMode="0" isExpression="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontUnderline="0" previewBkgrdColor="255,255,255,255" legendString="Aa">
+<text-style fontWordSpacing="0" fontStrikeout="0" textOrientation="horizontal" fontKerning="1" namedStyle="Condensed Light" fontFamily="Noto Sans" textOpacity="1" fontLetterSpacing="0" fontWeight="25" fontSize="6" allowHtml="0" capitalization="1" textColor="255,255,255,255" fontSizeUnit="Point" multilineHeight="1" fieldName="texto_edicao" useSubstitutions="0" fontItalic="0" blendMode="0" isExpression="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontUnderline="0" previewBkgrdColor="255,255,255,255" legendString="Aa">
 <families/>
 <text-buffer bufferBlendMode="0" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="Point" bufferColor="0,0,0,255" bufferDraw="1" bufferOpacity="1" bufferJoinStyle="128" bufferNoFill="1"/>
 <text-mask maskedSymbolLayers="" maskSizeUnits="MM" maskJoinStyle="128" maskEnabled="1" maskType="0" maskSize="0.20000000000000001" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskOpacity="1"/>
@@ -96,7 +96,7 @@
 <Option type="Map">
 <Option type="QString" name="angle" value="0"/>
 <Option type="QString" name="cap_style" value="square"/>
-<Option type="QString" name="color" value="183,72,75,255"/>
+<Option type="QString" name="color" value="141,90,153,255"/>
 <Option type="QString" name="horizontal_anchor_point" value="1"/>
 <Option type="QString" name="joinstyle" value="bevel"/>
 <Option type="QString" name="name" value="circle"/>
@@ -116,7 +116,7 @@
 </Option>
 <prop k="angle" v="0"/>
 <prop k="cap_style" v="square"/>
-<prop k="color" v="183,72,75,255"/>
+<prop k="color" v="141,90,153,255"/>
 <prop k="horizontal_anchor_point" v="1"/>
 <prop k="joinstyle" v="bevel"/>
 <prop k="name" v="circle"/>
@@ -195,8 +195,8 @@
 </dd_properties>
 <substitutions/>
 </text-style>
-<text-format autoWrapLength="0" plussign="0" placeDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" rightDirectionSymbol=">" reverseDirectionSymbol="0" multilineAlign="0" formatNumbers="0" decimals="3" useMaxLineLengthForAutoWrap="1" wrapChar=""/>
-<placement placement="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" layerType="PointGeometry" fitInPolygonOnly="0" maxCurvedCharAngleOut="-25" geometryGeneratorEnabled="1" yOffset="0" polygonPlacementFlags="2" rotationAngle="0" quadOffset="4" overrunDistanceUnit="MM" distUnits="MM" preserveRotation="1" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" centroidWhole="0" offsetUnits="MM" centroidInside="0" offsetType="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" dist="0" repeatDistance="0" lineAnchorType="0" lineAnchorClipping="0" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" priority="5" repeatDistanceUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistance="0" placementFlags="9" xOffset="0" geometryGeneratorType="PointGeometry"/>
+<text-format autoWrapLength="0" plussign="0" placeDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" rightDirectionSymbol=">" reverseDirectionSymbol="0" multilineAlign="3" formatNumbers="0" decimals="3" useMaxLineLengthForAutoWrap="1" wrapChar="|"/>
+<placement placement="0" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" layerType="PointGeometry" fitInPolygonOnly="0" maxCurvedCharAngleOut="-25" geometryGeneratorEnabled="1" yOffset="0" polygonPlacementFlags="2" rotationAngle="0" quadOffset="4" overrunDistanceUnit="MM" distUnits="MM" preserveRotation="1" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" centroidWhole="0" offsetUnits="MM" centroidInside="0" offsetType="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" dist="0" repeatDistance="0" lineAnchorType="0" lineAnchorClipping="0" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" priority="5" repeatDistanceUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistance="0" placementFlags="10" xOffset="0" geometryGeneratorType="PointGeometry"/>
 <rendering obstacle="1" minFeatureSize="0" obstacleFactor="1" scaleMin="0" drawLabels="1" fontMinPixelSize="3" displayAll="0" maxNumLabels="2000" obstacleType="1" zIndex="0" fontLimitPixelSize="0" scaleMax="0" unplacedVisibility="0" fontMaxPixelSize="10000" upsidedownLabels="0" mergeLines="0" scaleVisibility="0" limitNumLabels="0" labelPerPart="0"/>
 <dd_properties>
 <Option type="Map">
@@ -205,16 +205,6 @@
 <Option type="Map" name="AlwaysShow">
 <Option type="bool" name="active" value="true"/>
 <Option type="QString" name="expression" value="&quot;label_x&quot; IS NOT NULL AND  &quot;label_y&quot; IS NOT NULL"/>
-<Option type="int" name="type" value="3"/>
-</Option>
-<Option type="Map" name="FontLetterSpacing">
-<Option type="bool" name="active" value="true"/>
-<Option type="QString" name="expression" value="coalesce(  &quot;espacamento&quot;  , 0)"/>
-<Option type="int" name="type" value="3"/>
-</Option>
-<Option type="Map" name="FontWordSpacing">
-<Option type="bool" name="active" value="true"/>
-<Option type="QString" name="expression" value="coalesce(  &quot;espacamento&quot;  , 0)"/>
 <Option type="int" name="type" value="3"/>
 </Option>
 <Option type="Map" name="MultiLineAlignment">
@@ -232,10 +222,15 @@
 <Option type="QString" name="field" value="label_y"/>
 <Option type="int" name="type" value="2"/>
 </Option>
-<Option type="Map" name="Size">
+<Option type="Map" name="Show">
 <Option type="bool" name="active" value="true"/>
-<Option type="QString" name="expression" value="&quot;tamanho_txt&quot;"/>
+<Option type="QString" name="expression" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)"/>
 <Option type="int" name="type" value="3"/>
+</Option>
+<Option type="Map" name="Size">
+<Option type="bool" name="active" value="false"/>
+<Option type="int" name="type" value="1"/>
+<Option type="QString" name="val" value=""/>
 </Option>
 </Option>
 <Option type="QString" name="type" value="collection"/>
@@ -391,122 +386,31 @@
 </config>
 </editWidget>
 </field>
-<field name="tipo" configurationFlags="None">
-<editWidget type="ValueMap">
-<config>
-<Option type="Map">
-<Option type="List" name="map">
-<Option type="Map">
-<Option type="QString" name="A SER PREENCHIDO (9999)" value="9999"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Cabo (11)" value="11"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Chapada (4)" value="4"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Maciço (5)" value="5"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Montanha (3)" value="3"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Morro (2)" value="2"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Península (9)" value="9"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Pico (17)" value="17"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Planalto (6)" value="6"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Planície (7)" value="7"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Ponta (10)" value="10"/>
-</Option>
-<Option type="Map">
-<Option type="QString" name="Praia (12)" value="12"/>
-</Option>
-</Option>
-</Option>
-</config>
-</editWidget>
-</field>
 <field name="texto_edicao" configurationFlags="None">
 <editWidget type="TextEdit">
 <config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
+<Option/>
 </config>
 </editWidget>
 </field>
 <field name="label_x" configurationFlags="None">
 <editWidget type="TextEdit">
 <config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
+<Option/>
 </config>
 </editWidget>
 </field>
 <field name="label_y" configurationFlags="None">
 <editWidget type="TextEdit">
 <config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
-</config>
-</editWidget>
-</field>
-<field name="tamanho_txt" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
+<Option/>
 </config>
 </editWidget>
 </field>
 <field name="justificativa_txt" configurationFlags="None">
 <editWidget type="TextEdit">
 <config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
-</config>
-</editWidget>
-</field>
-<field name="espacamento" configurationFlags="None">
-<editWidget type="TextEdit">
-<config>
-<Option type="Map">
-<Option type="bool" name="IsMultiline" value="false"/>
-<Option type="bool" name="UseHtml" value="false"/>
-</Option>
-</config>
-</editWidget>
-</field>
-<field name="rotular_carta_mini" configurationFlags="None">
-<editWidget type="ValueMap">
-<config>
-<Option type="Map">
-<Option type="Map" name="map">
-<Option type="QString" name="A SER PREENCHIDO (9999)" value="9999"/>
-<Option type="QString" name="Não (2)" value="2"/>
-<Option type="QString" name="Sim (1)" value="1"/>
-</Option>
-</Option>
+<Option/>
 </config>
 </editWidget>
 </field>
@@ -521,53 +425,37 @@
 <aliases>
 <alias name="" index="0" field="id"/>
 <alias name="" index="1" field="nome"/>
-<alias name="" index="2" field="tipo"/>
-<alias name="" index="3" field="texto_edicao"/>
-<alias name="" index="4" field="label_x"/>
-<alias name="" index="5" field="label_y"/>
-<alias name="" index="6" field="tamanho_txt"/>
-<alias name="" index="7" field="justificativa_txt"/>
-<alias name="" index="8" field="espacamento"/>
-<alias name="" index="9" field="rotular_carta_mini"/>
-<alias name="" index="10" field="observacao"/>
+<alias name="" index="2" field="texto_edicao"/>
+<alias name="" index="3" field="label_x"/>
+<alias name="" index="4" field="label_y"/>
+<alias name="" index="5" field="justificativa_txt"/>
+<alias name="" index="6" field="observacao"/>
 </aliases>
 <defaults>
 <default applyOnUpdate="0" expression="" field="id"/>
 <default applyOnUpdate="0" expression="" field="nome"/>
-<default applyOnUpdate="0" expression="" field="tipo"/>
 <default applyOnUpdate="0" expression="" field="texto_edicao"/>
 <default applyOnUpdate="0" expression="" field="label_x"/>
 <default applyOnUpdate="0" expression="" field="label_y"/>
-<default applyOnUpdate="0" expression="" field="tamanho_txt"/>
 <default applyOnUpdate="0" expression="" field="justificativa_txt"/>
-<default applyOnUpdate="0" expression="" field="espacamento"/>
-<default applyOnUpdate="0" expression="" field="rotular_carta_mini"/>
 <default applyOnUpdate="0" expression="" field="observacao"/>
 </defaults>
 <constraints>
 <constraint unique_strength="1" notnull_strength="1" exp_strength="0" constraints="3" field="id"/>
 <constraint unique_strength="0" notnull_strength="0" exp_strength="0" constraints="0" field="nome"/>
-<constraint unique_strength="0" notnull_strength="1" exp_strength="0" constraints="1" field="tipo"/>
 <constraint unique_strength="0" notnull_strength="0" exp_strength="0" constraints="0" field="texto_edicao"/>
 <constraint unique_strength="0" notnull_strength="0" exp_strength="0" constraints="0" field="label_x"/>
 <constraint unique_strength="0" notnull_strength="0" exp_strength="0" constraints="0" field="label_y"/>
-<constraint unique_strength="0" notnull_strength="0" exp_strength="0" constraints="0" field="tamanho_txt"/>
 <constraint unique_strength="0" notnull_strength="1" exp_strength="0" constraints="1" field="justificativa_txt"/>
-<constraint unique_strength="0" notnull_strength="0" exp_strength="0" constraints="0" field="espacamento"/>
-<constraint unique_strength="0" notnull_strength="1" exp_strength="0" constraints="1" field="rotular_carta_mini"/>
 <constraint unique_strength="0" notnull_strength="0" exp_strength="0" constraints="0" field="observacao"/>
 </constraints>
 <constraintExpressions>
 <constraint exp="" field="id" desc=""/>
 <constraint exp="" field="nome" desc=""/>
-<constraint exp="" field="tipo" desc=""/>
 <constraint exp="" field="texto_edicao" desc=""/>
 <constraint exp="" field="label_x" desc=""/>
 <constraint exp="" field="label_y" desc=""/>
-<constraint exp="" field="tamanho_txt" desc=""/>
 <constraint exp="" field="justificativa_txt" desc=""/>
-<constraint exp="" field="espacamento" desc=""/>
-<constraint exp="" field="rotular_carta_mini" desc=""/>
 <constraint exp="" field="observacao" desc=""/>
 </constraintExpressions>
 <expressionfields/>
@@ -578,16 +466,12 @@
 <columns>
 <column type="field" width="-1" hidden="0" name="id"/>
 <column type="field" width="-1" hidden="0" name="nome"/>
-<column type="field" width="-1" hidden="0" name="tipo"/>
 <column type="field" width="-1" hidden="0" name="texto_edicao"/>
 <column type="field" width="-1" hidden="0" name="label_x"/>
 <column type="field" width="-1" hidden="0" name="label_y"/>
-<column type="field" width="-1" hidden="0" name="tamanho_txt"/>
 <column type="field" width="-1" hidden="0" name="justificativa_txt"/>
-<column type="field" width="-1" hidden="0" name="espacamento"/>
 <column type="field" width="-1" hidden="0" name="observacao"/>
 <column type="actions" width="-1" hidden="1"/>
-<column type="field" width="-1" hidden="0" name="rotular_carta_mini"/>
 </columns>
 </attributetableconfig>
 <conditionalstyles>
@@ -619,32 +503,22 @@ def my_form_open(diálogo, camada, feição):
 <featformsuppress>0</featformsuppress>
 <editorlayout>generatedlayout</editorlayout>
 <editable>
-<field name="espacamento" editable="1"/>
 <field name="id" editable="1"/>
 <field name="justificativa_txt" editable="1"/>
 <field name="label_x" editable="1"/>
 <field name="label_y" editable="1"/>
 <field name="nome" editable="1"/>
 <field name="observacao" editable="1"/>
-<field name="rotular_carta_mini" editable="1"/>
-<field name="simbolizar_carta_mini" editable="1"/>
-<field name="tamanho_txt" editable="1"/>
 <field name="texto_edicao" editable="1"/>
-<field name="tipo" editable="1"/>
 </editable>
 <labelOnTop>
-<field name="espacamento" labelOnTop="0"/>
 <field name="id" labelOnTop="0"/>
 <field name="justificativa_txt" labelOnTop="0"/>
 <field name="label_x" labelOnTop="0"/>
 <field name="label_y" labelOnTop="0"/>
 <field name="nome" labelOnTop="0"/>
 <field name="observacao" labelOnTop="0"/>
-<field name="rotular_carta_mini" labelOnTop="0"/>
-<field name="simbolizar_carta_mini" labelOnTop="0"/>
-<field name="tamanho_txt" labelOnTop="0"/>
 <field name="texto_edicao" labelOnTop="0"/>
-<field name="tipo" labelOnTop="0"/>
 </labelOnTop>
 <reuseLastValue/>
 <dataDefinedFieldProperties/>

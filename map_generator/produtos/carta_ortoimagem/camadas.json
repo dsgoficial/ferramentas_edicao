@@ -1,7 +1,7 @@
 {
     "carta": [
         {
-            "tabela": "edicao_cota_mestra_p",
+            "tabela": "edicao_simb_cota_mestra_l",
             "schema": "edgv"
         },
         {
@@ -145,10 +145,6 @@
             "schema": "edgv"
         },
         {
-            "tabela": "edicao_borda_elemento_hidrografico_l",
-            "schema": "edgv"
-        },
-        {
             "tabela": "elemnat_elemento_hidrografico_a",
             "schema": "edgv"
         },
@@ -176,10 +172,6 @@
         },
         {
             "tabela": "edicao_texto_generico_l",
-            "schema": "edgv"
-        },
-        {
-            "tabela": "llp_nome_local_p",
             "schema": "edgv"
         },
         {
