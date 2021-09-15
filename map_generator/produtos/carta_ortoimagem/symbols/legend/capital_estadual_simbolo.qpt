@@ -152,7 +152,7 @@
    <customproperties/>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem opacity="1" frameJoinStyle="miter" htmlState="0" valign="32" id="categoria_3_linha_1_column_left" positionLock="false" halign="1" marginY="0" labelText="Capital Estadual" background="false" visibility="1" excludeFromExports="0" positionOnPage="0,1.76,mm" blendMode="0" templateUuid="{92b90a30-8763-4e1a-bb3f-6868993591c6}" position="0,1.76,mm" groupUuid="" uuid="{92b90a30-8763-4e1a-bb3f-6868993591c6}" outlineWidthM="0.3,mm" itemRotation="0" frame="false" size="15.6031,2.4,mm" type="65641" referencePoint="0" zValue="94" marginX="0">
+ <LayoutItem opacity="1" frameJoinStyle="miter" htmlState="0" valign="32" id="categoria_3_linha_1_column_left" positionLock="false" halign="1" marginY="0" labelText="Capital estadual" background="false" visibility="1" excludeFromExports="0" positionOnPage="0,1.76,mm" blendMode="0" templateUuid="{92b90a30-8763-4e1a-bb3f-6868993591c6}" position="0,1.76,mm" groupUuid="" uuid="{92b90a30-8763-4e1a-bb3f-6868993591c6}" outlineWidthM="0.3,mm" itemRotation="0" frame="false" size="15.6031,2.4,mm" type="65641" referencePoint="0" zValue="94" marginX="0">
   <FrameColor green="0" alpha="255" blue="0" red="0"/>
   <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
   <LayoutObject>

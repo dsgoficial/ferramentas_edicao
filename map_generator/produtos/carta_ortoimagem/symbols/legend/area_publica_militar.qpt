@@ -152,7 +152,7 @@
    <customproperties/>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem frameJoinStyle="miter" groupUuid="" background="false" type="65641" id="line_area_militar" itemRotation="0" uuid="{e567a0a6-c25a-4c65-beee-d530ff98c017}" halign="1" valign="32" visibility="1" positionLock="false" marginX="0" referencePoint="0" zValue="94" labelText="Área Militar" blendMode="0" marginY="0" size="11.167,2.4,mm" templateUuid="{e567a0a6-c25a-4c65-beee-d530ff98c017}" excludeFromExports="0" outlineWidthM="0.3,mm" opacity="1" positionOnPage="0,1.76,mm" position="0,1.76,mm" frame="false" htmlState="0">
+ <LayoutItem frameJoinStyle="miter" groupUuid="" background="false" type="65641" id="line_area_militar" itemRotation="0" uuid="{e567a0a6-c25a-4c65-beee-d530ff98c017}" halign="1" valign="32" visibility="1" positionLock="false" marginX="0" referencePoint="0" zValue="94" labelText="Área militar" blendMode="0" marginY="0" size="11.167,2.4,mm" templateUuid="{e567a0a6-c25a-4c65-beee-d530ff98c017}" excludeFromExports="0" outlineWidthM="0.3,mm" opacity="1" positionOnPage="0,1.76,mm" position="0,1.76,mm" frame="false" htmlState="0">
   <FrameColor green="0" red="0" blue="0" alpha="255"/>
   <BackgroundColor green="255" red="255" blue="255" alpha="255"/>
   <LayoutObject>

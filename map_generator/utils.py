@@ -105,13 +105,6 @@ class MapTools:
             epsg = epsg + str(78 + self.fuso-18)
         self.epsg = int(epsg)
 
-    def getDictWithEqualKeys(self, list_of_dict, dict_to_check, equal_keys):
-        for dict_in_list in list_of_dict:
-            for key in equal_keys:
-                if dict_to_check[key] != dict_in_list[key]:
-                    continue
-            return dict_in_list
-
     def getMapLayers(self, connectedUri,  list_dict_maptables, list_dict_minimaptables, tipo_produto, escala):
         map_layers_db, map_layersId_db = self.getLayersFromDB(
             connectedUri,  list_dict_maptables, "map",  tipo_produto, escala)

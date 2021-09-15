@@ -152,7 +152,7 @@
    <customproperties/>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem frameJoinStyle="miter" groupUuid="" background="false" type="65641" id="categoria_3_linha_1_column_left" itemRotation="0" uuid="{74a78d7f-34b7-45cb-99cd-c105a9ea09b9}" halign="1" valign="32" visibility="1" positionLock="false" marginX="0" referencePoint="0" zValue="94" labelText="Extração Mineral" blendMode="0" marginY="0" size="16.0382,2.4,mm" templateUuid="{74a78d7f-34b7-45cb-99cd-c105a9ea09b9}" excludeFromExports="0" outlineWidthM="0.3,mm" opacity="1" positionOnPage="0,1.76,mm" position="0,1.76,mm" frame="false" htmlState="0">
+ <LayoutItem frameJoinStyle="miter" groupUuid="" background="false" type="65641" id="categoria_3_linha_1_column_left" itemRotation="0" uuid="{74a78d7f-34b7-45cb-99cd-c105a9ea09b9}" halign="1" valign="32" visibility="1" positionLock="false" marginX="0" referencePoint="0" zValue="94" labelText="Extração mineral" blendMode="0" marginY="0" size="16.0382,2.4,mm" templateUuid="{74a78d7f-34b7-45cb-99cd-c105a9ea09b9}" excludeFromExports="0" outlineWidthM="0.3,mm" opacity="1" positionOnPage="0,1.76,mm" position="0,1.76,mm" frame="false" htmlState="0">
   <FrameColor green="0" red="0" blue="0" alpha="255"/>
   <BackgroundColor green="255" red="255" blue="255" alpha="255"/>
   <LayoutObject>

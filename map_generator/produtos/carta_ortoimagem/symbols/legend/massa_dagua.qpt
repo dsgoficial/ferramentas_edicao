@@ -152,7 +152,7 @@
    <customproperties/>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem size="13.0244,2.38919,mm" excludeFromExports="0" type="65641" halign="1" positionOnPage="0.228505,1.46081,mm" frame="false" uuid="{ec7a9453-991c-4043-a0f3-90a06544b2db}" position="0.228505,1.46081,mm" blendMode="0" groupUuid="" marginX="0" outlineWidthM="0.3,mm" referencePoint="0" itemRotation="0" valign="32" marginY="0" zValue="94" background="false" id="categoria_3_linha_1_column_left" frameJoinStyle="miter" labelText="Massa dágua" templateUuid="{ec7a9453-991c-4043-a0f3-90a06544b2db}" opacity="1" visibility="1" positionLock="false" htmlState="0">
+ <LayoutItem size="13.0244,2.38919,mm" excludeFromExports="0" type="65641" halign="1" positionOnPage="0.228505,1.46081,mm" frame="false" uuid="{ec7a9453-991c-4043-a0f3-90a06544b2db}" position="0.228505,1.46081,mm" blendMode="0" groupUuid="" marginX="0" outlineWidthM="0.3,mm" referencePoint="0" itemRotation="0" valign="32" marginY="0" zValue="94" background="false" id="categoria_3_linha_1_column_left" frameJoinStyle="miter" labelText="Massa d'água" templateUuid="{ec7a9453-991c-4043-a0f3-90a06544b2db}" opacity="1" visibility="1" positionLock="false" htmlState="0">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>

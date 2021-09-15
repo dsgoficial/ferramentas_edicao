@@ -16,7 +16,7 @@ class Legend():
         },
         'hidrografia': {
             'order': 1,
-            'order_classes': ['massa_dagua', 'trecho_drenagem', 'terreno_sujeito_inundacao', 'queda_dagua_corredeira']
+            'order_classes': ['massa_dagua', 'trecho_drenagem', 'terreno_sujeito_inundacao', 'queda_dagua_corredeira', 'ilha']
         },
         'energia_e_comunicacoes': {
             'order': 2,
@@ -29,8 +29,8 @@ class Legend():
         'limites_e_localidades': {
             'order': 4,
             'order_classes': ['capital_federal_simbolo', 'capital_federal_texto', 'capital_estadual_simbolo', 'capital_estadual_texto', 
-            'cidade_simbolo', 'cidade_texto','vila_simbolo', 'vila_texto', 'aglomerado_rural', 'nome_local', 'area_militar', 'terra_indigena', 
-            'unidade_de_conservacao', 'limite_estadual', 'limite_internacional']
+            'cidade_simbolo', 'cidade_texto','vila_simbolo', 'vila_texto', 'aglomerado_rural', 'nome_local', 'area_publica_militar', 'terra_indigena', 
+            'unidade_conservacao', 'limite_estadual', 'limite_internacional']
         },
         'relevo': {
             'order': 5,

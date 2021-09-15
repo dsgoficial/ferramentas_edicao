@@ -25,9 +25,6 @@ class MapManager(MapTools):
 		self.GLC = GLC
 		self.map_height = 570-15*2 # milimiters
 		self.utm_grid = UtmGrid()
-		
-	def set_products_parameters(self, products_parameters):
-		self.products_parameters = products_parameters
 	
 	def setElementsConfig(self, product):
 		self.productType = product

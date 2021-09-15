@@ -91,7 +91,6 @@ class MapParent:
 
     def createLayerRaster(self, rasterPath, stylePath=None):
         rasterLayer = self.getRasterLayerByType(rasterPath)
-        # rasterBasename = os.path.basename(rasterPath).split('.')[0]
         if not rasterLayer or not rasterLayer.isValid():
             return None
         elif stylePath:

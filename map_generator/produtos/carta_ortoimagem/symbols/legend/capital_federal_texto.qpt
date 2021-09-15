@@ -152,7 +152,7 @@
    <customproperties/>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem opacity="1" frameJoinStyle="miter" htmlState="0" valign="32" id="categoria_3_linha_1_column_left" positionLock="false" halign="1" marginY="0" labelText="Capital Federal" background="false" visibility="1" excludeFromExports="0" positionOnPage="0,1.76,mm" blendMode="0" templateUuid="{c657b2df-b6d7-452b-9216-81ec38a2de57}" position="0,1.76,mm" groupUuid="" uuid="{c657b2df-b6d7-452b-9216-81ec38a2de57}" outlineWidthM="0.3,mm" itemRotation="0" frame="false" size="14.5338,2.4,mm" type="65641" referencePoint="0" zValue="94" marginX="0">
+ <LayoutItem opacity="1" frameJoinStyle="miter" htmlState="0" valign="32" id="categoria_3_linha_1_column_left" positionLock="false" halign="1" marginY="0" labelText="Capital federal" background="false" visibility="1" excludeFromExports="0" positionOnPage="0,1.76,mm" blendMode="0" templateUuid="{c657b2df-b6d7-452b-9216-81ec38a2de57}" position="0,1.76,mm" groupUuid="" uuid="{c657b2df-b6d7-452b-9216-81ec38a2de57}" outlineWidthM="0.3,mm" itemRotation="0" frame="false" size="14.5338,2.4,mm" type="65641" referencePoint="0" zValue="94" marginX="0">
   <FrameColor green="0" alpha="255" blue="0" red="0"/>
   <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
   <LayoutObject>
