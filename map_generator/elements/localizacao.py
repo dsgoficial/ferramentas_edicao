@@ -93,17 +93,6 @@ class Localizacao(MapParent):
             layer_estadosnames.dataProvider().setEncoding(u'UTF-8')
         return layer_estadosnames
 
-    def load_intersection_country_layers(self, names):
-        list_layer_paises = []
-        for name in names:
-            caminho_shp_internacional = os.path.join(os.path.dirname(
-                os.path.dirname(__file__)), 'limites', name + '.shp')
-            caminho_estilo_internacional = os.path.join(self.stylesFolder, 'no_labels_style.qml')
-            internacional_layer_fundo = self.loadShapeLayer(
-                caminho_shp_internacional, caminho_estilo_internacional, name + '_unidades_federativas')
-            list_layer_paises.append(internacional_layer_fundo)
-        return list_layer_paises
-
     def getExtent(self, selectedFeature, stateLayer, isInternational):
         rectBounds = []
         self.estados = []

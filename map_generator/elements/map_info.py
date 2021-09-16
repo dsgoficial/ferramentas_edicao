@@ -41,35 +41,6 @@ class HtmlData(MapParent):
         for qptDict in qptDicts:
             copyQptToCompositor(composition, qptDict)
 
-    def load_intersection_country_layers(self, names):
-        countryLayers = []
-        for name in names:
-            internationalLayerPath = Path(__file__).parent.parent / 'limites' / f'{name}.shp'
-            internacional_layer_fundo = self.loadShapeLayer(
-                internationalLayerPath, None, f'{name}_unidades_federativas')
-            countryLayers.append(internacional_layer_fundo)
-        return countryLayers
-
-    '''
-    def get_regioes_info(self, composition, map_extent_feature):      
-        self.estados = []
-		self.regioes = []	
-
-        # Verifica se no exterior
-		if internacional_layer is not None:
-			for count, pais_feature in enumerate(internacional_layer.getFeatures()):
-				if selectedFeature.geometry().intersects(pais_feature.geometry()):
-					self.paises.append(pais_feature['nome'])
-
-		caminho_shp_estado = os.path.join(os.path.dirname(os.path.dirname(__file__)),'limites','2020','Estados_2020.shp')		
-		estados_layer_fundo = self.loadShapeLayer(caminho_shp_estado, None, 'estados')
-
-
-        list_layer_paises = self.load_intersection_country_layers(names)
-
-        map_extent = self.getExtent(map_extent_feature, estados_layer_fundo, internacional_layer_fundo) 
-    '''
-
     def replaceStr(self, original_text, dict_replace):
         for variavel, valor in dict_replace.items():
             original_text = original_text.replace(variavel, str(valor))
@@ -276,8 +247,9 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Declinação magnética: NOAA (WMM 2020-2025)')
 
             secondTable = next(tables)
-            _tmp = self.generateElement(secondTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '** Limites sujeitos  à homologação do referido órgão.')
+            if tecnicalInfo.get('observacao_homologacao', True) is False:
+                _tmp = self.generateElement(secondTable, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '** Limites sujeitos  à homologação do referido órgão.')
             _tmp = self.generateElement(secondTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'phases'}, 'Para maiores informações consulte o arquivo de metadados.')
 
