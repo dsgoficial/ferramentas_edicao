@@ -12,7 +12,7 @@ class Legend():
         'sistemas_de_transporte': {
             'order': 0,
             'order_classes': ['rodovia_pavimentada', 'prefixo_rodovia_federal', 'rodovia_nao_pavimentada', 'prefixo_rodovia_estadual',
-            'ferrovia_bitola_metrica', 'ferrovia_bitola_internacional_larga', 'pista_pouso', 'heliponto', 'atracadouro_terminal']
+            'ferrovia_bitola_metrica', 'ferrovia_bitola_internacional_larga', 'pista_pouso_heliponto', 'atracadouro_terminal']
         },
         'hidrografia': {
             'order': 1,
