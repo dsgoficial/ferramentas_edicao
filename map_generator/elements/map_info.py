@@ -205,7 +205,7 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'SIRGAS2000 (Época 2000.4)')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Equidistância das curvas de nível')
-            if tecnicalInfo.get('curva_auxiliar'):
+            if tecnicalInfo.get('curva_auxiliar', True):
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Auxiliar: {curveData[0]} metros')
                 _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Normal: {curveData[1]} metros')
