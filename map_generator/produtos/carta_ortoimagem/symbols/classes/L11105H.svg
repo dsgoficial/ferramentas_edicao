@@ -33,7 +33,7 @@
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="1912"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:pagecheckerboard="0"
@@ -54,6 +54,24 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(46.161936,-114.67958)">
+    <path
+       inkscape:connector-curvature="0"
+       id="path3372-2"
+       d="m -46.16188,116.55718 14.999886,0.005"
+       style="fill:none;stroke:#e0e0e0;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3372-9-8-4"
+       d="m -35.467997,116.69983 0.0043,0.74887"
+       style="fill:none;stroke:#e0e0e0;stroke-width:0.4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3372-9-8"
+       d="m -42.248073,115.66329 0.0043,0.74887"
+       style="fill:none;stroke:#e0e0e0;stroke-width:0.4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
     <path
        inkscape:connector-curvature="0"
        id="path3372"
