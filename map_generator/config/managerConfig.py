@@ -190,10 +190,10 @@ product_parameters = {
             "linwidth_utm": 0.2,
             "linwidth_buffer_geo": 0.1,
             "linwidth_buffer_utm": 0.1,
-            "geo_grid_color": QColor('black'),
-            "utm_grid_color": QColor('black'),
-            "geo_grid_buffer_color": QColor('white'),
-            "utm_grid_buffer_color": QColor('white'),
+            "geo_grid_color": QColor('white'),
+            "utm_grid_color": QColor('white'),
+            "geo_grid_buffer_color": QColor('black'),
+            "utm_grid_buffer_color": QColor('black'),
             "masks_check": True
         }
     }
