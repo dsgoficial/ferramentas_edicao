@@ -236,7 +236,6 @@ class Divisao(MapParent):
 
     def goNextColumn(self, municipio_index, n_column1, n_column2, n_column3):
         n_municipio = municipio_index + 1
-        # nextColumn = False
         if n_municipio == n_column1 or n_municipio == n_column1 + n_column2 or n_municipio == n_column1 + n_column2 + n_column3:
             return True
         else:
@@ -251,9 +250,9 @@ class Divisao(MapParent):
             baseHtml = f.read()
         fontSize = '0.6'
         if 6 < nCounties < 13:
-            fontSize = '0.55'
+            fontSize = '0.5'
         elif 12 < nCounties:
-            fontSize = '0.50'
+            fontSize = '0.4'
 
         nColumns, nColumn1, nColumn2, nColumn3 = self.getNColums(nCounties)
 

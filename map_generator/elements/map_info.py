@@ -179,6 +179,8 @@ class HtmlData(MapParent):
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
             lenThirdData = 3 + len(thirdPartyData)
+            displayAuxContour = tecnicalInfo.get('curva_auxiliar', True)
+            nContourInTable = '3' if displayAuxContour else '2'
 
             intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
 
@@ -204,7 +206,7 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum horizontal')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'SIRGAS2000 (Época 2000.4)')
             _tmp = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Equidistância das curvas de nível')
+            _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':nContourInTable}, 'Equidistância das curvas de nível')
             if tecnicalInfo.get('curva_auxiliar', True):
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Auxiliar: {curveData[0]} metros')
                 _tmp = self.generateElement(firstTable, 'tr')

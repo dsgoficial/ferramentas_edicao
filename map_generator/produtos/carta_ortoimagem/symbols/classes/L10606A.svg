@@ -84,27 +84,27 @@
     <rect
        style="opacity:1;fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999991;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
        id="rect4935"
-       width="3.9363284"
+       width="4.2505212"
        height="0.40000001"
-       x="0.049999718"
+       x="0.049999721"
        y="295.10001" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
-       x="3.9651842"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
+       x="4.4738846"
        y="296.00873"
        id="text1385"><tspan
          sodipodi:role="line"
          id="tspan1383"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
-         x="3.9651842"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
+         x="4.4738846"
          y="296.00873">100</tspan></text>
     <rect
        style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999997;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
        id="rect4935-8"
-       width="3.7378912"
+       width="4.1843758"
        height="0.40000001"
-       x="8.2190094"
+       x="7.7725248"
        y="295.10001" />
   </g>
 </svg>
