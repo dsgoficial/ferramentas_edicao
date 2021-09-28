@@ -2,13 +2,16 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="15mm"
-   height="3.7mm"
-   viewBox="0 0 15 3.7"
+   width="12mm"
+   height="4mm"
+   viewBox="0 0 12 3.9999999"
    version="1.1"
    id="svg8"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    sodipodi:docname="P30002D.svg"
+   inkscape:export-filename="C:\Users\eliton\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\plugin_edicao\map_generator\produtos\carta_ortoimagem\symbols\classes\P30002D.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -62,28 +65,28 @@
      id="layer1"
      transform="translate(0,-293.3)">
     <rect
-       style="fill:#000000;stroke-width:0.22786075"
-       y="294.79999"
-       x="2.0816682e-16"
+       style="fill:#000000;stroke-width:0.227861"
+       y="294.95001"
+       x="1.6653345e-16"
        height="0.69999999"
-       width="15"
+       width="12"
        id="rect817" />
     <rect
        id="rect10"
-       width="15"
+       width="12"
        height="0.5"
-       x="2.0816682e-16"
-       y="294.89999"
-       style="fill:#ff0000;fill-opacity:1;stroke-width:0.19257748" />
+       x="1.6653345e-16"
+       y="295.04999"
+       style="fill:#ff0000;fill-opacity:1;stroke-width:0.192577" />
     <circle
        id="path871"
-       cx="7.5"
-       cy="295.14999"
+       cx="6"
+       cy="295.29999"
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        r="1.6996659" />
     <g
        id="g876"
-       transform="matrix(0.72283144,0,0,0.89795617,7.4941125,41.346758)"
+       transform="matrix(0.72283144,0,0,0.89795617,5.9941125,41.49676)"
        style="stroke-width:1.24123">
       <text
          xml:space="preserve"

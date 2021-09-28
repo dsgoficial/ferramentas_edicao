@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="15mm"
-   height="3.7mm"
-   viewBox="0 0 15 3.7"
+   width="12mm"
+   height="4mm"
+   viewBox="0 0 12 3.9999999"
    version="1.1"
    id="svg8"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
@@ -26,10 +26,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="18.321568"
-     inkscape:cx="28.190819"
-     inkscape:cy="0.51851457"
+     inkscape:cx="15.801049"
+     inkscape:cy="13.781572"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g840"
      showgrid="false"
      inkscape:pagecheckerboard="true"
      inkscape:window-width="1920"
@@ -58,14 +58,14 @@
     <g
        id="g840"
        transform="matrix(0.99747663,0,0,0.94833486,0.01469983,15.249289)"
-       style="stroke:#000000;stroke-width:0.0514088;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.69999999">
+       style="stroke:#000000;stroke-width:0.0514088;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7">
       <rect
-         style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0514088;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.69999999"
+         style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0822541;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7;paint-order:fill markers stroke"
          id="rect4935"
-         width="14.989812"
-         height="0.18060634"
-         x="0.0093301898"
-         y="295.05936" />
+         width="11.948103"
+         height="0.26624995"
+         x="0.026390053"
+         y="295.17535" />
     </g>
   </g>
 </svg>

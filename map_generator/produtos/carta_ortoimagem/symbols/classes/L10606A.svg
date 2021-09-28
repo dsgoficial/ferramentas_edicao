@@ -2,13 +2,16 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="15mm"
-   height="3.7mm"
-   viewBox="0 0 15 3.7"
+   width="12mm"
+   height="4mm"
+   viewBox="0 0 12 3.9999999"
    version="1.1"
    id="svg8"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    sodipodi:docname="L10606A.svg"
+   inkscape:export-filename="C:\Users\eliton\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\plugin_edicao\map_generator\produtos\carta_ortoimagem\symbols\classes\L10606A.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -29,15 +32,15 @@
     <marker
        style="overflow:visible"
        id="Arrow1Lstart"
-       refX="0.0"
-       refY="0.0"
+       refX="0"
+       refY="0"
        orient="auto"
        inkscape:stockid="Arrow1Lstart"
        inkscape:isstock="true">
       <path
-         transform="scale(0.8) translate(12.5,0)"
-         style="fill-rule:evenodd;fill:context-stroke;stroke:context-stroke;stroke-width:1.0pt"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="path1852" />
     </marker>
   </defs>
@@ -79,29 +82,29 @@
      id="layer1"
      transform="translate(0,-293.3)">
     <rect
-       style="opacity:1;fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999995;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
+       style="opacity:1;fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999991;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
        id="rect4935"
-       width="5.6726565"
+       width="3.9363284"
        height="0.40000001"
-       x="0.049999721"
-       y="294.95001" />
+       x="0.049999718"
+       y="295.10001" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:0.69999999"
-       x="5.4982572"
-       y="295.95911"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
+       x="3.9651842"
+       y="296.00873"
        id="text1385"><tspan
          sodipodi:role="line"
          id="tspan1383"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.69999999"
-         x="5.4982572"
-         y="295.95911">100</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
+         x="3.9651842"
+         y="296.00873">100</tspan></text>
     <rect
-       style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999999;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
+       style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999997;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
        id="rect4935-8"
-       width="5.2757816"
+       width="3.7378912"
        height="0.40000001"
-       x="9.6742182"
-       y="294.95001" />
+       x="8.2190094"
+       y="295.10001" />
   </g>
 </svg>
