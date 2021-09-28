@@ -9,7 +9,7 @@ from qgis.core import QgsReadWriteContext
 class Legend():
 
     order_group = {
-        'sistemas_de_transporte': {
+        'sistema_de_transporte': {
             'order': 0,
             'order_classes': ['rodovia_pavimentada', 'prefixo_rodovia_federal', 'rodovia_nao_pavimentada', 'prefixo_rodovia_estadual',
             'ferrovia_bitola_metrica', 'ferrovia_bitola_internacional_larga', 'pista_pouso_heliponto', 'atracadouro_terminal']

@@ -79,11 +79,29 @@
      id="layer1"
      transform="translate(0,-293.3)">
     <rect
-       style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0500001;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:1"
+       style="opacity:1;fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999995;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
        id="rect4935"
-       width="14.95"
-       height="0.39199999"
-       x="0.024999991"
-       y="295.104" />
+       width="5.6726565"
+       height="0.40000001"
+       x="0.049999721"
+       y="294.95001" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:0.69999999"
+       x="5.4982572"
+       y="295.95911"
+       id="text1385"><tspan
+         sodipodi:role="line"
+         id="tspan1383"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82222px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.69999999"
+         x="5.4982572"
+         y="295.95911">100</tspan></text>
+    <rect
+       style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999999;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
+       id="rect4935-8"
+       width="5.2757816"
+       height="0.40000001"
+       x="9.6742182"
+       y="294.95001" />
   </g>
 </svg>

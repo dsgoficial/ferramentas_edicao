@@ -5,15 +5,15 @@
             "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
         },
         "infra_ferrovia_l":{
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
         },
         "cobter_massa_dagua_a":{
@@ -65,19 +65,19 @@
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
         "infra_obstaculo_vertical_p": {
@@ -151,15 +151,15 @@
             "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
         },
         "infra_ferrovia_l":{
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
         },
         "cobter_massa_dagua_a":{
@@ -211,19 +211,19 @@
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
         "infra_obstaculo_vertical_p": {
@@ -297,15 +297,15 @@
             "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
         },
         "infra_ferrovia_l":{
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
         },
         "cobter_massa_dagua_a":{
@@ -357,19 +357,19 @@
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
         "infra_obstaculo_vertical_p": {
@@ -443,15 +443,15 @@
             "labels": ["vila_simbolo", "cidade_simbolo", "capital_estadual_simbolo", "capital_federal_simbolo"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
         },
         "infra_ferrovia_l":{
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
         },
         "cobter_massa_dagua_a":{
@@ -503,19 +503,19 @@
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistemas_de_transporte",
+            "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
         "infra_obstaculo_vertical_p": {
