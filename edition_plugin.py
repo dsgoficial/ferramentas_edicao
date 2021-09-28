@@ -162,16 +162,12 @@ class EditionPlugin:
             pass
 
     def connectingButtons(self):
-        self.defaultMap = DefaultMap(self.dlg, self.GLC)
+        self.defaultMap = DefaultMap(self.dlg, self.GLC, self.iface)
         self.dlg.pushButton_gerar_cartas.clicked.connect(self.defaultMap.createMaps)
 
     def setTestData(self):        
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\NB-20-Z-D-II-3.json')
         
-        exportFolder = 'D:\\export'
-        self.dlg.exportFolder.setFilePath(exportFolder)
-
     def initializeVariables(self):
         # Maps to create
         self.GLC = GridAndLabelCreator()

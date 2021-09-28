@@ -166,21 +166,22 @@ class MapTools:
     def exportMap(self, composition):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
-        if False:
-            pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
-            pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
-            pdfExporterSettings.rasterizeWholeImage = True
-            pdfExporterSettings.simplifyGeometries = False
-            pdfExporterSettings.appendGeoreference = True
-            pdfExporterSettings.exportMetadata = False
-            pdfExporterSettings.dpi = 400
-            exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
+        pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
+        pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
+        pdfExporterSettings.rasterizeWholeImage = True
+        pdfExporterSettings.simplifyGeometries = False
+        pdfExporterSettings.appendGeoreference = True
+        pdfExporterSettings.exportMetadata = False
+        pdfExporterSettings.dpi = 400
+        statusPdf = exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
         if self.dlgCfg.exportTiff:
             tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
             tiffExporterSettings.dpi = 400
-            exporter.exportToImage(tiffFilePath, tiffExporterSettings)
+            statusTiff = exporter.exportToImage(tiffFilePath, tiffExporterSettings)
+            statusPdf += statusTiff
         del exporter
+        return not bool(statusPdf)
 
     def removeCreationDataGroups(self, map_groups=['localizacao', 'articulation', 'map', 'minimap',  'divisao']):
         root = QgsProject.instance().layerTreeRoot()

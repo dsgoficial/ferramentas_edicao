@@ -13,15 +13,14 @@ def exportMaps(args):
 def setupArgparser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--tipo', default='carta_ortoimagem', choices=('carta_topografica','carta_ortoimagem'), type=str)
-    parser.add_argument('-j', '--json', default=['C:\\Users\\eliton\\Downloads\\SH-22-V-D-III-3-SE.json','C:\\Users\\eliton\\Downloads\\SH-22-V-D-VI-2-NO.json'])
-    # parser.add_argument('-j', '--json', default=[r'C:\Users\eliton\Documents\edicao\json_test\cartaortoimagem_SF-22-Y-C-I-1-NE.json'])
+    parser.add_argument('-j', '--json', default=[])
     parser.add_argument('-l', '--login',dest='username', required=True)
     parser.add_argument('-s', '--senha', dest='password', required=True)
     parser.add_argument('-ph', '--proxyHost', type=str)
     parser.add_argument('-pp', '--proxyPort', type=int)
     parser.add_argument('-pu', '--proxyUser')
     parser.add_argument('-ppass', '--proxyPassword')
-    parser.add_argument('-ef', '--exportFolder', default='D:\\export\\')
+    parser.add_argument('-ef', '--exportFolder', required=True)
     parser.add_argument('-et', '--exportTiff', action='store_true')
     return parser.parse_args()
 

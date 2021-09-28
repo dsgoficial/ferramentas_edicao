@@ -11,10 +11,11 @@ from .elements.map_index.map_index import UtmGrid
 from .config.managerConfig import product_parameters, Defaults
 
 class DefaultMap(MapManager):
-    def __init__(self, dlg, GLC):
+    def __init__(self, dlg, GLC, iface=None):
         super().__init__(dlg, GLC)
         self.MapC = MapConnection()
         self.GLC = GLC
+        self.iface = iface
         self.map_height = 570-15*2  # milimiters
         self.utm_grid = UtmGrid()
         self.defaults = Defaults()
@@ -241,9 +242,9 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    self.setupMasks(strProductType)
-                self.exportMap(composition)
-                # QgsProject.instance().removeMapLayers(ids_maplayer)
+                self.setupMasks(strProductType)
+                exportStatus = self.exportMap(composition)
+                QgsProject.instance().removeMapLayers(ids_maplayer)
         # Reprojeta se for o caso
         if self.dlgCfg.exportTiff:
             self.reprojectTiffs()
@@ -251,5 +252,9 @@ class DefaultMap(MapManager):
         # if not showLayers:
         self.mc.setProjectProjection(oldProjValue)
 
-        # self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
-        # self.cleanLayerTreeRoot()
+        self.cleanLayerTreeRoot()
+        if self.iface:
+            if exportStatus:
+                self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
+            else:
+                self.iface.messageBar().pushMessage('Status', f'Problemas na exportação dos mapas', Qgis.Critical)
