@@ -46,7 +46,7 @@ class DefaultMap(MapManager):
 
     def setCartaConfig(self, jsonData, connectedUri, compositionDict, mapAreaFeature):
         '''
-        Setting map configurations
+        Sets map configurations
         '''
         inomen = 'Especial'
         if 'inom' in jsonData:
@@ -60,54 +60,50 @@ class DefaultMap(MapManager):
             latitude = _center.get('latitude')
             inomen = self.utm_grid.get_INOM_from_lat_lon(longitude, latitude, escala)
 
-        # Tipo de produto
-        # productTypeStr = self.dlg.productType.currentText()
-        productTypeStr = 'Carta Topográfica'
+        # Product type
+        productType = jsonData.get('productType')
+        strProductType = jsonData.get('strProductType')
 
-        productTypeStrC = '_'.join(productTypeStr.lower().split(' '))
-        if productTypeStr == 'Carta Topográfica':
-            productTypeStrC = 'carta_topografica'
-
-        # Print Layout para o produto
+        # Composition
         composition = compositionDict[escala]
 
-        # Camadas para o produto
-        productLayerDictPath = Path(__file__).parent / 'produtos' / productTypeStrC / 'camadas.json'        
+        # Necessary layers
+        productLayerDictPath = Path(__file__).parent / 'produtos' / strProductType / 'camadas.json'        
         productLayersDict = self.readJsonFromPath(productLayerDictPath)
 
-        # Checks classes_complementares on carta_ortoimagem
-        if productTypeStrC == 'carta_ortoimagem':
+        # Filtering layers based on classes_complementares key on carta_ortoimagem
+        if strProductType == 'carta_ortoimagem':
             mapLayersDict, miniMapLayersDict = self.filterLayers(
                 productLayersDict.get('carta'), productLayersDict.get('carta_mini'),
                 jsonData.get('classes_complementares', list()), self.defaults)
         else:
             mapLayersDict = productLayersDict.get('carta')
             miniMapLayersDict = productLayersDict.get('carta_mini')
-        # Etapas
+
+        # Phases table(customEtapa)
         self.htmlData.customEtapa(composition, jsonData['fases'])
 
-        # Sensores
+        # Sensors table
         self.htmlData.customSensores(composition, jsonData.get('sensores', ()))
 
-        # Info tecnica carta
+        # Technical info
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
         self.htmlData.customTecnicalInfo(
-            composition, scale, hemisferio, fuso, productTypeStr, jsonData.get('info_tecnica'),
+            composition, scale, hemisferio, fuso, productType, jsonData.get('info_tecnica'),
             jsonData.get('territorio_internacional'), mapAreaFeature)
 
-        # Banco
+        # Sets database
         if connectedUri:
             connectedUri.setDatabase(jsonData['banco']['nome'])
 
-        # Carrega camadas do banco
+        # Getting map layers
         map_layers_db, map_layersId_db, minimap_layers_db, minimap_layersId_db = self.getMapLayers(
-            connectedUri,  mapLayersDict, miniMapLayersDict, productTypeStrC, str(scale))
+            connectedUri,  mapLayersDict, miniMapLayersDict, strProductType, str(scale))
 
-        # Carrega imagens
-
+        # Loading images
         image_layers, image_layersId = self.MapC.createLayersRasters(jsonData.get('imagens', ()))
 
-        # Adiciona camadas e imagens para serem mostradas no mapa e minimapa
+        # Layers dict
         layers = {
             'map': map_layers_db,
             'id_map': map_layersId_db,
@@ -224,6 +220,9 @@ class DefaultMap(MapManager):
             self.exportFolder.mkdir(exist_ok=True)
             for jsonPath in self.dlgCfg.jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
+                jsonData.update({
+                    'productType':productType,
+                    'strProductType': strProductType})
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
                 oldQptsPaths = self.editComposition(jsonData, compositionDict, strProductType, oldQptsPaths) if 'oldQptsPaths' in locals() \
                     else self.editComposition(jsonData, compositionDict, strProductType, ['','',''])
