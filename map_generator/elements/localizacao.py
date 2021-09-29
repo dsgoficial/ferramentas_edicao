@@ -61,7 +61,7 @@ class Localizacao(MapParent):
         self.updateMapItem(composition, stateLayerForeground,
                            stateLayerBackground, mapAreaLayer, mapExtents)
 
-        # TODO: update this section in case of ortho maps
+        # TODO: huge cleanup
         if adaptacaoNome:
             layer_estadosnames = self.createLayerNomeGroup('estados_nome')
             mapLayers.append(layer_estadosnames.id())
@@ -267,7 +267,7 @@ class Localizacao(MapParent):
         if mapItem is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
-            mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+            mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
             mapItem.setExtent(bound)
             mapItem.refresh()
             mapItem.setLayers([stateLayerForeground, mapAreaLayer, stateLayer])

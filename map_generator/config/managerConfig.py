@@ -59,6 +59,12 @@ product_parameters = {
                     "y_0": 7,
                     "width": 110,
                     "height": 22,
+                },
+                "classified": {
+                    "x_0": 7,
+                    "y_0": 175,
+                    "width": 110,
+                    "height": 20
                 }
             },
             50: {
@@ -78,6 +84,46 @@ product_parameters = {
                     "x_0": 7,
                     "y_0": 175,
                     "width": 110,
+                    "height": 20
+                }
+            },
+            100: {
+                "projeto": {
+                    "x_0": 7,
+                    "y_0": 487,
+                    "width": 110,
+                    "height": 70,
+                },
+                "cabecalho": {
+                    "x_0": 7,
+                    "y_0": 7,
+                    "width": 110,
+                    "height": 22,
+                },
+                "classified": {
+                    "x_0": 7,
+                    "y_0": 180,
+                    "width": 120,
+                    "height": 20
+                }
+            },
+            250: {
+                "projeto": {
+                    "x_0": 7,
+                    "y_0": 395,
+                    "width": 110,
+                    "height": 70,
+                },
+                "cabecalho": {
+                    "x_0": 7,
+                    "y_0": 7,
+                    "width": 110,
+                    "height": 22,
+                },
+                "classified": {
+                    "x_0": 7,
+                    "y_0": 180,
+                    "width": 120,
                     "height": 20
                 }
             }
@@ -186,7 +232,7 @@ product_parameters = {
                 },
                 "bdgexAcessInfo":{
                     "x_0": 852,
-                    "y_0": 360,
+                    "y_0": 380,
                     "width": 105,
                     "height": 100,
                 }

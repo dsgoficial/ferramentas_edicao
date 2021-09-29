@@ -35,7 +35,7 @@ class MapTools:
         x_min = x - spacing_x/2
         x_max = x + spacing_x/2
         y = latitude
-        spacing_y = self.utm_grid.getSpacingX(escala)
+        spacing_y = self.utm_grid.getSpacingY(escala)
         y_min = y - spacing_y/2
         y_max = y + spacing_y/2
         rect = QgsRectangle(x_min, y_min, x_max, y_max)

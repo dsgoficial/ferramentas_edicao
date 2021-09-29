@@ -333,8 +333,8 @@ class Divisao(MapParent):
             mapItem = composition.itemById("map_divisao")
         if mapItem is not None:
             mapItem.setExtent(map_extent)
-            mapItem.refresh()
             mapItem.setLayers(layers_to_show)
+            mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
             mapItem.refresh()
 
     def unsetLabel(self, layer):

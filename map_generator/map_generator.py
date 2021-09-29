@@ -118,7 +118,7 @@ class MapManager(MapTools):
 
 		# Mapa de Divisão
 		if composition.itemById("map_divisao") is not None:
-			self.divisao.setEPSG(self.hemisferio, self.fuso)
+			# self.divisao.setEPSG(self.hemisferio, self.fuso)
 			ids_maplayers.extend(self.divisao.make(composition, map_extent_feature, showLayers, jsonData.get('territorio_internacional')))
 
 		# Mapa de Articulação
@@ -132,7 +132,7 @@ class MapManager(MapTools):
 		# Dados de escala e nome
 		self.dados_de_escala.setScale(self.scale*1000)
 		self.dados_de_escala.changeScaleLabels(composition)
-		editMapName(composition, jsonData.get('nome'), self.mi, self.inom)
+		editMapName(composition, jsonData.get('nome'), self.mi, self.inom, self.scale)
 
 		if composition.itemById('label_convencoes') is not None and self.productType == 'carta_ortoimagem':
 			self.legend.make(composition, self.scale, jsonData.get('classes_complementares', list()), self.defaults)

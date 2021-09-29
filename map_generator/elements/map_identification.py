@@ -1,81 +1,31 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- EditionPlugin
-                                 A QGIS plugin
- This plugin helps the edition of maps.
-                              -------------------
-        begin                : 2020-09-13
-        git sha              : $Format:%H$
-        copyright            : (C) 2020 by Ronaldo Martins da Silva Junior
-        email                : ronaldo.rmsjr@gmail.com
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
-
-
-def editMapName(composition, nome, mi, inom):
-    mapName = nome.upper() if nome else 'ESPECIAL'
-    if composition.itemById("label_nomeCarta") is not None:
-        label_nomeCarta = composition.itemById("label_nomeCarta")
-        label_nomeCarta.setText(mapName)
-        label_nomeCarta.refresh()
-    if composition.itemById("label_indice") is not None:
-        label_indice = composition.itemById("label_indice")
+def editMapName(composition, nome, mi, inom, scale):
+    if (mapNameLabel:=composition.itemById("label_nomeCarta")) is not None:
+        mapText = nome.upper() if nome else 'ESPECIAL'
+        mapNameLabel.setText(mapText)
+        mapNameLabel.refresh()
+    if (indiceLabel:=composition.itemById("label_indice")) is not None:
         if inom != 'Especial':
-            text_label_indice = "ÍNDICE: " + inom
-            label_indice.setVisible(True)
-            label_indice.setText(text_label_indice)
-            label_indice.refresh()
+            indiceText = "ÍNDICE: " + inom
+            indiceLabel.setVisible(True)
+            indiceLabel.setText(indiceText)
         else:
-            label_indice.setVisible(False)
-        label_indice.refresh()
-    if composition.itemById("label_mi") is not None:
-        label_mi = composition.itemById("label_mi")
+            indiceLabel.setVisible(False)
+        indiceLabel.refresh()
+    if (miLabel:=composition.itemById("label_mi")) is not None:
         if mi and mi != 'Especial':
-            label_mi.setVisible(True)
-            text_label_mi = "MI: " + mi
-            label_mi.setText(text_label_mi)
+            miText = f'{"MIR" if int(scale) == 250 else "MI"}: {mi}'
+            miLabel.setVisible(True)
+            miLabel.setText(miText)
         else:
-            label_mi.setVisible(False)
-        label_mi.refresh()
+            miLabel.setVisible(False)
+        miLabel.refresh()
 
 
-def editMapType(composition, text_productType):
-    if composition.itemById("label_nome_produto") is not None:
-        label_productType = composition.itemById("label_nome_produto")
-        label_productType.setText(text_productType)
-        label_productType.refresh()
-
-
-def editProjeto(composition, text_projetoNegrito):
-    if composition.itemById("label_projeto_negrito") is not None:
-        label_projeto_negrito = composition.itemById("label_projeto_negrito")
-        label_projeto_negrito.setText(text_projetoNegrito)
-        label_projeto_negrito.refresh()
-    if composition.itemById("label_projeto_normal") is not None:
-        label_projeto_normal = composition.itemById("label_projeto_normal")
-        label_projeto_normal.setText(text_projetonormal)
-        label_projeto_normal.refresh()
-
-
-def editCreditos(composition, text_creditosNegrito):
-    if composition.itemById("label_creditos_negrito") is not None:
-        label_creditos_negrito = composition.itemById("label_creditos_negrito")
-        label_creditos_negrito.setText(text_creditosNegrito)
-        label_creditos_negrito.refresh()
-    if composition.itemById("label_creditos_normal") is not None:
-        label_creditos_normal = composition.itemById("label_creditos_normal")
-        label_creditos_normal.setText(text_creditosnormal)
-        label_creditos_normal.refresh()
+def editMapType(composition, productTypeText):
+    if (productTypeLabel:=composition.itemById("label_nome_produto")) is not None:
+        productTypeLabel.setText(productTypeText)
+        productTypeLabel.refresh()
 
 
 def replaceLabelRegiao(composition, regioes_intersected):

@@ -537,8 +537,8 @@ class UtmGrid(QObject):
         # division         
         div_lat = 4
         div_lon = 6
-        next_lat = abs(lat) % div_lat
-        next_lon = abs(lon) % div_lon        
+        next_lat = abs(lat) % div_lat if abs(lat) % div_lat else div_lat
+        next_lon = abs(lon) % div_lon if abs(lon) % div_lon else div_lon
         for i in range(1,self.scales.index(scale)+1):
             div_lat = div_lat/len(self.scaleText[i])            
             n_lat = len(self.scaleText[i])-1

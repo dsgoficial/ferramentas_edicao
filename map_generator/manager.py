@@ -66,7 +66,6 @@ class DefaultMap(MapManager):
         strProductType = jsonData.get('strProductType')
 
         # Composition
-        print(compositionDict.keys())
         composition = compositionDict[scaleStr]
 
         # Necessary layers
