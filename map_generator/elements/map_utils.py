@@ -32,7 +32,7 @@ class MapParent:
         # adding to existing items
         #items, ok = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
         layout.loadFromTemplate(doc, QgsReadWriteContext())
-        self.updateQptVariables(layout, newValue)
+        self.updateQptVariables(layout, str(newValue))
         return layout
 
     def updateQptVariables(self, composition, newValue, defaultKey='edition_folder'):

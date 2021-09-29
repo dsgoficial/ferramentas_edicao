@@ -167,7 +167,7 @@ class EditionPlugin:
 
     def setTestData(self):        
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\NB-20-Z-D-II-3.json')
+        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\orto\\orto_250k.json')
         
         exportFolder = 'D:\\export'
         self.dlg.exportFolder.setFilePath(exportFolder)

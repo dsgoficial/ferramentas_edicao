@@ -29,7 +29,6 @@ class Defaults:
 product_parameters = {
     'carta_topografica': {
         "nome_produto": "Carta Topográfica",
-        "required_files": [],
         "grid": {
             "crossX": 4,
             "crossY": 4,
@@ -87,13 +86,6 @@ product_parameters = {
     },
     'carta_ortoimagem': {
         "nome_produto": "Carta Ortoimagem",
-        "required_files": [
-            ['map_generator', 'limites', 'estados_2019.shp'],
-            ['map_generator', 'limites', 'internacional.shp'],
-            ['map_generator', 'limites', 'municipios_2019.shp'],
-            ['map_generator', 'limites', 'oceano.shp'],
-            ['map_generator', 'limites', 'paises.shp']
-        ],
         "qpt": {
             25: {
                 "projeto": {
@@ -159,6 +151,18 @@ product_parameters = {
                     "y_0": 7,
                     "width": 110,
                     "height": 22,
+                },
+                "classified": {
+                    "x_0": 7,
+                    "y_0": 180,
+                    "width": 120,
+                    "height": 20
+                },
+                "bdgexAcessInfo":{
+                    "x_0": 729,
+                    "y_0": 440,
+                    "width": 105,
+                    "height": 100,
                 }
             },
             250: {
@@ -173,6 +177,18 @@ product_parameters = {
                     "y_0": 7,
                     "width": 110,
                     "height": 22,
+                },
+                "classified": {
+                    "x_0": 7,
+                    "y_0": 180,
+                    "width": 120,
+                    "height": 20
+                },
+                "bdgexAcessInfo":{
+                    "x_0": 852,
+                    "y_0": 360,
+                    "width": 105,
+                    "height": 100,
                 }
             }
         },
