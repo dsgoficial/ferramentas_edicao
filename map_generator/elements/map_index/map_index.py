@@ -532,20 +532,20 @@ class UtmGrid(QObject):
         # Initial part 
         INOM = 'N' if lat >= 0 else 'S'        
         INOM += string.ascii_uppercase[math.floor(abs(lat/4.)) % 26] + '-'
-        utm_zone = math.floor(31 + lon/6)
+        utm_zone = math.floor(31 + lon/6) if lon % 6 else int(30 + lon/6)
         INOM += str(utm_zone)
         # division         
         div_lat = 4
         div_lon = 6
         next_lat = abs(lat) % div_lat
-        next_lon = abs(lon) % div_lon        
+        next_lon = abs(lon) % div_lon
         for i in range(1,self.scales.index(scale)+1):
             div_lat = div_lat/len(self.scaleText[i])            
             n_lat = len(self.scaleText[i])-1
             n_lon = len(self.scaleText[i][0])-1
             div_lon = div_lon/len(self.scaleText[i][0])
             index_lat = math.floor(next_lat / div_lat) if lat <= 0 else n_lat - math.floor(next_lat / div_lat)
-            index_lon = math.floor(next_lon / div_lon) if lon >= 0 else n_lon- math.floor(next_lon / div_lon)
+            index_lon = math.floor(next_lon / div_lon) if lon >= 0 else n_lon - math.floor(next_lon / div_lon)
             part_inom = self.scaleText[i][index_lat][index_lon]
             INOM += '-' + part_inom
             next_lat = abs(next_lat) % div_lat

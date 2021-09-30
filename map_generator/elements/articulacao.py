@@ -3,7 +3,7 @@ from pathlib import Path
 
 from PyQt5.QtGui import QColor
 from qgis.core import (QgsLayerTreeGroup, QgsProject, QgsRuleBasedRenderer,
-                       QgsSymbol, QgsVectorLayer)
+                       QgsSymbol, QgsVectorLayer, QgsCoordinateReferenceSystem)
 
 from .map_utils import MapParent
 
@@ -40,7 +40,7 @@ class Articulation(MapParent):
         mapIDsToBeDisplayed.append(mapAreaLayer.id())
 
         # Updates composition
-        self.updateComposition(
+        self.updateMapItem(
             composition, gridLayer.extent(), mapAreaLayer,  articulationFrameLayer)
 
         if showLayers:
@@ -126,10 +126,11 @@ class Articulation(MapParent):
         layer_moldura_mi.setRenderer(renderer)
         layer_moldura_mi.triggerRepaint()
 
-    def updateComposition(self, composition, mapExtents, mapAreaLayer,  articulationFrameLayer):
+    def updateMapItem(self, composition, mapExtents, mapAreaLayer,  articulationFrameLayer):
         if (mapItem:=composition.itemById("map_articulacao")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
             mapItem.setExtent(mapExtents)
             mapItem.setLayers([articulationFrameLayer, mapAreaLayer])
+            mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
             mapItem.refresh()

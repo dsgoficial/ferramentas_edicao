@@ -49,8 +49,8 @@ class Legend():
         with open(_p / 'mapClassToLegend.json') as mappingData:
             self.legendMappingData = json.load(mappingData)
     
-    def buildLegend(self, composition, legendDict):
-        xAnchor, yAnchor = 726, 16
+    def buildLegend(self, composition, legendDict, anchor):
+        xAnchor, yAnchor = anchor
         x, y = xAnchor, yAnchor
         ySpacing = 4.8
         xSpacingFirstColumn = 2
@@ -104,10 +104,16 @@ class Legend():
             doc.setContent(content.read())
         return doc
 
+    @staticmethod
+    def getAnchor(scale):
+        if str(scale) == '250':
+            return 848, 16
+        return 726, 16
+
     def make(self, composition, scale, cfg, defaults):
         legendMappingData = self.legendMappingData.get(str(scale))
         legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(cfg)))
         legendClassesGrouped = self.groupLegend(legendClassesToDisplay, legendMappingData)
         legendClassesOrdered = self.orderLegend(legendClassesGrouped)
-        self.buildLegend(composition, legendClassesOrdered)
+        self.buildLegend(composition, legendClassesOrdered, self.getAnchor(scale))
             
