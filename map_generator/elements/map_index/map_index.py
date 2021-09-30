@@ -532,7 +532,7 @@ class UtmGrid(QObject):
         # Initial part 
         INOM = 'N' if lat >= 0 else 'S'        
         INOM += string.ascii_uppercase[math.floor(abs(lat/4.)) % 26] + '-'
-        utm_zone = math.floor(31 + lon/6) if lon%6 else 30 + lon/6
+        utm_zone = math.floor(31 + lon/6) if lon % 6 else int(30 + lon/6)
         INOM += str(utm_zone)
         # division         
         div_lat = 4
