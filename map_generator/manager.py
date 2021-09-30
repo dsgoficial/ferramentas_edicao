@@ -187,7 +187,7 @@ class DefaultMap(MapManager):
             return False, None, None
 
     def createMaps(self):
-        showLayers = True
+        showLayers = False
 
         # Set project crs
         oldProjValue = self.mc.setProjectProjection()
