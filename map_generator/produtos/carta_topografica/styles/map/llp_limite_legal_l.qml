@@ -745,7 +745,7 @@
             <substitutions/>
           </text-style>
           <text-format multilineAlign="1" leftDirectionSymbol="&lt;" rightDirectionSymbol=">" reverseDirectionSymbol="0" plussign="0" placeDirectionSymbol="0" addDirectionSymbol="0" useMaxLineLengthForAutoWrap="1" formatNumbers="0" autoWrapLength="0" wrapChar="|" decimals="3"/>
-          <placement priority="5" repeatDistanceUnits="MM" overrunDistance="0" centroidWhole="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" yOffset="0" centroidInside="0" repeatDistance="0" dist="0" placement="3" rotationAngle="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" distUnits="MM" offsetUnits="MM" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" layerType="LineGeometry" fitInPolygonOnly="0" preserveRotation="1" geometryGenerator="with_variable(&#xd;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xd;&#xa;)" polygonPlacementFlags="2" quadOffset="4" placementFlags="9" offsetType="0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" distMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleOut="-25" lineAnchorType="0" geometryGeneratorType="LineGeometry" overrunDistanceUnit="MM" geometryGeneratorEnabled="1"/>
+          <placement priority="5" repeatDistanceUnits="MM" overrunDistance="0" centroidWhole="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" yOffset="0" centroidInside="0" repeatDistance="0" dist="0" placement="3" rotationAngle="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" distUnits="MM" offsetUnits="MM" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" layerType="LineGeometry" fitInPolygonOnly="0" preserveRotation="1" geometryGenerator="with_variable(&#xd;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xd;&#xa;)" polygonPlacementFlags="2" quadOffset="4" placementFlags="9" offsetType="0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" distMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleOut="-25" lineAnchorType="0" geometryGeneratorType="LineGeometry" overrunDistanceUnit="MM" geometryGeneratorEnabled="1"/>
           <rendering drawLabels="1" obstacleType="1" fontMinPixelSize="3" obstacle="1" fontLimitPixelSize="0" zIndex="0" scaleMin="0" obstacleFactor="1" mergeLines="0" scaleVisibility="0" scaleMax="0" fontMaxPixelSize="10000" displayAll="1" maxNumLabels="2000" upsidedownLabels="0" labelPerPart="0" minFeatureSize="0" limitNumLabels="0"/>
           <dd_properties>
             <Option type="Map">
@@ -753,7 +753,7 @@
               <Option name="properties" type="Map">
                 <Option name="Show" type="Map">
                   <Option name="active" value="true" type="bool"/>
-                  <Option name="expression" value="with_variable(&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;true&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;)" type="QString"/>
+                  <Option name="expression" value="with_variable(&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;true&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;)" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
               </Option>
@@ -859,7 +859,7 @@
             <substitutions/>
           </text-style>
           <text-format multilineAlign="0" leftDirectionSymbol="&lt;" rightDirectionSymbol=">" reverseDirectionSymbol="0" plussign="0" placeDirectionSymbol="0" addDirectionSymbol="0" useMaxLineLengthForAutoWrap="1" formatNumbers="0" autoWrapLength="0" wrapChar="" decimals="3"/>
-          <placement priority="5" repeatDistanceUnits="MM" overrunDistance="0" centroidWhole="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" yOffset="0" centroidInside="0" repeatDistance="200" dist="0.6" placement="3" rotationAngle="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" distUnits="MM" offsetUnits="MM" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" layerType="LineGeometry" fitInPolygonOnly="0" preserveRotation="1" geometryGenerator="with_variable(&#xd;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xd;&#xa;)" polygonPlacementFlags="2" quadOffset="4" placementFlags="10" offsetType="0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" distMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleOut="-25" lineAnchorType="0" geometryGeneratorType="LineGeometry" overrunDistanceUnit="MM" geometryGeneratorEnabled="1"/>
+          <placement priority="5" repeatDistanceUnits="MM" overrunDistance="0" centroidWhole="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" yOffset="0" centroidInside="0" repeatDistance="200" dist="0.6" placement="3" rotationAngle="0" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" distUnits="MM" offsetUnits="MM" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" layerType="LineGeometry" fitInPolygonOnly="0" preserveRotation="1" geometryGenerator="with_variable(&#xd;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xd;&#xa;)" polygonPlacementFlags="2" quadOffset="4" placementFlags="10" offsetType="0" xOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" distMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleOut="-25" lineAnchorType="0" geometryGeneratorType="LineGeometry" overrunDistanceUnit="MM" geometryGeneratorEnabled="1"/>
           <rendering drawLabels="1" obstacleType="1" fontMinPixelSize="3" obstacle="1" fontLimitPixelSize="0" zIndex="0" scaleMin="0" obstacleFactor="1" mergeLines="0" scaleVisibility="0" scaleMax="0" fontMaxPixelSize="10000" displayAll="0" maxNumLabels="2000" upsidedownLabels="0" labelPerPart="0" minFeatureSize="0" limitNumLabels="0"/>
           <dd_properties>
             <Option type="Map">
@@ -867,7 +867,7 @@
               <Option name="properties" type="Map">
                 <Option name="Show" type="Map">
                   <Option name="active" value="true" type="bool"/>
-                  <Option name="expression" value="with_variable(&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;true&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;)" type="QString"/>
+                  <Option name="expression" value="with_variable(&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa;&#xd;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xd;&#xa;&#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;true&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;&#xd;&#xd;&#xa;)" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
               </Option>
@@ -1266,22 +1266,38 @@
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
   <editforminitfilepath></editforminitfilepath>
-  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-QGIS forms can have a Python function that is called when the form is
-opened.
-
-Use this function to add extra logic to your forms.
-
-Enter the name of the function in the "Python Init function"
-field.
-An example follows:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+  <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+
+"""
+
+QGIS forms can have a Python function that is called when the form is
+
+opened.
+
+
+
+Use this function to add extra logic to your forms.
+
+
+
+Enter the name of the function in the "Python Init function"
+
+field.
+
+An example follows:
+
+"""
+
+from qgis.PyQt.QtWidgets import QWidget
+
+
+
+def my_form_open(dialog, layer, feature):
+
+	geom = feature.geometry()
+
+	control = dialog.findChild(QWidget, "MyLineEdit")
+
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
   <editorlayout>generatedlayout</editorlayout>

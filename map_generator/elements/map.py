@@ -7,6 +7,7 @@ from qgis.core import (
     QgsCoordinateTransform, QgsFeature, QgsLayerTreeGroup, QgsLayoutSize,
     QgsUnitTypes, QgsUnitTypes, QgsLayoutItem
 )
+from qgis import processing
 
 from .map_utils import MapParent
 
@@ -128,12 +129,20 @@ class Map(MapParent):
             grid_layer, selected_feature)
         QgsProject.instance().addMapLayer(layer_grid_styled, False)
         copy = self.cloneVectorLayer(layer_grid_styled, 'aux_moldura')
+        # copyLabel = self.cloneVectorLayer(layer_grid_styled, 'aux_label')
+        crs = next(iter(layers['map'])).crs()
+        copyLabel = self.cloneVectorLayerReproject(layer_grid_styled, 'aux_label', crs)
+        copyLabelStyle = Path(__file__).parent.parent / 'styles' / 'grid' / 'aux_label.qml'
+        copyLabel.loadNamedStyle(str(copyLabelStyle))
+        QgsProject.instance().addMapLayer(copyLabel, False)
         # copy = layer_grid_styled.clone()
         copyStyle = Path(__file__).parent.parent / 'styles' / 'grid' / 'style.qml'
         copy.loadNamedStyle(str(copyStyle))
         QgsProject.instance().addMapLayer(copy, False)
-        map_layers.append(copy.id())
-        map_layers.append(layer_grid_styled.id())
+        map_layers.extend([copy.id(), copyLabel.id(), layer_grid_styled.id()])
+        # map_layers.append(copy.id())
+        # map_layers.append(copyLabel.id())
+        # map_layers.append(layer_grid_styled.id())
         mapGroup_node.addLayer(layer_grid_styled)
         self.generateGridStyleForLayer(layer_grid_styled)
         layer_grid_styled.triggerRepaint()
@@ -143,8 +152,11 @@ class Map(MapParent):
         QgsProject.instance().addMapLayer(layer_mascara_rotulo, False)
         map_layers.append(layer_mascara_rotulo.id())
 
+
+        # layers_to_lock = [layer_mascara_rotulo, copy, copyStyle, *layers['map'], *layers['images']]
         layers_to_lock = [layer_mascara_rotulo]
         layers_to_lock.extend([copy])
+        layers_to_lock.extend([copyLabel])
         layers_to_lock.extend(layers['map'])
         layers_to_lock.extend(layers['images'])
         self.updateMapItem2(composition, map_extent, map_extent_transformed,
