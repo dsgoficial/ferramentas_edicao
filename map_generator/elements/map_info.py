@@ -249,7 +249,7 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Declinação magnética: NOAA (WMM 2020-2025)')
 
             secondTable = next(tables)
-            if tecnicalInfo.get('observacao_homologacao', True) is False:
+            if tecnicalInfo.get('observacao_homologacao', True):
                 _tmp = self.generateElement(secondTable, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '** Limites sujeitos  à homologação do referido órgão.')
             _tmp = self.generateElement(secondTable, 'tr')
