@@ -163,17 +163,18 @@ class MapTools:
                 return p
         return stylesFolder / f'{layerName}.qml'
 
-    def exportMap(self, composition):
+    def exportMap(self, composition, debugMode):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
-        pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
-        pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
-        pdfExporterSettings.rasterizeWholeImage = True
-        pdfExporterSettings.simplifyGeometries = False
-        pdfExporterSettings.appendGeoreference = True
-        pdfExporterSettings.exportMetadata = False
-        pdfExporterSettings.dpi = 400
-        statusPdf = exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
+        if not debugMode:
+            pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
+            pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
+            pdfExporterSettings.rasterizeWholeImage = True
+            pdfExporterSettings.simplifyGeometries = False
+            pdfExporterSettings.appendGeoreference = True
+            pdfExporterSettings.exportMetadata = False
+            pdfExporterSettings.dpi = 400
+            statusPdf = exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
         if self.dlgCfg.exportTiff:
             tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
@@ -233,7 +234,7 @@ class MapTools:
 
                 os.remove(reprojectPath)
 
-    def deleteMaps(self, idsMapLayers):
+    def removeMaps(self, idsMapLayers):
         QgsProject.instance().removeMapLayers(idsMapLayers)
 
     def cleanLayerTreeRoot(self):

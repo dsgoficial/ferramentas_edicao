@@ -212,7 +212,7 @@
 <substitutions/>
 </text-style>
 <text-format autoWrapLength="0" plussign="0" placeDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;" rightDirectionSymbol=">" reverseDirectionSymbol="0" multilineAlign="1" formatNumbers="0" decimals="3" useMaxLineLengthForAutoWrap="1" wrapChar="|"/>
-<placement placement="4" geometryGenerator="with_variable(&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;)" layerType="LineGeometry" fitInPolygonOnly="0" maxCurvedCharAngleOut="-25" geometryGeneratorEnabled="1" yOffset="-0.5" polygonPlacementFlags="3" rotationAngle="0" quadOffset="2" overrunDistanceUnit="MM" distUnits="MM" preserveRotation="1" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" centroidWhole="0" offsetUnits="MM" centroidInside="0" offsetType="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" dist="0" repeatDistance="0" lineAnchorType="0" lineAnchorClipping="0" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" priority="5" repeatDistanceUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistance="0" placementFlags="10" xOffset="0.5" geometryGeneratorType="LineGeometry"/>
+<placement placement="4" geometryGenerator="with_variable(&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;)" layerType="LineGeometry" fitInPolygonOnly="0" maxCurvedCharAngleOut="-25" geometryGeneratorEnabled="1" yOffset="-0.5" polygonPlacementFlags="3" rotationAngle="0" quadOffset="2" overrunDistanceUnit="MM" distUnits="MM" preserveRotation="1" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" centroidWhole="0" offsetUnits="MM" centroidInside="0" offsetType="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" dist="0" repeatDistance="0" lineAnchorType="0" lineAnchorClipping="0" distMapUnitScale="3x:0,0,0,0,0,0" lineAnchorPercent="0.5" priority="5" repeatDistanceUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistance="0" placementFlags="10" xOffset="0.5" geometryGeneratorType="LineGeometry"/>
 <rendering obstacle="1" minFeatureSize="0" obstacleFactor="1" scaleMin="0" drawLabels="1" fontMinPixelSize="3" displayAll="0" maxNumLabels="2000" obstacleType="1" zIndex="0" fontLimitPixelSize="0" scaleMax="0" unplacedVisibility="0" fontMaxPixelSize="10000" upsidedownLabels="0" mergeLines="0" scaleVisibility="0" limitNumLabels="0" labelPerPart="0"/>
 <dd_properties>
 <Option type="Map">
@@ -240,7 +240,7 @@
 </Option>
 <Option type="Map" name="Show">
 <Option type="bool" name="active" value="true"/>
-<Option type="QString" name="expression" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects( centroid( $geometry),  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)"/>
+<Option type="QString" name="expression" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects( centroid( $geometry),  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)"/>
 <Option type="int" name="type" value="3"/>
 </Option>
 </Option>
@@ -601,22 +601,38 @@
 <editforminit/>
 <editforminitcodesource>0</editforminitcodesource>
 <editforminitfilepath></editforminitfilepath>
-<editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-QGIS forms can have a Python function that is called when the form is
-opened.
-
-Use this function to add extra logic to your forms.
-
-Enter the name of the function in the "Python Init function"
-field.
-An example follows:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+<editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+
+"""
+
+QGIS forms can have a Python function that is called when the form is
+
+opened.
+
+
+
+Use this function to add extra logic to your forms.
+
+
+
+Enter the name of the function in the "Python Init function"
+
+field.
+
+An example follows:
+
+"""
+
+from qgis.PyQt.QtWidgets import QWidget
+
+
+
+def my_form_open(dialog, layer, feature):
+
+	geom = feature.geometry()
+
+	control = dialog.findChild(QWidget, "MyLineEdit")
+
 ]]></editforminitcode>
 <featformsuppress>0</featformsuppress>
 <editorlayout>generatedlayout</editorlayout>

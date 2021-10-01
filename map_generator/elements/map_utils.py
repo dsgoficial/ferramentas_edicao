@@ -4,8 +4,8 @@ from pathlib import Path
 from PyQt5.QtCore import QPointF, QSettings
 from PyQt5.QtXml import QDomDocument
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
-                       QgsLayout, QgsLayoutItem, QgsLayoutPoint,
-                       QgsPrintLayout, QgsProject, QgsRasterLayer,
+                       QgsLayout, QgsLayoutItem, QgsLayoutPoint,QgsCoordinateTransform,
+                       QgsPrintLayout, QgsProject, QgsRasterLayer, QgsDataSourceUri,
                        QgsReadWriteContext, QgsVectorLayer)
 
 from .map_index.map_index import UtmGrid
@@ -168,6 +168,25 @@ class MapParent:
         copyLayerDataProvider.renameAttributes(renameDict)
         copyLayer.updateFields()
         copyLayerDataProvider.addFeatures(layer.getFeatures())
+        return copyLayer
+
+    @staticmethod
+    def cloneVectorLayerReproject(layer, layerName, crsDest):
+        dataProviderUri = layer.dataProvider().dataSourceUri()
+        dataProviderUri = dataProviderUri.replace(layer.crs().authid(), crsDest.authid())
+        copyLayer = QgsVectorLayer(dataProviderUri, layerName, 'memory')
+        copyLayerDataProvider = copyLayer.dataProvider()
+        renameDict = {x:layer.attributeDisplayName(x) for x in layer.attributeList()}
+        copyLayerDataProvider.renameAttributes(renameDict)
+        copyLayer.updateFields()
+        transform = QgsCoordinateTransform(layer.crs(), crsDest, QgsProject.instance())
+        _tmp = []
+        for feat in layer.getFeatures():
+            geom = feat.geometry()
+            geom.transform(transform)
+            feat.setGeometry(geom)
+            _tmp.append(feat)
+        copyLayerDataProvider.addFeatures(_tmp)
         return copyLayer
 
 

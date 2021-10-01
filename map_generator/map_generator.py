@@ -172,5 +172,5 @@ class MapManager(MapTools):
 		#ids_maplayers.extend([grid_layer.id()])
 		
 		# if not showLayers:
-			# self.deleteMaps(ids_maplayers)
+			# self.removeMaps(ids_maplayers)
 			# delete_file(path_qrCode) # deleting qrCode

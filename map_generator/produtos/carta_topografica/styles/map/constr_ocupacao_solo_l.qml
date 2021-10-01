@@ -219,7 +219,7 @@
 <substitutions/>
 </text-style>
 <text-format rightDirectionSymbol=">" reverseDirectionSymbol="0" plussign="0" formatNumbers="0" autoWrapLength="0" placeDirectionSymbol="0" decimals="3" useMaxLineLengthForAutoWrap="1" multilineAlign="0" leftDirectionSymbol="&lt;" addDirectionSymbol="0" wrapChar="|"/>
-<placement placement="4" yOffset="-0.5" polygonPlacementFlags="2" distMapUnitScale="3x:0,0,0,0,0,0" xOffset="0.5" layerType="LineGeometry" quadOffset="2" fitInPolygonOnly="0" placementFlags="10" overrunDistance="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" centroidInside="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" geometryGenerator="with_variable(&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;)" dist="0" maxCurvedCharAngleOut="-25" repeatDistance="0" rotationAngle="0" distUnits="MM" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" repeatDistanceUnits="MM" offsetType="0" offsetUnits="MM" preserveRotation="1" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistanceUnit="MM" lineAnchorType="0" geometryGeneratorEnabled="1" centroidWhole="0" lineAnchorPercent="0.5" geometryGeneratorType="LineGeometry" priority="5"/>
+<placement placement="4" yOffset="-0.5" polygonPlacementFlags="2" distMapUnitScale="3x:0,0,0,0,0,0" xOffset="0.5" layerType="LineGeometry" quadOffset="2" fitInPolygonOnly="0" placementFlags="10" overrunDistance="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" maxCurvedCharAngleIn="25" centroidInside="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" geometryGenerator="with_variable(&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;)" dist="0" maxCurvedCharAngleOut="-25" repeatDistance="0" rotationAngle="0" distUnits="MM" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" repeatDistanceUnits="MM" offsetType="0" offsetUnits="MM" preserveRotation="1" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" overrunDistanceUnit="MM" lineAnchorType="0" geometryGeneratorEnabled="1" centroidWhole="0" lineAnchorPercent="0.5" geometryGeneratorType="LineGeometry" priority="5"/>
 <rendering labelPerPart="0" limitNumLabels="0" scaleVisibility="0" zIndex="0" obstacle="1" fontLimitPixelSize="0" upsidedownLabels="0" fontMinPixelSize="3" obstacleType="1" displayAll="1" drawLabels="1" fontMaxPixelSize="10000" scaleMin="0" scaleMax="0" minFeatureSize="0" obstacleFactor="1" maxNumLabels="2000" mergeLines="0"/>
 <dd_properties>
 <Option type="Map">
@@ -237,7 +237,7 @@
 </Option>
 <Option type="Map" name="Show">
 <Option type="bool" value="true" name="active"/>
-<Option type="QString" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('auxiliar_moldura', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)" name="expression"/>
+<Option type="QString" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)" name="expression"/>
 <Option type="int" value="3" name="type"/>
 </Option>
 </Option>
@@ -636,22 +636,38 @@
 <editforminit/>
 <editforminitcodesource>0</editforminitcodesource>
 <editforminitfilepath></editforminitfilepath>
-<editforminitcode><![CDATA[# -*- código: utf-8 -*-
-"""
-Formas QGIS podem ter uma função Python que é chamada quando o formulário é
-aberto.
-
-Use esta função para adicionar lógica extra para seus formulários.
-
-Digite o nome da função na "função Python Init"
-campo.
-Um exemplo a seguir:
-"""
-de qgis.PyQt.QtWidgets importar QWidget
-
-def my_form_open(diálogo, camada, feição):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+<editforminitcode><![CDATA[# -*- código: utf-8 -*-
+
+"""
+
+Formas QGIS podem ter uma função Python que é chamada quando o formulário é
+
+aberto.
+
+
+
+Use esta função para adicionar lógica extra para seus formulários.
+
+
+
+Digite o nome da função na "função Python Init"
+
+campo.
+
+Um exemplo a seguir:
+
+"""
+
+de qgis.PyQt.QtWidgets importar QWidget
+
+
+
+def my_form_open(diálogo, camada, feição):
+
+	geom = feature.geometry()
+
+	control = dialog.findChild(QWidget, "MyLineEdit")
+
 ]]></editforminitcode>
 <featformsuppress>0</featformsuppress>
 <editorlayout>generatedlayout</editorlayout>
