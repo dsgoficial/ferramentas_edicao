@@ -166,6 +166,7 @@ class MapTools:
     def exportMap(self, composition, debugMode):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
+        exportStatus = 0
         if not debugMode:
             pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
             pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
@@ -174,15 +175,15 @@ class MapTools:
             pdfExporterSettings.appendGeoreference = True
             pdfExporterSettings.exportMetadata = False
             pdfExporterSettings.dpi = 400
-            statusPdf = exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
+            exportStatus += exporter.exportToPdf(pdfFilePath, pdfExporterSettings)
         if self.dlgCfg.exportTiff:
             tiffFilePath = os.path.join(self.exportFolder, f'{basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
             tiffExporterSettings.dpi = 400
             statusTiff = exporter.exportToImage(tiffFilePath, tiffExporterSettings)
-            statusPdf += statusTiff
+            exportStatus += statusTiff
         del exporter
-        return not bool(statusPdf)
+        return not bool(exportStatus)
 
     def removeCreationDataGroups(self, map_groups=['localizacao', 'articulation', 'map', 'minimap',  'divisao']):
         root = QgsProject.instance().layerTreeRoot()
