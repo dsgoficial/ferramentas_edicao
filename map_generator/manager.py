@@ -186,7 +186,7 @@ class DefaultMap(MapManager):
             return False, None, None
 
     def createMaps(self):
-        showLayers = True
+        showLayers = (Path(__file__).parent.parent / '.env').exists()
 
         # Set project crs
         oldProjValue = self.mc.setProjectProjection()
@@ -231,15 +231,18 @@ class DefaultMap(MapManager):
                 QgsProject.instance().addMapLayer(layer_feature_map_extent, False)
 
                 self.setElementsConfig(strProductType)
-                ids_maplayer = self.createAll(composition, inomen, feature_map_extent,
+                idsMapLayers = self.createAll(composition, inomen, feature_map_extent,
                                layer_feature_map_extent, layers, jsonData, showLayers)
                 if showLayers:
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                    self.setupMasks(strProductType)
-                self.exportMap(composition)
-                # QgsProject.instance().removeMapLayers(ids_maplayer)
+                self.exportMap(composition, showLayers)
+                self.setupMasks(strProductType)
+                if not showLayers:
+                    self.removeMaps(idsMapLayers)
+                    self.cleanLayerTreeRoot()
+
         # Reprojeta se for o caso
         if self.dlgCfg.exportTiff:
             self.reprojectTiffs()
@@ -248,4 +251,3 @@ class DefaultMap(MapManager):
         self.mc.setProjectProjection(oldProjValue)
 
         # self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
-        # self.cleanLayerTreeRoot()

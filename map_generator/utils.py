@@ -163,10 +163,10 @@ class MapTools:
                 return p
         return stylesFolder / f'{layerName}.qml'
 
-    def exportMap(self, composition):
+    def exportMap(self, composition, debugMode):
         basename = self.mi + '_' + self.inom if self.mi else self.inom
         exporter = QgsLayoutExporter(composition)
-        if False:
+        if not debugMode:
             pdfFilePath = os.path.join(self.exportFolder, f'{basename}.pdf')
             pdfExporterSettings = QgsLayoutExporter.PdfExportSettings()
             pdfExporterSettings.rasterizeWholeImage = True
@@ -232,7 +232,7 @@ class MapTools:
 
                 os.remove(reprojectPath)
 
-    def deleteMaps(self, idsMapLayers):
+    def removeMaps(self, idsMapLayers):
         QgsProject.instance().removeMapLayers(idsMapLayers)
 
     def cleanLayerTreeRoot(self):
