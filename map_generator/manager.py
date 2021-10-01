@@ -237,17 +237,22 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
-                self.exportMap(composition, showLayers)
+                exportStatus = self.exportMap(composition, showLayers)
                 self.setupMasks(strProductType)
                 if not showLayers:
                     self.removeMaps(idsMapLayers)
                     self.cleanLayerTreeRoot()
 
-        # Reprojeta se for o caso
         if self.dlgCfg.exportTiff:
             self.reprojectTiffs()
 
         # if not showLayers:
         self.mc.setProjectProjection(oldProjValue)
 
-        # self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
+        if hasattr(self, 'iface'):
+            if exportStatus:
+                self.iface.messageBar().pushMessage('Status', f'Exportação concluída: {len(self.dlgCfg.jsonFilesPaths)} mapas foram exportados', Qgis.Success)
+            elif showLayers:
+                pass
+            else:
+                self.iface.messageBar().pushMessage('Status', f'Problemas na exportação dos mapas', Qgis.Critical)
