@@ -191,6 +191,14 @@
             "schema": "edgv"
         },
         {
+            "tabela": "elemnat_ilha_p",
+            "schema": "edgv"
+        },
+        {
+            "tabela": "elemnat_ilha_a",
+            "schema": "edgv"
+        },
+        {
             "tabela": "llp_area_pub_militar_l",
             "schema": "edgv"
         },

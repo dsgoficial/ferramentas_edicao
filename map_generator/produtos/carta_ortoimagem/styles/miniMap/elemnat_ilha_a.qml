@@ -1,11 +1,8 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis labelsEnabled="1" styleCategories="Symbology|Labeling" version="3.20.2-Odense">
-  <renderer-v2 type="RuleRenderer" enableorderby="0" symbollevels="0" forceraster="0">
-    <rules key="{c6ed9ba4-2ba1-4a19-ae91-06463f9362ed}">
-      <rule label="Carta" filter=" &quot;carta_simbolizacao&quot; = 1" symbol="0" key="{1364bdea-9f0d-45f9-a8a1-940f4568e4fc}"/>
-    </rules>
+  <renderer-v2 type="singleSymbol" enableorderby="0" symbollevels="0" forceraster="0">
     <symbols>
-      <symbol type="marker" force_rhr="0" clip_to_extent="1" name="0" alpha="1">
+      <symbol type="fill" force_rhr="0" clip_to_extent="1" name="0" alpha="1">
         <data_defined_properties>
           <Option type="Map">
             <Option type="QString" name="name" value=""/>
@@ -13,47 +10,31 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
+        <layer pass="0" enabled="1" locked="0" class="SimpleFill">
           <Option type="Map">
-            <Option type="QString" name="angle" value="0"/>
-            <Option type="QString" name="cap_style" value="square"/>
-            <Option type="QString" name="color" value="243,166,178,0"/>
-            <Option type="QString" name="horizontal_anchor_point" value="1"/>
+            <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="color" value="190,178,151,255"/>
             <Option type="QString" name="joinstyle" value="bevel"/>
-            <Option type="QString" name="name" value="circle"/>
             <Option type="QString" name="offset" value="0,0"/>
             <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
             <Option type="QString" name="offset_unit" value="MM"/>
             <Option type="QString" name="outline_color" value="35,35,35,255"/>
             <Option type="QString" name="outline_style" value="no"/>
-            <Option type="QString" name="outline_width" value="0"/>
-            <Option type="QString" name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="outline_width" value="0.26"/>
             <Option type="QString" name="outline_width_unit" value="MM"/>
-            <Option type="QString" name="scale_method" value="diameter"/>
-            <Option type="QString" name="size" value="2"/>
-            <Option type="QString" name="size_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="size_unit" value="MM"/>
-            <Option type="QString" name="vertical_anchor_point" value="1"/>
+            <Option type="QString" name="style" value="no"/>
           </Option>
-          <prop v="0" k="angle"/>
-          <prop v="square" k="cap_style"/>
-          <prop v="243,166,178,0" k="color"/>
-          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+          <prop v="190,178,151,255" k="color"/>
           <prop v="bevel" k="joinstyle"/>
-          <prop v="circle" k="name"/>
           <prop v="0,0" k="offset"/>
           <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
           <prop v="MM" k="offset_unit"/>
           <prop v="35,35,35,255" k="outline_color"/>
           <prop v="no" k="outline_style"/>
-          <prop v="0" k="outline_width"/>
-          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="0.26" k="outline_width"/>
           <prop v="MM" k="outline_width_unit"/>
-          <prop v="diameter" k="scale_method"/>
-          <prop v="2" k="size"/>
-          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
-          <prop v="MM" k="size_unit"/>
-          <prop v="1" k="vertical_anchor_point"/>
+          <prop v="no" k="style"/>
           <data_defined_properties>
             <Option type="Map">
               <Option type="QString" name="name" value=""/>
@@ -64,12 +45,14 @@
         </layer>
       </symbol>
     </symbols>
+    <rotation/>
+    <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{10c43916-45ac-4c68-87ee-1587a4700486}">
-      <rule filter=" &quot;carta_simbolizacao&quot; = 1" key="{05c996ff-2cb6-449e-bc67-d509b949b926}" description="Carta">
+    <rules key="{59163c22-0456-4217-a7ee-0d0dff717895}">
+      <rule filter=" &quot;rotular_carta_mini&quot; = 1" key="{21fe3b38-c9fb-4d3e-8c4a-6b4a91ae97f0}">
         <settings calloutType="simple">
-          <text-style fontWordSpacing="0" multilineHeight="0.80000000000000004" fontWeight="50" fontFamily="Noto Sans" textOrientation="horizontal" useSubstitutions="0" textColor="255,255,255,255" blendMode="0" namedStyle="Italic" fontStrikeout="0" fontSize="16" previewBkgrdColor="255,255,255,255" fontUnderline="0" fieldName="texto_edicao" capitalization="0" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" fontItalic="1" legendString="Aa" textOpacity="1" fontSizeUnit="Point" fontLetterSpacing="0" isExpression="0">
+          <text-style fontWordSpacing="0" multilineHeight="0.80000000000000004" fontWeight="50" fontFamily="Noto Sans" textOrientation="horizontal" useSubstitutions="0" textColor="255,255,255,255" blendMode="0" namedStyle="Condensed Italic" fontStrikeout="0" fontSize="6" previewBkgrdColor="255,255,255,255" fontUnderline="0" fieldName="texto_edicao" capitalization="1" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" fontItalic="1" legendString="Aa" textOpacity="1" fontSizeUnit="Point" fontLetterSpacing="0" isExpression="0">
             <families/>
             <text-buffer bufferSize="1" bufferOpacity="1" bufferDraw="1" bufferNoFill="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="0,0,0,255" bufferSizeUnits="Point" bufferBlendMode="0" bufferJoinStyle="128"/>
             <text-mask maskType="0" maskOpacity="1" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskJoinStyle="128" maskEnabled="1" maskSize="0.20000000000000001" maskedSymbolLayers=""/>
@@ -86,7 +69,7 @@
                   <Option type="Map">
                     <Option type="QString" name="angle" value="0"/>
                     <Option type="QString" name="cap_style" value="square"/>
-                    <Option type="QString" name="color" value="183,72,75,255"/>
+                    <Option type="QString" name="color" value="231,113,72,255"/>
                     <Option type="QString" name="horizontal_anchor_point" value="1"/>
                     <Option type="QString" name="joinstyle" value="bevel"/>
                     <Option type="QString" name="name" value="circle"/>
@@ -106,7 +89,7 @@
                   </Option>
                   <prop v="0" k="angle"/>
                   <prop v="square" k="cap_style"/>
-                  <prop v="183,72,75,255" k="color"/>
+                  <prop v="231,113,72,255" k="color"/>
                   <prop v="1" k="horizontal_anchor_point"/>
                   <prop v="bevel" k="joinstyle"/>
                   <prop v="circle" k="name"/>
@@ -185,47 +168,17 @@
             </dd_properties>
             <substitutions/>
           </text-style>
-          <text-format leftDirectionSymbol="&lt;" formatNumbers="0" useMaxLineLengthForAutoWrap="1" reverseDirectionSymbol="0" placeDirectionSymbol="0" multilineAlign="0" addDirectionSymbol="0" wrapChar="|" rightDirectionSymbol=">" autoWrapLength="0" decimals="3" plussign="0"/>
-          <placement priority="5" quadOffset="4" offsetType="0" preserveRotation="1" maxCurvedCharAngleIn="25" maxCurvedCharAngleOut="-25" overrunDistanceUnit="MM" lineAnchorClipping="0" geometryGeneratorType="PointGeometry" placement="1" layerType="PointGeometry" xOffset="0" geometryGeneratorEnabled="1" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="0" dist="0" offsetUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" distUnits="MM" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" centroidWhole="0" centroidInside="0" fitInPolygonOnly="0" polygonPlacementFlags="2" distMapUnitScale="3x:0,0,0,0,0,0" placementFlags="9" overrunDistance="0" lineAnchorPercent="0.5" lineAnchorType="0" yOffset="0" rotationAngle="0" repeatDistanceUnits="MM"/>
-          <rendering limitNumLabels="0" maxNumLabels="2000" upsidedownLabels="0" scaleMin="0" scaleVisibility="0" obstacleType="1" scaleMax="0" drawLabels="1" zIndex="0" minFeatureSize="0" displayAll="1" labelPerPart="0" fontMaxPixelSize="10000" fontLimitPixelSize="0" mergeLines="0" obstacleFactor="1" unplacedVisibility="0" fontMinPixelSize="3" obstacle="1"/>
+          <text-format leftDirectionSymbol="&lt;" formatNumbers="0" useMaxLineLengthForAutoWrap="1" reverseDirectionSymbol="0" placeDirectionSymbol="0" multilineAlign="3" addDirectionSymbol="0" wrapChar="|" rightDirectionSymbol=">" autoWrapLength="0" decimals="3" plussign="0"/>
+          <placement priority="5" quadOffset="4" offsetType="0" preserveRotation="1" maxCurvedCharAngleIn="25" maxCurvedCharAngleOut="-25" overrunDistanceUnit="MM" lineAnchorClipping="0" geometryGeneratorType="PolygonGeometry" placement="0" layerType="PolygonGeometry" xOffset="0" geometryGeneratorEnabled="1" labelOffsetMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="0" dist="0" offsetUnits="MM" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" geometryGenerator="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersection(centroid($geometry),  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;$geometry&#xd;&#xa;END&#xd;&#xa;)" distUnits="MM" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" centroidWhole="1" centroidInside="1" fitInPolygonOnly="0" polygonPlacementFlags="3" distMapUnitScale="3x:0,0,0,0,0,0" placementFlags="10" overrunDistance="0" lineAnchorPercent="0.5" lineAnchorType="0" yOffset="0" rotationAngle="0" repeatDistanceUnits="MM"/>
+          <rendering limitNumLabels="0" maxNumLabels="2000" upsidedownLabels="0" scaleMin="0" scaleVisibility="0" obstacleType="1" scaleMax="0" drawLabels="1" zIndex="0" minFeatureSize="0" displayAll="0" labelPerPart="0" fontMaxPixelSize="10000" fontLimitPixelSize="0" mergeLines="0" obstacleFactor="1" unplacedVisibility="0" fontMinPixelSize="3" obstacle="1"/>
           <dd_properties>
             <Option type="Map">
               <Option type="QString" name="name" value=""/>
               <Option type="Map" name="properties">
-                <Option type="Map" name="BufferColor">
+                <Option type="Map" name="AlwaysShow">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="&quot;cor_buffer&quot;"/>
+                  <Option type="QString" name="expression" value="&quot;label_x&quot; IS NOT NULL AND  &quot;label_y&quot; IS NOT NULL"/>
                   <Option type="int" name="type" value="3"/>
-                </Option>
-                <Option type="Map" name="BufferDraw">
-                  <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="&quot;tamanho_buffer&quot; IS NOT NULL"/>
-                  <Option type="int" name="type" value="3"/>
-                </Option>
-                <Option type="Map" name="BufferSize">
-                  <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="&quot;tamanho_buffer&quot;"/>
-                  <Option type="int" name="type" value="3"/>
-                </Option>
-                <Option type="Map" name="Color">
-                  <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="&quot;cor&quot;"/>
-                  <Option type="int" name="type" value="3"/>
-                </Option>
-                <Option type="Map" name="FontLetterSpacing">
-                  <Option type="bool" name="active" value="false"/>
-                  <Option type="int" name="type" value="1"/>
-                  <Option type="QString" name="val" value=""/>
-                </Option>
-                <Option type="Map" name="FontStyle">
-                  <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="&quot;estilo_fonte&quot;"/>
-                  <Option type="int" name="type" value="3"/>
-                </Option>
-                <Option type="Map" name="FontWordSpacing">
-                  <Option type="bool" name="active" value="false"/>
-                  <Option type="int" name="type" value="1"/>
-                  <Option type="QString" name="val" value=""/>
                 </Option>
                 <Option type="Map" name="MultiLineAlignment">
                   <Option type="bool" name="active" value="true"/>
@@ -244,7 +197,7 @@
                 </Option>
                 <Option type="Map" name="Show">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects($geometry,  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)"/>
+                  <Option type="QString" name="expression" value="with_variable(&#xd;&#xa; 'moldura',&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;THEN &#xd;&#xa;intersects(centroid($geometry),  @moldura) &#xd;&#xa;ELSE&#xd;&#xa;true&#xd;&#xa;END&#xd;&#xa;)"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
                 <Option type="Map" name="Size">
@@ -286,5 +239,5 @@
   </labeling>
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
-  <layerGeometryType>0</layerGeometryType>
+  <layerGeometryType>2</layerGeometryType>
 </qgis>
