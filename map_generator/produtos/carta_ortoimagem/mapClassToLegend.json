@@ -80,6 +80,14 @@
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
+        "infra_elemento_infraestrutura_l": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
+        "infra_elemento_infraestrutura_a": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
         "infra_obstaculo_vertical_p": {
             "group": "classes_auxiliares",
             "labels": ["obstaculo_vertical"]
@@ -223,6 +231,14 @@
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_elemento_infraestrutura_p": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
+        "infra_elemento_infraestrutura_l": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
+        "infra_elemento_infraestrutura_a": {
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
@@ -372,6 +388,14 @@
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
+        "infra_elemento_infraestrutura_l": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
+        "infra_elemento_infraestrutura_a": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
         "infra_obstaculo_vertical_p": {
             "group": "classes_auxiliares",
             "labels": ["obstaculo_vertical"]
@@ -515,6 +539,14 @@
             "labels": ["pista_pouso_heliponto"]
         },
         "infra_elemento_infraestrutura_p": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
+        "infra_elemento_infraestrutura_l": {
+            "group": "sistema_de_transporte",
+            "labels": ["atracadouro_terminal"]
+        },
+        "infra_elemento_infraestrutura_a": {
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },

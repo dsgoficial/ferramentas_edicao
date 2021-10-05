@@ -105,6 +105,14 @@
             "schema": "edgv"
         },
         {
+            "tabela": "infra_elemento_infraestrutura_l",
+            "schema": "edgv"
+        },
+        {
+            "tabela": "infra_elemento_infraestrutura_a",
+            "schema": "edgv"
+        },
+        {
             "tabela": "elemnat_elemento_hidrografico_p",
             "schema": "edgv"
         },

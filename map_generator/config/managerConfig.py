@@ -8,7 +8,7 @@ class Defaults:
     footer: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'creditsDSG.qpt'
     bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'bdgexAcessInfo.qpt'
     orthoMandatoryClasses: set = field(default_factory=lambda: set([
-        'llp_localidade_p', 'infra_via_deslocamento_l', 'edicao_identificador_trecho_rod_p', 'infra_ferrovia_l', 'edicao_simb_direcao_corrente_p', 
+        'llp_localidade_p', 'infra_via_deslocamento_l', 'edicao_identificador_trecho_rod_p', 'infra_ferrovia_l', 
         'cobter_massa_dagua_a', 'elemnat_trecho_drenagem_l', 'aux_area_sem_dados_a', 'edicao_texto_generico_p', 'edicao_texto_generico_l'
     ]))
     orthoOptionalClasses: set = field(default_factory=lambda: set([
@@ -16,6 +16,7 @@ class Defaults:
         'constr_extracao_mineral_p', 'elemnat_terreno_sujeito_inundacao_a',
         'llp_limite_legal_l', 'elemnat_curva_nivel_l', 'elemnat_ponto_cotado_p',
         'infra_pista_pouso_p', 'infra_pista_pouso_l', 'infra_pista_pouso_a', 'infra_elemento_infraestrutura_p',
+        'infra_elemento_infraestrutura_l', 'infra_elemento_infraestrutura_a',
         'infra_obstaculo_vertical_p', 'elemnat_elemento_hidrografico_p',
         'elemnat_elemento_hidrografico_l', 'elemnat_elemento_hidrografico_a', 'elemnat_toponimo_fisiografico_natural_p',
         'elemnat_toponimo_fisiografico_natural_l', 'elemnat_ilha_p', 'elemnat_ilha_a', 'llp_nome_local_p',
