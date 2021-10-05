@@ -141,7 +141,7 @@ class DefaultMap(MapManager):
         if len(jsonFilesPaths) > 0:
             for jsonPath in jsonFilesPaths:
                 jsonPath = Path(jsonPath)
-                jsonErrors = namedtuple(jsonPath.stem.replace('-', '_'), 'errors')
+                jsonErrors = namedtuple('erro_' + jsonPath.stem.replace('-', '_'), 'errors')
                 jsonErrors.errors = []
 
                 jsonMapData = self.readJsonFromPath(jsonPath)
