@@ -52,6 +52,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback): 
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
+        feedback.setProgressText('Iniciando...')
         if mapType==0:
             carta = 'carta_topografica'
         elif mapType==1:
@@ -86,18 +87,30 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'styles',
                 styleOption
             )
+        feedback.setProgressText('Calculando dicionário QML...')
         qmlDict = self.buildQmlDict(stylePath)
         iface.mapCanvas().freeze(True)
-        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], qmlDict, context)   
+        feedback.setProgressText('Ordenando as camadas...')
+        feedbackCancel = False
+        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], qmlDict, feedback, feedbackCancel)   
+        if feedback.isCanceled() or feedbackCancel:
+            return {self.OUTPUT: 'feedback cancelado'}
         iface.mapCanvas().freeze(False) 
         return {self.OUTPUT: ''}
 
-    def order(self, layerNames, qmlDict, context):
+    def order(self, layerNames, qmlDict, feedback, feedbackCancel):
         project = core.QgsProject.instance()
-        layers = project.mapLayers().values()
+        projectMapLayers = project.mapLayers()
+        listSize = len(projectMapLayers)
+        progressStep = 100/(listSize+1) if listSize else 0
+        layers = projectMapLayers.values()
         order = []
-        for layer in layers:
+        for step, layer in enumerate(layers):
+            if feedback.isCanceled():
+                feedbackCancel = True
+                return 
             layerName = layer.dataProvider().uri().table()
+            feedback.setProgress( step * progressStep )
             if not( layerName in layerNames ):
                 project.removeMapLayer( layer.id() )
                 continue

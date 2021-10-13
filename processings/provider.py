@@ -3,6 +3,9 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.PyQt.QtGui import QIcon
 import os
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
+from .mergeRivers import MergeRivers
+from .mergeHighway import MergeHighway
+from .prepareOrtho import PrepareOrtho
 class Provider(QgsProcessingProvider):
 
     def __init__(self):
@@ -10,6 +13,9 @@ class Provider(QgsProcessingProvider):
 
     def loadAlgorithms(self, *args, **kwargs):
         self.addAlgorithm(OrderEditLayersAndAddStyle())
+        self.addAlgorithm(MergeHighway())
+        self.addAlgorithm(MergeRivers())
+        self.addAlgorithm(PrepareOrtho())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
