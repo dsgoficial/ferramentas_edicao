@@ -6,6 +6,8 @@ from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
 from .mergeRivers import MergeRivers
 from .mergeHighway import MergeHighway
 from .prepareOrtho import PrepareOrtho
+from .highestSpotOnTheFrame import HighestSpotOnTheFrame
+
 class Provider(QgsProcessingProvider):
 
     def __init__(self):
@@ -16,6 +18,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MergeHighway())
         self.addAlgorithm(MergeRivers())
         self.addAlgorithm(PrepareOrtho())
+        self.addAlgorithm(HighestSpotOnTheFrame())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
