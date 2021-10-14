@@ -61,10 +61,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             'infra_via_deslocamento_l':'edicao_identificador_trecho_rod_p'
         }
         refLayersSobreposition = [x for x in layers if x.dataProvider().uri().table() in _refLayersNamesSobreposition]
-        destLayersToCreateSpacedSymbolsCase1 = next(filter(
-            lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase1.values(), layers))
-        destLayersToCreateSpacedSymbolsCase2 = next(filter(
-            lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
 
         attrDefault = {
             'constr_extracao_mineral_p': {
@@ -226,6 +222,12 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             }  
         }
 
+        moldura = None
+        for lyr in layers:
+            lyrName = lyr.dataProvider().uri().table()
+            if lyrName == 'aux_moldura_a':
+                moldura = lyr
+
         for lyr in layers:
             lyrName = lyr.dataProvider().uri().table()
             # self.updateLayer(lyr, lyrName)
@@ -239,12 +241,18 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             if lyrName in layerToCreateSpacedSymbolsCase1:
                 distance = self.getChopDistance(lyr, scale * 0.02)
                 pointsAndAngles = self.chopLineLayer(lyr, distance)
+                destLayersToCreateSpacedSymbolsCase1 = next(filter(
+                    lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase1.values(), layers))
                 self.populateEnergyTowerSymbolLayer(destLayersToCreateSpacedSymbolsCase1,pointsAndAngles)
             if lyrName in layerToCreateSpacedSymbolsCase2:
                 self.mergeHighways(lyr)
                 distance = self.getChopDistance(lyr, scale * 0.2)
                 pointsAndAngles = self.chopLineLayer(lyr, distance, ['sigla', 'jurisdicao'])
+                destLayersToCreateSpacedSymbolsCase2 = next(filter(
+                    lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
                 self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles)
+            if lyrName == 'elemnat_ponto_cotado_p' and moldura:
+                self.highestSpot(lyr, moldura)
                     
         return {self.OUTPUT: ''}
 
@@ -453,6 +461,18 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return expression
 
     @staticmethod
+    def highestSpot(lyr, moldura):
+        '''Atualiza o atributo 'cota_mais_alta' se o ponto cotado é o mais alto do MI
+        '''
+        processing.run(
+        'ferramentasedicao:highestspotontheframe', {
+            'INPUT_LAYER_P': lyr,
+            'INPUT_SPOT_FIELD': 'cota',
+            'INPUT_HIGHEST_SPOT_FIELD': 'cota_mais_alta',
+            'INPUT_FRAME': moldura
+        })
+     
+    @staticmethod
     def checkIntersectionAndSetAttr(lyr, lyrsRef):
         '''Updates the attribute 'sobreposto' if lyr limits are within lrysRef 
         '''
@@ -486,7 +506,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         else:
             return distance
 
-    def chopLineLayer(self, layer, cutDistance, requiredAttrs=None):
+    @staticmethod
+    def chopLineLayer(layer, cutDistance, requiredAttrs=None):
         '''Chops layer using cutDistance, returning initial points of chopped features and its angles.
         If the point touches the initial/final point of any original feature the point is discarded.
         If requiredAttrs is provided, the mapping {attr:feat[attr] for attr in requiredAttrs} is also returned
@@ -530,9 +551,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 pointsAndAngles.append((point, angle, attributeMapping))
         return pointsAndAngles
 
-
-
-    def populateEnergyTowerSymbolLayer(self, layer, pointsAndAngles):
+    @staticmethod
+    def populateEnergyTowerSymbolLayer(layer, pointsAndAngles):
         '''Populates the layer edicao_simb_torre_energia_p
         '''
         fields = layer.fields()
@@ -545,7 +565,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             layer.addFeature(feat)
         # layer.commitChanges()
 
-    def mergeHighways(self, layer):
+    @staticmethod
+    def mergeHighways(layer):
         merge = {}
         for highwayFeature in layer.getFeatures():
             if not highwayFeature['sigla']:
@@ -579,7 +600,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     idsToRemove.append( featureBId )
             layer.deleteFeatures( idsToRemove )
 
-    def populateRoadIndentificationSymbolLayer(self, layer, pointsAndAngles):
+    @staticmethod
+    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles):
         '''Populates the layer edicao_identificador_trecho_rod_p
         '''
         fields = layer.fields()

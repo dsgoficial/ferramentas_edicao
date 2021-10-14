@@ -106,7 +106,7 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         return HighestSpotOnTheFrame()
 
     def name(self):
-        return 'highestspotqntheframe'
+        return 'highestspotontheframe'
 
     def displayName(self):
         return self.tr('Definir cota mais alta por moldura')

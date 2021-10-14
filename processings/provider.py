@@ -25,7 +25,7 @@ class Provider(QgsProcessingProvider):
         ProcessingConfig.addSetting(
             Setting(
                 self.name(),
-                'ACTIVATE_EditionPlugin',
+                'ACTIVATE_ferramentasedicao',
                 'Activate',
                 True
             )
@@ -43,10 +43,10 @@ class Provider(QgsProcessingProvider):
         return True
 
     def id(self, *args, **kwargs):
-        return 'EditionPlugin'
+        return 'ferramentasedicao'
 
     def name(self, *args, **kwargs):
-        return self.tr('Edition Plugin')
+        return self.tr('Ferramentas de Edição')
 
     def icon(self):
         return QIcon(
