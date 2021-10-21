@@ -27,87 +27,84 @@ class Divisao(MapParent):
         self.countryAttribute = 'SIGLA_PAIS'
 
     def make(self, composition, mapArea, showLayers=False, isInternational=False):
-        # Deletando as variaveis
+        # Cleanup
         self.deleteGroups(['divisao'])
-        map_layers = []
 
-        # Adiciona os layers de municipios, estado e limite internacional
-        divisaoGroup_node = QgsLayerTreeGroup('divisao')
-        divisaoGroup_node.setItemVisibilityChecked(False)
+        mapLayers = []
 
-        layerCounty, layerState, layerBrazil, layerOcean, layerCountry = self.createLayersGroup()
-        map_layers.extend([layerCounty.id(), layerState.id(),
-                          layerBrazil.id(), layerOcean.id(), layerCountry.id()])
+        # Inserting necessary layers
+        divisionGroupNode = QgsLayerTreeGroup('divisao')
+        divisionGroupNode.setItemVisibilityChecked(False)
 
-        # Cria o layer da área do mapa
+        layerCountyArea, layerCountyLine, layerStateLine, layerCountryArea, layerCountryLine, layerOcean = self.createLayersGroup()
+        mapLayers.extend([
+            layerCountyArea.id(),layerCountyLine.id(), layerStateLine.id(), layerOcean.id(), layerCountryArea.id(), layerCountryLine.id()])
+
+        # Getting map extents
         gridBound = mapArea.geometry().boundingBox()
         gridRectangleLayer = self.createGridRectangle(gridBound, 'divisionMapArea')
-        map_layers.append(gridRectangleLayer.id())
+        mapLayers.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
         # TODO: Check possible refactor on getExtent
         outerExtents = self.getExtent(gridBound, mapArea)
         orderedCountiesByCentroidDistance, orderedCountiesNamesByArea = self.getIntersections(
-            layerCounty, outerExtents, mapArea, isInternational)
+            layerCountyArea, outerExtents, mapArea, isInternational)
 
-        # Set styles and html table data for municipios que intersectam
-        self.setStyles(layerCounty, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea)
+        # Labeling counties
+        self.setStyles(layerCountyArea, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea)
+
+        # Inserting counties table
         html_tabledata = self.customcreateHtmlTableData(orderedCountiesNamesByArea)
         self.setMunicipiosTable(composition,  html_tabledata)
 
         if not isInternational:
-            self.hideInternationalCouties(layerCountry)
+            self.hideInternationalCouties(layerCountryArea)
             # self.unsetLabel(layerCountry)
 
-        for layer in (gridRectangleLayer, layerOcean, layerCountry, layerBrazil, layerState, layerCounty):
+        # Update map in correct sequence
+        layersToShow = (
+            gridRectangleLayer, layerOcean, layerCountryLine, layerCountryArea, layerStateLine, layerCountyLine, layerCountyArea)
+        for layer in layersToShow:
             QgsProject.instance().addMapLayer(layer, False)
-            divisaoGroup_node.addLayer(layer)
-
+            divisionGroupNode.addLayer(layer)
         if showLayers:
             root = QgsProject.instance().layerTreeRoot()
-            root.addChildNode(divisaoGroup_node)
-
-        # Update map in correct sequence
-        layers_to_show = (gridRectangleLayer, layerOcean, layerCountry,
-                          layerBrazil, layerState, layerCounty)
-        self.updateMapItem(composition, outerExtents, layers_to_show)
-        return map_layers
+            root.addChildNode(divisionGroupNode)
+        self.updateMapItem(composition, outerExtents, layersToShow)
+        return mapLayers
 
     def createLayersGroup(self):
         '''
-        Creates QgsVectorLayer and sets up its style for five inputs: County, State, Brazil, Ocean and Contry.
+        Creates QgsVectorLayer and sets up its style for classes: County, State, Contry and Ocean.
+        Layers with Limites suffix are used for displaying purposes only.
         '''
+
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Municipios_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'municipio_rdg.qml'
-        layerCounty = QgsVectorLayer(str(uriPath), 'municipios', 'ogr')
-        layerCounty.setProviderEncoding(u'UTF-8')
-        layerCounty.loadNamedStyle(str(stylePath))
+        stylePath = self.styleFolder / 'carta_topografica' / 'municipio.qml'
+        layerCountyArea = self.loadShapeLayer(uriPath, stylePath, 'counties')
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'estados_rdg.qml'
-        layerState = QgsVectorLayer(str(uriPath), 'limite_estado', 'ogr')
-        layerState.setProviderEncoding(u'UTF-8')
-        layerState.loadNamedStyle(str(stylePath))
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Limites_Municipios_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica' / 'municipio_l.qml'
+        layerCountyLine = self.loadShapeLayer(uriPath, stylePath, 'countiesLimits')
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Brasil_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'internacional_rdg.qml'
-        layerBrazil = QgsVectorLayer(str(uriPath), 'internacional_rdg', 'ogr')
-        layerBrazil.setProviderEncoding(u'UTF-8')
-        layerBrazil.loadNamedStyle(str(stylePath))
-
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Oceano_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'oceano_rdg.qml'
-        layerOcean = QgsVectorLayer(str(uriPath), 'oceano', 'ogr')
-        layerOcean.setProviderEncoding(u'UTF-8')
-        layerOcean.loadNamedStyle(str(stylePath))
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Limites_Estados_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica' / 'estados_l.qml'
+        layerStateLine = self.loadShapeLayer(uriPath, stylePath, 'statesLimits')
 
         uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Paises_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica_rdg' / 'paises_rdg.qml'
-        layerCountry = QgsVectorLayer(str(uriPath), 'paises', 'ogr')
-        layerCountry.setProviderEncoding(u'UTF-8')
-        layerCountry.loadNamedStyle(str(stylePath))
+        stylePath = self.styleFolder / 'carta_topografica' / 'paises.qml'
+        layerCountryArea = self.loadShapeLayer(uriPath, stylePath, 'countries')
 
-        return layerCounty, layerState, layerBrazil, layerOcean, layerCountry
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Limites_Paises_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica' / 'paises_l.qml'
+        layerCountryLine = self.loadShapeLayer(uriPath, stylePath, 'countriesLimits')
+
+        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Oceano_2020.shp'
+        stylePath = self.styleFolder / 'carta_topografica' / 'oceano.qml'
+        layerOcean = self.loadShapeLayer(uriPath, stylePath, 'ocean')
+
+        return layerCountyArea, layerCountyLine, layerStateLine, layerCountryArea, layerCountryLine, layerOcean
 
     def getExtent(self, gridBound, selected_feature):
         x_min, x_max = gridBound.xMinimum(), gridBound.xMaximum()
@@ -328,12 +325,10 @@ class Divisao(MapParent):
         layerCounty.setLabelsEnabled(True)
         layerCounty.triggerRepaint()
 
-    def updateMapItem(self, composition, map_extent, layers_to_show, mapItem=None):
-        if mapItem is None:
-            mapItem = composition.itemById("map_divisao")
-        if mapItem is not None:
-            mapItem.setExtent(map_extent)
-            mapItem.setLayers(layers_to_show)
+    def updateMapItem(self, composition, mapExtent, layersToShow, mapItem=None):
+        if (mapItem:=composition.itemById("map_divisao")) is not None:
+            mapItem.setExtent(mapExtent)
+            mapItem.setLayers(layersToShow)
             mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
             mapItem.refresh()
 
