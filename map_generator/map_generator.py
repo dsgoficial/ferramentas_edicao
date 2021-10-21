@@ -139,7 +139,7 @@ class MapManager(MapTools):
 
 		# Mapa de Localização
 		if composition.itemById("map_localizacao") is not None:
-			mapLayers_loocalizacao = self.localizacao.make(composition, map_extent_feature, False,  showLayers, jsonData.get('territorio_internacional'))
+			mapLayers_loocalizacao = self.localizacao.make(composition, map_extent_feature, showLayers, jsonData.get('territorio_internacional'))
 			ids_maplayers.extend(mapLayers_loocalizacao)
 			# linhas para comentar quando subtitulo estiver funcionado
 			#regioes = self.localizacao.regioes
