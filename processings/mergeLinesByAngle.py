@@ -5,6 +5,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
                        QgsGeometryUtils,
                        QgsFeatureSink,
                        QgsGeometry,
@@ -16,6 +17,7 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
  
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
+    MAX_ITERATION = 'MAX_ITERATION'
 
     def initAlgorithm(self, config=None):
 
@@ -24,6 +26,15 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
                 self.INPUT,
                 self.tr('Input layer'),
                 [QgsProcessing.TypeVectorLine]
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.MAX_ITERATION,
+                self.tr('Iteration limit'),
+                type=QgsProcessingParameterNumber.Integer,
+                defaultValue=5
             )
         )
       
@@ -39,20 +50,17 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
         numberOfFeatures =  {-1: source.featureCount()}
-        limit = 6
+        limit = self.parameterAsInt(parameters, self.MAX_ITERATION, context)
         progressStep = 100/limit
         auxLayerInput = self.runAddCount(source)
         self.runCreateSpatialIndex(auxLayerInput)
         for i in range(limit):
-            print(i)
             feedback.setProgress( i * progressStep )
             if not self.mergeLines(auxLayerInput):
-                print('not merge')
                 break
             newNumberOfFeatures = auxLayerInput.featureCount()
             numberOfFeatures[i]=newNumberOfFeatures
             if numberOfFeatures[i]==numberOfFeatures[i-1]:
-                print('number equal')
                 break
         newLayer = self.outLayer(parameters, context, auxLayerInput)
         return {self.OUTPUT: newLayer}
@@ -225,11 +233,11 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
         return self.tr('Mescla Linhas Pelo Ângulo')
 
     def group(self):
-        return self.tr('Missoes')
+        return self.tr('Edição')
 
     def groupId(self):
     
-        return 'missoes'
+        return 'edicao'
 
     def shortHelpString(self):
     

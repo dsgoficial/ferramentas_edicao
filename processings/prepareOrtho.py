@@ -239,8 +239,9 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             if lyrName in layersToCalculateSobreposition:
                 self.checkIntersectionAndSetAttr(lyr, refLayersSobreposition)
             if lyrName in layerToCreateSpacedSymbolsCase1:
-                distance = self.getChopDistance(lyr, scale * 0.02)
-                pointsAndAngles = self.chopLineLayer(lyr, distance)
+                energyLyr = self.mergeEnergyLines(lyr, 5)
+                distance = self.getChopDistance(energyLyr, scale * 0.02)
+                pointsAndAngles = self.chopLineLayer(energyLyr, distance)
                 destLayersToCreateSpacedSymbolsCase1 = next(filter(
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase1.values(), layers))
                 self.populateEnergyTowerSymbolLayer(destLayersToCreateSpacedSymbolsCase1,pointsAndAngles)
@@ -495,6 +496,15 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     break
             # lyr.commitChanges()
 
+    def mergeEnergyLines(self, lyr, limit):
+        r = processing.run(
+            'ferramentasedicao:mergelinesbyangle',
+            {   'INPUT' : lyr, 
+                'MAX_ITERATION': limit,
+                'OUTPUT' : 'TEMPORARY_OUTPUT'
+            }
+        )
+        return r['OUTPUT']
     @staticmethod
     def getChopDistance(layer, distance):
         '''Helper function to get distances in decimal degrees
@@ -546,8 +556,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     angle=angle-360
                 if angle>90 and angle<270:
                     angle = angle - 180
-                print(point)
-                print(angle)
                 pointsAndAngles.append((point, angle, attributeMapping))
         return pointsAndAngles
 
