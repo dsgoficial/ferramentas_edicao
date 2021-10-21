@@ -7,6 +7,7 @@ from .mergeRivers import MergeRivers
 from .mergeHighway import MergeHighway
 from .prepareOrtho import PrepareOrtho
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
+from .mergeLinesByAngle import MergeLinesByAngle
 
 class Provider(QgsProcessingProvider):
 
@@ -19,6 +20,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MergeRivers())
         self.addAlgorithm(PrepareOrtho())
         self.addAlgorithm(HighestSpotOnTheFrame())
+        self.addAlgorithm(MergeLinesByAngle())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
