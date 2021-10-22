@@ -36,6 +36,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):      
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
         scale = self.parameterAsInt(parameters, self.SCALE, context)
+        scaleMini = scale*6.2
         layersToCalculateDefaults = [
             'infra_obstaculo_vertical_p',
             'infra_pista_pouso_p',
@@ -246,12 +247,15 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase1.values(), layers))
                 self.populateEnergyTowerSymbolLayer(destLayersToCreateSpacedSymbolsCase1,pointsAndAngles)
             if lyrName in layerToCreateSpacedSymbolsCase2:
-                self.mergeHighways(lyr)
-                distance = self.getChopDistance(lyr, scale * 0.2)
-                pointsAndAngles = self.chopLineLayer(lyr, distance, ['sigla', 'jurisdicao'])
+                highwayLyr = self.mergeHighways(lyr)
+                distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
+                pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao'])
+                distance2 = self.getChopDistance(highwayLyr, scaleMini * 0.2)
+                pointsAndAngles2 = self.chopLineLayer(highwayLyr, distance2, ['sigla', 'jurisdicao'])
                 destLayersToCreateSpacedSymbolsCase2 = next(filter(
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
-                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles)
+                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles1, 1)
+                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles2, 2)
             if lyrName == 'elemnat_ponto_cotado_p' and moldura:
                 self.highestSpot(lyr, moldura)
                     
@@ -573,43 +577,18 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             layer.addFeature(feat)
         # layer.commitChanges()
 
-    @staticmethod
-    def mergeHighways(layer):
-        merge = {}
-        for highwayFeature in layer.getFeatures():
-            if not highwayFeature['sigla']:
-                continue
-            mergeKey = '{0}'.format( highwayFeature['sigla'].lower() )
-            if not( mergeKey in merge):
-                merge[ mergeKey ] = []
-            merge[ mergeKey ].append( highwayFeature )
-            features = merge[ mergeKey ]
-            layer.startEditing()
-        for mergeKey in merge:
-            idsToRemove = []
-            featureIds = [ f.id() for f in features ]
-            for i in range(len(featureIds)):
-                featureAId = featureIds[i]
-                if featureAId in idsToRemove:
-                    continue
-                featureA = layer.getFeature( featureAId )
-                geomEngine = QgsGeometry().createGeometryEngine(featureA.geometry().constGet())
-                geomEngine.prepareGeometry()
-                for j in range(i+1, len(featureIds)):
-                    featureBId = featureIds[j]
-                    if featureBId in idsToRemove:
-                        continue
-                    featureB = layer.getFeature( featureBId )
-                    if not geomEngine.touches( featureB.geometry().constGet() ):
-                        continue
-                    newGeometry = featureA.geometry().combine( featureB.geometry() ).mergeLines()
-                    featureA.setGeometry( newGeometry )
-                    layer.updateFeature( featureA )
-                    idsToRemove.append( featureBId )
-            layer.deleteFeatures( idsToRemove )
+    
+    def mergeHighways(self, lyr):
+        r = processing.run(
+            'ferramentasedicao:mergehighway',
+            {   'INPUT_LAYER_L' : lyr,
+                'OUTPUT_LAYER_L' : 'TEMPORARY_OUTPUT'
+            }
+        )
+        return r['OUTPUT_LAYER_L']
 
     @staticmethod
-    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles):
+    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, isMiniMap):
         '''Populates the layer edicao_identificador_trecho_rod_p
         '''
         fields = layer.fields()
@@ -623,7 +602,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 feat.setAttribute('sigla', name)
             if jurisdicao:=mapping.get('jurisdicao'):
                 feat.setAttribute('jurisdicao', jurisdicao)
-            feat.setAttribute('carta_simbolizacao', 1)
+            feat.setAttribute('carta_simbolizacao', isMiniMap)
             layer.addFeature(feat)
         # layer.commitChanges()
 
