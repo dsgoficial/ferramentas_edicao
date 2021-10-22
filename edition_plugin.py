@@ -167,7 +167,9 @@ class EditionPlugin:
         self.defaultMap = DefaultMap(self.dlg, self.GLC, self.iface)
         self.dlg.pushButton_gerar_cartas.clicked.connect(self.defaultMap.createMaps)
 
-    def setTestData(self):        
+    def setTestData(self):
+        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\topo\\NB-20-Z-D-II-3.json')
+        self.dlg.exportFolder.setFilePath('D:\\export')
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
         
     def initializeVariables(self):
