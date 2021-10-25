@@ -1,14 +1,17 @@
 import os
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
+from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
+from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
-from qgis.core import QgsApplication
-from .resources import *
-from .map_generator.manager import DefaultMap
+
 from .edition_plugin_dialog import EditionPluginDialog
-from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
+from .map_generator.manager import DefaultMap
 from .processings.pluginProvider import pluginProvider
+from .resources import *
+from .tools.setupButtons import SetupButtons
+
 
 class EditionPlugin:
     """QGIS Plugin Implementation."""
@@ -144,14 +147,15 @@ class EditionPlugin:
             text=self.tr(u'Edition Plugin'),
             callback=self.run,
             parent=self.iface.mainWindow())
-
-        # will be set False in run()
         self.first_start = True
+        self.tools = SetupButtons(self.iface)
+        self.tools.initToolBar()
         pluginProvider.initProcessing(self)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         QgsApplication.processingRegistry().removeProvider(self.provider)
+        self.tools.unload()
         for action in self.actions:
             self.iface.removePluginMenu(
                 self.tr(u'&Edition Plugin'),
