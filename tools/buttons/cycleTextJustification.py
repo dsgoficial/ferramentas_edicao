@@ -5,6 +5,7 @@ from .baseTools import BaseTools
 class CycleTextJustification(BaseTools):
 
     def __init__(self, toolBar, iface) -> None:
+        super().__init__()
         self.toolBar = toolBar
         self.iface = iface
 
