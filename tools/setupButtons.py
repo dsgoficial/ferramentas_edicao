@@ -9,6 +9,7 @@ from .buttons.cycleVisibility import CycleVisibility
 from .buttons.cycleTextJustification import CycleTextJustification
 from .buttons.copyToGenericLabel import CopyToGenericLabel
 from .buttons.cycleLabelPosition import CycleLabelPosition
+from .buttons.createVegetationSymbol import CreateVegetationSymbol
 
 
 class SetupButtons:
@@ -26,6 +27,8 @@ class SetupButtons:
         self.copyToGenericLabelButton.initButton()
         self.cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface)
         self.cycleLabelPositionButton.initButton()
+        self.createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar)
+        self.createVegetationSymbol.setupUi()
 
     def unload(self):
         self.iface.mainWindow().removeToolBar(self.toolBar)
