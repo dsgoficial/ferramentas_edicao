@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget
-from qgis.core import QgsWkbTypes
+from PyQt5.QtCore import QVariant
+from qgis.core import QgsWkbTypes, QgsFields, QgsField, QgsProject, QgsFeature
 
 from .baseTools import BaseTools
 
@@ -20,19 +21,41 @@ class CopyToGenericLabel(BaseTools):
         )
         self.toolBar.addAction(action)
 
+    @staticmethod
+    def setFeatValues(originFeat, destFeat):
+        destFeat.setAttribute('texto_edicao', originFeat.attribute('nome'))
+        destFeat.setAttribute('estilo_fonte', 'Condensed')
+        destFeat.setAttribute('tamanho_txt', 6)
+        # destFeat.setAttribute('justificativa_txt', 2)
+        destFeat.setAttribute('espacamento', 0)
+        destFeat.setAttribute('cor', '#0')
+        destFeat.setGeometry(originFeat.geometry())
+
     def run(self):
+        print('mpo')
         lyr = self.iface.activeLayer()
         fieldIdx = lyr.dataProvider().fieldNameIndex('nome')
         if fieldIdx == -1:
             self.displayErrorMessage('O atributo "nome" não existe na camada selecionada.')
         else:
-            lyr.startEditing()
+            instance = QgsProject().instance()
+            geomType = lyr.geometryType()
+            print(geomType)
+            if geomType == QgsWkbTypes.PointGeometry:
+                destLayerName = 'edicao_texto_generico_p'
+            elif geomType == QgsWkbTypes.LineGeometry:
+                destLayerName = 'edicao_texto_generico_l'
+            destLayer = instance.mapLayersByName(destLayerName)
+            print(destLayer)
+            if len(destLayer) != 1:
+                self.displayErrorMessage(f'O layer "{destLayerName}" não existe')
+            destLayer = destLayer[0]
+            destLayer.startEditing()
             for feat in lyr.getSelectedFeatures():
                 if self.checkAttrIsEmpty(feat, 'nome'):
                     break
-                geomType = feat.geometry().type()
-                if geomType == QgsWkbTypes.PointGeometry:
-                    pass
-                elif geomType == QgsWkbTypes.LineGeometry:
-                    pass
-                
+                print(feat)
+                fields = destLayer.fields()
+                destFeat = QgsFeature(fields)
+                self.setFeatValues(feat, destFeat)
+                destLayer.addFeature(destFeat)

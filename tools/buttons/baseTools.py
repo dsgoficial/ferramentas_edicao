@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtGui import QIcon
 
-class BaseTools():
+class BaseTools:
 
     @staticmethod
     def createAction(text, icon, callback, whatisthis, tip, iface):
@@ -27,12 +27,12 @@ class BaseTools():
         action.setStatusTip(tip)
         return action
 
-    @staticmethod
-    def displayErrorMessage(iface, message):
-        iface.messageBar().pushMessage(message, Qgis.Error)
+    def displayErrorMessage(self, message):
+        iface = getattr(self, 'iface')
+        iface.messageBar().pushMessage(message, Qgis.Critical, 5)
 
     def checkAttrIsEmpty(self, feat, attrName):
-        if not feat.attribute(attrName, None):
+        if not feat.attribute(attrName):
             self.displayErrorMessage(
-                f'Feature {feat.attribute(id)} has empty "{attrName}" attribute.')
+                f'Feature {feat.attribute("id")} has empty "{attrName}" attribute.')
             return True
