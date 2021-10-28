@@ -1,13 +1,14 @@
 import math
 
 from qgis import processing
-from qgis.core import (QgsCoordinateReferenceSystem,
+from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsCoordinateTransformContext, QgsDistanceArea,
                        QgsFeature, QgsFeatureRequest, QgsGeometry,
                        QgsProcessing, QgsProcessingAlgorithm,
                        QgsProcessingParameterMultipleLayers,
-                       QgsProcessingParameterNumber, QgsUnitTypes)
-from qgis.PyQt.QtCore import QCoreApplication
+                       QgsProcessingParameterNumber, QgsUnitTypes,
+                       QgsProcessingParameterFeatureSink, QgsFeatureSink)
+from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 
 
 class PrepareOrtho(QgsProcessingAlgorithm): 
@@ -32,6 +33,13 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 defaultValue=50000
             )
         )
+
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT,
+                self.tr('Flag Preparar Ortoimagem')
+            )
+        ) 
 
     def processAlgorithm(self, parameters, context, feedback):      
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
@@ -258,8 +266,11 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles2, 2)
             if lyrName == 'elemnat_ponto_cotado_p' and moldura:
                 self.highestSpot(lyr, moldura)
-                    
-        return {self.OUTPUT: ''}
+        distanceBuffer = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.003)
+        addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, destLayersToCreateSpacedSymbolsCase2, distanceBuffer)            
+        newLayer = self.outLayer(parameters, context, destLayersToCreateSpacedSymbolsCase2, addToSinkDict)
+
+        return {self.OUTPUT: newLayer}
 
     def updateLayer(self, layer, layerName):
         if layerName in [
@@ -576,7 +587,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             feat.setAttribute('simb_rot', angle)
             layer.addFeature(feat)
         # layer.commitChanges()
-
     
     def mergeHighways(self, lyr):
         r = processing.run(
@@ -606,6 +616,68 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             layer.addFeature(feat)
         # layer.commitChanges()
 
+    def removeCloseEnergyAndHighwaySymbols(self, energyLayer, highwayLayer, distance):
+        addToSink = {}
+        toBeRemovedHighway = []
+        toBeRemovedEnergy = []
+        for featA in highwayLayer.getFeatures():
+            if featA in addToSink or featA.id() in toBeRemovedHighway:
+                continue
+            geomAbuffer = featA.geometry().buffer(distance, 5)
+            request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
+            for featB in highwayLayer.getFeatures(request):
+                if featA.id() == featB.id() or featB in addToSink or featB.id() in toBeRemovedHighway:
+                    continue
+                isEqual = True
+                for field in featA.fields().names():
+                    if field=='id':
+                        continue
+                    if not featA[field]==featB[field]:
+                        isEqual = False
+                        fieldText = 'próximo de outro símbolo com campo ' + field + ' diferente'
+                        addToSink[featB]=fieldText
+                        break
+                if isEqual:
+                    toBeRemovedHighway.append(featB.id())
+            for featC in energyLayer.getFeatures(request):
+                if featC.id() in toBeRemovedEnergy:
+                    continue
+                toBeRemovedEnergy.append(featC.id())
+        for featA in energyLayer.getFeatures():
+            if featA.id() in toBeRemovedEnergy:
+                continue
+            geomAbuffer = featA.geometry().buffer(distance, 5)
+            request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
+            for featB in energyLayer.getFeatures(request):
+                if featB.id() in toBeRemovedEnergy or featA.id()==featB.id():
+                    continue
+                toBeRemovedEnergy.append(featB.id())
+        highwayLayer.deleteFeatures(toBeRemovedHighway)
+        energyLayer.deleteFeatures(toBeRemovedEnergy)
+        return addToSink
+    
+    def outLayer(self, parameters, context, origLayer, dictFeatures):
+        newField = origLayer.fields()
+        newField.append(QgsField('erro', QVariant.String))
+
+        (sink, newLayer) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            newField,
+            4, #1point 2line 3polygon 4multipoint 5 multiline
+            origLayer.sourceCrs()
+        )
+
+        for feat in dictFeatures:
+            newFeat = QgsFeature()
+            newFeat.setGeometry(feat.geometry())
+            newFeat.setFields(newField)
+            for field in  range(len(feat.fields())):
+                newFeat.setAttribute((field), feat.attribute((field)))
+            newFeat['erro'] = dictFeatures[feat]
+            sink.addFeature(newFeat, QgsFeatureSink.FastInsert)
+        return newLayer
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
 
