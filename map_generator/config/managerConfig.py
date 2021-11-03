@@ -155,7 +155,7 @@ product_parameters = {
                 },
                 "bdgexAcessInfo":{
                     "x_0": 729,
-                    "y_0": 440,
+                    "y_0": 450,
                     "width": 105,
                     "height": 100,
                 }
@@ -181,7 +181,7 @@ product_parameters = {
                 },
                 "bdgexAcessInfo":{
                     "x_0": 729,
-                    "y_0": 440,
+                    "y_0": 450,
                     "width": 105,
                     "height": 100,
                 }
@@ -207,7 +207,7 @@ product_parameters = {
                 },
                 "bdgexAcessInfo":{
                     "x_0": 729,
-                    "y_0": 440,
+                    "y_0": 450,
                     "width": 105,
                     "height": 100,
                 }
