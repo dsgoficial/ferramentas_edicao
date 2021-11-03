@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QHBoxLayout
 from PyQt5.QtGui import QIcon
 
 from qgis.gui import QgisInterface

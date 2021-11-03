@@ -1,5 +1,6 @@
 from .baseMapEmitPointTool import BaseMapEmitPointTool
 from qgis.core import QgsProject, QgsSpatialIndex
+from qgis.gui import QgsMapToolEmitPoint
 
 class CreateVegetationSymbolTool(BaseMapEmitPointTool):
 
