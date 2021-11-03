@@ -10,7 +10,7 @@ from .buttons.cycleTextJustification import CycleTextJustification
 from .buttons.copyToGenericLabel import CopyToGenericLabel
 from .buttons.cycleLabelPosition import CycleLabelPosition
 from .buttons.createVegetationSymbol import CreateVegetationSymbol
-
+from .buttons.createRoadIdentifierSymbol import CreateRoadIdentifierSymbol
 
 class SetupButtons:
 
@@ -28,6 +28,8 @@ class SetupButtons:
         self.cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface)
         self.cycleLabelPositionButton.initButton()
         self.createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar)
+        self.createVegetationSymbol.setupUi()
+        self.createVegetationSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar)
         self.createVegetationSymbol.setupUi()
 
     def unload(self):
