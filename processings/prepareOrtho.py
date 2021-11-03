@@ -4,7 +4,7 @@ from qgis import processing
 from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsCoordinateTransformContext, QgsDistanceArea,
                        QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProcessing, QgsProcessingAlgorithm,
+                       QgsProcessing, QgsProcessingAlgorithm, QgsProperty,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber, QgsUnitTypes,
                        QgsProcessingParameterFeatureSink, QgsFeatureSink)
@@ -258,16 +258,33 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 highwayLyr = self.mergeHighways(lyr)
                 distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
                 pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao'])
-                distance2 = self.getChopDistance(highwayLyr, scaleMini * 0.2)
-                pointsAndAngles2 = self.chopLineLayer(highwayLyr, distance2, ['sigla', 'jurisdicao'])
+                distanceMiniMap = self.getChopDistance(highwayLyr, scaleMini * 0.2)
+                pointsAndAnglesMiniMap = self.chopLineLayer(highwayLyr, distanceMiniMap, ['sigla', 'jurisdicao'])
                 destLayersToCreateSpacedSymbolsCase2 = next(filter(
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
-                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles1, 1)
-                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles2, 2)
+                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles1, 1, 0)
+                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesMiniMap, 2, 0)
+
+                maxRoadIndentificationNumber = self.findMaxRoadIndentificationNumber(pointsAndAngles1)
+                for n in range(maxRoadIndentificationNumber):
+                    if n == maxRoadIndentificationNumber:
+                        break
+                    distanceFromSymbol = self.getChopDistance(highwayLyr, scale * (n+1)* 0.008)
+                    highwayLyrSubstring = self.getLineSubstring(highwayLyr, distanceFromSymbol, QgsProperty.fromExpression('length( $geometry)'))
+                    chopDistance = self.getChopDistance(highwayLyrSubstring, scale*0.2)
+                    pointsAndAnglesN = self.chopLineLayer(highwayLyrSubstring, chopDistance, ['sigla', 'jurisdicao'])
+                    distanceMiniMap = self.getChopDistance(highwayLyrSubstring, scaleMini * 0.2)
+                    pointsAndAnglesMiniMap = self.chopLineLayer(highwayLyrSubstring, distanceMiniMap, ['sigla', 'jurisdicao'])
+                    destLayersToCreateSpacedSymbolsCase2 = next(filter(
+                        lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
+                    self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesN, 1, n+1)
+                    self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesMiniMap, 2, n+1)
+                
             if lyrName == 'elemnat_ponto_cotado_p' and moldura:
                 self.highestSpot(lyr, moldura)
-        distanceBuffer = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.003)
-        addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, destLayersToCreateSpacedSymbolsCase2, distanceBuffer)            
+        distanceToRemoveEnergySymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.003)
+        distanceToRemoveRoadSymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.006)
+        addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, distanceToRemoveEnergySymbol, destLayersToCreateSpacedSymbolsCase2, distanceToRemoveRoadSymbol)            
         newLayer = self.outLayer(parameters, context, destLayersToCreateSpacedSymbolsCase2, addToSinkDict)
 
         return {self.OUTPUT: newLayer}
@@ -520,6 +537,18 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             }
         )
         return r['OUTPUT']
+    
+    def getLineSubstring(self, layer, startDistance, endDistance):
+        r = processing.run(
+            'native:linesubstring',
+            {   'END_DISTANCE' : endDistance, 
+                'INPUT' : layer, 
+                'OUTPUT' : 'TEMPORARY_OUTPUT', 
+                'START_DISTANCE' : startDistance 
+            }
+        )
+        return r['OUTPUT']
+    
     @staticmethod
     def getChopDistance(layer, distance):
         '''Helper function to get distances in decimal degrees
@@ -597,8 +626,16 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         )
         return r['OUTPUT_LAYER_L']
 
+    def findMaxRoadIndentificationNumber(self, pointsAndAngles):
+        n = 0
+        for point, angle, mapping in pointsAndAngles: 
+            if sigla:=mapping.get('sigla'):
+                name = sigla.split(';')
+                if len(name)>n:
+                    n=len(name)
+        return n
     @staticmethod
-    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, isMiniMap):
+    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, isMiniMap, n):
         '''Populates the layer edicao_identificador_trecho_rod_p
         '''
         fields = layer.fields()
@@ -608,7 +645,9 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             geom = QgsGeometry.fromWkt(point.asWkt())
             feat.setGeometry(geom)
             if sigla:=mapping.get('sigla'):
-                name = sigla.split(';')[0].split('-')[1]
+                if not len(sigla.split(';'))>n:
+                    continue
+                name = sigla.split(';')[n].split('-')[1]
                 feat.setAttribute('sigla', name)
             if jurisdicao:=mapping.get('jurisdicao'):
                 feat.setAttribute('jurisdicao', jurisdicao)
@@ -616,14 +655,14 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             layer.addFeature(feat)
         # layer.commitChanges()
 
-    def removeCloseEnergyAndHighwaySymbols(self, energyLayer, highwayLayer, distance):
+    def removeCloseEnergyAndHighwaySymbols(self, energyLayer, distanceToRemoveEnergySymbol, highwayLayer, distanceToRemoveRoadSymbol):
         addToSink = {}
         toBeRemovedHighway = []
         toBeRemovedEnergy = []
         for featA in highwayLayer.getFeatures():
             if featA in addToSink or featA.id() in toBeRemovedHighway:
                 continue
-            geomAbuffer = featA.geometry().buffer(distance, 5)
+            geomAbuffer = featA.geometry().buffer(distanceToRemoveRoadSymbol, 5)
             request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
             for featB in highwayLayer.getFeatures(request):
                 if featA.id() == featB.id() or featB in addToSink or featB.id() in toBeRemovedHighway:
@@ -646,7 +685,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         for featA in energyLayer.getFeatures():
             if featA.id() in toBeRemovedEnergy:
                 continue
-            geomAbuffer = featA.geometry().buffer(distance, 5)
+            geomAbuffer = featA.geometry().buffer(distanceToRemoveEnergySymbol, 5)
             request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
             for featB in energyLayer.getFeatures(request):
                 if featB.id() in toBeRemovedEnergy or featA.id()==featB.id():
