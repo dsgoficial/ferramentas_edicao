@@ -239,7 +239,7 @@ class DefaultMap(MapManager):
                     composition.setName(productType)
                     manager.addLayout(composition)
                 exportStatus = self.exportMap(composition, showLayers)
-                self.setupMasks()
+                self.setupMasks(strProductType)
                 if not showLayers:
                     self.removeMaps(idsMapLayers)
                     self.cleanLayerTreeRoot()
