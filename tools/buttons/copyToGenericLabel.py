@@ -32,7 +32,6 @@ class CopyToGenericLabel(BaseTools):
         destFeat.setGeometry(originFeat.geometry())
 
     def run(self):
-        print('mpo')
         lyr = self.iface.activeLayer()
         fieldIdx = lyr.dataProvider().fieldNameIndex('nome')
         if fieldIdx == -1:
@@ -40,22 +39,19 @@ class CopyToGenericLabel(BaseTools):
         else:
             instance = QgsProject().instance()
             geomType = lyr.geometryType()
-            print(geomType)
             if geomType == QgsWkbTypes.PointGeometry:
                 destLayerName = 'edicao_texto_generico_p'
             elif geomType == QgsWkbTypes.LineGeometry:
                 destLayerName = 'edicao_texto_generico_l'
             destLayer = instance.mapLayersByName(destLayerName)
-            print(destLayer)
             if len(destLayer) != 1:
                 self.displayErrorMessage(f'O layer "{destLayerName}" não existe')
-            destLayer = destLayer[0]
-            destLayer.startEditing()
-            for feat in lyr.getSelectedFeatures():
-                if self.checkAttrIsEmpty(feat, 'nome'):
-                    break
-                print(feat)
-                fields = destLayer.fields()
-                destFeat = QgsFeature(fields)
-                self.setFeatValues(feat, destFeat)
-                destLayer.addFeature(destFeat)
+            else:
+                destLayer = destLayer[0]
+                destLayer.startEditing()
+                for feat in lyr.getSelectedFeatures():
+                    if self.checkAttrIsEmpty(feat, 'nome'):
+                        break
+                    destFeat = QgsFeature(destLayer.fields())
+                    self.setFeatValues(feat, destFeat)
+                    destLayer.addFeature(destFeat)
