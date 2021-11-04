@@ -3,7 +3,6 @@ from collections import namedtuple
 import json
 import os
 from pathlib import Path
-from re import U
 import subprocess
 import argparse
 
@@ -206,7 +205,8 @@ class MapTools:
             srcPath, dstPath
         ])
 
-    def setupMasks(self, produto):
+    @staticmethod
+    def setupMasks(produto):
         pathJson = Path(__file__).parent / 'produtos' / produto / 'mascaras.json'
         if pathJson.exists():
             processing.run(
