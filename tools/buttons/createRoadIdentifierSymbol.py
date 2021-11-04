@@ -1,9 +1,13 @@
 from pathlib import Path
-from qgis.core import QgsProject, QgsSpatialIndex, Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
-from qgis.gui import QgsMapToolEmitPoint
-from .utils.comboBox import ComboBox
-from PyQt5.QtWidgets import QWidget, QPushButton, QAction
+
 from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtCore import Qt
+from qgis.core import (Qgis, QgsFeature, QgsFeatureRequest, QgsGeometry,
+                       QgsProject, QgsSpatialIndex)
+from qgis.gui import QgsMapToolEmitPoint
+
+from .utils.comboBox import ComboBox
 
 
 class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
@@ -42,11 +46,11 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
             self.mapCanvas.unsetMapTool(self)
 
     def mouseClick(self, pos, btn):
-        print('VP:', self.mapCanvas.viewportSizeHint())
         if self.active:
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
             print(closestSpatialID)
-            # Option 1: Use a QgsFeatureRequest
+            # Option 1 (actual): Use a QgsFeatureRequest
+            # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)
             if not closestFeat.isClosed():
@@ -56,35 +60,29 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
                     if ';' in roadAbrev:
                         options = roadAbrev.split(';')
                         self.box.updateItems(options)
-                        self.box.showComboBox(self.toCanvasCoordinates(pos))
+                        self.box.showComboBox()
                         # self.currFeat = feat
                     else:
                         self.createFeature(roadAbrev)
                 else:
                     self.displayErrorMessage(
-                        f'Feição selecionada não possui o atributo "sigla"'
+                        f'Feição selecionada possui atributo "sigla" inválido'
                     )
 
     def createFeature(self, name):
         self.box.hide()
         toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert.setAttribute('sigla', name)
+        jurisd, abbrv = name.split('-')
+        toInsert.setAttribute('jurisdicao', jurisd)
+        toInsert.setAttribute('sigla', abbrv)
         toInsertGeom = QgsGeometry.fromPointXY(self.currPos)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
         self.mapCanvas.refresh()
 
-            # Option 2: TODO: Use a dict lookup
-
-    def getAbrevFromComboBox(self, pos, roadAbrev):
-        choices = roadAbrev.split(';')
-        self.box.updateItems(choices)
-        self.box.showComboBox(pos)
-
-
     def getLayers(self):
-        srcLyr = QgsProject.instance().mapLayersByName('infra_via_deslocamento_l')
+        srcLyr = QgsProject.instance().mapLayersByabbrv('infra_via_deslocamento_l')
         dstLyr = QgsProject.instance().mapLayersByName('edicao_identificador_trecho_rod_p')
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
