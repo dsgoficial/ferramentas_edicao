@@ -1,13 +1,14 @@
 import math
 
 from qgis import processing
-from qgis.core import (QgsCoordinateReferenceSystem,
+from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsCoordinateTransformContext, QgsDistanceArea,
                        QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProcessing, QgsProcessingAlgorithm,
+                       QgsProcessing, QgsProcessingAlgorithm, QgsProperty,
                        QgsProcessingParameterMultipleLayers,
-                       QgsProcessingParameterNumber, QgsUnitTypes)
-from qgis.PyQt.QtCore import QCoreApplication
+                       QgsProcessingParameterNumber, QgsUnitTypes,
+                       QgsProcessingParameterFeatureSink, QgsFeatureSink)
+from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 
 
 class PrepareOrtho(QgsProcessingAlgorithm): 
@@ -33,9 +34,17 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT,
+                self.tr('Flag Preparar Ortoimagem')
+            )
+        ) 
+
     def processAlgorithm(self, parameters, context, feedback):      
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
         scale = self.parameterAsInt(parameters, self.SCALE, context)
+        scaleMini = scale*6.2
         layersToCalculateDefaults = [
             'infra_obstaculo_vertical_p',
             'infra_pista_pouso_p',
@@ -239,22 +248,46 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             if lyrName in layersToCalculateSobreposition:
                 self.checkIntersectionAndSetAttr(lyr, refLayersSobreposition)
             if lyrName in layerToCreateSpacedSymbolsCase1:
-                distance = self.getChopDistance(lyr, scale * 0.02)
-                pointsAndAngles = self.chopLineLayer(lyr, distance)
+                energyLyr = self.mergeEnergyLines(lyr, 5)
+                distance = self.getChopDistance(energyLyr, scale * 0.02)
+                pointsAndAngles = self.chopLineLayer(energyLyr, distance)
                 destLayersToCreateSpacedSymbolsCase1 = next(filter(
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase1.values(), layers))
                 self.populateEnergyTowerSymbolLayer(destLayersToCreateSpacedSymbolsCase1,pointsAndAngles)
             if lyrName in layerToCreateSpacedSymbolsCase2:
-                self.mergeHighways(lyr)
-                distance = self.getChopDistance(lyr, scale * 0.2)
-                pointsAndAngles = self.chopLineLayer(lyr, distance, ['sigla', 'jurisdicao'])
+                highwayLyr = self.mergeHighways(lyr)
+                distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
+                pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao'])
+                distanceMiniMap = self.getChopDistance(highwayLyr, scaleMini * 0.2)
+                pointsAndAnglesMiniMap = self.chopLineLayer(highwayLyr, distanceMiniMap, ['sigla', 'jurisdicao'])
                 destLayersToCreateSpacedSymbolsCase2 = next(filter(
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
-                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles)
+                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles1, 1, 0)
+                self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesMiniMap, 2, 0)
+
+                maxRoadIndentificationNumber = self.findMaxRoadIndentificationNumber(pointsAndAngles1)
+                for n in range(maxRoadIndentificationNumber):
+                    if n == maxRoadIndentificationNumber:
+                        break
+                    distanceFromSymbol = self.getChopDistance(highwayLyr, scale * (n+1)* 0.008)
+                    highwayLyrSubstring = self.getLineSubstring(highwayLyr, distanceFromSymbol, QgsProperty.fromExpression('length( $geometry)'))
+                    chopDistance = self.getChopDistance(highwayLyrSubstring, scale*0.2)
+                    pointsAndAnglesN = self.chopLineLayer(highwayLyrSubstring, chopDistance, ['sigla', 'jurisdicao'])
+                    distanceMiniMap = self.getChopDistance(highwayLyrSubstring, scaleMini * 0.2)
+                    pointsAndAnglesMiniMap = self.chopLineLayer(highwayLyrSubstring, distanceMiniMap, ['sigla', 'jurisdicao'])
+                    destLayersToCreateSpacedSymbolsCase2 = next(filter(
+                        lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
+                    self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesN, 1, n+1)
+                    self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesMiniMap, 2, n+1)
+                
             if lyrName == 'elemnat_ponto_cotado_p' and moldura:
                 self.highestSpot(lyr, moldura)
-                    
-        return {self.OUTPUT: ''}
+        distanceToRemoveEnergySymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.003)
+        distanceToRemoveRoadSymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.006)
+        addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, distanceToRemoveEnergySymbol, destLayersToCreateSpacedSymbolsCase2, distanceToRemoveRoadSymbol)            
+        newLayer = self.outLayer(parameters, context, destLayersToCreateSpacedSymbolsCase2, addToSinkDict)
+
+        return {self.OUTPUT: newLayer}
 
     def updateLayer(self, layer, layerName):
         if layerName in [
@@ -495,6 +528,27 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     break
             # lyr.commitChanges()
 
+    def mergeEnergyLines(self, lyr, limit):
+        r = processing.run(
+            'ferramentasedicao:mergelinesbyangle',
+            {   'INPUT' : lyr, 
+                'MAX_ITERATION': limit,
+                'OUTPUT' : 'TEMPORARY_OUTPUT'
+            }
+        )
+        return r['OUTPUT']
+    
+    def getLineSubstring(self, layer, startDistance, endDistance):
+        r = processing.run(
+            'native:linesubstring',
+            {   'END_DISTANCE' : endDistance, 
+                'INPUT' : layer, 
+                'OUTPUT' : 'TEMPORARY_OUTPUT', 
+                'START_DISTANCE' : startDistance 
+            }
+        )
+        return r['OUTPUT']
+    
     @staticmethod
     def getChopDistance(layer, distance):
         '''Helper function to get distances in decimal degrees
@@ -546,8 +600,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     angle=angle-360
                 if angle>90 and angle<270:
                     angle = angle - 180
-                print(point)
-                print(angle)
                 pointsAndAngles.append((point, angle, attributeMapping))
         return pointsAndAngles
 
@@ -564,44 +616,26 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             feat.setAttribute('simb_rot', angle)
             layer.addFeature(feat)
         # layer.commitChanges()
+    
+    def mergeHighways(self, lyr):
+        r = processing.run(
+            'ferramentasedicao:mergehighway',
+            {   'INPUT_LAYER_L' : lyr,
+                'OUTPUT_LAYER_L' : 'TEMPORARY_OUTPUT'
+            }
+        )
+        return r['OUTPUT_LAYER_L']
 
+    def findMaxRoadIndentificationNumber(self, pointsAndAngles):
+        n = 0
+        for point, angle, mapping in pointsAndAngles: 
+            if sigla:=mapping.get('sigla'):
+                name = sigla.split(';')
+                if len(name)>n:
+                    n=len(name)
+        return n
     @staticmethod
-    def mergeHighways(layer):
-        merge = {}
-        for highwayFeature in layer.getFeatures():
-            if not highwayFeature['sigla']:
-                continue
-            mergeKey = '{0}'.format( highwayFeature['sigla'].lower() )
-            if not( mergeKey in merge):
-                merge[ mergeKey ] = []
-            merge[ mergeKey ].append( highwayFeature )
-            features = merge[ mergeKey ]
-            layer.startEditing()
-        for mergeKey in merge:
-            idsToRemove = []
-            featureIds = [ f.id() for f in features ]
-            for i in range(len(featureIds)):
-                featureAId = featureIds[i]
-                if featureAId in idsToRemove:
-                    continue
-                featureA = layer.getFeature( featureAId )
-                geomEngine = QgsGeometry().createGeometryEngine(featureA.geometry().constGet())
-                geomEngine.prepareGeometry()
-                for j in range(i+1, len(featureIds)):
-                    featureBId = featureIds[j]
-                    if featureBId in idsToRemove:
-                        continue
-                    featureB = layer.getFeature( featureBId )
-                    if not geomEngine.touches( featureB.geometry().constGet() ):
-                        continue
-                    newGeometry = featureA.geometry().combine( featureB.geometry() ).mergeLines()
-                    featureA.setGeometry( newGeometry )
-                    layer.updateFeature( featureA )
-                    idsToRemove.append( featureBId )
-            layer.deleteFeatures( idsToRemove )
-
-    @staticmethod
-    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles):
+    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, isMiniMap, n):
         '''Populates the layer edicao_identificador_trecho_rod_p
         '''
         fields = layer.fields()
@@ -611,14 +645,78 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             geom = QgsGeometry.fromWkt(point.asWkt())
             feat.setGeometry(geom)
             if sigla:=mapping.get('sigla'):
-                name = sigla.split(';')[0].split('-')[1]
+                if not len(sigla.split(';'))>n:
+                    continue
+                name = sigla.split(';')[n].split('-')[1]
                 feat.setAttribute('sigla', name)
             if jurisdicao:=mapping.get('jurisdicao'):
                 feat.setAttribute('jurisdicao', jurisdicao)
-            feat.setAttribute('carta_simbolizacao', 1)
+            feat.setAttribute('carta_simbolizacao', isMiniMap)
             layer.addFeature(feat)
         # layer.commitChanges()
 
+    def removeCloseEnergyAndHighwaySymbols(self, energyLayer, distanceToRemoveEnergySymbol, highwayLayer, distanceToRemoveRoadSymbol):
+        addToSink = {}
+        toBeRemovedHighway = []
+        toBeRemovedEnergy = []
+        for featA in highwayLayer.getFeatures():
+            if featA in addToSink or featA.id() in toBeRemovedHighway:
+                continue
+            geomAbuffer = featA.geometry().buffer(distanceToRemoveRoadSymbol, 5)
+            request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
+            for featB in highwayLayer.getFeatures(request):
+                if featA.id() == featB.id() or featB in addToSink or featB.id() in toBeRemovedHighway:
+                    continue
+                isEqual = True
+                for field in featA.fields().names():
+                    if field=='id':
+                        continue
+                    if not featA[field]==featB[field]:
+                        isEqual = False
+                        fieldText = 'próximo de outro símbolo com campo ' + field + ' diferente'
+                        addToSink[featB]=fieldText
+                        break
+                if isEqual:
+                    toBeRemovedHighway.append(featB.id())
+            for featC in energyLayer.getFeatures(request):
+                if featC.id() in toBeRemovedEnergy:
+                    continue
+                toBeRemovedEnergy.append(featC.id())
+        for featA in energyLayer.getFeatures():
+            if featA.id() in toBeRemovedEnergy:
+                continue
+            geomAbuffer = featA.geometry().buffer(distanceToRemoveEnergySymbol, 5)
+            request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
+            for featB in energyLayer.getFeatures(request):
+                if featB.id() in toBeRemovedEnergy or featA.id()==featB.id():
+                    continue
+                toBeRemovedEnergy.append(featB.id())
+        highwayLayer.deleteFeatures(toBeRemovedHighway)
+        energyLayer.deleteFeatures(toBeRemovedEnergy)
+        return addToSink
+    
+    def outLayer(self, parameters, context, origLayer, dictFeatures):
+        newField = origLayer.fields()
+        newField.append(QgsField('erro', QVariant.String))
+
+        (sink, newLayer) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            newField,
+            4, #1point 2line 3polygon 4multipoint 5 multiline
+            origLayer.sourceCrs()
+        )
+
+        for feat in dictFeatures:
+            newFeat = QgsFeature()
+            newFeat.setGeometry(feat.geometry())
+            newFeat.setFields(newField)
+            for field in  range(len(feat.fields())):
+                newFeat.setAttribute((field), feat.attribute((field)))
+            newFeat['erro'] = dictFeatures[feat]
+            sink.addFeature(newFeat, QgsFeatureSink.FastInsert)
+        return newLayer
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
 

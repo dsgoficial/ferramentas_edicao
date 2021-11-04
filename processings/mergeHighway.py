@@ -40,7 +40,8 @@ class MergeHighway(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_FRAME_A,
                 self.tr('Selecionar camada de moldura'),
-                [QgsProcessing.TypeVectorPolygon]
+                [QgsProcessing.TypeVectorPolygon],
+                optional = True
             )
         )
 
@@ -52,35 +53,66 @@ class MergeHighway(QgsProcessingAlgorithm):
         ) 
 
     def processAlgorithm(self, parameters, context, feedback):      
-        highwayLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
+        highwayLayerInput = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME_A, context)
+        
 
         (sink_l, sinkId_l) = self.parameterAsSink(
             parameters,
             self.OUTPUT_LAYER_L,
             context,
-            highwayLayer.fields(),
+            highwayLayerInput.fields(),
             core.QgsWkbTypes.MultiLineString,
             QgsCoordinateReferenceSystem( iface.mapCanvas().mapSettings().destinationCrs().authid() )
         )
-
-        clippedHighwayLayer = self.clipLayer( highwayLayer, frameLayer)
-
+        if frameLayer is not None:
+            highwayLayer = self.clipLayer( highwayLayerInput, frameLayer)
+        highwayLayer = self.runAddCount(highwayLayerInput)
+        self.runCreateSpatialIndex(highwayLayer)
         merge = {}
-        for highwayFeature in clippedHighwayLayer.getFeatures():
+        for highwayFeature in highwayLayer.getFeatures():
             if not highwayFeature['sigla']:
                 continue
             mergeKey = '{0}'.format( highwayFeature['sigla'].lower() )
             if not( mergeKey in merge):
                 merge[ mergeKey ] = []
             merge[ mergeKey ].append( highwayFeature )
-        for mergeKey in merge:
-            self.mergeLineFeatures( merge[ mergeKey ], clippedHighwayLayer )
-
-        for feature in clippedHighwayLayer.getFeatures():
+        numberOfFeatures =  {-1: highwayLayer.featureCount()}
+        limit = 10
+        for i in range(limit):
+            for mergeKey in merge:
+                self.mergeLineFeatures( merge[ mergeKey ], highwayLayer )
+            newNumberOfFeatures = highwayLayer.featureCount()
+            numberOfFeatures[i]=newNumberOfFeatures
+            if numberOfFeatures[i]==numberOfFeatures[i-1]:
+                break
+        for feature in highwayLayer.getFeatures():
             self.addSink( feature, sink_l)
+
         return {self.OUTPUT_LAYER_L: sinkId_l}
     
+    def runAddCount(self, inputLyr):
+        output = processing.run(
+            "native:addautoincrementalfield",
+            {
+                'INPUT':inputLyr,
+                'FIELD_NAME':'AUTO',
+                'START':0,
+                'GROUP_FIELDS':[],
+                'SORT_EXPRESSION':'',
+                'SORT_ASCENDING':False,
+                'SORT_NULLS_FIRST':False,
+                'OUTPUT':'TEMPORARY_OUTPUT'
+            }
+        )
+        return output['OUTPUT']
+    
+    def runCreateSpatialIndex(self, inputLyr):
+        processing.run(
+            "native:createspatialindex",
+            {'INPUT':inputLyr}
+        )
+
     def addSink(self, feature, sink):
         newFeature = QgsFeature( feature.fields() )
         newFeature.setAttributes( feature.attributes() )
