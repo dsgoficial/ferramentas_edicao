@@ -11,7 +11,7 @@ from qgis.gui import QgsMapToolEmitPoint
 from .utils.comboBox import ComboBox
 
 
-class CreateLakeLabel(QgsMapToolEmitPoint):
+class CreateRiverLabel(QgsMapToolEmitPoint):
 
     def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector):
         super().__init__(iface.mapCanvas())
@@ -29,7 +29,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
         self.button =  QPushButton(
             QIcon(str(buttonImg)),
-            'CreateLakeLabel',
+            'CreateRiverLabel',
             self.iface.mainWindow()
         )
         self.setButton(self.button)
@@ -57,7 +57,10 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
             if not closestFeat.isClosed():
                 feat = next(closestFeat)
                 if self.checkFeature(feat):
-                    self.createFeature(feat)
+                    if feat.attribute('situacao_em_poligono') == 1:
+                        self.createFeatureA(feat, pos)
+                    elif feat.attribute('situacao_em_poligono') in (2,3):
+                        self.createFeatureB(feat, pos)
                 else:
                     self.displayErrorMessage(
                         f'Feição selecionada inválida. Verifique os campos "nome" e "tipo" na camada cobter_massa_dagua_a'
@@ -65,18 +68,32 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
 
     @staticmethod
     def checkFeature(feat):
-        return (feat.attribute('tipo') in (3,4,5,6,7,11)) and feat.attribute('nome')
+        return not not feat.attribute('nome')
 
-    def createFeature(self, feat):
+    def createFeatureA(self, feat, pos):
         toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert.setAttribute('texto_edicao', feat.attribute('nome').upper())
+        toInsert.setAttribute('texto_edicao', feat.attribute('nome'))
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
         toInsert.setAttribute('justificativa_txt', 2)
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         toInsert.setAttribute('tamanho_txt', self.getLabelSize(feat))
-        toInsertGeom = QgsGeometry.fromPointXY(self.currPos)
+        toInsertGeom = self.getLabelGeometry(pos)
+        toInsert.setGeometry(toInsertGeom)
+        self.dstLyr.startEditing()
+        self.dstLyr.addFeature(toInsert)
+        self.mapCanvas.refresh()
+
+    def createFeatureB(self, feat, pos):
+        toInsert = QgsFeature(self.dstLyr.fields())
+        toInsert.setAttribute('texto_edicao', feat.attribute('nome').upper())
+        toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
+        toInsert.setAttribute('espacamento', 0)
+        toInsert.setAttribute('cor', '#00a0df')
+        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
+        toInsert.setAttribute('tamanho_txt', self.getLabelSize(feat))
+        toInsertGeom = self.getLabelGeometry(pos)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
@@ -87,6 +104,9 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
         if mapType == 'Carta':
             return 0
         return 1
+
+    def getLabelGeometry(self, pos):
+        pass
 
     def getLabelSize(self, feat):
         area = feat.geometry().area()
@@ -116,20 +136,20 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
         return int(scale)
 
     def getLayers(self):
-        srcLyr = QgsProject.instance().mapLayersByName('cobter_massa_dagua_a')
-        dstLyr = QgsProject.instance().mapLayersByName('edicao_texto_generico_p')
+        srcLyr = QgsProject.instance().mapLayersByName('elemnat_trecho_drenagem_l')
+        dstLyr = QgsProject.instance().mapLayersByName('edicao_texto_generico_l')
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(
-                f'Layer cobter_massa_dagua_a não encontrado'
+                f'Layer elemnat_trecho_drenagem_l não encontrado'
             )
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
             self.displayErrorMessage(
-                f'Layer edicao_texto_generico_p não encontrado'
+                f'Layer edicao_texto_generico_l não encontrado'
             )
             return None
         self.spatialIndex = QgsSpatialIndex(

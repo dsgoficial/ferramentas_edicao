@@ -14,6 +14,7 @@ from .buttons.cycleLabelPosition import CycleLabelPosition
 from .buttons.createVegetationSymbol import CreateVegetationSymbol
 from .buttons.createRoadIdentifierSymbol import CreateRoadIdentifierSymbol
 from .buttons.createLakeLabel import CreateLakeLabel
+from .buttons.createRiverLabel import CreateRiverLabel
 
 class SetupButtons:
 
@@ -41,6 +42,8 @@ class SetupButtons:
         self.createVegetationSymbol.setupUi()
         self.createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, self.mapTypeSelector, self.scaleSelector)
         self.createLakeLabel.setupUi()
+        self.createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, self.mapTypeSelector, self.scaleSelector)
+        self.createRiverLabel.setupUi()
 
     def unload(self):
         self.iface.mainWindow().removeToolBar(self.toolBar)
