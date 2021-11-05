@@ -5,20 +5,28 @@ from PyQt5.QtGui import QIcon
 
 from qgis.gui import QgisInterface
 
+from .buttons.mapTypeSelector import MapTypeSelector
+from .buttons.scaleSelector import ScaleSelector
 from .buttons.cycleVisibility import CycleVisibility
 from .buttons.cycleTextJustification import CycleTextJustification
 from .buttons.copyToGenericLabel import CopyToGenericLabel
 from .buttons.cycleLabelPosition import CycleLabelPosition
 from .buttons.createVegetationSymbol import CreateVegetationSymbol
 from .buttons.createRoadIdentifierSymbol import CreateRoadIdentifierSymbol
+from .buttons.createLakeLabel import CreateLakeLabel
 
 class SetupButtons:
 
     def __init__(self, iface=None) -> None:
         self.iface = iface
         self.toolBar = iface.addToolBar('ferramentas_edicao')
+        self.tools = list()
 
     def initToolBar(self):
+        self.mapTypeSelector = MapTypeSelector(self.iface, self.toolBar)
+        self.mapTypeSelector.setupUi()
+        self.scaleSelector = ScaleSelector(self.iface, self.toolBar)
+        self.scaleSelector.setupUi()
         self.cycleVisibilityButton = CycleVisibility(self.toolBar, self.iface)
         self.cycleVisibilityButton.initButton()
         self.cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
@@ -29,8 +37,10 @@ class SetupButtons:
         self.cycleLabelPositionButton.initButton()
         self.createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar)
         self.createVegetationSymbol.setupUi()
-        self.createVegetationSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar)
+        self.createVegetationSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, self.mapTypeSelector)
         self.createVegetationSymbol.setupUi()
+        self.createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, self.mapTypeSelector, self.scaleSelector)
+        self.createLakeLabel.setupUi()
 
     def unload(self):
         self.iface.mainWindow().removeToolBar(self.toolBar)
