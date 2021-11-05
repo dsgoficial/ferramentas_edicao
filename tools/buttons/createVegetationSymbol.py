@@ -17,7 +17,7 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint):
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'createVegetationSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
         self.button =  QPushButton(
             QIcon(str(buttonImg)),
             'CreateVegetationSymbol',
