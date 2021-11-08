@@ -33,26 +33,28 @@ class CopyToGenericLabel(BaseTools):
         destFeat.setGeometry(originFeat.geometry())
 
     def run(self):
-        lyr = self.iface.activeLayer()
-        fieldIdx = lyr.dataProvider().fieldNameIndex('nome')
-        if fieldIdx == -1:
-            self.displayErrorMessage(self.tr('The attribute "nome" does not exist in the selected layer'))
+        if not (lyr:=self.iface.activeLayer()):
+            self.displayErrorMessage(self.tr('No selected layer'))
         else:
-            instance = QgsProject().instance()
-            geomType = lyr.geometryType()
-            if geomType == QgsWkbTypes.PointGeometry:
-                destLayerName = 'edicao_texto_generico_p'
-            elif geomType == QgsWkbTypes.LineGeometry:
-                destLayerName = 'edicao_texto_generico_l'
-            destLayer = instance.mapLayersByName(destLayerName)
-            if len(destLayer) != 1:
-                self.displayErrorMessage(self.tr(f'The layer "{destLayerName}" does not exist'))
+            fieldIdx = lyr.dataProvider().fieldNameIndex('nome')
+            if fieldIdx == -1:
+                self.displayErrorMessage(self.tr('The attribute "nome" does not exist in the selected layer'))
             else:
-                destLayer = destLayer[0]
-                destLayer.startEditing()
-                for feat in lyr.getSelectedFeatures():
-                    if self.checkAttrIsEmpty(feat, 'nome'):
-                        break
-                    destFeat = QgsFeature(destLayer.fields())
-                    self.setFeatValues(feat, destFeat)
-                    destLayer.addFeature(destFeat)
+                instance = QgsProject().instance()
+                geomType = lyr.geometryType()
+                if geomType == QgsWkbTypes.PointGeometry:
+                    destLayerName = 'edicao_texto_generico_p'
+                elif geomType == QgsWkbTypes.LineGeometry:
+                    destLayerName = 'edicao_texto_generico_l'
+                destLayer = instance.mapLayersByName(destLayerName)
+                if len(destLayer) != 1:
+                    self.displayErrorMessage(self.tr(f'The layer "{destLayerName}" does not exist'))
+                else:
+                    destLayer = destLayer[0]
+                    destLayer.startEditing()
+                    for feat in lyr.getSelectedFeatures():
+                        if self.checkAttrIsEmpty(feat, 'nome'):
+                            break
+                        destFeat = QgsFeature(destLayer.fields())
+                        self.setFeatValues(feat, destFeat)
+                        destLayer.addFeature(destFeat)

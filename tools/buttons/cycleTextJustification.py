@@ -21,16 +21,18 @@ class CycleTextJustification(BaseTools):
         self.action = self.toolBar.addWidget(button)
 
     def run(self):
-        lyr = self.iface.activeLayer()
-        fieldIdx = lyr.dataProvider().fieldNameIndex('justificativa_txt')
-        if fieldIdx == -1:
-            self.displayErrorMessage(self.tr('The attribute "justificativa_txt" does not exist in the selected layer'))
+        if not (lyr:=self.iface.activeLayer()):
+            self.displayErrorMessage(self.tr('No selected layer'))
         else:
-            lyr.startEditing()
-            for feat in lyr.getSelectedFeatures():
-                visible = feat.attribute('justificativa_txt')
-                if visible == 9999:
-                    lyr.changeAttributeValue(feat.id(), fieldIdx, 1)
-                else:
-                    lyr.changeAttributeValue(feat.id(), fieldIdx, (visible + 1) % 4 or visible + 1)
+            fieldIdx = lyr.dataProvider().fieldNameIndex('justificativa_txt')
+            if fieldIdx == -1:
+                self.displayErrorMessage(self.tr('The attribute "justificativa_txt" does not exist in the selected layer'))
+            else:
+                lyr.startEditing()
+                for feat in lyr.getSelectedFeatures():
+                    visible = feat.attribute('justificativa_txt')
+                    if visible == 9999:
+                        lyr.changeAttributeValue(feat.id(), fieldIdx, 1)
+                    else:
+                        lyr.changeAttributeValue(feat.id(), fieldIdx, (visible + 1) % 4 or visible + 1)
                 
