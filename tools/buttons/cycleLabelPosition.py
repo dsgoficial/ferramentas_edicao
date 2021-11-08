@@ -37,20 +37,22 @@ class CycleLabelPosition(BaseTools):
         self.pos = (self.pos + 1) % 8
 
     def run(self):
-        lyr = self.iface.activeLayer()
-        fieldXIdx = lyr.dataProvider().fieldNameIndex('label_x')
-        fieldYIdx = lyr.dataProvider().fieldNameIndex('label_y')
-        if any((fieldXIdx == -1, fieldYIdx == -1)):
-            self.displayErrorMessage(self.tr('Attributes "label_x" or "label_y" do not exist in the selected layer'))
+        if not (lyr:=self.iface.activeLayer()):
+            self.displayErrorMessage(self.tr('No selected layer'))
         else:
-            lyr.startEditing()
-            if len(self.currentFeats) > 0 and self.currentFeats != set(x.id() for x in lyr.getSelectedFeatures()):
-                self.pos = 0
-                self.currentFeats = set()
-            for feat in lyr.getSelectedFeatures():
-                newX, newY = self.getUpdateValue(feat, fieldXIdx, fieldYIdx)
-                lyr.changeAttributeValue(feat.id(), fieldXIdx, newX)
-                lyr.changeAttributeValue(feat.id(), fieldYIdx, newY)
-                self.currentFeats.add(feat.id())
-            self.updateCurrentPos()
-                
+            fieldXIdx = lyr.dataProvider().fieldNameIndex('label_x')
+            fieldYIdx = lyr.dataProvider().fieldNameIndex('label_y')
+            if any((fieldXIdx == -1, fieldYIdx == -1)):
+                self.displayErrorMessage(self.tr('Attributes "label_x" or "label_y" do not exist in the selected layer'))
+            else:
+                lyr.startEditing()
+                if len(self.currentFeats) > 0 and self.currentFeats != set(x.id() for x in lyr.getSelectedFeatures()):
+                    self.pos = 0
+                    self.currentFeats = set()
+                for feat in lyr.getSelectedFeatures():
+                    newX, newY = self.getUpdateValue(feat, fieldXIdx, fieldYIdx)
+                    lyr.changeAttributeValue(feat.id(), fieldXIdx, newX)
+                    lyr.changeAttributeValue(feat.id(), fieldYIdx, newY)
+                    self.currentFeats.add(feat.id())
+                self.updateCurrentPos()
+                    
