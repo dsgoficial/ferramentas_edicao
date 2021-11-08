@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget
+from pathlib import Path
 
 from .baseTools import BaseTools
 
@@ -15,16 +15,16 @@ class CycleLabelPosition(BaseTools):
         ] #(0,d)
         self.currentFeats = set()
 
-    def initButton(self):
-        action = self.createAction(
-            'cycleLabelPosition',
-            'cycleLabelPosition.png',
+    def setupUi(self):
+        button = self.createPushButton(
+            'CycleLabelPosition',
+            Path(__file__).parent / 'icons' / 'genericSymbolA.png',
             self.run,
-            'Cycles the attributes "label_x" and "label_y"',
-            'Cycles the attributes "label_x" and "label_y"',
+            self.tr('Cycles the attributes "label_x" and "label_y"'),
+            self.tr('Cycles the attributes "label_x" and "label_y"'),
             self.iface
         )
-        self.toolBar.addAction(action)
+        self.action = self.toolBar.addWidget(button)
 
     def getUpdateValue(self, feat, featXIdx, featYIdx):
         attrXValue = feat.attribute(featXIdx)
@@ -41,7 +41,7 @@ class CycleLabelPosition(BaseTools):
         fieldXIdx = lyr.dataProvider().fieldNameIndex('label_x')
         fieldYIdx = lyr.dataProvider().fieldNameIndex('label_y')
         if any((fieldXIdx == -1, fieldYIdx == -1)):
-            self.displayErrorMessage('Os atributo "label_x" e/ou "label_y" não existe(m) na camada selecionada.')
+            self.displayErrorMessage(self.tr('Attributes "label_x" or "label_y" do not exist in the selected layer'))
         else:
             lyr.startEditing()
             if len(self.currentFeats) > 0 and self.currentFeats != set(x.id() for x in lyr.getSelectedFeatures()):

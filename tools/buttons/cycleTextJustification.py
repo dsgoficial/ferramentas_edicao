@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget
+from pathlib import Path
 
 from .baseTools import BaseTools
 
@@ -9,22 +9,22 @@ class CycleTextJustification(BaseTools):
         self.toolBar = toolBar
         self.iface = iface
 
-    def initButton(self):
-        action = self.createAction(
-            'cycleTextJustification',
-            'cycleTextJustification.png',
+    def setupUi(self):
+        button = self.createPushButton(
+            'CycleTextJustification',
+            Path(__file__).parent / 'icons' / 'genericSymbolA.png',
             self.run,
-            'Cycles the attribute "justificativa_txt" 1 -> 2 -> 3 -> 1 for selected features',
-            'Cycles text justification attribute',
+            self.tr('Cycles the attribute "justificativa_txt" 1 -> 2 -> 3 -> 1 for selected features'),
+            self.tr('Cycles the attribute "justificativa_txt" 1 -> 2 -> 3 -> 1 for selected features'),
             self.iface
         )
-        self.toolBar.addAction(action)
+        self.action = self.toolBar.addWidget(button)
 
     def run(self):
         lyr = self.iface.activeLayer()
         fieldIdx = lyr.dataProvider().fieldNameIndex('justificativa_txt')
         if fieldIdx == -1:
-            self.displayErrorMessage('O atributo "justificativa_txt" não existe na camada selecionada.')
+            self.displayErrorMessage(self.tr('The attribute "justificativa_txt" does not exist in the selected layer'))
         else:
             lyr.startEditing()
             for feat in lyr.getSelectedFeatures():

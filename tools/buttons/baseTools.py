@@ -3,7 +3,8 @@ from pathlib import Path
 
 from qgis.core import Qgis
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtWidgets import QAction
+from qgis.PyQt.QtCore import QCoreApplication
+from PyQt5.QtWidgets import QAction, QPushButton
 from PyQt5.QtGui import QIcon
 
 class BaseTools:
@@ -27,12 +28,27 @@ class BaseTools:
         action.setStatusTip(tip)
         return action
 
-    def displayErrorMessage(self, message):
+    @staticmethod
+    def createPushButton(text, icon, callback, whatisthis, tip, iface):
+        if icon:
+            button = QPushButton(QIcon(str(icon)), text, iface.mainWindow())
+        else:
+            button = QPushButton(QIcon(text, iface.mainWindow()))
+        button.clicked.connect(callback)
+        button.setWhatsThis(whatisthis)
+        button.setStatusTip(tip)
+        return button
+
+    def displayErrorMessage(self, message, duration=5):
         iface = getattr(self, 'iface')
-        iface.messageBar().pushMessage(message, Qgis.Critical, 5)
+        iface.messageBar().pushMessage(message, Qgis.Critical, duration)
 
     def checkAttrIsEmpty(self, feat, attrName):
         if not feat.attribute(attrName):
             self.displayErrorMessage(
                 f'Feature {feat.attribute("id")} has empty "{attrName}" attribute.')
             return True
+
+    @staticmethod
+    def tr(message):
+        return QCoreApplication.translate('EditionPlugin', message)
