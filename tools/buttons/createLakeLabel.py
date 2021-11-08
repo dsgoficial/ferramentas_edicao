@@ -1,17 +1,14 @@
 from pathlib import Path
-import math
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtCore import Qt
-from qgis.core import (Qgis, QgsFeature, QgsFeatureRequest, QgsGeometry,
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry,
                        QgsProject, QgsSpatialIndex)
 from qgis.gui import QgsMapToolEmitPoint
 
+from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
 
 
-class CreateLakeLabel(QgsMapToolEmitPoint):
+class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
 
     def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector):
         super().__init__(iface.mapCanvas())
@@ -27,14 +24,16 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
 
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
-        self.button =  QPushButton(
-            QIcon(str(buttonImg)),
+        self._button = self.createPushButton(
             'CreateLakeLabel',
-            self.iface.mainWindow()
+            buttonImg,
+            self.setMapTool,
+            self.tr('Creates features in "edicao_texto_generico_p" based on "cobter_massa_dagua_a" intersection'),
+            self.tr('Creates features in "edicao_texto_generico_p" based on "cobter_massa_dagua_a" intersection'),
+            self.iface
         )
-        self.setButton(self.button)
-        self.button.clicked.connect(self.setMapTool)
-        self.toolBar.addWidget(self.button)
+        self.setButton(self._button)
+        self._action = self.toolBar.addWidget(self._button)
 
     def setMapTool(self):
         self.active = not self.active
@@ -59,9 +58,9 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
                 if self.checkFeature(feat):
                     self.createFeature(feat)
                 else:
-                    self.displayErrorMessage(
-                        f'Feição selecionada inválida. Verifique os campos "nome" e "tipo" na camada cobter_massa_dagua_a'
-                    )
+                    self.displayErrorMessage(self.tr(
+                        'Invalid feature. Verify the attributes "nome" and "tipo" on layer "cobter_massa_dagua_a"'
+                    ))
 
     @staticmethod
     def checkFeature(feat):
@@ -121,20 +120,17 @@ class CreateLakeLabel(QgsMapToolEmitPoint):
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer cobter_massa_dagua_a não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "cobter_massa_dagua_a" not found'
+            ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer edicao_texto_generico_p não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "edicao_texto_generico_p" not found'
+            ))
             return None
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
-
-    def displayErrorMessage(self, message):
-        self.iface.messageBar().pushMessage(message, Qgis.Critical, 5)

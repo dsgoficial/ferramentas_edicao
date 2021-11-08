@@ -1,12 +1,13 @@
 from pathlib import Path
-from qgis.core import QgsProject, QgsSpatialIndex, Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry
+
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
+                       QgsSpatialIndex)
 from qgis.gui import QgsMapToolEmitPoint
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QAction
-from PyQt5.QtGui import QIcon
+from .baseTools import BaseTools
 
 
-class CreateVegetationSymbol(QgsMapToolEmitPoint):
+class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
     def __init__(self, iface, toolBar):
         super().__init__(iface.mapCanvas())
@@ -18,17 +19,18 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint):
 
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
-        self.button =  QPushButton(
-            QIcon(str(buttonImg)),
+        self._button = self.createPushButton(
             'CreateVegetationSymbol',
-            self.iface.mainWindow()
+            buttonImg,
+            self.setMapTool,
+            self.tr('Creates features in "edicao_simb_vegetacao_p" based on "cobter_vegetacao_a" values'),
+            self.tr('Creates features in "edicao_simb_vegetacao_p" based on "cobter_vegetacao_a" values'),
+            self.iface
         )
-        self.setButton(self.button)
-        self.button.clicked.connect(self.setMapTool)
-        self.toolBar.addWidget(self.button)
+        self.setButton(self._button)
+        self._action = self.toolBar.addWidget(self._button)
 
     def setMapTool(self):
-        print('setting active / not active')
         self.active = not self.active
         if self.active:
             if not self.getLayers():
@@ -55,9 +57,6 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint):
                 self.dstLyr.addFeature(toInsert)
                 self.mapCanvas.refresh()
 
-
-            # Option 2: TODO: Use a dict lookup
-
     @staticmethod
     def getVegetationMapping(feat):
         mapping = {
@@ -76,20 +75,17 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint):
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer cobter_vegetacao_a não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "cobter_vegetacao_a" not found'
+            ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer edicao_simb_vegetacao_p não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "edicao_simb_vegetacao_p" not found'
+            ))
             return None
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
-
-    def displayErrorMessage(self, message):
-        self.iface.messageBar().pushMessage(message, Qgis.Critical, 5)
