@@ -1,16 +1,14 @@
 from pathlib import Path
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QPushButton
-from qgis.core import (Qgis, QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProject, QgsSpatialIndex, QgsPointXY, QgsLineString,
-                       QgsAbstractGeometryTransformer)
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsLineString,
+                       QgsPointXY, QgsProject, QgsSpatialIndex)
 from qgis.gui import QgsMapToolEmitPoint
 
+from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
 
 
-class CreateRiverLabel(QgsMapToolEmitPoint):
+class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
     def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector):
         super().__init__(iface.mapCanvas())
@@ -25,14 +23,16 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
 
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
-        self.button =  QPushButton(
-            QIcon(str(buttonImg)),
+        self._button = self.createPushButton(
             'CreateRiverLabel',
-            self.iface.mainWindow()
+            buttonImg,
+            self.setMapTool,
+            self.tr('Creates label features in "edicao_texto_generico_l" based on "elemnat_trecho_drenagem_l" features'),
+            self.tr('Creates label features in "edicao_texto_generico_l" based on "elemnat_trecho_drenagem_l" features'),
+            self.iface
         )
-        self.setButton(self.button)
-        self.button.clicked.connect(self.setMapTool)
-        self.toolBar.addWidget(self.button)
+        self.setButton(self._button)
+        self._action = self.toolBar.addWidget(self._button)
 
     def setMapTool(self):
         self.active = not self.active
@@ -59,9 +59,9 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
                     elif feat.attribute('situacao_em_poligono') in (2,3):
                         self.createFeatureB(feat, pos)
                 else:
-                    self.displayErrorMessage(
-                        f'Feição selecionada inválida. Verifique os campos na camada elemnat_trecho_drenagem_l'
-                    )
+                    self.displayErrorMessage(self.tr(
+                        'Invalid feature. Verify the attributes of the layer "elemnat_trecho_drenagem_l"'
+                    ))
 
     @staticmethod
     def checkFeature(feat):
@@ -74,7 +74,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
         # toInsert.setAttribute('justificativa_txt', 2)
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
-        # toInsert.setAttribute('carta_simbolizacao', self.getMapType())
+        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         labelSize = self.getLabelFontSizeB(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
@@ -89,7 +89,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
-        # toInsert.setAttribute('carta_simbolizacao', self.getMapType())
+        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         labelSize = self.getLabelFontSizeB(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
@@ -108,7 +108,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
         geom = feat.geometry()
         name = feat.attribute('nome')
         interpolateSize = labelSize * len(str(name)) * 0.5
-        # Gets closest 
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
         closestV = geom.interpolate(posClosestV)
@@ -196,32 +195,17 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer elemnat_trecho_drenagem_l não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "elemnat_trecho_drenagem_l" not found'
+            ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer edicao_texto_generico_l não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "edicao_texto_generico_l" not found'
+            ))
             return None
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
-
-    def displayErrorMessage(self, message, duration=5):
-        self.iface.messageBar().pushMessage(message, Qgis.Critical, duration)
-
-class Transformer(QgsAbstractGeometryTransformer):
-
-    def __init__(self, ref):
-        super().__init__()
-        self.ref = ref
-    
-    def transformPoint(self, x, y, z, m):
-    # returns a tuple of True to indicate success, then the modified x/y/z/m values
-        newX = x - self.ref.x()
-        newY = y - self.ref.y()
-        return  True, self.ref.x(), self.ref.y(), z, m

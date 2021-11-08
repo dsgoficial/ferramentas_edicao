@@ -1,16 +1,14 @@
 from pathlib import Path
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtCore import Qt
-from qgis.core import (Qgis, QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProject, QgsSpatialIndex)
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
+                       QgsSpatialIndex)
 from qgis.gui import QgsMapToolEmitPoint
 
+from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
 
 
-class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
+class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
 
     def __init__(self, iface, toolBar, mapChoice):
         super().__init__(iface.mapCanvas())
@@ -19,24 +17,24 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
         self.mapChoice = mapChoice
         self.mapCanvas = iface.mapCanvas()
         self.active = False
-        self.currFeat = None
         self.box = ComboBox(self.iface.mainWindow())
         self.box.textActivated.connect(self.createFeature)
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
-        self.button =  QPushButton(
-            QIcon(str(buttonImg)),
+        self._button = self.createPushButton(
             'CreatRoadIdentifierSymbol',
-            self.iface.mainWindow()
+            buttonImg,
+            self.setMapTool,
+            self.tr('Creates features in "edicao_identificador_trecho_rod_p" based on "infra_via_deslocamento_l" values'),
+            self.tr('Creates features in "edicao_identificador_trecho_rod_p" based on "infra_via_deslocamento_l" values'),
+            self.iface
         )
-        self.setButton(self.button)
-        self.button.clicked.connect(self.setMapTool)
-        self.toolBar.addWidget(self.button)
+        self.setButton(self._button)
+        self._action = self.toolBar.addWidget(self._button)
 
     def setMapTool(self):
-        print('setting active / not active')
         self.active = not self.active
         if self.active:
             if not self.getLayers():
@@ -65,9 +63,9 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
                     else:
                         self.createFeature(roadAbrev)
                 else:
-                    self.displayErrorMessage(
-                        f'Feição selecionada possui atributo "sigla" inválido'
-                    )
+                    self.displayErrorMessage(self.tr(
+                        f'Selected feature has an invalid "sigla" attribute'
+                    ))
 
     def createFeature(self, name):
         self.box.hide()
@@ -77,6 +75,8 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
         toInsert.setAttribute('sigla', abbrv)
         if self.mapChoice.currentText() == 'Carta Mini':
             toInsert.setAttribute('carta_mini', True)
+        else:
+            toInsert.setAttribute('carta_mini', False)
         toInsertGeom = QgsGeometry.fromPointXY(self.currPos)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
@@ -89,20 +89,17 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint):
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer infra_via_deslocamento_l não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "infra_via_deslocamento_l" not found'
+            ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
-            self.displayErrorMessage(
-                f'Layer edicao_identificador_trecho_rod_p não encontrado'
-            )
+            self.displayErrorMessage(self.tr(
+                'Layer "edicao_identificador_trecho_rod_p" not found'
+            ))
             return None
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
-
-    def displayErrorMessage(self, message):
-        self.iface.messageBar().pushMessage(message, Qgis.Critical, 5)
