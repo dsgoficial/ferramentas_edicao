@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QWidget
-
+from pathlib import Path
 from .baseTools import BaseTools
 
 class CycleVisibility(BaseTools):
@@ -8,22 +7,22 @@ class CycleVisibility(BaseTools):
         self.toolBar = toolBar
         self.iface = iface
 
-    def initButton(self):
-        action = self.createAction(
-            'cycleVisibility',
-            'cycleVisibility.png',
+    def setupUi(self):
+        button = self.createPushButton(
+            'CycleVisibility',
+            Path(__file__).parent / 'icons' / 'genericSymbolA.png',
             self.run,
-            'Cycles the attribute "visivel" 1 -> 2 -> 1 for selected features',
-            'Cycles visibility attribute',
+            self.tr('Cycles the attribute "visivel" 1 -> 2 -> 1 for selected features'),
+            self.tr('Cycles the attribute "visivel" 1 -> 2 -> 1 for selected features'),
             self.iface
         )
-        self.toolBar.addAction(action)
+        self.action = self.toolBar.addWidget(button)
 
     def run(self):
         lyr = self.iface.activeLayer()
         fieldIdx = lyr.dataProvider().fieldNameIndex('visivel')
         if fieldIdx == -1:
-            self.displayErrorMessage('O atributo "visivel" não existe na camada selecionada.')
+            self.displayErrorMessage(self.tr('The attribute "visivel" does not exist in the selected layer'))
         else:
             lyr.startEditing()
             for feat in lyr.getSelectedFeatures():
