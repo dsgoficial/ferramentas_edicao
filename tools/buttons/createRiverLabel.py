@@ -1,11 +1,10 @@
 from pathlib import Path
-import math
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtCore import Qt
 from qgis.core import (Qgis, QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProject, QgsSpatialIndex)
+                       QgsProject, QgsSpatialIndex, QgsPointXY, QgsLineString,
+                       QgsAbstractGeometryTransformer)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .utils.comboBox import ComboBox
@@ -22,7 +21,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
         self.mapCanvas = iface.mapCanvas()
         self.active = False
         self.box = ComboBox(self.iface.mainWindow())
-        self.box.textActivated.connect(self.createFeature)
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
@@ -49,7 +47,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
     def mouseClick(self, pos, btn):
         if self.active:
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
-            print(closestSpatialID)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
@@ -63,7 +60,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
                         self.createFeatureB(feat, pos)
                 else:
                     self.displayErrorMessage(
-                        f'Feição selecionada inválida. Verifique os campos "nome" e "tipo" na camada cobter_massa_dagua_a'
+                        f'Feição selecionada inválida. Verifique os campos na camada elemnat_trecho_drenagem_l'
                     )
 
     @staticmethod
@@ -74,12 +71,13 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
         toInsert = QgsFeature(self.dstLyr.fields())
         toInsert.setAttribute('texto_edicao', feat.attribute('nome'))
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
-        toInsert.setAttribute('justificativa_txt', 2)
+        # toInsert.setAttribute('justificativa_txt', 2)
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
-        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
-        toInsert.setAttribute('tamanho_txt', self.getLabelSize(feat))
-        toInsertGeom = self.getLabelGeometry(pos)
+        # toInsert.setAttribute('carta_simbolizacao', self.getMapType())
+        labelSize = self.getLabelFontSizeB(feat)
+        toInsert.setAttribute('tamanho_txt', labelSize)
+        toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
@@ -91,9 +89,10 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
-        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
-        toInsert.setAttribute('tamanho_txt', self.getLabelSize(feat))
-        toInsertGeom = self.getLabelGeometry(pos)
+        # toInsert.setAttribute('carta_simbolizacao', self.getMapType())
+        labelSize = self.getLabelFontSizeB(feat)
+        toInsert.setAttribute('tamanho_txt', labelSize)
+        toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
@@ -105,34 +104,90 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
             return 0
         return 1
 
-    def getLabelGeometry(self, pos):
-        pass
+    def getLabelGeometry(self, feat, clickPos, labelSize):
+        geom = feat.geometry()
+        name = feat.attribute('nome')
+        interpolateSize = labelSize * len(str(name)) * 0.5
+        # Gets closest 
+        clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
+        posClosestV = geom.lineLocatePoint(clickPosGeom)
+        closestV = geom.interpolate(posClosestV)
+        firstGeom = geom.interpolate(posClosestV-interpolateSize/2)
+        lastGeom = geom.interpolate(posClosestV+interpolateSize/2)
+        toInsertGeom = self.buildLineGeom(firstGeom, lastGeom, geom)
+        toInsertGeom.translate(*self.getTransformParams(closestV,clickPos))
+        toInsertGeom = toInsertGeom.simplify(2)
+        return toInsertGeom
 
-    def getLabelSize(self, feat):
-        area = feat.geometry().area()
+    def getTransformParams(self, ref, clickPos):
+        ref = ref.asPoint()
+        xTranslate = clickPos.x() - ref.x()
+        yTranslate =  clickPos.y() - ref.y()
+        return xTranslate, yTranslate
+
+    def buildLineGeom(self, firstGeom, lastGeom, geom):
+        xCoords = []
+        yCoords = []
+        if firstGeom.isNull():
+            fp = QgsPointXY(geom.vertexAt(0))
+        else:
+            fp = firstGeom.asPoint()
+        if lastGeom.isNull():
+            count = geom.constGet().vertexCount()
+            lp = QgsPointXY(geom.vertexAt(count-1))
+        else:
+            lp = lastGeom.asPoint()
+        fpClosestPoint, fpClosestVIdx, fpPrevVIdx, fpNextVIdx, _ = geom.closestVertex(fp)
+        lpClosestPoint, lpClosestVIdx, lpPrevVIdx, lpNextVIdx, _ = geom.closestVertex(lp)
+        xCoords.append((fp.x()))
+        yCoords.append((fp.y()))
+        if lpClosestVIdx >= fpClosestVIdx:
+            for i in range(fpClosestVIdx, lpClosestVIdx):
+                _v = geom.vertexAt(i)
+                xCoords.append(_v.x())
+                yCoords.append(_v.y())
+        xCoords.append(lp.x())
+        yCoords.append(lp.y())
+        lineGeom = QgsLineString(xCoords, yCoords)
+        return QgsGeometry(lineGeom)
+
+
+    def getLabelFontSizeA(self, feat):
+        length = feat.geometry().length()
         scale = self.getScale()
-        scaleComparator = (scale/1000)**2
-        if area < 2300*scaleComparator:
+        scaleComparator = scale/1000
+        if length < 80*scaleComparator:
             return 6
-        elif area < 3600*scaleComparator:
+        elif length < 120*scaleComparator:
             return 7
-        elif area < 5200*scaleComparator:
+        elif length < 160*scaleComparator:
             return 8
-        elif area < 9800*scaleComparator:
+        else:
             return 9
-        elif area < 16500*scaleComparator:
+
+    def getLabelFontSizeB(self, feat):
+        length = feat.geometry().length()
+        scale = self.getScale()
+        scaleComparator = scale/1000
+        if length < 65*scaleComparator:
+            return 6
+        elif length < 80*scaleComparator:
+            return 7
+        elif length < 100*scaleComparator:
+            return 8
+        elif length < 120*scaleComparator:
+            return 9
+        elif length < 160*scaleComparator:
             return 10
-        elif area < 25000*scaleComparator:
+        elif length < 200*scaleComparator:
             return 12
-        elif area < 36000*scaleComparator:
-            return 14
         else:
             return 16
 
     def getScale(self):
         scale = self.scaleSelector.currentText()
         scale = scale.split(':')[1]
-        scale = scale.strip('.')
+        scale = scale.replace('.', '')
         return int(scale)
 
     def getLayers(self):
@@ -156,5 +211,17 @@ class CreateRiverLabel(QgsMapToolEmitPoint):
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
 
-    def displayErrorMessage(self, message):
-        self.iface.messageBar().pushMessage(message, Qgis.Critical, 5)
+    def displayErrorMessage(self, message, duration=5):
+        self.iface.messageBar().pushMessage(message, Qgis.Critical, duration)
+
+class Transformer(QgsAbstractGeometryTransformer):
+
+    def __init__(self, ref):
+        super().__init__()
+        self.ref = ref
+    
+    def transformPoint(self, x, y, z, m):
+    # returns a tuple of True to indicate success, then the modified x/y/z/m values
+        newX = x - self.ref.x()
+        newY = y - self.ref.y()
+        return  True, self.ref.x(), self.ref.y(), z, m

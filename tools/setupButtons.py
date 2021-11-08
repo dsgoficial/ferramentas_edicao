@@ -24,31 +24,40 @@ class SetupButtons:
         self.tools = list()
 
     def initToolBar(self):
-        self.mapTypeSelector = MapTypeSelector(self.iface, self.toolBar)
-        self.mapTypeSelector.setupUi()
-        self.scaleSelector = ScaleSelector(self.iface, self.toolBar)
-        self.scaleSelector.setupUi()
-        self.cycleVisibilityButton = CycleVisibility(self.toolBar, self.iface)
-        self.cycleVisibilityButton.initButton()
-        self.cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
-        self.cycleTextJustificationButton.initButton()
-        self.copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
-        self.copyToGenericLabelButton.initButton()
-        self.cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface)
-        self.cycleLabelPositionButton.initButton()
-        self.createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar)
-        self.createVegetationSymbol.setupUi()
-        self.createVegetationSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, self.mapTypeSelector)
-        self.createVegetationSymbol.setupUi()
-        self.createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, self.mapTypeSelector, self.scaleSelector)
-        self.createLakeLabel.setupUi()
-        self.createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, self.mapTypeSelector, self.scaleSelector)
-        self.createRiverLabel.setupUi()
+        mapTypeSelector = MapTypeSelector(self.iface, self.toolBar)
+        mapTypeSelector.setupUi()
+        scaleSelector = ScaleSelector(self.iface, self.toolBar)
+        scaleSelector.setupUi()
+        cycleVisibilityButton = CycleVisibility(self.toolBar, self.iface)
+        cycleVisibilityButton.initButton()
+        cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
+        cycleTextJustificationButton.initButton()
+        copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
+        copyToGenericLabelButton.initButton()
+        cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface)
+        cycleLabelPositionButton.initButton()
+        createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar)
+        createVegetationSymbol.setupUi()
+        createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, mapTypeSelector)
+        createRoadIdentifierSymbol.setupUi()
+        createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
+        createLakeLabel.setupUi()
+        createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
+        createRiverLabel.setupUi()
+        self.tools.extend([
+            mapTypeSelector,
+            scaleSelector,
+            cycleTextJustificationButton,
+            copyToGenericLabelButton,
+            cycleLabelPositionButton,
+            createVegetationSymbol,
+            createRoadIdentifierSymbol,
+            createLakeLabel,
+            createRiverLabel
+        ])
 
     def unload(self):
+        # TODO: unregisterMapToolHandler for MapTools
+        self.toolBar.clear()
         self.iface.mainWindow().removeToolBar(self.toolBar)
-        del self.cycleVisibilityButton
-        del self.cycleTextJustificationButton
-        del self.copyToGenericLabelButton
-        del self.cycleLabelPositionButton
-        del self.toolBar
+        self.actions = list()
