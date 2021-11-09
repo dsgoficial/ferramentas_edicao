@@ -16,7 +16,6 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         self.toolBar = toolBar
         self.mapChoice = mapChoice
         self.mapCanvas = iface.mapCanvas()
-        self.active = False
         self.box = ComboBox(self.iface.mainWindow())
         self.box.textActivated.connect(self.createFeature)
         self.canvasClicked.connect(self.mouseClick)
@@ -26,26 +25,17 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         self._button = self.createPushButton(
             'CreatRoadIdentifierSymbol',
             buttonImg,
-            self.setMapTool,
+            lambda _: None,
             self.tr('Creates features in "edicao_identificador_trecho_rod_p" based on "infra_via_deslocamento_l" values'),
             self.tr('Creates features in "edicao_identificador_trecho_rod_p" based on "infra_via_deslocamento_l" values'),
             self.iface
         )
+        self._button.setCheckable(True)
         self.setButton(self._button)
         self._action = self.toolBar.addWidget(self._button)
 
-    def setMapTool(self):
-        self.active = not self.active
-        if self.active:
-            if not self.getLayers():
-                self.active = False
-                self.mapCanvas.unsetMapTool(self)
-            self.mapCanvas.setMapTool(self)
-        else:
-            self.mapCanvas.unsetMapTool(self)
-
     def mouseClick(self, pos, btn):
-        if self.active:
+        if self.isActive():
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
             print(closestSpatialID)
             # Option 1 (actual): Use a QgsFeatureRequest

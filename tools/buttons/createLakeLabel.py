@@ -17,7 +17,6 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
-        self.active = False
         self.box = ComboBox(self.iface.mainWindow())
         self.box.textActivated.connect(self.createFeature)
         self.canvasClicked.connect(self.mouseClick)
@@ -27,26 +26,17 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         self._button = self.createPushButton(
             'CreateLakeLabel',
             buttonImg,
-            self.setMapTool,
+            lambda _: None,
             self.tr('Creates features in "edicao_texto_generico_p" based on "cobter_massa_dagua_a" intersection'),
             self.tr('Creates features in "edicao_texto_generico_p" based on "cobter_massa_dagua_a" intersection'),
             self.iface
         )
+        self._button.setCheckable(True)
         self.setButton(self._button)
         self._action = self.toolBar.addWidget(self._button)
 
-    def setMapTool(self):
-        self.active = not self.active
-        if self.active:
-            if not self.getLayers():
-                self.active = False
-                self.mapCanvas.unsetMapTool(self)
-            self.mapCanvas.setMapTool(self)
-        else:
-            self.mapCanvas.unsetMapTool(self)
-
     def mouseClick(self, pos, btn):
-        if self.active:
+        if self.isActive():
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
             print(closestSpatialID)
             # Option 1 (actual): Use a QgsFeatureRequest

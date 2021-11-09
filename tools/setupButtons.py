@@ -1,9 +1,6 @@
 from pathlib import Path
 
-from PyQt5.QtWidgets import QAction, QHBoxLayout
-from PyQt5.QtGui import QIcon
-
-from qgis.gui import QgisInterface
+from PyQt5.QtWidgets import QButtonGroup
 
 from .buttons.mapTypeSelector import MapTypeSelector
 from .buttons.scaleSelector import ScaleSelector
@@ -21,7 +18,9 @@ class SetupButtons:
     def __init__(self, iface=None) -> None:
         self.iface = iface
         self.toolBar = iface.addToolBar('ferramentas_edicao')
+        self.mapCanvas = iface.mapCanvas()
         self.tools = list()
+        self.mapTools = list()
 
     def initToolBar(self):
         mapTypeSelector = MapTypeSelector(self.iface, self.toolBar)
@@ -44,6 +43,12 @@ class SetupButtons:
         createLakeLabel.setupUi()
         createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
         createRiverLabel.setupUi()
+        self.mapTools.extend([
+            createVegetationSymbol,
+            createRoadIdentifierSymbol,
+            createLakeLabel,
+            createRiverLabel
+        ])
         self.tools.extend([
             mapTypeSelector,
             scaleSelector,
@@ -55,9 +60,30 @@ class SetupButtons:
             createLakeLabel,
             createRiverLabel
         ])
+        self.buttonGroup = self.setupButtonGroup(*self.mapTools)
+
+    def setupButtonGroup(self, *tools):
+        buttonGroup = QButtonGroup(self.iface.mainWindow())
+        for idx, tool in enumerate(tools):
+            buttonGroup.addButton(tool._button, idx)
+        buttonGroup.idClicked.connect(self.setMapToolsOnToggle)
+        return buttonGroup
+
+    def setMapToolsOnToggle(self, idx):
+        if self.mapTools[idx].isActive():
+            self.unsetMapToolsOnToggle(idx)
+        else:
+            self.mapCanvas.setMapTool(self.mapTools[idx])
+            self.mapTools[idx].getLayers()
+
+    def unsetMapToolsOnToggle(self, idx):
+        self.mapCanvas.unsetMapTool(self.mapTools[idx])
+        self.buttonGroup.setExclusive(False)
+        button = self.buttonGroup.button(idx)
+        button.setChecked(False)
+        self.buttonGroup.setExclusive(True)
 
     def unload(self):
         # TODO: unregisterMapToolHandler for MapTools
         self.toolBar.clear()
         self.iface.mainWindow().removeToolBar(self.toolBar)
-        self.actions = list()

@@ -14,7 +14,6 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
         self.iface = iface
         self.toolBar = toolBar
         self.mapCanvas = iface.mapCanvas()
-        self.active = False
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
@@ -22,26 +21,17 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
         self._button = self.createPushButton(
             'CreateVegetationSymbol',
             buttonImg,
-            self.setMapTool,
+            lambda _: None,
             self.tr('Creates features in "edicao_simb_vegetacao_p" based on "cobter_vegetacao_a" values'),
             self.tr('Creates features in "edicao_simb_vegetacao_p" based on "cobter_vegetacao_a" values'),
             self.iface
         )
+        self._button.setCheckable(True)
         self.setButton(self._button)
         self._action = self.toolBar.addWidget(self._button)
 
-    def setMapTool(self):
-        self.active = not self.active
-        if self.active:
-            if not self.getLayers():
-                self.active = False
-                self.mapCanvas.unsetMapTool(self)
-            self.mapCanvas.setMapTool(self)
-        else:
-            self.mapCanvas.unsetMapTool(self)
-
     def mouseClick(self, pos, btn):
-        if self.active:
+        if self.isActive():
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
             print(closestSpatialID)
             # Option 1: Use a QgsFeatureRequest

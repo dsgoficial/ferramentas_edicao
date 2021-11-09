@@ -17,7 +17,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
-        self.active = False
         self.box = ComboBox(self.iface.mainWindow())
         self.canvasClicked.connect(self.mouseClick)
 
@@ -26,26 +25,17 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         self._button = self.createPushButton(
             'CreateRiverLabel',
             buttonImg,
-            self.setMapTool,
+            lambda _: None,
             self.tr('Creates label features in "edicao_texto_generico_l" based on "elemnat_trecho_drenagem_l" features'),
             self.tr('Creates label features in "edicao_texto_generico_l" based on "elemnat_trecho_drenagem_l" features'),
             self.iface
         )
+        self._button.setCheckable(True)
         self.setButton(self._button)
         self._action = self.toolBar.addWidget(self._button)
 
-    def setMapTool(self):
-        self.active = not self.active
-        if self.active:
-            if not self.getLayers():
-                self.active = False
-                self.mapCanvas.unsetMapTool(self)
-            self.mapCanvas.setMapTool(self)
-        else:
-            self.mapCanvas.unsetMapTool(self)
-
     def mouseClick(self, pos, btn):
-        if self.active:
+        if self.isActive():
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
