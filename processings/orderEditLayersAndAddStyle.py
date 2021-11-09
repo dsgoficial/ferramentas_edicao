@@ -10,12 +10,15 @@ from qgis import core, gui
 from qgis.utils import iface
 import os
 import json
+from processing.gui.wrappers import WidgetWrapper
 from qgis.PyQt.QtXml import QDomDocument
+from PyQt5 import QtCore, uic, QtWidgets, QtGui
 
 class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm): 
 
     MAP_TYPE = 'MAP_TYPE'
     STYLENAME = 'STYLENAME'
+    GROUP = 'GROUP'
     MODE = 'MODE'
     OUTPUT = 'OUTPUT'
 
@@ -49,10 +52,31 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            ParameterGroup(
+                self.GROUP,
+                description='Grupo'
+            )
+        )
+
+    def parameterAsGroup(self, parameters, name, context):
+        return parameters[name]
+
     def processAlgorithm(self, parameters, context, feedback): 
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
+        groupName = self.parameterAsGroup(parameters, self.GROUP, context)
+        
         feedback.setProgressText('Iniciando...')
+        group = core.QgsProject.instance().layerTreeRoot().findGroup( groupName )
+
+        if groupName:
+            group = core.QgsProject.instance().layerTreeRoot().findGroup( groupName )
+            if not group:
+                raise Exception('Grupo não encontrado!')
+            layers = [  layerTree.layer() for layerTree in group.findLayers() ]
+        else: 
+            layers = core.QgsProject.instance().mapLayers().values()
         if mapType==0:
             carta = 'carta_topografica'
         elif mapType==1:
@@ -92,7 +116,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         iface.mapCanvas().freeze(True)
         feedback.setProgressText('Ordenando as camadas...')
         feedbackCancel = False
-        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], qmlDict, feedback, feedbackCancel)
+        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel)
         feedback.setProgressText('Carregando as máscaras...')  
         group=''
         self.loadMasks(carta, group)
@@ -101,12 +125,11 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         iface.mapCanvas().freeze(False) 
         return {self.OUTPUT: ''}
 
-    def order(self, layerNames, qmlDict, feedback, feedbackCancel):
+    def order(self, layerNames, layers, qmlDict, feedback, feedbackCancel):
         project = core.QgsProject.instance()
         projectMapLayers = project.mapLayers()
         listSize = len(projectMapLayers)
         progressStep = 100/(listSize+1) if listSize else 0
-        layers = projectMapLayers.values()
         order = []
         layersIdToRemove = []
         for step, layer in enumerate(layers):
@@ -174,10 +197,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'OUTPUT' : 'TEMPORARY_OUTPUT'
             }
         )
-        return r['OUTPUT']  
-        
-        
-        
+        return r['OUTPUT']   
 
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
@@ -199,4 +219,71 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr("O algoritmo ordena as camadas e aplica os estilos para a edição")
+
+class GroupsWidgetWrapper(WidgetWrapper):
+    def __init__(self, *args, **kwargs):
+        super(GroupsWidgetWrapper, self).__init__(*args, **kwargs)
+    
+    def getGroupNames(self):
+        groupsList = [
+            g.name()
+            for g in  core.QgsProject.instance().layerTreeRoot().findGroups()
+        ]
+        groupsList.insert(0, '')
+        return groupsList
+
+    def createWidget(self):
+        self.widget = QtWidgets.QComboBox()
+        self.widget.addItems( self.getGroupNames() )
+        self.widget.dialogType = self.dialogType
+        return self.widget
+    
+    def parentLayerChanged(self, layer=None):
+        pass
+    
+    def setLayer(self, layer):
+        pass
+    
+    def setValue(self, value):
+        pass
+
+    def value(self):
+        return self.widget.currentText()
+    
+    def postInitialize(self, wrappers):
+        pass
+
+class ParameterGroup(core.QgsProcessingParameterDefinition):
+
+    def __init__(self, name, description=''):
+        super().__init__(name, description)
+
+    def clone(self):
+        copy = ParameterGroup(self.name(), self.description())
+        return copy
+
+    def type(self):
+        return self.typeName()
+
+    @staticmethod
+    def typeName():
+        return 'group'
+
+    def checkValueIsAcceptable(self, value, context=None):
+        return True
+
+    def metadata(self):
+        return {'widget_wrapper': 'plugin_edicao.processings.loadMasks.GroupsWidgetWrapper' }
+
+    def valueAsPythonString(self, value, context):
+        return str(value)
+
+    def asScriptCode(self):
+        raise NotImplementedError()
+
+    @classmethod
+    def fromScriptCode(cls, name, description, isOptional, definition):
+        raise NotImplementedError()
+
+    
     
