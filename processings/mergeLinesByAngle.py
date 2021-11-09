@@ -233,13 +233,13 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
         return self.tr('Mescla Linhas Pelo Ângulo')
 
     def group(self):
-        return self.tr('Edição')
+        return self.tr('Auxiliar')
 
     def groupId(self):
     
-        return 'edicao'
+        return 'auxiliar'
 
     def shortHelpString(self):
     
-        return self.tr("Esse algoritmo mescla linhas conectadas. Em caso de bifurcação, percorre-se o caminho de maior tamanho para mesclar. Considera-se o sentido das linhas para conectar.")
+        return self.tr("Esse algoritmo mescla linhas conectadas. Em caso de bifurcação, mescla as de menor ângulo entre si.")
     
