@@ -5,7 +5,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsCoordinateTransformContext, QgsDistanceArea,
                        QgsFeature, QgsFeatureRequest, QgsGeometry,
                        QgsProcessing, QgsProcessingAlgorithm, QgsProperty,
-                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterMultipleLayers, QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterNumber, QgsUnitTypes,
                        QgsProcessingParameterFeatureSink, QgsFeatureSink)
 from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
@@ -14,6 +14,7 @@ from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 class PrepareOrtho(QgsProcessingAlgorithm): 
 
     INPUT_LAYERS = 'INPUT_LAYERS'
+    INPUT_FRAME = 'INPUT_FRAME'
     SCALE = 'SCALE'
     OUTPUT = 'OUTPUT'
 
@@ -35,6 +36,15 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_FRAME,
+                self.tr('Selecionar camada de moldura'),
+                [QgsProcessing.TypeVectorPolygon],
+                optional = True
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
                 self.tr('Flag Preparar Ortoimagem')
@@ -44,6 +54,9 @@ class PrepareOrtho(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):      
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
         scale = self.parameterAsInt(parameters, self.SCALE, context)
+        frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
+        if frameLayer:
+            frameLinesLayer = self.convertPolygonToLines(frameLayer)
         scaleMini = scale*6.2
         layersToCalculateDefaults = [
             'infra_obstaculo_vertical_p',
@@ -230,13 +243,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'rotular_carta_mini': 1
             }  
         }
-
-        moldura = None
-        for lyr in layers:
-            lyrName = lyr.dataProvider().uri().table()
-            if lyrName == 'aux_moldura_a':
-                moldura = lyr
-
+        destLayersToCreateSpacedSymbolsCase1 = False
+        destLayersToCreateSpacedSymbolsCase2 = False
         for lyr in layers:
             lyrName = lyr.dataProvider().uri().table()
             # self.updateLayer(lyr, lyrName)
@@ -248,14 +256,26 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             if lyrName in layersToCalculateSobreposition:
                 self.checkIntersectionAndSetAttr(lyr, refLayersSobreposition)
             if lyrName in layerToCreateSpacedSymbolsCase1:
-                energyLyr = self.mergeEnergyLines(lyr, 5)
+                energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5)
+                if frameLayer:
+                    energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer)
+                else:
+                    energyLyr = energyLyrBeforeClip
                 distance = self.getChopDistance(energyLyr, scale * 0.02)
                 pointsAndAngles = self.chopLineLayer(energyLyr, distance)
                 destLayersToCreateSpacedSymbolsCase1 = next(filter(
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase1.values(), layers))
                 self.populateEnergyTowerSymbolLayer(destLayersToCreateSpacedSymbolsCase1,pointsAndAngles)
+                if frameLayer:
+                    distanceNextToFrame = self.getChopDistance(energyLyr, scale * 0.02)
+                    self.removePointsNextToFrame(frameLinesLayer, destLayersToCreateSpacedSymbolsCase1, distanceNextToFrame)
+                distanceToRemoveEnergySymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase1, scale * 0.003)
             if lyrName in layerToCreateSpacedSymbolsCase2:
-                highwayLyr = self.mergeHighways(lyr)
+                highwayLyrBeforeClip = self.mergeHighways(lyr)
+                if frameLayer:
+                    highwayLyr = self.clipLayer(highwayLyrBeforeClip, frameLayer)
+                else:
+                    highwayLyr = highwayLyrBeforeClip
                 distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
                 pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao'])
                 distanceMiniMap = self.getChopDistance(highwayLyr, scaleMini * 0.2)
@@ -264,7 +284,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
                 self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAngles1, 1, 0)
                 self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesMiniMap, 2, 0)
-
                 maxRoadIndentificationNumber = self.findMaxRoadIndentificationNumber(pointsAndAngles1)
                 for n in range(maxRoadIndentificationNumber):
                     if n == maxRoadIndentificationNumber:
@@ -279,15 +298,20 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                         lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase2.values(), layers))
                     self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesN, 1, n+1)
                     self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesMiniMap, 2, n+1)
-                
-            if lyrName == 'elemnat_ponto_cotado_p' and moldura:
-                self.highestSpot(lyr, moldura)
-        distanceToRemoveEnergySymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.003)
-        distanceToRemoveRoadSymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.006)
-        addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, distanceToRemoveEnergySymbol, destLayersToCreateSpacedSymbolsCase2, distanceToRemoveRoadSymbol)            
-        newLayer = self.outLayer(parameters, context, destLayersToCreateSpacedSymbolsCase2, addToSinkDict)
-
-        return {self.OUTPUT: newLayer}
+                distanceToRemoveRoadSymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.006)
+                if frameLayer:
+                    distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.02)
+                    self.removePointsNextToFrame(frameLinesLayer, destLayersToCreateSpacedSymbolsCase2, distanceNextToFrame)
+            if lyrName == 'elemnat_ponto_cotado_p' and frameLayer:
+                self.highestSpot(lyr, frameLayer)
+        if destLayersToCreateSpacedSymbolsCase2:
+            addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, distanceToRemoveEnergySymbol, destLayersToCreateSpacedSymbolsCase2, distanceToRemoveRoadSymbol)            
+        else:
+            addToSinkDict = False
+        if addToSinkDict:
+            newLayer = self.outLayer(parameters, context, destLayersToCreateSpacedSymbolsCase2, addToSinkDict)
+            return {self.OUTPUT: newLayer}
+        return {self.OUTPUT: 'concluído'}
 
     def updateLayer(self, layer, layerName):
         if layerName in [
@@ -360,7 +384,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     if not text:
                         text = value
                     else:
-                        text = '{0} | {1}'.format(text, value)
+                        text = f'{0} | {1}'.format(text, value)
                 feature[ 'texto_edicao' ] = text
                 self.updateLayerFeature( layer, feature)
 
@@ -471,14 +495,14 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 if _first:
                     _first = False
                     if field == 'situacaofisica':
-                        expression = f'({field})'
+                        expression = f'({feat.attribute(field)})'
                     else:
-                        expression = f'{field}'
+                        expression = f'{feat.attribute(field)}'
                 else:
                     if field == 'situacaofisica':
-                        expression = f'{expression}|({field})'
+                        expression = f'{expression}|({feat.attribute(field)})'
                     else:
-                        expression = f'{expression}|{field}'
+                        expression = f'{expression}|{feat.attribute(field)}'
         return expression          
 
     @staticmethod
@@ -678,23 +702,57 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                         break
                 if isEqual:
                     toBeRemovedHighway.append(featB.id())
-            for featC in energyLayer.getFeatures(request):
-                if featC.id() in toBeRemovedEnergy:
+            if energyLayer:
+                for featC in energyLayer.getFeatures(request):
+                    if featC.id() in toBeRemovedEnergy:
+                        continue
+                    toBeRemovedEnergy.append(featC.id())
+        if energyLayer:    
+            for featA in energyLayer.getFeatures():
+                if featA.id() in toBeRemovedEnergy:
                     continue
-                toBeRemovedEnergy.append(featC.id())
-        for featA in energyLayer.getFeatures():
-            if featA.id() in toBeRemovedEnergy:
-                continue
-            geomAbuffer = featA.geometry().buffer(distanceToRemoveEnergySymbol, 5)
-            request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
-            for featB in energyLayer.getFeatures(request):
-                if featB.id() in toBeRemovedEnergy or featA.id()==featB.id():
-                    continue
-                toBeRemovedEnergy.append(featB.id())
+                geomAbuffer = featA.geometry().buffer(distanceToRemoveEnergySymbol, 5)
+                request = QgsFeatureRequest().setFilterRect( geomAbuffer.boundingBox() ) 
+                for featB in energyLayer.getFeatures(request):
+                    if featB.id() in toBeRemovedEnergy or featA.id()==featB.id():
+                        continue
+                    toBeRemovedEnergy.append(featB.id())
         highwayLayer.deleteFeatures(toBeRemovedHighway)
-        energyLayer.deleteFeatures(toBeRemovedEnergy)
+        if energyLayer:
+            energyLayer.deleteFeatures(toBeRemovedEnergy)
         return addToSink
     
+    def clipLayer(self, layer, frame):
+        r = processing.run(
+            'native:clip',
+            {   'FIELD' : [], 
+                'INPUT' : layer,
+                'OVERLAY' : frame,
+                'OUTPUT' : 'TEMPORARY_OUTPUT'
+            }
+        )
+        return r['OUTPUT']
+    
+    def convertPolygonToLines(self, inputLayer):
+        output = processing.run(
+            "native:polygonstolines",
+            {
+                'INPUT': inputLayer,
+                'OUTPUT': 'TEMPORARY_OUTPUT'
+            }
+        )
+        return output['OUTPUT']
+
+    def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance):
+        toBeRemoved = []
+        for point in pointsLayer.getFeatures():
+            for frameLine in frameLinesLayer.getFeatures():
+                dist = QgsGeometry.distance(point.geometry(), frameLine.geometry())
+                if dist<distance:
+                    toBeRemoved.append(point.id())
+        pointsLayer.deleteFeatures(toBeRemoved)
+
+
     def outLayer(self, parameters, context, origLayer, dictFeatures):
         newField = origLayer.fields()
         newField.append(QgsField('erro', QVariant.String))

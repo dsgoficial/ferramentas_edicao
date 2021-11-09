@@ -8,6 +8,9 @@ from .mergeHighway import MergeHighway
 from .prepareOrtho import PrepareOrtho
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
 from .mergeLinesByAngle import MergeLinesByAngle
+from .loadMasks import LoadMasks
+from .saveLayerStylesToFile import SaveLayerStylesToFile
+from .saveMasks import SaveMasks
 
 class Provider(QgsProcessingProvider):
 
@@ -21,6 +24,9 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PrepareOrtho())
         self.addAlgorithm(HighestSpotOnTheFrame())
         self.addAlgorithm(MergeLinesByAngle())
+        self.addAlgorithm(LoadMasks())
+        self.addAlgorithm(SaveLayerStylesToFile())
+        self.addAlgorithm(SaveMasks())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
