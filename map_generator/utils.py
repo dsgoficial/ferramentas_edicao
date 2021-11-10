@@ -206,11 +206,11 @@ class MapTools:
         ])
 
     @staticmethod
-    def setupMasks(produto):
-        pathJson = Path(__file__).parent / 'produtos' / produto / 'mascaras.json'
+    def setupMasks(productType):
+        pathJson = Path(__file__).parent / 'produtos' / productType / 'masks.json'
         if pathJson.exists():
             processing.run(
-                'FerramentasExperimentaisProvider:loadmasks',
+                'ferramentasedicao:loadmasks',
                 {'JSON_FILE': str(pathJson),
                     'GROUP': 'map'
                 }
