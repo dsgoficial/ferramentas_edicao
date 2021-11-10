@@ -1,7 +1,6 @@
 import os
 
-from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
-from qgis.core import QgsApplication
+from gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
