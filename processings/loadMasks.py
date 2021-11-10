@@ -53,9 +53,16 @@ class LoadMasks(QgsProcessingAlgorithm):
         else: 
             layers = core.QgsProject.instance().mapLayers().values()
 
-        mapId = {layer.dataProvider().uri().table() : layer.id() for layer in layers}
+        mapId = {layer.dataProvider().uri().table() : layer.id() for layer in layers if layer}
+        '''
+        if layer porque quando roda pelo orderEditLayersAndAddStyle (configurar para o preparo de edição), 
+        a camada pode vir como NoneType, aparentemente, tal fato deve-se à exclusão da camada no order do 
+        orderEditLayersAndAddStyle
+        '''
 
         for layer in layers:
+            if not layer:
+                continue
             layerName = layer.dataProvider().uri().table()
             if not layerName in mask_dict:
                 continue
