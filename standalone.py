@@ -2,7 +2,7 @@ import os, sys, argparse
 from qgis.core import QgsApplication, QgsNetworkAccessManager
 from PyQt5.QtNetwork import QNetworkProxy
 from .map_generator.manager import DefaultMap
-from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
+from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 
 def exportMaps(args):
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
