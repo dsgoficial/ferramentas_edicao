@@ -188,7 +188,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'map_generator',
                 'produtos',
                 carta,
-                'mascaras.json'
+                'masks.json'
             )
         r = processing.run(
             'ferramentasedicao:loadmasks',
