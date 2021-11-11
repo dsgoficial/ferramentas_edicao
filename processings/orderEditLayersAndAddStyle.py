@@ -66,17 +66,19 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
+
+        project = context.project().instance()
         
         feedback.setProgressText('Iniciando...')
-        group = core.QgsProject.instance().layerTreeRoot().findGroup( groupInput )
+        group = project.layerTreeRoot().findGroup( groupInput )
 
         if groupInput:
-            group = core.QgsProject.instance().layerTreeRoot().findGroup( groupInput )
+            group = project.layerTreeRoot().findGroup( groupInput )
             if not group:
                 raise Exception('Grupo não encontrado!')
             layers = [  layerTree.layer() for layerTree in group.findLayers() ]
         else: 
-            layers = core.QgsProject.instance().mapLayers().values()
+            layers = project.instance().mapLayers().values()
         if mapType==0:
             carta = 'carta_topografica'
         elif mapType==1:
@@ -113,37 +115,29 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         feedback.setProgressText('Calculando dicionário QML...')
         qmlDict = self.buildQmlDict(stylePath)
-        iface.mapCanvas().freeze(True)
         feedback.setProgressText('Ordenando as camadas...')
         feedbackCancel = False
-        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel)
+        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
         feedback.setProgressText('Carregando as máscaras...') 
 
         self.loadMasks(carta, groupInput)
         if feedback.isCanceled() or feedbackCancel:
             return {self.OUTPUT: 'feedback cancelado'}
-        iface.mapCanvas().freeze(False) 
         return {self.OUTPUT: ''}
 
-    def order(self, layerNames, layers, qmlDict, feedback, feedbackCancel):
-        project = core.QgsProject.instance()
+    def order(self, layerNames, layers, qmlDict, feedback, feedbackCancel, project):
         projectMapLayers = project.mapLayers()
         listSize = len(projectMapLayers)
         progressStep = 100/(listSize+1) if listSize else 0
         order = []
-        layersIdToRemove = []
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
                 feedbackCancel = True
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
-            if not( layerName in layerNames ):
+            if not( layerName in layerNames ) or not layerName in qmlDict:
                 project.removeMapLayer( layer.id() )
-                continue
-            if not layerName in qmlDict:
-                project.removeMapLayer( layer.id() )
-                continue 
             else:
                 order.insert( 
                 layerNames.index( layerName ), 
@@ -174,11 +168,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         return qmlDict
     
     def applyStyle(self, lyr, styleQmlPath):
-        styleDoc = QDomDocument()
-        dataQml = open(styleQmlPath, 'r').read()
-        styleDoc.setContent(dataQml)
-        lyr.importNamedStyle(styleDoc)
-        lyr.triggerRepaint()
+        r = processing.run(
+            'native:setlayerstyle',
+            {   'INPUT' : lyr,
+                'STYLE': styleQmlPath
+            }
+        )
     
     def loadMasks(self, carta, group):
         jsonPathMask = os.path.join(

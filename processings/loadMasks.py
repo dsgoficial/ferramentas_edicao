@@ -39,19 +39,20 @@ class LoadMasks(QgsProcessingAlgorithm):
         return parameters[name]
 
     def processAlgorithm(self, parameters, context, feedback):      
+        project = context.project().instance()
         jsonFilePath = self.parameterAsFile(parameters, self.JSON_FILE, context)
         groupName = self.parameterAsGroup(parameters, self.GROUP, context)
         mask_dict = json.load( open( jsonFilePath ) )
 
-        group = core.QgsProject.instance().layerTreeRoot().findGroup( groupName )
+        group = project.layerTreeRoot().findGroup( groupName )
 
         if groupName:
-            group = core.QgsProject.instance().layerTreeRoot().findGroup( groupName )
+            group = project.layerTreeRoot().findGroup( groupName )
             if not group:
                 raise Exception('Grupo não encontrado!')
             layers = [  layerTree.layer() for layerTree in group.findLayers() ]
         else: 
-            layers = core.QgsProject.instance().mapLayers().values()
+            layers = project.mapLayers().values()
 
         mapId = {layer.dataProvider().uri().table() : layer.id() for layer in layers if layer}
         '''
@@ -67,6 +68,8 @@ class LoadMasks(QgsProcessingAlgorithm):
             if not layerName in mask_dict:
                 continue
             labels = layer.labeling()
+            if not labels:
+                continue
             for provider in mask_dict[layerName]:
                 if provider == '--SINGLE--RULE--':
                     label_settings=labels.settings()
