@@ -8,7 +8,6 @@ from qgis.core import QgsApplication, QgsNetworkAccessManager
 from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from .map_generator.manager import DefaultMap
 
-
 def exportMaps(args):
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     grid = GridAndLabelCreator()
