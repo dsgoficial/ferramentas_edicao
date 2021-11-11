@@ -7,7 +7,7 @@ from qgis.core import QgsApplication
 from .resources import *
 from .map_generator.manager import DefaultMap
 from .edition_plugin_dialog import EditionPluginDialog
-from gridGenerator.gui.gridAndLabelCreator import GridAndLabelCreator
+from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from .processings.pluginProvider import pluginProvider
 
 class EditionPlugin:
