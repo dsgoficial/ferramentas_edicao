@@ -115,30 +115,51 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         feedback.setProgressText('Calculando dicionário QML...')
         qmlDict = self.buildQmlDict(stylePath)
-        feedback.setProgressText('Ordenando as camadas...')
+        
         feedbackCancel = False
+
+        feedback.setProgressText('Removendo as camadas...')
+        layers = self.remove( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
+        
+        feedback.setProgressText('Ordenando as camadas...')
         self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
+        
+        feedback.setProgressText('Carregando estilos...')
+        self.estilos( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
+
+
+
         feedback.setProgressText('Carregando as máscaras...') 
-        #calcular layers de novo, pois podem ter sido removidas em self.order
-        group = project.layerTreeRoot().findGroup( groupInput )
 
-        if groupInput:
-            group = project.layerTreeRoot().findGroup( groupInput )
-            if not group:
-                raise Exception('Grupo não encontrado!')
-            layers = [  layerTree.layer() for layerTree in group.findLayers() ]
-        else: 
-            layers = project.instance().mapLayers().values()
-
-        layerList = [layer for layer in layers if layer]
-        self.loadMasks(carta, layerList)
+        self.loadMasks(carta, layers)
         if feedback.isCanceled() or feedbackCancel:
             return {self.OUTPUT: 'feedback cancelado'}
         return {self.OUTPUT: ''}
 
+
+    def remove(self, layerNames, layers, qmlDict, feedback, feedbackCancel, project):
+        listSize = len(layers)
+        progressStep = 100/(listSize+1) if listSize else 0
+        toBeRemoved = []
+        layersOk = []
+        for step, layer in enumerate(layers):
+            if feedback.isCanceled():
+                feedbackCancel = True
+                return 
+            layerName = layer.dataProvider().uri().table()
+            feedback.setProgress( step * progressStep )
+            if not( layerName in layerNames ) or not layerName in qmlDict:
+                toBeRemoved.append(layer.id())
+            else:
+                layersOk.append(layer)
+
+        if toBeRemoved:
+            project.removeMapLayers( toBeRemoved )
+
+        return layersOk
+
     def order(self, layerNames, layers, qmlDict, feedback, feedbackCancel, project):
-        projectMapLayers = project.mapLayers()
-        listSize = len(projectMapLayers)
+        listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
         order = []
         for step, layer in enumerate(layers):
@@ -147,17 +168,26 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
-            if not( layerName in layerNames ) or not layerName in qmlDict:
-                project.removeMapLayer( layer.id() )
-            else:
-                order.insert( 
-                layerNames.index( layerName ), 
-                layer
-                )
-                self.applyStyle(layer, qmlDict[layerName])
-            
+            order.insert( 
+            layerNames.index( layerName ), 
+            layer
+            )
+
         project.layerTreeRoot().setHasCustomLayerOrder(True)
         project.layerTreeRoot().setCustomLayerOrder( order )
+
+        return
+
+    def estilos(self, layerNames, layers, qmlDict, feedback, feedbackCancel, project):
+        listSize = len(layers)
+        progressStep = 100/(listSize+1) if listSize else 0
+        for step, layer in enumerate(layers):
+            if feedback.isCanceled():
+                feedbackCancel = True
+                return 
+            layerName = layer.dataProvider().uri().table()
+            feedback.setProgress( step * progressStep )
+            self.applyStyle(layer, qmlDict[layerName])
 
         return
 
