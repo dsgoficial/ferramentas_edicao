@@ -119,8 +119,19 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         feedbackCancel = False
         self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
         feedback.setProgressText('Carregando as máscaras...') 
+        #calcular layers de novo, pois podem ter sido removidas em self.order
+        group = project.layerTreeRoot().findGroup( groupInput )
 
-        self.loadMasks(carta, groupInput)
+        if groupInput:
+            group = project.layerTreeRoot().findGroup( groupInput )
+            if not group:
+                raise Exception('Grupo não encontrado!')
+            layers = [  layerTree.layer() for layerTree in group.findLayers() ]
+        else: 
+            layers = project.instance().mapLayers().values()
+
+        layerList = [layer for layer in layers if layer]
+        self.loadMasks(carta, layerList)
         if feedback.isCanceled() or feedbackCancel:
             return {self.OUTPUT: 'feedback cancelado'}
         return {self.OUTPUT: ''}
@@ -175,7 +186,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             }
         )
     
-    def loadMasks(self, carta, group):
+    def loadMasks(self, carta, layers):
         jsonPathMask = os.path.join(
                 os.path.abspath(os.path.join(
                     os.path.dirname(os.path.dirname(__file__))
@@ -187,7 +198,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         r = processing.run(
             'ferramentasedicao:loadmasks',
-            {   'GROUP' : group,
+            {   'INPUT_LAYERS' : layers,
                 'JSON_FILE': jsonPathMask,
                 'OUTPUT' : 'TEMPORARY_OUTPUT'
             }
@@ -268,7 +279,7 @@ class ParameterGroup(core.QgsProcessingParameterDefinition):
         return True
 
     def metadata(self):
-        return {'widget_wrapper': 'plugin_edicao.processings.loadMasks.GroupsWidgetWrapper' }
+        return {'widget_wrapper': 'plugin_edicao.processings.orderEditLayersAndAddStyle.GroupsWidgetWrapper' }
 
     def valueAsPythonString(self, value, context):
         return str(value)
