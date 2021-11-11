@@ -141,9 +141,6 @@ class MapManager(MapTools):
 		if composition.itemById("map_localizacao") is not None:
 			mapLayers_loocalizacao = self.localizacao.make(composition, map_extent_feature, showLayers, jsonData.get('territorio_internacional'))
 			ids_maplayers.extend(mapLayers_loocalizacao)
-			# linhas para comentar quando subtitulo estiver funcionado
-			#regioes = self.localizacao.regioes
-			#replaceLabelRegiao(composition, regioes)
 
 		# Region label
 		if composition.itemById("label_regiao") is not None:
@@ -167,10 +164,4 @@ class MapManager(MapTools):
 			path_qrCode = create_qrcode_from_feature(map_extent_feature, str(self.scale), camadas_adicionar)
 			replace_qrCode(composition, path_qrCode)
 
-		# Add grid layer
 		return ids_maplayers
-		#ids_maplayers.extend([grid_layer.id()])
-		
-		# if not showLayers:
-			# self.removeMaps(ids_maplayers)
-			# delete_file(path_qrCode) # deleting qrCode
