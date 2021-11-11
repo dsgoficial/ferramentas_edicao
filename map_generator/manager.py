@@ -238,8 +238,8 @@ class DefaultMap(MapManager):
                     manager = QgsProject.instance().layoutManager()
                     composition.setName(productType)
                     manager.addLayout(composition)
+                # self.setupMasks(strProductType)
                 exportStatus = self.exportMap(composition, showLayers)
-                self.setupMasks(strProductType)
                 if not showLayers:
                     self.removeMaps(idsMapLayers)
                     self.cleanLayerTreeRoot()

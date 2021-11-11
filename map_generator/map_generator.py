@@ -94,7 +94,7 @@ class MapManager(MapTools):
 	def createMap(self, composition, grid_layer, selected_feature, layers, showLayers=False):
 		map_layers = []
 		self.map.setEPSG(self.hemisferio, self.fuso)
-		self.map.setSpacingFromScale(self.scale)				
+		self.map.setSpacingFromScale(self.scale)
 		map_layers = self.map.make(composition, grid_layer, selected_feature, layers, showLayers)
 		return map_layers
 
@@ -111,7 +111,7 @@ class MapManager(MapTools):
 		# Mini mapa
 		if composition.itemById("map_miniMap") is not None:			
 			ids_maplayers.extend(self.miniMap.make(composition, map_extent_feature, layers, showLayers))
-			self.miniMapCoordAndOthers.make(composition, map_extent_feature, addDataToMarginal = False)	
+			self.miniMapCoordAndOthers.make(composition, map_extent_feature, addDataToMarginal = False)
 
 		# Adicionando as imagens nos ids para remover
 		ids_maplayers.extend(layers['id_images'])

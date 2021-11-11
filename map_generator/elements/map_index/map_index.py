@@ -628,7 +628,7 @@ class UtmGrid(QObject):
         return layer, feat
 
     def get_neighbors_inom(self, inom):
-        layer, fields = self.createGridLayer('moldura', 'Multipolygon', '4326')
+        layer, fields = self.createGridLayer('articulation', 'Multipolygon', '4326')
         exceptions = self.getMIexceptions()
         noMi = (inom in exceptions) or self.checkContainedUpperLevel(inom, exceptions)
         inomenList = self.getNeighbors(inom)

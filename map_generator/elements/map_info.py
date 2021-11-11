@@ -34,8 +34,6 @@ curvas = {
 }
 
 class HtmlData(MapParent):
-    def __init__(self):
-        pass
 
     def editQpts(self, composition, qptDicts):
         for qptDict in qptDicts:
@@ -56,7 +54,6 @@ class HtmlData(MapParent):
     def customEtapa(self, composition, etapas=[]):
         label_tabela_etapas = composition.itemById("label_tabela_etapas")
         if label_tabela_etapas is not None:
-            text_label_tabela_etapas = ''
 
             txt_file = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                                     'html_auto', 'etapas_auto.html')

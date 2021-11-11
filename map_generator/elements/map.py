@@ -91,12 +91,11 @@ class Map(MapParent):
         self.deleteGroups(['map'])
 
         instance = QgsProject.instance()
-        mapGroupNode = QgsLayerTreeGroup('map')
-        mapGroupNode.setItemVisibilityChecked(False)
-
         # Setting up grid layer
         mapExtent = self.getExtent(mapExtents)
         gridLayer, mapExtentsTransformed = self.createLayerForGrid(mapExtentsLayer, mapExtents)
+        self.applyStyleGridLayer(gridLayer)
+        gridLayer.triggerRepaint()
         instance.addMapLayer(gridLayer, False)
 
         # Setting up aux_label, which is reprojected to mapLayers
@@ -112,19 +111,17 @@ class Map(MapParent):
         copy.loadNamedStyle(str(copyStyle))
         instance.addMapLayer(copy, False)
 
-        mapGroupNode.addLayer(gridLayer)
-        self.applyStyleGridLayer(gridLayer)
-        gridLayer.triggerRepaint()
-
         # Setting up mask layer
         maskLayer = self.createMaskLayer(mapExtents)
         instance.addMapLayer(maskLayer, False)
 
         mapLayers.extend((copy.id(), copyLabel.id(), gridLayer.id(), maskLayer.id(), *layers['id_map']))
-        layersToComposition = [maskLayer, copy, copyLabel, *layers['map'], *layers['images']]
+        layersToComposition = [gridLayer, maskLayer, copy, copyLabel, *layers['map'], *layers['images']]
         self.updateMapItem(composition, mapExtent, mapExtentsTransformed, gridLayer, layersToComposition)
 
         if showLayers:
+            mapGroupNode = QgsLayerTreeGroup('map')
+            mapGroupNode.setItemVisibilityChecked(False)
             for lyr in layersToComposition:
                 mapGroupNode.addLayer(lyr)
             root = QgsProject.instance().layerTreeRoot()

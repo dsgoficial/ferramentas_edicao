@@ -8,12 +8,7 @@ class MiniMap(MapParent):
 	def make(self, composition, mapArea, layers, showLayers=False):	
 		self.deleteGroups(['minimap'])	
 
-		root = QgsProject.instance().layerTreeRoot()		
-		miniMapGroupNode = QgsLayerTreeGroup('minimap')	
-		miniMapGroupNode.setItemVisibilityChecked(False)								
-		
 		mapExtents = mapArea.geometry().convexHull().boundingBox()
-		
 		# Creating layers to lock map
 		layersToLock = []
 		layersToLock.extend(layers['minimap'])
@@ -21,6 +16,8 @@ class MiniMap(MapParent):
 		self.updateMapItem(composition, mapExtents, layersToLock)	
 
 		if showLayers:
+			miniMapGroupNode = QgsLayerTreeGroup('minimap')	
+			miniMapGroupNode.setItemVisibilityChecked(False)								
 			for layer in layersToLock:
 				miniMapGroupNode.addLayer(layer)
 			root = QgsProject.instance().layerTreeRoot()		
@@ -29,7 +26,7 @@ class MiniMap(MapParent):
 		return layers['id_minimap']
     
 	@staticmethod
-	def updateMapItem(composition, mapExtents, layersToLock, mapItem=None):    	
+	def updateMapItem(composition, mapExtents, layersToLock):    	
 		if (mapItem:=composition.itemById("map_miniMap")) is not None:
 			mapSize = mapItem.sizeWithUnits()
 			mapItem.setFixedSize(mapSize)

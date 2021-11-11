@@ -13037,6 +13037,7 @@
   </LayoutObject>
   <LabelFont style="" description="Arial,10,-1,5,75,0,0,0,0,0"/>
   <FontColor green="0" blue="0" alpha="255" red="0"/>
+ </LayoutItem>
  <LayoutItem type="65641" excludeFromExports="0" size="35.8,1.6,mm" frameJoinStyle="miter" groupUuid="" frame="false" blendMode="0" valign="32" zValue="53" uuid="{b3291112-53f7-446c-9203-da736160c6fa}" id="label_orientacoes_dobra" templateUuid="{b3291112-53f7-446c-9203-da736160c6fa}" positionOnPage="44.1,576.7,mm" halign="132" background="false" htmlState="0" opacity="1" visibility="1" outlineWidthM="0.3,mm" marginY="0" position="44.1,576.7,mm" marginX="0" positionLock="false" itemRotation="0" referencePoint="0" labelText="ORIENTAÇÕES PARA DOBRA EM FORMATO TIPO GUIA">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
