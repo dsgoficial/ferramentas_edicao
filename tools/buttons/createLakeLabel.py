@@ -24,11 +24,11 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
         self._button = self.createPushButton(
-            'CreateLakeLabel',
+            'Rótulo Lago',
             buttonImg,
             lambda _: None,
-            self.tr('Creates features in "edicao_texto_generico_p" based on "cobter_massa_dagua_a" intersection'),
-            self.tr('Creates features in "edicao_texto_generico_p" based on "cobter_massa_dagua_a" intersection'),
+            self.tr('Cria feições em "edicao_texto_generico_p" baseadas na interseção com "cobter_massa_dagua_a"'),
+            self.tr('Cria feições em "edicao_texto_generico_p" baseadas na interseção com "cobter_massa_dagua_a"'),
             self.iface
         )
         self._button.setCheckable(True)
@@ -49,7 +49,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
                     self.createFeature(feat)
                 else:
                     self.displayErrorMessage(self.tr(
-                        'Invalid feature. Verify the attributes "nome" and "tipo" on layer "cobter_massa_dagua_a"'
+                        'Feição inválida. Verifique os atributos "nome" e "tipo" na camada "cobter_massa_dagua_a"'
                     ))
 
     @staticmethod
@@ -111,14 +111,14 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "cobter_massa_dagua_a" not found'
+                'Camada "cobter_massa_dagua_a" não encontrada'
             ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "edicao_texto_generico_p" not found'
+                'Camada "edicao_texto_generico_p" não encontrada'
             ))
             return None
         self.spatialIndex = QgsSpatialIndex(

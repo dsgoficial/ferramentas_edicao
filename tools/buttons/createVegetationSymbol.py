@@ -19,11 +19,11 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
         self._button = self.createPushButton(
-            'CreateVegetationSymbol',
+            'Símbolo Vegetação',
             buttonImg,
             lambda _: None,
-            self.tr('Creates features in "edicao_simb_vegetacao_p" based on "cobter_vegetacao_a" values'),
-            self.tr('Creates features in "edicao_simb_vegetacao_p" based on "cobter_vegetacao_a" values'),
+            self.tr('Cria feições em "edicao_texto_generico_l" baseadas nos valores de "cobter_vegetacao_a"'),
+            self.tr('Cria feições em "edicao_texto_generico_l" baseadas nos valores de "cobter_vegetacao_a"'),
             self.iface
         )
         self._button.setCheckable(True)
@@ -66,14 +66,14 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "cobter_vegetacao_a" not found'
+                'Camada "cobter_vegetacao_a" não encontrada'
             ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "edicao_simb_vegetacao_p" not found'
+                'Camada "edicao_simb_vegetacao_p" não encontrada'
             ))
             return None
         self.spatialIndex = QgsSpatialIndex(

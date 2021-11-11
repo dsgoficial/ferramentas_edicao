@@ -23,11 +23,11 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
         self._button = self.createPushButton(
-            'CreateRiverLabel',
+            'Rótulo Rio',
             buttonImg,
             lambda _: None,
-            self.tr('Creates label features in "edicao_texto_generico_l" based on "elemnat_trecho_drenagem_l" features'),
-            self.tr('Creates label features in "edicao_texto_generico_l" based on "elemnat_trecho_drenagem_l" features'),
+            self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "elemnat_trecho_drenagem_l"'),
+            self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "elemnat_trecho_drenagem_l"'),
             self.iface
         )
         self._button.setCheckable(True)
@@ -50,7 +50,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
                         self.createFeatureB(feat, pos)
                 else:
                     self.displayErrorMessage(self.tr(
-                        'Invalid feature. Verify the attributes of the layer "elemnat_trecho_drenagem_l"'
+                        'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
                     ))
 
     @staticmethod
@@ -186,14 +186,14 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "elemnat_trecho_drenagem_l" not found'
+                'Camada "elemnat_trecho_drenagem_l" não encontrada'
             ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "edicao_texto_generico_l" not found'
+                'Camada "edicao_texto_generico_l" não encontrada'
             ))
             return None
         self.spatialIndex = QgsSpatialIndex(

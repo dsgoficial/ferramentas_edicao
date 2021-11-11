@@ -17,11 +17,11 @@ class CycleLabelPosition(BaseTools):
 
     def setupUi(self):
         button = self.createPushButton(
-            'CycleLabelPosition',
+            'Alternar rótulo',
             Path(__file__).parent / 'icons' / 'genericSymbolA.png',
             self.run,
-            self.tr('Cycles the attributes "label_x" and "label_y"'),
-            self.tr('Cycles the attributes "label_x" and "label_y"'),
+            self.tr('Alterna os atributos "label_x" e "label_y"'),
+            self.tr('Alterna os atributos "label_x" e "label_y"'),
             self.iface
         )
         self.action = self.toolBar.addWidget(button)
@@ -38,12 +38,12 @@ class CycleLabelPosition(BaseTools):
 
     def run(self):
         if not (lyr:=self.iface.activeLayer()):
-            self.displayErrorMessage(self.tr('No selected layer'))
+            self.displayErrorMessage(self.tr('Nenhuma camada selecionada'))
         else:
             fieldXIdx = lyr.dataProvider().fieldNameIndex('label_x')
             fieldYIdx = lyr.dataProvider().fieldNameIndex('label_y')
             if any((fieldXIdx == -1, fieldYIdx == -1)):
-                self.displayErrorMessage(self.tr('Attributes "label_x" or "label_y" do not exist in the selected layer'))
+                self.displayErrorMessage(self.tr('atributos "label_x" ou "label_y" não existem na camada selecionada'))
             else:
                 lyr.startEditing()
                 if len(self.currentFeats) > 0 and self.currentFeats != set(x.id() for x in lyr.getSelectedFeatures()):

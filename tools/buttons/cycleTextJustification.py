@@ -11,11 +11,11 @@ class CycleTextJustification(BaseTools):
 
     def setupUi(self):
         button = self.createPushButton(
-            'CycleTextJustification',
+            'Alternar justificativa',
             Path(__file__).parent / 'icons' / 'genericSymbolA.png',
             self.run,
-            self.tr('Cycles the attribute "justificativa_txt" 1 -> 2 -> 3 -> 1 for selected features'),
-            self.tr('Cycles the attribute "justificativa_txt" 1 -> 2 -> 3 -> 1 for selected features'),
+            self.tr('Alterna o atributo "justificativa_txt" 1 -> 2 -> 3 -> 1 nas feições selecionadas'),
+            self.tr('Alterna o atributo "justificativa_txt" 1 -> 2 -> 3 -> 1 nas feições selecionadas'),
             self.iface
         )
         self.action = self.toolBar.addWidget(button)
@@ -26,7 +26,7 @@ class CycleTextJustification(BaseTools):
         else:
             fieldIdx = lyr.dataProvider().fieldNameIndex('justificativa_txt')
             if fieldIdx == -1:
-                self.displayErrorMessage(self.tr('The attribute "justificativa_txt" does not exist in the selected layer'))
+                self.displayErrorMessage(self.tr('O atributo "justificativa_txt" não existe na camada selecionada'))
             else:
                 lyr.startEditing()
                 for feat in lyr.getSelectedFeatures():

@@ -23,11 +23,11 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
         self._button = self.createPushButton(
-            'CreatRoadIdentifierSymbol',
+            'Símbolo Idt.Tr.Rod.',
             buttonImg,
             lambda _: None,
-            self.tr('Creates features in "edicao_identificador_trecho_rod_p" based on "infra_via_deslocamento_l" values'),
-            self.tr('Creates features in "edicao_identificador_trecho_rod_p" based on "infra_via_deslocamento_l" values'),
+            self.tr('Cria feições em "edicao_identificador_trecho_rod_p" baseadas nos valores de "infra_via_deslocamento_l"'),
+            self.tr('Cria feições em "edicao_identificador_trecho_rod_p" baseadas nos valores de "infra_via_deslocamento_l"'),
             self.iface
         )
         self._button.setCheckable(True)
@@ -54,7 +54,7 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
                         self.createFeature(roadAbrev)
                 else:
                     self.displayErrorMessage(self.tr(
-                        f'Selected feature has an invalid "sigla" attribute'
+                        f'Feição selecionada possui atributo "sigla" inválido'
                     ))
 
     def createFeature(self, name):
@@ -80,14 +80,14 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "infra_via_deslocamento_l" not found'
+                'Camada "infra_via_deslocamento_l" não encontrada'
             ))
             return None
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Layer "edicao_identificador_trecho_rod_p" not found'
+                'Camada "edicao_identificador_trecho_rod_p" não encontrada'
             ))
             return None
         self.spatialIndex = QgsSpatialIndex(

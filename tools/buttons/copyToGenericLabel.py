@@ -13,11 +13,11 @@ class CopyToGenericLabel(BaseTools):
 
     def setupUi(self):
         button = self.createPushButton(
-            'CopyToGenericLabel',
+            'Copiar Texto Genérico',
             Path(__file__).parent / 'icons' / 'genericSymbolA.png',
             self.run,
-            self.tr('Copies selected feature to classes "edicao_texto_generico_p" or "edicao_texto_generico_l"'),
-            self.tr('Copies selected feature to classes "edicao_texto_generico_p" or "edicao_texto_generico_l"'),
+            self.tr('Copia feições selecionadas para "edicao_texto_generico_p" ou "edicao_texto_generico_l"'),
+            self.tr('Copia feições selecionadas para "edicao_texto_generico_p" ou "edicao_texto_generico_l"'),
             self.iface
         )
         self.action = self.toolBar.addWidget(button)
@@ -38,7 +38,7 @@ class CopyToGenericLabel(BaseTools):
         else:
             fieldIdx = lyr.dataProvider().fieldNameIndex('nome')
             if fieldIdx == -1:
-                self.displayErrorMessage(self.tr('The attribute "nome" does not exist in the selected layer'))
+                self.displayErrorMessage(self.tr('O atributo "nome" não existe na camada selecionada'))
             else:
                 instance = QgsProject().instance()
                 geomType = lyr.geometryType()
@@ -48,7 +48,7 @@ class CopyToGenericLabel(BaseTools):
                     destLayerName = 'edicao_texto_generico_l'
                 destLayer = instance.mapLayersByName(destLayerName)
                 if len(destLayer) != 1:
-                    self.displayErrorMessage(self.tr(f'The layer "{destLayerName}" does not exist'))
+                    self.displayErrorMessage(self.tr(f'A camada "{destLayerName}" não existe'))
                 else:
                     destLayer = destLayer[0]
                     destLayer.startEditing()
