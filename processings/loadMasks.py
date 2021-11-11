@@ -78,8 +78,9 @@ class LoadMasks(QgsProcessingAlgorithm):
                 new_symbol_mask = []
                 for symbol in mask_dict[layerName][provider]:
                     symbol_id = core.QgsSymbolLayerId(symbol[1], symbol[2])
-                    reference = core.QgsSymbolLayerReference(mapId[symbol[0]], symbol_id)
-                    new_symbol_mask.append(reference)
+                    if symbol[0] in mapId:
+                        reference = core.QgsSymbolLayerReference(mapId[symbol[0]], symbol_id)
+                        new_symbol_mask.append(reference)
                 masks.setMaskedSymbolLayers(new_symbol_mask)
                 label_settings.setFormat(label_format)
                 if provider == '--SINGLE--RULE--':
