@@ -6,8 +6,6 @@ from ..elements.map_utils import MapParent
 
 
 class Subtitulo(MapParent):
-    def __init__(self):		
-        pass
 
     def replaceLabel(self, composition, regionsIntersected, isInternational):				
         regionsIntersected = [regiao.upper() for regiao in regionsIntersected]
