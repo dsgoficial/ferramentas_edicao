@@ -116,35 +116,36 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         feedback.setProgressText('Calculando dicionário QML...')
         qmlDict = self.buildQmlDict(stylePath)
         
-        feedbackCancel = False
-
         feedback.setProgressText('Removendo as camadas...')
-        layers = self.remove( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
-        
+        layers = self.remove( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, project)
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
+
         feedback.setProgressText('Ordenando as camadas...')
-        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
-        
+        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, feedback, project)
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
+
         feedback.setProgressText('Carregando estilos...')
-        self.estilos( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, feedbackCancel, project)
-
-
+        self.estilos( layers, qmlDict, feedback)
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
 
         feedback.setProgressText('Carregando as máscaras...') 
-
         self.loadMasks(carta, layers)
-        if feedback.isCanceled() or feedbackCancel:
-            return {self.OUTPUT: 'feedback cancelado'}
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
+
         return {self.OUTPUT: ''}
 
 
-    def remove(self, layerNames, layers, qmlDict, feedback, feedbackCancel, project):
+    def remove(self, layerNames, layers, qmlDict, feedback, project):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
         toBeRemoved = []
         layersOk = []
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
-                feedbackCancel = True
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
@@ -158,13 +159,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         return layersOk
 
-    def order(self, layerNames, layers, qmlDict, feedback, feedbackCancel, project):
+    def order(self, layerNames, layers, feedback, project):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
         order = []
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
-                feedbackCancel = True
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
@@ -178,12 +178,11 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         return
 
-    def estilos(self, layerNames, layers, qmlDict, feedback, feedbackCancel, project):
+    def estilos(self, layers, qmlDict, feedback):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
-                feedbackCancel = True
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
