@@ -1,11 +1,11 @@
 import os
 
-from gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
 from .edition_plugin_dialog import EditionPluginDialog
+from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from .map_generator.manager import DefaultMap
 from .processings.pluginProvider import pluginProvider
 from .resources import *
