@@ -134,10 +134,11 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
-        feedback.setProgressText('Carregando as máscaras...') 
-        self.loadMasks(carta, layers)
-        if feedback.isCanceled():
-            return {self.OUTPUT: 'Cancelado'}
+
+        #feedback.setProgressText('Carregando as máscaras...') 
+        #self.loadMasks(carta, layers)
+        #if feedback.isCanceled():
+        #    return {self.OUTPUT: 'Cancelado'}
 
         return {self.OUTPUT: ''}
 
