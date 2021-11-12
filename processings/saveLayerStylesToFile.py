@@ -151,7 +151,7 @@ class ParameterGroup(core.QgsProcessingParameterDefinition):
         return True
 
     def metadata(self):
-        return {'widget_wrapper': 'ferramentas_experimentais.processings.saveLayerStylesToFile.GroupsWidgetWrapper' }
+        return {'widget_wrapper': 'plugin_edicao.processings.saveLayerStylesToFile.GroupsWidgetWrapper' }
 
     def valueAsPythonString(self, value, context):
         return str(value)
