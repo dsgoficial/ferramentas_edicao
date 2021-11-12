@@ -22,6 +22,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     MODE = 'MODE'
     OUTPUT = 'OUTPUT'
 
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
     def initAlgorithm(self, config=None):
 
         self.map = [
@@ -67,7 +70,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
 
-        project = context.project().instance()
+        project = context.project()
         
         feedback.setProgressText('Iniciando...')
         group = project.layerTreeRoot().findGroup( groupInput )
