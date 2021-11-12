@@ -267,7 +267,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     lambda x: x.dataProvider().uri().table() in layerToCreateSpacedSymbolsCase1.values(), layers))
                 self.populateEnergyTowerSymbolLayer(destLayersToCreateSpacedSymbolsCase1,pointsAndAngles)
                 if frameLayer:
-                    distanceNextToFrame = self.getChopDistance(energyLyr, scale * 0.02)
+                    distanceNextToFrame = self.getChopDistance(energyLyr, scale * 0.006)
                     self.removePointsNextToFrame(frameLinesLayer, destLayersToCreateSpacedSymbolsCase1, distanceNextToFrame)
                 distanceToRemoveEnergySymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase1, scale * 0.003)
             if lyrName in layerToCreateSpacedSymbolsCase2:
@@ -300,7 +300,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     self.populateRoadIndentificationSymbolLayer(destLayersToCreateSpacedSymbolsCase2,pointsAndAnglesMiniMap, 2, n+1)
                 distanceToRemoveRoadSymbol = self.getChopDistance(destLayersToCreateSpacedSymbolsCase2, scale * 0.006)
                 if frameLayer:
-                    distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.02)
+                    distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
                     self.removePointsNextToFrame(frameLinesLayer, destLayersToCreateSpacedSymbolsCase2, distanceNextToFrame)
             if lyrName == 'elemnat_ponto_cotado_p' and frameLayer:
                 self.highestSpot(lyr, frameLayer)

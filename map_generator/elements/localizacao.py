@@ -1,30 +1,23 @@
-import os
 from pathlib import Path
 
 from PyQt5.QtGui import QColor
-from qgis.core import (QgsGeometry, QgsLayerTreeGroup, QgsFeatureRequest,
-                       QgsPalLayerSettings, QgsProject,
-                       QgsRuleBasedRenderer, QgsSymbol,
-					   QgsRuleBasedLabeling, QgsTextFormat,
-					   QgsSymbolLayerRegistry, QgsCoordinateReferenceSystem)
-from qgis.gui import *
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeatureRequest,
+                       QgsGeometry, QgsLayerTreeGroup, QgsPalLayerSettings,
+                       QgsProject, QgsRuleBasedLabeling, QgsRuleBasedRenderer,
+                       QgsSymbol, QgsSymbolLayerRegistry, QgsTextFormat)
 
 from .map_utils import MapParent
 
 
 class Localizacao(MapParent):
     def __init__(self):
-        self.scale = 25000
         self.stylesFolder = Path(__file__).parent.parent / 'styles' / 'localizacao'
 
     def make(self, composition, mapAreaFeature, showLayers=False, isInternational=False):
-        # Deleting old groups if necessary
+        # Cleanup
         self.deleteGroups(['localizacao'])
         mapLayers = []
-
-        # Creating nodes
-        localizationGroupNode = QgsLayerTreeGroup('localizacao')
-        localizationGroupNode.setItemVisibilityChecked(False)
+        instance = QgsProject.instance()
 
         # Creating layer for mapArea
         mapAreaBoundingBox = mapAreaFeature.geometry().boundingBox()
@@ -39,18 +32,18 @@ class Localizacao(MapParent):
         self.setLabel(stateLayerBackground, isInternational)
         mapLayers.append(stateLayerBackground.id())
 
-        # Adding into localization node
-        localizationGroupNode.addLayer(mapAreaLayer)
-        localizationGroupNode.addLayer(stateLayerBackground)
-
         # Adding layers
-        QgsProject.instance().addMapLayer(stateLayerBackground, False)
-        QgsProject.instance().addMapLayer(mapAreaLayer, False)
+        instance.addMapLayer(stateLayerBackground, False)
+        instance.addMapLayer(mapAreaLayer, False)
 
         # Updating composition
         self.updateMapItem(composition, stateLayerBackground, mapAreaLayer, mapExtents)
 
         if showLayers:
+            localizationGroupNode = QgsLayerTreeGroup('localizacao')
+            localizationGroupNode.setItemVisibilityChecked(False)
+            for layer in (mapAreaLayer, stateLayerBackground):
+                localizationGroupNode.addLayer(layer)
             root = QgsProject.instance().layerTreeRoot()
             root.addChildNode(localizationGroupNode)
 
@@ -174,11 +167,11 @@ class Localizacao(MapParent):
         stateLayer.setLabelsEnabled(True)
         stateLayer.triggerRepaint()
 
-    def updateMapItem(self, composition, stateLayer, mapAreaLayer, bound, mapItem=None):
+    def updateMapItem(self, composition, stateLayer, mapAreaLayer, bound):
         if (mapItem := composition.itemById("map_localizacao")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
-            mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
             mapItem.setExtent(bound)
-            mapItem.refresh()
+            mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
             mapItem.setLayers([mapAreaLayer, stateLayer])
+            mapItem.refresh()

@@ -112,9 +112,9 @@ class MapParent:
             rasterPath = Path(rasterUri)
             return QgsRasterLayer(str(rasterPath), rasterPath.stem) 
 
-    def loadStyleToLayer(self, layer, style_file):
+    def loadStyleToLayer(self, layer, stylePath):
         if layer.isValid():
-            layer.loadNamedStyle(style_file)
+            layer.loadNamedStyle(str(stylePath))
             layer.triggerRepaint()
 
     def setEPSG(self, hemisferio, fuso):
@@ -136,7 +136,6 @@ class MapParent:
 
     def createGridLayer(self, inom):
         gridLayer, _ = self.utm_grid.get_neighbors_inom(inom)
-        QgsProject.instance().addMapLayer(gridLayer, False)
         return gridLayer
 
     def createVectorLayerFromIter(self, layerName, iterable):
