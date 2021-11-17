@@ -1,5 +1,6 @@
 import os
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
@@ -153,7 +154,7 @@ class EditionPlugin:
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
-        # QgsApplication.processingRegistry().removeProvider(self.provider)
+        QgsApplication.processingRegistry().removeProvider(self.provider)
         self.tools.unload()
         for action in self.actions:
             self.iface.removePluginMenu(

@@ -21,30 +21,6 @@ class DefaultMap(MapManager):
         self.defaults = Defaults()
         self.products_parameters = product_parameters
 
-    def editCompositions(self, productType, compositionDict):
-        '''
-        Searches .qpt files for header and footer layouts, setting its defaults otherwise.
-        '''
-        qptList = []
-        for scale, compositor in compositionDict.items():
-            headerPath = Path(self.dlg.mapHeader.filePath())
-            footerPath = Path(self.dlg.mapFooter.filePath())
-            if headerPath.suffix == '.qpt':
-                dictHeader = self.products_parameters[productType]['qpt'][scale]['cabecalho'].copy()
-                dictHeader.update({'caminho': headerPath})
-                qptList.append(dictHeader)
-            if footerPath.suffix == '.qpt':
-                dictFooter = self.products_parameters[productType]['qpt'][scale]['projeto'].copy()
-                dictFooter.update({'caminho': footerPath})
-                qptList.append(dictFooter)
-            # TODO: get info from json
-            # if True:
-            #     dict_classified = self.products_parameters[productType]['qpt'][scale]['classified'].copy()
-            #     dict_classified.update({'caminho': Path(__file__).parent.parent /
-            #                            'map_generator' / 'produtos' / productType / 'classified.qpt'})
-            #     qptList.append(dict_classified)
-            self.htmlData.editQpts(compositor, qptList)
-
     def setCartaConfig(self, jsonData, connectedUri, compositionDict, mapAreaFeature):
         '''
         Sets map configurations
@@ -210,19 +186,16 @@ class DefaultMap(MapManager):
 
         # Edit composition with project and credits qpt
         compositionDict = self.createCompositions(scales, strProductType)
-        # self.editCompositions(strProductType, compositionDict)
 
         if success:
             self.exportFolder = self.dlgCfg.exportFolder / datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
             self.exportFolder.mkdir(exist_ok=True)
             for jsonPath in self.dlgCfg.jsonFilesPaths:
                 jsonData = self.readJsonFromPath(jsonPath)
-                jsonData.update({
-                    'productType':productType,
-                    'strProductType': strProductType})
+                jsonData.update({'productType':productType,'strProductType': strProductType})
                 feature_map_extent, layer_feature_map_extent = self.setDefaultFeatureData(jsonData)
                 oldQptsPaths = self.editComposition(jsonData, compositionDict, strProductType, oldQptsPaths) if 'oldQptsPaths' in locals() \
-                    else self.editComposition(jsonData, compositionDict, strProductType, ['','',''])
+                    else self.editComposition(jsonData, compositionDict, strProductType, ['','','',''])
                 connectedUri = self.getDBConnection(jsonData['banco'], self.dlgCfg.username, self.dlgCfg.password)
                 # Set config for html labels
                 composition, inomen, layers = self.setCartaConfig(
