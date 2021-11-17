@@ -119,7 +119,10 @@ class Localizacao(MapParent):
         symbol = QgsSymbol.defaultSymbol(stateLayer.geometryType())
         registry = QgsSymbolLayerRegistry()
         fillMeta = registry.symbolLayerMetadata("SimpleFill")
-        fillSymbolLayer = fillMeta.createSymbolLayer({'color': '178,178,178' })
+        fillSymbolLayer = fillMeta.createSymbolLayer({
+            'color': '201,201,201',
+            'outline_width': 0.1
+            })
         # Replace the default style
         symbol.deleteSymbolLayer(0)
         symbol.appendSymbolLayer(fillSymbolLayer)
