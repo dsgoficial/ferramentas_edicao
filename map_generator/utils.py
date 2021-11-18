@@ -51,7 +51,7 @@ class MapTools:
         compositor = compositionDict.get(next(iter(compositionDict)))
         headerQptPath = self.setupPath(jsonData.get('cabecalho')) or self.defaults.header
         footerQptPath = self.setupPath(jsonData.get('projeto')) or self.defaults.footer
-        footerRepRightsQptPath = self.setupPath(jsonData.get('diretos_reproducao')) or self.defaults.reproductionRights
+        footerRepRightsQptPath = self.setupPath(jsonData.get('direitos_reproducao')) or self.defaults.reproductionRights
         bdgexInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.defaults.bdgexAcessInfo
         changed = [headerQptPath,footerQptPath,footerRepRightsQptPath,bdgexInfoQptPath] != oldQptsPaths
         if headerQptPath != oldQptsPaths[0]:
