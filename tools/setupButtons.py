@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QButtonGroup, QActionGroup
 
 from .buttons.mapTypeSelector import MapTypeSelector
 from .buttons.scaleSelector import ScaleSelector
@@ -21,6 +21,7 @@ class SetupButtons:
         self.mapCanvas = iface.mapCanvas()
         self.tools = list()
         self.mapTools = list()
+        self.mapToolsActions = list()
 
     def initToolBar(self):
         mapTypeSelector = MapTypeSelector(self.iface, self.toolBar)
@@ -49,18 +50,47 @@ class SetupButtons:
             createLakeLabel,
             createRiverLabel
         ])
+        self.mapToolsActions.extend([
+            createVegetationSymbol._action,
+            createRoadIdentifierSymbol._action,
+            createLakeLabel._action,
+            createRiverLabel._action
+        ])
         self.tools.extend([
             mapTypeSelector,
             scaleSelector,
             cycleTextJustificationButton,
             copyToGenericLabelButton,
             cycleLabelPositionButton,
+            cycleVisibilityButton,
             createVegetationSymbol,
             createRoadIdentifierSymbol,
             createLakeLabel,
             createRiverLabel
         ])
-        self.buttonGroup = self.setupButtonGroup(*self.mapTools)
+        self.actionGroup = self.setupActionGroup(*self.mapTools)
+
+    def setupActionGroup(self, *tools):
+        actionGroup = QActionGroup(self.iface.mainWindow())
+        for tool in tools:
+            actionGroup.addAction(tool._action)
+        actionGroup.triggered.connect(self.setMapToolsOnTrigger)
+        return actionGroup
+
+    def setMapToolsOnTrigger(self, action):
+        idx = self.mapToolsActions.index(action)
+        if self.mapTools[idx].isActive():
+            self.unsetMapToolsOnToggle(idx)
+        else:
+            self.mapCanvas.setMapTool(self.mapTools[idx])
+            self.mapTools[idx].getLayers()
+
+    def unsetMapToolsOnToggle(self, idx):
+        self.mapCanvas.unsetMapTool(self.mapTools[idx])
+        self.actionGroup.setExclusive(False)
+        action = self.mapToolsActions[idx]
+        action.setChecked(False)
+        self.actionGroup.setExclusive(True)
 
     def setupButtonGroup(self, *tools):
         buttonGroup = QButtonGroup(self.iface.mainWindow())
@@ -71,12 +101,12 @@ class SetupButtons:
 
     def setMapToolsOnToggle(self, idx):
         if self.mapTools[idx].isActive():
-            self.unsetMapToolsOnToggle(idx)
+            self.unsetMapToolsOnToggleButton(idx)
         else:
             self.mapCanvas.setMapTool(self.mapTools[idx])
             self.mapTools[idx].getLayers()
 
-    def unsetMapToolsOnToggle(self, idx):
+    def unsetMapToolsOnToggleButton(self, idx):
         self.mapCanvas.unsetMapTool(self.mapTools[idx])
         self.buttonGroup.setExclusive(False)
         button = self.buttonGroup.button(idx)

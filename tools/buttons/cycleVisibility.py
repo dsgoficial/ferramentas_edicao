@@ -8,19 +8,21 @@ class CycleVisibility(BaseTools):
         self.iface = iface
 
     def setupUi(self):
-        button = self.createPushButton(
+        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbolA.png'
+        self._action = self.createAction(
             'Alternar visibilidade',
-            Path(__file__).parent / 'icons' / 'genericSymbolA.png',
+            None,
             self.run,
             self.tr('Alterna o atributo "visivel" 1 -> 2 -> 1 nas feições selecionadas'),
             self.tr('Alterna o atributo "visivel" 1 -> 2 -> 1 nas feições selecionadas'),
             self.iface
         )
-        self.action = self.toolBar.addWidget(button)
+        self.toolBar.addAction(self._action)
+        self.iface.registerMainWindowAction(self._action, '')
 
     def run(self):
         lyr = self.iface.activeLayer()
-        fieldIdx = lyr.dataProvider().fieldNameIndex('visivel')
+        fieldIdx = lyr.dataProvider().fieldNameIndex('visivel') if lyr else -1
         if fieldIdx == -1:
             self.displayErrorMessage(self.tr('O atributo "visivel" não existe na camada selecionada'))
         else:

@@ -10,15 +10,17 @@ class CycleTextJustification(BaseTools):
         self.iface = iface
 
     def setupUi(self):
-        button = self.createPushButton(
+        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbolA.png'
+        self._action = self.createAction(
             'Alternar justificativa',
-            Path(__file__).parent / 'icons' / 'genericSymbolA.png',
+            None,
             self.run,
             self.tr('Alterna o atributo "justificativa_txt" 1 -> 2 -> 3 -> 1 nas feições selecionadas'),
             self.tr('Alterna o atributo "justificativa_txt" 1 -> 2 -> 3 -> 1 nas feições selecionadas'),
             self.iface
         )
-        self.action = self.toolBar.addWidget(button)
+        self.toolBar.addAction(self._action)
+        self.iface.registerMainWindowAction(self._action, '')
 
     def run(self):
         if not (lyr:=self.iface.activeLayer()):

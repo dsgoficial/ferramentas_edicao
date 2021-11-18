@@ -18,17 +18,18 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
-        self._button = self.createPushButton(
+        self._action = self.createAction(
             'Símbolo Vegetação',
-            buttonImg,
+            None,
             lambda _: None,
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas nos valores de "cobter_vegetacao_a"'),
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas nos valores de "cobter_vegetacao_a"'),
             self.iface
         )
-        self._button.setCheckable(True)
-        self.setButton(self._button)
-        self._action = self.toolBar.addWidget(self._button)
+        self._action.setCheckable(True)
+        self.setAction(self._action)
+        self.toolBar.addAction(self._action)
+        self.iface.registerMainWindowAction(self._action, '')
 
     def mouseClick(self, pos, btn):
         if self.isActive():

@@ -16,15 +16,17 @@ class CycleLabelPosition(BaseTools):
         self.currentFeats = set()
 
     def setupUi(self):
-        button = self.createPushButton(
+        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        self._action = self.createAction(
             'Alternar rótulo',
-            Path(__file__).parent / 'icons' / 'genericSymbolA.png',
+            None,
             self.run,
             self.tr('Alterna os atributos "label_x" e "label_y"'),
             self.tr('Alterna os atributos "label_x" e "label_y"'),
             self.iface
         )
-        self.action = self.toolBar.addWidget(button)
+        self.toolBar.addAction(self._action)
+        self.iface.registerMainWindowAction(self._action, '')
 
     def getUpdateValue(self, feat, featXIdx, featYIdx):
         attrXValue = feat.attribute(featXIdx)

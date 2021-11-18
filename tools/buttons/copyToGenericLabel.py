@@ -12,15 +12,18 @@ class CopyToGenericLabel(BaseTools):
         self.iface = iface
 
     def setupUi(self):
-        button = self.createPushButton(
+        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbolA.png'
+        self._action = self.createAction(
             'Copiar Texto Genérico',
-            Path(__file__).parent / 'icons' / 'genericSymbolA.png',
+            None,
             self.run,
             self.tr('Copia feições selecionadas para "edicao_texto_generico_p" ou "edicao_texto_generico_l"'),
             self.tr('Copia feições selecionadas para "edicao_texto_generico_p" ou "edicao_texto_generico_l"'),
             self.iface
         )
-        self.action = self.toolBar.addWidget(button)
+        self.toolBar.addAction(self._action)
+        self.iface.registerMainWindowAction(self._action, '')
+
 
     @staticmethod
     def setFeatValues(originFeat, destFeat):
