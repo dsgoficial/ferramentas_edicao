@@ -51,7 +51,9 @@ class MapTools:
         compositor = compositionDict.get(next(iter(compositionDict)))
         headerQptPath = self.setupPath(jsonData.get('cabecalho')) or self.defaults.header
         footerQptPath = self.setupPath(jsonData.get('projeto')) or self.defaults.footer
+        footerRepRightsQptPath = self.setupPath(jsonData.get('diretos_reproducao')) or self.defaults.reproductionRights
         bdgexInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.defaults.bdgexAcessInfo
+        changed = [headerQptPath,footerQptPath,footerRepRightsQptPath,bdgexInfoQptPath] != oldQptsPaths
         if headerQptPath != oldQptsPaths[0]:
             oldQptsPaths[0] = headerQptPath
             dictHeader = self.products_parameters[productType]['qpt'][self.scale]['cabecalho'].copy()
@@ -62,13 +64,18 @@ class MapTools:
             dictFooter = self.products_parameters[productType]['qpt'][self.scale]['projeto'].copy()
             dictFooter.update({'caminho': footerQptPath})
             qptList.append(dictFooter)
-        if productType == 'carta_ortoimagem' and bdgexInfoQptPath != oldQptsPaths[2]:
-            oldQptsPaths[2] = bdgexInfoQptPath
+        if footerRepRightsQptPath != oldQptsPaths[2]:
+            oldQptsPaths[2] = footerQptPath
+            dictRepRights = self.products_parameters[productType]['qpt'][self.scale]['reproductionRights'].copy()
+            dictRepRights.update({'caminho': footerRepRightsQptPath})
+            qptList.append(dictRepRights)
+        if productType == 'carta_ortoimagem' and bdgexInfoQptPath != oldQptsPaths[3]:
+            oldQptsPaths[3] = bdgexInfoQptPath
             dictBdgexAcessInfo = self.products_parameters[productType]['qpt'][self.scale]['bdgexAcessInfo'].copy()
             dictBdgexAcessInfo.update({'caminho': bdgexInfoQptPath})
             qptList.append(dictBdgexAcessInfo)
-
         self.htmlData.editQpts(compositor, qptList)
+        # if changed:
         return oldQptsPaths
 
     def create_layer_from_geometry(self, name, geom, layerType='Multipolygon', crsAuthId='4326'):

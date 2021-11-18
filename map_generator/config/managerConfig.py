@@ -7,6 +7,7 @@ class Defaults:
     header: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'header.qpt'
     footer: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'creditsDSG.qpt'
     bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'bdgexAcessInfo.qpt'
+    reproductionRights: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'reproductionRights.qpt'
     orthoMandatoryClasses: set = field(default_factory=lambda: set([
         'llp_localidade_p', 'infra_via_deslocamento_l', 'edicao_identificador_trecho_rod_p', 'infra_ferrovia_l', 
         'cobter_massa_dagua_a', 'elemnat_trecho_drenagem_l', 'aux_area_sem_dados_a', 'edicao_texto_generico_p', 'edicao_texto_generico_l'
@@ -66,6 +67,12 @@ product_parameters = {
                     "y_0": 175,
                     "width": 110,
                     "height": 20
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 561,
+                    "width": 110,
+                    "height": 20
                 }
             },
             50: {
@@ -84,6 +91,12 @@ product_parameters = {
                 "classified": {
                     "x_0": 7,
                     "y_0": 175,
+                    "width": 110,
+                    "height": 20
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 561,
                     "width": 110,
                     "height": 20
                 }
@@ -106,6 +119,12 @@ product_parameters = {
                     "y_0": 180,
                     "width": 120,
                     "height": 20
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 561,
+                    "width": 110,
+                    "height": 20
                 }
             },
             250: {
@@ -125,6 +144,12 @@ product_parameters = {
                     "x_0": 7,
                     "y_0": 180,
                     "width": 120,
+                    "height": 20
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 464,
+                    "width": 110,
                     "height": 20
                 }
             }
@@ -155,9 +180,15 @@ product_parameters = {
                 },
                 "bdgexAcessInfo":{
                     "x_0": 729,
-                    "y_0": 440,
+                    "y_0": 450,
                     "width": 105,
                     "height": 100,
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 561,
+                    "width": 110,
+                    "height": 20
                 }
             },
             50: {
@@ -181,9 +212,15 @@ product_parameters = {
                 },
                 "bdgexAcessInfo":{
                     "x_0": 729,
-                    "y_0": 440,
+                    "y_0": 450,
                     "width": 105,
                     "height": 100,
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 561,
+                    "width": 110,
+                    "height": 20
                 }
             },
             100: {
@@ -207,9 +244,15 @@ product_parameters = {
                 },
                 "bdgexAcessInfo":{
                     "x_0": 729,
-                    "y_0": 440,
+                    "y_0": 450,
                     "width": 105,
                     "height": 100,
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 561,
+                    "width": 110,
+                    "height": 20
                 }
             },
             250: {
@@ -236,6 +279,12 @@ product_parameters = {
                     "y_0": 380,
                     "width": 105,
                     "height": 100,
+                },
+                "reproductionRights": {
+                    "x_0": 7,
+                    "y_0": 464,
+                    "width": 110,
+                    "height": 20
                 }
             }
         },
