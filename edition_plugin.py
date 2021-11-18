@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
@@ -148,14 +149,16 @@ class EditionPlugin:
             callback=self.run,
             parent=self.iface.mainWindow())
         self.first_start = True
-        self.tools = SetupButtons(self.iface)
-        self.tools.initToolBar()
+        if (Path(__file__).parent / '.env').exists():
+            self.tools = SetupButtons(self.iface)
+            self.tools.initToolBar()
         pluginProvider.initProcessing(self)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         QgsApplication.processingRegistry().removeProvider(self.provider)
-        self.tools.unload()
+        if hasattr(self, 'tools'):
+            self.tools.unload()
         for action in self.actions:
             self.iface.removePluginMenu(
                 self.tr(u'&Edition Plugin'),
