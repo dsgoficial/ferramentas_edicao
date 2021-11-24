@@ -4,5 +4,5 @@ def classFactory(iface):
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
-    from .edition_plugin import EditionPlugin
+    from .editionPlugin import EditionPlugin
     return EditionPlugin(iface)

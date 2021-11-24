@@ -151,7 +151,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton_gerar_cartas">
+    <widget class="QPushButton" name="pushButton">
      <property name="text">
       <string>Gerar cartas</string>
      </property>

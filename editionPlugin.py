@@ -6,7 +6,10 @@ from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-from .edition_plugin_dialog import EditionPluginDialog
+from .controllers.mapBuilderController import MapBuildController
+from .config.configDefaults import ConfigDefaults
+
+from .resources.dialogs.editionPluginDialog import EditionPluginDialog
 from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from .map_generator.manager import DefaultMap
 from .processings.pluginProvider import pluginProvider
@@ -27,6 +30,7 @@ class EditionPlugin:
         """
         # Save reference to the QGIS interface
         self.iface = iface
+        self.debugMode = (Path(__file__).parent / '.env').exists()
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
@@ -47,7 +51,7 @@ class EditionPlugin:
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
-        self.first_start = None
+        self.firstStart = None
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -148,7 +152,7 @@ class EditionPlugin:
             text=self.tr(u'Edition Plugin'),
             callback=self.run,
             parent=self.iface.mainWindow())
-        self.first_start = True
+        self.firstStart = True
         if (Path(__file__).parent / '.env').exists():
             self.tools = SetupButtons(self.iface)
             self.tools.initToolBar()
@@ -170,38 +174,20 @@ class EditionPlugin:
         except AttributeError:
             pass
 
-    def connectingButtons(self):
-        self.defaultMap = DefaultMap(self.dlg, self.GLC, self.iface)
-        self.dlg.pushButton_gerar_cartas.clicked.connect(self.defaultMap.createMaps)
-
-    def setTestData(self):
-        self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\topo\\NB-20-Z-D-II-3.json')
-        self.dlg.exportFolder.setFilePath('D:\\export')
-        self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-        
-    def initializeVariables(self):
-        # Maps to create
-        self.GLC = GridAndLabelCreator()
+    def initialize(self):
+        ''' Starts main plugin dialog and the main controller '''
+        if self.firstStart:
+            self.firstStart = False
+            self.dlg = EditionPluginDialog()
+            if self.debugMode:
+                self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\topo\\NB-20-Z-D-II-3.json')
+                self.dlg.exportFolder.setFilePath('D:\\export')
+                self.dlg.jsonConfigs.setFilter("JSON (*.json)")
+        self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
+        self.dlg.pushButton.clicked.connect(self.controller.run)
 
     def run(self):
         """Run method that performs all the real work"""
-
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg = EditionPluginDialog()
-
-        self.initializeVariables()
-        self.setTestData()
-        self.connectingButtons()
-
-        # show the dialog
+        self.initialize()
         self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+        self.dlg.exec_()
