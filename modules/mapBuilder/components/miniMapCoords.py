@@ -1,7 +1,7 @@
 from qgis.core import QgsVectorLayer, QgsProject, QgsFeature
 from .map_utils import MapParent
 
-class MiniMapCoordAndOthers(MapParent):
+class MiniMapCoords(MapParent):
 	# This function populates: Nome da carta, Indíce da carta, MI da carta e as coordenadas do minimapa
 	def __init__(self):		
 		pass

@@ -2,10 +2,7 @@ from pathlib import Path
 
 from qgis.core import QgsFeatureRequest
 
-from ..elements.map_utils import MapParent
-
-
-class Subtitulo(MapParent):
+class Subtitle:
 
     def replaceLabel(self, composition, regionsIntersected, isInternational):				
         regionsIntersected = [regiao.upper() for regiao in regionsIntersected]

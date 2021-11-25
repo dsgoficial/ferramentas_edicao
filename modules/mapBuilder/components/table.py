@@ -33,7 +33,7 @@ curvas = {
     }
 }
 
-class HtmlData(MapParent):
+class Table:
 
     def editQpts(self, composition, qptDicts):
         for qptDict in qptDicts:

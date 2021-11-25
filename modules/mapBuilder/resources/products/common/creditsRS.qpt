@@ -150,7 +150,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string(@commonPath) + '/rsSymbol.jpg'" name="expression"/>
+       <Option type="QString" value="to_string(@commonFolder) + '/rsSymbol.jpg'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -208,7 +208,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string(@commonPath) + '/dsgSymbol.png'" name="expression"/>
+       <Option type="QString" value="to_string(@commonFolder) + '/dsgSymbol.png'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>

@@ -226,7 +226,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" type="bool" value="true"/>
-       <Option name="expression" type="QString" value="to_string(@commonPath) + '/folderOrientation.jpg'"/>
+       <Option name="expression" type="QString" value="to_string(@commonFolder) + '/folderOrientation.jpg'"/>
        <Option name="type" type="int" value="3"/>
       </Option>
      </Option>
@@ -398,7 +398,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" type="bool" value="true"/>
-       <Option name="expression" type="QString" value="to_string(@commonPath) + '/leftDeclinationDiagram.svg'"/>
+       <Option name="expression" type="QString" value="to_string(@commonFolder) + '/leftDeclinationDiagram.svg'"/>
        <Option name="type" type="int" value="3"/>
       </Option>
      </Option>
@@ -420,7 +420,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" type="bool" value="true"/>
-       <Option name="expression" type="QString" value="to_string(@commonPath) + '/rightDeclinationDiagram.svg'"/>
+       <Option name="expression" type="QString" value="to_string(@commonFolder) + '/rightDeclinationDiagram.svg'"/>
        <Option name="type" type="int" value="3"/>
       </Option>
      </Option>
@@ -622,7 +622,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" type="bool" value="true"/>
-       <Option name="expression" type="QString" value="to_string(@commonPath) + '/scale.svg'"/>
+       <Option name="expression" type="QString" value="to_string(@commonFolder) + '/scale.svg'"/>
        <Option name="type" type="int" value="3"/>
       </Option>
      </Option>

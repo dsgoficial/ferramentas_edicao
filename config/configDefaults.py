@@ -5,7 +5,7 @@ from pathlib import Path
 @dataclass
 class ConfigDefaults:
     header: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'header.qpt'
-    footer: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'creditsDSG.qpt'
+    project: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'creditsDSG.qpt'
     bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'bdgexAcessInfo.qpt'
     reproductionRights: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'reproductionRights.qpt'
     orthoMandatoryClasses: set = field(default_factory=lambda: set([
@@ -49,13 +49,13 @@ class ConfigDefaults:
         },
         'qpt': {
             25: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 487,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,
@@ -75,13 +75,13 @@ class ConfigDefaults:
                 }
             },
             50: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 487,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,
@@ -101,13 +101,13 @@ class ConfigDefaults:
                 }
             },
             100: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 487,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,
@@ -127,13 +127,13 @@ class ConfigDefaults:
                 }
             },
             250: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 395,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,
@@ -159,13 +159,13 @@ class ConfigDefaults:
         'name': 'Carta Ortoimagem',
         'qpt': {
             25: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 487,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,
@@ -191,13 +191,13 @@ class ConfigDefaults:
                 }
             },
             50: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 487,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,
@@ -223,13 +223,13 @@ class ConfigDefaults:
                 }
             },
             100: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 487,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,
@@ -255,13 +255,13 @@ class ConfigDefaults:
                 }
             },
             250: {
-                'projeto': {
+                'project': {
                     'x_0': 7,
                     'y_0': 395,
                     'width': 110,
                     'height': 70,
                 },
-                'cabecalho': {
+                'header': {
                     'x_0': 7,
                     'y_0': 7,
                     'width': 110,

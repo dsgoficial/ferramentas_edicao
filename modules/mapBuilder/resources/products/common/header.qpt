@@ -114,7 +114,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string(@commonPath) + '/armySymbol.svg'" type="QString"/>
+       <Option name="expression" value="to_string(@commonFolder) + '/armySymbol.svg'" type="QString"/>
        <Option name="type" value="3" type="int"/>
       </Option>
      </Option>
@@ -136,7 +136,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string(@commonPath) + '/dsgSymbol.png'" type="QString"/>
+       <Option name="expression" value="to_string(@commonFolder) + '/dsgSymbol.png'" type="QString"/>
        <Option name="type" value="3" type="int"/>
       </Option>
      </Option>
@@ -206,7 +206,7 @@
   <Option type="Map">
    <Option name="atlasRasterFormat" value="png" type="QString"/>
    <Option name="variableNames" type="StringList">
-    <Option value="edition_folder" type="QString"/>
+    <Option value="productFolder" type="QString"/>
    </Option>
    <Option name="variableValues" type="StringList">
     <Option value="C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem" type="QString"/>

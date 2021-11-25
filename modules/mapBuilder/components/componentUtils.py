@@ -8,12 +8,12 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
                        QgsPrintLayout, QgsProject, QgsRasterLayer, QgsDataSourceUri,
                        QgsReadWriteContext, QgsVectorLayer)
 
-from .map_index.map_index import UtmGrid
+from ..factories.gridFactory.gridFactory import GridFactory
 
 
-class MapParent:
+class ComponentUtils:
     def __init__(self):
-        self.utm_grid = UtmGrid()
+        self.utm_grid = GridFactory()
 
     def getPrintLayoutFromQptPath(self, path, newValue):
         '''
@@ -35,11 +35,11 @@ class MapParent:
         self.updateQptVariables(layout, str(newValue))
         return layout
 
-    def updateQptVariables(self, composition, newValue, defaultKey='edition_folder'):
+    def updateQptVariables(self, composition, newValue, defaultKey='productFolder'):
         '''Sets composition variables
         '''
-        commonPathPropertyKey = 'commonPath'
-        commonPathPropertyValue = str(Path(__file__).parent.parent / 'produtos' / 'common')
+        commonFolderPropertyKey = 'commonFolder'
+        commonFolderPropertyValue = str(Path(__file__).parent.parent / 'produtos' / 'common')
         if 'variableNames' in composition.customProperties():
             keys = composition.customProperty('variableNames')
             values = composition.customProperty('variableValues')
@@ -57,8 +57,8 @@ class MapParent:
                 composition.setCustomProperty('variableNames', keys)
                 composition.setCustomProperty('variableValues', values)
         else:
-            composition.setCustomProperty('variableNames', [defaultKey, commonPathPropertyKey])
-            composition.setCustomProperty('variableValues', [newValue, commonPathPropertyValue])
+            composition.setCustomProperty('variableNames', [defaultKey, commonFolderPropertyKey])
+            composition.setCustomProperty('variableValues', [newValue, commonFolderPropertyValue])
 
     def loadShapeLayer(self, pathShp, pathStyle, lyrName):
         if Path(pathShp).is_file():

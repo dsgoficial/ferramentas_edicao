@@ -9,7 +9,7 @@ from .angles.auxiliar.auxiliar import Auxiliar
 from .angles.geomag.geomag import GeoMag
 
 
-class HandleAngles:
+class AnglesHandler:
     def __init__(self):
         self.auxiliar = Auxiliar()
 

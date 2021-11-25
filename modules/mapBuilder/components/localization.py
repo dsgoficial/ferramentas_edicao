@@ -9,7 +9,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeatureRequest,
 from .map_utils import MapParent
 
 
-class Localizacao(MapParent):
+class Localization(MapParent):
     def __init__(self):
         self.stylesFolder = Path(__file__).parent.parent / 'styles' / 'localizacao'
 

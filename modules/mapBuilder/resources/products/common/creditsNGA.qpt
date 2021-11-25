@@ -222,7 +222,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option type="bool" value="true" name="active"/>
-       <Option type="QString" value="to_string(@commonPath) + 'ngaSymbol.tif'" name="expression"/>
+       <Option type="QString" value="to_string(@commonFolder) + 'ngaSymbol.tif'" name="expression"/>
        <Option type="int" value="3" name="type"/>
       </Option>
      </Option>
@@ -256,7 +256,7 @@
   <Option type="Map">
    <Option type="QString" value="png" name="atlasRasterFormat"/>
    <Option type="StringList" name="variableNames">
-    <Option type="QString" value="edition_folder"/>
+    <Option type="QString" value="productFolder"/>
    </Option>
    <Option type="StringList" name="variableValues">
     <Option type="QString" value="C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem"/>

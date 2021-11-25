@@ -5,22 +5,35 @@ from pathlib import Path
 
 from config.configDefaults import ConfigDefaults
 from modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
+from factories.exporterSingleton import ExporterSingleton
 from qgis.core import QgsFeature, QgsVectorLayer
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtWidgets import QDialog
 
-from.mapBuilderControllerUtils import MapBuildControllerUtils
-from typing import NamedTuple, Tuple, Union
+from .mapBuilderControllerUtils import MapBuildControllerUtils
+from factories.connectionSingleton import ConnectionSingleton
+from factories.compositionSingleton import CompositionSingleton
+from factories.orthoMapBuilder import OrthoMapBuilder
+from factories.topoMapBuilder import TopoMapBuilder
+from factories.omMapbuilder import OmMapbuilder
+from typing import Any, NamedTuple, Tuple, Union
+
+from modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
 class MapBuildController(MapBuildControllerUtils):
     
-    def __init__(self, dlg: Union[QDialog,Namespace], iface: QgisInterface, defaults: ConfigDefaults) -> None:
+    def __init__(self, dlg: Union[QDialog,Namespace], iface: QgisInterface, defaults: ConfigDefaults = ConfigDefaults()) -> None:
         super().__init__()
         self.dlg = self.setupDlgCfg(dlg)
         self.iface = iface
         self.defaults = defaults
         self.grid = GridFactory()
+        self.conn = ConnectionSingleton()
+        self.compositions = CompositionSingleton(defaults)
+        self.debugMode = (Path(__file__).parent.parent / '.env').exists()
+        self.exporter = ExporterSingleton(self.debugMode, self.dlg.exportFolder)
+        self.builders = dict()
 
     def checkJsonFiles(self):
         '''Verify consistency of JSON files'''
@@ -111,9 +124,27 @@ class MapBuildController(MapBuildControllerUtils):
         elif productType == 'Carta Topográfica':
             return 'carta_topografica', productType
 
+    def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
+        if productType == 'carta_ortoimagem' and productType not in self.builders:
+            self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
+        elif productType == 'carta_topografica' and productType not in self.builders:
+            self.builders.update({productType: TopoMapBuilder(ComponentFactory())})
+        elif productType == 'carta_om' and productType not in self.builders:
+            self.builders.update({productType: OmMapbuilder(ComponentFactory())})
+        return self.builders.get(productType)
+
     def run(self):
         '''Runs the specified MapBuilder according to dlg / json preferences'''
         for jsonPath in self.dlg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
             productType, productName = self.getProductType(self.dlgCfg.productType)
             jsonData.update({'productType':productType,'productName': productName})
+            mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
+            builder = self.getProductBuilder(productType)
+            composition = self.compositions.getComposition(jsonData)
+            connection = self.conn.getConnection(jsonData.get('banco'), self.dlg.username, self.dlg.password)
+            # Build components
+            builder.setParams(jsonData, self.defaults, connection, composition, mapExtentsFeat)
+            builder.run()
+            # Export
+            

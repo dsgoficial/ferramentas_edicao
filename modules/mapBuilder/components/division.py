@@ -13,10 +13,10 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QVariant
 import shapely.wkt
 import shapely.geometry
-from .map_utils import MapParent
+from .componentUtils import ComponentUtils
 
 
-class Divisao(MapParent):
+class Division(ComponentUtils):
     def __init__(self):
         self.itemname_tableMunicipios = 'label_divisao_municipios'
         self.maxCountiesToDisplay = 27
