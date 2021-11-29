@@ -14,7 +14,7 @@ from ..components.qrcode import Qrcode
 
 class ComponentFactory:
 
-    def getComponent(comp: str):
+    def getComponent(comp: str, *args, **kwargs):
         components = {
             'AnglesHandler': AnglesHandler,
             'Articulation': Articulation,
@@ -29,4 +29,4 @@ class ComponentFactory:
             'MapIdentification': MapIdentification,
             'Qrcode': Qrcode
         }
-        return components.get(comp)()
+        return components.get(comp)(*args, **kwargs)

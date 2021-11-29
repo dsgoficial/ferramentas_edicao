@@ -5,18 +5,19 @@ from typing import NamedTuple
 
 class ExporterSingleton:
 
-    def __init__(self, debugMode, exportFolder) -> None:
+    def setParams(self, exportFolder: Path, dlg: NamedTuple, data: dict, debugMode: bool):
+        self.exporFolder = exportFolder
         self.debugMode = debugMode
-        self.exportFolder = exportFolder
+        self.exportTiff = dlg.exportTiff
+        self.basename = data.get('mi') or data.get('inom')
 
-    def export(self, composition: QgsPrintLayout, jsonData: dict, dlg: NamedTuple):
+    def export(self, composition: QgsPrintLayout):
         ''' Creates a QgsLayoutExporter per composition to be exported
         '''
-        basename = jsonData.get('mi') or jsonData.get('inom')
         exporter = QgsLayoutExporter(composition)
         exportStatus = 0
         if not self.debugMode:
-            pdfFilePath = Path(self.exportFolder, f'{basename}.pdf')
+            pdfFilePath = Path(self.exportFolder, f'{self.basename}.pdf')
             pdfExportSettings = QgsLayoutExporter.PdfExportSettings()
             pdfExportSettings.rasterizeWholeImage = True
             pdfExportSettings.simplifyGeometries = False
@@ -24,8 +25,8 @@ class ExporterSingleton:
             pdfExportSettings.exportMetadata = False
             pdfExportSettings.dpi = 400
             exportStatus += exporter.exportToPdf(pdfFilePath, pdfExportSettings)
-        if dlg.exportTiff:
-            tiffFilePath = Path(self.exportFolder, f'{basename}.tif')
+        if self.exportTiff:
+            tiffFilePath = Path(self.exportFolder, f'{self.basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
             tiffExporterSettings.dpi = 400
             statusTiff = exporter.exportToImage(tiffFilePath, tiffExporterSettings)

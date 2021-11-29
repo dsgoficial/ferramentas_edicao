@@ -32,7 +32,7 @@ class MapBuildController(MapBuildControllerUtils):
         self.conn = ConnectionSingleton()
         self.compositions = CompositionSingleton(defaults)
         self.debugMode = (Path(__file__).parent.parent / '.env').exists()
-        self.exporter = ExporterSingleton(self.debugMode, self.dlg.exportFolder)
+        self.exporter = ExporterSingleton()
         self.builders = dict()
 
     def checkJsonFiles(self):
@@ -133,6 +133,10 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update({productType: OmMapbuilder(ComponentFactory())})
         return self.builders.get(productType)
 
+    def getExporter(self, exportFolder: Path, debugMode: bool):
+        self.exporter.setParams(exportFolder, debugMode)
+        return self.exporter
+
     def run(self):
         '''Runs the specified MapBuilder according to dlg / json preferences'''
         for jsonPath in self.dlg.jsonFilePaths:
@@ -144,7 +148,8 @@ class MapBuildController(MapBuildControllerUtils):
             composition = self.compositions.getComposition(jsonData)
             connection = self.conn.getConnection(jsonData.get('banco'), self.dlg.username, self.dlg.password)
             # Build components
-            builder.setParams(jsonData, self.defaults, connection, composition, mapExtentsFeat)
-            builder.run()
+            builder.setParams(jsonData, self.defaults, connection, composition, mapExtentsFeat, mapExtentsLyr)
+            builder.run(self.debugMode)
             # Export
-            
+            exporter = self.getExporter(self.dlg.exportFolder, self.dlg, jsonData, self.debugMode)
+            exporter.export(composition)

@@ -1,6 +1,7 @@
 from typing import Tuple
 from modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 
+from qgis import processing
 from qgis.core import (QgsFeature, QgsField, QgsFields, QgsGeometry,
                        QgsRectangle, QgsVectorLayer, QVariant)
 

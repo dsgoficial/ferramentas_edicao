@@ -7,5 +7,9 @@ class IMapBuilder(ABC):
         pass
 
     @abstractmethod
+    def buildComponents(self):
+        pass
+    
+    @abstractmethod
     def run(self):
         pass
