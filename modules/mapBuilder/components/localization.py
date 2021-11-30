@@ -1,23 +1,28 @@
 from pathlib import Path
 
+from interfaces.iComponent import IComponent
 from PyQt5.QtGui import QColor
-from qgis.core import (QgsCoordinateReferenceSystem, QgsFeatureRequest,
-                       QgsGeometry, QgsLayerTreeGroup, QgsPalLayerSettings,
-                       QgsProject, QgsRuleBasedLabeling, QgsRuleBasedRenderer,
-                       QgsSymbol, QgsSymbolLayerRegistry, QgsTextFormat)
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
+                       QgsFeatureRequest, QgsGeometry, QgsLayerTreeGroup,
+                       QgsPalLayerSettings, QgsPrintLayout, QgsProject,
+                       QgsRectangle, QgsRuleBasedLabeling,
+                       QgsRuleBasedRenderer, QgsSymbol, QgsSymbolLayerRegistry,
+                       QgsTextFormat, QgsVectorLayer)
 
-from .map_utils import MapParent
+from .componentUtils import ComponentUtils
 
 
-class Localization(MapParent):
-    def __init__(self):
-        self.stylesFolder = Path(__file__).parent.parent / 'styles' / 'localizacao'
+class Localization(ComponentUtils,IComponent):
+    def __init__(self, *args, **kwargs):
+        productType = args[0]
+        self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'products' / productType / 'styles' / 'localization'
+        self.stateShpPath =  Path(__file__).parent.parent / 'resources' / 'limits' / '2020' / 'Estados_2020.shp'
 
-    def make(self, composition, mapAreaFeature, showLayers=False, isInternational=False):
-        # Cleanup
-        self.deleteGroups(['localizacao'])
+    def build(
+        self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, showLayers: bool=False):
         mapLayers = []
         instance = QgsProject.instance()
+        isInternational = bool(data.get('territorio_internacional'))
 
         # Creating layer for mapArea
         mapAreaBoundingBox = mapAreaFeature.geometry().boundingBox()
@@ -25,8 +30,7 @@ class Localization(MapParent):
         mapLayers.append(mapAreaLayer.id())
 
         # Getting state layer
-        stateShpPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Estados_2020.shp'
-        stateLayerBackground = self.loadShapeLayer(stateShpPath, '', 'backgroundStates')
+        stateLayerBackground = self.loadShapeLayer(self.stateShpPath, '', 'backgroundStates')
         mapExtents = self.getExtent(mapAreaFeature, stateLayerBackground, isInternational)
         self.setupBackgroundLayer(stateLayerBackground)
         self.setLabel(stateLayerBackground, isInternational)
@@ -37,19 +41,19 @@ class Localization(MapParent):
         instance.addMapLayer(mapAreaLayer, False)
 
         # Updating composition
-        self.updateMapItem(composition, stateLayerBackground, mapAreaLayer, mapExtents)
+        self.updateComposition(composition, stateLayerBackground, mapAreaLayer, mapExtents)
 
         if showLayers:
             localizationGroupNode = QgsLayerTreeGroup('localizacao')
             localizationGroupNode.setItemVisibilityChecked(False)
             for layer in (mapAreaLayer, stateLayerBackground):
                 localizationGroupNode.addLayer(layer)
-            root = QgsProject.instance().layerTreeRoot()
+            root = instance.layerTreeRoot()
             root.addChildNode(localizationGroupNode)
 
         return mapLayers
 
-    def getExtent(self, selectedFeature, stateLayer, isInternational):
+    def getExtent(self, selectedFeature: QgsFeature, stateLayer: QgsVectorLayer, isInternational: bool):
         '''Gets the component extents by checking intersections between selectedFeature and 
         stateLayer. 
         '''
@@ -93,7 +97,7 @@ class Localization(MapParent):
         else:
             bounds.grow(.8) 
 
-    def createGridRectangle(self, mapBounds, layerName):
+    def createGridRectangle(self, mapBounds: QgsRectangle, layerName: str) -> QgsVectorLayer:
         ''' Creates the mapArea layer for this component by using mapBounds.
         Also sets its style.
         '''
@@ -170,11 +174,11 @@ class Localization(MapParent):
         stateLayer.setLabelsEnabled(True)
         stateLayer.triggerRepaint()
 
-    def updateMapItem(self, composition, stateLayer, mapAreaLayer, bound):
-        if (mapItem := composition.itemById("map_localizacao")) is not None:
+    def updateComposition(self, composition: QgsPrintLayout, stateLayer: QgsVectorLayer, mapAreaLayer: QgsVectorLayer, bounds: QgsRectangle):
+        if (mapItem := composition.itemById("localization")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
-            mapItem.setExtent(bound)
+            mapItem.setExtent(bounds)
             mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
             mapItem.setLayers([mapAreaLayer, stateLayer])
             mapItem.refresh()

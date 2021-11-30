@@ -12,6 +12,7 @@ from ..factories.gridFactory.gridFactory import GridFactory
 
 
 class ComponentUtils:
+    # TODO: check feasibility of removing the grid factory from __init__
     def __init__(self):
         self.utm_grid = GridFactory()
 
@@ -60,11 +61,11 @@ class ComponentUtils:
             composition.setCustomProperty('variableNames', [defaultKey, commonFolderPropertyKey])
             composition.setCustomProperty('variableValues', [newValue, commonFolderPropertyValue])
 
-    def loadShapeLayer(self, pathShp, pathStyle, lyrName):
-        if Path(pathShp).is_file():
+    def loadShapeLayer(self, pathShp: Path, pathStyle: Path, lyrName: str) -> QgsVectorLayer:
+        if pathShp.is_file():
             layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
             if layer.isValid():
-                if Path(pathStyle).is_file():
+                if pathStyle.is_file():
                     layer.loadNamedStyle(str(pathStyle))
                     layer.triggerRepaint()
                 layer.setProviderEncoding(u'UTF-8')

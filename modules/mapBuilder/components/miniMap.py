@@ -1,37 +1,36 @@
-from qgis.core import QgsLayerTreeGroup, QgsProject, QgsCoordinateReferenceSystem
+from interfaces.iComponent import IComponent
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
+                       QgsLayerTreeGroup, QgsMapLayer, QgsPrintLayout,
+                       QgsProject, QgsRectangle)
 
-from .map_utils import MapParent
+from .componentUtils import ComponentUtils
 
 
-class MiniMap(MapParent):
+class MiniMap(ComponentUtils,IComponent):
 
-	def make(self, composition, mapArea, layers, showLayers=False):	
-		self.deleteGroups(['minimap'])	
+	def build(
+		self, composition: QgsPrintLayout, mapAreaFeature: QgsFeature,
+		layers: list[QgsMapLayer], showLayers=False):	
 
-		mapExtents = mapArea.geometry().convexHull().boundingBox()
-		# Creating layers to lock map
-		layersToLock = []
-		layersToLock.extend(layers['minimap'])
-		layersToLock.extend(layers['images'])
-		self.updateMapItem(composition, mapExtents, layersToLock)	
+		mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
+		self.updateComposition(composition, mapExtents, layers)	
 
 		if showLayers:
 			miniMapGroupNode = QgsLayerTreeGroup('minimap')	
 			miniMapGroupNode.setItemVisibilityChecked(False)								
-			for layer in layersToLock:
+			for layer in layers:
 				miniMapGroupNode.addLayer(layer)
 			root = QgsProject.instance().layerTreeRoot()		
 			root.addChildNode(miniMapGroupNode)
 
 		return layers['id_minimap']
     
-	@staticmethod
-	def updateMapItem(composition, mapExtents, layersToLock):    	
-		if (mapItem:=composition.itemById("map_miniMap")) is not None:
+	def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: list[QgsMapLayer]):    	
+		if (mapItem:=composition.itemById("miniMap")) is not None:
 			mapSize = mapItem.sizeWithUnits()
 			mapItem.setFixedSize(mapSize)
-			if layersToLock is not None:
-				mapItem.setLayers(layersToLock)
+			if layers is not None:
+				mapItem.setLayers(layers)
 			mapItem.setExtent(mapExtents)
 			mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
 			mapItem.refresh()

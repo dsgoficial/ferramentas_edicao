@@ -35,6 +35,9 @@ curvas = {
 
 class Table:
 
+    def __init__(self, *args, **kwargs) -> None:
+        pass
+
     def editQpts(self, composition, qptDicts):
         for qptDict in qptDicts:
             copyQptToCompositor(composition, qptDict)

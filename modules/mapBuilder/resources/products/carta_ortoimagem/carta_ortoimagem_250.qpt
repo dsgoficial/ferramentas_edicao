@@ -274,7 +274,7 @@
   <LabelFont description="Arial,6,-1,5,50,0,0,0,0,0" style=""/>
   <FontColor green="0" blue="0" alpha="255" red="0"/>
  </LayoutItem>
- <LayoutItem zValue="63" labelMargin="0,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="true" positionOnPage="25,343.83,mm" uuid="{76584290-5598-4050-98ed-200f5d2eab9c}" outlineWidthM="0.2,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="map_articulacao" position="25,343.83,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="74,49.33,mm" itemRotation="0" templateUuid="{76584290-5598-4050-98ed-200f5d2eab9c}">
+ <LayoutItem zValue="63" labelMargin="0,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="true" positionOnPage="25,343.83,mm" uuid="{76584290-5598-4050-98ed-200f5d2eab9c}" outlineWidthM="0.2,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="articulation" position="25,343.83,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="74,49.33,mm" itemRotation="0" templateUuid="{76584290-5598-4050-98ed-200f5d2eab9c}">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -652,7 +652,7 @@
   <LabelFont description="Arial,10,-1,5,75,0,0,0,0,0" style=""/>
   <FontColor green="0" blue="0" alpha="255" red="0"/>
  </LayoutItem>
- <LayoutItem zValue="43" labelMargin="0,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="true" positionOnPage="25,183.83,mm" uuid="{d15c7dde-0a83-4665-a54d-ece93defe8d4}" outlineWidthM="0.2,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="map_localizacao_adaptacao" position="25,183.83,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="74,74,mm" itemRotation="0" templateUuid="{d15c7dde-0a83-4665-a54d-ece93defe8d4}">
+ <LayoutItem zValue="43" labelMargin="0,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="true" positionOnPage="25,183.83,mm" uuid="{d15c7dde-0a83-4665-a54d-ece93defe8d4}" outlineWidthM="0.2,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="localization" position="25,183.83,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="74,74,mm" itemRotation="0" templateUuid="{d15c7dde-0a83-4665-a54d-ece93defe8d4}">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -874,7 +874,7 @@
   <LabelFont description="Arial,6,-1,5,50,0,0,0,0,0" style=""/>
   <FontColor green="0" blue="0" alpha="255" red="0"/>
  </LayoutItem>
- <LayoutItem zValue="31" labelMargin="1,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="true" positionOnPage="25,80.2,mm" uuid="{19cfcd9a-7324-4f41-ba8f-fb1cdf49514a}" outlineWidthM="0.2,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="map_miniMap" position="25,80.2,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="74,49.33,mm" itemRotation="0" templateUuid="{19cfcd9a-7324-4f41-ba8f-fb1cdf49514a}">
+ <LayoutItem zValue="31" labelMargin="1,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="true" positionOnPage="25,80.2,mm" uuid="{19cfcd9a-7324-4f41-ba8f-fb1cdf49514a}" outlineWidthM="0.2,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="miniMap" position="25,80.2,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="74,49.33,mm" itemRotation="0" templateUuid="{19cfcd9a-7324-4f41-ba8f-fb1cdf49514a}">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -2792,7 +2792,7 @@
    <node y="0" x="0"/>
   </nodes>
  </LayoutItem>
- <LayoutItem zValue="6" labelMargin="0,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="false" positionOnPage="140,24,mm" uuid="{1fe86fb4-920f-4ef6-8398-53232d846bad}" outlineWidthM="0.3,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="the_map" position="140,24,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="686,456,mm" itemRotation="0" templateUuid="{1fe86fb4-920f-4ef6-8398-53232d846bad}">
+ <LayoutItem zValue="6" labelMargin="0,mm" keepLayerSet="false" type="65639" excludeFromExports="0" visibility="1" frame="false" positionOnPage="140,24,mm" uuid="{1fe86fb4-920f-4ef6-8398-53232d846bad}" outlineWidthM="0.3,mm" referencePoint="0" drawCanvasItems="true" positionLock="false" opacity="1" id="map" position="140,24,mm" mapRotation="0" followPresetName="" groupUuid="" mapFlags="0" isTemporal="0" frameJoinStyle="miter" followPreset="false" background="true" blendMode="0" size="686,456,mm" itemRotation="0" templateUuid="{1fe86fb4-920f-4ef6-8398-53232d846bad}">
   <FrameColor green="0" blue="0" alpha="255" red="0"/>
   <BackgroundColor green="255" blue="255" alpha="255" red="255"/>
   <LayoutObject>

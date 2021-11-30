@@ -1,11 +1,14 @@
-from interfaces.iMapBuilder import IMapBuilder
 from pathlib import Path
 
-from qgis.core import QgsDataSourceUri, QgsFeature, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsProject, QgsPrintLayout
-
-from modules.mapBuilder.factories.componentFactory import ComponentFactory
-from factories.mapBuilderUtils import MapBuilderUtils
 from config.configDefaults import ConfigDefaults
+from interfaces.iMapBuilder import IMapBuilder
+from modules.mapBuilder.factories.componentFactory import ComponentFactory
+from qgis.core import (QgsCoordinateReferenceSystem, QgsDataSourceUri,
+                       QgsFeature, QgsPrintLayout, QgsProject, QgsVectorLayer)
+
+from factories.mapBuilderUtils import MapBuilderUtils
+from modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
+
 
 class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
 
@@ -25,6 +28,7 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'miniMapCoords':self.componentFactory.getComponent('MiniMapCoords')})
         self.components.update({'mapIdentification':self.componentFactory.getComponent('MapIdentification')})
         self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
+        self.grid = GridAndLabelCreator()
 
     def setParams(self, jsonData: dict, defaults: ConfigDefaults, connection: QgsDataSourceUri, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, mapAreaLayer: QgsVectorLayer):
         self.data = jsonData
@@ -34,7 +38,7 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.mapAreaFeature = mapAreaFeature
         self.mapAreaLayer = mapAreaLayer
 
-    def run(self, debugMode=False):
+    def run(self, debugMode: bool = False):
         # Let's try to not track the mapLayersIds and then remove everything in the end
         mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x)
         miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x)
@@ -45,12 +49,23 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
             manager.addLayout(self.composition)
         # self.instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
         for key, component in self.components.items():
+            self.deleteLayerTreeNode(key)
             if key == 'map':
-                component.build(self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers)
+                component.build(self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid)
             elif key == 'miniMap':
-                component.build(self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, miniMapLayers)
+                component.build(self.composition, self.mapAreaFeature, self.mapAreaLayer, miniMapLayers)
+            elif key == 'localization':
+                component.build(self.composition, self.data, self.mapAreaFeature)
+            elif key == 'articulation':
+                component.build(self.composition, self.data, self.mapAreaLayer)
+            elif key == 'subtitle':
+                component.build(self.composition, self.data, self.mapAreaFeature)
+            elif key == 'mapScale':
+                component.build(self.composition, self.data, self.mapAreaFeature)
+            elif key == 'table':
+                component.build(self.composition, self.data, self.mapAreaFeature)
             else:
-                component.build(self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer)
+                component.build(self.composition, self.data, self.mapAreaFeature)
         self.setupMasks(self.productPath, mapLayers)
         if not debugMode:
             self.instance.removeAllMapLayers()

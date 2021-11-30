@@ -127,8 +127,8 @@ class MapBuildController(MapBuildControllerUtils):
     def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
         if productType == 'carta_ortoimagem' and productType not in self.builders:
             self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
-        elif productType == 'carta_topografica' and productType not in self.builders:
-            self.builders.update({productType: TopoMapBuilder(ComponentFactory())})
+        elif productType == 'topoMap' and productType not in self.builders:
+            self.builders.update({productType: TopoMapBuilder(ComponentFactory(productType))})
         elif productType == 'carta_om' and productType not in self.builders:
             self.builders.update({productType: OmMapbuilder(ComponentFactory())})
         return self.builders.get(productType)

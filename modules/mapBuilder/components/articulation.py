@@ -1,25 +1,27 @@
 from pathlib import Path
 
+from interfaces.iComponent import IComponent
 from qgis.core import (QgsCoordinateReferenceSystem, QgsLayerTreeGroup,
-                       QgsProject)
+                       QgsPrintLayout, QgsProject, QgsVectorLayer)
 
-from .map_utils import MapParent
+from .componentUtils import ComponentUtils
 
 
-class Articulation(MapParent):
-    def __init__(self):
-        super().__init__()
-        self.stylesFolder = Path(__file__).parent.parent / 'styles' / 'articulation'
+class Articulation(ComponentUtils,IComponent):
+    def __init__(self, *args, **kwargs):
+        productType = args[0]
+        self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'products' / productType / 'styles' / 'articulation'
 
-    def make(self, composition, inomen, mapAreaLayer, showLayers):
-        # Cleanup
-        self.deleteGroups(['articulation'])
+    def build(
+        self, composition: QgsPrintLayout,  data: dict, mapAreaLayer: QgsVectorLayer,  showLayers: bool=False):
+        # TODO: build mapAreaLayer with mapAreaFeat or just clone the layer
+
         mapIDsToBeDisplayed = []
         instance = QgsProject.instance()
 
         # Creating the articulation frame
-        gridLayer = self.createGridLayer(inomen)
-        self.loadStyleToGridLayer(gridLayer)
+        gridLayer = self.createGridLayer(data.get('inom'))
+        self.loadStyleToGridLayer(gridLayer, data.get('scale'))
         instance.addMapLayer(gridLayer, False)
         mapIDsToBeDisplayed.append(gridLayer.id())
 
@@ -30,7 +32,7 @@ class Articulation(MapParent):
         mapIDsToBeDisplayed.append(mapAreaLayer.id())
 
         # Updates composition
-        self.updateMapItem(composition, gridLayer, mapAreaLayer)
+        self.updateComposition(composition, gridLayer, mapAreaLayer)
 
         if showLayers:
             articulationNodeGroup = QgsLayerTreeGroup('articulation')
@@ -42,16 +44,17 @@ class Articulation(MapParent):
         
         return mapIDsToBeDisplayed
 
-    def loadStyleToGridLayer(self, layer):
-        styleFile = self.stylesFolder / 'articulacao_especial_25k_v6.qml'
-        if self.scale == 250:
+    def loadStyleToGridLayer(self, layer: QgsVectorLayer, scale: int) -> QgsVectorLayer:
+        if scale == 250000:
             styleFile = self.stylesFolder / 'articulacao_especial_25k_v6_250.qml'
+        else:
+            styleFile = self.stylesFolder / 'articulacao_especial_25k_v6.qml'
         layer.loadNamedStyle(str(styleFile))
         layer.triggerRepaint()
         return layer
 
-    def updateMapItem(self, composition, gridLayer, mapAreaLayer):
-        if (mapItem:=composition.itemById("map_articulacao")) is not None:
+    def updateComposition(self, composition: QgsPrintLayout, gridLayer: QgsVectorLayer, mapAreaLayer: QgsVectorLayer):
+        if (mapItem:=composition.itemById("articulation")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
             mapItem.setExtent(gridLayer.extent())

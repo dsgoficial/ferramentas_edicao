@@ -3,20 +3,21 @@ import math
 import os
 
 from dateutil.relativedelta import relativedelta
-from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject
+from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
+                       QgsPrintLayout, QgsProject)
 
 from .angles.auxiliar.auxiliar import Auxiliar
 from .angles.geomag.geomag import GeoMag
 
 
 class AnglesHandler:
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.auxiliar = Auxiliar()
 
-    def make(self, composition, selected_feature):
+    def build(self, composition: QgsPrintLayout, mapAreaFeature):
         point = None
 
-        geom = selected_feature.geometry()
+        geom = mapAreaFeature.geometry()
         convexhull = geom.convexHull()
         # point = convexhull.centroid().asPoint()
         point = geom.centroid().asPoint()
@@ -35,7 +36,7 @@ class AnglesHandler:
         yearlydelta_declination = decl_yearago.dec-decl_today.dec
         #decl = geomag.declination(wgsPoint.y(), wgsPoint.x())
 
-        self.replaceData(composition, convergencia, decl_today.dec, yearlydelta_declination)
+        self.updateComposition(composition, convergencia, decl_today.dec, yearlydelta_declination)
 
     def getWGSPoint(self, pt):
         crsSrc = QgsProject.instance().crs()
@@ -84,7 +85,7 @@ class AnglesHandler:
         gms = gms.encode('utf8')
         return gms.decode('utf8')
 
-    def replaceData(self, composition, convergencia, declinacao, yearlydelta_declination):
+    def updateComposition(self, composition: QgsPrintLayout, convergencia, declinacao, yearlydelta_declination):
         # Yearly declination delta
         label_yearlyDeclinationDelta = composition.itemById('label_yearlyDeclinationDelta')
         if label_yearlyDeclinationDelta is not None:

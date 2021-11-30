@@ -54,6 +54,11 @@ class MapBuilderUtils:
             data = json.load(fp)
         return data
 
+    def deleteLayerTreeNode(self, group: str):
+        root = self.instance.layerTreeRoot()
+        if foundGroup := root.findGroup(group):
+            root.removeChildNode(foundGroup)
+
     def setupMasks(productPath: Path, layers: list[QgsVectorLayer]):
         pathJson = productPath / 'masks.json'
         if pathJson.exists():
