@@ -1,8 +1,8 @@
-from interfaces.iComponent import IComponent
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
                        QgsLayerTreeGroup, QgsMapLayer, QgsPrintLayout,
                        QgsProject, QgsRectangle)
 
+from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
 
 

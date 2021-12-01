@@ -3,7 +3,9 @@ import os
 import xml.etree.ElementTree as et
 from pathlib import Path
 
-from .map_utils import MapParent, copyQptToCompositor
+from qgis.core import QgsFeature, QgsPrintLayout
+
+from ....interfaces.iComponent import IComponent
 
 curvas = {
     "25":	{
@@ -33,14 +35,18 @@ curvas = {
     }
 }
 
-class Table:
+class Table(IComponent):
 
     def __init__(self, *args, **kwargs) -> None:
         pass
 
-    def editQpts(self, composition, qptDicts):
-        for qptDict in qptDicts:
-            copyQptToCompositor(composition, qptDict)
+    def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature):
+        self.customEtapa(composition, data.get('fases', ()))
+        self.customSensores(composition, data.get('sensores', ()))
+        self.customTecnicalInfo(composition, data, mapAreaFeature)
+
+    def updateComposition(self, *args, **kwargs):
+        pass
 
     def replaceStr(self, original_text, dict_replace):
         for variavel, valor in dict_replace.items():
@@ -57,14 +63,9 @@ class Table:
     def customEtapa(self, composition, etapas=[]):
         label_tabela_etapas = composition.itemById("label_tabela_etapas")
         if label_tabela_etapas is not None:
-
-            txt_file = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                    'html_auto', 'etapas_auto.html')
-            #filepath = os.path.join(folder, filer)
-            file_data = open(txt_file, "r")
-            base_html = file_data.read()
-            file_data.close()
-
+            pathEtapasHtml = Path(__file__).parent.parent / 'html_auto' / 'etapas_auto.html'
+            with open(pathEtapasHtml) as fp:
+                base_html = fp.read()
             rows = []
             for etapa in etapas:
                 # Dados Etapa
@@ -169,12 +170,18 @@ class Table:
                 edited = self.replaceStr(base_html, {'{sensores}': str_sensores})
             label_tabela_info_ortoimagem.setText(edited)
 
-    def customTecnicalInfo(self, composition, scale, hemisphere, fuso, tipo_produto, tecnicalInfo={}, isInternational=False, mapAreaFeature=None):
+    def customTecnicalInfo(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature):
         label = composition.itemById("label_tabela_info_carta")
+        scale = data.get('scale')
+        hemisphere = data.get('hemisphere')
+        timeZone = data.get('timeZone')
+        tecnicalInfo = data.get('info_tecnica')
+        productName = data.get('productName')
+        isInternational = data.get('territorio_internacional')
         if label:
             hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
             falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
-            centralMeridian = -180+(int(fuso)-1)*6 + 3
+            centralMeridian = -180+(int(timeZone)-1)*6 + 3
             curveData = [x for x in curvas[str(scale)].values()]
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
@@ -197,7 +204,7 @@ class Table:
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Origem UTM')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Hemisfério {hemisphere}. Equador: {falseNorth} Km')
             _tmp = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Zona {fuso}. Meridiano Central {centralMeridian} º {position} Gr.: + 500 Km')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Zona {timeZone}. Meridiano Central {centralMeridian} º {position} Gr.: + 500 Km')
             if tecnicalInfo.get('datum_vertical'):
                 _tmp = self.generateElement(firstTable, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum vertical')
@@ -223,7 +230,7 @@ class Table:
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Descrição do produto de Conjuntos de Dados Geoespaciais')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tipo_produto)
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, productName)
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Origem dos dados altimétricos')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('origem_dados_altimetricos'))

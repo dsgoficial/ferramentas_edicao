@@ -1,20 +1,18 @@
-from qgis.core import QgsVectorLayer, QgsProject, QgsFeature
-from .map_utils import MapParent
+from qgis.core import QgsFeature, QgsPrintLayout, QgsProject, QgsVectorLayer
 
-class MiniMapCoords(MapParent):
+from ....interfaces.iComponent import IComponent
+from .componentUtils import ComponentUtils
+
+
+class MiniMapCoords(ComponentUtils,IComponent):
 	# This function populates: Nome da carta, Indíce da carta, MI da carta e as coordenadas do minimapa
-	def __init__(self):		
+	def __init__(self, *args, **kwargs):		
 		pass
 	
-	def make(self, composition, selectedFeature, addDataToMarginal):
-		nome, mi, indice, minimap_layer = self.createConvexHull(selectedFeature)
-		minimap_points = self.customgetMiniMaPointsCoordinates(selectedFeature, minimap_layer)
-		self.replacingLabels(composition, minimap_points)
-		if addDataToMarginal:
-			self.adicionandoDadosCarta( composition, nome, mi, indice)
-
-	def setAddDataToMarginal(self, add):
-		self.addDataToMarginal = add
+	def build(self, composition: QgsPrintLayout, mapAreaFeature: QgsFeature):
+		nome, mi, indice, minimap_layer = self.createConvexHull(mapAreaFeature)
+		minimap_points = self.customgetMiniMaPointsCoordinates(mapAreaFeature, minimap_layer)
+		self.updateComposition(composition, minimap_points)
 
 	def createConvexHull(self, selectedFeature):  
 		mi_attr = 'mi' 
@@ -151,7 +149,7 @@ class MiniMapCoords(MapParent):
 		QgsProject.instance().removeMapLayers( [miniMapLayer.id()] )  
 		return pontos
 
-	def replacingLabels(self, composition, pontos):
+	def updateComposition(self, composition: QgsPrintLayout, pontos: list[dict]):
 	    for ponto in pontos:
 	        itemname_lat = 'minimap_coord_' + ponto['posicao'] + '_lat'
 	        pos_lat = composition.itemById(itemname_lat)    
@@ -161,17 +159,3 @@ class MiniMapCoords(MapParent):
 	        pos_long = composition.itemById(itemname_long)    
 	        pos_long.setText(ponto['long'])
 	        pos_long.refresh()
-
-	def adicionandoDadosCarta(self,composition,  nome, mi, indice):
-		itemcarta_nome = composition.itemById('label_nomeCarta')
-		if itemcarta_nome is not None:
-			itemcarta_nome.setText(nome)
-			itemcarta_nome.refresh()
-		itemcarta_mi = composition.itemById('label_mi')
-		if itemcarta_mi is not None:
-			itemcarta_mi.setText('MI: ' + mi)
-			itemcarta_mi.refresh()
-		itemcarta_indice = composition.itemById('label_indice')
-		if itemcarta_indice is not None:
-			itemcarta_indice.setText('ÍNDICE: ' + indice)
-			itemcarta_indice.refresh()

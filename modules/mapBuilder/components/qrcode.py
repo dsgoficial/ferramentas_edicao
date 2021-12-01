@@ -1,6 +1,8 @@
 import tempfile
 from pathlib import Path
 
+from qgis.core import QgsPrintLayout, QgsFeature
+
 from ...qrcode.main import make
 
 camadas_ligadas = {
@@ -37,16 +39,17 @@ class Qrcode:
         img = make(custom_path)
         img.save(dest_path)
 
-    def create_qrcode_from_feature(self, selected_feature, escala, camadas_adicionar):
-        centroid_pt = selected_feature.geometry().centroid().asPoint()
+    def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature):
+        camadas_adicionar = ["localidades", "mosaico_topograficas"]
+        scale = data.get('scale')
+        centroid_pt = mapAreaFeature.geometry().centroid().asPoint()
         latitude, longitude = centroid_pt.y(), centroid_pt.x()
         dest_path = tempfile.NamedTemporaryFile(suffix='.png')
-        dest_path = Path(dest_path.name)
-        self.createQRCode(dest_path, latitude, longitude, camadas_adicionar, escala)
-        return dest_path
+        # dest_path = Path(dest_path.name)
+        self.createQRCode(dest_path, latitude, longitude, camadas_adicionar, scale)
+        self.updateComposition(composition, dest_path.name)
 
-    def replace_qrCode(composition, path_qrCode, idPicture_qrCode="symbol_QRCODE"):
-        if composition.itemById(idPicture_qrCode) is not None:
-            picture_QRCode = composition.itemById(idPicture_qrCode)
-            picture_QRCode.setPicturePath(str(path_qrCode))
-            picture_QRCode.refresh()
+    def updateComposition(self, composition: QgsPrintLayout, qrCodePath: str):
+        if (layoutItem:=composition.itemById('symbol_QRCODE')) is not None:
+            layoutItem.setPicturePath(qrCodePath)
+            layoutItem.refresh()

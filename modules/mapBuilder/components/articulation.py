@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from interfaces.iComponent import IComponent
+from ....interfaces.iComponent import IComponent
 from qgis.core import (QgsCoordinateReferenceSystem, QgsLayerTreeGroup,
                        QgsPrintLayout, QgsProject, QgsVectorLayer)
 

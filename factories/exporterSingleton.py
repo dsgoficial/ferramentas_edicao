@@ -1,7 +1,8 @@
 from pathlib import Path
-from typing import List
-from qgis.core import QgsPrintLayout, QgsLayoutExporter
 from typing import NamedTuple
+
+from qgis.core import QgsLayoutExporter, QgsPrintLayout
+
 
 class ExporterSingleton:
 

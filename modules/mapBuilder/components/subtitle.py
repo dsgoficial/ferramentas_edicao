@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from interfaces.iComponent import IComponent
 from qgis.core import (QgsFeature, QgsFeatureRequest, QgsPrintLayout,
                        QgsVectorLayer)
 
+from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
 
 

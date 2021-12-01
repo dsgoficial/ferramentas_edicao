@@ -10,11 +10,11 @@ from .controllers.mapBuilderController import MapBuildController
 from .config.configDefaults import ConfigDefaults
 
 from .resources.dialogs.editionPluginDialog import EditionPluginDialog
-from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
-from .map_generator.manager import DefaultMap
-from .processings.pluginProvider import pluginProvider
+# from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
+# from .map_generator.manager import DefaultMap
+# from .processings.pluginProvider import pluginProvider
 from .resources import *
-from .tools.setupButtons import SetupButtons
+# from .tools.setupButtons import SetupButtons
 
 
 class EditionPlugin:
@@ -146,17 +146,17 @@ class EditionPlugin:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/edition_plugin/icon.png'
+        icon_path = Path(__file__).parent / 'icon.png'
         self.add_action(
-            icon_path,
+            str(icon_path),
             text=self.tr(u'Edition Plugin'),
             callback=self.run,
             parent=self.iface.mainWindow())
         self.firstStart = True
-        if (Path(__file__).parent / '.env').exists():
-            self.tools = SetupButtons(self.iface)
-            self.tools.initToolBar()
-        pluginProvider.initProcessing(self)
+        # if (Path(__file__).parent / '.env').exists():
+        #     self.tools = SetupButtons(self.iface)
+        #     self.tools.initToolBar()
+        # pluginProvider.initProcessing(self)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""

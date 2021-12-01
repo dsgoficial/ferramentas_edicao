@@ -1,9 +1,8 @@
-from typing import Tuple
-from modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
-
 from qgis import processing
 from qgis.core import (QgsFeature, QgsField, QgsFields, QgsGeometry,
-                       QgsRectangle, QgsVectorLayer, QVariant)
+                       QgsRectangle, QgsVectorLayer)
+from qgis.PyQt.QtCore import QVariant
+from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 
 
 class MapBuildControllerUtils:
@@ -11,7 +10,7 @@ class MapBuildControllerUtils:
     handling the mapGrid
     '''
 
-    def createLayerFromLatLong(self, grid: GridFactory, lon: int, lat: int, scale: int) -> Tuple[QgsVectorLayer, QgsFeature]:
+    def createLayerFromLatLong(self, grid: GridFactory, lon: int, lat: int, scale: int) -> tuple[QgsVectorLayer, QgsFeature]:
         ''' Creates a feature centered at lat/lon with size compatible with scale,
         and a vector layer containing this feature.
         Args:
@@ -33,7 +32,7 @@ class MapBuildControllerUtils:
         layer, feat = self.createLayerFromGeom('mapExtents', geom)
         return layer, feat
 
-    def createLayerFromGeom(self, name: str, geom: QgsGeometry, layerType: str ='Multipolygon', crsAuthId: str ='4326') -> Tuple[QgsVectorLayer, QgsFeature]:
+    def createLayerFromGeom(self, name: str, geom: QgsGeometry, layerType: str ='Multipolygon', crsAuthId: str ='4326') -> tuple[QgsVectorLayer, QgsFeature]:
         ''' Creates a feature and vector layer.
         Args:
             name: name of the VectorLayer to be created

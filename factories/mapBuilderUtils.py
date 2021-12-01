@@ -2,9 +2,11 @@ import json
 from pathlib import Path
 from typing import Callable
 
-from config.configDefaults import ConfigDefaults
 from qgis import processing
-from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer
+from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject,
+                       QgsVectorLayer)
+
+from ..config.configDefaults import ConfigDefaults
 
 
 class MapBuilderUtils:
@@ -36,6 +38,18 @@ class MapBuilderUtils:
         table = data.get('tabela')
         uri.setDataSource(schema, table, 'geom')
         return QgsVectorLayer(uri.uri(False), table, 'postgres')
+
+    def classifiedMapHandler(self, composition: QgsPrintLayout, data: dict):
+        if data.get('acesso_restrito'):
+            composition.itemById('label_bdgexQR').setVisible(False)
+            composition.itemById('label_bdgexWeb').setVisible(False)
+            composition.itemById('symbol_QRCODE').setVisible(False)
+            composition.itemById('label_classified').setVisible(True)
+        else:
+            composition.itemById('label_bdgexQR').setVisible(True)
+            composition.itemById('label_bdgexWeb').setVisible(True)
+            composition.itemById('symbol_QRCODE').setVisible(True)
+            composition.itemById('label_classified').setVisible(False)
 
     def getStylePath(layerName: str, defaults: ConfigDefaults, productType: str, stylesFolder: Path, scale: int) -> Path:
         if productType == 'orthoMap':

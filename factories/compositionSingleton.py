@@ -1,9 +1,12 @@
 from pathlib import Path
-from typing import List
-from qgis.core import QgsPrintLayout, QgsProject, QgsReadWriteContext, QgsLayout, QgsLayoutItem, QgsLayoutPoint
-from qgis.PyQt.QtXml import QDomDocument
+
+from qgis.core import (QgsLayout, QgsLayoutItem, QgsLayoutPoint,
+                       QgsPrintLayout, QgsProject, QgsReadWriteContext)
 from qgis.PyQt.QtCore import QPointF
-from config.configDefaults import ConfigDefaults
+from qgis.PyQt.QtXml import QDomDocument
+
+from ..config.configDefaults import ConfigDefaults
+
 
 class CompositionSingleton:
 

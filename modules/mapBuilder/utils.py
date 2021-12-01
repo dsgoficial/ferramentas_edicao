@@ -14,13 +14,13 @@ from qgis.core import (Qgis, QgsCredentials, QgsDataSourceUri, QgsFeature,
                        QgsProject, QgsRasterLayer, QgsRectangle,
                        QgsVectorLayer)
 
-from .elements.map_index.map_index import UtmGrid
+# from .elements.map_index.map_index import UtmGrid
 
 
 class MapTools:
     def __init__(self, dlg):
         self.dlg = dlg
-        self.utm_grid = UtmGrid()
+        # self.utm_grid = UtmGrid()
         self.conn = None
 
     def readJsonFromPath(self, path_json):

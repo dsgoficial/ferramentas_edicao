@@ -2,23 +2,22 @@ import json
 from argparse import Namespace
 from collections import namedtuple
 from pathlib import Path
+from typing import Any, NamedTuple, Tuple, Union
 
-from config.configDefaults import ConfigDefaults
-from modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
-from factories.exporterSingleton import ExporterSingleton
 from qgis.core import QgsFeature, QgsVectorLayer
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtWidgets import QDialog
 
+from ..config.configDefaults import ConfigDefaults
+from ..factories.compositionSingleton import CompositionSingleton
+from ..factories.connectionSingleton import ConnectionSingleton
+from ..factories.exporterSingleton import ExporterSingleton
+from ..factories.omMapbuilder import OmMapbuilder
+from ..factories.orthoMapBuilder import OrthoMapBuilder
+from ..factories.topoMapBuilder import TopoMapBuilder
+from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
+from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 from .mapBuilderControllerUtils import MapBuildControllerUtils
-from factories.connectionSingleton import ConnectionSingleton
-from factories.compositionSingleton import CompositionSingleton
-from factories.orthoMapBuilder import OrthoMapBuilder
-from factories.topoMapBuilder import TopoMapBuilder
-from factories.omMapbuilder import OmMapbuilder
-from typing import Any, NamedTuple, Tuple, Union
-
-from modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
 class MapBuildController(MapBuildControllerUtils):
@@ -124,7 +123,8 @@ class MapBuildController(MapBuildControllerUtils):
         elif productType == 'Carta Topográfica':
             return 'carta_topografica', productType
 
-    def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
+    # def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
+    def getProductBuilder(self, productType: str):
         if productType == 'carta_ortoimagem' and productType not in self.builders:
             self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
         elif productType == 'topoMap' and productType not in self.builders:
@@ -153,3 +153,4 @@ class MapBuildController(MapBuildControllerUtils):
             # Export
             exporter = self.getExporter(self.dlg.exportFolder, self.dlg, jsonData, self.debugMode)
             exporter.export(composition)
+            builder.cleanProject()

@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from interfaces.iComponent import IComponent
 from PyQt5.QtGui import QColor
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
                        QgsFeatureRequest, QgsGeometry, QgsLayerTreeGroup,
@@ -9,6 +8,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
                        QgsRuleBasedRenderer, QgsSymbol, QgsSymbolLayerRegistry,
                        QgsTextFormat, QgsVectorLayer)
 
+from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
 
 

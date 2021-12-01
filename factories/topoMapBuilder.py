@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from config.configDefaults import ConfigDefaults
-from interfaces.iMapBuilder import IMapBuilder
-from modules.mapBuilder.factories.componentFactory import ComponentFactory
-from qgis.core import (QgsCoordinateReferenceSystem, QgsDataSourceUri,
-                       QgsFeature, QgsPrintLayout, QgsProject, QgsVectorLayer)
+from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
+                       QgsVectorLayer)
 
-from factories.mapBuilderUtils import MapBuilderUtils
-from modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
+from ..config.configDefaults import ConfigDefaults
+from ..factories.mapBuilderUtils import MapBuilderUtils
+from ..interfaces.iMapBuilder import IMapBuilder
+from ..modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
+from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
 class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
@@ -26,7 +26,6 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
         self.components.update({'miniMapCoords':self.componentFactory.getComponent('MiniMapCoords')})
-        self.components.update({'mapIdentification':self.componentFactory.getComponent('MapIdentification')})
         self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
         self.grid = GridAndLabelCreator()
 
@@ -37,6 +36,11 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.composition = composition
         self.mapAreaFeature = mapAreaFeature
         self.mapAreaLayer = mapAreaLayer
+
+    def cleanProject(self, debugMode: bool = False):
+        if not debugMode:
+            self.instance.removeAllMapLayers()
+            self.instance.layerTreeRoot().removeAllChildren()
 
     def run(self, debugMode: bool = False):
         # Let's try to not track the mapLayersIds and then remove everything in the end
@@ -64,10 +68,11 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.data, self.mapAreaFeature)
             elif key == 'table':
                 component.build(self.composition, self.data, self.mapAreaFeature)
-            else:
+            elif key == 'miniMapCoords':
                 component.build(self.composition, self.data, self.mapAreaFeature)
+            elif key == 'qrcode':
+                component.build(self.composition, self.data, self.mapAreaFeature)
+        self.classifiedMapHandler(self)
         self.setupMasks(self.productPath, mapLayers)
-        if not debugMode:
-            self.instance.removeAllMapLayers()
-            self.instance.layerTreeRoot().removeAllChildren()
+
 

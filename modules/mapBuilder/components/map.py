@@ -2,14 +2,15 @@ from pathlib import Path
 
 from PyQt5.QtCore import QVariant
 from PyQt5.QtGui import *
-from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsMapLayer,
+from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsFeature, QgsField, QgsLayerTreeGroup, QgsLayoutItem,
-                       QgsLayoutSize, QgsProject, QgsUnitTypes, QgsVectorLayer, QgsPrintLayout, QgsRectangle)
+                       QgsLayoutSize, QgsMapLayer, QgsPrintLayout, QgsProject,
+                       QgsRectangle, QgsUnitTypes, QgsVectorLayer)
 
+from ....config.configDefaults import ConfigDefaults
+from ....interfaces.iComponent import IComponent
+from ....modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from .componentUtils import ComponentUtils
-from interfaces.iComponent import IComponent
-from modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
-from config.configDefaults import ConfigDefaults
 
 
 class Map(ComponentUtils,IComponent):
