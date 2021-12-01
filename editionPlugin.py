@@ -160,7 +160,7 @@ class EditionPlugin:
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
-        QgsApplication.processingRegistry().removeProvider(self.provider)
+        # QgsApplication.processingRegistry().removeProvider(self.provider)
         if hasattr(self, 'tools'):
             self.tools.unload()
         for action in self.actions:

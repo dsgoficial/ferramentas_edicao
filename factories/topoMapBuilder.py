@@ -17,10 +17,10 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.componentFactory = componentFactory
         self.productPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'topoMap'
         self.components = dict()
-        self.components.update({'map':self.componentFactory.getComponent('Map')})
+        self.components.update({'map':self.componentFactory.getComponent('Map', 'topoMap')})
         self.components.update({'miniMap':self.componentFactory.getComponent('MiniMap')})
-        self.components.update({'localization':self.componentFactory.getComponent('Localization')})
-        self.components.update({'articulation':self.componentFactory.getComponent('Articulation')})
+        self.components.update({'localization':self.componentFactory.getComponent('Localization', 'topoMap')})
+        self.components.update({'articulation':self.componentFactory.getComponent('Articulation', 'topoMap')})
         self.components.update({'subtitle':self.componentFactory.getComponent('Subtitle')})
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
@@ -43,11 +43,12 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
             self.instance.layerTreeRoot().removeAllChildren()
 
     def run(self, debugMode: bool = False):
+        debugMode = True
         # Let's try to not track the mapLayersIds and then remove everything in the end
         mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x)
         miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x)
         self.instance.addMapLayer(self.mapAreaLayer, False)
-        if not debugMode:
+        if debugMode:
             manager = self.instance.layoutManager()
             self.composition.setName(self.data.get('productType'))
             manager.addLayout(self.composition)
@@ -65,14 +66,14 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
             elif key == 'subtitle':
                 component.build(self.composition, self.data, self.mapAreaFeature)
             elif key == 'mapScale':
-                component.build(self.composition, self.data, self.mapAreaFeature)
+                component.build(self.composition, self.data)
             elif key == 'table':
                 component.build(self.composition, self.data, self.mapAreaFeature)
             elif key == 'miniMapCoords':
-                component.build(self.composition, self.data, self.mapAreaFeature)
+                component.build(self.composition, self.mapAreaFeature)
             elif key == 'qrcode':
                 component.build(self.composition, self.data, self.mapAreaFeature)
-        self.classifiedMapHandler(self)
-        self.setupMasks(self.productPath, mapLayers)
+        self.classifiedMapHandler(self.composition, self.data)
+        # self.setupMasks(self.productPath, mapLayers)
 
 

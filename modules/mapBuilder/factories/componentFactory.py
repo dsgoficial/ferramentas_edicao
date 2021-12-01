@@ -13,7 +13,9 @@ from ..components.qrcode import Qrcode
 
 class ComponentFactory:
 
-    def getComponent(comp: str, *args, **kwargs):
+    # TODO: organize every component resouce in its folder
+
+    def getComponent(self, comp: str, *args, **kwargs):
         components = {
             'AnglesHandler': AnglesHandler,
             'Articulation': Articulation,
@@ -24,7 +26,7 @@ class ComponentFactory:
             'MiniMap': MiniMap,
             'Subtitle': Subtitle,
             'Table': Table,
-            'MiniMapCoors': MiniMapCoords,
+            'MiniMapCoords': MiniMapCoords,
             'Qrcode': Qrcode
         }
         return components.get(comp)(*args, **kwargs)

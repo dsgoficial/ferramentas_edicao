@@ -9,8 +9,7 @@ from .componentUtils import ComponentUtils
 
 class Articulation(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
-        productType = args[0]
-        self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'products' / productType / 'styles' / 'articulation'
+        self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'styles' / 'articulation'
 
     def build(
         self, composition: QgsPrintLayout,  data: dict, mapAreaLayer: QgsVectorLayer,  showLayers: bool=False):

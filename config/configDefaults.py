@@ -4,10 +4,10 @@ from pathlib import Path
 
 @dataclass
 class ConfigDefaults:
-    header: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'header.qpt'
-    project: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'creditsDSG.qpt'
-    bdgexAcessInfo: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'bdgexAcessInfo.qpt'
-    reproductionRights: Path = Path(__file__).parent.parent / 'produtos' / 'common' / 'reproductionRights.qpt'
+    header: Path = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'common' / 'header.qpt'
+    project: Path = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'common' / 'creditsDSG.qpt'
+    bdgexAcessInfo: Path = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'common' / 'bdgexAcessInfo.qpt'
+    reproductionRights: Path = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'common' / 'reproductionRights.qpt'
     orthoMandatoryClasses: set = field(default_factory=lambda: set([
         'llp_localidade_p', 'infra_via_deslocamento_l', 'edicao_identificador_trecho_rod_p', 'infra_ferrovia_l', 
         'cobter_massa_dagua_a', 'elemnat_trecho_drenagem_l', 'aux_area_sem_dados_a', 'edicao_texto_generico_p', 'edicao_texto_generico_l'
@@ -28,7 +28,7 @@ class ConfigDefaults:
     scaleBasedStyleTopo: set = field(default_factory=lambda: set(['llp_localidade_p']))
     scaleBasedStyleOrtho: set = field(default_factory=lambda: set(['llp_localidade_p']))
 
-    topoMapParameters: dict = field(default_factory=lambda: {
+    topoMap: dict = field(default_factory=lambda: {
         'name': 'Carta Topográfica',
         'grid': {
             'crossX': 4,
@@ -155,7 +155,7 @@ class ConfigDefaults:
         }
     })
 
-    orthoMapParameters: dict = field(default_factory=lambda: {
+    orthoMap: dict = field(default_factory=lambda: {
         'name': 'Carta Ortoimagem',
         'qpt': {
             25: {

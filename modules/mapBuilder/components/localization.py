@@ -14,8 +14,7 @@ from .componentUtils import ComponentUtils
 
 class Localization(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
-        productType = args[0]
-        self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'products' / productType / 'styles' / 'localization'
+        self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'styles' / 'localization'
         self.stateShpPath =  Path(__file__).parent.parent / 'resources' / 'limits' / '2020' / 'Estados_2020.shp'
 
     def build(

@@ -28,14 +28,14 @@ class Map(ComponentUtils,IComponent):
         mapLayers = []
 
         # Setting up grid layer
-        defaults = getattr(defaults, f'{self.productType}Parameters').get('grid')
+        defaults = getattr(defaults, self.productType).get('grid')
         mapAreaExtents = mapAreaFeature.geometry().boundingBox()
         gridLayer, mapExtentsTransformed = self.createLayerForGrid(mapAreaLayer, mapAreaFeature, data)
-        self.applyStyleGridLayer(gridLayer, gridGenerator)
+        self.applyStyleGridLayer(gridLayer, gridGenerator, defaults, data)
         instance.addMapLayer(gridLayer, False)
 
         # Setting up aux_label, which is reprojected to mapLayers
-        crs = next(iter(layers['map'])).crs()
+        crs = next(iter(layers)).crs()
         copyLabel = self.cloneVectorLayerReproject(gridLayer, 'aux_label', crs)
         copyLabelStyle = self.gridStylesFolder / 'aux_label.qml'
         copyLabel.loadNamedStyle(str(copyLabelStyle))
@@ -51,7 +51,7 @@ class Map(ComponentUtils,IComponent):
         maskLayer = self.createMaskLayer(mapAreaFeature)
         instance.addMapLayer(maskLayer, False)
 
-        mapLayers.extend((copy.id(), copyLabel.id(), gridLayer.id(), maskLayer.id(), *layers['id_map']))
+        # mapLayers.extend((copy.id(), copyLabel.id(), gridLayer.id(), maskLayer.id(), *layers['id_map']))
         layersToComposition = [gridLayer, maskLayer, copy, copyLabel, *layers]
         self.updateComposition(composition, mapAreaExtents, mapExtentsTransformed, gridLayer, layersToComposition, data)
 

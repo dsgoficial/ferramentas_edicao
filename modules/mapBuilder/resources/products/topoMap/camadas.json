@@ -1,5 +1,5 @@
 {
-    "carta": [
+    "map": [
         {
             "tabela": "edicao_cota_mestra_p",
             "schema": "edgv"
@@ -270,7 +270,7 @@
             "schema": "edgv"
         }
     ],
-    "carta_mini": [
+    "miniMap": [
         {
             "tabela": "edicao_identificador_trecho_rod_p",
             "schema": "edgv",

@@ -5,10 +5,6 @@ class IMapBuilder(ABC):
     @abstractmethod
     def setParams(self, jsonData, connection, compositions, mapAreaFeature):
         pass
-
-    @abstractmethod
-    def buildComponents(self):
-        pass
     
     @abstractmethod
     def run(self):

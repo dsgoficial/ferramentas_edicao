@@ -45,7 +45,7 @@ class Subtitle(ComponentUtils,IComponent):
         mi = data.get('mi')
         inom = data.get('inom')
         scale = data.get('scale')
-        productName = data.get('productName')
+        productName = data.get('productName').upper()
         if (productTypeLabel:=composition.itemById("label_nome_produto")) is not None:
             productTypeLabel.setText(productName)
             productTypeLabel.refresh()

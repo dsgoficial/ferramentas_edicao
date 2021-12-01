@@ -21,25 +21,27 @@ class CompositionSingleton:
         scale = jsonData.get('scale')
         if productType not in self.compositions:
             self.compositions[productType] = dict()
-            self.compositions[productType][scale] = self.createComposition(productType, scale)
+            self.compositions[productType][scale] = self.createComposition(productType, jsonData)
         elif scale not in self.compositions.get(productType):
-            self.compositions[productType][scale] = self.createComposition(productType, scale)
-        self.compositions[productType][scale] = self.updateCompositionFromConfig(
-            self.compositions[productType][scale], jsonData)
+            self.compositions[productType][scale] = self.createComposition(productType, jsonData)
+        # self.updatePrintLayoutFromConfig(
+        #     self.compositions[productType][scale], jsonData)
         return self.compositions[productType][scale]
 
-    def createComposition(self, productType: str, scale: int) -> QgsPrintLayout:
+    def createComposition(self, productType: str, jsonData: dict) -> QgsPrintLayout:
+        scale = jsonData.get('scale')
         compositionRootPath = self.resourcesPath / productType
         if scale == 250:
             compositionPath = compositionRootPath / f'{productType}_250.qpt'
         else:
             compositionPath = compositionRootPath / f'{productType}.qpt'
         printLayout = self.createPrintLayoutFromPath(compositionPath)
-        composition = self.updatePrintLayoutFromConfig(printLayout)
+        self.updatePrintLayoutFromConfig(printLayout, jsonData)
+        return printLayout
 
     def createPrintLayoutFromPath(self, compositionPath: Path) -> QgsPrintLayout:
         productFolder = compositionPath.parent
-        commonFolder = compositionPath.parent.parent / 'common'
+        commonFolder = self.resourcesPath / 'common'
         layout = QgsPrintLayout(QgsProject.instance())
         with open(compositionPath) as template:
             templateContent = template.read()
@@ -95,7 +97,8 @@ class CompositionSingleton:
         for qpt in qptsToInsert:
             with open(qpt.get('path')) as fp:
                 template = fp.read()
-            doc = QDomDocument().setContent(template)
+            doc = QDomDocument()
+            doc.setContent(template)
             layoutItems, sucess = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
             if sucess:
                 for layoutItem in layoutItems:

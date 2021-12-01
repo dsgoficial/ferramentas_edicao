@@ -18,11 +18,11 @@ class MapBuilderUtils:
         layersIDsList = []
         scale = data.get('scale')
         productType = data.get('productType')
-        availableLayers = self.readJsonFromPath(productPath / 'camadas.json')
-        availableLayers = filterF(availableLayers)
+        availableLayers = self.readJsonFromPath(productPath / 'camadas.json').get(group)
+        availableLayers = filter(filterF, availableLayers)
         stylesFolder = productPath / 'styles' / group
-        for lyr in availableLayers.get(group):
-            layer = self.getLayerFromPostgres(uri, lyr, group)
+        for lyr in availableLayers:
+            layer = self.getLayerFromPostgres(uri, lyr)
             if layer.isValid():
                 self.instance.addMapLayer(layer, False)
                 if stylePath:=self.getStylePath(layer.name(), defaults, productType, stylesFolder, scale):
@@ -51,7 +51,7 @@ class MapBuilderUtils:
             composition.itemById('symbol_QRCODE').setVisible(True)
             composition.itemById('label_classified').setVisible(False)
 
-    def getStylePath(layerName: str, defaults: ConfigDefaults, productType: str, stylesFolder: Path, scale: int) -> Path:
+    def getStylePath(self, layerName: str, defaults: ConfigDefaults, productType: str, stylesFolder: Path, scale: int) -> Path:
         if productType == 'orthoMap':
             basedOnScale = defaults.scaleBasedStyleOrtho
         elif productType == 'topoMap':
@@ -73,7 +73,7 @@ class MapBuilderUtils:
         if foundGroup := root.findGroup(group):
             root.removeChildNode(foundGroup)
 
-    def setupMasks(productPath: Path, layers: list[QgsVectorLayer]):
+    def setupMasks(self, productPath: Path, layers: list[QgsVectorLayer]):
         pathJson = productPath / 'masks.json'
         if pathJson.exists():
             processing.run(

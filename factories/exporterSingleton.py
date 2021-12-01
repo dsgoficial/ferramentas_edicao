@@ -6,11 +6,11 @@ from qgis.core import QgsLayoutExporter, QgsPrintLayout
 
 class ExporterSingleton:
 
-    def setParams(self, exportFolder: Path, dlg: NamedTuple, data: dict, debugMode: bool):
-        self.exporFolder = exportFolder
-        self.debugMode = debugMode
-        self.exportTiff = dlg.exportTiff
+    def setParams(self, dlg: NamedTuple, data: dict, debugMode: bool):
         self.basename = data.get('mi') or data.get('inom')
+        self.exporFolder = dlg.exportFolder
+        self.exportTiff = dlg.exportTiff
+        self.debugMode = debugMode
 
     def export(self, composition: QgsPrintLayout):
         ''' Creates a QgsLayoutExporter per composition to be exported

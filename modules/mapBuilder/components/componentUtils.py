@@ -13,8 +13,9 @@ from ..factories.gridFactory.gridFactory import GridFactory
 
 class ComponentUtils:
     # TODO: check feasibility of removing the grid factory from __init__
-    def __init__(self):
-        self.utm_grid = GridFactory()
+    def __init__(self, *args, **kwargs):
+        pass
+        # self.utm_grid = GridFactory()
 
     def getPrintLayoutFromQptPath(self, path, newValue):
         '''
@@ -65,7 +66,7 @@ class ComponentUtils:
         if pathShp.is_file():
             layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
             if layer.isValid():
-                if pathStyle.is_file():
+                if isinstance(pathStyle, Path) and pathStyle.is_file():
                     layer.loadNamedStyle(str(pathStyle))
                     layer.triggerRepaint()
                 layer.setProviderEncoding(u'UTF-8')
@@ -136,7 +137,8 @@ class ComponentUtils:
         return oldProjValue
 
     def createGridLayer(self, inom):
-        gridLayer, _ = self.utm_grid.get_neighbors_inom(inom)
+        utmGrid = GridFactory()
+        gridLayer, _ = utmGrid.get_neighbors_inom(inom)
         return gridLayer
 
     def createVectorLayerFromIter(self, layerName, iterable):

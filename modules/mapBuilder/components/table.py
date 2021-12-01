@@ -6,6 +6,7 @@ from pathlib import Path
 from qgis.core import QgsFeature, QgsPrintLayout
 
 from ....interfaces.iComponent import IComponent
+from .componentUtils import ComponentUtils
 
 curvas = {
     "25":	{
@@ -35,10 +36,10 @@ curvas = {
     }
 }
 
-class Table(IComponent):
+class Table(IComponent,ComponentUtils):
 
     def __init__(self, *args, **kwargs) -> None:
-        pass
+        self.pathBrazilLayer = Path(__file__).parent.parent / 'resources' / 'limits' / '2020' / 'Brasil_2020.shp'
 
     def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature):
         self.customEtapa(composition, data.get('fases', ()))
@@ -266,8 +267,7 @@ class Table(IComponent):
 
 
     def getIntersectionStatus(self, mapAreaFeature):
-        pathBrazilLayer = Path(__file__).parent.parent / 'limites' / '2020' / 'Brasil_2020.shp'
-        _brazilLayer = self.loadShapeLayer(pathBrazilLayer, '', '_tmp')
+        _brazilLayer = self.loadShapeLayer(self.pathBrazilLayer, '', '_tmp')
         _brazilGeom = next(_brazilLayer.getFeatures()).geometry()
         _mapAreaGeom = mapAreaFeature.geometry()
         if _mapAreaGeom.within(_brazilGeom):

@@ -1,55 +1,55 @@
+import math
 import os
 from pathlib import Path
-import math
 
-from qgis.core import (
-    QgsLayerTreeGroup, QgsProject, QgsVectorLayer, QgsGeometry,
-    QgsDistanceArea, QgsCoordinateReferenceSystem, QgsLineString,
-    QgsCoordinateTransform, QgsRectangle, QgsLayoutItemLabel,
-    QgsPalLayerSettings, QgsTextFormat, QgsRuleBasedLabeling,
-    QgsTextBufferSettings, QgsFeatureRequest, QgsVectorLayerSimpleLabeling
-)
-from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QVariant
-import shapely.wkt
 import shapely.geometry
+import shapely.wkt
+from PyQt5.QtCore import QVariant
+from PyQt5.QtGui import QColor
+from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
+                       QgsDistanceArea, QgsFeatureRequest, QgsGeometry,
+                       QgsLayerTreeGroup, QgsLayoutItemLabel, QgsLineString,
+                       QgsPalLayerSettings, QgsProject, QgsRectangle,
+                       QgsRuleBasedLabeling, QgsTextBufferSettings,
+                       QgsTextFormat, QgsPrintLayout, QgsFeature,
+                       QgsVectorLayerSimpleLabeling, QgsVectorLayer)
+
 from .componentUtils import ComponentUtils
+from ....interfaces.iComponent import IComponent
 
 
-class Division(ComponentUtils):
-    def __init__(self):
+class Division(ComponentUtils,IComponent):
+    def __init__(self, *args, **kwargs):
         self.itemname_tableMunicipios = 'label_divisao_municipios'
         self.maxCountiesToDisplay = 27
-        self.styleFolder = Path(__file__).parent.parent / 'styles' / 'divisao'
+        self.shpFolder = Path(__file__).parent.parent / 'resources' / 'limits' / '2020'
+        self.styleFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'division'
+        self.htmlTablePath = Path(__file__).parent.parent / 'html_auto' / 'divisao.html'
         self.n_maxlines = 6
         self.nameAttribute = 'NOME'
         self.countyAttribute = 'SIGLA_UF'
         self.countryAttribute = 'SIGLA_PAIS'
 
-    def make(self, composition, mapArea, showLayers=False, isInternational=False):
-        # Cleanup
-        self.deleteGroups(['divisao'])
-
+    def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, showLayers: bool = True):
         mapLayers = []
+        isInternational = data.get('territorio_internacional')
 
         # Inserting necessary layers
-        divisionGroupNode = QgsLayerTreeGroup('divisao')
-        divisionGroupNode.setItemVisibilityChecked(False)
 
         layerCountyArea, layerCountyLine, layerStateLine, layerCountryArea, layerCountryLine, layerOcean = self.createLayersGroup()
         mapLayers.extend([
             layerCountyArea.id(),layerCountyLine.id(), layerStateLine.id(), layerOcean.id(), layerCountryArea.id(), layerCountryLine.id()])
 
         # Getting map extents
-        gridBound = mapArea.geometry().boundingBox()
+        gridBound = mapAreaFeature.geometry().boundingBox()
         gridRectangleLayer = self.createGridRectangle(gridBound, 'divisionMapArea')
         mapLayers.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
         # TODO: Check possible refactor on getExtent
-        outerExtents = self.getExtent(gridBound, mapArea)
+        outerExtents = self.getExtent(gridBound, mapAreaFeature)
         orderedCountiesByCentroidDistance, orderedCountiesNamesByArea = self.getIntersections(
-            layerCountyArea, outerExtents, mapArea, isInternational)
+            layerCountyArea, outerExtents, mapAreaFeature, isInternational)
 
         # Labeling counties
         self.setStyles(layerCountyArea, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea)
@@ -67,12 +67,14 @@ class Division(ComponentUtils):
             gridRectangleLayer, layerOcean, layerCountryLine, layerCountryArea, layerStateLine, layerCountyLine, layerCountyArea)
         for layer in layersToShow:
             QgsProject.instance().addMapLayer(layer, False)
-            divisionGroupNode.addLayer(layer)
-        if showLayers:
-            root = QgsProject.instance().layerTreeRoot()
-            root.addChildNode(divisionGroupNode)
-        self.updateMapItem(composition, outerExtents, layersToShow)
-        return mapLayers
+            if showLayers:
+                divisionGroupNode = QgsLayerTreeGroup('division')
+                divisionGroupNode.setItemVisibilityChecked(False)
+                divisionGroupNode.addLayer(layer)
+                root = QgsProject.instance().layerTreeRoot()
+                root.addChildNode(divisionGroupNode)
+        self.updateComposition(composition, outerExtents, layersToShow)
+        # return mapLayers
 
     def createLayersGroup(self):
         '''
@@ -80,28 +82,28 @@ class Division(ComponentUtils):
         Layers with Limites suffix are used for displaying purposes only.
         '''
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Municipios_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica' / 'municipio.qml'
+        uriPath = self.shpFolder / 'Municipios_2020.shp'
+        stylePath = self.styleFolder / 'municipio.qml'
         layerCountyArea = self.loadShapeLayer(uriPath, stylePath, 'counties')
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Limites_Municipios_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica' / 'municipio_l.qml'
+        uriPath = self.shpFolder / 'Limites_Municipios_2020.shp'
+        stylePath = self.styleFolder / 'municipio_l.qml'
         layerCountyLine = self.loadShapeLayer(uriPath, stylePath, 'countiesLimits')
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Limites_Estados_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica' / 'estados_l.qml'
+        uriPath = self.shpFolder / 'Limites_Estados_2020.shp'
+        stylePath = self.styleFolder / 'estados_l.qml'
         layerStateLine = self.loadShapeLayer(uriPath, stylePath, 'statesLimits')
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Paises_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica' / 'paises.qml'
+        uriPath = self.shpFolder / 'Paises_2020.shp'
+        stylePath = self.styleFolder / 'paises.qml'
         layerCountryArea = self.loadShapeLayer(uriPath, stylePath, 'countries')
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Limites_Paises_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica' / 'paises_l.qml'
+        uriPath = self.shpFolder / 'Limites_Paises_2020.shp'
+        stylePath = self.styleFolder / 'paises_l.qml'
         layerCountryLine = self.loadShapeLayer(uriPath, stylePath, 'countriesLimits')
 
-        uriPath = Path(__file__).parent.parent / 'limites' / '2020' / 'Oceano_2020.shp'
-        stylePath = self.styleFolder / 'carta_topografica' / 'oceano.qml'
+        uriPath = self.shpFolder / 'Oceano_2020.shp'
+        stylePath = self.styleFolder / 'oceano.qml'
         layerOcean = self.loadShapeLayer(uriPath, stylePath, 'ocean')
 
         return layerCountyArea, layerCountyLine, layerStateLine, layerCountryArea, layerCountryLine, layerOcean
@@ -242,8 +244,7 @@ class Division(ComponentUtils):
         nCounties = len(sortedCounties)
         nColumns = math.ceil(nCounties/self.n_maxlines)
         nColumns = 1 if nColumns == 0 else nColumns
-        htmlTablePath = Path(__file__).parent.parent / 'html_auto' / 'divisao.html'
-        with open(htmlTablePath, "r") as f:
+        with open(self.htmlTablePath, "r") as f:
             baseHtml = f.read()
         fontSize = '0.6'
         if 6 < nCounties < 13:
@@ -325,7 +326,7 @@ class Division(ComponentUtils):
         layerCounty.setLabelsEnabled(True)
         layerCounty.triggerRepaint()
 
-    def updateMapItem(self, composition, mapExtent, layersToShow, mapItem=None):
+    def updateComposition(self, composition: QgsPrintLayout, mapExtent: QgsRectangle, layersToShow: tuple[QgsVectorLayer]):
         if (mapItem:=composition.itemById("map_divisao")) is not None:
             mapItem.setExtent(mapExtent)
             mapItem.setLayers(layersToShow)

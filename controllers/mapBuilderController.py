@@ -62,6 +62,7 @@ class MapBuildController(MapBuildControllerUtils):
             scale = self.grid.getScale(inom)
             mapExtentsLyr, mapExtentsFeat = self.grid.getNewGridFromInom(inom)
         elif center:=jsonData.get('center'):
+            mi = 'Especial'
             scale = int(jsonData['escala']/1000)
             lat = center.get('latitude')
             lon = center.get('longitude')
@@ -71,9 +72,9 @@ class MapBuildController(MapBuildControllerUtils):
             'mi': mi,
             'inom': inom,
             'hemisphere': inom[0],
-            'timeZone': int(inom[3-5]),
+            'timeZone': int(inom[3:5]),
             'scale': scale,
-            'epsg': self.getEpsg(inom[0], int(inom[3-5]))
+            'epsg': self.getEpsg(inom[0], int(inom[3:5]))
         })
         return mapExtentsLyr, mapExtentsFeat
 
@@ -119,29 +120,29 @@ class MapBuildController(MapBuildControllerUtils):
         elif productType == 'Carta Ortoimagem':
             return 'carta_ortoimagem', productType
         elif productType == 'carta_topografica':
-            return productType, 'Carta Topográfica'
+            return 'topoMap', 'Carta Topográfica'
         elif productType == 'Carta Topográfica':
-            return 'carta_topografica', productType
+            return 'topoMap', productType
 
     # def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
     def getProductBuilder(self, productType: str):
         if productType == 'carta_ortoimagem' and productType not in self.builders:
             self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
         elif productType == 'topoMap' and productType not in self.builders:
-            self.builders.update({productType: TopoMapBuilder(ComponentFactory(productType))})
+            self.builders.update({productType: TopoMapBuilder(ComponentFactory())})
         elif productType == 'carta_om' and productType not in self.builders:
             self.builders.update({productType: OmMapbuilder(ComponentFactory())})
         return self.builders.get(productType)
 
-    def getExporter(self, exportFolder: Path, debugMode: bool):
-        self.exporter.setParams(exportFolder, debugMode)
+    def getExporter(self, dlg: NamedTuple, data: dict, debugMode: bool):
+        self.exporter.setParams(dlg, data, debugMode)
         return self.exporter
 
     def run(self):
         '''Runs the specified MapBuilder according to dlg / json preferences'''
         for jsonPath in self.dlg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
-            productType, productName = self.getProductType(self.dlgCfg.productType)
+            productType, productName = self.getProductType(self.dlg.productType)
             jsonData.update({'productType':productType,'productName': productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
@@ -151,6 +152,6 @@ class MapBuildController(MapBuildControllerUtils):
             builder.setParams(jsonData, self.defaults, connection, composition, mapExtentsFeat, mapExtentsLyr)
             builder.run(self.debugMode)
             # Export
-            exporter = self.getExporter(self.dlg.exportFolder, self.dlg, jsonData, self.debugMode)
+            exporter = self.getExporter(self.dlg, jsonData, self.debugMode)
             exporter.export(composition)
-            builder.cleanProject()
+            # builder.cleanProject()

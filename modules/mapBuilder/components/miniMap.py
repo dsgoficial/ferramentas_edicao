@@ -13,7 +13,9 @@ class MiniMap(ComponentUtils,IComponent):
 		layers: list[QgsMapLayer], showLayers=False):	
 
 		mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
-		self.updateComposition(composition, mapExtents, layers)	
+		if not isinstance(layers, list):
+			layers = [layers]
+		self.updateComposition(composition, mapExtents, layers)
 
 		if showLayers:
 			miniMapGroupNode = QgsLayerTreeGroup('minimap')	
@@ -23,7 +25,7 @@ class MiniMap(ComponentUtils,IComponent):
 			root = QgsProject.instance().layerTreeRoot()		
 			root.addChildNode(miniMapGroupNode)
 
-		return layers['id_minimap']
+		# return layers['id_minimap']
     
 	def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: list[QgsMapLayer]):    	
 		if (mapItem:=composition.itemById("miniMap")) is not None:
