@@ -24,7 +24,7 @@ class MapBuildController(MapBuildControllerUtils):
     
     def __init__(self, dlg: Union[QDialog,Namespace], iface: QgisInterface, defaults: ConfigDefaults = ConfigDefaults()) -> None:
         super().__init__()
-        self.dlg = self.setupDlgCfg(dlg)
+        self.dlg = dlg
         self.iface = iface
         self.defaults = defaults
         self.grid = GridFactory()
@@ -45,7 +45,7 @@ class MapBuildController(MapBuildControllerUtils):
         Returns:
             json object (dict)
         '''
-        with open(jsonPath, 'r', encoding='utf-8') as fp:
+        with open(jsonPath, 'r', encoding='utf-8-sig') as fp:
             data = json.load(fp)
         return data
 
@@ -124,6 +124,14 @@ class MapBuildController(MapBuildControllerUtils):
         elif productType == 'Carta Topográfica':
             return 'topoMap', productType
 
+    def unload(self):
+        ''' Unloads the Controller. It's called when the plugin is uninstalled or reloaded
+        '''
+        self.conn.conn = None
+        self.compositions.compositions = dict()
+        self.compositions.previousQptPaths = [None,None,None,None]
+        self.builders = dict()
+
     # def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
     def getProductBuilder(self, productType: str):
         if productType == 'carta_ortoimagem' and productType not in self.builders:
@@ -140,18 +148,19 @@ class MapBuildController(MapBuildControllerUtils):
 
     def run(self):
         '''Runs the specified MapBuilder according to dlg / json preferences'''
-        for jsonPath in self.dlg.jsonFilePaths:
+        dlgCfg = self.setupDlgCfg(self.dlg)
+        for jsonPath in dlgCfg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
-            productType, productName = self.getProductType(self.dlg.productType)
+            productType, productName = self.getProductType(dlgCfg.productType)
             jsonData.update({'productType':productType,'productName': productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
             composition = self.compositions.getComposition(jsonData)
-            connection = self.conn.getConnection(jsonData.get('banco'), self.dlg.username, self.dlg.password)
+            connection = self.conn.getConnection(jsonData.get('banco'), dlgCfg.username, dlgCfg.password)
             # Build components
             builder.setParams(jsonData, self.defaults, connection, composition, mapExtentsFeat, mapExtentsLyr)
             builder.run(self.debugMode)
             # Export
-            exporter = self.getExporter(self.dlg, jsonData, self.debugMode)
+            exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
             exporter.export(composition)
             # builder.cleanProject()

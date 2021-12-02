@@ -45,11 +45,11 @@ class Qrcode:
         centroid_pt = mapAreaFeature.geometry().centroid().asPoint()
         latitude, longitude = centroid_pt.y(), centroid_pt.x()
         dest_path = tempfile.NamedTemporaryFile(suffix='.png')
-        # dest_path = Path(dest_path.name)
+        dest_path = Path(dest_path.name)
         self.createQRCode(dest_path, latitude, longitude, camadas_adicionar, scale)
-        self.updateComposition(composition, dest_path.name)
+        self.updateComposition(composition,dest_path)
 
-    def updateComposition(self, composition: QgsPrintLayout, qrCodePath: str):
+    def updateComposition(self, composition: QgsPrintLayout, qrCodePath: Path):
         if (layoutItem:=composition.itemById('symbol_QRCODE')) is not None:
-            layoutItem.setPicturePath(qrCodePath)
+            layoutItem.setPicturePath(str(qrCodePath))
             layoutItem.refresh()

@@ -32,7 +32,7 @@ class ExporterSingleton:
             tiffExporterSettings.dpi = 400
             statusTiff = exporter.exportToImage(tiffFilePath, tiffExporterSettings)
             exportStatus += statusTiff
-        del exporter
+        # del exporter
         return not bool(exportStatus)
 
     def convert(self):

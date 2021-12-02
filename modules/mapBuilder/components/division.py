@@ -30,8 +30,11 @@ class Division(ComponentUtils,IComponent):
         self.countyAttribute = 'SIGLA_UF'
         self.countryAttribute = 'SIGLA_PAIS'
 
-    def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, showLayers: bool = True):
+    def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, showLayers: bool = False):
+
         mapLayers = []
+        instance = QgsProject.instance()
+        
         isInternational = data.get('territorio_internacional')
 
         # Inserting necessary layers
@@ -49,7 +52,7 @@ class Division(ComponentUtils,IComponent):
         # TODO: Check possible refactor on getExtent
         outerExtents = self.getExtent(gridBound, mapAreaFeature)
         orderedCountiesByCentroidDistance, orderedCountiesNamesByArea = self.getIntersections(
-            layerCountyArea, outerExtents, mapAreaFeature, isInternational)
+            layerCountyArea, outerExtents, mapAreaFeature, data)
 
         # Labeling counties
         self.setStyles(layerCountyArea, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea)
@@ -66,13 +69,16 @@ class Division(ComponentUtils,IComponent):
         layersToShow = (
             gridRectangleLayer, layerOcean, layerCountryLine, layerCountryArea, layerStateLine, layerCountyLine, layerCountyArea)
         for layer in layersToShow:
-            QgsProject.instance().addMapLayer(layer, False)
-            if showLayers:
-                divisionGroupNode = QgsLayerTreeGroup('division')
-                divisionGroupNode.setItemVisibilityChecked(False)
+            instance.addMapLayer(layer, False)
+                
+        if showLayers:
+            divisionGroupNode = QgsLayerTreeGroup('division')
+            divisionGroupNode.setItemVisibilityChecked(False)
+            root = instance.layerTreeRoot()
+            for layer in layersToShow:
                 divisionGroupNode.addLayer(layer)
-                root = QgsProject.instance().layerTreeRoot()
-                root.addChildNode(divisionGroupNode)
+            root.addChildNode(divisionGroupNode)
+            
         self.updateComposition(composition, outerExtents, layersToShow)
         # return mapLayers
 
@@ -127,15 +133,16 @@ class Division(ComponentUtils,IComponent):
         m = round(distance.measureLine(geomOne, geomTwo), 2)
         return m
 
-    def checkRadiusPoleForLabel(self, countyFeature, outerExtentsGeometry):
+    def checkRadiusPoleForLabel(self, countyFeature, outerExtentsGeometry, data):
         '''
         Uses poleOfInaccessibility to decide the renderization of countyFeature if it intersects outerExtentsGeometry
         '''
+        epsg = data.get('epsg')
         maxRadiusPerMapArea = 2300
         outerExtentsArea = math.sqrt(outerExtentsGeometry.area())
         intersectionGeometry = countyFeature.geometry().intersection(outerExtentsGeometry)
         crsSrc = QgsCoordinateReferenceSystem('EPSG:4326')  # WGS 84
-        crsExtents = QgsCoordinateReferenceSystem(f'EPSG:{self.epsg}')
+        crsExtents = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
         transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
         intersectionGeometry.transform(transform)
         _, radius = intersectionGeometry.poleOfInaccessibility(10)
@@ -153,10 +160,11 @@ class Division(ComponentUtils,IComponent):
         boundary_geom = QgsGeometry(boundary_polyline)
         return boundary_geom
 
-    def getIntersections(self, layerCounty, outerExtents, mapAreaFeature, isInternational=False):
+    def getIntersections(self, layerCounty, outerExtents, mapAreaFeature, data):
         '''
         Gets every county that intersects the outerExtents and decides if the county will be displayed or not.
         '''
+        isInternational = data.get('territorio_internacional')
         d = QgsDistanceArea()
         outerExtentsGeometry = QgsGeometry.fromRect(outerExtents)
         contourOuterExtents = self.convertPolygonToMultilineGeometry(outerExtentsGeometry)
@@ -176,7 +184,7 @@ class Division(ComponentUtils,IComponent):
                 labelTable = f'{name} - {county}'
                 if isInternational:
                     labelTable = f'{labelTable} / {country}'
-                _, show = self.checkRadiusPoleForLabel(countyFeature, outerExtentsGeometry)
+                _, show = self.checkRadiusPoleForLabel(countyFeature, outerExtentsGeometry, data)
                 if show:
                     countyIntersection = countyGeometry.intersection(outerExtentsGeometry)
                     countyCentroid = countyIntersection.centroid().asPoint()

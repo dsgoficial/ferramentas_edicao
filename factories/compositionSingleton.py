@@ -24,8 +24,9 @@ class CompositionSingleton:
             self.compositions[productType][scale] = self.createComposition(productType, jsonData)
         elif scale not in self.compositions.get(productType):
             self.compositions[productType][scale] = self.createComposition(productType, jsonData)
-        # self.updatePrintLayoutFromConfig(
-        #     self.compositions[productType][scale], jsonData)
+        self.updatePrintLayoutFromConfig(
+            self.compositions[productType][scale], jsonData)
+        print(self.compositions[productType])
         return self.compositions[productType][scale]
 
     def createComposition(self, productType: str, jsonData: dict) -> QgsPrintLayout:

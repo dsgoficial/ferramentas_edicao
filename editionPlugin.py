@@ -163,6 +163,8 @@ class EditionPlugin:
         # QgsApplication.processingRegistry().removeProvider(self.provider)
         if hasattr(self, 'tools'):
             self.tools.unload()
+        if hasattr(self, 'controller'):
+            self.controller.unload()
         for action in self.actions:
             self.iface.removePluginMenu(
                 self.tr(u'&Edition Plugin'),
@@ -179,12 +181,12 @@ class EditionPlugin:
         if self.firstStart:
             self.firstStart = False
             self.dlg = EditionPluginDialog()
+            self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
+            self.dlg.pushButton.clicked.connect(self.controller.run)
             if self.debugMode:
                 self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\topo\\NB-20-Z-D-II-3.json')
                 self.dlg.exportFolder.setFilePath('D:\\export')
                 self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-        self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
-        self.dlg.pushButton.clicked.connect(self.controller.run)
 
     def run(self):
         """Run method that performs all the real work"""

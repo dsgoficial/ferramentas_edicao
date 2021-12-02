@@ -16,7 +16,7 @@ from .componentUtils import ComponentUtils
 class Map(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
         self.productType = args[0]
-        self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'products' / self.productType / 'styles' / 'map'
+        self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'map'
         self.gridStylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'grid'
         self.defaultMapSize = [(588,588),(494,724)]
 
@@ -139,7 +139,7 @@ class Map(ComponentUtils,IComponent):
         mapExtentsTransformed: QgsRectangle, frameLayer: QgsVectorLayer, layersToComposition: list[QgsMapLayer], data: dict):
         '''Updates the composer
         '''
-        scale = data.get('scale')
+        scale = data.get('scale')*1000
         epsg = data.get('epsg')
         mapItem = composition.itemById("map")
         mapItem.setExtent(mapExtents)
@@ -165,10 +165,11 @@ class Map(ComponentUtils,IComponent):
     def centerMapInAreaCarta(self, composition: QgsPrintLayout):
         ''' Sets reference point for map and area_reservada_carta elements
         '''
+        print(composition)
         if (mapReservedArea:=composition.itemById('area_reservada_carta')) is not None:
             mapReservedArea.setReferencePoint(QgsLayoutItem.Middle)
             mapReservedArea.refresh()
             positionMapReservedArea = mapReservedArea.positionWithUnits()
-            mapItem = composition.itemById('map')
+        if (mapItem:=composition.itemById('map')) is not None:
             mapItem.setReferencePoint(QgsLayoutItem.Middle)
             mapItem.attemptMove(positionMapReservedArea)

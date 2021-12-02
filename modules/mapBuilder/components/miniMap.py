@@ -10,7 +10,7 @@ class MiniMap(ComponentUtils,IComponent):
 
 	def build(
 		self, composition: QgsPrintLayout, mapAreaFeature: QgsFeature,
-		layers: list[QgsMapLayer], showLayers=False):	
+		layers: list[QgsMapLayer], showLayers=False):
 
 		mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
 		if not isinstance(layers, list):
