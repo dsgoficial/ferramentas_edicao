@@ -122,7 +122,7 @@
   <LabelFont description="Arial,8,-1,5,75,0,0,0,0,0" style=""/>
   <FontColor blue="0" red="0" alpha="255" green="0"/>
  </LayoutItem>
- <LayoutItem positionOnPage="55,12.198,mm" outlineWidthM="0.3,mm" size="93.1078,10.7963,mm" opacity="1" zValue="11" position="55,12.198,mm" halign="132" groupUuid="" excludeFromExports="0" valign="32" referencePoint="4" frame="false" uuid="{55878a48-26fc-4f2e-8389-42a4c95106bf}" templateUuid="{55878a48-26fc-4f2e-8389-42a4c95106bf}" blendMode="0" labelText="PRODUTO CARTOGRÁFICO ELABORADO NO ÂMBITO DO PROJETO DE INFRAESTRUTURA&#xa;ESTADUAL DE DADOS ESPACIAIS DO RIO GRANDE DO SUL&#xa;PELA SECRETARIA DE PLANEJAMENTO, GOVERNANÇA E GESTÃO" id="labelCreditType" htmlState="0" type="65641" marginY="0" frameJoinStyle="miter" visibility="1" background="false" marginX="0" itemRotation="0" positionLock="false">
+ <LayoutItem positionOnPage="55,12.198,mm" outlineWidthM="0.3,mm" size="93.1078,10.7963,mm" opacity="1" zValue="11" position="55,12.198,mm" halign="132" groupUuid="" excludeFromExports="0" valign="32" referencePoint="4" frame="false" uuid="{55878a48-26fc-4f2e-8389-42a4c95106bf}" templateUuid="{55878a48-26fc-4f2e-8389-42a4c95106bf}" blendMode="0" labelText="PRODUTO ELABORADO NO ÂMBITO DO PROJETO DE INFRAESTRUTURA&#xa;ESTADUAL DE DADOS ESPACIAIS DO RIO GRANDE DO SUL&#xa;PELA SECRETARIA DE PLANEJAMENTO, GOVERNANÇA E GESTÃO" id="labelCreditType" htmlState="0" type="65641" marginY="0" frameJoinStyle="miter" visibility="1" background="false" marginX="0" itemRotation="0" positionLock="false">
   <FrameColor blue="0" red="0" alpha="255" green="0"/>
   <BackgroundColor blue="255" red="255" alpha="255" green="255"/>
   <LayoutObject>

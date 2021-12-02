@@ -158,7 +158,7 @@
   <LabelFont description="Arial,8,-1,5,75,0,0,0,0,0" style=""/>
   <FontColor alpha="255" green="0" blue="0" red="0"/>
  </LayoutItem>
- <LayoutItem outlineWidthM="0.3,mm" positionOnPage="16.5,23.73,mm" excludeFromExports="0" marginX="0" positionLock="false" frame="false" groupUuid="" halign="132" type="65641" templateUuid="{de8e84e8-72a4-495a-a2a5-902f4c8d4636}" frameJoinStyle="miter" referencePoint="0" itemRotation="0" marginY="0" htmlState="0" id="labelCreditType" visibility="1" opacity="1" valign="32" size="77,5.8,mm" labelText="PRODUTO CARTOGRÁFICO ELABORADO NO CONTEXTO DO PROJETO&#xa;MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE" background="false" uuid="{de8e84e8-72a4-495a-a2a5-902f4c8d4636}" blendMode="0" position="16.5,23.73,mm" zValue="6">
+ <LayoutItem outlineWidthM="0.3,mm" positionOnPage="16.5,23.73,mm" excludeFromExports="0" marginX="0" positionLock="false" frame="false" groupUuid="" halign="132" type="65641" templateUuid="{de8e84e8-72a4-495a-a2a5-902f4c8d4636}" frameJoinStyle="miter" referencePoint="0" itemRotation="0" marginY="0" htmlState="0" id="labelCreditType" visibility="1" opacity="1" valign="32" size="77,5.8,mm" labelText="PRODUTO ELABORADO NO CONTEXTO DO PROJETO&#xa;MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE" background="false" uuid="{de8e84e8-72a4-495a-a2a5-902f4c8d4636}" blendMode="0" position="16.5,23.73,mm" zValue="6">
   <FrameColor alpha="255" green="0" blue="0" red="0"/>
   <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
   <LayoutObject>
