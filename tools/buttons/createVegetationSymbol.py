@@ -34,7 +34,6 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
     def mouseClick(self, pos, btn):
         if self.isActive():
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
-            print(closestSpatialID)
             # Option 1: Use a QgsFeatureRequest
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)

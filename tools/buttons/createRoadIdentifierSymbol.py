@@ -36,10 +36,8 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         self.iface.registerMainWindowAction(self._action, '')
 
     def mouseClick(self, pos, btn):
-        print('mopa')
         if self.isActive():
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
-            print(closestSpatialID)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
