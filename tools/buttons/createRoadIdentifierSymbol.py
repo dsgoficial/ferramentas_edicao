@@ -46,6 +46,7 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
             closestFeat = self.srcLyr.getFeatures(request)
             if not closestFeat.isClosed():
                 feat = next(closestFeat)
+                jurisd = feat.attribute('jurisdicao')
                 if roadAbrev:=feat.attribute('sigla'):
                     self.currPos = pos
                     if ';' in roadAbrev:
@@ -53,22 +54,22 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
                         self.box.updateItems(options)
                         self.box.showComboBox()
                     else:
-                        self.createFeature(roadAbrev)
+                        self.createFeature(roadAbrev, jurisd)
                 else:
                     self.displayErrorMessage(self.tr(
                         f'Feição selecionada possui atributo "sigla" inválido'
                     ))
 
-    def createFeature(self, name):
+    def createFeature(self, name, jurisd):
         self.box.hide()
         toInsert = QgsFeature(self.dstLyr.fields())
-        jurisd, abbrv = name.split('-')
+        abbrv = name.split('-')[1]
         toInsert.setAttribute('jurisdicao', jurisd)
         toInsert.setAttribute('sigla', abbrv)
         if self.mapChoice.currentText() == 'Carta Mini':
-            toInsert.setAttribute('carta_mini', True)
+            toInsert.setAttribute('carta_simbolizacao', 2)
         else:
-            toInsert.setAttribute('carta_mini', False)
+            toInsert.setAttribute('carta_simbolizacao', 1)
         toInsertGeom = QgsGeometry.fromPointXY(self.currPos)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
