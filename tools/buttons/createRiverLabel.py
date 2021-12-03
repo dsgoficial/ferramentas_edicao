@@ -66,7 +66,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
-        labelSize = self.getLabelFontSizeB(feat)
+        labelSize = self.getLabelFontSizeA(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
         toInsert.setGeometry(toInsertGeom)
@@ -92,8 +92,8 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
     def getMapType(self):
         mapType = self.mapTypeSelector.currentText()
         if mapType == 'Carta':
-            return 0
-        return 1
+            return 1
+        return 2
 
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
