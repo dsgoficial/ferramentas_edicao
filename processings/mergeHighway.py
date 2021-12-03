@@ -65,10 +65,11 @@ class MergeHighway(QgsProcessingAlgorithm):
             core.QgsWkbTypes.MultiLineString,
             QgsCoordinateReferenceSystem( iface.mapCanvas().mapSettings().destinationCrs().authid() )
         )
-        if frameLayer is not None:
-            highwayLayer = self.clipLayer( highwayLayerInput, frameLayer)
+
         highwayLayer = self.runAddCount(highwayLayerInput)
         self.runCreateSpatialIndex(highwayLayer)
+
+
         merge = {}
         for highwayFeature in highwayLayer.getFeatures():
             if not highwayFeature['sigla']:
@@ -86,6 +87,12 @@ class MergeHighway(QgsProcessingAlgorithm):
             numberOfFeatures[i]=newNumberOfFeatures
             if numberOfFeatures[i]==numberOfFeatures[i-1]:
                 break
+
+
+        if frameLayer is not None:
+            highwayLayer = self.clipLayer( highwayLayer, frameLayer)
+
+        
         for feature in highwayLayer.getFeatures():
             self.addSink( feature, sink_l)
 
@@ -171,5 +178,5 @@ class MergeHighway(QgsProcessingAlgorithm):
         return 'edicao'
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("Mescla as rodovias de acordo com o atributo *sigla*, desconsiderando rodovias sem sigla, e depois recorta as rodovias com a moldura. O resultado é retornado em outra camada e é utilizado como referência para auxiliar no processo de edição.")
     
