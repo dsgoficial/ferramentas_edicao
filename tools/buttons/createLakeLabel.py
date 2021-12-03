@@ -39,7 +39,6 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
     def mouseClick(self, pos, btn):
         if self.isActive():
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
-            print(closestSpatialID)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
@@ -47,6 +46,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
             if not closestFeat.isClosed():
                 feat = next(closestFeat)
                 if self.checkFeature(feat):
+                    self.currPos = pos
                     self.createFeature(feat)
                 else:
                     self.displayErrorMessage(self.tr(
@@ -55,7 +55,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
 
     @staticmethod
     def checkFeature(feat):
-        return (feat.attribute('tipo') in (3,4,5,6,7,11)) and feat.attribute('nome')
+        return (int(feat.attribute('tipo')) in (3,4,5,6,7,11)) and feat.attribute('nome')
 
     def createFeature(self, feat):
         toInsert = QgsFeature(self.dstLyr.fields())
@@ -75,8 +75,8 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
     def getMapType(self):
         mapType = self.mapTypeSelector.currentText()
         if mapType == 'Carta':
-            return 0
-        return 1
+            return 1
+        return 2
 
     def getLabelSize(self, feat):
         area = feat.geometry().area()
@@ -102,7 +102,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
     def getScale(self):
         scale = self.scaleSelector.currentText()
         scale = scale.split(':')[1]
-        scale = scale.strip('.')
+        scale = scale.replace('.', '')
         return int(scale)
 
     def getLayers(self):
