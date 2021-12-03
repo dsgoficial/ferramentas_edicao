@@ -32,9 +32,9 @@ class CycleTextJustification(BaseTools):
             else:
                 lyr.startEditing()
                 for feat in lyr.getSelectedFeatures():
-                    visible = feat.attribute('justificativa_txt')
-                    if visible == 9999:
+                    just = int(feat.attribute('justificativa_txt'))
+                    if just == 9999:
                         lyr.changeAttributeValue(feat.id(), fieldIdx, 1)
                     else:
-                        lyr.changeAttributeValue(feat.id(), fieldIdx, (visible + 1) % 4 or visible + 1)
+                        lyr.changeAttributeValue(feat.id(), fieldIdx, just%3 + 1)
                 
