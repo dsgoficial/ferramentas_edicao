@@ -32,7 +32,7 @@ class CopyToGenericLabel(BaseTools):
         destFeat.setAttribute('tamanho_txt', 6)
         destFeat.setAttribute('justificativa_txt', 2)
         destFeat.setAttribute('espacamento', 0)
-        destFeat.setAttribute('cor', '#0')
+        destFeat.setAttribute('cor', '#000000')
         destFeat.setGeometry(originFeat.geometry())
 
     def run(self):
