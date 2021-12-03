@@ -212,7 +212,7 @@ class HtmlData(MapParent):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Mestra: {curveData[2]} metros')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Erro gráfico')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, '0,2 mm na escala da carta')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, '0,2 mm na escala')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Padrão de Exatidão Cartográfica (PEC)')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'PEC Planimétrico: {tecnicalInfo.get("pec_planimetrico")}')
