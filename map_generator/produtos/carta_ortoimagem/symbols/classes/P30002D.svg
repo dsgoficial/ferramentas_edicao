@@ -36,16 +36,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.839192"
-     inkscape:cx="26.484937"
-     inkscape:cy="1.2311234"
+     inkscape:zoom="7.919596"
+     inkscape:cx="3.5986684"
+     inkscape:cy="-7.3867404"
      inkscape:document-units="mm"
      inkscape:current-layer="g876"
      showgrid="false"
      inkscape:pagecheckerboard="true"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
@@ -90,15 +90,16 @@
        style="stroke-width:1.24123">
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.1894px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.32841"
-         x="-1.5627456"
-         y="283.42709"
-         id="text1401"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.07806px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.32841"
+         x="-1.4832734"
+         y="298.53076"
+         id="text1401"
+         transform="scale(1.0535775,0.94914708)"><tspan
            sodipodi:role="line"
            id="tspan1399"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.1894px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.32841"
-           x="-1.5627456"
-           y="283.42709">163</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.07806px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.32841"
+           x="-1.4832734"
+           y="298.53076">163</tspan></text>
     </g>
   </g>
 </svg>
