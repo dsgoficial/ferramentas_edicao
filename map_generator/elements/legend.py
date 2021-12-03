@@ -62,7 +62,7 @@ class Legend():
             position = QPointF(x,y)
             domGroup = self.loadQDomComponent(self.qptsPath / f'group_{group}.qpt')
             composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
-            y += 1.5*ySpacing
+            y += 1.2*ySpacing
             for label in labels:
                 x += xSpacingFirstColumn
                 position = QPointF(x,y)
@@ -72,7 +72,7 @@ class Legend():
                 y = y + ySpacing if not changeColumn else y
                 changeColumn = not changeColumn
             x = xAnchor
-            y += ySpacing if changeColumn else 2*ySpacing
+            y += ySpacing if changeColumn else 1.5*ySpacing
             changeColumn = True
 
     def groupLegend(self, classes, legendMappingData):
