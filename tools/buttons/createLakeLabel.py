@@ -1,7 +1,9 @@
 from pathlib import Path
 
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProject, QgsSpatialIndex)
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransformContext, QgsDistanceArea,
+                       QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
+                       QgsSpatialIndex, QgsUnitTypes)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
@@ -38,12 +40,12 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
 
     def mouseClick(self, pos, btn):
         if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)
-            if not closestFeat.isClosed():
+            if closestSpatialID:
                 feat = next(closestFeat)
                 if self.checkFeature(feat):
                     self.currPos = pos
@@ -52,6 +54,9 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
                     self.displayErrorMessage(self.tr(
                         'Feição inválida. Verifique os atributos "nome" e "tipo" na camada "cobter_massa_dagua_a"'
                     ))
+            else:
+                self.displayErrorMessage('Não foram encontradas feições em "cobter_massa_dagua_a"')
+
 
     @staticmethod
     def checkFeature(feat):
@@ -122,6 +127,12 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
                 'Camada "edicao_texto_generico_p" não encontrada'
             ))
             return None
+        if self.srcLyr.dataProvider().crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
+            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees)
+        else:
+            self.tolerance = self.getScale() * 0.01
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
