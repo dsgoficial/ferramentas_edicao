@@ -34,7 +34,7 @@ class SetupButtons:
         cycleTextJustificationButton.setupUi()
         copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
         copyToGenericLabelButton.setupUi()
-        cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface)
+        cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
         createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar)
         createVegetationSymbol.setupUi()
