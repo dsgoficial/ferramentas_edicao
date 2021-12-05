@@ -32,7 +32,7 @@ class SetupButtons:
         cycleVisibilityButton.setupUi()
         cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
         cycleTextJustificationButton.setupUi()
-        copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
+        copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface, mapTypeSelector)
         copyToGenericLabelButton.setupUi()
         cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
