@@ -1,7 +1,9 @@
 from pathlib import Path
 
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
-                       QgsSpatialIndex)
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransformContext, QgsDistanceArea,
+                       QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
+                       QgsSpatialIndex, QgsUnitTypes)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
@@ -9,11 +11,12 @@ from .baseTools import BaseTools
 
 class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
-    def __init__(self, iface, toolBar):
+    def __init__(self, iface, toolBar, scaleSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
         self.mapCanvas = iface.mapCanvas()
+        self.scaleSelector = scaleSelector
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
@@ -33,11 +36,12 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
     def mouseClick(self, pos, btn):
         if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
+            print(closestSpatialID)
             # Option 1: Use a QgsFeatureRequest
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)
-            if not closestFeat.isClosed():
+            if closestSpatialID:
                 feat = next(closestFeat)
                 toInsert = QgsFeature(self.dstLyr.fields())
                 toInsert.setAttribute('texto', self.getVegetationMapping(feat))
@@ -46,6 +50,8 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
                 self.dstLyr.startEditing()
                 self.dstLyr.addFeature(toInsert)
                 self.mapCanvas.refresh()
+            else:
+                self.displayErrorMessage('Não foi encontrado um polígono de vegetação dentro da tolerância')
 
     @staticmethod
     def getVegetationMapping(feat):
@@ -76,6 +82,12 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
                 'Camada "edicao_simb_vegetacao_p" não encontrada'
             ))
             return None
+        if self.srcLyr.dataProvider().crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
+            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees)
+        else:
+            self.tolerance = self.getScale() * 0.01
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True

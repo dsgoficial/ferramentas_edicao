@@ -36,7 +36,7 @@ class SetupButtons:
         copyToGenericLabelButton.setupUi()
         cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
-        createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar)
+        createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector)
         createVegetationSymbol.setupUi()
         createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, mapTypeSelector)
         createRoadIdentifierSymbol.setupUi()

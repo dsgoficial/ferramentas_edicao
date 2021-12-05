@@ -1,8 +1,6 @@
-from os import stat
 from pathlib import Path
 
 from qgis.core import Qgis
-from PyQt5 import QtWidgets, uic
 from qgis.PyQt.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QAction, QPushButton
 from PyQt5.QtGui import QIcon
@@ -48,6 +46,13 @@ class BaseTools:
             self.displayErrorMessage(
                 f'Feature {feat.attribute("id")} has empty "{attrName}" attribute.')
             return True
+
+    def getScale(self):
+        if hasattr(self, 'scaleSelector'):
+            scale = self.scaleSelector.currentText()
+            scale = scale.replace('.','').split(':')[1]
+            print(scale)
+            return int(scale)
 
     @staticmethod
     def tr(message):
