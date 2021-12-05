@@ -51,8 +51,12 @@ class BaseTools:
         if hasattr(self, 'scaleSelector'):
             scale = self.scaleSelector.currentText()
             scale = scale.replace('.','').split(':')[1]
-            print(scale)
             return int(scale)
+
+    def getMapType(self):
+        if hasattr(self, 'mapTypeSelector'):
+            return self.mapTypeSelector.options.get(self.mapTypeSelector.currentText())
+
 
     @staticmethod
     def tr(message):

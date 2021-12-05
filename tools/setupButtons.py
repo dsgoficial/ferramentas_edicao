@@ -38,7 +38,7 @@ class SetupButtons:
         cycleLabelPositionButton.setupUi()
         createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector)
         createVegetationSymbol.setupUi()
-        createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, mapTypeSelector)
+        createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
         createRoadIdentifierSymbol.setupUi()
         createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
         createLakeLabel.setupUi()
