@@ -1,7 +1,11 @@
 from pathlib import Path
+import math
 
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsLineString,
-                       QgsPointXY, QgsProject, QgsSpatialIndex)
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransformContext, QgsDistanceArea,
+                       QgsFeature, QgsFeatureRequest, QgsGeometry,
+                       QgsLineString, QgsPointXY, QgsProject, QgsSpatialIndex,
+                       QgsUnitTypes)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
@@ -37,12 +41,12 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
     def mouseClick(self, pos, btn):
         if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)
-            if not closestFeat.isClosed():
+            if closestSpatialID:
                 feat = next(closestFeat)
                 if self.checkFeature(feat):
                     if feat.attribute('situacao_em_poligono') == 1:
@@ -53,6 +57,8 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
                     self.displayErrorMessage(self.tr(
                         'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
                     ))
+            else:
+                    self.displayErrorMessage('Não foram encontradas feições em "elemnat_trecho_drenagem_l"')
 
     @staticmethod
     def checkFeature(feat):
@@ -89,31 +95,63 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         self.dstLyr.addFeature(toInsert)
         self.mapCanvas.refresh()
 
-    def getMapType(self):
-        mapType = self.mapTypeSelector.currentText()
-        if mapType == 'Carta':
-            return 1
-        return 2
-
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
         name = feat.attribute('nome')
-        interpolateSize = labelSize * len(str(name)) * 0.5
+        interpolateSize = labelSize * len(str(name)) * self.tolerance / 10
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
+        # TODO: Vases 1,2 and 3 need to extend line
+        if interpolateSize > geom.length():
+            toExtend = interpolateSize - geom.length()
+            geom = geom.extendLine(toExtend/2,toExtend/2)
+            # start = 0
+            # end = geom.length()
+        elif posClosestV + interpolateSize/2 > geom.length():
+            diff = geom.length() - (posClosestV + interpolateSize/2)
+            geom = geom.extendLine(0,diff)
+            # start = posClosestV - diff
+            # end = geom.length()
+        elif posClosestV - interpolateSize/2 < 0:
+            diff = abs(posClosestV - interpolateSize/2)
+            geom = geom.extendLine(diff,0)
+            # start = 0
+            # end = posClosestV + diff
+        start = posClosestV - interpolateSize/2
+        end = posClosestV + interpolateSize/2
         closestV = geom.interpolate(posClosestV)
         firstGeom = geom.interpolate(posClosestV-interpolateSize/2)
         lastGeom = geom.interpolate(posClosestV+interpolateSize/2)
-        toInsertGeom = self.buildLineGeom(firstGeom, lastGeom, geom)
+        toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
+        # toInsertGeom = self.buildLineGeom(firstGeom, lastGeom, geom)
         toInsertGeom.translate(*self.getTransformParams(closestV,clickPos))
-        toInsertGeom = toInsertGeom.simplify(2)
+        toInsertGeom = toInsertGeom.simplify(self.tolerance/10)
         return toInsertGeom
 
     def getTransformParams(self, ref, clickPos):
         ref = ref.asPoint()
         xTranslate = clickPos.x() - ref.x()
         yTranslate =  clickPos.y() - ref.y()
+        xTranslate, yTranslate = self.scaleTransform(xTranslate, yTranslate)
         return xTranslate, yTranslate
+
+    def scaleTransform(self, x, y):
+        d = self.tolerance
+        scaleFactor = (d**2 / ((x**2 + y**2)))**0.5
+        return scaleFactor*x, scaleFactor*y
+
+    def buildLineFromGeomDist(self, start, end, geom):
+        xCoords = []
+        yCoords = []
+        if geom.isMultipart():
+            for point in geom.asMultiPolyline()[0]:
+                xCoords.append(point.x())
+                yCoords.append(point.y())
+        else:
+            for point in geom.asPolyline():
+                xCoords.append(point.x())
+                yCoords.append(point.y())
+        return QgsLineString(xCoords,yCoords).curveSubstring(start,end)
 
     def buildLineGeom(self, firstGeom, lastGeom, geom):
         xCoords = []
@@ -174,12 +212,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         else:
             return 16
 
-    def getScale(self):
-        scale = self.scaleSelector.currentText()
-        scale = scale.split(':')[1]
-        scale = scale.replace('.', '')
-        return int(scale)
-
     def getLayers(self):
         srcLyr = QgsProject.instance().mapLayersByName('elemnat_trecho_drenagem_l')
         dstLyr = QgsProject.instance().mapLayersByName('edicao_texto_generico_l')
@@ -197,6 +229,12 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
                 'Camada "edicao_texto_generico_l" não encontrada'
             ))
             return None
+        if self.srcLyr.dataProvider().crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
+            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees)
+        else:
+            self.tolerance = self.getScale() * 0.01
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
