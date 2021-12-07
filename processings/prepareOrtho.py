@@ -249,8 +249,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             lyrName = lyr.dataProvider().uri().table()
             # self.updateLayer(lyr, lyrName)
             if lyrName in attrDefault:
-                valeusToCommit = attrDefault.get(lyrName)
-                self.setDefaultAttrV2(lyr, valeusToCommit)
+                valuesToCommit = attrDefault.get(lyrName)
+                self.setDefaultAttrV2(lyr, valuesToCommit)
             if lyrName in layersToCalculateDefaults:
                 self.setDefaultAttrCalc(lyrName, lyr)
             if lyrName in layersToCalculateSobreposition:
