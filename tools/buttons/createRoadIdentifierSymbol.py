@@ -72,7 +72,7 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         toInsert.setGeometry(self.currPos)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
-        self.mapCanvas.refresh()
+        self.dstLyr.triggerRepaint()
 
     def getjurisdiction(self, abbr):
         if abbr in ('BR','VE') :
@@ -80,8 +80,6 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         if abbr in ('RS','SC','PR','SP','RJ','MG','ES','MS','MT','AP','AM','RO','RR','PA','AC','TO','MA','CE','RN','PI','PB','PE','AL','SE','BA'):
             return 2
         return 0
-
-
 
     def projectPosition(self, pos, feat):
         geom = feat.geometry()
