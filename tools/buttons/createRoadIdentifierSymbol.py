@@ -46,7 +46,6 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
             closestFeat = self.srcLyr.getFeatures(request)
             if closestSpatialID:
                 feat = next(closestFeat)
-                self.jurisd = feat.attribute('jurisdicao')
                 if roadAbrev:=feat.attribute('sigla'):
                     self.currPos = self.projectPosition(pos, feat)
                     if ';' in roadAbrev:
@@ -65,14 +64,24 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
     def createFeature(self, name):
         self.box.hide()
         toInsert = QgsFeature(self.dstLyr.fields())
-        abbrv = name.split('-')[1]
-        toInsert.setAttribute('jurisdicao', self.jurisd)
+        jurisd, abbrv = name.split('-')
+        jurisd = self.getjurisdiction(jurisd)
+        toInsert.setAttribute('jurisdicao', jurisd)
         toInsert.setAttribute('sigla', abbrv)
         toInsert.setAttribute('carta_mini', self.getMapType())
         toInsert.setGeometry(self.currPos)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
         self.mapCanvas.refresh()
+
+    def getjurisdiction(self, abbr):
+        if abbr in ('BR','VE') :
+            return 1
+        if abbr in ('RS','SC','PR','SP','RJ','MG','ES','MS','MT','AP','AM','RO','RR','PA','AC','TO','MA','CE','RN','PI','PB','PE','AL','SE','BA'):
+            return 2
+        return 0
+
+
 
     def projectPosition(self, pos, feat):
         geom = feat.geometry()
