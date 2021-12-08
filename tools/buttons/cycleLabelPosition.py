@@ -4,6 +4,17 @@ from .baseTools import BaseTools
 
 class CycleLabelPosition(BaseTools):
 
+    horizontalAnchorCodelist = {
+        'Left': 1,
+        'Center': 2,
+        'Right': 3
+    }
+    verticalAnchorCodelist = {
+        'Bottom': 1,
+        'Half': 2,
+        'Top': 3
+    }
+
     def __init__(self, toolBar, iface, scaleSelector) -> None:
         self.toolBar = toolBar
         self.iface = iface
@@ -41,25 +52,29 @@ class CycleLabelPosition(BaseTools):
     def updateCurrentPos(self):
         self.pos = (self.pos + 1) % 8
 
-    def updateLabelAnchor(self, x, y, name):
+    def getLabelAnchor(self):
         if self.pos == 1: # Top left
-            x = x - self.xAnchorAdjustment * len(name)
-        if self.pos == 2: # Bottom right
-            y = y - self.yAnchorAdjustment
-        if self.pos == 3: # Bottom left
-            x = x - self.xAnchorAdjustment * len(name)
-            y = y - self.yAnchorAdjustment
-        if self.pos == 4: # Top
-            x = x - self.xAnchorAdjustment * len(name) / 2
-        if self.pos == 5: # Right
-            y = y - self.yAnchorAdjustment / 2
-        if self.pos == 6: # Left
-            x = x - self.xAnchorAdjustment * len(name)
-            y = y - self.yAnchorAdjustment / 2
-        if self.pos == 7: # Bottom
-            x = x - self.xAnchorAdjustment * len(name) / 2
-            y = y - self.yAnchorAdjustment
-        return x, y
+            horizontalAnchor = 'Right'
+            verticalAnchor = 'Bottom'
+        elif self.pos == 2: # Bottom right
+            horizontalAnchor = 'Left'
+            verticalAnchor = 'Top'
+        elif self.pos == 3: # Bottom left
+            horizontalAnchor = 'Right'
+            verticalAnchor = 'Top'
+        elif self.pos == 4: # Top
+            horizontalAnchor = 'Center'
+            verticalAnchor = 'Bottom'
+        elif self.pos == 5: # Right
+            horizontalAnchor = 'Left'
+            verticalAnchor = 'Half'
+        elif self.pos == 6: # Left
+            horizontalAnchor = 'Right'
+            verticalAnchor = 'Half'
+        elif self.pos == 7: # Bottom
+            horizontalAnchor = 'Center'
+            verticalAnchor = 'Top'
+        return horizontalAnchor, verticalAnchor
 
     def setTolerance(self, mapSettings):
         self.d = mapSettings.mapUnitsPerPixel() * 10
@@ -83,9 +98,11 @@ class CycleLabelPosition(BaseTools):
                     self.currentFeats = set()
                 for feat in lyr.getSelectedFeatures():
                     newX, newY = self.getUpdateValue(feat, fieldXIdx, fieldYIdx)
-                    newX, newY = self.updateLabelAnchor(newX, newY, feat.attribute('texto_edicao'))
+                    horizontalAnchor, verticalAnchor = self.getLabelAnchor()
                     lyr.changeAttributeValue(feat.id(), fieldXIdx, newX)
                     lyr.changeAttributeValue(feat.id(), fieldYIdx, newY)
+                    lyr.changeAttributeValue(feat.id(), 'ancora_horizontal', self.horizontalAnchorCodelist.get(horizontalAnchor))
+                    lyr.changeAttributeValue(feat.id(), 'ancora_vertical', self.verticalAnchorCodelist.get(verticalAnchor))
                     self.currentFeats.add(feat.id())
                 self.updateCurrentPos()
                 lyr.triggerRepaint()
