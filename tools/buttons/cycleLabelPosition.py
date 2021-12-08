@@ -8,11 +8,11 @@ class CycleLabelPosition(BaseTools):
         self.toolBar = toolBar
         self.iface = iface
         self.scaleSelector = scaleSelector
-        d = 0.004
+        self.mapCanvas = iface.mapCanvas()
         self.pos = 0
         self.ord = [
-            (d,d),(-2*d,0),(2*d,-2*d),((0,-2*d)),
-            (d,2*d),(d,-d),(-2*d,0),(d,-d)
+            (1,1),(-1,1),(1,-1),(-1,-1),
+            (0,1),(1,0),(-1,0),(0,-1)
         ] #(0,d)
         self.currentFeats = set()
 
@@ -29,30 +29,42 @@ class CycleLabelPosition(BaseTools):
         self.toolBar.addAction(self._action)
         self.iface.registerMainWindowAction(self._action, '')
 
-    def getUpdateValue(self, feat, featXIdx, featYIdx, isGeographic):
+    def getUpdateValue(self, feat, featXIdx, featYIdx):
         centroid = feat.geometry().centroid().vertexAt(0)
-        scale = self.scaleSelector.currentText()
-        scale = int(scale.replace('.', '').split(':')[1])
+        refX, refY = centroid.x(), centroid.y()
         attrXValue = feat.attribute(featXIdx)
         attrYValue = feat.attribute(featYIdx)
-        oldX, oldY = centroid.x(), centroid.y()
-        if isGeographic:
-            d = QgsDistanceArea()
-            d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
-            if not any((attrXValue, attrYValue)):
-                d0 = d.convertLengthMeasurement(self.ord[0][0] * scale, QgsUnitTypes.DistanceDegrees)
-                d1 = d.convertLengthMeasurement(self.ord[0][1] * scale, QgsUnitTypes.DistanceDegrees)
-            else:
-                d0 = d.convertLengthMeasurement(self.ord[self.pos][0] * scale, QgsUnitTypes.DistanceDegrees)
-                d1 = d.convertLengthMeasurement(self.ord[self.pos][1] * scale, QgsUnitTypes.DistanceDegrees)
-            return d0 + oldX, d1 + oldY
-        else:
-            if not any((attrXValue, attrYValue)):
-                return self.ord[0][0] * scale + oldX, self.ord[0][1] * scale + oldY
-            return self.ord[self.pos][0] * scale + oldX, self.ord[self.pos][1] * scale + oldY
+        if not any((attrXValue, attrYValue)):
+            return self.ord[0][0] * self.d + refX, self.ord[0][1] * self.d + refY
+        return self.ord[self.pos][0] * self.d + refX, self.ord[self.pos][1] * self.d + refY
 
     def updateCurrentPos(self):
         self.pos = (self.pos + 1) % 8
+
+    def updateLabelAnchor(self, x, y, name):
+        if self.pos == 1: # Top left
+            x = x - self.xAnchorAdjustment * len(name)
+        if self.pos == 2: # Bottom right
+            y = y - self.yAnchorAdjustment
+        if self.pos == 3: # Bottom left
+            x = x - self.xAnchorAdjustment * len(name)
+            y = y - self.yAnchorAdjustment
+        if self.pos == 4: # Top
+            x = x - self.xAnchorAdjustment * len(name) / 2
+        if self.pos == 5: # Right
+            y = y - self.yAnchorAdjustment / 2
+        if self.pos == 6: # Left
+            x = x - self.xAnchorAdjustment * len(name)
+            y = y - self.yAnchorAdjustment / 2
+        if self.pos == 7: # Bottom
+            x = x - self.xAnchorAdjustment * len(name) / 2
+            y = y - self.yAnchorAdjustment
+        return x, y
+
+    def setTolerance(self, mapSettings):
+        self.d = mapSettings.mapUnitsPerPixel() * 10
+        self.xAnchorAdjustment = mapSettings.mapUnitsPerPixel() * 20
+        self.yAnchorAdjustment = mapSettings.mapUnitsPerPixel() * 40
 
     def run(self):
         if not (lyr:=self.iface.activeLayer()):
@@ -64,14 +76,17 @@ class CycleLabelPosition(BaseTools):
                 self.displayErrorMessage(self.tr('atributos "label_x" ou "label_y" não existem na camada selecionada'))
             else:
                 lyr.startEditing()
-                isGeographic = lyr.dataProvider().crs().isGeographic()
+                mapSettings = self.iface.mapCanvas().mapSettings()
+                self.setTolerance(mapSettings)
                 if len(self.currentFeats) > 0 and self.currentFeats != set(x.id() for x in lyr.getSelectedFeatures()):
                     self.pos = 0
                     self.currentFeats = set()
                 for feat in lyr.getSelectedFeatures():
-                    newX, newY = self.getUpdateValue(feat, fieldXIdx, fieldYIdx, isGeographic)
+                    newX, newY = self.getUpdateValue(feat, fieldXIdx, fieldYIdx)
+                    newX, newY = self.updateLabelAnchor(newX, newY, feat.attribute('texto_edicao'))
                     lyr.changeAttributeValue(feat.id(), fieldXIdx, newX)
                     lyr.changeAttributeValue(feat.id(), fieldYIdx, newY)
                     self.currentFeats.add(feat.id())
                 self.updateCurrentPos()
+                lyr.triggerRepaint()
                     
