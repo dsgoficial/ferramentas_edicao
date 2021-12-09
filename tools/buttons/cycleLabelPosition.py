@@ -21,10 +21,11 @@ class CycleLabelPosition(BaseTools):
         self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
         self.pos = 0
+        dist = 2**(1/2)/2
         self.ord = [
-            (1,1),(-1,1),(1,-1),(-1,-1),
+            (dist,dist),(-dist,dist),(dist,-dist),(-dist,-dist),
             (0,1),(1,0),(-1,0),(0,-1)
-        ] #(0,d)
+        ]
         self.currentFeats = set()
 
     def setupUi(self):
@@ -53,7 +54,10 @@ class CycleLabelPosition(BaseTools):
         self.pos = (self.pos + 1) % 8
 
     def getLabelAnchor(self):
-        if self.pos == 1: # Top left
+        if self.pos == 0: # Top right
+            horizontalAnchor = 'Left'
+            verticalAnchor = 'Bottom'
+        elif self.pos == 1: # Top left
             horizontalAnchor = 'Right'
             verticalAnchor = 'Bottom'
         elif self.pos == 2: # Bottom right
@@ -77,9 +81,7 @@ class CycleLabelPosition(BaseTools):
         return horizontalAnchor, verticalAnchor
 
     def setTolerance(self, mapSettings):
-        self.d = mapSettings.mapUnitsPerPixel() * 10
-        self.xAnchorAdjustment = mapSettings.mapUnitsPerPixel() * 20
-        self.yAnchorAdjustment = mapSettings.mapUnitsPerPixel() * 40
+        self.d = mapSettings.mapUnitsPerPixel() * 8
 
     def run(self):
         if not (lyr:=self.iface.activeLayer()):
@@ -87,8 +89,10 @@ class CycleLabelPosition(BaseTools):
         else:
             fieldXIdx = lyr.dataProvider().fieldNameIndex('label_x')
             fieldYIdx = lyr.dataProvider().fieldNameIndex('label_y')
-            if any((fieldXIdx == -1, fieldYIdx == -1)):
-                self.displayErrorMessage(self.tr('atributos "label_x" ou "label_y" não existem na camada selecionada'))
+            fieldAncH = lyr.dataProvider().fieldNameIndex('ancora_horizontal')
+            fieldAncV = lyr.dataProvider().fieldNameIndex('ancora_vertical')
+            if any((fieldXIdx == -1, fieldYIdx == -1, fieldAncH == -1, fieldAncV == -1)):
+                self.displayErrorMessage(self.tr('atributos "label_x" ou "label_y" ou "ancora_horizontal" ou "ancora_vertical" não existem na camada selecionada'))
             else:
                 lyr.startEditing()
                 mapSettings = self.iface.mapCanvas().mapSettings()
@@ -101,8 +105,8 @@ class CycleLabelPosition(BaseTools):
                     horizontalAnchor, verticalAnchor = self.getLabelAnchor()
                     lyr.changeAttributeValue(feat.id(), fieldXIdx, newX)
                     lyr.changeAttributeValue(feat.id(), fieldYIdx, newY)
-                    lyr.changeAttributeValue(feat.id(), 'ancora_horizontal', self.horizontalAnchorCodelist.get(horizontalAnchor))
-                    lyr.changeAttributeValue(feat.id(), 'ancora_vertical', self.verticalAnchorCodelist.get(verticalAnchor))
+                    lyr.changeAttributeValue(feat.id(), fieldAncH, self.horizontalAnchorCodelist.get(horizontalAnchor))
+                    lyr.changeAttributeValue(feat.id(), fieldAncV, self.verticalAnchorCodelist.get(verticalAnchor))
                     self.currentFeats.add(feat.id())
                 self.updateCurrentPos()
                 lyr.triggerRepaint()

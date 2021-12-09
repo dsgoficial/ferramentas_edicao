@@ -198,22 +198,22 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         scale = self.getScale()
         scaleComparator = scale/1000
         if length < 65*scaleComparator:
-            return 6
-        elif length < 80*scaleComparator:
             return 7
-        elif length < 100*scaleComparator:
+        elif length < 80*scaleComparator:
             return 8
-        elif length < 120*scaleComparator:
+        elif length < 100*scaleComparator:
             return 9
-        elif length < 160*scaleComparator:
+        elif length < 120*scaleComparator:
             return 10
-        elif length < 200*scaleComparator:
+        elif length < 160*scaleComparator:
             return 12
+        elif length < 200*scaleComparator:
+            return 14
         else:
             return 16
 
     def getLayers(self):
-        srcLyr = QgsProject.instance().mapLayersByName('elemnat_trecho_drenagem_l')
+        srcLyr = QgsProject.instance().mapLayersByName('elemnat_trecho_drenagem_l_merged')
         dstLyr = QgsProject.instance().mapLayersByName('edicao_texto_generico_l')
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]

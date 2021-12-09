@@ -33,4 +33,5 @@ class CycleVisibility(BaseTools):
                     lyr.changeAttributeValue(feat.id(), fieldIdx, 1)
                 else:
                     lyr.changeAttributeValue(feat.id(), fieldIdx, visible%2 + 1)
+            lyr.triggerRepaint()
                 

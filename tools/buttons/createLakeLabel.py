@@ -87,22 +87,24 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         area = feat.geometry().area()
         scale = self.getScale()
         scaleComparator = (scale/1000)**2
-        if area < 2300*scaleComparator:
+        if area < 770*scaleComparator:
             return 6
-        elif area < 3600*scaleComparator:
+        elif area < 2300*scaleComparator:
             return 7
-        elif area < 5200*scaleComparator:
+        elif area < 3600*scaleComparator:
             return 8
-        elif area < 9800*scaleComparator:
+        elif area < 5200*scaleComparator:
             return 9
-        elif area < 16500*scaleComparator:
+        elif area < 9800*scaleComparator:
             return 10
-        elif area < 25000*scaleComparator:
+        elif area < 16500*scaleComparator:
             return 12
-        elif area < 36000*scaleComparator:
+        elif area < 25000*scaleComparator:
             return 14
-        else:
+        elif area < 36000*scaleComparator:
             return 16
+        else:
+            return 18
 
     def getScale(self):
         scale = self.scaleSelector.currentText()
