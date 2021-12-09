@@ -219,7 +219,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Camada "elemnat_trecho_drenagem_l" não encontrada'
+                'Camada "elemnat_trecho_drenagem_l_merged" não encontrada'
             ))
             return None
         if len(dstLyr) == 1:
