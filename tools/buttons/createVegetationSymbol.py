@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
-                       QgsSpatialIndex)
+                       Qgis, QgsRectangle)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
@@ -34,24 +34,29 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
     def mouseClick(self, pos, btn):
         if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=1e-6)
-            # Option 1: Use a QgsFeatureRequest
-            request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-            closestFeat = self.srcLyr.getFeatures(request)
-            if closestSpatialID:
-                feat = next(closestFeat)
-                toInsert = QgsFeature(self.dstLyr.fields())
-                if vegName:=self.getVegetationMapping(feat):
-                    toInsert.setAttribute('texto', vegName)
-                    toInsertGeom = QgsGeometry.fromPointXY(pos)
-                    toInsert.setGeometry(toInsertGeom)
-                    self.dstLyr.startEditing()
-                    self.dstLyr.addFeature(toInsert)
-                else:
-                    self.displayErrorMessage('Vegetação inválida')
-                self.mapCanvas.refresh()
-            else:
+            flag = False
+            posGeom = QgsGeometry.fromPointXY(pos)
+            p = self.mapCanvas.mapSettings().mapToLayerCoordinates(self.srcLyr, pos)
+            rect = QgsRectangle(p.x() - self.tol, p.y()-self.tol, p.x() + self.tol, p.y() + self.tol)
+            feats = [x for x in self.srcLyr.getFeatures(rect)]
+            if not feats:
                 self.displayErrorMessage('Não foi encontrado um polígono de vegetação dentro da tolerância')
+                flag = True
+            for feat in feats:
+                if feat.geometry().intersects(posGeom):
+                    toInsert = QgsFeature(self.dstLyr.fields())
+                    if vegName:=self.getVegetationMapping(feat):
+                        toInsert.setAttribute('texto', vegName)
+                        toInsert.setGeometry(posGeom)
+                        self.dstLyr.startEditing()
+                        self.dstLyr.addFeature(toInsert)
+                        self.dstLyr.triggerRepaint()
+                        flag = True
+                    break
+            if not flag:
+                self.displayErrorMessage('Vegetação inválida')
+            self.dstLyr.triggerRepaint()
+            self.mapCanvas.refresh()
 
     @staticmethod
     def getVegetationMapping(feat):
@@ -64,6 +69,8 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
         }
         return mapping.get(feat.attribute('tipo'), '')
 
+    def setTolerance(self):
+        self.tol = self.mapCanvas.mapSettings().mapUnitsPerPixel()
 
     def getLayers(self):
         srcLyr = QgsProject.instance().mapLayersByName('cobter_vegetacao_a')
@@ -82,6 +89,5 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
                 'Camada "edicao_simb_vegetacao_p" não encontrada'
             ))
             return None
-        self.spatialIndex = QgsSpatialIndex(
-            srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
+        self.setTolerance()
         return True
