@@ -18,6 +18,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
+        self.dstLyr = None
         self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
@@ -40,7 +41,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         self.iface.registerMainWindowAction(self._action, '')
 
     def mouseClick(self, pos, btn):
-        if self.isActive():
+        if self.isActive() and self.dstLyr:
             closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
@@ -53,12 +54,16 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
                         self.createFeatureA(feat, pos)
                     elif feat.attribute('situacao_em_poligono') in (2,3):
                         self.createFeatureB(feat, pos)
+                    else:
+                        self.displayErrorMessage(self.tr(
+                        'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
+                        ))
                 else:
                     self.displayErrorMessage(self.tr(
                         'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
                     ))
             else:
-                    self.displayErrorMessage('Não foram encontradas feições em "elemnat_trecho_drenagem_l"')
+                    self.displayErrorMessage('Não foram encontradas feições em "elemnat_trecho_drenagem_l_merged"')
 
     @staticmethod
     def checkFeature(feat):
@@ -232,9 +237,9 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         if self.srcLyr.dataProvider().crs().isGeographic():
             d = QgsDistanceArea()
             d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
-            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees)
+            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.005, QgsUnitTypes.DistanceDegrees)
         else:
-            self.tolerance = self.getScale() * 0.01
+            self.tolerance = self.getScale() * 0.005
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True
