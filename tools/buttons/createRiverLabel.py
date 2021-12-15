@@ -42,7 +42,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
     def mouseClick(self, pos, btn):
         if self.isActive() and self.dstLyr:
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=2*self.tolerance)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
@@ -73,7 +73,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert = QgsFeature(self.dstLyr.fields())
         toInsert.setAttribute('texto_edicao', feat.attribute('nome'))
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
-        # toInsert.setAttribute('justificativa_txt', 2)
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
@@ -83,7 +82,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
-        self.mapCanvas.refresh()
+        self.dstLyr.triggerRepaint()
 
     def createFeatureB(self, feat, pos):
         toInsert = QgsFeature(self.dstLyr.fields())
@@ -98,39 +97,32 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
-        self.mapCanvas.refresh()
+        self.dstLyr.triggerRepaint()
 
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
         name = feat.attribute('nome')
-        interpolateSize = labelSize * len(str(name)) * self.tolerance / 10
+        interpolateSize = labelSize * len(str(name)) * self.tolerance / 15
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
-        # TODO: Vases 1,2 and 3 need to extend line
         if interpolateSize > geom.length():
             toExtend = interpolateSize - geom.length()
             geom = geom.extendLine(toExtend/2,toExtend/2)
-            # start = 0
-            # end = geom.length()
         elif posClosestV + interpolateSize/2 > geom.length():
             diff = geom.length() - (posClosestV + interpolateSize/2)
             geom = geom.extendLine(0,diff)
-            # start = posClosestV - diff
-            # end = geom.length()
         elif posClosestV - interpolateSize/2 < 0:
             diff = abs(posClosestV - interpolateSize/2)
             geom = geom.extendLine(diff,0)
-            # start = 0
-            # end = posClosestV + diff
         start = posClosestV - interpolateSize/2
         end = posClosestV + interpolateSize/2
         closestV = geom.interpolate(posClosestV)
         firstGeom = geom.interpolate(posClosestV-interpolateSize/2)
         lastGeom = geom.interpolate(posClosestV+interpolateSize/2)
         toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
-        # toInsertGeom = self.buildLineGeom(firstGeom, lastGeom, geom)
         toInsertGeom.translate(*self.getTransformParams(closestV,clickPos))
-        toInsertGeom = toInsertGeom.simplify(self.tolerance/10)
+        #toInsertGeom = toInsertGeom.simplify(self.tolerance/3)
+
         return toInsertGeom
 
     def getTransformParams(self, ref, clickPos):
