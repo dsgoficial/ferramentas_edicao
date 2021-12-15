@@ -147,6 +147,7 @@ class MapBuildController(MapBuildControllerUtils):
         return self.exporter
 
     def run(self):
+        # TODO: run in a different thread
         '''Runs the specified MapBuilder according to dlg / json preferences'''
         dlgCfg = self.setupDlgCfg(self.dlg)
         for jsonPath in dlgCfg.jsonFilePaths:
@@ -155,7 +156,7 @@ class MapBuildController(MapBuildControllerUtils):
             jsonData.update({'productType':productType,'productName': productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
-            composition = self.compositions.getComposition(jsonData)
+            composition = self.compositions.getComposition(jsonData).clone()
             connection = self.conn.getConnection(jsonData.get('banco'), dlgCfg.username, dlgCfg.password)
             # Build components
             builder.setParams(jsonData, self.defaults, connection, composition, mapExtentsFeat, mapExtentsLyr)
@@ -163,4 +164,5 @@ class MapBuildController(MapBuildControllerUtils):
             # Export
             exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
             exporter.export(composition)
-            # builder.cleanProject()
+            builder.removeLayers(self.debugMode)
+        builder.cleanProject(self.debugMode)

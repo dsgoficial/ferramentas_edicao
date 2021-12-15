@@ -15,6 +15,7 @@ class CompositionSingleton:
         self.config = config
         self.previousQptPaths = [None, None, None, None]
         self.resourcesPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products'
+        self.lastComposition = None
 
     def getComposition(self, jsonData: dict) -> QgsPrintLayout:
         productType = jsonData.get('productType')
@@ -26,7 +27,6 @@ class CompositionSingleton:
             self.compositions[productType][scale] = self.createComposition(productType, jsonData)
         self.updatePrintLayoutFromConfig(
             self.compositions[productType][scale], jsonData)
-        print(self.compositions[productType])
         return self.compositions[productType][scale]
 
     def createComposition(self, productType: str, jsonData: dict) -> QgsPrintLayout:

@@ -32,7 +32,7 @@ class Division(ComponentUtils,IComponent):
 
     def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, showLayers: bool = False):
 
-        mapLayers = []
+        mapIDsToBeDisplayed = []
         instance = QgsProject.instance()
         
         isInternational = data.get('territorio_internacional')
@@ -40,13 +40,13 @@ class Division(ComponentUtils,IComponent):
         # Inserting necessary layers
 
         layerCountyArea, layerCountyLine, layerStateLine, layerCountryArea, layerCountryLine, layerOcean = self.createLayersGroup()
-        mapLayers.extend([
+        mapIDsToBeDisplayed.extend([
             layerCountyArea.id(),layerCountyLine.id(), layerStateLine.id(), layerOcean.id(), layerCountryArea.id(), layerCountryLine.id()])
 
         # Getting map extents
         gridBound = mapAreaFeature.geometry().boundingBox()
         gridRectangleLayer = self.createGridRectangle(gridBound, 'divisionMapArea')
-        mapLayers.append(gridRectangleLayer.id())
+        mapIDsToBeDisplayed.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
         # TODO: Check possible refactor on getExtent
@@ -80,7 +80,7 @@ class Division(ComponentUtils,IComponent):
             root.addChildNode(divisionGroupNode)
             
         self.updateComposition(composition, outerExtents, layersToShow)
-        # return mapLayers
+        return mapIDsToBeDisplayed
 
     def createLayersGroup(self):
         '''

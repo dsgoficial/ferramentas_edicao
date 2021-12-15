@@ -18,14 +18,16 @@ class MiniMap(ComponentUtils,IComponent):
 		self.updateComposition(composition, mapExtents, layers)
 
 		if showLayers:
-			miniMapGroupNode = QgsLayerTreeGroup('minimap')	
+			miniMapGroupNode = QgsLayerTreeGroup('miniMap')	
 			miniMapGroupNode.setItemVisibilityChecked(False)								
 			for layer in layers:
 				miniMapGroupNode.addLayer(layer)
 			root = QgsProject.instance().layerTreeRoot()		
 			root.addChildNode(miniMapGroupNode)
 
-		# return layers['id_minimap']
+		mapIDsToBeDisplayed = [x.id() for x in layers]
+
+		return mapIDsToBeDisplayed
     
 	def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: list[QgsMapLayer]):    	
 		if (mapItem:=composition.itemById("miniMap")) is not None:

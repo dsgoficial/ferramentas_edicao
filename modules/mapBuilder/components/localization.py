@@ -19,21 +19,21 @@ class Localization(ComponentUtils,IComponent):
 
     def build(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, showLayers: bool=False):
-        mapLayers = []
+        mapIDsToBeDisplayed = []
         instance = QgsProject.instance()
         isInternational = bool(data.get('territorio_internacional'))
 
         # Creating layer for mapArea
         mapAreaBoundingBox = mapAreaFeature.geometry().boundingBox()
         mapAreaLayer = self.createGridRectangle(mapAreaBoundingBox, 'localizationMapArea')
-        mapLayers.append(mapAreaLayer.id())
+        mapIDsToBeDisplayed.append(mapAreaLayer.id())
 
         # Getting state layer
         stateLayerBackground = self.loadShapeLayer(self.stateShpPath, '', 'backgroundStates')
         mapExtents = self.getExtent(mapAreaFeature, stateLayerBackground, isInternational)
         self.setupBackgroundLayer(stateLayerBackground)
         self.setLabel(stateLayerBackground, isInternational)
-        mapLayers.append(stateLayerBackground.id())
+        mapIDsToBeDisplayed.append(stateLayerBackground.id())
 
         # Adding layers
         instance.addMapLayer(stateLayerBackground, False)
@@ -43,14 +43,14 @@ class Localization(ComponentUtils,IComponent):
         self.updateComposition(composition, stateLayerBackground, mapAreaLayer, mapExtents)
 
         if showLayers:
-            localizationGroupNode = QgsLayerTreeGroup('localizacao')
+            localizationGroupNode = QgsLayerTreeGroup('localization')
             localizationGroupNode.setItemVisibilityChecked(False)
             for layer in (mapAreaLayer, stateLayerBackground):
                 localizationGroupNode.addLayer(layer)
             root = instance.layerTreeRoot()
             root.addChildNode(localizationGroupNode)
 
-        return mapLayers
+        return mapIDsToBeDisplayed
 
     def getExtent(self, selectedFeature: QgsFeature, stateLayer: QgsVectorLayer, isInternational: bool):
         '''Gets the component extents by checking intersections between selectedFeature and 

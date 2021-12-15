@@ -25,7 +25,7 @@ class Map(ComponentUtils,IComponent):
         mapAreaLayer: QgsVectorLayer, layers: list[QgsMapLayer], gridGenerator: GridAndLabelCreator, showLayers: bool=False):
 
         instance = QgsProject.instance()
-        mapLayers = []
+        mapIDsToBeDisplayed = []
 
         # Setting up grid layer
         defaults = getattr(defaults, self.productType).get('grid')
@@ -51,7 +51,7 @@ class Map(ComponentUtils,IComponent):
         maskLayer = self.createMaskLayer(mapAreaFeature)
         instance.addMapLayer(maskLayer, False)
 
-        # mapLayers.extend((copy.id(), copyLabel.id(), gridLayer.id(), maskLayer.id(), *layers['id_map']))
+        mapIDsToBeDisplayed.extend((copy.id(), copyLabel.id(), gridLayer.id(), maskLayer.id(), *[x.id() for x in layers]))
         layersToComposition = [gridLayer, maskLayer, copy, copyLabel, *layers]
         self.updateComposition(composition, mapAreaExtents, mapExtentsTransformed, gridLayer, layersToComposition, data)
 
@@ -63,7 +63,7 @@ class Map(ComponentUtils,IComponent):
             root = QgsProject.instance().layerTreeRoot()
             root.addChildNode(mapGroupNode)
 
-        return mapLayers
+        return mapIDsToBeDisplayed
 
     def createLayerForGrid(self, baseLayer: QgsVectorLayer, mapExtents: QgsFeature, data: dict) -> tuple[QgsVectorLayer, QgsRectangle]:
         ''' Creates a vector layer that will be the base for the grid.
@@ -165,7 +165,6 @@ class Map(ComponentUtils,IComponent):
     def centerMapInAreaCarta(self, composition: QgsPrintLayout):
         ''' Sets reference point for map and area_reservada_carta elements
         '''
-        print(composition)
         if (mapReservedArea:=composition.itemById('area_reservada_carta')) is not None:
             mapReservedArea.setReferencePoint(QgsLayoutItem.Middle)
             mapReservedArea.refresh()

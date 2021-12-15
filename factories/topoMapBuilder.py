@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
-                       QgsVectorLayer)
+                       QgsVectorLayer, QgsMapLayer)
 
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
@@ -38,35 +38,49 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.mapAreaFeature = mapAreaFeature
         self.mapAreaLayer = mapAreaLayer
 
-    def cleanProject(self, debugMode: bool = False):
+    def removeLayers(self, debugMode: bool = False):
+        debugMode = False
         if not debugMode:
-            self.instance.removeAllMapLayers()
-            self.instance.layerTreeRoot().removeAllChildren()
+            self.instance.removeMapLayers(self.layersIdsToBeRemoved)
+            root = self.instance.layerTreeRoot()
+            for group in self.groupsToBeRemoved:
+                groupTree = root.findGroup(group)
+                root.removeChildNode(groupTree)
+
+    def cleanProject(self, debugMode):
+        if not debugMode:
             self.instance.layoutManager().removeLayout(self.composition)
 
     def run(self, debugMode: bool = False):
-        debugMode = True
+        self.layersIdsToBeRemoved = []
+        self.groupsToBeRemoved = []
         # Let's try to not track the mapLayersIds and then remove everything in the end
         mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x)
         miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x)
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()
-            self.composition.setName(self.data.get('productName'))
             manager.addLayout(self.composition)
+            self.composition.setName(self.data.get('productName'))
         # self.instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
         for key, component in self.components.items():
             self.deleteLayerTreeNode(key)
+            # TODO: Parallelize
             if key == 'map':
-                component.build(self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid)
+                mapLayersIds = component.build(
+                    self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid, debugMode)
             elif key == 'miniMap':
-                component.build(self.composition, self.mapAreaFeature, miniMapLayers)
+                miniMapLayersIds = component.build(
+                    self.composition, self.mapAreaFeature, miniMapLayers, debugMode)
             elif key == 'localization':
-                component.build(self.composition, self.data, self.mapAreaFeature)
+                localizationLayersIds = component.build(
+                    self.composition, self.data, self.mapAreaFeature, debugMode)
             elif key == 'articulation':
-                component.build(self.composition, self.data, self.mapAreaLayer)
+                articulationLayersIds = component.build(
+                    self.composition, self.data, self.mapAreaLayer, debugMode)
             elif key == 'division':
-                component.build(self.composition, self.data, self.mapAreaFeature)
+                divisionLayersIds = component.build(
+                    self.composition, self.data, self.mapAreaFeature, debugMode)
             elif key == 'subtitle':
                 component.build(self.composition, self.data, self.mapAreaFeature)
             elif key == 'mapScale':
@@ -77,6 +91,8 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.mapAreaFeature)
             elif key == 'qrcode':
                 component.build(self.composition, self.data, self.mapAreaFeature)
+        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds))
+        self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
         self.classifiedMapHandler(self.composition, self.data)
         # self.setupMasks(self.productPath, mapLayers)
 
