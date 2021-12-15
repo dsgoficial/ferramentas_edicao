@@ -166,7 +166,7 @@ class HtmlData(MapParent):
                 edited = self.replaceStr(base_html, {'{sensores}': str_sensores})
             label_tabela_info_ortoimagem.setText(edited)
 
-    def customTecnicalInfo(self, composition, scale, hemisphere, fuso, tipo_produto, tecnicalInfo={}, isInternational=False, mapAreaFeature=None):
+    def customTecnicalInfo(self, composition, scale, hemisphere, fuso, tecnicalInfo={}, isInternational=False, mapAreaFeature=None):
         label = composition.itemById("label_tabela_info_carta")
         if label:
             hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
@@ -219,8 +219,8 @@ class HtmlData(MapParent):
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}')
             _tmp = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Descrição do produto de Conjuntos de Dados Geoespaciais')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tipo_produto)
+            _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Especificação técnica de representação')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'{tecnicalInfo.get("especificacao_representacao", "ET-RDG versão preliminar")}')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Origem dos dados altimétricos')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('origem_dados_altimetricos'))
