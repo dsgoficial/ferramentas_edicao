@@ -115,7 +115,7 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         return self.tr('Auxiliar')
 
     def groupId(self):
-        return 'edicao'
+        return 'auxiliar'
 
     def shortHelpString(self):
         return self.tr("O algoritmo ...")
