@@ -1,7 +1,8 @@
 from pathlib import Path
-import math
+import numpy as np
+from numpy.core.fromnumeric import sort
 
-from qgis.core import (QgsCoordinateReferenceSystem,
+from qgis.core import (QgsCoordinateReferenceSystem, QgsGeometryUtils,
                        QgsCoordinateTransformContext, QgsDistanceArea,
                        QgsFeature, QgsFeatureRequest, QgsGeometry,
                        QgsLineString, QgsPointXY, QgsProject, QgsSpatialIndex,
@@ -105,25 +106,54 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         interpolateSize = labelSize * len(str(name)) * self.tolerance / 15
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
+        start = posClosestV - interpolateSize/2
+        end = posClosestV + interpolateSize/2
         if interpolateSize > geom.length():
             toExtend = interpolateSize - geom.length()
             geom = geom.extendLine(toExtend/2,toExtend/2)
         elif posClosestV + interpolateSize/2 > geom.length():
-            diff = geom.length() - (posClosestV + interpolateSize/2)
+            diff = (posClosestV + interpolateSize/2) - geom.length()
             geom = geom.extendLine(0,diff)
+            end = geom.length()
         elif posClosestV - interpolateSize/2 < 0:
-            diff = abs(posClosestV - interpolateSize/2)
+            diff =  interpolateSize/2 - posClosestV
             geom = geom.extendLine(diff,0)
-        start = posClosestV - interpolateSize/2
-        end = posClosestV + interpolateSize/2
+            start = 0
+            end += diff
         closestV = geom.interpolate(posClosestV)
-        firstGeom = geom.interpolate(posClosestV-interpolateSize/2)
-        lastGeom = geom.interpolate(posClosestV+interpolateSize/2)
+        # firstGeom = geom.interpolate(posClosestV-interpolateSize/2)
+        # lastGeom = geom.interpolate(posClosestV+interpolateSize/2)
+        start, end = self.adjustGeomLength(geom, start, end)
+        # toInsertGeom = QgsGeometry(self.polynomialFit(geom,start, end))
         toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
+        toInsertGeom = self.polynomialFit(toInsertGeom)
         toInsertGeom.translate(*self.getTransformParams(closestV,clickPos))
         #toInsertGeom = toInsertGeom.simplify(self.tolerance/3)
 
         return toInsertGeom
+
+    def adjustGeomLength(self, geom, start, end):
+        firstV = geom.interpolate(start).asPoint()
+        lastV = geom.interpolate(end).asPoint()
+        realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
+        observedLength = end - start
+        while(observedLength / realLength) > 1.2:
+            start, end = start - self.tolerance, end + self.tolerance
+            start = max(start, 0)
+            end = min(end, geom.length())
+            firstV = geom.interpolate(start).asPoint()
+            lastV = geom.interpolate(end).asPoint()
+            realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
+        return start, end
+
+    def polynomialFit(self, geom):
+        geom = geom.simplify(self.tolerance/10)
+        xVert = [p.x() for p in geom.vertices()]
+        yVert = [p.y() for p in geom.vertices()]
+        f = np.poly1d(np.polyfit(xVert, yVert, 2))
+        xVert = sorted(xVert)
+        newYVert = f(xVert)
+        return QgsGeometry(QgsLineString(xVert,newYVert.tolist()))
 
     def getTransformParams(self, ref, clickPos):
         ref = ref.asPoint()
