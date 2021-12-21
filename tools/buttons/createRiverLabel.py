@@ -121,10 +121,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
             start = 0
             end += diff
         closestV = geom.interpolate(posClosestV)
-        # firstGeom = geom.interpolate(posClosestV-interpolateSize/2)
-        # lastGeom = geom.interpolate(posClosestV+interpolateSize/2)
         start, end = self.adjustGeomLength(geom, start, end)
-        # toInsertGeom = QgsGeometry(self.polynomialFit(geom,start, end))
         toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
         toInsertGeom = self.polynomialFit(toInsertGeom)
         toInsertGeom.translate(*self.getTransformParams(closestV,clickPos))
@@ -133,21 +130,24 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         return toInsertGeom
 
     def adjustGeomLength(self, geom, start, end):
-        firstV = geom.interpolate(start).asPoint()
-        lastV = geom.interpolate(end).asPoint()
-        realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
-        observedLength = end - start
-        while(observedLength / realLength) > 1.2:
-            start, end = start - self.tolerance, end + self.tolerance
-            start = max(start, 0)
-            end = min(end, geom.length())
+        if geom.interpolate(start) and geom.interpolate(end):
             firstV = geom.interpolate(start).asPoint()
             lastV = geom.interpolate(end).asPoint()
             realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
+            observedLength = end - start
+            maxCount = 0
+            while(observedLength / realLength) > 1.2 and maxCount < 10:
+                start, end = start - self.tolerance, end + self.tolerance
+                start = max(start, 0)
+                end = min(end, geom.length())
+                firstV = geom.interpolate(start).asPoint()
+                lastV = geom.interpolate(end).asPoint()
+                realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
+                maxCount+=1
         return start, end
 
     def polynomialFit(self, geom):
-        geom = geom.simplify(self.tolerance/10)
+        #geom = geom.simplify(self.tolerance/10)
         xVert = [p.x() for p in geom.vertices()]
         yVert = [p.y() for p in geom.vertices()]
         f = np.poly1d(np.polyfit(xVert, yVert, 2))
@@ -179,32 +179,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
                 xCoords.append(point.x())
                 yCoords.append(point.y())
         return QgsLineString(xCoords,yCoords).curveSubstring(start,end)
-
-    def buildLineGeom(self, firstGeom, lastGeom, geom):
-        xCoords = []
-        yCoords = []
-        if firstGeom.isNull():
-            fp = QgsPointXY(geom.vertexAt(0))
-        else:
-            fp = firstGeom.asPoint()
-        if lastGeom.isNull():
-            count = geom.constGet().vertexCount()
-            lp = QgsPointXY(geom.vertexAt(count-1))
-        else:
-            lp = lastGeom.asPoint()
-        fpClosestPoint, fpClosestVIdx, fpPrevVIdx, fpNextVIdx, _ = geom.closestVertex(fp)
-        lpClosestPoint, lpClosestVIdx, lpPrevVIdx, lpNextVIdx, _ = geom.closestVertex(lp)
-        xCoords.append((fp.x()))
-        yCoords.append((fp.y()))
-        if lpClosestVIdx >= fpClosestVIdx:
-            for i in range(fpClosestVIdx, lpClosestVIdx):
-                _v = geom.vertexAt(i)
-                xCoords.append(_v.x())
-                yCoords.append(_v.y())
-        xCoords.append(lp.x())
-        yCoords.append(lp.y())
-        lineGeom = QgsLineString(xCoords, yCoords)
-        return QgsGeometry(lineGeom)
 
 
     def getLabelFontSizeA(self, feat):
