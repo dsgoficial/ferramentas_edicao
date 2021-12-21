@@ -149,9 +149,8 @@ class EditionPlugin:
             callback=self.run,
             parent=self.iface.mainWindow())
         self.first_start = True
-        if (Path(__file__).parent / '.env').exists():
-            self.tools = SetupButtons(self.iface)
-            self.tools.initToolBar()
+        self.tools = SetupButtons(self.iface)
+        self.tools.initToolBar()
         pluginProvider.initProcessing(self)
 
     def unload(self):

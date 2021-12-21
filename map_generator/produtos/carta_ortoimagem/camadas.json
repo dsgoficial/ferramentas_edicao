@@ -85,10 +85,6 @@
             "schema": "edgv"
         },
         {
-            "tabela": "elemnat_curva_nivel_l",
-            "schema": "edgv"
-        },
-        {
             "tabela": "infra_pista_pouso_p",
             "schema": "edgv"
         },
@@ -133,18 +129,6 @@
             "schema": "edgv"
         },
         {
-            "tabela": "infra_ferrovia_l",
-            "schema": "edgv"
-        },
-        {
-            "tabela": "infra_via_deslocamento_l",
-            "schema": "edgv"
-        },
-        {
-            "tabela": "elemnat_trecho_drenagem_l",
-            "schema": "edgv"
-        },
-        {
             "tabela": "constr_extracao_mineral_a",
             "schema": "edgv"
         },
@@ -154,6 +138,22 @@
         },
         {
             "tabela": "elemnat_elemento_hidrografico_a",
+            "schema": "edgv"
+        },
+        {
+            "tabela": "infra_via_deslocamento_l",
+            "schema": "edgv"
+        },
+        {
+            "tabela": "infra_ferrovia_l",
+            "schema": "edgv"
+        },
+        {
+            "tabela": "elemnat_trecho_drenagem_l",
+            "schema": "edgv"
+        },
+        {
+            "tabela": "elemnat_curva_nivel_l",
             "schema": "edgv"
         },
         {
@@ -234,12 +234,13 @@
             "tabela": "llp_limite_legal_l",
             "schema": "edgv"
         },
+        
         {
-            "tabela": "infra_ferrovia_l",
+            "tabela": "infra_via_deslocamento_l",
             "schema": "edgv"
         },
         {
-            "tabela": "infra_via_deslocamento_l",
+            "tabela": "infra_ferrovia_l",
             "schema": "edgv"
         },
         {

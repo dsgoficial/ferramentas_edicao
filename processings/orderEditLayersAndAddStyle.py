@@ -99,10 +99,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'camadas.json'
             ))
         if mode==0:
-            styleOption = 'map'
+            styleOption = 'map_edicao'
             groupName = 'carta'
         elif mode==1:
-            styleOption = 'miniMap'
+            styleOption = 'miniMap_edicao'
             groupName = 'carta_mini'
         else:
             return {self.OUTPUT: 'Valor para modo inválido'}

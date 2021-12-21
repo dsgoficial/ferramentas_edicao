@@ -67,7 +67,7 @@ class DefaultMap(MapManager):
         # Technical info
         scale, hemisferio, fuso = self.getScaleHemisferioFusoFromInom(inomen)
         self.htmlData.customTecnicalInfo(
-            composition, scale, hemisferio, fuso, productType, jsonData.get('info_tecnica'),
+            composition, scale, hemisferio, fuso, jsonData.get('info_tecnica'),
             jsonData.get('territorio_internacional'), mapAreaFeature)
 
         # Sets database

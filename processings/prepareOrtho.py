@@ -249,8 +249,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             lyrName = lyr.dataProvider().uri().table()
             # self.updateLayer(lyr, lyrName)
             if lyrName in attrDefault:
-                valeusToCommit = attrDefault.get(lyrName)
-                self.setDefaultAttrV2(lyr, valeusToCommit)
+                valuesToCommit = attrDefault.get(lyrName)
+                self.setDefaultAttrV2(lyr, valuesToCommit)
             if lyrName in layersToCalculateDefaults:
                 self.setDefaultAttrCalc(lyrName, lyr)
             if lyrName in layersToCalculateSobreposition:
@@ -673,8 +673,16 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     continue
                 name = sigla.split(';')[n].split('-')[1]
                 feat.setAttribute('sigla', name)
-            if jurisdicao:=mapping.get('jurisdicao'):
+                siglasEstados = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
+                if sigla.split(';')[n].split('-')[0]=='BR':
+                    jurisdicao=1
+                elif sigla.split(';')[n].split('-')[0] in siglasEstados:
+                    jurisdicao=2
+                elif mapping.get('jurisdicao'):
+                    jurisdicao = mapping.get('jurisdicao')
                 feat.setAttribute('jurisdicao', jurisdicao)
+            # if jurisdicao:=mapping.get('jurisdicao'):
+            #     feat.setAttribute('jurisdicao', jurisdicao)
             feat.setAttribute('carta_simbolizacao', isMiniMap)
             layer.addFeature(feat)
         # layer.commitChanges()
