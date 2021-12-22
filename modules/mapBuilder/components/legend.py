@@ -2,7 +2,7 @@ import json
 from collections import OrderedDict
 from pathlib import Path
 
-from config.configDefaults import ConfigDefaults
+from ....config.configDefaults import ConfigDefaults
 from PyQt5.QtCore import QPointF
 from PyQt5.QtXml import QDomDocument
 from qgis.core import QgsPrintLayout, QgsReadWriteContext
@@ -114,7 +114,7 @@ class Legend():
 
     def build(self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults):
         scale = jsonData.get('scale')
-        complementaryClasses = jsonData.get('classes_complementares')
+        complementaryClasses = jsonData.get('classes_complementares', [])
         legendMappingData = self.legendMappingData.get(str(scale))
         legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(complementaryClasses)))
         legendClassesGrouped = self.groupLegend(legendClassesToDisplay, legendMappingData)

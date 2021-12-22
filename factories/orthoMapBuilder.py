@@ -1,4 +1,4 @@
-
+from functools import partial
 from pathlib import Path
 
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
@@ -70,26 +70,30 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         if not debugMode:
             self.instance.layoutManager().removeLayout(self.composition)
 
-    def filterLayers(self, mapType, mapLayers, miniMapLayers, jsonData, defaults):
+    def filterLayers(self, mapType: str, jsonData: dict, defaults: ConfigDefaults, mapLayers:list[dict]):
         '''Filters displayed classes by merging mandatory layers from ConfigDefaults and desired classes from json file.
+        Args:
+            mapType: map or miniMap
+            jsonData: dict with json data + other parameters
+            defaults: instance of configuration defaults
+            mapLayers: Dict with available layers
         '''
-        _toDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(jsonData)))
-        mapLayersToDisplay = [x for x in mapLayers if x.get('tabela') in _toDisplay]
-        miniMapLayersToDisplay = [x for x in miniMapLayers if x.get('tabela') in _toDisplay]
+        _complementarClasses = set(jsonData.get('classes_complementares', list()))
+        _toDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(_complementarClasses))
+        layersToDisplay = [x for x in mapLayers if x.get('table') in _toDisplay]
         if mapType == 'map':
             if 'infra_elemento_energia_l' in _toDisplay:
-                mapLayersToDisplay.insert(0, {
+                layersToDisplay.insert(0, {
                     "tabela": "edicao_simb_torre_energia_p",
                     "schema": "edgv"
             })
 
             if 'elemnat_curva_nivel_l' in _toDisplay:
-                mapLayersToDisplay.insert(0, {
+                layersToDisplay.insert(0, {
                     "tabela": "edicao_simb_cota_mestra_l",
                     "schema": "edgv"
             })
-
-        return mapLayersToDisplay, miniMapLayersToDisplay
+        return layersToDisplay
 
     def run(self, debugMode: bool = False):
         ''' Creates the necessary components for the OrthoMap product and populates the composition.
@@ -98,8 +102,10 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         '''
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
-        mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x)
-        miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x)
+        mapLayers, mapLayersIds = self.getLayersFromDB(
+            self.conn, self.data, self.defaults, self.productPath, 'map', partial(self.filterLayers, 'map', self.data, self.defaults))
+        miniMapLayers, miniMapLayersIds = self.getLayersFromDB(
+            self.conn, self.data, self.defaults, self.productPath, 'miniMap', partial(self.filterLayers, 'miniMap', self.data, self.defaults))
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()

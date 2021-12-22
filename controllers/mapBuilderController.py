@@ -116,9 +116,9 @@ class MapBuildController(MapBuildControllerUtils):
             A tuple with the product type and product name
         '''
         if productType == 'carta_ortoimagem':
-            return productType, 'Carta Ortoimagem'
+            return 'orthoMap', 'Carta Ortoimagem'
         elif productType == 'Carta Ortoimagem':
-            return 'carta_ortoimagem', productType
+            return 'orthoMap', productType
         elif productType == 'carta_topografica':
             return 'topoMap', 'Carta Topográfica'
         elif productType == 'Carta Topográfica':
@@ -134,7 +134,7 @@ class MapBuildController(MapBuildControllerUtils):
 
     # def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
     def getProductBuilder(self, productType: str):
-        if productType == 'carta_ortoimagem' and productType not in self.builders:
+        if productType == 'orthoMap' and productType not in self.builders:
             self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
         elif productType == 'topoMap' and productType not in self.builders:
             self.builders.update({productType: TopoMapBuilder(ComponentFactory())})
@@ -148,6 +148,7 @@ class MapBuildController(MapBuildControllerUtils):
 
     def run(self):
         # TODO: run in a different thread
+        # TODO: better layers / composition cleanup
         '''Runs the specified MapBuilder according to dlg / json preferences'''
         dlgCfg = self.setupDlgCfg(self.dlg)
         for jsonPath in dlgCfg.jsonFilePaths:
@@ -156,6 +157,7 @@ class MapBuildController(MapBuildControllerUtils):
             jsonData.update({'productType':productType,'productName': productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
+            builder.cleanProject(False)
             builder.removeLayers(False)
             composition = self.compositions.getComposition(jsonData).clone()
             connection = self.conn.getConnection(jsonData.get('banco'), dlgCfg.username, dlgCfg.password)

@@ -18,9 +18,9 @@ class MapBuilderUtils:
         layersIDsList = []
         scale = data.get('scale')
         productType = data.get('productType')
-        availableLayers = self.readJsonFromPath(productPath / 'camadas.json').get(group)
-        availableLayers = filter(filterF, availableLayers)
         stylesFolder = productPath / 'styles' / group
+        availableLayers = self.readJsonFromPath(productPath / 'camadas.json').get(group)
+        availableLayers = filterF(availableLayers)
         for lyr in availableLayers:
             layer = self.getLayerFromPostgres(uri, lyr)
             if layer.isValid():
@@ -35,7 +35,7 @@ class MapBuilderUtils:
 
     def getLayerFromPostgres(self, uri: QgsDataSourceUri, data: dict) -> QgsVectorLayer:
         schema = data.get('schema')
-        table = data.get('tabela')
+        table = data.get('table')
         uri.setDataSource(schema, table, 'geom')
         return QgsVectorLayer(uri.uri(False), table, 'postgres')
 
