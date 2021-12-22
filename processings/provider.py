@@ -11,6 +11,8 @@ from .mergeLinesByAngle import MergeLinesByAngle
 from .loadMasks import LoadMasks
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
+from .elevationPointGeneralization import ElevationPointsGeneralization
+from .makeGrid import MakeGrid
 
 class Provider(QgsProcessingProvider):
 
@@ -27,6 +29,8 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(LoadMasks())
         self.addAlgorithm(SaveLayerStylesToFile())
         self.addAlgorithm(SaveMasks())
+        self.addAlgorithm(ElevationPointsGeneralization())
+        self.addAlgorithm(MakeGrid())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
