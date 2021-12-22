@@ -3,7 +3,8 @@
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
                         QgsProcessingAlgorithm,
-                        QgsProcessingParameterEnum
+                        QgsProcessingParameterEnum,
+                        QgsProcessingParameterScale
                     )
 from qgis import processing
 from qgis import core, gui
@@ -18,6 +19,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
     MAP_TYPE = 'MAP_TYPE'
     STYLENAME = 'STYLENAME'
+    INPUT_SCALE = 'INPUT_SCALE'
     GROUP = 'GROUP'
     MODE = 'MODE'
     OUTPUT = 'OUTPUT'
@@ -56,6 +58,13 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterScale(
+                'INPUT_SCALE',
+                self.tr('Selecione a escala para renderização:')
+            )
+        )
+
+        self.addParameter(
             ParameterGroup(
                 self.GROUP,
                 description='Grupo'
@@ -67,6 +76,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback): 
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
+        scale = self.parameterAsDouble(parameters, 'INPUT_SCALE', context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
 
@@ -134,6 +144,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
+        feedback.setProgressText('Renderizando...')
+        self.renderizar( layers, scale)
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
 
         #feedback.setProgressText('Carregando as máscaras...') 
         #self.loadMasks(carta, layers)
@@ -218,6 +232,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'STYLE': styleQmlPath
             }
         )
+    
+    def renderizar(self, layers, scale):
+        for layer in layers:
+            qgs_feature_renderer = layer.renderer()
+            qgs_feature_renderer.setReferenceScale(scale)
+            layer.reload()
     
     def loadMasks(self, carta, layers):
         jsonPathMask = os.path.join(
