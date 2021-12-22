@@ -1,118 +1,125 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta charset="utf-8" name="viewport" content="maximum-scale=1">
+	<meta charset="utf-8" name="viewport" content="maximum-scale=1">
 </head>
 <style>
-page, body, div {
-		 width:100%;/*104,0mm*/
-		 height:100%;/*134,5mm*/
-		 margin: 0px 0px 0px 0px; 
-	 	 margin-right:0mm;
-		 padding: 0px 0px 0px 0px;
-}
+	page,
+	body,
+	div {
+		width: 100%;
+		/*104,0mm*/
+		height: 100%;
+		/*134,5mm*/
+		margin: 0px 0px 0px 0px;
+		margin-right: 0mm;
+		padding: 0px 0px 0px 0px;
+	}
 
-table#producao {
-  		width: 100%;/*105mm*/
-		border-collapse: collapse;	            
+	table#producao {
+		width: 100%;
+		/*105mm*/
+		border-collapse: collapse;
 		border: 0.09em solid;
-        font-size: 0.7em;
+		font-size: 0.7em;
 		columns: 3;
-}
+	}
 
-table#producao tr td.lef{
-		width: 40%;
+	table#producao tr td.lef {
+		width: 35%;
 		border: 0.06em solid;
 		text-align: left;
 		padding-top: 0.18em;
-	    padding-bottom:0.18em;
-	    padding-left: 0.4em;
-	    padding-right: 0;
-}
+		padding-bottom: 0.18em;
+		padding-left: 0.4em;
+		padding-right: 0;
+	}
 
-table#producao tr td.mid{
-		width: 50%;
+	table#producao tr td.mid {
+		width: 51%;
 		border: 0.06em solid;
 		text-align: left;
 		padding-top: 0.18em;
-	    padding-bottom:0.18em;
-	    padding-left: 0.4em;
-	    padding-right: 0;
-}
+		padding-bottom: 0.18em;
+		padding-left: 0.4em;
+		padding-right: 0;
+	}
 
-
-table#producao tr td.rig{
-		width: 9.6153846153846153846153846153846%;
-		border: 0.06em solid;
+	table#producao tr td.rig {
+		width: 14%;
+		border: 0.1mm solid;
 		line-height: 1.2;
 		text-align: center;
-		padding-top: 0.18em;
-	    padding-bottom:0.18em;
-	    padding-left: 0.4em;
-	    padding-right: 0;
-}
+		padding-top: 0.5mm;
+		padding-bottom: 0.5mm;
+		padding-left: 0;
+		padding-right: 0;
+	}
 
-table#obs {
-    width: 100%;
-    border-collapse: collapse;
-    border:0px solid;
-    font-size: 0.64em;
-    columns: 1;
-    font-family: Arial;
-}
+	table#obs {
+		width: 100%;
+		border-collapse: collapse;
+		border: 0px solid;
+		font-size: 0.64em;
+		columns: 1;
+		font-family: Arial;
+	}
 
-table#obs tr td.fases {
-		border:0px solid;
-		color:red;
+	table#obs tr td.fases {
+		border: 0px solid;
+		color: red;
 		padding-top: 0.6em;
-	    padding-bottom:0.3em;
-	    padding-left: 0.5em;
-	    padding-right: 0;
+		padding-bottom: 0.3em;
+		padding-left: 0.5em;
+		padding-right: 0;
 		font-size: 0.88em;
-}
+	}
 
-table#obs tr td.origem {
+	table#obs tr td.origem {
 		width: 60%;
-		border:0px solid;
+		border: 0px solid;
 		padding-top: 0.6em;
-	    padding-bottom:0;
-	    padding-left: 0.5em;
-	    padding-right: 0;
-}
+		padding-bottom: 0;
+		padding-left: 0.5em;
+		padding-right: 0;
+	}
 
-table th {
-    font-weight:bold;
-    font-size: 1.39em;
-    text-transform: uppercase;
-    padding: 0.34em;
-}
-
+	table th {
+		font-weight: bold;
+		font-size: 1.39em;
+		text-transform: uppercase;
+		padding: 0.34em;
+	}
 </style>
 <page id="rodamao" style="
-    width: 104mm;" >
- <body id = "direito">
-  <div align="center">
-   <table id="producao" >
-    <tr>
-    	<span >
-	 		<th colspan="3" style="">etapas de produção</th>
-		</span>
-	</tr>
-	<tr style="font-weight:bold;">
-		<td class = "lef" style="text-align: center;">FASES</td>
-		<td class = "mid" style="text-align: center;">EXECUTANTES</td>
-		<td class = "lef" style="text-align: center;">ANO</td>
-	</tr>
-    {etapas}
-   </table>
-   <table id="obs">
-	<tr>
-	 <td class = "fases" style="">
-        Última Edição em {dia} de {mes} de {ano}.
-	 </td>
-	</tr>
-   </table>
-  </div>
- </body>
+    width: 104mm;">
+
+	<body id="direito">
+		<div align="center">
+			<table id="producao">
+				<tr>
+					<span>
+						<th colspan="3">fases da produção</th>
+					</span>
+				</tr>
+				<tr style="font-weight:bold;">
+					<td class="lef" style="text-align: center;">FASES</td>
+					<td class="mid" style="text-align: center;">EXECUTANTES</td>
+					<td class="rig" style="text-align: center;">DATAS</td>
+				</tr>
+				{etapas}
+			</table>
+			<table id="obs">
+				<tr>
+					<td class="fases">
+						Última Edição em {dia} de {mes} de {ano}.
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
 </page>
+
 </html>
