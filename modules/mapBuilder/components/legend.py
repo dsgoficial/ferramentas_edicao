@@ -1,10 +1,12 @@
 import json
-from pathlib import Path
 from collections import OrderedDict
+from pathlib import Path
 
-from PyQt5.QtXml import QDomDocument
+from config.configDefaults import ConfigDefaults
 from PyQt5.QtCore import QPointF
-from qgis.core import QgsReadWriteContext
+from PyQt5.QtXml import QDomDocument
+from qgis.core import QgsPrintLayout, QgsReadWriteContext
+
 
 class Legend():
 
@@ -44,7 +46,7 @@ class Legend():
     }
 
     def __init__(self):
-        _p = Path(__file__).parent.parent / 'produtos' / 'carta_ortoimagem' 
+        _p = Path(__file__).parent.parent / 'resources' / 'products' / 'orthoMap' 
         self.qptsPath = _p / 'symbols' / 'legend'
         with open(_p / 'mapClassToLegend.json') as mappingData:
             self.legendMappingData = json.load(mappingData)
@@ -110,9 +112,11 @@ class Legend():
             return 848, 16
         return 726, 16
 
-    def make(self, composition, scale, cfg, defaults):
+    def build(self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults):
+        scale = jsonData.get('scale')
+        complementaryClasses = jsonData.get('classes_complementares')
         legendMappingData = self.legendMappingData.get(str(scale))
-        legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(cfg)))
+        legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(complementaryClasses)))
         legendClassesGrouped = self.groupLegend(legendClassesToDisplay, legendMappingData)
         legendClassesOrdered = self.orderLegend(legendClassesGrouped)
         self.buildLegend(composition, legendClassesOrdered, self.getAnchor(scale))

@@ -9,6 +9,7 @@ from ..components.miniMap import MiniMap
 from ..components.subtitle import Subtitle
 from ..components.table import Table
 from ..components.miniMapCoords import MiniMapCoords
+from ..components.legend import Legend
 from ..components.qrcode import Qrcode
 
 class ComponentFactory:
@@ -26,6 +27,7 @@ class ComponentFactory:
             'MiniMap': MiniMap,
             'Subtitle': Subtitle,
             'Table': Table,
+            'Legend': Legend,
             'MiniMapCoords': MiniMapCoords,
             'Qrcode': Qrcode
         }

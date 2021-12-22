@@ -31,6 +31,17 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.grid = GridAndLabelCreator()
 
     def setParams(self, jsonData: dict, defaults: ConfigDefaults, connection: QgsDataSourceUri, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, mapAreaLayer: QgsVectorLayer):
+        ''' Sets necessary parameters to create the map.
+        Args:
+            jsonData: dict with json data + other parameters
+            defaults: default settings
+            connection: instance of QgsDataSourceUri which points to the database to be used
+            composition: QgsPrintLayout which will hold the map components
+            mapAreaFeature: QgsFeature which covers the map area
+            mapAreaLayer: QgsVectorLayer that contains a mapAreaFeature
+        Returns:
+            None
+        '''
         self.data = jsonData
         self.conn = connection
         self.defaults = defaults
@@ -39,22 +50,36 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.mapAreaLayer = mapAreaLayer
 
     def removeLayers(self, debugMode: bool = False):
-        debugMode = False
-        if not debugMode:
+        ''' Removes map layers and layer tree roots. Should be called when not running in debug mode, specially when exporting multiple maps at once.
+        This function is called pre-export process to remove mapLayers that won't be used and in the end of the exportation process (when not running in debug mode)
+        to cleanup layers from the interface.
+        Args:
+            debugMode: Boolean value declaring the debugMode status
+        Returns:
+            None
+        '''
+        if not debugMode and hasattr(self, 'layersIdsToBeRemoved') and hasattr(self, 'groupsToBeRemoved'):
             self.instance.removeMapLayers(self.layersIdsToBeRemoved)
             root = self.instance.layerTreeRoot()
             for group in self.groupsToBeRemoved:
                 groupTree = root.findGroup(group)
                 root.removeChildNode(groupTree)
 
-    def cleanProject(self, debugMode):
+    def cleanProject(self, debugMode: bool = False):
+        ''' Removes a composition from the layoutManager. Only called when not in debug mode.
+        Args:
+            debugMode: Boolean value holding the debugMode status
+        '''
         if not debugMode:
             self.instance.layoutManager().removeLayout(self.composition)
 
     def run(self, debugMode: bool = False):
+        ''' Creates the necessary components for the TopoMap product and populates the composition.
+        Args:
+            debugMode: Boolean value holding the debugMode status
+        '''
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
-        # Let's try to not track the mapLayersIds and then remove everything in the end
         mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x)
         miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x)
         self.instance.addMapLayer(self.mapAreaLayer, False)
