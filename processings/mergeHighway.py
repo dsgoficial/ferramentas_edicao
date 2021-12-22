@@ -86,6 +86,8 @@ class MergeHighway(QgsProcessingAlgorithm):
             numberOfFeatures[i]=newNumberOfFeatures
             if numberOfFeatures[i]==numberOfFeatures[i-1]:
                 break
+        if frameLayer is not None:
+            highwayLayer = self.clipLayer( highwayLayer, frameLayer)
         for feature in highwayLayer.getFeatures():
             self.addSink( feature, sink_l)
 
