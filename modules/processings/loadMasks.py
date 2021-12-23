@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-                        QgsProcessingAlgorithm,
-                        QgsProcessingParameterMultipleLayers,
-                        QgsProcessing
-                    )
-from qgis import core
 import json
+
+from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterMultipleLayers, QgsSymbolLayerId,
+                       QgsSymbolLayerReference)
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class LoadMasks(QgsProcessingAlgorithm): 
 
@@ -17,7 +15,7 @@ class LoadMasks(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            core.QgsProcessingParameterFile(
+            QgsProcessingParameterFile(
                 self.JSON_FILE,
                 self.tr('Selecionar o arquivo de máscaras:'),
                 extension='json'
@@ -43,7 +41,6 @@ class LoadMasks(QgsProcessingAlgorithm):
         a camada pode vir como NoneType, aparentemente, tal fato deve-se à exclusão da camada no order do 
         orderEditLayersAndAddStyle
         '''
-
         for layer in layers:
             if not layer:
                 continue
@@ -63,9 +60,9 @@ class LoadMasks(QgsProcessingAlgorithm):
                 masks = label_format.mask()
                 new_symbol_mask = []
                 for symbol in mask_dict[layerName][provider]:
-                    symbol_id = core.QgsSymbolLayerId(symbol[1], symbol[2])
+                    symbol_id = QgsSymbolLayerId(symbol[1], symbol[2])
                     if symbol[0] in mapId:
-                        reference = core.QgsSymbolLayerReference(mapId[symbol[0]], symbol_id)
+                        reference = QgsSymbolLayerReference(mapId[symbol[0]], symbol_id)
                         new_symbol_mask.append(reference)
                 masks.setMaskedSymbolLayers(new_symbol_mask)
                 label_settings.setFormat(label_format)

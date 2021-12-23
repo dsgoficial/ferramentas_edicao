@@ -1,17 +1,14 @@
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing,
-                       QgsFeatureRequest,
-                       QgsProcessingException,
-                       QgsProcessingAlgorithm,
+import math
+
+from qgis import processing
+from qgis.core import (QgsFeatureRequest, QgsFeatureSink, QgsGeometry,
+                       QgsGeometryUtils, QgsPointXY, QgsProcessing,
+                       QgsProcessingAlgorithm, QgsProcessingException,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber,
-                       QgsGeometryUtils,
-                       QgsFeatureSink,
-                       QgsGeometry,
-                       QgsPointXY)
-from qgis import processing
-import math
+                       QgsProcessingParameterNumber)
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class MergeLinesByAngle(QgsProcessingAlgorithm):
  

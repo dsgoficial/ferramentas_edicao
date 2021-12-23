@@ -1,25 +1,12 @@
-# -*- coding: utf-8 -*-
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-                        QgsProcessing,
-                        QgsFeatureSink,
-                        QgsProcessingAlgorithm,
-                        QgsProcessingParameterFeatureSink,
-                        QgsCoordinateReferenceSystem,
-                        QgsProcessingParameterMultipleLayers,
-                        QgsFeature,
-                        QgsProcessingParameterVectorLayer,
-                        QgsFields,
-                        QgsFeatureRequest,
-                        QgsProcessingParameterNumber,
-                        QgsGeometry,
-                        QgsPointXY
-                    )
 from qgis import processing
-from qgis import core, gui
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsProcessing,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorLayer, QgsWkbTypes)
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
-import math
+
 
 class MergeHighway(QgsProcessingAlgorithm): 
 
@@ -62,13 +49,14 @@ class MergeHighway(QgsProcessingAlgorithm):
             self.OUTPUT_LAYER_L,
             context,
             highwayLayerInput.fields(),
-            core.QgsWkbTypes.MultiLineString,
+            QgsWkbTypes.MultiLineString,
             QgsCoordinateReferenceSystem( iface.mapCanvas().mapSettings().destinationCrs().authid() )
         )
-        if frameLayer is not None:
-            highwayLayer = self.clipLayer( highwayLayerInput, frameLayer)
+
         highwayLayer = self.runAddCount(highwayLayerInput)
         self.runCreateSpatialIndex(highwayLayer)
+
+
         merge = {}
         for highwayFeature in highwayLayer.getFeatures():
             if not highwayFeature['sigla']:
@@ -86,6 +74,10 @@ class MergeHighway(QgsProcessingAlgorithm):
             numberOfFeatures[i]=newNumberOfFeatures
             if numberOfFeatures[i]==numberOfFeatures[i-1]:
                 break
+        
+        if frameLayer is not None:
+            highwayLayer = self.clipLayer( highwayLayer, frameLayer)
+
         for feature in highwayLayer.getFeatures():
             self.addSink( feature, sink_l)
 
@@ -143,7 +135,7 @@ class MergeHighway(QgsProcessingAlgorithm):
         r = processing.run(
             'native:clip',
             {   'FIELD' : [], 
-                'INPUT' : core.QgsProcessingFeatureSourceDefinition(
+                'INPUT' : QgsProcessingFeatureSourceDefinition(
                     layer.source()
                 ), 
                 'OVERLAY' : frame,
@@ -171,5 +163,5 @@ class MergeHighway(QgsProcessingAlgorithm):
         return 'edicao'
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("Mescla as rodovias de acordo com o atributo *sigla*, desconsiderando rodovias sem sigla, e depois recorta as rodovias com a moldura. O resultado é retornado em outra camada e é utilizado como referência para auxiliar no processo de edição.")
     

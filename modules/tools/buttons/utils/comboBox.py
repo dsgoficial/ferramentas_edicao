@@ -16,4 +16,4 @@ class ComboBox(QComboBox):
     def showComboBox(self):
         pos=QCursor.pos()
         self.move(pos)
-        self.show()
+        self.showPopup()

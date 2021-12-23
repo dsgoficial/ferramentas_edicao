@@ -1,25 +1,12 @@
-# -*- coding: utf-8 -*-
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-                        QgsProcessing,
-                        QgsFeatureSink,
-                        QgsProcessingAlgorithm,
-                        QgsProcessingParameterFeatureSink,
-                        QgsCoordinateReferenceSystem,
-                        QgsProcessingParameterMultipleLayers,
-                        QgsFeature,
-                        QgsProcessingParameterVectorLayer,
-                        QgsFields,
-                        QgsFeatureRequest,
-                        QgsProcessingParameterNumber,
-                        QgsGeometry,
-                        QgsPointXY
-                    )
 from qgis import processing
-from qgis import core, gui
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsProcessing,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorLayer, QgsWkbTypes)
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
-import math
+
 
 class MergeRivers(QgsProcessingAlgorithm): 
 
@@ -51,6 +38,28 @@ class MergeRivers(QgsProcessingAlgorithm):
             )
         ) 
 
+    def runAddCount(self, inputLyr):
+        output = processing.run(
+            "native:addautoincrementalfield",
+            {
+                'INPUT':inputLyr,
+                'FIELD_NAME':'AUTO',
+                'START':0,
+                'GROUP_FIELDS':[],
+                'SORT_EXPRESSION':'',
+                'SORT_ASCENDING':False,
+                'SORT_NULLS_FIRST':False,
+                'OUTPUT':'TEMPORARY_OUTPUT'
+            }
+        )
+        return output['OUTPUT']
+    
+    def runCreateSpatialIndex(self, inputLyr):
+        processing.run(
+            "native:createspatialindex",
+            {'INPUT':inputLyr}
+        )
+
     def processAlgorithm(self, parameters, context, feedback):      
         drainageLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME_A, context)
@@ -60,14 +69,15 @@ class MergeRivers(QgsProcessingAlgorithm):
             self.OUTPUT_LAYER_L,
             context,
             drainageLayer.fields(),
-            core.QgsWkbTypes.MultiLineString,
+            QgsWkbTypes.MultiLineString,
             QgsCoordinateReferenceSystem( iface.mapCanvas().mapSettings().destinationCrs().authid() )
         )
 
-        clippedDrainageLayer = self.clipLayer( drainageLayer, frameLayer)
+        drainageLayer = self.runAddCount(drainageLayer)
+        self.runCreateSpatialIndex(drainageLayer)
 
         merge = {}
-        for drainageFeature in clippedDrainageLayer.getFeatures():
+        for drainageFeature in drainageLayer.getFeatures():
             if not drainageFeature['nome']:
                 continue
             mergeKey = '{0}_{1}'.format( drainageFeature['nome'].lower(), drainageFeature['tipo'])
@@ -76,10 +86,14 @@ class MergeRivers(QgsProcessingAlgorithm):
             merge[ mergeKey ].append( drainageFeature )
 
         for mergeKey in merge:
-            self.mergeLineFeatures( merge[ mergeKey ], clippedDrainageLayer )
+            self.mergeLineFeatures( merge[ mergeKey ], drainageLayer )
 
-        for feature in clippedDrainageLayer.getFeatures():
+        if frameLayer is not None:
+            drainageLayer = self.clipLayer( drainageLayer, frameLayer)
+
+        for feature in drainageLayer.getFeatures():
             self.addSink( feature, sink_l)
+
         return {self.OUTPUT_LAYER_L: sinkId_l}
     
     def addSink(self, feature, sink):
@@ -113,7 +127,7 @@ class MergeRivers(QgsProcessingAlgorithm):
         r = processing.run(
             'native:clip',
             {   'FIELD' : [], 
-                'INPUT' : core.QgsProcessingFeatureSourceDefinition(
+                'INPUT' : QgsProcessingFeatureSourceDefinition(
                     layer.source()
                 ), 
                 'OVERLAY' : frame,
@@ -141,5 +155,5 @@ class MergeRivers(QgsProcessingAlgorithm):
         return 'edicao'
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("Mescla os rios de acordo com os atributos *nome* e *tipo*, desconsiderando rios sem nome, e depois recorta os rios com a moldura. O resultado é retornado em outra camada e é utilizado como referência para auxiliar no processo de edição.")
     

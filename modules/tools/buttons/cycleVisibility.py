@@ -28,9 +28,10 @@ class CycleVisibility(BaseTools):
         else:
             lyr.startEditing()
             for feat in lyr.getSelectedFeatures():
-                visible = feat.attribute('visivel')
+                visible = int(feat.attribute('visivel'))
                 if visible == 9999:
                     lyr.changeAttributeValue(feat.id(), fieldIdx, 1)
                 else:
-                    lyr.changeAttributeValue(feat.id(), fieldIdx, (visible + 1) % 3 or visible + 1)
+                    lyr.changeAttributeValue(feat.id(), fieldIdx, visible%2 + 1)
+            lyr.triggerRepaint()
                 

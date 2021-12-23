@@ -1,20 +1,15 @@
 import os
 from pathlib import Path
 
-from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-from .controllers.mapBuilderController import MapBuildController
 from .config.configDefaults import ConfigDefaults
-
+from .controllers.mapBuilderController import MapBuildController
+from .modules.processings.pluginProvider import ProcessingProvider
+from .modules.tools.setupButtons import SetupButtons
 from .resources.dialogs.editionPluginDialog import EditionPluginDialog
-# from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
-# from .map_generator.manager import DefaultMap
-# from .processings.pluginProvider import pluginProvider
-from .resources import *
-# from .tools.setupButtons import SetupButtons
 
 
 class EditionPlugin:
@@ -153,10 +148,10 @@ class EditionPlugin:
             callback=self.run,
             parent=self.iface.mainWindow())
         self.firstStart = True
-        # if (Path(__file__).parent / '.env').exists():
-        #     self.tools = SetupButtons(self.iface)
-        #     self.tools.initToolBar()
-        # pluginProvider.initProcessing(self)
+        self.tools = SetupButtons(self.iface)
+        self.tools.initToolBar()
+        self.processingProvider = ProcessingProvider()
+        self.processingProvider.initProcessing()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -165,16 +160,15 @@ class EditionPlugin:
             self.tools.unload()
         if hasattr(self, 'controller'):
             self.controller.unload()
+        if hasattr(self, 'processingProvider'):
+            self.processingProvider.unload()
+        if hasattr(self, 'dlg'):
+            self.dlg.close()
         for action in self.actions:
             self.iface.removePluginMenu(
                 self.tr(u'&Edition Plugin'),
                 action)
             self.iface.removeToolBarIcon(action)
-        try:
-            dlg = getattr(self, 'dlg')
-            dlg.close()
-        except AttributeError:
-            pass
 
     def initialize(self):
         ''' Starts main plugin dialog and the main controller '''

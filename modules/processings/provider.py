@@ -1,16 +1,21 @@
-from qgis.core import QgsProcessingProvider
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from qgis.PyQt.QtGui import QIcon
 import os
-from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
-from .mergeRivers import MergeRivers
-from .mergeHighway import MergeHighway
-from .prepareOrtho import PrepareOrtho
+
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from qgis.core import QgsProcessingProvider
+from qgis.PyQt.QtGui import QIcon
+
+from .elevationPointGeneralization import ElevationPointsGeneralization
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
-from .mergeLinesByAngle import MergeLinesByAngle
 from .loadMasks import LoadMasks
+from .makeGrid import MakeGrid
+from .mergeHighway import MergeHighway
+from .mergeLinesByAngle import MergeLinesByAngle
+from .mergeRivers import MergeRivers
+from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
+from .prepareOrtho import PrepareOrtho
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
+
 
 class Provider(QgsProcessingProvider):
 
@@ -27,6 +32,8 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(LoadMasks())
         self.addAlgorithm(SaveLayerStylesToFile())
         self.addAlgorithm(SaveMasks())
+        self.addAlgorithm(ElevationPointsGeneralization())
+        self.addAlgorithm(MakeGrid())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()

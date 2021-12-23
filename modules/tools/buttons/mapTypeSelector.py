@@ -12,8 +12,8 @@ from qgis.core import (Qgis, QgsFeature, QgsFeatureRequest, QgsGeometry,
 class MapTypeSelector(QComboBox):
 
     options = {
-        'Carta': 0,
-        'Carta Mini': 1
+        'Carta': 1,
+        'Carta Mini': 2
     }
 
     def __init__(self, iface, toolBar):

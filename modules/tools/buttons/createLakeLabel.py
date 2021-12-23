@@ -1,7 +1,9 @@
 from pathlib import Path
 
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProject, QgsSpatialIndex)
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransformContext, QgsDistanceArea,
+                       QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
+                       QgsSpatialIndex, QgsUnitTypes)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
@@ -38,24 +40,27 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
 
     def mouseClick(self, pos, btn):
         if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
-            print(closestSpatialID)
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)
-            if not closestFeat.isClosed():
+            if closestSpatialID:
                 feat = next(closestFeat)
                 if self.checkFeature(feat):
+                    self.currPos = pos
                     self.createFeature(feat)
                 else:
                     self.displayErrorMessage(self.tr(
                         'Feição inválida. Verifique os atributos "nome" e "tipo" na camada "cobter_massa_dagua_a"'
                     ))
+            else:
+                self.displayErrorMessage('Não foram encontradas feições em "cobter_massa_dagua_a"')
+
 
     @staticmethod
     def checkFeature(feat):
-        return (feat.attribute('tipo') in (3,4,5,6,7,11)) and feat.attribute('nome')
+        return (int(feat.attribute('tipo')) in (3,4,5,6,7,11)) and feat.attribute('nome')
 
     def createFeature(self, feat):
         toInsert = QgsFeature(self.dstLyr.fields())
@@ -75,34 +80,36 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
     def getMapType(self):
         mapType = self.mapTypeSelector.currentText()
         if mapType == 'Carta':
-            return 0
-        return 1
+            return 1
+        return 2
 
     def getLabelSize(self, feat):
         area = feat.geometry().area()
         scale = self.getScale()
         scaleComparator = (scale/1000)**2
-        if area < 2300*scaleComparator:
+        if area < 770*scaleComparator:
             return 6
-        elif area < 3600*scaleComparator:
+        elif area < 2300*scaleComparator:
             return 7
-        elif area < 5200*scaleComparator:
+        elif area < 3600*scaleComparator:
             return 8
-        elif area < 9800*scaleComparator:
+        elif area < 5200*scaleComparator:
             return 9
-        elif area < 16500*scaleComparator:
+        elif area < 9800*scaleComparator:
             return 10
-        elif area < 25000*scaleComparator:
+        elif area < 16500*scaleComparator:
             return 12
-        elif area < 36000*scaleComparator:
+        elif area < 25000*scaleComparator:
             return 14
-        else:
+        elif area < 36000*scaleComparator:
             return 16
+        else:
+            return 18
 
     def getScale(self):
         scale = self.scaleSelector.currentText()
         scale = scale.split(':')[1]
-        scale = scale.strip('.')
+        scale = scale.replace('.', '')
         return int(scale)
 
     def getLayers(self):
@@ -122,6 +129,12 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
                 'Camada "edicao_texto_generico_p" não encontrada'
             ))
             return None
+        if self.srcLyr.dataProvider().crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
+            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees)
+        else:
+            self.tolerance = self.getScale() * 0.01
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True

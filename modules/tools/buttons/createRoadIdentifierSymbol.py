@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
-                       QgsSpatialIndex)
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject, QgsPoint,
+                       QgsSpatialIndex, QgsDistanceArea, QgsCoordinateTransformContext,
+                       QgsCoordinateReferenceSystem, QgsUnitTypes, QgsGeometryUtils)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
@@ -10,11 +11,12 @@ from .utils.comboBox import ComboBox
 
 class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
 
-    def __init__(self, iface, toolBar, mapChoice):
+    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
-        self.mapChoice = mapChoice
+        self.mapTypeSelector = mapTypeSelector
+        self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
         self.box = ComboBox(self.iface.mainWindow())
         self.box.textActivated.connect(self.createFeature)
@@ -36,18 +38,16 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         self.iface.registerMainWindowAction(self._action, '')
 
     def mouseClick(self, pos, btn):
-        print('mopa')
         if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
-            print(closestSpatialID)
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)
-            if not closestFeat.isClosed():
+            if closestSpatialID:
                 feat = next(closestFeat)
                 if roadAbrev:=feat.attribute('sigla'):
-                    self.currPos = pos
+                    self.currPos = self.projectPosition(pos, feat)
                     if ';' in roadAbrev:
                         options = roadAbrev.split(';')
                         self.box.updateItems(options)
@@ -58,22 +58,43 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
                     self.displayErrorMessage(self.tr(
                         f'Feição selecionada possui atributo "sigla" inválido'
                     ))
+            else:
+                self.displayErrorMessage('Não foi encontrada uma via de deslocamento dentro da tolerância')
 
     def createFeature(self, name):
         self.box.hide()
         toInsert = QgsFeature(self.dstLyr.fields())
         jurisd, abbrv = name.split('-')
+        jurisd = self.getjurisdiction(jurisd)
         toInsert.setAttribute('jurisdicao', jurisd)
         toInsert.setAttribute('sigla', abbrv)
-        if self.mapChoice.currentText() == 'Carta Mini':
-            toInsert.setAttribute('carta_mini', True)
-        else:
-            toInsert.setAttribute('carta_mini', False)
-        toInsertGeom = QgsGeometry.fromPointXY(self.currPos)
-        toInsert.setGeometry(toInsertGeom)
+        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
+        toInsert.setGeometry(self.currPos)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
-        self.mapCanvas.refresh()
+        self.dstLyr.triggerRepaint()
+
+    def getjurisdiction(self, abbr):
+        if abbr in ('BR','VE') :
+            return 1
+        if abbr in ('RS','SC','PR','SP','RJ','MG','ES','MS','MT','AP','AM','RO','RR','PA','AC','TO','MA','CE','RN','PI','PB','PE','AL','SE','BA'):
+            return 2
+        return 0
+
+    def projectPosition(self, pos, feat):
+        geom = feat.geometry()
+        point = QgsPoint(pos.x(), pos.y())
+        point, vIdx, prevVIdx, nextVIdx, _ = geom.closestVertex(pos)
+        if prevVIdx == -1:
+            prevPoint = geom.vertexAt(vIdx)
+            nextPoint = geom.vertexAt(nextVIdx)
+        else:
+            prevPoint = geom.vertexAt(prevVIdx)
+            nextPoint = geom.vertexAt(vIdx)
+        return QgsGeometryUtils.projectPointOnSegment(
+            QgsPoint(pos.x(), pos.y()),
+            QgsPoint(prevPoint.x(),prevPoint.y()),
+            QgsPoint(nextPoint.x(),nextPoint.y()))
 
     def getLayers(self):
         srcLyr = QgsProject.instance().mapLayersByName('infra_via_deslocamento_l')
@@ -92,6 +113,12 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
                 'Camada "edicao_identificador_trecho_rod_p" não encontrada'
             ))
             return None
+        if self.srcLyr.dataProvider().crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
+            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees)
+        else:
+            self.tolerance = self.getScale() * 0.01
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True

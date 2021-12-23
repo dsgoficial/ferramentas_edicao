@@ -1,25 +1,8 @@
-# -*- coding: utf-8 -*-
-
+from qgis.core import (QgsFeatureRequest, QgsProcessing,
+                       QgsProcessingAlgorithm, QgsProcessingParameterField,
+                       QgsProcessingParameterVectorLayer)
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-                        QgsProcessing,
-                        QgsFeatureSink,
-                        QgsProcessingAlgorithm,
-                        QgsProcessingParameterFeatureSink,
-                        QgsCoordinateReferenceSystem,
-                        QgsProcessingParameterMultipleLayers,
-                        QgsFeature,
-                        QgsProcessingParameterVectorLayer,
-                        QgsFields,
-                        QgsFeatureRequest,
-                        QgsProcessingParameterNumber,
-                        QgsGeometry,
-                        QgsPointXY
-                    )
-from qgis import processing
-from qgis import core, gui
-from qgis.utils import iface
-import math
+
 
 class HighestSpotOnTheFrame(QgsProcessingAlgorithm): 
 
@@ -39,20 +22,20 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
-            core.QgsProcessingParameterField(
+            QgsProcessingParameterField(
                 self.INPUT_SPOT_FIELD,
                 self.tr('Selecionar o atributo de "cota"'), 
-                type=core.QgsProcessingParameterField.Any, 
+                type=QgsProcessingParameterField.Any, 
                 parentLayerParameterName=self.INPUT_SPOT_LAYER,
                 allowMultiple=False
             )
         )
 
         self.addParameter(
-            core.QgsProcessingParameterField(
+            QgsProcessingParameterField(
                 self.INPUT_HIGHEST_SPOT_FIELD,
                 self.tr('Selecionar o atributo de "cota mais alta"'), 
-                type=core.QgsProcessingParameterField.Any, 
+                type=QgsProcessingParameterField.Any, 
                 parentLayerParameterName=self.INPUT_SPOT_LAYER,
                 allowMultiple=False
             )
@@ -65,7 +48,6 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
                 [QgsProcessing.TypeVectorPolygon]
             )
         )
-
 
     def processAlgorithm(self, parameters, context, feedback):      
         spotLayer = self.parameterAsVectorLayer(parameters, self.INPUT_SPOT_LAYER, context)
@@ -112,10 +94,10 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         return self.tr('Definir cota mais alta por moldura')
 
     def group(self):
-        return self.tr('Edição')
+        return self.tr('Auxiliar')
 
     def groupId(self):
-        return 'edicao'
+        return 'auxiliar'
 
     def shortHelpString(self):
         return self.tr("O algoritmo ...")

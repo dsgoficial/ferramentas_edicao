@@ -1,26 +1,13 @@
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-                        QgsProcessing,
-                        QgsFeatureSink,
-                        QgsProcessingAlgorithm,
-                        QgsProcessingParameterFeatureSink,
-                        QgsCoordinateReferenceSystem,
-                        QgsProcessingParameterMultipleLayers,
-                        QgsFeature,
-                        QgsProcessingParameterVectorLayer,
-                        QgsFields,
-                        QgsFeatureRequest,
-                        QgsProcessingParameterNumber,
-                        QgsProcessingParameterFolderDestination,
-                        QgsGeometry,
-                        QgsPointXY
-                    )
-from qgis import processing
-from qgis import core, gui
-from qgis.utils import iface
 import os
+
+from PyQt5 import QtWidgets
+from qgis import processing
 from processing.gui.wrappers import WidgetWrapper
-from PyQt5 import QtCore, uic, QtWidgets, QtGui
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFolderDestination, QgsProject)
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class SaveLayerStylesToFile(QgsProcessingAlgorithm): 
 
@@ -50,7 +37,7 @@ class SaveLayerStylesToFile(QgsProcessingAlgorithm):
         groupName = self.parameterAsGroup(parameters, self.GROUP, context)
         folderOutput = self.parameterAsFileOutput(parameters, self.FOLDER_OUTPUT, context)
 
-        group = core.QgsProject.instance().layerTreeRoot().findGroup( groupName )
+        group = QgsProject.instance().layerTreeRoot().findGroup( groupName )
 
         if not group:
             raise Exception('Grupo não encontrado!')
@@ -99,7 +86,6 @@ class SaveLayerStylesToFile(QgsProcessingAlgorithm):
         return self.tr("O algoritmo ...")
 
 
-
 class GroupsWidgetWrapper(WidgetWrapper):
     def __init__(self, *args, **kwargs):
         super(GroupsWidgetWrapper, self).__init__(*args, **kwargs)
@@ -107,7 +93,7 @@ class GroupsWidgetWrapper(WidgetWrapper):
     def getGroupNames(self):
         return [
             g.name()
-            for g in  core.QgsProject.instance().layerTreeRoot().findGroups()
+            for g in  QgsProject.instance().layerTreeRoot().findGroups()
         ]
 
     def createWidget(self):
@@ -131,7 +117,7 @@ class GroupsWidgetWrapper(WidgetWrapper):
     def postInitialize(self, wrappers):
         pass
 
-class ParameterGroup(core.QgsProcessingParameterDefinition):
+class ParameterGroup(QgsProcessingParameterDefinition):
 
     def __init__(self, name, description=''):
         super().__init__(name, description)
@@ -151,7 +137,7 @@ class ParameterGroup(core.QgsProcessingParameterDefinition):
         return True
 
     def metadata(self):
-        return {'widget_wrapper': 'plugin_edicao.processings.saveLayerStylesToFile.GroupsWidgetWrapper' }
+        return {'widget_wrapper': 'plugin_edicao.modules.processings.saveLayerStylesToFile.GroupsWidgetWrapper' }
 
     def valueAsPythonString(self, value, context):
         return str(value)

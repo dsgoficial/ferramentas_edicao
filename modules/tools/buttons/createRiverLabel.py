@@ -1,7 +1,12 @@
 from pathlib import Path
+import numpy as np
+from numpy.core.fromnumeric import sort
 
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsLineString,
-                       QgsPointXY, QgsProject, QgsSpatialIndex)
+from qgis.core import (QgsCoordinateReferenceSystem, QgsGeometryUtils,
+                       QgsCoordinateTransformContext, QgsDistanceArea,
+                       QgsFeature, QgsFeatureRequest, QgsGeometry,
+                       QgsLineString, QgsPointXY, QgsProject, QgsSpatialIndex,
+                       QgsUnitTypes)
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
@@ -14,6 +19,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
+        self.dstLyr = None
         self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
@@ -36,23 +42,29 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         self.iface.registerMainWindowAction(self._action, '')
 
     def mouseClick(self, pos, btn):
-        if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos)
+        if self.isActive() and self.dstLyr:
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=2*self.tolerance)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyr.getFeatures(request)
-            if not closestFeat.isClosed():
+            if closestSpatialID:
                 feat = next(closestFeat)
                 if self.checkFeature(feat):
                     if feat.attribute('situacao_em_poligono') == 1:
                         self.createFeatureA(feat, pos)
                     elif feat.attribute('situacao_em_poligono') in (2,3):
                         self.createFeatureB(feat, pos)
+                    else:
+                        self.displayErrorMessage(self.tr(
+                        'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
+                        ))
                 else:
                     self.displayErrorMessage(self.tr(
                         'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
                     ))
+            else:
+                    self.displayErrorMessage('Não foram encontradas feições em "elemnat_trecho_drenagem_l_merged"')
 
     @staticmethod
     def checkFeature(feat):
@@ -62,17 +74,16 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert = QgsFeature(self.dstLyr.fields())
         toInsert.setAttribute('texto_edicao', feat.attribute('nome'))
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
-        # toInsert.setAttribute('justificativa_txt', 2)
         toInsert.setAttribute('espacamento', 0)
         toInsert.setAttribute('cor', '#00a0df')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
-        labelSize = self.getLabelFontSizeB(feat)
+        labelSize = self.getLabelFontSizeA(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
-        self.mapCanvas.refresh()
+        self.dstLyr.triggerRepaint()
 
     def createFeatureB(self, feat, pos):
         toInsert = QgsFeature(self.dstLyr.fields())
@@ -87,59 +98,87 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
-        self.mapCanvas.refresh()
-
-    def getMapType(self):
-        mapType = self.mapTypeSelector.currentText()
-        if mapType == 'Carta':
-            return 0
-        return 1
+        self.dstLyr.triggerRepaint()
 
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
         name = feat.attribute('nome')
-        interpolateSize = labelSize * len(str(name)) * 0.5
+        interpolateSize = labelSize * len(str(name)) * self.tolerance / 15
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
+        start = posClosestV - interpolateSize/2
+        end = posClosestV + interpolateSize/2
+        if interpolateSize > geom.length():
+            toExtend = interpolateSize - geom.length()
+            geom = geom.extendLine(toExtend/2,toExtend/2)
+        elif posClosestV + interpolateSize/2 > geom.length():
+            diff = (posClosestV + interpolateSize/2) - geom.length()
+            geom = geom.extendLine(0,diff)
+            end = geom.length()
+        elif posClosestV - interpolateSize/2 < 0:
+            diff =  interpolateSize/2 - posClosestV
+            geom = geom.extendLine(diff,0)
+            start = 0
+            end += diff
         closestV = geom.interpolate(posClosestV)
-        firstGeom = geom.interpolate(posClosestV-interpolateSize/2)
-        lastGeom = geom.interpolate(posClosestV+interpolateSize/2)
-        toInsertGeom = self.buildLineGeom(firstGeom, lastGeom, geom)
+        start, end = self.adjustGeomLength(geom, start, end)
+        toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
+        toInsertGeom = self.polynomialFit(toInsertGeom)
         toInsertGeom.translate(*self.getTransformParams(closestV,clickPos))
-        toInsertGeom = toInsertGeom.simplify(2)
+        #toInsertGeom = toInsertGeom.simplify(self.tolerance/3)
+
         return toInsertGeom
+
+    def adjustGeomLength(self, geom, start, end):
+        if geom.interpolate(start) and geom.interpolate(end):
+            firstV = geom.interpolate(start).asPoint()
+            lastV = geom.interpolate(end).asPoint()
+            realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
+            observedLength = end - start
+            maxCount = 0
+            while(observedLength / realLength) > 1.2 and maxCount < 10:
+                start, end = start - self.tolerance, end + self.tolerance
+                start = max(start, 0)
+                end = min(end, geom.length())
+                firstV = geom.interpolate(start).asPoint()
+                lastV = geom.interpolate(end).asPoint()
+                realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
+                maxCount+=1
+        return start, end
+
+    def polynomialFit(self, geom):
+        #geom = geom.simplify(self.tolerance/10)
+        xVert = [p.x() for p in geom.vertices()]
+        yVert = [p.y() for p in geom.vertices()]
+        f = np.poly1d(np.polyfit(xVert, yVert, 2))
+        xVert = sorted(xVert)
+        newYVert = f(xVert)
+        return QgsGeometry(QgsLineString(xVert,newYVert.tolist()))
 
     def getTransformParams(self, ref, clickPos):
         ref = ref.asPoint()
         xTranslate = clickPos.x() - ref.x()
         yTranslate =  clickPos.y() - ref.y()
+        xTranslate, yTranslate = self.scaleTransform(xTranslate, yTranslate)
         return xTranslate, yTranslate
 
-    def buildLineGeom(self, firstGeom, lastGeom, geom):
+    def scaleTransform(self, x, y):
+        d = self.tolerance
+        scaleFactor = (d**2 / ((x**2 + y**2)))**0.5
+        return scaleFactor*x, scaleFactor*y
+
+    def buildLineFromGeomDist(self, start, end, geom):
         xCoords = []
         yCoords = []
-        if firstGeom.isNull():
-            fp = QgsPointXY(geom.vertexAt(0))
+        if geom.isMultipart():
+            for point in geom.asMultiPolyline()[0]:
+                xCoords.append(point.x())
+                yCoords.append(point.y())
         else:
-            fp = firstGeom.asPoint()
-        if lastGeom.isNull():
-            count = geom.constGet().vertexCount()
-            lp = QgsPointXY(geom.vertexAt(count-1))
-        else:
-            lp = lastGeom.asPoint()
-        fpClosestPoint, fpClosestVIdx, fpPrevVIdx, fpNextVIdx, _ = geom.closestVertex(fp)
-        lpClosestPoint, lpClosestVIdx, lpPrevVIdx, lpNextVIdx, _ = geom.closestVertex(lp)
-        xCoords.append((fp.x()))
-        yCoords.append((fp.y()))
-        if lpClosestVIdx >= fpClosestVIdx:
-            for i in range(fpClosestVIdx, lpClosestVIdx):
-                _v = geom.vertexAt(i)
-                xCoords.append(_v.x())
-                yCoords.append(_v.y())
-        xCoords.append(lp.x())
-        yCoords.append(lp.y())
-        lineGeom = QgsLineString(xCoords, yCoords)
-        return QgsGeometry(lineGeom)
+            for point in geom.asPolyline():
+                xCoords.append(point.x())
+                yCoords.append(point.y())
+        return QgsLineString(xCoords,yCoords).curveSubstring(start,end)
 
 
     def getLabelFontSizeA(self, feat):
@@ -160,34 +199,28 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         scale = self.getScale()
         scaleComparator = scale/1000
         if length < 65*scaleComparator:
-            return 6
-        elif length < 80*scaleComparator:
             return 7
-        elif length < 100*scaleComparator:
+        elif length < 80*scaleComparator:
             return 8
-        elif length < 120*scaleComparator:
+        elif length < 100*scaleComparator:
             return 9
-        elif length < 160*scaleComparator:
+        elif length < 120*scaleComparator:
             return 10
-        elif length < 200*scaleComparator:
+        elif length < 160*scaleComparator:
             return 12
+        elif length < 200*scaleComparator:
+            return 14
         else:
             return 16
 
-    def getScale(self):
-        scale = self.scaleSelector.currentText()
-        scale = scale.split(':')[1]
-        scale = scale.replace('.', '')
-        return int(scale)
-
     def getLayers(self):
-        srcLyr = QgsProject.instance().mapLayersByName('elemnat_trecho_drenagem_l')
+        srcLyr = QgsProject.instance().mapLayersByName('elemnat_trecho_drenagem_l_merged')
         dstLyr = QgsProject.instance().mapLayersByName('edicao_texto_generico_l')
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Camada "elemnat_trecho_drenagem_l" não encontrada'
+                'Camada "elemnat_trecho_drenagem_l_merged" não encontrada'
             ))
             return None
         if len(dstLyr) == 1:
@@ -197,6 +230,12 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
                 'Camada "edicao_texto_generico_l" não encontrada'
             ))
             return None
+        if self.srcLyr.dataProvider().crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
+            self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.005, QgsUnitTypes.DistanceDegrees)
+        else:
+            self.tolerance = self.getScale() * 0.005
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries) 
         return True

@@ -1,17 +1,10 @@
-# -*- coding: utf-8 -*-
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-                        QgsProcessingAlgorithm,
-                    )
-from qgis import processing
-from qgis import core, gui
-from qgis.utils import iface
-import math
 import json
-from qgis.PyQt.QtXml import QDomDocument
-from processing.gui.wrappers import WidgetWrapper
-from PyQt5 import QtCore, uic, QtWidgets, QtGui
+
+from qgis.core import (QgsMapLayer, QgsProcessingAlgorithm,
+                       QgsProcessingParameterFileDestination, QgsProject,
+                       QgsRuleBasedLabeling, QgsVectorLayerSimpleLabeling)
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class SaveMasks(QgsProcessingAlgorithm): 
 
@@ -20,7 +13,7 @@ class SaveMasks(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            core.QgsProcessingParameterFileDestination(
+            QgsProcessingParameterFileDestination(
                 self.FOLDER_OUTPUT,
                 self.tr('Selecionar o arquivo para salvar'),
                 fileFilter='.json'
@@ -29,20 +22,20 @@ class SaveMasks(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):      
         fileOutput = self.parameterAsFileOutput(parameters, self.FOLDER_OUTPUT, context)
-        layers = core.QgsProject.instance().mapLayers().values()
+        layers = QgsProject.instance().mapLayers().values()
         mask_dict = {}
         for layer in layers:
             layerName = layer.dataProvider().uri().table()
-            if not layer.type() == core.QgsMapLayer.VectorLayer:
+            if not layer.type() == QgsMapLayer.VectorLayer:
                 continue
             labels = layer.labeling()
             if not labels:
                 continue
             providers = []
-            if isinstance(labels, core.QgsVectorLayerSimpleLabeling):
+            if isinstance(labels, QgsVectorLayerSimpleLabeling):
                 providers.append('--SINGLE--RULE--')
                 providerMap = {'--SINGLE--RULE--': '--SINGLE--RULE--'}
-            if isinstance(labels, core.QgsRuleBasedLabeling):
+            if isinstance(labels, QgsRuleBasedLabeling):
                 providers = [x.ruleKey() for x in labels.rootRule().children()]
                 providerMap = {x.ruleKey(): x.description() for x in labels.rootRule().children()}
                 

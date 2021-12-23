@@ -1,23 +1,20 @@
-# -*- coding: utf-8 -*-
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-                        QgsProcessingAlgorithm,
-                        QgsProcessingParameterEnum
-                    )
-from qgis import processing
-from qgis import core, gui
-from qgis.utils import iface
-import os
 import json
+import os
+
+from PyQt5 import QtWidgets
+from qgis import processing
 from processing.gui.wrappers import WidgetWrapper
-from qgis.PyQt.QtXml import QDomDocument
-from PyQt5 import QtCore, uic, QtWidgets, QtGui
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterEnum, QgsProject)
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm): 
 
     MAP_TYPE = 'MAP_TYPE'
     STYLENAME = 'STYLENAME'
+    INPUT_SCALE = 'INPUT_SCALE'
     GROUP = 'GROUP'
     MODE = 'MODE'
     OUTPUT = 'OUTPUT'
@@ -56,6 +53,14 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterEnum(
+                self.INPUT_SCALE,
+                self.tr('Selecione a escala de edição:'),
+                options = [self.tr('1:25.000'), self.tr('1:50.000'), self.tr('1:100.000'), self.tr('1:250.000')]
+            )
+        )
+
+        self.addParameter(
             ParameterGroup(
                 self.GROUP,
                 description='Grupo'
@@ -67,8 +72,18 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback): 
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
+        gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
+
+        if (gridScaleParam==0):
+            gridScale = 25000
+        elif (gridScaleParam==1):
+            gridScale = 50000
+        if (gridScaleParam==2):
+            gridScale = 100000
+        elif (gridScaleParam==3):
+            gridScale = 250000
 
         project = context.project()
         
@@ -99,10 +114,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'camadas.json'
             ))
         if mode==0:
-            styleOption = 'map'
+            styleOption = 'map_edicao'
             groupName = 'carta'
         elif mode==1:
-            styleOption = 'miniMap'
+            styleOption = 'miniMap_edicao'
             groupName = 'carta_mini'
         else:
             return {self.OUTPUT: 'Valor para modo inválido'}
@@ -134,6 +149,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
+        feedback.setProgressText('Configurando escala de renderização...')
+        self.renderizar( layers, gridScaleParam)
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
 
         #feedback.setProgressText('Carregando as máscaras...') 
         #self.loadMasks(carta, layers)
@@ -219,6 +238,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             }
         )
     
+    def renderizar(self, layers, scale):
+        for layer in layers:
+            qgs_feature_renderer = layer.renderer()
+            qgs_feature_renderer.setReferenceScale(scale)
+            layer.reload()
+    
     def loadMasks(self, carta, layers):
         jsonPathMask = os.path.join(
                 os.path.abspath(os.path.join(
@@ -266,7 +291,7 @@ class GroupsWidgetWrapper(WidgetWrapper):
     def getGroupNames(self):
         groupsList = [
             g.name()
-            for g in  core.QgsProject.instance().layerTreeRoot().findGroups()
+            for g in  QgsProject.instance().layerTreeRoot().findGroups()
         ]
         groupsList.insert(0, '')
         return groupsList
@@ -292,7 +317,7 @@ class GroupsWidgetWrapper(WidgetWrapper):
     def postInitialize(self, wrappers):
         pass
 
-class ParameterGroup(core.QgsProcessingParameterDefinition):
+class ParameterGroup(QgsProcessingParameterDefinition):
 
     def __init__(self, name, description=''):
         super().__init__(name, description)
@@ -312,7 +337,7 @@ class ParameterGroup(core.QgsProcessingParameterDefinition):
         return True
 
     def metadata(self):
-        return {'widget_wrapper': 'plugin_edicao.processings.orderEditLayersAndAddStyle.GroupsWidgetWrapper' }
+        return {'widget_wrapper': 'plugin_edicao.modules.processings.orderEditLayersAndAddStyle.GroupsWidgetWrapper' }
 
     def valueAsPythonString(self, value, context):
         return str(value)

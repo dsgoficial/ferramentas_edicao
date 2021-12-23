@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
 from qgis.core import QgsApplication
 from .provider import Provider
-from PyQt5.QtWidgets import * 
-from PyQt5.QtGui import * 
-from PyQt5.QtCore import * 
 
-class pluginProvider(object):
+class ProcessingProvider(object):
 
     def __init__(self):
         self.provider = None
