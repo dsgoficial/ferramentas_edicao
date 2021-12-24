@@ -63,7 +63,14 @@ class MapBuildControllerUtils:
             layer.commitChanges()
             return layer, feat
 
-    def getEpsg(self, hemisphere, timeZone):
+    def getEpsg(self, hemisphere: str, timeZone: str) -> int:
+        ''' Calculates the epsg by using the hemisphere and the timezone
+        Args:
+            hemisphere: N or S
+            timezone: Integer / String from -12 to 12
+        Returns:
+            EPSG (int)
+        '''
         timeZone = int(timeZone)
         epsg = "319"
         if hemisphere == 'N':

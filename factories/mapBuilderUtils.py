@@ -10,10 +10,24 @@ from ..config.configDefaults import ConfigDefaults
 
 
 class MapBuilderUtils:
+    ''' Utility functions for MapBuilders
+    '''
 
     instance = QgsProject.instance()
 
     def getLayersFromDB(self, uri: QgsDataSourceUri, data:dict, defaults: ConfigDefaults, productPath: Path, group: str, filterF: Callable) -> tuple[list[QgsVectorLayer],list[str]]:
+        ''' Reads layer from "uri". The layers to be read are defined by "productType" and "group" and filtered by "filterF",
+        which is callable. Returns a tuple of two lists containing QgsMapLayers and its ids, respectively.
+        Args:
+            uri: URI definition holding the database info
+            data: Dict holding the map info
+            defaults: Dataclass holding default plugin info
+            productPath: Path instance pointing to the product path 
+            group: map or miniMap
+            filterF: filter function that receives available layers and return the filtered ones
+        Returns:
+            Tuple of two lists: [QgsMapLayers] and [QgsMapLayers ids]
+        '''
         layersList = []
         layersIDsList = []
         scale = data.get('scale')
@@ -30,16 +44,27 @@ class MapBuilderUtils:
                     layer.triggerRepaint()
                 layersList.append(layer)
                 layersIDsList.append(layer.id())
-
         return layersList, layersIDsList
 
     def getLayerFromPostgres(self, uri: QgsDataSourceUri, data: dict) -> QgsVectorLayer:
+        ''' Reads a vector layer from a postgres database.
+        Args:
+            uri: URI definition holding the database info
+            data: dict holding two postgres table infos: schema and table name
+        Returns:
+            A vector layer
+        '''
         schema = data.get('schema')
         table = data.get('table')
         uri.setDataSource(schema, table, 'geom')
         return QgsVectorLayer(uri.uri(False), table, 'postgres')
 
     def classifiedMapHandler(self, composition: QgsPrintLayout, data: dict):
+        '''Switches the visibility status of QgsLayoutItems that are influentiated by the "acesso_restrito" json key
+        Args:
+            composition: QgsPrintLayout
+            data: Dict holding the map info
+        '''
         if data.get('acesso_restrito'):
             composition.itemById('label_bdgexQR').setVisible(False)
             composition.itemById('label_bdgexWeb').setVisible(False)
@@ -52,6 +77,17 @@ class MapBuilderUtils:
             composition.itemById('label_classified').setVisible(False)
 
     def getStylePath(self, layerName: str, defaults: ConfigDefaults, productType: str, stylesFolder: Path, scale: int) -> Path:
+        '''Returns the style path of some layer. The style path depends on its "productType", "scale". Variables such as
+        "stylesFolder" and "layerName" are also necessary to define the path.
+        Args:
+            layerName: layer's name string
+            defaults: Dataclass holding default plugin info
+            productType: orthoMap or topoMap
+            stylesFolder: Path instance pointing to the styles folder
+            scale: int in (25,50,100,250)
+        Returns:
+            Path instance containing the style path
+        '''
         if productType == 'orthoMap':
             basedOnScale = defaults.scaleBasedStyleOrtho
         elif productType == 'topoMap':
@@ -64,16 +100,31 @@ class MapBuilderUtils:
             return p
 
     def readJsonFromPath(self, jsonPath: Path) -> dict:
+        '''Reads a json file.
+        Args:
+            jsonPath: json's path instance
+        Returns:
+            dict containig the json data
+        ''' 
         with open(jsonPath, 'r', encoding='utf-8') as fp:
             data = json.load(fp)
         return data
 
     def deleteLayerTreeNode(self, group: str):
+        '''Delete LayerTreeNodes
+        Args:
+            group: string with group name
+        '''
         root = self.instance.layerTreeRoot()
         if foundGroup := root.findGroup(group):
             root.removeChildNode(foundGroup)
 
     def setupMasks(self, productPath: Path, layers: list[QgsVectorLayer]):
+        ''' Runs the "loadmasks" processing to setup the layers masks.
+        Args:
+            productPath: Product Path instance
+            layers: list of vector layers which masks will be modified
+        '''
         pathJson = productPath / 'masks.json'
         if pathJson.exists():
             processing.run(

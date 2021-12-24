@@ -67,7 +67,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         Args:
             debugMode: Boolean value holding the debugMode status
         '''
-        if not debugMode:
+        if not debugMode and hasattr(self, 'composition'):
             self.instance.layoutManager().removeLayout(self.composition)
 
     def filterLayers(self, mapType: str, jsonData: dict, defaults: ConfigDefaults, mapLayers:list[dict]):
@@ -145,4 +145,4 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds))
         self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
         self.classifiedMapHandler(self.composition, self.data)
-        # self.setupMasks(self.productPath, mapLayers)
+        self.setupMasks(self.productPath, mapLayers)
