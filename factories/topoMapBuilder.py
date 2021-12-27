@@ -70,7 +70,7 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         Args:
             debugMode: Boolean value holding the debugMode status
         '''
-        if not debugMode:
+        if not debugMode and hasattr(self, 'composition'):
             self.instance.layoutManager().removeLayout(self.composition)
 
     def run(self, debugMode: bool = False):

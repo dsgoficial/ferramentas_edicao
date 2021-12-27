@@ -106,6 +106,11 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             self.conn, self.data, self.defaults, self.productPath, 'map', partial(self.filterLayers, 'map', self.data, self.defaults))
         miniMapLayers, miniMapLayersIds = self.getLayersFromDB(
             self.conn, self.data, self.defaults, self.productPath, 'miniMap', partial(self.filterLayers, 'miniMap', self.data, self.defaults))
+        imgLayers, imgLayersIds = self.createRasterLayers(self.data.get('imagens', tuple()))
+        mapLayers = [*mapLayers, *imgLayers]
+        mapLayersIds = [*mapLayersIds, *imgLayersIds]
+        miniMapLayers = [*miniMapLayers, *imgLayers]
+        miniMapLayersIds = [*miniMapLayersIds, *imgLayersIds]
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()

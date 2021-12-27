@@ -1,12 +1,19 @@
+import subprocess
 from pathlib import Path
 from typing import NamedTuple
 
-from qgis.core import QgsLayoutExporter, QgsPrintLayout
+from qgis.core import QgsLayoutExporter, QgsPrintLayout, QgsRasterLayer
 
 
 class ExporterSingleton:
 
     def setParams(self, dlg: NamedTuple, data: dict, debugMode: bool):
+        '''Sets parameters for each export process
+        Args:
+            dlg: holds the interface info
+            data: has the json data
+            debugMode: whether the debug mode is on of off 
+        '''
         self.basename = data.get('mi') or data.get('inom')
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
@@ -19,8 +26,6 @@ class ExporterSingleton:
         Returns:
             The export status
         '''
-        print(self.exportFolder)
-        print(self.exportTiff)
         exporter = QgsLayoutExporter(composition)
         exportStatus = 0
         if not self.debugMode:
@@ -38,8 +43,43 @@ class ExporterSingleton:
             tiffExporterSettings.dpi = 400
             statusTiff = exporter.exportToImage(str(tiffFilePath), tiffExporterSettings)
             exportStatus += statusTiff
+            self.reproject(tiffFilePath)
+            self.compress(tiffFilePath)
+            self.cleanup(tiffFilePath)
         # del exporter
         return not bool(exportStatus)
 
-    def convert(self):
-        pass
+    def reproject(self, path: Path):
+        '''Calls gdalwarp to reproject a tiff file to EPSG:4674 (BDGEx default)
+        Args:
+            path: Path instance of original exported tiff file
+        '''
+        srcEpsg = QgsRasterLayer(str(path), "tmp").crs().postgisSrid()
+        p = subprocess.Popen([
+            'gdalwarp', '-overwrite', '-s_srs',
+            f'EPSG:{srcEpsg}', '-t_srs', 'EPSG:4674',
+            '-of', 'GTiff', path, path.with_stem('reproject')], shell=True)
+        p.wait()
+
+    def compress(self, path: Path):
+        '''Calls gdal_translate to use JPEG compression on a tiff file
+        Args:
+            path: Path instance of original exported tiff file
+        '''
+        p = subprocess.Popen([
+            'gdal_translate', '-b', '1', '-b', '2', '-b', '3', 
+            '-co', 'COMPRESS=JPEG', '-co', 'TILED=YES', '-co', 'PHOTOMETRIC=YCBCR',
+            path.with_stem('reproject'),
+            path.with_stem('compress')], shell=True)
+        p.wait()
+    
+    def cleanup(self, path: Path):
+        '''Unlink intermediate files (reproject and compress) created by reproject and compress functions.
+        Args:
+            path: Path instance of original exported tiff file
+        '''
+        compressPath = path.with_stem('compress')
+        reprojectPath = path.with_stem('reproject')
+        path.unlink(missing_ok=True)
+        reprojectPath.unlink(missing_ok=True)
+        compressPath.rename(path)

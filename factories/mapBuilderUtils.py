@@ -1,10 +1,11 @@
 import json
+import re
 from pathlib import Path
 from typing import Callable
 
 from qgis import processing
 from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject,
-                       QgsVectorLayer)
+                       QgsVectorLayer, QgsCoordinateReferenceSystem, QgsRasterLayer)
 
 from ..config.configDefaults import ConfigDefaults
 
@@ -98,6 +99,55 @@ class MapBuilderUtils:
             p = stylesFolder / f'{layerName}.qml'
         if p.exists():
             return p
+
+    def createRasterLayers(self, listDictImages: list[dict]) -> tuple[list[QgsRasterLayer],list[str]]:
+        instance = QgsProject.instance()
+        imageLayers = []
+        imageLayersIDs = []
+        for dictImage in listDictImages:
+            rasterPath = dictImage.get('caminho_imagem')
+            stylePath = dictImage.get('caminho_estilo')
+            epsg = dictImage.get('epsg')
+            if rasterLayer:= self.createRasterLayer(rasterPath, stylePath):
+                if epsg:
+                    epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
+                    rasterLayer.setCrs(epsgId)
+                imageLayers.insert(0, (rasterLayer))
+                imageLayersIDs.insert(0, (rasterLayer.id()))
+                instance.addMapLayer(rasterLayer, False)
+        return imageLayers, imageLayersIDs
+
+    def createRasterLayer(self, rasterPath: str, stylePath: str = None):
+        '''Creates a QgsRasterLayer using getRasterLayerByType and checks if it's valid.
+        Also applies a style, when it's provided.
+        Args:
+            rasterPath: str with raster path
+            stylePath: str with raster style path
+        Returns:
+            A QgsMapLayer
+        '''
+        rasterLayer = self.getRasterLayerByType(rasterPath)
+        if not rasterLayer or not rasterLayer.isValid():
+            return None
+        elif stylePath:
+            rasterLayer.loadNamedStyle(stylePath)
+        rasterLayer.triggerRepaint()
+        return rasterLayer
+
+    def getRasterLayerByType(self, rasterUri: str) -> QgsRasterLayer:
+        ''' Returs a QgsRasterLayer based on its source: xyz or path-like.
+        Args:
+            rasterUri: str containing the raster path or its url (in case of xyz)
+        Returns:
+            A QgsRasterLayer (it may be valid or not, the caller of this function should check it)
+        '''
+        if 'type=xyz' in rasterUri:
+            expression = re.compile(r'type=xyz&url=https?:\/\/(.+?)&zmax=\d{1,2}&zmin=\d{1,2}')
+            if found := expression.findall(rasterUri):
+                return QgsRasterLayer(rasterUri, found[0], 'wms')
+        else:
+            rasterPath = Path(rasterUri)
+            return QgsRasterLayer(str(rasterPath), rasterPath.stem) 
 
     def readJsonFromPath(self, jsonPath: Path) -> dict:
         '''Reads a json file.
