@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="12mm"
+   height="4mm"
+   viewBox="0 0 12 3.9999999"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="P30002D.svg"
+   inkscape:export-filename="C:\Users\eliton\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\plugin_edicao\map_generator\produtos\carta_ortoimagem\symbols\classes\P30002D.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2">
+    <pattern
+       y="0"
+       x="0"
+       height="6"
+       width="6"
+       patternUnits="userSpaceOnUse"
+       id="EMFhbasepattern" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="15.839192"
+     inkscape:cx="26.484937"
+     inkscape:cy="1.2311234"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g876"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-293.3)">
+    <rect
+       style="fill:#000000;stroke-width:0.227861"
+       y="294.95001"
+       x="1.6653345e-16"
+       height="0.69999999"
+       width="12"
+       id="rect817" />
+    <rect
+       id="rect10"
+       width="12"
+       height="0.5"
+       x="1.6653345e-16"
+       y="295.04999"
+       style="fill:#ff0000;fill-opacity:1;stroke-width:0.192577" />
+    <circle
+       id="path871"
+       cx="6"
+       cy="295.29999"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       r="1.6996659" />
+    <g
+       id="g876"
+       transform="matrix(0.72283144,0,0,0.89795617,5.9941125,41.49676)"
+       style="stroke-width:1.24123">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.1894px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.32841"
+         x="-1.5627456"
+         y="283.42709"
+         id="text1401"><tspan
+           sodipodi:role="line"
+           id="tspan1399"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.1894px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke-width:0.32841"
+           x="-1.5627456"
+           y="283.42709">163</tspan></text>
+    </g>
+  </g>
+</svg>

@@ -1,6 +1,6 @@
 from qgis import processing
-from qgis.core import (QgsFeature, QgsField, QgsFields, QgsGeometry,
-                       QgsRectangle, QgsVectorLayer)
+from qgis.core import (QgsFeature, QgsField, QgsFields, QgsGeometry, QgsUnitTypes,QgsCoordinateTransformContext,
+                       QgsRectangle, QgsVectorLayer, QgsDistanceArea, QgsCoordinateReferenceSystem)
 from qgis.PyQt.QtCore import QVariant
 from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 
@@ -32,7 +32,7 @@ class MapBuildControllerUtils:
         layer, feat = self.createLayerFromGeom('mapExtents', geom)
         return layer, feat
 
-    def createLayerFromGeom(self, name: str, geom: QgsGeometry, layerType: str ='Multipolygon', crsAuthId: str ='4326') -> tuple[QgsVectorLayer, QgsFeature]:
+    def createLayerFromGeom(self, name: str, geom: QgsGeometry, layerType: str ='Multipolygon', crsAuthId: str ='4674') -> tuple[QgsVectorLayer, QgsFeature]:
         ''' Creates a feature and vector layer.
         Args:
             name: name of the VectorLayer to be created
@@ -62,6 +62,33 @@ class MapBuildControllerUtils:
 
             layer.commitChanges()
             return layer, feat
+
+    def createLayerFromWkt(self, polygonWkt: str) -> tuple[QgsVectorLayer, QgsFeature]:
+        '''Creates a feature and vector layer from a wkt string.
+        Args:
+            polgonWkt: WKT string representation of the polygon
+            
+        '''
+        geom = QgsGeometry.fromWkt(polygonWkt)
+        layer, feat = self.createLayerFromGeom('mapExtents', geom)
+        return layer, feat
+
+    def getLatLongScaleFromWkt(self, polygonWkt: str) -> tuple[float,float,float]:
+        '''Gets the centroid of a from a wkt geometry and its desired scale representation.
+        Args:
+            polgonWkt: WKT string representation of the polygon
+        Returns:
+            Tuple of lat / long / scale related to this polygon
+            
+        '''
+        geom = QgsGeometry.fromWkt(polygonWkt)
+        centroid = geom.centroid().asPoint()
+        bbox = geom.boundingBox()
+        areaCalculator = QgsDistanceArea()
+        areaCalculator.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
+        areaCalculator.convertAreaMeasurement(geom.area(), QgsUnitTypes.DistanceDegrees)
+        return centroid.y(), centroid.x()
+
 
     def getEpsg(self, hemisphere: str, timeZone: str) -> int:
         ''' Calculates the epsg by using the hemisphere and the timezone

@@ -12,7 +12,7 @@ from ..config.configDefaults import ConfigDefaults
 from ..factories.compositionSingleton import CompositionSingleton
 from ..factories.connectionSingleton import ConnectionSingleton
 from ..factories.exporterSingleton import ExporterSingleton
-from ..factories.omMapbuilder import OmMapbuilder
+from ..factories.omMapbuilder import OmMapBuilder
 from ..factories.orthoMapBuilder import OrthoMapBuilder
 from ..factories.topoMapBuilder import TopoMapBuilder
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
@@ -68,6 +68,10 @@ class MapBuildController(MapBuildControllerUtils):
             lon = center.get('longitude')
             inom = self.grid.get_INOM_from_lat_lon(lon, lat, scale)
             mapExtentsLyr, mapExtentsFeat = self.createLayerFromLatLong(self.grid, lon, lat, scale)
+        elif polygonWkt:= jsonData.get('poligono'):
+            mi = 'Especial'
+            lat, long, scale = self.getLatLongScaleFromWkt(polygonWkt)
+            mapExtentsLyr, mapExtentsFeat = self.createLayerFromWkt(polygonWkt)
         jsonData.update({
             'mi': mi,
             'inom': inom,
@@ -123,6 +127,10 @@ class MapBuildController(MapBuildControllerUtils):
             return 'topoMap', 'Carta Topográfica'
         elif productType == 'Carta Topográfica':
             return 'topoMap', productType
+        if productType == 'carta_om':
+            return 'omMap', 'Carta Ortoimagem'
+        elif productType == 'Carta Ortoimagem OM':
+            return 'omMap', productType
 
     def unload(self):
         ''' Unloads the Controller. It's called when the plugin is uninstalled or reloaded
@@ -138,8 +146,8 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
         elif productType == 'topoMap' and productType not in self.builders:
             self.builders.update({productType: TopoMapBuilder(ComponentFactory())})
-        elif productType == 'carta_om' and productType not in self.builders:
-            self.builders.update({productType: OmMapbuilder(ComponentFactory())})
+        elif productType == 'omMap' and productType not in self.builders:
+            self.builders.update({productType: OmMapBuilder(ComponentFactory())})
         return self.builders.get(productType)
 
     def getExporter(self, dlg: NamedTuple, data: dict, debugMode: bool):

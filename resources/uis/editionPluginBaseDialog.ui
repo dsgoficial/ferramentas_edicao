@@ -35,6 +35,11 @@
          <string>Carta Ortoimagem</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Carta Ortoimagem OM</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
