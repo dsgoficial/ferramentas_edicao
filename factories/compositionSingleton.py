@@ -19,20 +19,22 @@ class CompositionSingleton:
 
     def getComposition(self, jsonData: dict) -> QgsPrintLayout:
         productType = jsonData.get('productType')
-        scale = jsonData.get('scale')
+        scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
         if productType not in self.compositions:
             self.compositions[productType] = dict()
-            self.compositions[productType][scale] = self.createComposition(productType, jsonData)
-        elif scale not in self.compositions.get(productType):
+        if scale not in self.compositions.get(productType):
             self.compositions[productType][scale] = self.createComposition(productType, jsonData)
         self.updatePrintLayoutFromConfig(
             self.compositions[productType][scale], jsonData)
         return self.compositions[productType][scale]
 
     def createComposition(self, productType: str, jsonData: dict) -> QgsPrintLayout:
-        scale = jsonData.get('scale')
+        productType = jsonData.get('productType')
+        scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
         compositionRootPath = self.resourcesPath / productType
-        if scale == 250:
+        if productType == 'omMap':
+            compositionPath = compositionRootPath / f'{productType}{scale}.qpt'
+        elif scale == 250:
             compositionPath = compositionRootPath / f'{productType}_250.qpt'
         else:
             compositionPath = compositionRootPath / f'{productType}.qpt'
@@ -54,9 +56,10 @@ class CompositionSingleton:
         return layout
 
     def updatePrintLayoutFromConfig(self, composition: QgsPrintLayout, jsonData: dict):
+        # TODO: insert qpts on demand: not every product will need every qpt
         qptsToInsert = list()
         productType = jsonData.get('productType')
-        scale = jsonData.get('scale')
+        scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
         productParams = getattr(self.config, productType)
         headerQptPath = self.setupPath(jsonData.get('cabecalho')) or self.config.header
         projectQptPath = self.setupPath(jsonData.get('projeto')) or self.config.project

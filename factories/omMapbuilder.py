@@ -74,7 +74,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
         mapLayers, mapLayersIds = self.getLayersFromDB(
-            self.conn, self.data, self.defaults, self.productPath, 'map', partial(self.filterLayers, 'map', self.data, self.defaults))
+            self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x)
         imgLayers, imgLayersIds = self.createRasterLayers(self.data.get('imagens', tuple()))
         mapLayers = [*mapLayers, *imgLayers]
         mapLayersIds = [*mapLayersIds, *imgLayersIds]

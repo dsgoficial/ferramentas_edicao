@@ -70,8 +70,15 @@ class MapBuildController(MapBuildControllerUtils):
             mapExtentsLyr, mapExtentsFeat = self.createLayerFromLatLong(self.grid, lon, lat, scale)
         elif polygonWkt:= jsonData.get('poligono'):
             mi = 'Especial'
-            lat, long, scale = self.getLatLongScaleFromWkt(polygonWkt)
+            templateType, scale, angle = self.getInfoOmMap(polygonWkt)
+            print(templateType, scale, angle)
             mapExtentsLyr, mapExtentsFeat = self.createLayerFromWkt(polygonWkt)
+            centroid = mapExtentsFeat.geometry().centroid().asPoint()
+            lat, lon = centroid.y(), centroid.x()
+            inom = self.grid.get_INOM_from_lat_lon(lon, lat, 1)
+            jsonData.update({
+                'omTemplateType': templateType,
+                'rotationAngle': angle})
         jsonData.update({
             'mi': mi,
             'inom': inom,
@@ -89,7 +96,7 @@ class MapBuildController(MapBuildControllerUtils):
         Returns:
             dlgCfg: A NamedTuple with necessary configurations to run the export
         '''
-        _dlgCfg = namedtuple('dlgCfg', ['isntance','productType','jsonFilePaths','exportFolder', 'username', 'password','exportTiff'])
+        _dlgCfg = namedtuple('dlgCfg', ['instance','productType','jsonFilePaths','exportFolder', 'username', 'password','exportTiff'])
         if isinstance(dlg, QDialog):
             dlgCfg = _dlgCfg(
                 'qgis',

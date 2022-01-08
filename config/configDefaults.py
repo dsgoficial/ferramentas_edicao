@@ -27,6 +27,7 @@ class ConfigDefaults:
     ]))
     scaleBasedStyleTopo: set = field(default_factory=lambda: set(['llp_localidade_p']))
     scaleBasedStyleOrtho: set = field(default_factory=lambda: set(['llp_localidade_p']))
+    scaleBasedStyleOm: set = field(default_factory=lambda: set(['llp_localidade_p']))
 
     topoMap: dict = field(default_factory=lambda: {
         'name': 'Carta Topográfica',
@@ -307,4 +308,94 @@ class ConfigDefaults:
         'html': {
             'info_tecnica': '',
         }
+    })
+
+    omMap: dict = field(default_factory=lambda: {
+        'name': 'Carta Ortoimagem OM',
+        'qpt': {
+            1: {
+                'project': {
+                    'x_0': 7,
+                    'y_0': 487,
+                    'width': 110,
+                    'height': 70,
+                },
+                'header': {
+                    'x_0': 7,
+                    'y_0': 7,
+                    'width': 110,
+                    'height': 22,
+                },
+                'classified': {
+                    'x_0': 7,
+                    'y_0': 180,
+                    'width': 120,
+                    'height': 20
+                },
+                'bdgexAcessInfo':{
+                    'x_0': 729,
+                    'y_0': 450,
+                    'width': 105,
+                    'height': 100,
+                },
+                'reproductionRights': {
+                    'x_0': 7,
+                    'y_0': 561,
+                    'width': 110,
+                    'height': 20
+                }
+            },
+            2: {
+                'project': {
+                    'x_0': 7,
+                    'y_0': 487,
+                    'width': 110,
+                    'height': 70,
+                },
+                'header': {
+                    'x_0': 7,
+                    'y_0': 7,
+                    'width': 110,
+                    'height': 22,
+                },
+                'classified': {
+                    'x_0': 7,
+                    'y_0': 180,
+                    'width': 120,
+                    'height': 20
+                },
+                'bdgexAcessInfo':{
+                    'x_0': 729,
+                    'y_0': 450,
+                    'width': 105,
+                    'height': 100,
+                },
+                'reproductionRights': {
+                    'x_0': 7,
+                    'y_0': 561,
+                    'width': 110,
+                    'height': 20
+                }
+            },
+        'grid': {
+            'crossX': 4,
+            'crossY': 4,
+            'fontSize': 1.9,
+            'font': QFont('Arial'),
+            'fontLL': QFont('Arial'),
+            'llcolor': QColor('black'),
+            'linwidth_geo': 0.3,
+            'linwidth_utm': 0.2,
+            'linwidth_buffer_geo': 0.1,
+            'linwidth_buffer_utm': 0.1,
+            'geo_grid_color': QColor('white'),
+            'utm_grid_color': QColor('white'),
+            'geo_grid_buffer_color': QColor('black'),
+            'utm_grid_buffer_color': QColor('black'),
+            'masks_check': True
+        },
+        'html': {
+            'info_tecnica': '',
+        }
+    }
     })

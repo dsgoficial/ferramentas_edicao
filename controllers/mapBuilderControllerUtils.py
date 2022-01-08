@@ -1,3 +1,4 @@
+from math import ceil
 from qgis import processing
 from qgis.core import (QgsFeature, QgsField, QgsFields, QgsGeometry, QgsUnitTypes,QgsCoordinateTransformContext,
                        QgsRectangle, QgsVectorLayer, QgsDistanceArea, QgsCoordinateReferenceSystem)
@@ -73,7 +74,7 @@ class MapBuildControllerUtils:
         layer, feat = self.createLayerFromGeom('mapExtents', geom)
         return layer, feat
 
-    def getLatLongScaleFromWkt(self, polygonWkt: str) -> tuple[float,float,float]:
+    def getInfoOmMap(self, polygonWkt: str) -> tuple[float,float,float]:
         '''Gets the centroid of a from a wkt geometry and its desired scale representation.
         Args:
             polgonWkt: WKT string representation of the polygon
@@ -82,12 +83,15 @@ class MapBuildControllerUtils:
             
         '''
         geom = QgsGeometry.fromWkt(polygonWkt)
-        centroid = geom.centroid().asPoint()
-        bbox = geom.boundingBox()
-        areaCalculator = QgsDistanceArea()
-        areaCalculator.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
-        areaCalculator.convertAreaMeasurement(geom.area(), QgsUnitTypes.DistanceDegrees)
-        return centroid.y(), centroid.x()
+        orientedBbox, orientedBboxArea, angle, width, height = geom.orientedMinimumBoundingBox()
+        if height > width:
+            tmp = height
+            height = width
+            width = tmp
+            angle += 90
+        bbox = orientedBbox.boundingBox()
+        templateType, scale = self.getOmScale(bbox)
+        return templateType, scale, angle
 
 
     def getEpsg(self, hemisphere: str, timeZone: str) -> int:
@@ -105,3 +109,43 @@ class MapBuildControllerUtils:
         elif hemisphere == 'S':
             epsg = epsg + str(78 + timeZone-18)
         return int(epsg)
+
+    def getOmScale(self, bbox: QgsRectangle) -> float:
+        ''' Returns the OM map scale based on the geometry's bounding box. The choice
+        is made by comparing the bbox's dimensions with the map dimensions from the 2 OM map templates.
+        Also returns which tmeplate is the best suited for the bbox
+        Args:
+            bbox: bounding box of the minimum oriented bounding box from the wkt
+        Returns:
+            The template type (1 or 2) and the optimal scale
+        '''
+        layout1Dims = (.975, .865) # For scales < 1:500
+        layout2Dims = (.550, .550) # For scales > 1:500
+        distCalculator = QgsDistanceArea()
+        distCalculator.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4674'), QgsCoordinateTransformContext())
+        width = distCalculator.convertLengthMeasurement(bbox.width(), QgsUnitTypes.DistanceMeters)
+        height = distCalculator.convertLengthMeasurement(bbox.height(), QgsUnitTypes.DistanceMeters)
+        templateType = 1 if max(width, height) > 2500 else 2 # For the scale 1:500, the layout2 is approx. 2.5km wide
+        if templateType == 1:
+            scale = max(width / layout1Dims[0], height / layout1Dims[1])
+            scale = ceil(scale / 100) * 100
+        elif templateType == 2:
+            scale = max(width / layout2Dims[0], height / layout2Dims[1])
+            scale = ceil(scale / 100) * 100
+            maxScale = ceil(1 / (100*self.getMaxScaleOmMap())) * 100
+            scale = max(scale, maxScale)
+        return templateType, scale
+
+        
+        
+
+    def getMaxScaleOmMap(self) -> float:
+        '''Returns an maximal map scale based on pixel size and image quality.
+        Args:
+            None
+        Returns:
+            The minimum scale
+        '''
+        imgQuality = 1 # Between 0 and 1
+        pixSize = 1 # Meters
+        return (imgQuality+1)/(500*pixSize)
