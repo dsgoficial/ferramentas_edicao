@@ -1,4 +1,3 @@
-from functools import partial
 from pathlib import Path
 
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
@@ -7,7 +6,6 @@ from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
 from ..interfaces.iMapBuilder import IMapBuilder
-from ..modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 class OmMapBuilder(IMapBuilder,MapBuilderUtils):
@@ -17,7 +15,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.componentFactory = componentFactory
         self.productPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap'
         self.components = dict()
-        self.components.update({'map':self.componentFactory.getComponent('Map', 'omMap')})
+        self.components.update({'map':self.componentFactory.getComponent('MapOM')})
         self.components.update({'localization':self.componentFactory.getComponent('Localization', 'omMap')})
         self.components.update({'division':self.componentFactory.getComponent('Division')})
         self.components.update({'subtitle':self.componentFactory.getComponent('Subtitle')})
@@ -25,7 +23,6 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
-        self.grid = GridAndLabelCreator()
 
     def setParams(self, jsonData: dict, defaults: ConfigDefaults, connection: QgsDataSourceUri, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, mapAreaLayer: QgsVectorLayer):
         ''' Sets necessary parameters to create the map.
@@ -89,7 +86,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
             # TODO: Parallelize
             if key == 'map':
                 mapLayersIds = component.build(
-                    self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid, debugMode)
+                    self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, debugMode)
             elif key == 'localization':
                 localizationLayersIds = component.build(
                     self.composition, self.data, self.mapAreaFeature, debugMode)

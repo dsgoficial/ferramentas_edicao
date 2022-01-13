@@ -5,6 +5,7 @@ from ..components.division import Division
 from ..components.mapScale import MapScale
 from ..components.localization import Localization
 from ..components.map import Map
+from ..components.mapOM import MapOM
 from ..components.miniMap import MiniMap
 from ..components.subtitle import Subtitle
 from ..components.table import Table
@@ -24,6 +25,7 @@ class ComponentFactory:
             'MapScale': MapScale,
             'Localization': Localization,
             'Map': Map,
+            'MapOM': MapOM,
             'MiniMap': MiniMap,
             'Subtitle': Subtitle,
             'Table': Table,
