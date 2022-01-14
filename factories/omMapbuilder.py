@@ -19,7 +19,6 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'localization':self.componentFactory.getComponent('Localization', 'omMap')})
         self.components.update({'division':self.componentFactory.getComponent('Division')})
         self.components.update({'subtitle':self.componentFactory.getComponent('Subtitle')})
-        self.components.update({'legend':self.componentFactory.getComponent('Legend')})
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
@@ -95,13 +94,9 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
                     self.composition, self.data, self.mapAreaFeature, debugMode)
             elif key == 'subtitle':
                 component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == 'legend':
-                component.build(self.composition, self.data, self.defaults)
             elif key == 'mapScale':
                 component.build(self.composition, self.data)
             elif key == 'table':
                 component.build(self.composition, self.data, self.mapAreaFeature)
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *localizationLayersIds, *divisionLayersIds))
         self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
-        self.classifiedMapHandler(self.composition, self.data)
-        self.setupMasks(self.productPath, mapLayers)

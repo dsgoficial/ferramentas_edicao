@@ -183,7 +183,10 @@ class Table(IComponent,ComponentUtils):
             hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
             falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
             centralMeridian = -180+(int(timeZone)-1)*6 + 3
-            curveData = [x for x in curvas[str(scale)].values()]
+            if str(scale) in curvas:
+                curveData = [x for x in curvas[str(scale)].values()]
+            else:
+                curveData = [0,0,0]
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
             lenThirdData = 3 + len(thirdPartyData)

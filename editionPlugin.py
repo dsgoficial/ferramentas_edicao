@@ -178,7 +178,7 @@ class EditionPlugin:
             self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
             self.dlg.pushButton.clicked.connect(self.controller.run)
             if self.debugMode:
-                self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\topo\\NB-20-Z-D-II-3.json')
+                self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om.json')
                 self.dlg.exportFolder.setFilePath('D:\\export')
                 self.dlg.jsonConfigs.setFilter("JSON (*.json)")
 

@@ -45,12 +45,14 @@ class Division(ComponentUtils,IComponent):
 
         # Getting map extents
         gridBound = mapAreaFeature.geometry().boundingBox()
+        print('Gridbound:', gridBound)
         gridRectangleLayer = self.createGridRectangle(gridBound, 'divisionMapArea')
         mapIDsToBeDisplayed.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
         # TODO: Check possible refactor on getExtent
-        outerExtents = self.getExtent(gridBound, mapAreaFeature)
+        outerExtents = self.getExtent(gridBound, mapAreaFeature, data)
+        print('Outer extents:', outerExtents)
         orderedCountiesByCentroidDistance, orderedCountiesNamesByArea = self.getIntersections(
             layerCountyArea, outerExtents, mapAreaFeature, data)
 
@@ -114,7 +116,11 @@ class Division(ComponentUtils,IComponent):
 
         return layerCountyArea, layerCountyLine, layerStateLine, layerCountryArea, layerCountryLine, layerOcean
 
-    def getExtent(self, gridBound, selected_feature):
+    def getExtent(self, gridBound, selected_feature, data):
+        if data.get('poligono'):
+            extents = QgsRectangle(gridBound)
+            extents.grow(.1)
+            return extents
         x_min, x_max = gridBound.xMinimum(), gridBound.xMaximum()
         delta = round(abs(x_max-x_min)*60)
         angle_spliter = delta
@@ -146,7 +152,7 @@ class Division(ComponentUtils,IComponent):
         transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
         intersectionGeometry.transform(transform)
         _, radius = intersectionGeometry.poleOfInaccessibility(10)
-        radiusPerMapArea = radius/outerExtentsArea
+        radiusPerMapArea = radius/(outerExtentsArea + 1e-8)
         show = False if radiusPerMapArea < maxRadiusPerMapArea else True
         return radiusPerMapArea, show
 

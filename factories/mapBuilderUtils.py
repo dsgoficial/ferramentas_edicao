@@ -67,15 +67,23 @@ class MapBuilderUtils:
             data: Dict holding the map info
         '''
         if data.get('acesso_restrito'):
-            composition.itemById('label_bdgexQR').setVisible(False)
-            composition.itemById('label_bdgexWeb').setVisible(False)
-            composition.itemById('symbol_QRCODE').setVisible(False)
-            composition.itemById('label_classified').setVisible(True)
+            if item:=composition.itemById('label_bdgexQR'):
+                item.setVisibility(False)
+            if item:=composition.itemById('label_bdgexWeb'):
+                item.setVisibility(False)
+            if item:=composition.itemById('symbol_QRCODE'):
+                item.setVisibility(False)
+            if item:=composition.itemById('label_classified'):
+                item.setVisibility(True)
         else:
-            composition.itemById('label_bdgexQR').setVisible(True)
-            composition.itemById('label_bdgexWeb').setVisible(True)
-            composition.itemById('symbol_QRCODE').setVisible(True)
-            composition.itemById('label_classified').setVisible(False)
+            if item:=composition.itemById('label_bdgexQR'):
+                item.setVisibility(True)
+            if item:=composition.itemById('label_bdgexWeb'):
+                item.setVisibility(True)
+            if item:=composition.itemById('symbol_QRCODE'):
+                item.setVisibility(True)
+            if item:=composition.itemById('label_classified'):
+                item.setVisibility(False)
 
     def getStylePath(self, layerName: str, defaults: ConfigDefaults, productType: str, stylesFolder: Path, scale: int) -> Path:
         '''Returns the style path of some layer. The style path depends on its "productType", "scale". Variables such as

@@ -105,11 +105,14 @@ class MapOM(ComponentUtils,IComponent):
         mapExtentsTransformed: QgsRectangle, frameLayer: QgsVectorLayer, layersToComposition: list[QgsMapLayer], data: dict):
         '''Updates the composer
         '''
-        scale = data.get('scale')*1000
+        scale = data.get('scale')
         epsg = data.get('epsg')
+        angle = data.get('rotationAngle')
         mapItem = composition.itemById("map")
         mapItem.setExtent(mapExtents)
         mapItem.setScale(scale)
+        mapItem.setMapRotation(angle - 90)
+        # mapItem.rotateItem(angle)
         if layersToComposition is not None:
             layersToSet = [frameLayer, *layersToComposition]
             mapItem.setLayers(layersToSet)
