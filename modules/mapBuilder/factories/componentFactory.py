@@ -2,6 +2,7 @@ from typing import Any
 from ..components.anglesHandler import AnglesHandler
 from ..components.articulation import Articulation
 from ..components.division import Division
+from ..components.divisionOM import DivisionOM
 from ..components.mapScale import MapScale
 from ..components.localization import Localization
 from ..components.map import Map
@@ -22,6 +23,7 @@ class ComponentFactory:
             'AnglesHandler': AnglesHandler,
             'Articulation': Articulation,
             'Division': Division,
+            'DivisionOM': DivisionOM,
             'MapScale': MapScale,
             'Localization': Localization,
             'Map': Map,

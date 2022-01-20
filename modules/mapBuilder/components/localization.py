@@ -25,7 +25,7 @@ class Localization(ComponentUtils,IComponent):
 
         # Creating layer for mapArea
         mapAreaBoundingBox = mapAreaFeature.geometry().boundingBox()
-        mapAreaLayer = self.createGridRectangle(mapAreaBoundingBox, 'localizationMapArea')
+        mapAreaLayer = self.createGridRectangle(mapAreaBoundingBox, data, 'localizationMapArea')
         mapIDsToBeDisplayed.append(mapAreaLayer.id())
 
         # Getting state layer
@@ -96,12 +96,16 @@ class Localization(ComponentUtils,IComponent):
         else:
             bounds.grow(.8) 
 
-    def createGridRectangle(self, mapBounds: QgsRectangle, layerName: str) -> QgsVectorLayer:
+    def createGridRectangle(self, mapBounds: QgsRectangle, data: dict, layerName: str) -> QgsVectorLayer:
         ''' Creates the mapArea layer for this component by using mapBounds.
         Also sets its style.
         '''
+        productType = data.get('productType')
         mapBoundsLayer = self.createVectorLayerFromIter(layerName, [QgsGeometry.fromRect(mapBounds)])
-        stylePath = str(self.stylesFolder / 'localizationMapArea.qml')
+        if productType == 'omMap':
+            stylePath = self.stylesFolder / 'localizationMapAreaForOmMap.qml'
+        else:
+            stylePath = self.stylesFolder / 'localizationMapArea.qml'
         self.loadStyleToLayer(mapBoundsLayer, stylePath)
         return mapBoundsLayer
 

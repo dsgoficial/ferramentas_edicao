@@ -17,7 +17,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components = dict()
         self.components.update({'map':self.componentFactory.getComponent('MapOM')})
         self.components.update({'localization':self.componentFactory.getComponent('Localization', 'omMap')})
-        self.components.update({'division':self.componentFactory.getComponent('Division')})
+        self.components.update({'division':self.componentFactory.getComponent('DivisionOM')})
         self.components.update({'subtitle':self.componentFactory.getComponent('Subtitle')})
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
