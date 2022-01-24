@@ -23,44 +23,14 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
 
-    def setParams(self, jsonData: dict, defaults: ConfigDefaults, connection: QgsDataSourceUri, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, mapAreaLayer: QgsVectorLayer):
-        ''' Sets necessary parameters to create the map.
-        Args:
-            jsonData: dict with json data + other parameters
-            defaults: default settings
-            connection: instance of QgsDataSourceUri which points to the database to be used
-            composition: QgsPrintLayout which will hold the map components
-            mapAreaFeature: QgsFeature which covers the map area
-            mapAreaLayer: QgsVectorLayer that contains a mapAreaFeature
+    def handleMapRotation(self, data: dict, composition: QgsPrintLayout):
+        '''Rotates the north indication
         '''
-        self.data = jsonData
-        self.conn = connection
-        self.defaults = defaults
-        self.composition = composition
-        self.mapAreaFeature = mapAreaFeature
-        self.mapAreaLayer = mapAreaLayer
-
-    def removeLayers(self, debugMode: bool = False):
-        ''' Removes map layers and layer tree roots. Should be called when not running in debug mode, specially when exporting multiple maps at once.
-        This function is called pre-export process to remove mapLayers that won't be used and in the end of the exportation process (when not running in debug mode)
-        to cleanup layers from the interface.
-        Args:
-            debugMode: Boolean value holding the debugMode status
-        '''
-        if not debugMode and hasattr(self, 'layersIdsToBeRemoved') and hasattr(self, 'groupsToBeRemoved'):
-            self.instance.removeMapLayers(self.layersIdsToBeRemoved)
-            root = self.instance.layerTreeRoot()
-            for group in self.groupsToBeRemoved:
-                groupTree = root.findGroup(group)
-                root.removeChildNode(groupTree)
-
-    def cleanProject(self, debugMode: bool = False):
-        ''' Removes a composition from the layoutManager. Only called when not in debug mode.
-        Args:
-            debugMode: Boolean value holding the debugMode status
-        '''
-        if not debugMode and hasattr(self, 'composition'):
-            self.instance.layoutManager().removeLayout(self.composition)
+        rotationAngle = float(data.get("rotationAngle")) - 90
+        if quadriculeImg:=composition.itemById('quadriculaRotation'):
+            quadriculeImg.setItemRotation(rotationAngle)
+        if quadriculeImg:=composition.itemById('quadriculaRotationLabel'):
+            quadriculeImg.setText(f'ROTAÇÃO DE {rotationAngle:.2f}°')
 
     def run(self, debugMode: bool = False):
         ''' Creates the necessary components for the OrthoMap product and populates the composition.
@@ -98,5 +68,6 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.data)
             elif key == 'table':
                 component.build(self.composition, self.data, self.mapAreaFeature)
+        self.handleMapRotation(self.data, self.composition)
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *localizationLayersIds, *divisionLayersIds))
         self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
