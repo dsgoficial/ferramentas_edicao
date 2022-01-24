@@ -25,12 +25,47 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
 
     def handleMapRotation(self, data: dict, composition: QgsPrintLayout):
         '''Rotates the north indication
+        Args:
+            data: dict holding the map info
+            composition: a QgsPrintLayout for the mapOm product
         '''
         rotationAngle = float(data.get("rotationAngle")) - 90
-        if quadriculeImg:=composition.itemById('quadriculaRotation'):
-            quadriculeImg.setItemRotation(rotationAngle)
-        if quadriculeImg:=composition.itemById('quadriculaRotationLabel'):
-            quadriculeImg.setText(f'ROTAÇÃO DE {rotationAngle:.2f}°')
+        if item:=composition.itemById('quadriculaRotation'):
+            item.setItemRotation(rotationAngle)
+        if item:=composition.itemById('quadriculaRotationLabel'):
+            item.setText(f'ROTAÇÃO DE {rotationAngle:.2f}°')
+
+    def handleOmInfo(self, data: dict, composition: QgsPrintLayout):
+        '''Sets the correct OM info in the composition: OM name / symbol and subordination's name / symbol 
+        Args:
+            data: dict holding the map info
+            composition: a QgsPrintLayout for the mapOm product
+        '''
+        if item:=composition.itemById('labelSubordination1'):
+            if text:=data.get("subordinacao1"):
+                item.setText(str(text).upper())
+                item.setVisibility(True)
+            else:
+                item.setVisibility(False)
+        if item:=composition.itemById('labelSubordination2'):
+            if text:=data.get("subordinacao2"):
+                item.setText(str(text).upper())
+                item.setVisibility(True)
+            else:
+                item.setVisibility(False)
+        if item:=composition.itemById('label_nomeCarta'):
+            item.setText(str(data.get("nome")).upper())
+        if item:=composition.itemById('symbolOM'):
+            imgPath = data.get("imagemOM")
+            if imgPath:
+                imgPath = Path(imgPath)
+                item.setPicturePath(str(imgPath))
+        if item:=composition.itemById('symbolSubordination'):
+            imgPath = data.get("imagemSubordinacao")
+            if imgPath:
+                imgPath = Path(imgPath)
+                item.setPicturePath(str(imgPath))
+        composition.refresh()
 
     def run(self, debugMode: bool = False):
         ''' Creates the necessary components for the OrthoMap product and populates the composition.
@@ -69,5 +104,6 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
             elif key == 'table':
                 component.build(self.composition, self.data, self.mapAreaFeature)
         self.handleMapRotation(self.data, self.composition)
+        self.handleOmInfo(self.data, self.composition)
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *localizationLayersIds, *divisionLayersIds))
         self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])

@@ -369,7 +369,7 @@
   <LabelFont description="Arial,10,-1,5,50,0,0,0,0,0" style=""/>
   <FontColor red="0" blue="0" green="0" alpha="255"/>
  </LayoutItem>
- <LayoutItem frameJoinStyle="miter" pictureWidth="nan" resizeMode="0" positionOnPage="58.6205,63.1517,mm" positionLock="false" position="58.6205,63.1517,mm" mapUuid="" anchorPoint="0" northOffset="0" outlineWidthM="0.3,mm" zValue="15" uuid="{3db7e821-70ce-4afa-8e35-bd8253e966e6}" templateUuid="{3db7e821-70ce-4afa-8e35-bd8253e966e6}" svgBorderWidth="0.2" northMode="0" frame="false" id="omImage" mode="2" type="65640" size="56.5584,65.5098,mm" visibility="1" opacity="1" excludeFromExports="0" svgFillColor="255,255,255,255" svgBorderColor="0,0,0,255" blendMode="0" pictureRotation="0" background="false" file="" groupUuid="" pictureHeight="nan" itemRotation="0" referencePoint="0">
+ <LayoutItem frameJoinStyle="miter" pictureWidth="nan" resizeMode="0" positionOnPage="58.6205,63.1517,mm" positionLock="false" position="58.6205,63.1517,mm" mapUuid="" anchorPoint="0" northOffset="0" outlineWidthM="0.3,mm" zValue="15" uuid="{3db7e821-70ce-4afa-8e35-bd8253e966e6}" templateUuid="{3db7e821-70ce-4afa-8e35-bd8253e966e6}" svgBorderWidth="0.2" northMode="0" frame="false" id="symbolOM" mode="2" type="65640" size="56.5584,65.5098,mm" visibility="1" opacity="1" excludeFromExports="0" svgFillColor="255,255,255,255" svgBorderColor="0,0,0,255" blendMode="0" pictureRotation="0" background="false" file="" groupUuid="" pictureHeight="nan" itemRotation="0" referencePoint="0">
   <FrameColor red="0" blue="0" green="0" alpha="255"/>
   <BackgroundColor red="255" blue="255" green="255" alpha="255"/>
   <LayoutObject>
