@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
-                       QgsVectorLayer)
+                       QgsVectorLayer, QgsProperty)
 
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
@@ -62,6 +62,11 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
                 item.setPicturePath(str(imgPath))
         if item:=composition.itemById('symbolSubordination'):
             imgPath = data.get("imagemSubordinacao")
+            propertyKey = item.dataDefinedProperties().propertyKeys()
+            if (isinstance(propertyKey, list) and len(propertyKey) > 0):
+                propertyKey = propertyKey[0]
+                item.dataDefinedProperties().setProperty(propertyKey, QgsProperty())
+                item.refresh()
             if imgPath:
                 imgPath = Path(imgPath)
                 item.setPicturePath(str(imgPath))
