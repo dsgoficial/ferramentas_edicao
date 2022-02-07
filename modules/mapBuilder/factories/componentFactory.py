@@ -4,6 +4,7 @@ from ..components.articulation import Articulation
 from ..components.division import Division
 from ..components.divisionOM import DivisionOM
 from ..components.mapScale import MapScale
+from ..components.mapScaleOM import MapScaleOM
 from ..components.localization import Localization
 from ..components.map import Map
 from ..components.mapOM import MapOM
@@ -25,6 +26,7 @@ class ComponentFactory:
             'Division': Division,
             'DivisionOM': DivisionOM,
             'MapScale': MapScale,
+            'MapScaleOM': MapScaleOM,
             'Localization': Localization,
             'Map': Map,
             'MapOM': MapOM,

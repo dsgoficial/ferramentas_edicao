@@ -20,7 +20,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'division':self.componentFactory.getComponent('DivisionOM')})
         self.components.update({'subtitle':self.componentFactory.getComponent('Subtitle')})
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
-        self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
+        self.components.update({'mapScale':self.componentFactory.getComponent('MapScaleOM')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
 
     def handleMapRotation(self, data: dict, composition: QgsPrintLayout):
