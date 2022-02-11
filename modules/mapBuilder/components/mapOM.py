@@ -15,8 +15,7 @@ from .componentUtils import ComponentUtils
 
 class MapOM(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
-        self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'map'
-        self.gridStylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'grid'
+        self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'products' / 'omMap' / 'styles'
         self.defaultMapSize = [(588,588),(494,724)]
 
     def build(
@@ -26,31 +25,14 @@ class MapOM(ComponentUtils,IComponent):
         instance = QgsProject.instance()
         mapIDsToBeDisplayed = []
 
-        # Setting up tmp layer
         mapAreaExtents = mapAreaFeature.geometry().boundingBox()
-        gridLayer, mapExtentsTransformed = self.createLayerForGrid(mapAreaLayer, mapAreaFeature, jsonData)
-        instance.addMapLayer(gridLayer, False)
+        omLayer, mapExtentsTransformed = self.createLayerForGrid(mapAreaLayer, mapAreaFeature, jsonData)
+        omLayer.loadNamedStyle(self.stylesFolder / 'omLayer.qml')
+        instance.addMapLayer(omLayer, False)
 
-        # Setting up aux_label, which is reprojected to mapLayers
-        crs = next(iter(layers)).crs()
-        copyLabel = self.cloneVectorLayerReproject(gridLayer, 'aux_label', crs)
-        copyLabelStyle = self.gridStylesFolder / 'aux_label.qml'
-        copyLabel.loadNamedStyle(str(copyLabelStyle))
-        instance.addMapLayer(copyLabel, False)
-
-        # Setting up aux_moldura
-        copy = self.cloneVectorLayer(gridLayer, 'aux_moldura')
-        copyStyle = self.gridStylesFolder / 'style.qml'
-        copy.loadNamedStyle(str(copyStyle))
-        instance.addMapLayer(copy, False)
-
-        # Setting up mask layer
-        maskLayer = self.createMaskLayer(mapAreaFeature)
-        instance.addMapLayer(maskLayer, False)
-
-        mapIDsToBeDisplayed.extend((copy.id(), copyLabel.id(), gridLayer.id(), maskLayer.id(), *[x.id() for x in layers]))
-        layersToComposition = [gridLayer, maskLayer, copy, copyLabel, *layers]
-        self.updateComposition(composition, mapAreaExtents, mapExtentsTransformed, gridLayer, layersToComposition, jsonData)
+        mapIDsToBeDisplayed.extend((omLayer.id(), *[x.id() for x in layers]))
+        layersToComposition = [omLayer, *layers]
+        self.updateComposition(composition, mapAreaExtents, mapExtentsTransformed, omLayer, layersToComposition, jsonData)
 
         if showLayers:
             mapGroupNode = QgsLayerTreeGroup('map')
@@ -66,7 +48,7 @@ class MapOM(ComponentUtils,IComponent):
         ''' Creates a vector layer that will be the base for the grid.
         '''
         uri = f'Polygon?crs=EPSG:{data.get("epsg")}'
-        gridLayer = QgsVectorLayer(uri, 'auxiliar_moldura', "memory")
+        gridLayer = QgsVectorLayer(uri, 'om_layer', "memory")
         gridLayerDataProvider = gridLayer.dataProvider()
         gridLayer.startEditing()
         gridLayerFields = (field.name() for field in baseLayer.fields())
@@ -90,15 +72,6 @@ class MapOM(ComponentUtils,IComponent):
 
         return gridLayer, convexhull.boundingBox()
 
-    def createMaskLayer(self, mapExtents: QgsFeature) -> QgsVectorLayer:
-        bound = mapExtents.geometry()
-        bufferedBound = bound.buffer(0.3, 2)
-        diffBound = bufferedBound.difference(bound)
-        maskLayer = self.createVectorLayerFromIter('mascara_rotulo', [diffBound])
-        maskLayer.loadNamedStyle(str(self.stylesFolder / 'mascara_rotulos.qml'))
-        maskLayer.triggerRepaint()
-        return maskLayer
-
     # TODO: check mapExtents / mapExtentsTransformed duplication
     def updateComposition(
         self, composition: QgsPrintLayout, mapExtents: QgsRectangle,
@@ -111,7 +84,7 @@ class MapOM(ComponentUtils,IComponent):
         mapItem = composition.itemById("map")
         mapItem.setExtent(mapExtents)
         mapItem.setScale(scale)
-        mapItem.setMapRotation(angle - 90)
+        mapItem.setMapRotation(90-angle)
         # mapItem.rotateItem(angle)
         if layersToComposition is not None:
             layersToSet = [frameLayer, *layersToComposition]

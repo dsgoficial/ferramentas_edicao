@@ -84,11 +84,6 @@ class MapBuildControllerUtils:
         '''
         geom = QgsGeometry.fromWkt(polygonWkt)
         orientedBbox, orientedBboxArea, angle, width, height = geom.orientedMinimumBoundingBox()
-        if height > width:
-            tmp = height
-            height = width
-            width = tmp
-            angle += 90
         bbox = orientedBbox.boundingBox()
         templateType, scale = self.getOmScale(bbox)
         return templateType, scale, angle
@@ -135,9 +130,6 @@ class MapBuildControllerUtils:
             maxScale = ceil(1 / (100*self.getMaxScaleOmMap())) * 100
             scale = max(scale, maxScale)
         return templateType, scale
-
-        
-        
 
     def getMaxScaleOmMap(self) -> float:
         '''Returns an maximal map scale based on pixel size and image quality.

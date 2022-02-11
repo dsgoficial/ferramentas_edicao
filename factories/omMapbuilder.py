@@ -29,7 +29,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
             data: dict holding the map info
             composition: a QgsPrintLayout for the mapOm product
         '''
-        rotationAngle = float(data.get("rotationAngle")) - 90
+        rotationAngle = 90 - float(data.get("rotationAngle"))
         if item:=composition.itemById('quadriculaRotation'):
             item.setItemRotation(rotationAngle)
         if item:=composition.itemById('quadriculaRotationLabel'):

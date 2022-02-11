@@ -179,6 +179,7 @@ class Table(IComponent,ComponentUtils):
         tecnicalInfo = data.get('info_tecnica')
         productName = data.get('productName')
         isInternational = data.get('territorio_internacional')
+        isOmMap = bool(data.get('poligono'))
         if label:
             hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
             falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
@@ -216,14 +217,15 @@ class Table(IComponent,ComponentUtils):
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Datum horizontal')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'SIRGAS2000 (Época 2000.4)')
-            _tmp = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':nContourInTable}, 'Equidistância das curvas de nível')
-            if tecnicalInfo.get('curva_auxiliar', True):
-                _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Auxiliar: {curveData[0]} metros')
+            if not isOmMap:
                 _tmp = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Normal: {curveData[1]} metros')
-            _tmp = self.generateElement(firstTable, 'tr')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Mestra: {curveData[2]} metros')
+                _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':nContourInTable}, 'Equidistância das curvas de nível')
+                if tecnicalInfo.get('curva_auxiliar', True):
+                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Auxiliar: {curveData[0]} metros')
+                    _tmp = self.generateElement(firstTable, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Normal: {curveData[1]} metros')
+                _tmp = self.generateElement(firstTable, 'tr')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Mestra: {curveData[2]} metros')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Erro gráfico')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, '0,2 mm na escala da carta')
