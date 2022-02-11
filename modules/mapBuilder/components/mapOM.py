@@ -27,7 +27,7 @@ class MapOM(ComponentUtils,IComponent):
 
         mapAreaExtents = mapAreaFeature.geometry().boundingBox()
         omLayer, mapExtentsTransformed = self.createLayerForGrid(mapAreaLayer, mapAreaFeature, jsonData)
-        omLayer.loadNamedStyle(self.stylesFolder / 'omLayer.qml')
+        omLayer.loadNamedStyle(str(self.stylesFolder / 'omLayer.qml'))
         instance.addMapLayer(omLayer, False)
 
         mapIDsToBeDisplayed.extend((omLayer.id(), *[x.id() for x in layers]))
