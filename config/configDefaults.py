@@ -314,21 +314,24 @@ class ConfigDefaults:
         'name': 'Carta Ortoimagem OM',
         'qpt': {
             1: {
+                'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
+                'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
+                'reproductionRightsPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'reproductionRights.qpt',
                 'project': {
                     'x_0': 7,
-                    'y_0': 487,
+                    'y_0': 720,
                     'width': 110,
                     'height': 70,
                 },
                 'header': {
                     'x_0': 7,
                     'y_0': 7,
-                    'width': 110,
-                    'height': 22,
+                    'width': 165,
+                    'height': 40,
                 },
                 'classified': {
                     'x_0': 7,
-                    'y_0': 180,
+                    'y_0': 440,
                     'width': 120,
                     'height': 20
                 },
@@ -340,7 +343,7 @@ class ConfigDefaults:
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 561,
+                    'y_0': 780,
                     'width': 110,
                     'height': 20
                 }

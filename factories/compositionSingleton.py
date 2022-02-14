@@ -56,14 +56,21 @@ class CompositionSingleton:
         return layout
 
     def updatePrintLayoutFromConfig(self, composition: QgsPrintLayout, jsonData: dict):
+        '''Creates 4 qpts (header, product, reproduction rights and BDGEx acess info) based on defined qpt paths,
+        following the search order jsonData -> product defaults -> config defaults. The json keys to be filled for
+        the 4 qpts (if necessary) are (cabecalho, projeto, direitos_reproducao, acesso_informacao), respectively.
+        Args:
+            composition: the QgsPrintLayout where the qpts will be inserted
+            jsonData: dict holding the map info (and possibly the keys (cabecalho, projeto, direitos_reproducao, acesso_informacao))
+        '''
         # TODO: insert qpts on demand: not every product will need every qpt
         qptsToInsert = list()
         productType = jsonData.get('productType')
         scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
-        productParams = getattr(self.config, productType)
-        headerQptPath = self.setupPath(jsonData.get('cabecalho')) or self.config.header
-        projectQptPath = self.setupPath(jsonData.get('projeto')) or self.config.project
-        repRightsQptPath = self.setupPath(jsonData.get('direitos_reproducao')) or self.config.reproductionRights
+        productParams: dict = getattr(self.config, productType)
+        headerQptPath = self.setupPath(jsonData.get('cabecalho')) or productParams.get('qpt', {}).get(scale, {}).get('headerPath', None) or self.config.header
+        projectQptPath = self.setupPath(jsonData.get('projeto')) or productParams.get('qpt', {}).get(scale, {}).get('projectPath', None) or self.config.project
+        repRightsQptPath = self.setupPath(jsonData.get('direitos_reproducao')) or productParams.get('qpt', {}).get(scale, {}).get('reproductionRightsPath', None) or self.config.reproductionRights
         bdgexAcessInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.config.bdgexAcessInfo
         if headerQptPath != self.previousQptPaths[0]:
             self.previousQptPaths[0] = headerQptPath

@@ -16,7 +16,7 @@ from .componentUtils import ComponentUtils
 class MapOM(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
         self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'products' / 'omMap' / 'styles'
-        self.defaultMapSize = [(588,588),(494,724)]
+        self.defaultMapSize = [(975,860), (588,588), ]
 
     def build(
         self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults,  mapAreaFeature: QgsFeature,
@@ -81,6 +81,7 @@ class MapOM(ComponentUtils,IComponent):
         scale = data.get('scale')
         epsg = data.get('epsg')
         angle = data.get('rotationAngle')
+        omTemplateType = data.get("omTemplateType")
         mapItem = composition.itemById("map")
         mapItem.setExtent(mapExtents)
         mapItem.setScale(scale)
@@ -95,10 +96,10 @@ class MapOM(ComponentUtils,IComponent):
         mapItem.setCrs(QgsCoordinateReferenceSystem(f'EPSG:{epsg}'))
         mapItem.setExtent(mapExtentsTransformed)
         mapItem.setScale(scale)
-        if scale == 250000:
-            mapWidth, mapHeight = self.defaultMapSize[1]
-        else:
+        if omTemplateType == 1:
             mapWidth, mapHeight = self.defaultMapSize[0]
+        elif omTemplateType == 2:
+            mapWidth, mapHeight = self.defaultMapSize[1]
         mapItem.attemptResize(QgsLayoutSize(mapWidth, mapHeight, QgsUnitTypes.LayoutMillimeters))
         mapItem.setScale(scale)
         mapItem.refresh()
