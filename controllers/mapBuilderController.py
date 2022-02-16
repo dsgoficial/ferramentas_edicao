@@ -128,16 +128,16 @@ class MapBuildController(MapBuildControllerUtils):
         '''
         if productType == 'carta_ortoimagem':
             return 'orthoMap', 'Carta Ortoimagem'
-        elif productType == 'Carta Ortoimagem':
+        if productType == 'Carta Ortoimagem':
             return 'orthoMap', productType
-        elif productType == 'carta_topografica':
+        if productType == 'carta_topografica':
             return 'topoMap', 'Carta Topográfica'
-        elif productType == 'Carta Topográfica':
+        if productType == 'Carta Topográfica':
             return 'topoMap', productType
         if productType == 'carta_om':
-            return 'omMap', 'Carta Ortoimagem'
-        elif productType == 'Carta Ortoimagem OM':
-            return 'omMap', productType
+            return 'omMap', 'Carta Especial'
+        if productType == 'Carta Ortoimagem OM':
+            return 'omMap', 'Carta Especial'
 
     def unload(self):
         ''' Unloads the Controller. It's called when the plugin is uninstalled or reloaded

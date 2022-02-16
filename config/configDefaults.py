@@ -311,7 +311,7 @@ class ConfigDefaults:
     })
 
     omMap: dict = field(default_factory=lambda: {
-        'name': 'Carta Ortoimagem OM',
+        'name': 'Carta Especial',
         'qpt': {
             1: {
                 'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',

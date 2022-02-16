@@ -53,7 +53,7 @@
                 <Option name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
                 <Option name="outline_width_unit" value="MM" type="QString"/>
                 <Option name="scale_method" value="diameter" type="QString"/>
-                <Option name="size" value="5" type="QString"/>
+                <Option name="size" value="4" type="QString"/>
                 <Option name="size_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
                 <Option name="size_unit" value="MM" type="QString"/>
                 <Option name="vertical_anchor_point" value="1" type="QString"/>
@@ -73,7 +73,7 @@
               <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
               <prop v="MM" k="outline_width_unit"/>
               <prop v="diameter" k="scale_method"/>
-              <prop v="5" k="size"/>
+              <prop v="4" k="size"/>
               <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
               <prop v="MM" k="size_unit"/>
               <prop v="1" k="vertical_anchor_point"/>
