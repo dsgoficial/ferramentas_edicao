@@ -119,17 +119,6 @@ class ComponentUtils:
             layer.loadNamedStyle(str(stylePath))
             layer.triggerRepaint()
 
-    def setEPSG(self, hemisferio, fuso):
-        self.epsg = "319"
-        if hemisferio == 'N':
-            self.epsg = self.epsg + str(72 + fuso-18)
-        elif hemisferio == 'S':
-            self.epsg = self.epsg + str(78 + fuso-18)
-        # self.GLC.setFusoHemisferio(fuso,hemisferio)
-
-    def setScale(self, scale):
-        self.scale = scale
-
     def setProjectProjection(self, projection="useProject"):
         settings = QSettings()
         oldProjValue = settings.value("/Projections/defaultBehavior", "prompt", type=str)
@@ -191,7 +180,6 @@ class ComponentUtils:
         copyLayerDataProvider.addFeatures(_tmp)
         return copyLayer
 
-
 def cloneItem(item, composition_dest, x_0, y_0):
     ref_point = item.referencePoint()
     item.setReferencePoint(QgsLayoutItem.UpperLeft)
@@ -211,7 +199,6 @@ def cloneItem(item, composition_dest, x_0, y_0):
     composition_dest.itemById(item.id()).attemptMove(QgsLayoutPoint(final_x, final_y))
     composition_dest.itemById(item.id()).refresh()
     item.setReferencePoint(ref_point)
-
 
 def copyQptToCompositor(composition_dest, qptDict):
     project = QgsProject()

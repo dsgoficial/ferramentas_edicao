@@ -3,7 +3,7 @@ import os
 import xml.etree.ElementTree as et
 from pathlib import Path
 
-from qgis.core import QgsFeature, QgsPrintLayout
+from qgis.core import QgsFeature, QgsPrintLayout, QgsCoordinateTransform, QgsCoordinateReferenceSystem, QgsProject, QgsGeometry
 
 from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
@@ -45,6 +45,7 @@ class Table(IComponent,ComponentUtils):
         self.customEtapa(composition, data.get('fases', ()))
         self.customSensores(composition, data.get('sensores', ()))
         self.customTecnicalInfo(composition, data, mapAreaFeature)
+        self.omInfoTable(composition, data, mapAreaFeature)
 
     def updateComposition(self, *args, **kwargs):
         pass
@@ -270,6 +271,59 @@ class Table(IComponent,ComponentUtils):
 
             label.setText(et.tostring(root, encoding='unicode', method='html'))
 
+    def omInfoTable(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature):
+        ''' Creates the OM info table dinamically.
+        Args:
+            composition: the QgsPrintLayout to be updated
+            data: dict holding the map info
+            mapAreaFeature: a QgsFeature covering the OM area
+        '''
+        tableComp = composition.itemById("omInfoTable")
+        omAddress = data.get('endereco', '')
+        omPoint = mapAreaFeature.geometry().centroid().asPoint()
+        subordination = data.get('subordinacao1')
+        transformer = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem('EPSG:4674'),
+            QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}'), QgsProject.instance())
+        omUTMGeom = QgsGeometry(mapAreaFeature.geometry())
+        omUTMGeom.transform(transformer)
+        omUTMPoint = omUTMGeom.centroid().asPoint()
+        omUTMArea = omUTMGeom.area()
+        omUTMPerimeter = omUTMGeom.length()
+        if tableComp:
+            htmlPath = Path(__file__).parent.parent / 'html_auto' / 'omInfoBarebone.html'
+            htmlData = et.parse(str(htmlPath))
+            root = htmlData.getroot()
+            table = next(root.iter('table'))
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'left'}, 'Endereço')
+            self.generateElement(_tmp, 'td', {'class':'right'}, omAddress)
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'3'}, 'Coordenadas geográficas')
+            self.generateElement(_tmp, 'td', {'class':'right'}, 'Sistema de Referência: SIRGAS 2000 (Época 2000.4)')
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'Latitude: {omPoint.y():.3f}º')
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'Longidute: {omPoint.x():.3f}º')
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Coordenadas UTM')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'X: {omUTMPoint.x():.3f} m')
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'Y: {omUTMPoint.y():.3f} m')
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'left'}, 'Subordinação')
+            self.generateElement(_tmp, 'td', {'class':'right'}, subordination)
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'left'}, 'Altitude aproximada')
+            self.generateElement(_tmp, 'td', {'class':'right'}, '??????')
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'left'}, 'Área aproximada')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'{omUTMArea:.3f} m²')
+            _tmp = self.generateElement(table, 'tr')
+            self.generateElement(_tmp, 'td', {'class':'left'}, 'Perímetro aproximado')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'{omUTMPerimeter:.3f} m')
+
+            tableComp.setText(et.tostring(root, encoding='unicode', method='html'))
 
     def getIntersectionStatus(self, mapAreaFeature):
         _brazilLayer = self.loadShapeLayer(self.pathBrazilLayer, '', '_tmp')
@@ -281,44 +335,3 @@ class Table(IComponent,ComponentUtils):
             return 'intersects'
         else:
             return 'outside'
-
-    def editHTMLInfoTecCarta(self, composition, scale, hemisferio, fuso, tipo_produto, tecnicalInfo={}):
-        '''
-        Refreshes the label 'label_tabela_info_carta' with info from json
-        '''
-        label = composition.itemById("label_tabela_info_carta")
-        if label:
-            htmlData = label.text()
-            htmlPath = Path(__file__).parent.parent / 'html_auto' / 'informacoes_tecnicas_vetores.html'
-            with open(htmlPath, 'r') as htmlFile:
-                htmlData = htmlFile.read()
-            infoDict = {}
-            # Techical info from json
-            infoDict.update({"{" + k + "}": v for k, v in tecnicalInfo.items() if v != 'dados_terceiros'})
-            # Product type
-            infoDict.update({"{tipo_produto}": tipo_produto})
-
-            # Get curves info
-            dados_curva = curvas[str(scale)]
-            for curva, equidistancia_value in dados_curva.items():
-                equidistancia_key = "{equidistancia_curva_" + curva + "}"
-                infoDict.update({equidistancia_key: str(equidistancia_value)})
-
-            # Update hemisferio e false North
-            hemisferio = 'Norte' if hemisferio == 'N' else 'Sul'
-            infoDict.update({"{hemisferio}": hemisferio})
-            falseNorth = '0' if hemisferio == 'Norte' else '+10.000'
-            infoDict.update({"{falseNorth}": falseNorth})
-
-            # Update fuso
-            infoDict.update({"{fuso}": fuso})
-
-            # Update meridianoCentral e posicao
-            meridianoCentral = -180+(int(fuso)-1)*6 + 3
-            infoDict.update({"{meridianoCentral}": str(abs(meridianoCentral))})
-            posicao = 'W' if meridianoCentral < 0 else 'E'
-            infoDict.update({"{posicao}": posicao})
-
-            # Replace dados data in base html and set text
-            label.setText(self.replaceStr(
-                htmlData, infoDict))
