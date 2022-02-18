@@ -314,9 +314,9 @@ class ConfigDefaults:
         'name': 'Carta Especial',
         'qpt': {
             1: {
-                'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
+                # 'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
                 'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
-                'reproductionRightsPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'reproductionRights.qpt',
+                # 'reproductionRightsPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'reproductionRights.qpt',
                 'project': {
                     'x_0': 7,
                     'y_0': 720,
@@ -349,12 +349,7 @@ class ConfigDefaults:
                 }
             },
             2: {
-                'project': {
-                    'x_0': 7,
-                    'y_0': 487,
-                    'width': 110,
-                    'height': 70,
-                },
+                'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
                 'header': {
                     'x_0': 7,
                     'y_0': 7,
@@ -367,36 +362,25 @@ class ConfigDefaults:
                     'width': 120,
                     'height': 20
                 },
-                'bdgexAcessInfo':{
-                    'x_0': 729,
+                'project': {
+                    'x_0': 7,
                     'y_0': 450,
-                    'width': 105,
-                    'height': 100,
+                    'width': 110,
+                    'height': 70,
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 561,
+                    'y_0': 530,
                     'width': 110,
                     'height': 20
+                },
+                'bdgexAcessInfo':{
+                    'x_0': 729,
+                    'y_0': 300,
+                    'width': 105,
+                    'height': 100,
                 }
             },
-        'grid': {
-            'crossX': 4,
-            'crossY': 4,
-            'fontSize': 1.9,
-            'font': QFont('Arial'),
-            'fontLL': QFont('Arial'),
-            'llcolor': QColor('black'),
-            'linwidth_geo': 0.3,
-            'linwidth_utm': 0.2,
-            'linwidth_buffer_geo': 0.1,
-            'linwidth_buffer_utm': 0.1,
-            'geo_grid_color': QColor('white'),
-            'utm_grid_color': QColor('white'),
-            'geo_grid_buffer_color': QColor('black'),
-            'utm_grid_buffer_color': QColor('black'),
-            'masks_check': True
-        },
         'html': {
             'info_tecnica': '',
         }

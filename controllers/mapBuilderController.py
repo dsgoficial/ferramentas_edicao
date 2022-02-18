@@ -147,8 +147,7 @@ class MapBuildController(MapBuildControllerUtils):
         self.compositions.previousQptPaths = [None,None,None,None]
         self.builders = dict()
 
-    # def getProductBuilder(self, productType: str) -> Any[OrthoMapBuilder,TopoMapBuilder,OmMapbuilder]:
-    def getProductBuilder(self, productType: str):
+    def getProductBuilder(self, productType: str) -> Union[OrthoMapBuilder,TopoMapBuilder,OmMapBuilder]:
         if productType == 'orthoMap' and productType not in self.builders:
             self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
         elif productType == 'topoMap' and productType not in self.builders:

@@ -87,7 +87,7 @@ class CompositionSingleton:
             repRightsConfig = productParams['qpt'][scale]['reproductionRights'].copy()
             repRightsConfig.update({'path': repRightsQptPath})
             qptsToInsert.append(repRightsConfig)
-        if productType == 'carta_ortoimagem' and bdgexAcessInfoQptPath != self.previousQptPaths[3]:
+        if productType in ('orthoMap', 'omMap') and bdgexAcessInfoQptPath != self.previousQptPaths[3]:
             self.previousQptPaths[3] = bdgexAcessInfoQptPath
             bdgexAcessInfoConfig = productParams['qpt'][scale]['bdgexAcessInfo'].copy()
             bdgexAcessInfoConfig.update({'path': bdgexAcessInfoQptPath})
