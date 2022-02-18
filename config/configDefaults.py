@@ -317,12 +317,6 @@ class ConfigDefaults:
                 # 'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
                 'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
                 # 'reproductionRightsPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'reproductionRights.qpt',
-                'project': {
-                    'x_0': 7,
-                    'y_0': 720,
-                    'width': 110,
-                    'height': 70,
-                },
                 'header': {
                     'x_0': 7,
                     'y_0': 7,
@@ -336,14 +330,20 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
-                    'y_0': 450,
+                    'x_0': 7,
+                    'y_0': 680,
                     'width': 105,
                     'height': 100,
                 },
-                'reproductionRights': {
+                'project': {
                     'x_0': 7,
                     'y_0': 780,
+                    'width': 110,
+                    'height': 70,
+                },
+                'reproductionRights': {
+                    'x_0': 7,
+                    'y_0': 860,
                     'width': 110,
                     'height': 20
                 }
