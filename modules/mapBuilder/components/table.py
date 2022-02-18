@@ -278,26 +278,23 @@ class Table(IComponent,ComponentUtils):
             data: dict holding the map info
             mapAreaFeature: a QgsFeature covering the OM area
         '''
-        tableComp = composition.itemById("omInfoTable")
-        omAddress = data.get('endereco', '')
-        omPoint = mapAreaFeature.geometry().centroid().asPoint()
-        subordination = data.get('subordinacao1')
-        transformer = QgsCoordinateTransform(
-            QgsCoordinateReferenceSystem('EPSG:4674'),
-            QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}'), QgsProject.instance())
-        omUTMGeom = QgsGeometry(mapAreaFeature.geometry())
-        omUTMGeom.transform(transformer)
-        omUTMPoint = omUTMGeom.centroid().asPoint()
-        omUTMArea = omUTMGeom.area()
-        omUTMPerimeter = omUTMGeom.length()
-        if tableComp:
+        if tableComp:=composition.itemById("omInfoTable"):
+            # Coordinate transform to UTM
+            omPoint = mapAreaFeature.geometry().centroid().asPoint()
+            transformer = QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem('EPSG:4674'),
+                QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}'), QgsProject.instance())
+            omUTMGeom = QgsGeometry(mapAreaFeature.geometry())
+            omUTMGeom.transform(transformer)
+            omUTMPoint = omUTMGeom.centroid().asPoint()
+            # Filling the table
             htmlPath = Path(__file__).parent.parent / 'html_auto' / 'omInfoBarebone.html'
             htmlData = et.parse(str(htmlPath))
             root = htmlData.getroot()
             table = next(root.iter('table'))
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Endereço')
-            self.generateElement(_tmp, 'td', {'class':'right'}, omAddress)
+            self.generateElement(_tmp, 'td', {'class':'right'}, data.get('endereco', ''))
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'3'}, 'Coordenadas geográficas')
             self.generateElement(_tmp, 'td', {'class':'right'}, 'Sistema de Referência: SIRGAS 2000 (Época 2000.4)')
@@ -306,22 +303,27 @@ class Table(IComponent,ComponentUtils):
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'right'}, f'Longidute: {omPoint.x():.3f}º')
             _tmp = self.generateElement(table, 'tr')
-            self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Coordenadas UTM')
+            self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'3'}, 'Coordenadas UTM')
+            self.generateElement(_tmp, 'td', {'class':'right'},
+                f"Zona: {data.get('timeZone', '')} {data.get('hemisphere', '')}, \
+                Meridiano Central: {-180+(int(data.get('timeZone', 22))-1)*6 + 3}, \
+                Gr.: + 500 km, Equador: {'+ 0' if data.get('hemisphere') == 'N' else '+ 10.000'} km")
+            _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'right'}, f'X: {omUTMPoint.x():.3f} m')
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'right'}, f'Y: {omUTMPoint.y():.3f} m')
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Subordinação')
-            self.generateElement(_tmp, 'td', {'class':'right'}, subordination)
+            self.generateElement(_tmp, 'td', {'class':'right'}, data.get('subordinacao1'))
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Altitude aproximada')
             self.generateElement(_tmp, 'td', {'class':'right'}, '??????')
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Área aproximada')
-            self.generateElement(_tmp, 'td', {'class':'right'}, f'{omUTMArea:.3f} m²')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'{omUTMGeom.area():.3f} m²')
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Perímetro aproximado')
-            self.generateElement(_tmp, 'td', {'class':'right'}, f'{omUTMPerimeter:.3f} m')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'{omUTMGeom.length():.3f} m')
 
             tableComp.setText(et.tostring(root, encoding='unicode', method='html'))
 

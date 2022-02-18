@@ -370,13 +370,13 @@ class ConfigDefaults:
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 180,
+                    'y_0': 580,
                     'width': 110,
                     'height': 20
                 },
                 'bdgexAcessInfo':{
                     'x_0': 729,
-                    'y_0': 300,
+                    'y_0': 175,
                     'width': 105,
                     'height': 100,
                 }
