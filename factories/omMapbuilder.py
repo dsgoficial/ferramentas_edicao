@@ -88,7 +88,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         if debugMode:
             manager = self.instance.layoutManager()
             manager.addLayout(self.composition)
-            self.composition.setName(self.data.get('productName'))
+            self.composition.setName(f"Carta Ortoimagem OM {self.data.get('omTemplateType')}")
         # self.instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
         for key, component in self.components.items():
             self.deleteLayerTreeNode(key)

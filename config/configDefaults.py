@@ -330,8 +330,8 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 7,
-                    'y_0': 680,
+                    'x_0': 8,
+                    'y_0': 580,
                     'width': 105,
                     'height': 100,
                 },
@@ -343,7 +343,7 @@ class ConfigDefaults:
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 860,
+                    'y_0': 880,
                     'width': 110,
                     'height': 20
                 }
@@ -370,7 +370,7 @@ class ConfigDefaults:
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 530,
+                    'y_0': 180,
                     'width': 110,
                     'height': 20
                 },

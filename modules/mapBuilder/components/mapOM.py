@@ -16,7 +16,7 @@ from .componentUtils import ComponentUtils
 class MapOM(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
         self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'products' / 'omMap' / 'styles'
-        self.defaultMapSize = [(975,860), (588,588), ]
+        self.defaultMapSize = [(1025,865), (550,550), ]
 
     def build(
         self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults,  mapAreaFeature: QgsFeature,

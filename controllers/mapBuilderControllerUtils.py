@@ -114,7 +114,7 @@ class MapBuildControllerUtils:
         Returns:
             The template type (1 or 2) and the optimal scale
         '''
-        layout1Dims = (.975, .865) # For scales < 1:500
+        layout1Dims = (1.025, .865) # For scales < 1:500
         layout2Dims = (.550, .550) # For scales > 1:500
         distCalculator = QgsDistanceArea()
         distCalculator.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4674'), QgsCoordinateTransformContext())
