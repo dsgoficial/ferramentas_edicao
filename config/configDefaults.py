@@ -331,19 +331,19 @@ class ConfigDefaults:
                 },
                 'bdgexAcessInfo':{
                     'x_0': 8,
-                    'y_0': 580,
+                    'y_0': 595,
                     'width': 105,
                     'height': 100,
                 },
                 'project': {
                     'x_0': 7,
-                    'y_0': 780,
+                    'y_0': 790,
                     'width': 110,
                     'height': 70,
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 880,
+                    'y_0': 890,
                     'width': 110,
                     'height': 20
                 }

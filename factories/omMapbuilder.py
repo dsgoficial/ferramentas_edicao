@@ -22,6 +22,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScaleOM')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
+        self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
 
     def handleMapRotation(self, data: dict, composition: QgsPrintLayout):
         '''Rotates the north indication
@@ -107,6 +108,8 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
             elif key == 'mapScale':
                 component.build(self.composition, self.data)
             elif key == 'table':
+                component.build(self.composition, self.data, self.mapAreaFeature)
+            elif key == 'qrcode':
                 component.build(self.composition, self.data, self.mapAreaFeature)
         self.handleMapRotation(self.data, self.composition)
         self.handleOmInfo(self.data, self.composition)
