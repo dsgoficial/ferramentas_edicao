@@ -169,6 +169,7 @@ class DivisionOM(ComponentUtils,IComponent):
             layersToShow: tuple holding layers to be displayed in this component's mapItem
         '''
         if (mapItem:=composition.itemById("map_divisao")) is not None:
+            mapItem.setFixedSize(mapItem.sizeWithUnits())
             mapItem.setExtent(mapExtent)
             mapItem.setLayers(layersToShow)
             mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
