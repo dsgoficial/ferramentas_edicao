@@ -1,5 +1,4 @@
 from pathlib import Path
-import math
 
 from PyQt5.QtCore import QVariant
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
@@ -24,8 +23,7 @@ class MapOM(ComponentUtils,IComponent):
         instance = QgsProject.instance()
         mapIDsToBeDisplayed = []
 
-        mapAreaExtents = mapAreaFeature.geometry().boundingBox()
-        omLayer, mapExtentsTransformed = self.createLayerForGrid(mapAreaLayer, mapAreaFeature, jsonData)
+        omLayer = self.createOmLayer(mapAreaLayer, mapAreaFeature, jsonData)
         omLayer.loadNamedStyle(str(self.stylesFolder / 'omLayer.qml'))
         instance.addMapLayer(omLayer, False)
 
@@ -33,7 +31,7 @@ class MapOM(ComponentUtils,IComponent):
         layersToComposition = [omLayer, *layers]
 
         mapAreaFeaureAdjustPlacement = self.calculateRotationDisplacement(jsonData, mapAreaFeature)
-        self.updateComposition(composition, mapAreaExtents, mapExtentsTransformed, omLayer, layersToComposition, jsonData, mapAreaFeaureAdjustPlacement)
+        self.updateComposition(composition, omLayer, layersToComposition, jsonData, mapAreaFeaureAdjustPlacement)
 
         if showLayers:
             mapGroupNode = QgsLayerTreeGroup('map')
@@ -45,8 +43,14 @@ class MapOM(ComponentUtils,IComponent):
 
         return mapIDsToBeDisplayed
 
-    def createLayerForGrid(self, baseLayer: QgsVectorLayer, mapExtents: QgsFeature, data: dict) -> tuple[QgsVectorLayer, QgsRectangle]:
-        ''' Creates a vector layer that will be the base for the grid.
+    def createOmLayer(self, baseLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, data: dict) -> QgsVectorLayer:
+        ''' Copy of (reprojected) mapAreaLayer that will be displayed on composition
+        Args:
+            baseLayer (QgsVectorLayer): layer which holds one feature (map area)
+            mapAreaFeature (QgsFeature): Feature holding the geometry of the map area
+            data (dict): holds the map information
+        Returns:
+            the OM vector layer
         '''
         uri = f'Polygon?crs=EPSG:{data.get("epsg")}'
         gridLayer = QgsVectorLayer(uri, 'om_layer', "memory")
@@ -59,94 +63,69 @@ class MapOM(ComponentUtils,IComponent):
             gridLayerDataProvider.addAttributes([QgsField("id",  QVariant.String)])
         gridLayer.updateFields()
 
-        mapExtentsGeom = mapExtents.geometry()
+        mapAreaGeom = mapAreaFeature.geometry()
         crsSrc = QgsCoordinateReferenceSystem('EPSG:4674')
         crcDest = QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}')
         transform = QgsCoordinateTransform(crsSrc, crcDest, QgsProject.instance())
-        mapExtentsGeom.transform(transform)
+        mapAreaGeom.transform(transform)
 
         feat = QgsFeature(gridLayer.fields())
-        feat.setGeometry(mapExtentsGeom)
+        feat.setGeometry(mapAreaGeom)
         feat['id'] = '1'
         gridLayerDataProvider.addFeature(feat)
         gridLayer.commitChanges()
 
-        return gridLayer, mapExtentsGeom.boundingBox()
+        return gridLayer
 
-    def calculateRotationDisplacement(self, data: dict, mapAreaFeature: QgsFeature) -> tuple[float,float]:
-        '''Calculates the displacement of mapAreaFeature's center caused by the map rotation
+    def calculateRotationDisplacement(self, data: dict, mapAreaFeature: QgsFeature) -> QgsRectangle:
+        '''Calculates the new extents of the map after the rotation of the map area
         Args:
             data (dict): Holds the map metadata
             mapAreaFeature (QgsFeature): Feature holding the geometry of the map area
         Returns:
-            x and y displacements
+            The new bounding box of the map layout item
         '''
-        angle = data.get('rotationAngle')
         transformer = QgsCoordinateTransform(
             QgsCoordinateReferenceSystem('EPSG:4674'),
             QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}'),
             QgsCoordinateTransformContext())
         geom = mapAreaFeature.geometry()
         geom.transform(transformer)
-        # bboxOriginal = geom.boundingBox()
-        # print(bboxOriginal)
         bboxOriented, _, _, _, _ = geom.orientedMinimumBoundingBox()
-        # print(bboxOriented.boundingBox())
-        # displacementX = bboxOriented.boundingBox().xMaximum() - bboxOriginal.xMaximum()
-        # displacementY = bboxOriented.boundingBox().yMaximum() - bboxOriginal.yMaximum()
-        # copyGeometry = QgsFeature(mapAreaFeature).geometry()
-        # geom.rotate(data.get('rotationAngle', 0), geom.centroid().asPoint())
-        # mapAreaFeatureCentroid = mapAreaFeature.geometry().boundingBox().center()
-        # copyCentroid = copyGeometry.boundingBox().center()
-        # displacementX = mapAreaFeatureCentroid.x() - copyCentroid.x()
-        # displacementY = mapAreaFeatureCentroid.y() - copyCentroid.y()
-        # return displacementX * math.cos(angle / (2*math.pi)), displacementY * math.sin(angle / (2*math.pi))
-        return geom.boundingBox()
+        return bboxOriented.boundingBox()
 
-    # TODO: check mapExtents / mapExtentsTransformed duplication
-    def updateComposition(
-        self, composition: QgsPrintLayout, mapExtents: QgsRectangle,
-        mapExtentsTransformed: QgsRectangle, frameLayer: QgsVectorLayer,
-        layersToComposition: list[QgsMapLayer], data: dict, mapAreaFeaureAdjustPlacement: tuple):
-        '''Updates the composer
+    def updateComposition(self, composition: QgsPrintLayout, omLayer: QgsVectorLayer,
+        layersToComposition: list[QgsMapLayer], data: dict, mapAreaExtentsAfterRotation: QgsRectangle):
+        ''' Updates the print layout of the map component by setting layers, scale and extents for this component.
+        Args:
+            composition (QgsPrintLayout): composition to be updated
+            omLayer (QgsVectorLayer): om layer that will be displayed
+            layersToComposition (list[QgsMapLayer]): optional layers that will also be displayed
+            data (dict): map information
+            mapAreaExtentsAfterRotation (QgsRectangle): map extents after the rotation (oriented bounding box)
         '''
         scale = data.get('scale')
         epsg = data.get('epsg')
         angle = data.get('rotationAngle')
         omTemplateType = data.get("omTemplateType")
-        mapItem = composition.itemById("map")
-        # mapItem.setExtent(mapExtents)
-        # mapItem.setScale(scale)
-        if layersToComposition is not None:
-            layersToSet = [frameLayer, *layersToComposition]
-            mapItem.setLayers(layersToSet)
-        else:
-            mapItem.setLayers([frameLayer])
-        # mapItem.refresh()
-        mapItem.setCrs(QgsCoordinateReferenceSystem(f'EPSG:{epsg}'))
-        # mapExtentsTransformed = QgsRectangle(
-        #     mapExtentsTransformed.xMinimum() + mapAreaFeaureAdjustPlacement[0]/2,
-        #     mapExtentsTransformed.yMinimum() + mapAreaFeaureAdjustPlacement[1]/2,
-        #     mapExtentsTransformed.xMaximum() + mapAreaFeaureAdjustPlacement[0]/2,
-        #     mapExtentsTransformed.yMaximum() + mapAreaFeaureAdjustPlacement[1]/2)
-        # mapExtentsTransformed.setXMaximum(mapExtentsTransformed.xMaximum() - mapAreaFeaureAdjustPlacement[0])
-        # mapExtentsTransformed.setXMinimum(mapExtentsTransformed.xMinimum() - mapAreaFeaureAdjustPlacement[0])
-        # mapExtentsTransformed.setYMaximum(mapExtentsTransformed.yMaximum() - mapAreaFeaureAdjustPlacement[1])
-        # mapExtentsTransformed.setYMinimum(mapExtentsTransformed.yMinimum() - mapAreaFeaureAdjustPlacement[1])
-        mapItem.setExtent(mapAreaFeaureAdjustPlacement)
-        # mapItem.setScale(scale)
         if omTemplateType == 1:
             mapWidth, mapHeight = self.defaultMapSize[0]
         elif omTemplateType == 2:
             mapWidth, mapHeight = self.defaultMapSize[1]
-        mapItem.setMapRotation(90-angle)
-        mapItem.attemptResize(QgsLayoutSize(mapWidth, mapHeight, QgsUnitTypes.LayoutMillimeters))
-        mapItem.setScale(scale)
-        mapItem.refresh()
-        self.centerMapInAreaCarta(composition, mapAreaFeaureAdjustPlacement)
+        if mapItem:=composition.itemById("map"):
+            mapItem.setLayers([omLayer, *layersToComposition])
+            mapItem.setCrs(QgsCoordinateReferenceSystem(f'EPSG:{epsg}'))
+            mapItem.setExtent(mapAreaExtentsAfterRotation)
+            mapItem.setMapRotation(90-angle)
+            mapItem.attemptResize(QgsLayoutSize(mapWidth, mapHeight, QgsUnitTypes.LayoutMillimeters))
+            mapItem.setScale(scale)
+            mapItem.refresh()
+            self.centerMapInAreaCarta(composition)
 
-    def centerMapInAreaCarta(self, composition: QgsPrintLayout, mapAreaFeaureAdjustPlacement: tuple):
-        ''' Sets reference point for map and area_reservada_carta elements
+    def centerMapInAreaCarta(self, composition: QgsPrintLayout):
+        '''Updates map reference point (it was probably displaced in updateComposition())
+        Args:
+            composition (QgsPrintLayout): composition to be updated
         '''
         if (mapReservedArea:=composition.itemById('area_reservada_carta')) is not None:
             mapReservedArea.setReferencePoint(QgsLayoutItem.Middle)
@@ -155,6 +134,3 @@ class MapOM(ComponentUtils,IComponent):
         if (mapItem:=composition.itemById('map')) is not None:
             mapItem.setReferencePoint(QgsLayoutItem.Middle)
             mapItem.attemptMove(positionMapReservedArea)
-            # print(mapAreaFeaureAdjustPlacement)
-            # print(mapItem.mapUnitsToLayoutUnits())
-            # mapItem.moveContent(*mapAreaFeaureAdjustPlacement)
