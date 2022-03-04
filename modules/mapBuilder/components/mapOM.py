@@ -59,19 +59,19 @@ class MapOM(ComponentUtils,IComponent):
             gridLayerDataProvider.addAttributes([QgsField("id",  QVariant.String)])
         gridLayer.updateFields()
 
-        convexhull = mapExtents.geometry().convexHull()
+        mapExtentsGeom = mapExtents.geometry()
         crsSrc = QgsCoordinateReferenceSystem('EPSG:4674')
         crcDest = QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}')
         transform = QgsCoordinateTransform(crsSrc, crcDest, QgsProject.instance())
-        convexhull.transform(transform)
+        mapExtentsGeom.transform(transform)
 
         feat = QgsFeature(gridLayer.fields())
-        feat.setGeometry(convexhull)
+        feat.setGeometry(mapExtentsGeom)
         feat['id'] = '1'
         gridLayerDataProvider.addFeature(feat)
         gridLayer.commitChanges()
 
-        return gridLayer, convexhull.boundingBox()
+        return gridLayer, mapExtentsGeom.boundingBox()
 
     def calculateRotationDisplacement(self, data: dict, mapAreaFeature: QgsFeature) -> tuple[float,float]:
         '''Calculates the displacement of mapAreaFeature's center caused by the map rotation
