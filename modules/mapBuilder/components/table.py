@@ -317,7 +317,7 @@ class Table(IComponent,ComponentUtils):
             self.generateElement(_tmp, 'td', {'class':'right'}, data.get('subordinacao1'))
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Altitude aproximada')
-            self.generateElement(_tmp, 'td', {'class':'right'}, '??????')
+            self.generateElement(_tmp, 'td', {'class':'right'}, data.get('altitude', 0))
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Área aproximada')
             self.generateElement(_tmp, 'td', {'class':'right'}, f'{omUTMGeom.area():.3f} m²')
