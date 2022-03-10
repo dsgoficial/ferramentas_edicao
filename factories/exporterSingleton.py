@@ -14,7 +14,10 @@ class ExporterSingleton:
             data: has the json data
             debugMode: whether the debug mode is on of off 
         '''
-        self.basename = data.get('mi') or data.get('inom')
+        if data.get('omTemplateType'):
+            self.basename = data.get('nome')
+        else:
+            self.basename = data.get('mi') or data.get('inom')
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode

@@ -18,6 +18,13 @@ class CompositionSingleton:
         self.lastComposition = None
 
     def getComposition(self, jsonData: dict) -> QgsPrintLayout:
+        '''Returns the desired composition based on product type and scale.
+        Also creates the composition if it does not exist and holds it in self.compositions for future reusability.
+        Args:
+            jsonData (dict): product info
+        Returns:
+            The QgsPrintLayout associated to the request
+        '''
         productType = jsonData.get('productType')
         scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
         if productType not in self.compositions:
