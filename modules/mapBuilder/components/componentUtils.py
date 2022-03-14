@@ -5,7 +5,7 @@ from PyQt5.QtCore import QPointF, QSettings
 from PyQt5.QtXml import QDomDocument
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
                        QgsLayout, QgsLayoutItem, QgsLayoutPoint,QgsCoordinateTransform,
-                       QgsPrintLayout, QgsProject, QgsRasterLayer, QgsDataSourceUri,
+                       QgsPrintLayout, QgsProject, QgsRasterLayer, QgsDataSourceUri, QgsCoordinateTransformContext,
                        QgsReadWriteContext, QgsVectorLayer)
 
 from ..factories.gridFactory.gridFactory import GridFactory
@@ -179,6 +179,23 @@ class ComponentUtils:
             _tmp.append(feat)
         copyLayerDataProvider.addFeatures(_tmp)
         return copyLayer
+
+    def transformGeometry(self, geom: QgsGeometry, src: str, dest: str):
+        '''Apply a QgsCoordinateTransform to a QgsGeometry. The transformation is made inplace.
+        src and dst are (str) epsg definitions in the format EPSG:4326, for example.
+        Args:
+            geom (QgsGeometry): geometry to be (inplace) transformed
+            src (str): Source Coordinate Reference System definition (Example: 'EPSG:4674', 'EPSG:31982')
+            dest (str): Dest Coordinate Reference System definition (Example: 'EPSG:4674', 'EPSG:31982')
+        '''
+        if 'EPSG:' not in src or 'EPSG:' not in dest:
+            return geom
+        transformer = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem(src),
+            QgsCoordinateReferenceSystem(dest),
+            QgsCoordinateTransformContext())
+        geom.transform(transformer)
+        return geom
 
 def cloneItem(item, composition_dest, x_0, y_0):
     ref_point = item.referencePoint()
