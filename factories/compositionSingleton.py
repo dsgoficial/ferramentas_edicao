@@ -13,7 +13,12 @@ class CompositionSingleton:
     def __init__(self, config: ConfigDefaults = ConfigDefaults()) -> None:
         self.compositions = dict()
         self.config = config
-        self.previousQptPaths = [None, None, None, None]
+        self.previousQpts = {
+            'header': None,
+            'project': None,
+            'reproductionRights': None,
+            'bdgexAcessInfo': None
+        }
         self.resourcesPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products'
         self.lastComposition = None
 
@@ -31,8 +36,7 @@ class CompositionSingleton:
             self.compositions[productType] = dict()
         if scale not in self.compositions.get(productType):
             self.compositions[productType][scale] = self.createComposition(productType, jsonData)
-        self.updatePrintLayoutFromConfig(
-            self.compositions[productType][scale], jsonData)
+        self.updatePrintLayoutFromConfig(self.compositions[productType][scale], jsonData)
         return self.compositions[productType][scale]
 
     def createComposition(self, productType: str, jsonData: dict) -> QgsPrintLayout:
@@ -79,27 +83,28 @@ class CompositionSingleton:
         projectQptPath = self.setupPath(jsonData.get('projeto')) or productParams.get('qpt', {}).get(scale, {}).get('projectPath', None) or self.config.project
         repRightsQptPath = self.setupPath(jsonData.get('direitos_reproducao')) or productParams.get('qpt', {}).get(scale, {}).get('reproductionRightsPath', None) or self.config.reproductionRights
         bdgexAcessInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.config.bdgexAcessInfo
-        if headerQptPath != self.previousQptPaths[0]:
-            self.previousQptPaths[0] = headerQptPath
+        if headerQptPath != self.previousQpts.get('header') or composition != self.lastComposition:
+            self.previousQpts['header'] = headerQptPath
             headerConfig = productParams['qpt'][scale]['header'].copy()
             headerConfig.update({'path': headerQptPath})
             qptsToInsert.append(headerConfig)
-        if projectQptPath != self.previousQptPaths[1]:
-            self.previousQptPaths[1] = projectQptPath
+        if projectQptPath != self.previousQpts.get('project') or composition != self.lastComposition:
+            self.previousQpts['project'] = projectQptPath
             projectConfig = productParams['qpt'][scale]['project'].copy()
             projectConfig.update({'path': projectQptPath})
             qptsToInsert.append(projectConfig)
-        if repRightsQptPath != self.previousQptPaths[2]:
-            self.previousQptPaths[2] = repRightsQptPath
+        if repRightsQptPath != self.previousQpts.get('reproductionRights') or composition != self.lastComposition:
+            self.previousQpts['reproductionRights'] = repRightsQptPath
             repRightsConfig = productParams['qpt'][scale]['reproductionRights'].copy()
             repRightsConfig.update({'path': repRightsQptPath})
             qptsToInsert.append(repRightsConfig)
-        if productType in ('orthoMap', 'omMap') and bdgexAcessInfoQptPath != self.previousQptPaths[3]:
-            self.previousQptPaths[3] = bdgexAcessInfoQptPath
+        if productType in ('orthoMap', 'omMap') and (bdgexAcessInfoQptPath != self.previousQpts.get('bdgexAcessInfo') or composition != self.lastComposition):
+            self.previousQpts['bdgexAcessInfo'] = bdgexAcessInfoQptPath
             bdgexAcessInfoConfig = productParams['qpt'][scale]['bdgexAcessInfo'].copy()
             bdgexAcessInfoConfig.update({'path': bdgexAcessInfoQptPath})
             qptsToInsert.append(bdgexAcessInfoConfig)
         self.insertCompositions(composition, qptsToInsert)
+        self.lastComposition = composition
 
     def insertCompositions(self, compositionToUpdate: QgsPrintLayout, qptsToInsert: list[dict]):
         # Option 1: Use the method addItemsFromXml to insert a QDomDOcument into the layout

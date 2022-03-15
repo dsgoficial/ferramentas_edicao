@@ -76,7 +76,6 @@ class MapBuildController(MapBuildControllerUtils):
             inom = self.grid.get_INOM_from_lat_lon(lon, lat, 1)
             epsg = self.getEpsg(inom[0], int(inom[3:5]))
             templateType, scale, angle = self.getInfoOmMap(polygonWkt, epsg)
-            print(templateType, scale, angle)
             jsonData.update({
                 'omTemplateType': templateType,
                 'rotationAngle': angle})
@@ -172,7 +171,7 @@ class MapBuildController(MapBuildControllerUtils):
             jsonData.update({'productType':productType,'productName': productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
-            builder.cleanProject(False)
+            # builder.cleanProject(False)
             builder.removeLayers(False)
             composition = self.compositions.getComposition(jsonData).clone()
             connection = self.conn.getConnection(jsonData.get('banco'), dlgCfg.username, dlgCfg.password)

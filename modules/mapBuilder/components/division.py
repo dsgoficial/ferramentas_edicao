@@ -45,14 +45,12 @@ class Division(ComponentUtils,IComponent):
 
         # Getting map extents
         gridBound = mapAreaFeature.geometry().boundingBox()
-        print('Gridbound:', gridBound)
         gridRectangleLayer = self.createGridRectangle(gridBound, 'divisionMapArea')
         mapIDsToBeDisplayed.append(gridRectangleLayer.id())
 
         # Get map extent for intersections
         # TODO: Check possible refactor on getExtent
         outerExtents = self.getExtent(gridBound, mapAreaFeature, data)
-        print('Outer extents:', outerExtents)
         orderedCountiesByCentroidDistance, orderedCountiesNamesByArea = self.getIntersections(
             layerCountyArea, outerExtents, mapAreaFeature, data)
 

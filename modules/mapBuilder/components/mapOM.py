@@ -163,7 +163,6 @@ class OBB:
     def rectangle(self):
         pMin = self.transform((self.min[0], self.min[1]))
         pMax = self.transform((self.max[0], self.max[1]))
-        print(self.transform((self.min[0], self.min[1])))
         return QgsRectangle(
             pMin[0],
             pMin[1],
