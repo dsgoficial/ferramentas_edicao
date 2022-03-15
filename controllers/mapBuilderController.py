@@ -22,7 +22,7 @@ from .mapBuilderControllerUtils import MapBuildControllerUtils
 
 class MapBuildController(MapBuildControllerUtils):
     
-    def __init__(self, dlg: Union[QDialog,Namespace], iface: QgisInterface, defaults: ConfigDefaults = ConfigDefaults()) -> None:
+    def __init__(self, dlg: Union[QDialog,Namespace], iface: Union[QgisInterface,None], defaults: ConfigDefaults = ConfigDefaults()) -> None:
         super().__init__()
         self.dlg = dlg
         self.iface = iface
@@ -108,6 +108,7 @@ class MapBuildController(MapBuildControllerUtils):
                 dlg.checkBoxExportGeotiff.isChecked()
             )
         elif isinstance(dlg, Namespace):
+            print(dlg)
             dlgCfg = _dlgCfg(
                 'headless',
                 dlg.tipo,

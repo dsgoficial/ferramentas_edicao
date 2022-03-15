@@ -1,5 +1,6 @@
 @echo off
-set OSGEO4W_ROOT="C:\Program Files\QGIS 3.20.1"
+@REM for /D %%a in ("C:\Program Files\QGIS*") do set "qgispath=%%a"
+set OSGEO4W_ROOT="C:\Program Files\QGIS 3.22.1"
 set OSGEO4W_ROOT=%OSGEO4W_ROOT:"=%
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 @echo off

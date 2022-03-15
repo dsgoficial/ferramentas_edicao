@@ -1,23 +1,23 @@
 import argparse
 import os
 import sys
+from pathlib import Path
 
-from PyQt5.QtNetwork import QNetworkProxy
 from qgis.core import QgsApplication, QgsNetworkAccessManager
+from qgis.PyQt.QtNetwork import QNetworkProxy
 
-from .gridGenerator.gridAndLabelCreator import GridAndLabelCreator
-from .map_generator.manager import DefaultMap
+from .controllers.mapBuilderController import MapBuildController
+
 
 def exportMaps(args):
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    grid = GridAndLabelCreator()
-    defaultMap = DefaultMap(args, grid)
-    defaultMap.createMaps()
+    controller = MapBuildController(args, None)
+    controller.run()
 
 def setupArgparser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--tipo', default='carta_ortoimagem', choices=('carta_topografica','carta_ortoimagem'), type=str)
-    parser.add_argument('-j', '--json', default=[])
+    parser.add_argument('-t', '--tipo', default='carta_ortoimagem', choices=('carta_topografica','carta_ortoimagem', 'carta_om'), type=str)
+    parser.add_argument('-j', '--json', default=[], nargs='+')
     parser.add_argument('-l', '--login',dest='username', required=True)
     parser.add_argument('-s', '--senha', dest='password', required=True)
     parser.add_argument('-ph', '--proxyHost', type=str)
@@ -28,6 +28,12 @@ def setupArgparser():
     parser.add_argument('-et', '--exportTiff', action='store_true')
     return parser.parse_args()
 
+def getInstallationFolder() -> Path:
+    if sys.platform == 'win32':
+        return next(Path('C:\\Program Files\\').glob('QGIS*'))
+    elif sys.platform == 'linux':
+        pass
+
 def startNetwork(args):
     if all((args.proxyHost,args.proxyPort, args.proxyUser, args.proxyPassword)):
         proxy = QNetworkProxy(QNetworkProxy.HttpProxy, args.proxyHost, args.proxyPort, args.proxyUser, args.proxyPassword)
@@ -37,9 +43,11 @@ def startNetwork(args):
     manager.setFallbackProxyAndExcludes(proxy,[],[])
 
 if __name__ == '__main__':
+    qgisFolder = getInstallationFolder()
+    print(qgisFolder)
     args = setupArgparser()
     qgs = QgsApplication([], False)
-    QgsApplication.setPrefixPath('C:\\Program Files\\QGIS 3.20.1\\apps', True)
+    # QgsApplication.setPrefixPath('C:\\Program Files\\QGIS 3.20.1\\apps', True)
     qgs.initQgis()
     startNetwork(args)
     exportMaps(args)
