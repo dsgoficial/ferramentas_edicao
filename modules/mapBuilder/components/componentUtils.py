@@ -1,21 +1,23 @@
 import re
 from pathlib import Path
 
+from numpy import ndarray, array, asarray, dot, cov, array, finfo, min as npmin, max as npmax
+from numpy.linalg import eigh, norm
+
 from PyQt5.QtCore import QPointF, QSettings
 from PyQt5.QtXml import QDomDocument
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
                        QgsLayout, QgsLayoutItem, QgsLayoutPoint,QgsCoordinateTransform,
-                       QgsPrintLayout, QgsProject, QgsRasterLayer, QgsDataSourceUri, QgsCoordinateTransformContext,
+                       QgsPrintLayout, QgsProject, QgsRasterLayer, QgsRectangle, QgsCoordinateTransformContext,
                        QgsReadWriteContext, QgsVectorLayer)
 
 from ..factories.gridFactory.gridFactory import GridFactory
 
 
 class ComponentUtils:
-    # TODO: check feasibility of removing the grid factory from __init__
+
     def __init__(self, *args, **kwargs):
         pass
-        # self.utm_grid = GridFactory()
 
     def getPrintLayoutFromQptPath(self, path, newValue):
         '''
@@ -229,3 +231,76 @@ def copyQptToCompositor(composition_dest, qptDict):
     if sucess:
         for item in items:
             cloneItem(item, composition_dest, qptDict['x_0'], qptDict['y_0'])
+
+class OBB:
+    '''
+    From https://github.com/pboechat/pyobb/blob/master/pyobb/obb.py
+    '''
+    def __init__(self):
+        self.rotation = None
+        self.min = None
+        self.max = None
+
+    def transform(self, point):
+        return dot(array(point), self.rotation)
+
+    @property
+    def centroid(self):
+        return self.transform((self.min + self.max) / 2.0)
+
+    @property
+    def extents(self):
+        return abs(self.transform((self.max - self.min) / 2.0))
+
+    @property
+    def rectangle(self):
+        pMin = self.transform((self.min[0], self.min[1]))
+        pMax = self.transform((self.max[0], self.max[1]))
+        return QgsRectangle(
+            pMin[0],
+            pMin[1],
+            pMax[0],
+            pMax[1]
+        )
+
+    @classmethod
+    def build_from_covariance_matrix(cls, covariance_matrix, points):
+        if not isinstance(points, ndarray):
+            points = array(points, dtype=float)
+
+        obb = OBB()
+
+        _, eigen_vectors = eigh(covariance_matrix)
+
+        def try_to_normalize(v):
+            n = norm(v)
+            if n < finfo(float).resolution:
+                raise ZeroDivisionError
+            return v / n
+
+        r = try_to_normalize(eigen_vectors[:, 0])
+        u = try_to_normalize(eigen_vectors[:, 1])
+
+        obb.rotation = array((r, u)).T
+
+        p_primes = asarray([obb.rotation.dot(p) for p in points])
+        obb.min = npmin(p_primes, axis=0)
+        obb.max = npmax(p_primes, axis=0)
+
+        return obb
+
+    @classmethod
+    def build_from_points(cls, points):
+        if not isinstance(points, ndarray):
+            points = array(points, dtype=float)
+        return OBB.build_from_covariance_matrix(cov(points, y=None, rowvar=0, bias=1), points)
+
+    @classmethod
+    def build_from_geom(cls, geom: QgsGeometry):
+        geomWkt = geom.asWkt()
+        if geom.isMultipart():
+            coordsTxt = geomWkt.replace('MultiPolygon (((', '').replace(')))', '').split(',')
+        else:
+            coordsTxt = geomWkt.replace('Polygon ((', '').replace('))', '').split(',')
+        npCoords = [[float(x.strip().split(' ')[0]),float(x.strip().split(' ')[1])] for x in coordsTxt]
+        return OBB.build_from_covariance_matrix(cov(npCoords, y=None, rowvar=0, bias=1), npCoords)

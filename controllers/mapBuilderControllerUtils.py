@@ -1,8 +1,11 @@
 from math import ceil
-from qgis import processing
-from qgis.core import (QgsFeature, QgsField, QgsFields, QgsGeometry, QgsUnitTypes,QgsCoordinateTransformContext,
-                       QgsRectangle, QgsVectorLayer, QgsDistanceArea, QgsCoordinateReferenceSystem, QgsCoordinateTransform)
+
+from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
+                       QgsCoordinateTransformContext, QgsFeature, QgsField,
+                       QgsFields, QgsGeometry, QgsRectangle, QgsVectorLayer)
 from qgis.PyQt.QtCore import QVariant
+
+from ..modules.mapBuilder.components.componentUtils import OBB
 from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 
 
@@ -76,6 +79,7 @@ class MapBuildControllerUtils:
 
     def getInfoOmMap(self, polygonWkt: str, epsg: str) -> tuple[float,float,float]:
         '''Gets the centroid of a from a wkt geometry and its desired scale representation.
+        Uses the OBB class to extract the orientedMinimumBoundingBox (QGIS version is broken until 3.22)
         Args:
             polgonWkt: WKT string representation of the polygon
             epsg: Destination EPSG, eg. 31982
@@ -84,8 +88,9 @@ class MapBuildControllerUtils:
             
         '''
         geom = QgsGeometry.fromWkt(polygonWkt)
-        orientedBbox, orientedBboxArea, angle, width, height = geom.orientedMinimumBoundingBox()
-        # bbox = orientedBbox.boundingBox()
+        _, _, angle, _, _ = geom.orientedMinimumBoundingBox()
+        orientedBbox = OBB.build_from_geom(geom).rectangle
+        orientedBbox = QgsGeometry.fromRect(orientedBbox)
         templateType, scale = self.getOmScale(orientedBbox, epsg)
         return templateType, scale, angle
 

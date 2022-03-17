@@ -145,10 +145,17 @@ class MapBuildController(MapBuildControllerUtils):
         '''
         self.conn.conn = None
         self.compositions.compositions = dict()
-        self.compositions.previousQptPaths = [None,None,None,None]
+        self.compositions.previousQpts = {}
+        self.compositions.lastComposition = None
         self.builders = dict()
 
     def getProductBuilder(self, productType: str) -> Union[OrthoMapBuilder,TopoMapBuilder,OmMapBuilder]:
+        '''Gets a builder for the desired product and stores it in self.builders;
+        Args:
+            productType (str): product type
+        Returns:
+            A builder for the desired product type
+        '''
         if productType == 'orthoMap' and productType not in self.builders:
             self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
         elif productType == 'topoMap' and productType not in self.builders:
@@ -157,7 +164,15 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update({productType: OmMapBuilder(ComponentFactory())})
         return self.builders.get(productType)
 
-    def getExporter(self, dlg: NamedTuple, data: dict, debugMode: bool):
+    def getExporter(self, dlg: NamedTuple, data: dict, debugMode: bool) -> ExporterSingleton:
+        '''Sets up the exporter configuration and returns it
+        Args:
+            dlg (NamedTuple): Configuration details from the plugin window or cmd
+            data (dict): current map info
+            debugMode (bool): Debug flag
+        Returns:
+            An exporter singleton
+        '''
         self.exporter.setParams(dlg, data, debugMode)
         return self.exporter
 
