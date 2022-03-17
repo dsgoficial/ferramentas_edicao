@@ -81,10 +81,14 @@ class DivisionOM(ComponentUtils,IComponent):
         '''
         geom = mapAreaFeature.geometry()
         request = QgsFeatureRequest().setFilterRect(geom.boundingBox())
-        county: QgsFeature = next(countyLayer.getFeatures(request))
-        countyExtents = county.geometry().boundingBox()
+        for candidateCounty in countyLayer.getFeatures(request):
+            countyFeat = candidateCounty
+            if candidateCounty.geometry().intersects(geom):
+                countyFeat = candidateCounty
+                break
+        countyExtents = countyFeat.geometry().boundingBox()
         countyExtents.grow(.1)
-        return county, countyExtents
+        return countyFeat, countyExtents
 
     def updateCountyLayerStyle(self, county: QgsFeature, countyLayer: QgsVectorLayer):
         '''Creates the rendering rules for countyLayer by handling its simbology and labeling.

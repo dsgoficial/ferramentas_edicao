@@ -314,7 +314,7 @@ class Table(IComponent,ComponentUtils):
             self.generateElement(_tmp, 'td', {'class':'right'}, f'Y: {omUTMPoint.y():.3f} m')
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Subordinação')
-            self.generateElement(_tmp, 'td', {'class':'right'}, data.get('subordinacao1'))
+            self.generateElement(_tmp, 'td', {'class':'right'}, data.get('subordinacao2') or data.get('subordinacao1'))
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left'}, 'Altitude aproximada')
             self.generateElement(_tmp, 'td', {'class':'right'}, data.get('altitude', 0))
