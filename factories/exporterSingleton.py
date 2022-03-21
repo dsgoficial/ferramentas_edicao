@@ -21,6 +21,7 @@ class ExporterSingleton:
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
+        self.dpi = int(data.get('dpi')) or 400
 
     def export(self, composition: QgsPrintLayout) -> bool:
         ''' Creates a QgsLayoutExporter per composition to be exported
@@ -38,12 +39,12 @@ class ExporterSingleton:
             pdfExportSettings.simplifyGeometries = False
             pdfExportSettings.appendGeoreference = True
             pdfExportSettings.exportMetadata = False
-            pdfExportSettings.dpi = 400
+            pdfExportSettings.dpi = self.dpi
             exportStatus += exporter.exportToPdf(str(pdfFilePath), pdfExportSettings)
         if self.exportTiff:
             tiffFilePath = Path(self.exportFolder, f'{self.basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
-            tiffExporterSettings.dpi = 400
+            tiffExporterSettings.dpi = self.dpi
             statusTiff = exporter.exportToImage(str(tiffFilePath), tiffExporterSettings)
             exportStatus += statusTiff
             self.reproject(tiffFilePath)
