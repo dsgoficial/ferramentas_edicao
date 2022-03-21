@@ -21,7 +21,7 @@ class ExporterSingleton:
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
-        self.dpi = int(data.get('dpi')) or 400
+        self.dpi = int(data.get('dpi', 400))
 
     def export(self, composition: QgsPrintLayout) -> bool:
         ''' Creates a QgsLayoutExporter per composition to be exported

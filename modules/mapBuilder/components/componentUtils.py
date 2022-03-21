@@ -299,8 +299,8 @@ class OBB:
     def build_from_geom(cls, geom: QgsGeometry):
         geomWkt = geom.asWkt()
         if geom.isMultipart():
-            coordsTxt = geomWkt.replace('MultiPolygon (((', '').replace(')))', '').split(',')
+            coordsTxt = geomWkt.replace('MultiPolygon ', '').replace(')', '').replace('(', '').split(',')
         else:
-            coordsTxt = geomWkt.replace('Polygon ((', '').replace('))', '').split(',')
+            coordsTxt = geomWkt.replace('Polygon ', '').replace(')', '').replace('(', '').split(',')
         npCoords = [[float(x.strip().split(' ')[0]),float(x.strip().split(' ')[1])] for x in coordsTxt]
         return OBB.build_from_covariance_matrix(cov(npCoords, y=None, rowvar=0, bias=1), npCoords)
