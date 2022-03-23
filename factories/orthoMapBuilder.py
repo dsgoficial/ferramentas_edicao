@@ -106,6 +106,8 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.data, self.mapAreaFeature)
             elif key == 'miniMapCoords':
                 component.build(self.composition, self.mapAreaFeature)
+            elif key == 'anglesHandler':
+                component.build(self.composition, self.mapAreaFeature)
             elif key == 'qrcode':
                 component.build(self.composition, self.data, self.mapAreaFeature)
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds))

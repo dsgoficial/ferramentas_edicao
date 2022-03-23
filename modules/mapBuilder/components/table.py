@@ -229,7 +229,7 @@ class Table(IComponent,ComponentUtils):
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Mestra: {curveData[2]} metros')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Erro gráfico')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, '0,2 mm na escala da carta')
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, '0,2 mm na escala')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'2'}, 'Padrão de Exatidão Cartográfica (PEC)')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'PEC Planimétrico: {tecnicalInfo.get("pec_planimetrico")}')
@@ -245,17 +245,17 @@ class Table(IComponent,ComponentUtils):
             _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':f'{lenThirdData}'}, 'Origem dos dados geoespaciais fornecidos por terceiros')
             if isInternational:
                 if intersectionStatus in ('inside', 'intersects'):
-                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL** e GADM 3.6')
+                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL* e GADM 3.6')
                     _tmp = self.generateElement(_tmp, 'tr')
-                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020 e GADM 3.6')
+                    _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE* / 2020 e GADM 3.6')
                 else:
                     _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: GADM 3.6')
                     _tmp = self.generateElement(_tmp, 'tr')
                     _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: GADM 3.6')
             else:
-                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL**')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites internacionais: CBDL*')
                 _tmp = self.generateElement(_tmp, 'tr')
-                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE** / 2020')
+                _ = self.generateElement(_tmp, 'td', {'class':'right'}, 'Limites estaduais e municipais: IBGE* / 2020')
             for info in thirdPartyData:
                 _tmp = self.generateElement(firstTable, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, info)
@@ -265,7 +265,7 @@ class Table(IComponent,ComponentUtils):
             secondTable = next(tables)
             if tecnicalInfo.get('observacao_homologacao', True):
                 _tmp = self.generateElement(secondTable, 'tr')
-                _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '** Limites sujeitos  à homologação do referido órgão.')
+                _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '* Limites sujeitos  à homologação do referido órgão.')
             _tmp = self.generateElement(secondTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'phases'}, 'Para maiores informações consulte o arquivo de metadados.')
 

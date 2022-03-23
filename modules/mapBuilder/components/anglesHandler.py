@@ -29,7 +29,8 @@ class AnglesHandler:
 
         gm = GeoMag(file)
         height = 0
-        time = datetime.date(year=2021, month=1, day=1)
+        currYear = datetime.datetime.now().year
+        time = datetime.date(year=currYear, month=1, day=1)
         decl_today = gm.GeoMag(wgsPoint.y(), wgsPoint.x(), height, time=time)
         year_ago = time + relativedelta(years=1)
         decl_yearago = gm.GeoMag(wgsPoint.y(), wgsPoint.x(), height, year_ago)
@@ -115,6 +116,10 @@ class AnglesHandler:
         if label_convergence is not None:
             label_convergence.setText(self.generateDMS(convergencia))
             label_convergence.refresh()
+
+        # Updating year in Magnetic Declination left label
+        if magneticDeclLabel:=composition.itemById('label_declinacao_ano'):
+            magneticDeclLabel.setText(f'DECLINAÇÃO MAGNÉTICA EM 1° DE JANEIRO DE {datetime.datetime.now().year} E CONVERGÊNCIA MERIDIANA DO CENTRO DO PRODUTO')
 
         composition_list = (composition.items())
         for compositionItem in composition_list:
