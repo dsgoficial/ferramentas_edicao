@@ -158,7 +158,7 @@
   <LabelFont description="Arial,8,-1,5,75,0,0,0,0,0" style=""/>
   <FontColor blue="0" red="0" alpha="255" green="0"/>
  </LayoutItem>
- <LayoutItem positionOnPage="5,23.73,mm" outlineWidthM="0.3,mm" size="100,5.8,mm" opacity="1" zValue="7" position="5,23.73,mm" halign="132" groupUuid="" excludeFromExports="0" valign="32" referencePoint="0" frame="false" uuid="{812bbddb-a86b-49e1-a7fb-f417b753a203}" templateUuid="{812bbddb-a86b-49e1-a7fb-f417b753a203}" blendMode="0" labelText="PRODUTO CARTOGRÁFICO ELABORADO PELA DIRETORIA DE SERVIÇO GEOGRÁFICO NO &#xa;CONTEXTO DO BASIC EXCHANGE AND COOPERATION AGREEMENT (BECA)" id="labelCreditType" htmlState="0" type="65641" marginY="0" frameJoinStyle="miter" visibility="1" background="false" marginX="0" itemRotation="0" positionLock="false">
+ <LayoutItem positionOnPage="5,23.73,mm" outlineWidthM="0.3,mm" size="100,5.8,mm" opacity="1" zValue="7" position="5,23.73,mm" halign="132" groupUuid="" excludeFromExports="0" valign="32" referencePoint="0" frame="false" uuid="{812bbddb-a86b-49e1-a7fb-f417b753a203}" templateUuid="{812bbddb-a86b-49e1-a7fb-f417b753a203}" blendMode="0" labelText="PRODUTO ELABORADO PELA DIRETORIA DE SERVIÇO GEOGRÁFICO NO &#xa;CONTEXTO DO BASIC EXCHANGE AND COOPERATION AGREEMENT (BECA)" id="labelCreditType" htmlState="0" type="65641" marginY="0" frameJoinStyle="miter" visibility="1" background="false" marginX="0" itemRotation="0" positionLock="false">
   <FrameColor blue="0" red="0" alpha="255" green="0"/>
   <BackgroundColor blue="255" red="255" alpha="255" green="255"/>
   <LayoutObject>
@@ -256,7 +256,7 @@
   <Option type="Map">
    <Option type="QString" value="png" name="atlasRasterFormat"/>
    <Option type="StringList" name="variableNames">
-    <Option type="QString" value="productFolder"/>
+    <Option type="QString" value="edition_folder"/>
    </Option>
    <Option type="StringList" name="variableValues">
     <Option type="QString" value="C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem"/>
