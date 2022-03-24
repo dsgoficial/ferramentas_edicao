@@ -108,7 +108,6 @@ class MapBuildController(MapBuildControllerUtils):
                 dlg.checkBoxExportGeotiff.isChecked()
             )
         elif isinstance(dlg, Namespace):
-            print(dlg)
             dlgCfg = _dlgCfg(
                 'headless',
                 dlg.tipo,

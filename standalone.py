@@ -16,9 +16,10 @@ def exportMaps(args):
 
 def setupArgparser():
     parser = argparse.ArgumentParser()
+    parser.add_argument('pathQgis', default=str(getInstallationFolder()))
     parser.add_argument('-t', '--tipo', default='carta_ortoimagem', choices=('carta_topografica','carta_ortoimagem', 'carta_om'), type=str)
     parser.add_argument('-j', '--json', default=[], nargs='+')
-    parser.add_argument('-l', '--login',dest='username', required=True)
+    parser.add_argument('-l', '--login', dest='username', required=True)
     parser.add_argument('-s', '--senha', dest='password', required=True)
     parser.add_argument('-ph', '--proxyHost', type=str)
     parser.add_argument('-pp', '--proxyPort', type=int)
@@ -35,7 +36,7 @@ def getInstallationFolder() -> Path:
         pass
 
 def startNetwork(args):
-    if all((args.proxyHost,args.proxyPort, args.proxyUser, args.proxyPassword)):
+    if all((args.proxyHost, args.proxyPort, args.proxyUser, args.proxyPassword)):
         proxy = QNetworkProxy(QNetworkProxy.HttpProxy, args.proxyHost, args.proxyPort, args.proxyUser, args.proxyPassword)
     else:
         proxy = QNetworkProxy(QNetworkProxy.NoProxy)
@@ -43,8 +44,6 @@ def startNetwork(args):
     manager.setFallbackProxyAndExcludes(proxy,[],[])
 
 if __name__ == '__main__':
-    qgisFolder = getInstallationFolder()
-    print(qgisFolder)
     args = setupArgparser()
     qgs = QgsApplication([], False)
     # QgsApplication.setPrefixPath('C:\\Program Files\\QGIS 3.20.1\\apps', True)
