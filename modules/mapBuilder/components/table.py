@@ -236,7 +236,7 @@ class Table(IComponent,ComponentUtils):
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}')
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Especificação técnica de representação')
-            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('especificacao_representacao'))
+            _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('especificacao_representacao', 'ET-RDG versão preliminar'))
             _tmp = self.generateElement(firstTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'left'}, 'Origem dos dados altimétricos')
             _ = self.generateElement(_tmp, 'td', {'class':'right'}, tecnicalInfo.get('origem_dados_altimetricos'))
