@@ -1,11 +1,12 @@
 import json
 import re
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Union
 
 from qgis import processing
-from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject, QgsFeature,
-                       QgsVectorLayer, QgsCoordinateReferenceSystem, QgsRasterLayer)
+from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject, QgsFeature, QgsGeometry,
+                       QgsVectorLayer, QgsCoordinateReferenceSystem, QgsRasterLayer, QgsCoordinateTransform,
+                       QgsCoordinateTransformContext)
 
 from ..config.configDefaults import ConfigDefaults
 
@@ -35,9 +36,12 @@ class MapBuilderUtils:
         self.mapAreaFeature = mapAreaFeature
         self.mapAreaLayer = mapAreaLayer
 
-    def getLayersFromDB(self, uri: QgsDataSourceUri, data:dict, defaults: ConfigDefaults, productPath: Path, group: str, filterF: Callable) -> tuple[list[QgsVectorLayer],list[str]]:
+    def getLayersFromDB(
+        self, uri: QgsDataSourceUri, data:dict, defaults: ConfigDefaults, productPath: Path, group: str,
+        filterF: Callable, mapAreaFeature: Union[QgsFeature,None] = None) -> tuple[list[QgsVectorLayer],list[str]]:
         ''' Reads layer from "uri". The layers to be read are defined by "productType" and "group" and filtered by "filterF",
-        which is callable. Returns a tuple of two lists containing QgsMapLayers and its ids, respectively.
+        which is callable. If mapAreaFeature is given, it will be used as a filter query in the layer.
+        Returns a tuple of two lists containing QgsMapLayers and its ids, respectively.
         Args:
             uri: URI definition holding the database info
             data: Dict holding the map info
@@ -45,6 +49,7 @@ class MapBuilderUtils:
             productPath: Path instance pointing to the product path 
             group: map or miniMap
             filterF: filter function that receives available layers and return the filtered ones
+            mapAreaFeature (QgsFeature): feature holding the map area
         Returns:
             Tuple of two lists: [QgsMapLayers] and [QgsMapLayers ids]
         '''
@@ -52,6 +57,7 @@ class MapBuilderUtils:
         layersIDsList = []
         scale = data.get('scale')
         productType = data.get('productType')
+        useLayerFilter = data.get('useLayerFilter', True)
         stylesFolder = productPath / 'styles' / group
         availableLayers = self.readJsonFromPath(productPath / 'camadas.json').get(group)
         availableLayers = filterF(availableLayers)
@@ -59,6 +65,12 @@ class MapBuilderUtils:
             layer = self.getLayerFromPostgres(uri, lyr)
             if layer.isValid():
                 self.instance.addMapLayer(layer, False)
+                if useLayerFilter and mapAreaFeature:
+                    mapAreaFeature = QgsFeature(mapAreaFeature)
+                    mapAreaGeometry = self.transformGeometryIfNecessary(
+                        mapAreaFeature.geometry(), 'EPSG:4674' , layer.crs().authid())
+                    mapAreaGeometryWkt = mapAreaGeometry.asWkt()
+                    layer.setSubsetString(f"st_relate(geom,st_geomfromewkt('SRID={layer.crs().postgisSrid()};{mapAreaGeometryWkt}'),'T********')")
                 if stylePath:=self.getStylePath(layer.name(), defaults, productType, stylesFolder, scale):
                     layer.loadNamedStyle(str(stylePath), True)
                     layer.triggerRepaint()
@@ -219,6 +231,16 @@ class MapBuilderUtils:
             for group in self.groupsToBeRemoved:
                 groupTree = root.findGroup(group)
                 root.removeChildNode(groupTree)
+
+    def transformGeometryIfNecessary(self, geom: QgsGeometry, srcSrc: str, dstSrc: str):
+        if srcSrc != dstSrc:
+            transform = QgsCoordinateTransform(
+                QgsCoordinateTransform(srcSrc),
+                QgsCoordinateTransform(dstSrc),
+                QgsCoordinateTransformContext())
+            geom.transform(transform)
+            return geom
+        return geom
 
     def setupMasks(self, productPath: Path, layers: list[QgsVectorLayer]):
         ''' Runs the "loadmasks" processing to setup the layers masks.

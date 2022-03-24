@@ -37,8 +37,8 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         '''
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
-        mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x)
-        miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x)
+        mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x, self.mapAreaFeature)
+        miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x, self.mapAreaFeature)
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()

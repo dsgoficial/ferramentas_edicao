@@ -64,9 +64,9 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
         mapLayers, mapLayersIds = self.getLayersFromDB(
-            self.conn, self.data, self.defaults, self.productPath, 'map', partial(self.filterLayers, 'map', self.data, self.defaults))
+            self.conn, self.data, self.defaults, self.productPath, 'map', partial(self.filterLayers, 'map', self.data, self.defaults), self.mapAreaFeature)
         miniMapLayers, miniMapLayersIds = self.getLayersFromDB(
-            self.conn, self.data, self.defaults, self.productPath, 'miniMap', partial(self.filterLayers, 'miniMap', self.data, self.defaults))
+            self.conn, self.data, self.defaults, self.productPath, 'miniMap', partial(self.filterLayers, 'miniMap', self.data, self.defaults), self.mapAreaFeature)
         imgLayers, imgLayersIds = self.createRasterLayers(self.data.get('imagens', tuple()))
         mapLayers = [*mapLayers, *imgLayers]
         mapLayersIds = [*mapLayersIds, *imgLayersIds]
