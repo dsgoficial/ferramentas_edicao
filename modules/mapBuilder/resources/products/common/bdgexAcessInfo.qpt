@@ -150,7 +150,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string(@commonFolder) + '/geoportalQrcode.png'" type="QString"/>
+       <Option name="expression" value="to_string(@commonPath) + '/geoportalQrcode.png'" type="QString"/>
        <Option name="type" value="3" type="int"/>
       </Option>
      </Option>
@@ -190,7 +190,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string(@commonFolder) + '/geoportalBanner.png'" type="QString"/>
+       <Option name="expression" value="to_string(@commonPath) + '/geoportalBanner.png'" type="QString"/>
        <Option name="type" value="3" type="int"/>
       </Option>
      </Option>

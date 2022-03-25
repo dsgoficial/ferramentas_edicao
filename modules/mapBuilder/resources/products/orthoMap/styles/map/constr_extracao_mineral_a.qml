@@ -274,7 +274,7 @@
     <rules key="{7e06d6c5-4d98-4687-b558-06dea3f28991}">
       <rule key="{bef66ac3-86a6-48e6-8762-7186ec073116}" description="Extração Mineral" filter=" &quot;visivel&quot; = 1">
         <settings calloutType="simple">
-          <text-style fontKerning="1" isExpression="0" capitalization="0" fontSize="6" textColor="255,255,255,255" fontFamily="Noto Sans" fontItalic="0" fontWordSpacing="0" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" textOpacity="1" fontLetterSpacing="0" fontUnderline="0" allowHtml="0" multilineHeight="0.80000000000000004" namedStyle="Condensed" blendMode="0" fontStrikeout="0" fontWeight="50" fontSizeUnit="Point" fontSizeMapUnitScale="3x:0,0,0,0,0,0" useSubstitutions="0" previewBkgrdColor="255,255,255,255">
+          <text-style fontKerning="1" isExpression="0" capitalization="0" fontSize="7" textColor="255,255,255,255" fontFamily="Noto Sans" fontItalic="0" fontWordSpacing="0" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" textOpacity="1" fontLetterSpacing="0" fontUnderline="0" allowHtml="0" multilineHeight="0.80000000000000004" namedStyle="Condensed" blendMode="0" fontStrikeout="0" fontWeight="50" fontSizeUnit="Point" fontSizeMapUnitScale="3x:0,0,0,0,0,0" useSubstitutions="0" previewBkgrdColor="255,255,255,255">
             <families/>
             <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferNoFill="1" bufferJoinStyle="128" bufferOpacity="1" bufferSizeUnits="Point" bufferColor="0,0,0,255" bufferDraw="1" bufferBlendMode="0" bufferSize="1"/>
             <text-mask maskedSymbolLayers="" maskType="0" maskSize="0.20000000000000001" maskJoinStyle="128" maskOpacity="1" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskEnabled="1" maskSizeUnits="MM"/>

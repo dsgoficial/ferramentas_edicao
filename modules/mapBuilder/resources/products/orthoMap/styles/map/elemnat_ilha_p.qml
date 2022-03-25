@@ -68,7 +68,7 @@
     <rules key="{61df1adb-3d99-4f6d-afd1-4f55075272c5}">
       <rule key="{7d8e45d1-3e08-48d4-8051-2d85633d5ed1}" description="Ilha">
         <settings calloutType="simple">
-          <text-style fontWordSpacing="0" multilineHeight="0.80000000000000004" fontWeight="50" fontFamily="Noto Sans" textOrientation="horizontal" useSubstitutions="0" textColor="255,255,255,255" blendMode="0" namedStyle="Condensed Italic" fontStrikeout="0" fontSize="6" previewBkgrdColor="255,255,255,255" fontUnderline="0" fieldName="texto_edicao" capitalization="1" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" fontItalic="1" legendString="Aa" textOpacity="1" fontSizeUnit="Point" fontLetterSpacing="0" isExpression="0">
+          <text-style fontWordSpacing="0" multilineHeight="0.80000000000000004" fontWeight="50" fontFamily="Noto Sans" textOrientation="horizontal" useSubstitutions="0" textColor="255,255,255,255" blendMode="0" namedStyle="Condensed Italic" fontStrikeout="0" fontSize="7" previewBkgrdColor="255,255,255,255" fontUnderline="0" fieldName="texto_edicao" capitalization="1" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" fontItalic="1" legendString="Aa" textOpacity="1" fontSizeUnit="Point" fontLetterSpacing="0" isExpression="0">
             <families/>
             <text-buffer bufferSize="1" bufferOpacity="1" bufferDraw="1" bufferNoFill="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="0,0,0,255" bufferSizeUnits="Point" bufferBlendMode="0" bufferJoinStyle="128"/>
             <text-mask maskType="0" maskOpacity="1" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskJoinStyle="128" maskEnabled="1" maskSize="0.20000000000000001" maskedSymbolLayers=""/>

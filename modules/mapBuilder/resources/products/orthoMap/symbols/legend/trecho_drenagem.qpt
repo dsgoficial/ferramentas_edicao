@@ -72,7 +72,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" type="bool" value="true"/>
-       <Option name="expression" type="QString" value="to_string( @productFolder) + '/symbols/classes/trecho_drenagem.png'"/>
+       <Option name="expression" type="QString" value="to_string( @edition_folder) + '/symbols/classes/trecho_drenagem.png'"/>
        <Option name="type" type="int" value="3"/>
       </Option>
      </Option>
@@ -142,7 +142,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" type="bool" value="true"/>
-       <Option name="expression" type="QString" value="to_string( @productFolder) + '/symbols/classes/background.svg'"/>
+       <Option name="expression" type="QString" value="to_string( @edition_folder) + '/symbols/classes/background.svg'"/>
        <Option name="type" type="int" value="3"/>
       </Option>
      </Option>

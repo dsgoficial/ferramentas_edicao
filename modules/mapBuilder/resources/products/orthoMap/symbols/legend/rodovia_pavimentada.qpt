@@ -114,7 +114,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string( @productFolder) + '/symbols/classes/L11302Q.svg'" type="QString"/>
+       <Option name="expression" value="to_string( @edition_folder) + '/symbols/classes/L11302Q.svg'" type="QString"/>
        <Option name="type" value="3" type="int"/>
       </Option>
      </Option>
@@ -230,7 +230,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option name="active" value="true" type="bool"/>
-       <Option name="expression" value="to_string( @productFolder) + '/symbols/classes/background.svg'" type="QString"/>
+       <Option name="expression" value="to_string( @edition_folder) + '/symbols/classes/background.svg'" type="QString"/>
        <Option name="type" value="3" type="int"/>
       </Option>
      </Option>

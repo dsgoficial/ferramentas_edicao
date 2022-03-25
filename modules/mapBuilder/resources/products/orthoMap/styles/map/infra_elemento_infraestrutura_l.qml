@@ -84,7 +84,7 @@
     <rules key="{f8feb81c-93e9-494b-8528-4b0a1a043cd0}">
       <rule description="Elemento infraestrutura" key="{f10534cb-2597-4187-8a4c-856c03a111b0}">
         <settings calloutType="simple">
-          <text-style blendMode="0" fontFamily="Noto Sans" allowHtml="0" fontSize="6" fontSizeUnit="Point" namedStyle="Condensed" fontUnderline="0" fontItalic="0" isExpression="0" capitalization="0" fontKerning="1" multilineHeight="0.80000000000000004" fontStrikeout="0" fontLetterSpacing="0" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" useSubstitutions="0" legendString="Aa" fontWeight="50" fontWordSpacing="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="255,255,255,255" textOrientation="horizontal" textOpacity="1">
+          <text-style blendMode="0" fontFamily="Noto Sans" allowHtml="0" fontSize="7" fontSizeUnit="Point" namedStyle="Condensed" fontUnderline="0" fontItalic="0" isExpression="0" capitalization="0" fontKerning="1" multilineHeight="0.80000000000000004" fontStrikeout="0" fontLetterSpacing="0" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" useSubstitutions="0" legendString="Aa" fontWeight="50" fontWordSpacing="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="255,255,255,255" textOrientation="horizontal" textOpacity="1">
             <families/>
             <text-buffer bufferDraw="1" bufferOpacity="1" bufferSize="1" bufferBlendMode="0" bufferColor="0,0,0,255" bufferJoinStyle="128" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferNoFill="1" bufferSizeUnits="Point"/>
             <text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskJoinStyle="128" maskOpacity="1" maskEnabled="1" maskedSymbolLayers="" maskSize="0.20000000000000001" maskSizeUnits="MM" maskType="0"/>
