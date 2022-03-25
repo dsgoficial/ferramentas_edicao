@@ -126,12 +126,10 @@ class MergeRivers(QgsProcessingAlgorithm):
     def clipLayer(self, layer, frame):
         r = processing.run(
             'native:clip',
-            {   'FIELD' : [], 
-                'INPUT' : QgsProcessingFeatureSourceDefinition(
-                    layer.source()
-                ), 
-                'OVERLAY' : frame,
-                'OUTPUT' : 'TEMPORARY_OUTPUT'
+            {   'FIELD': [], 
+                'INPUT': layer,
+                'OVERLAY': frame,
+                'OUTPUT': 'TEMPORARY_OUTPUT'
             }
         )
         return r['OUTPUT']
