@@ -204,7 +204,7 @@
      <Option type="Map" name="properties">
       <Option type="Map" name="dataDefinedSource">
        <Option value="true" type="bool" name="active"/>
-       <Option value="to_string(@commonPath) + '/dsgSymbol.png'" type="QString" name="expression"/>
+       <Option value="to_string(@commonFolder) + '/dsgSymbol.png'" type="QString" name="expression"/>
        <Option value="3" type="int" name="type"/>
       </Option>
      </Option>
