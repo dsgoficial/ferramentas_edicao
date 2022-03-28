@@ -349,6 +349,7 @@ class ConfigDefaults:
                 }
             },
             2: {
+                'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
                 'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
                 'header': {
                     'x_0': 7,
