@@ -24,7 +24,7 @@ class Division(ComponentUtils,IComponent):
         self.maxCountiesToDisplay = 27
         self.shpFolder = Path(__file__).parent.parent / 'resources' / 'limits' / '2020'
         self.styleFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'division'
-        self.htmlTablePath = Path(__file__).parent.parent / 'html_auto' / 'divisao.html'
+        self.htmlTablePath = Path(__file__).parent.parent / 'htmlBarebone' / 'divisao.html'
         self.n_maxlines = 6
         self.nameAttribute = 'NOME'
         self.countyAttribute = 'SIGLA_UF'

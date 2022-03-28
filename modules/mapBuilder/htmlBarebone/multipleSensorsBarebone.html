@@ -1,0 +1,60 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="maximum-scale=1">
+</head>
+<style>
+	body {
+		width: 100%;
+		height: 100%;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		border: 0.1em solid;
+		font-size: 0.7em;
+		columns: 3;
+	}
+	
+	table th {
+		text-align: center;
+		font-weight: bold;
+		font-size: 1.4em;
+		text-transform: uppercase;
+		padding: 0.3em;
+	}
+
+	table tr td {
+		border: 0.06em solid;
+		text-align: center;
+		padding: 0.2em 0em;
+	}
+
+</style>
+
+<body>
+	<table>
+		<tr>
+			<th colspan="6">Informações técnicas da Ortoimagem</th>
+		</tr>
+		<tr>
+			<td colspan="3">Sistema sensor</td>
+			<td colspan="3">Imagem</td>
+		</tr>
+		<tr>
+			<td>Nome</td>
+			<td>Tipo</td>
+			<td>Plataforma</td>
+			<td>Res. espacial</td>
+			<td>Bandas</td>
+			<td>Nível do produto</td>
+		</tr>
+		{sensores}
+	</table>
+</body>
+
+</html>

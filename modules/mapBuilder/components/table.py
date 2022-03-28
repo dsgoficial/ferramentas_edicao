@@ -65,7 +65,7 @@ class Table(IComponent,ComponentUtils):
     def customEtapa(self, composition, etapas=[]):
         label_tabela_etapas = composition.itemById("label_tabela_etapas")
         if label_tabela_etapas is not None:
-            pathEtapasHtml = Path(__file__).parent.parent / 'html_auto' / 'etapas_auto.html'
+            pathEtapasHtml = Path(__file__).parent.parent / 'htmlBarebone' / 'etapas_auto.html'
             with open(pathEtapasHtml) as fp:
                 base_html = fp.read()
             rows = []
@@ -124,27 +124,19 @@ class Table(IComponent,ComponentUtils):
             edited = self.replaceStr(base_html, dados_data)
             label_tabela_etapas.setText(edited)
 
-    def customSensores(self, composition, sensores):
-        # String to store sensor_txt
-        edited = ''
-        label_tabela_info_ortoimagem = composition.itemById("label_tabela_info_ortoimagem")
-
-        if label_tabela_info_ortoimagem is not None:
-            n_sensores = len(sensores)
-
-            # Get the base html text
-            html_file_path = os.path.join(os.path.dirname(
-                os.path.dirname(__file__)), 'html_auto', 'sensores_auto_one.html')
-            if n_sensores > 1:
-                html_file_path = os.path.join(os.path.dirname(os.path.dirname(
-                    __file__)), 'html_auto', 'sensores_auto_multiple.html')
-            file_data = open(html_file_path, "r")
-            base_html = file_data.read()
-            file_data.close()
-
+    def customSensores(self, composition: QgsPrintLayout, sensors: dict):
+        if layoutItem:=composition.itemById("label_tabela_info_ortoimagem"):
+            edited = ''
+            nSensors = len(sensors)
             rows = []
-            for sensor in sensores:
-                dados_sensor = {
+            if nSensors == 1:
+                htmlBarebone = Path(__file__).parent.parent / 'htmlBarebone' / 'singleSensorBarebone.html'
+            else:
+                htmlBarebone = Path(__file__).parent.parent / 'htmlBarebone' / 'multipleSensorsBarebone.html'
+            with open(htmlBarebone, "r") as fp:
+                htmlData = fp.read()
+            for sensor in sensors:
+                sensorData = {
                     '{tipo}': sensor['tipo'],
                     '{plataforma}': sensor['plataforma'],
                     '{nome}': sensor['nome'],
@@ -152,25 +144,22 @@ class Table(IComponent,ComponentUtils):
                     '{bandas}': sensor['bandas'],
                     '{nivel_do_produto}': sensor['nivel_produto']
                 }
-                if n_sensores == 1:
-                    # Single Sensor - Done text!
-                    edited = self.replaceStr(base_html, dados_sensor)
-                elif 1 < n_sensores < 4:
-                    base_row_multiple = '<tr >\
-                        <td class = "lef" >{tipo}</td>\
-                        <td class = "lef" >{plataforma}</td>\
-                        <td class = "lef" >{nome}</td>\
-                        <td class = "lef" >{resolucao}</td>\
-                        <td class = "lef" >{bandas}</td>\
-                        <td class = "lef" >{nivel_do_produto}</td>\
+                if nSensors == 1:
+                    edited = self.replaceStr(htmlData, sensorData)
+                elif 1 < nSensors < 4:
+                    multipleSensorData = '<tr >\
+                        <td>{tipo}</td>\
+                        <td>{plataforma}</td>\
+                        <td>{nome}</td>\
+                        <td>{resolucao}</td>\
+                        <td>{bandas}</td>\
+                        <td>{nivel_do_produto}</td>\
                     </tr>'
-                    rows.append(self.replaceStr(base_row_multiple, dados_sensor))
-
-            # Multiple sensors
-            if 1 < n_sensores < 4:
+                    rows.append(self.replaceStr(multipleSensorData, sensorData))
+            if 1 < nSensors < 4:
                 str_sensores = '\n'.join(rows)
-                edited = self.replaceStr(base_html, {'{sensores}': str_sensores})
-            label_tabela_info_ortoimagem.setText(edited)
+                edited = self.replaceStr(htmlData, {'{sensores}': str_sensores})
+            layoutItem.setText(edited)
 
     def customTecnicalInfo(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature):
         label = composition.itemById("label_tabela_info_carta")
@@ -196,7 +185,7 @@ class Table(IComponent,ComponentUtils):
 
             intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
 
-            htmlPath = Path(__file__).parent.parent / 'html_auto' / 'technicalInfoBarebone.html'
+            htmlPath = Path(__file__).parent.parent / 'htmlBarebone' / 'technicalInfoBarebone.html'
             htmlData = et.parse(str(htmlPath))
             root = htmlData.getroot()
             tables = root.iter('table')
@@ -287,7 +276,7 @@ class Table(IComponent,ComponentUtils):
             omUTMGeom.transform(transformer)
             omUTMPoint = omUTMGeom.centroid().asPoint()
             # Filling the table
-            htmlPath = Path(__file__).parent.parent / 'html_auto' / 'omInfoBarebone.html'
+            htmlPath = Path(__file__).parent.parent / 'htmlBarebone' / 'omInfoBarebone.html'
             htmlData = et.parse(str(htmlPath))
             root = htmlData.getroot()
             table = next(root.iter('table'))
