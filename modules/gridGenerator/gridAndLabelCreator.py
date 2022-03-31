@@ -184,37 +184,41 @@ class GridAndLabelCreator(QObject):
         return rule
 
     def utm_grid_labeler(self, root_rule, x_UTM, y_UTM, x_geo, y_geo, x_min, y_min, px, py, trUTMLL, trLLUTM, u, isVertical, dx, dy, dyO, dy1, desc, fSize, fontType, grid_spacing, scale, rangetest, geo_bb_or, layer_bound):
-        x_colec = [float(geo_bb_or.split()[2*i]) for i in range(1,5)]
-        x_colec.sort()
-        y_colec = [float(geo_bb_or.split()[2*i+1]) for i in range(1,5)]
-        y_colec.sort()
-        ang = float(geo_bb_or.split()[13])
-        if ang > 0:
-            if 'Bot' in desc:
-                x_min_test = x_colec[0]
-                x_max_test = x_colec[2]
-            elif 'Up' in desc:
-                x_min_test = x_colec[1]
-                x_max_test = x_colec[3]
-            elif 'Left' in desc:
-                y_min_test = y_colec[1]
-                y_max_test = y_colec[3]
-            elif 'Right' in desc:
-                y_min_test = y_colec[0]
-                y_max_test = y_colec[2]
-        elif ang <= 0:
-            if 'Bot' in desc:
-                x_min_test = x_colec[1]
-                x_max_test = x_colec[3]
-            elif 'Up' in desc:
-                x_min_test = x_colec[0]
-                x_max_test = x_colec[2]
-            elif 'Left' in desc:
-                y_min_test = y_colec[0]
-                y_max_test = y_colec[2]
-            elif 'Right' in desc:
-                y_min_test = y_colec[1]
-                y_max_test = y_colec[3]
+        # x_colec = [float(geo_bb_or.split()[2*i]) for i in range(1,5)]
+        # x_colec.sort()
+        # y_colec = [float(geo_bb_or.split()[2*i+1]) for i in range(1,5)]
+        # y_colec.sort()
+        # ang = float(geo_bb_or.split()[13])
+        # if ang > 0:
+        #     if 'Bot' in desc:
+        #         x_min_test = x_colec[0]
+        #         x_max_test = x_colec[2]
+        #     elif 'Up' in desc:
+        #         x_min_test = x_colec[1]
+        #         x_max_test = x_colec[3]
+        #     elif 'Left' in desc:
+        #         y_min_test = y_colec[1]
+        #         y_max_test = y_colec[3]
+        #     elif 'Right' in desc:
+        #         y_min_test = y_colec[0]
+        #         y_max_test = y_colec[2]
+        # elif ang <= 0:
+        #     if 'Bot' in desc:
+        #         x_min_test = x_colec[1]
+        #         x_max_test = x_colec[3]
+        #     elif 'Up' in desc:
+        #         x_min_test = x_colec[0]
+        #         x_max_test = x_colec[2]
+        #     elif 'Left' in desc:
+        #         y_min_test = y_colec[0]
+        #         y_max_test = y_colec[2]
+        #     elif 'Right' in desc:
+        #         y_min_test = y_colec[1]
+        #         y_max_test = y_colec[3]
+        x_min_test = geo_bb_or.xMinimum()
+        x_max_test = geo_bb_or.xMaximum()
+        y_min_test = geo_bb_or.yMinimum()
+        y_max_test = geo_bb_or.yMaximum()
 
         # Check if is labeling grid's vertical lines
         if isVertical:
@@ -526,7 +530,8 @@ class GridAndLabelCreator(QObject):
         feature_geo_bbox = feature_geometry.boundingBox()
         feature_bbox_or = feature_geometry.orientedMinimumBoundingBox()
         geo_bound_bb = str(feature_geo_bbox).replace(',','').replace('>','')
-        oriented_geo_bb = str(feature_bbox_or).replace(',','').replace('>','').replace('((','').replace('))','')
+        # oriented_geo_bb = str(feature_bbox_or).replace(',','').replace('>','').replace('((','').replace('))','')
+        oriented_geo_bb = feature_geometry.boundingBox()
 
         #Defining UTM Grid Symbology Type
         properties = {'color': 'black'}
