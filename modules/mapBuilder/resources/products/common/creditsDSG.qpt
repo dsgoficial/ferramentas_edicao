@@ -238,7 +238,7 @@
   <Option type="Map">
    <Option value="png" type="QString" name="atlasRasterFormat"/>
    <Option type="StringList" name="variableNames">
-    <Option value="edition_folder" type="QString"/>
+    <Option value="productFolder" type="QString"/>
    </Option>
    <Option type="StringList" name="variableValues">
     <Option value="C:/Users/apotheosis/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/edition_plugin/map_generator/produtos/carta_ortoimagem" type="QString"/>
