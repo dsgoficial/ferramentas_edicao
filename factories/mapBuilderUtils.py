@@ -136,6 +136,7 @@ class MapBuilderUtils:
             basedOnScale = defaults.scaleBasedStyleOm
         if layerName in basedOnScale:
             p = stylesFolder / f'{layerName}_{scale}.qml'
+            p = p if p.exists() else stylesFolder / f'{layerName}.qml'
         else:
             p = stylesFolder / f'{layerName}.qml'
         if p.exists():
