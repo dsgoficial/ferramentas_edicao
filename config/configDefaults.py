@@ -27,7 +27,6 @@ class ConfigDefaults:
     ]))
     scaleBasedStyleTopo: set = field(default_factory=lambda: set(['llp_localidade_p']))
     scaleBasedStyleOrtho: set = field(default_factory=lambda: set(['llp_localidade_p']))
-    scaleBasedStyleOm: set = field(default_factory=lambda: set(['llp_localidade_p']))
 
     topoMap: dict = field(default_factory=lambda: {
         'name': 'Carta Topográfica',
