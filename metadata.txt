@@ -7,15 +7,15 @@ version=1.0
 author=1º CGEO
 email=eliton.filho@eb.mil.br
 about=This plugin generates maps following configurations predefined in JSON files.
-tracker=https://github.com/1cgeo/plugin_edicao/issues
-repository=https://github.com/1cgeo/plugin_edicao
+tracker=https://github.com/dsgoficial/ferramentas_edicao/issues
+repository=https://github.com/dsgoficial/ferramentas_edicao
 
 # Recommended items:
 
 hasProcessingProvider=no
 # changelog=
 tags=python
-homepage=https://github.com/1cgeo/plugin_edicao
+homepage=https://github.com/dsgoficial/ferramentas_edicao
 category=Plugins
 icon=icon.png
 experimental=False

@@ -337,7 +337,7 @@ class ParameterGroup(QgsProcessingParameterDefinition):
         return True
 
     def metadata(self):
-        return {'widget_wrapper': 'plugin_edicao.modules.processings.orderEditLayersAndAddStyle.GroupsWidgetWrapper' }
+        return {'widget_wrapper': 'ferramentas_edicao.modules.processings.orderEditLayersAndAddStyle.GroupsWidgetWrapper' }
 
     def valueAsPythonString(self, value, context):
         return str(value)
