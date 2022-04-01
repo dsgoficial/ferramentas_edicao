@@ -133,7 +133,7 @@ class MapBuilderUtils:
         elif productType == 'topoMap':
             basedOnScale = defaults.scaleBasedStyleTopo
         elif productType == 'omMap':
-            basedOnScale = defaults.scaleBasedStyleOm
+            basedOnScale = set()
         if layerName in basedOnScale:
             p = stylesFolder / f'{layerName}_{scale}.qml'
             p = p if p.exists() else stylesFolder / f'{layerName}.qml'
