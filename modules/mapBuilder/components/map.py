@@ -18,7 +18,7 @@ class Map(ComponentUtils,IComponent):
         self.productType = args[0]
         self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'map'
         self.gridStylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'grid'
-        self.defaultMapSize = [(588,588),(494,724)]
+        self.defaultMapSize = [(588,588),(690,460)]
 
     def build(
         self, composition: QgsPrintLayout, data: dict, defaults: ConfigDefaults,  mapAreaFeature: QgsFeature,
@@ -142,6 +142,7 @@ class Map(ComponentUtils,IComponent):
         scale = data.get('scale')*1000
         epsg = data.get('epsg')
         mapItem = composition.itemById("map")
+        print(scale, mapExtents, epsg)
         mapItem.setExtent(mapExtents)
         mapItem.setScale(scale)
         if layersToComposition is not None:
