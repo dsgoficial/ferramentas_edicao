@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import QgsProcessingProvider
@@ -64,12 +65,4 @@ class Provider(QgsProcessingProvider):
         return self.tr('Ferramentas de Edição')
 
     def icon(self):
-        return QIcon(
-            os.path.join(
-                os.path.abspath(os.path.join(
-                    os.path.dirname(__file__)
-                )),
-                '..',
-                'icon.png'
-            )
-        )
+        return QIcon(str(Path(__file__).parent.parent.parent / 'icon.png'))

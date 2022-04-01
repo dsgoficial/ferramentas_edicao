@@ -98,9 +98,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         else: 
             layers = project.instance().mapLayers().values()
         if mapType==0:
-            carta = 'carta_topografica'
+            carta = 'topoMap'
         elif mapType==1:
-            carta = 'carta_ortoimagem'
+            carta = 'orthoMap'
         else:
             return {self.OUTPUT: 'Valor para tipo de carta inválido'}
         jsonConfigData = self.getJSONConfig(
@@ -108,25 +108,27 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 os.path.abspath(os.path.join(
                     os.path.dirname(os.path.dirname(__file__))
                 )),
-                'map_generator',
-                'produtos',
+                'mapBuilder',
+                'resources',
+                'products',
                 carta,
                 'camadas.json'
             ))
         if mode==0:
-            styleOption = 'map_edicao'
-            groupName = 'carta'
+            styleOption = 'mapEdition'
+            groupName = 'map'
         elif mode==1:
-            styleOption = 'miniMap_edicao'
-            groupName = 'carta_mini'
+            styleOption = 'miniMapEdition'
+            groupName = 'miniMap'
         else:
             return {self.OUTPUT: 'Valor para modo inválido'}
         stylePath =os.path.join(
                 os.path.abspath(os.path.join(
                     os.path.dirname(os.path.dirname(__file__))
                 )),
-                'map_generator',
-                'produtos',
+                'mapBuilder',
+                'resources',
+                'products',
                 carta,
                 'styles',
                 styleOption
@@ -135,12 +137,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         qmlDict = self.buildQmlDict(stylePath)
         
         feedback.setProgressText('Removendo as camadas...')
-        layers = self.remove( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, project)
+        layers = self.remove( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, project)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
         feedback.setProgressText('Ordenando as camadas...')
-        self.order( [ i['tabela'] for i in jsonConfigData[ groupName ] ], layers, feedback, project)
+        self.order( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, feedback, project)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
@@ -249,8 +251,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 os.path.abspath(os.path.join(
                     os.path.dirname(os.path.dirname(__file__))
                 )),
-                'map_generator',
-                'produtos',
+                'mapBuilder',
+                'resources',
+                'products',
                 carta,
                 'masks.json'
             )
