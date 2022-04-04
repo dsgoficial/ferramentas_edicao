@@ -236,11 +236,10 @@ class MapBuilderUtils:
     def transformGeometryIfNecessary(self, geom: QgsGeometry, srcSrc: str, dstSrc: str):
         if srcSrc != dstSrc:
             transform = QgsCoordinateTransform(
-                QgsCoordinateTransform(srcSrc),
-                QgsCoordinateTransform(dstSrc),
+                QgsCoordinateReferenceSystem(srcSrc),
+                QgsCoordinateReferenceSystem(dstSrc),
                 QgsCoordinateTransformContext())
             geom.transform(transform)
-            return geom
         return geom
 
     def setupMasks(self, productPath: Path, layers: list[QgsVectorLayer]):
