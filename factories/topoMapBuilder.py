@@ -69,6 +69,8 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.data)
             elif key == 'table':
                 component.build(self.composition, self.data, self.mapAreaFeature)
+            elif key == 'anglesHandler':
+                component.build(self.composition, self.mapAreaFeature)
             elif key == 'miniMapCoords':
                 component.build(self.composition, self.mapAreaFeature)
             elif key == 'qrcode':
