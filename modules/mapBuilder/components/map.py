@@ -189,6 +189,6 @@ class Map(ComponentUtils,IComponent):
             mapReservedArea.setReferencePoint(QgsLayoutItem.Middle)
             mapReservedArea.refresh()
             positionMapReservedArea = mapReservedArea.positionWithUnits()
-        if (mapItem:=composition.itemById('map')) and positionMapReservedArea in locals():
+        if mapItem:=composition.itemById('map'):
             mapItem.setReferencePoint(QgsLayoutItem.Middle)
             mapItem.attemptMove(positionMapReservedArea)
