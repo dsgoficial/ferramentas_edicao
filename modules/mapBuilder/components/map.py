@@ -18,7 +18,7 @@ class Map(ComponentUtils,IComponent):
         self.productType = args[0]
         self.stylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'map'
         self.gridStylesFolder = Path(__file__).parent.parent / 'resources' / 'styles' / 'grid'
-        self.defaultMapSize = [(588,588),(690,460)]
+        self.defaultMapSize = [(588,588),(720,490)]
 
     def build(
         self, composition: QgsPrintLayout, data: dict, defaults: ConfigDefaults,  mapAreaFeature: QgsFeature,
