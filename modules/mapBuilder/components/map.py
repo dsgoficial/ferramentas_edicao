@@ -23,6 +23,22 @@ class Map(ComponentUtils,IComponent):
     def build(
         self, composition: QgsPrintLayout, data: dict, defaults: ConfigDefaults,  mapAreaFeature: QgsFeature,
         mapAreaLayer: QgsVectorLayer, layers: list[QgsMapLayer], gridGenerator: GridAndLabelCreator, showLayers: bool=False):
+        '''Builds the Map component Topo and Ortho maps. The building process follows the sequence:
+        1) Build the gridLayer (self.createLayerForGrid) in a layer called 'auxiliar_moldura'
+        2) Builds the 'mascara_rotulo' layer, a donut (which the hole is mapAreaFeature) that blocks rendering of labels outside the map area
+        3) Build the 'aux_moldura', an inverted polygon to hide external features
+        4) Build the 'aux_label' layer to ???
+        The aforementioned sequence is the layer insertion sequence (not the building one).
+        Args:
+            composition (QgsPrintLayout): composition to be updated
+            data (dict): dictionary holding map info
+            defaults (ConfigDefaults): dataclass holding global plugin configurations
+            mapAreaFeature (QgsFeature): feature holding the map area
+            mapAreaLayer (QgsVectorLayer): layer holding a unique feature representing the map area
+            layers (list[QgsMapLayer]): ordered layers to be inserted in the map component
+            gridGenerator (GridAndLabelCreator): instance of the GridAndLabelCreator class
+            showLayers (bool): whether the plugin is running on debug mode or not
+        '''
 
         instance = QgsProject.instance()
         mapIDsToBeDisplayed = []
@@ -66,7 +82,14 @@ class Map(ComponentUtils,IComponent):
         return mapIDsToBeDisplayed
 
     def createLayerForGrid(self, baseLayer: QgsVectorLayer, mapExtents: QgsFeature, data: dict) -> tuple[QgsVectorLayer, QgsRectangle]:
-        ''' Creates a vector layer that will be the base for the grid.
+        '''Creates a vector layer that will be the base for the grid.
+        Args:
+            baseLayer (QgsVectorLayer): base vector used to grid
+            mapExtents (QgsFeature): feature holding the map area extents
+            data (dict): dictionary holding map info
+        Returns:
+            gridLayer (QgsVectorLayer): The grid layer
+            mapExtentsBoundingBox (QgsRectangle): Bbox of the map extents in UTM
         '''
         uri = f'Polygon?crs=EPSG:{data.get("epsg")}'
         gridLayer = QgsVectorLayer(uri, 'auxiliar_moldura', "memory")
@@ -79,21 +102,28 @@ class Map(ComponentUtils,IComponent):
             gridLayerDataProvider.addAttributes([QgsField("id",  QVariant.String)])
         gridLayer.updateFields()
 
-        convexhull = mapExtents.geometry().convexHull()
+        mapExtentsGeom = mapExtents.geometry()
         crsSrc = QgsCoordinateReferenceSystem('EPSG:4674')
         crcDest = QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}')
         transform = QgsCoordinateTransform(crsSrc, crcDest, QgsProject.instance())
-        convexhull.transform(transform)
+        mapExtentsGeom.transform(transform)
 
         feat = QgsFeature(gridLayer.fields())
-        feat.setGeometry(convexhull)
+        feat.setGeometry(mapExtentsGeom)
         feat['id'] = '1'
         gridLayerDataProvider.addFeature(feat)
         gridLayer.commitChanges()
 
-        return gridLayer, convexhull.boundingBox()
+        return gridLayer, mapExtentsGeom.boundingBox()
 
     def applyStyleGridLayer(self, gridLayer: QgsVectorLayer, gridGenerator: GridAndLabelCreator, gridOpts: dict, data: dict) -> None:
+        '''Applies the grid styling on grid layer
+        Args:
+            gridLayer(QgsVectorLayer): The layer where the style will be applied
+            gridGenerator(GridAndLabelCreator): the instance of GridAndLabelCreator
+            gridOpts (dict): holds the GridAndLabelCreator parameters
+            data (dict): map info
+        '''
         gridCrs = gridLayer.crs().authid()
         srid = gridCrs.replace('EPSG:', '')
         gridGeometry = next(gridLayer.getFeatures()).geometry()
@@ -106,25 +136,16 @@ class Map(ComponentUtils,IComponent):
             scale=data.get('scale'),
             spacing=data.get('scale') * 40,
             **gridOpts
-            # crossX=gridOpts.get('crossX'),
-            # crossY=gridOpts.get('crossY'),
-            # fontSize= gridOpts.get('fontSize'),
-            # font=gridOpts.get('font'),
-            # fontLL=gridOpts.get('fontLL'),
-            # llcolor=gridOpts.get('llcolor'),
-            # linwidth_geo=gridOpts.get('linwidth_geo'),
-            # linwidth_utm=gridOpts.get('linwidth_utm'),
-            # linwidth_buffer_geo=gridOpts.get('linwidth_buffer_geo'),
-            # linwidth_buffer_utm=gridOpts.get('linwidth_buffer_utm'),
-            # geo_grid_color=gridOpts.get('geo_grid_color'),
-            # utm_grid_color=gridOpts.get('utm_grid_color'),
-            # geo_grid_buffer_color=gridOpts.get('geo_grid_buffer_color'),
-            # utm_grid_buffer_color=gridOpts.get('utm_grid_buffer_color'),
-            # masks_check=gridOpts.get('masks_check')
         )
         gridLayer.triggerRepaint()
 
     def createMaskLayer(self, mapExtents: QgsFeature) -> QgsVectorLayer:
+        '''Creates a mask ("donut-like") layer to hide map contents.
+        Args:
+            mapExtents (QgsFeature): feature holding the map area extents
+        Returns:
+            QgsVectorLayer: mask layer
+        '''
         bound = mapExtents.geometry()
         bufferedBound = bound.buffer(0.3, 2)
         diffBound = bufferedBound.difference(bound)
@@ -141,35 +162,33 @@ class Map(ComponentUtils,IComponent):
         '''
         scale = data.get('scale')*1000
         epsg = data.get('epsg')
-        mapItem = composition.itemById("map")
-        print(scale, mapExtents, epsg)
-        mapItem.setExtent(mapExtents)
-        mapItem.setScale(scale)
-        if layersToComposition is not None:
-            layersToSet = [frameLayer, *layersToComposition]
+        if mapItem := composition.itemById("map"):
+            mapItem.setExtent(mapExtents)
+            mapItem.setScale(scale)
+            layersToSet = [frameLayer] if not layersToComposition else [frameLayer, *layersToComposition]
             mapItem.setLayers(layersToSet)
-        else:
-            mapItem.setLayers([frameLayer])
-        mapItem.refresh()
-        mapItem.setCrs(QgsCoordinateReferenceSystem(f'EPSG:{epsg}'))
-        mapItem.setExtent(mapExtentsTransformed)
-        mapItem.setScale(scale)
-        if scale == 250000:
-            mapWidth, mapHeight = self.defaultMapSize[1]
-        else:
-            mapWidth, mapHeight = self.defaultMapSize[0]
-        mapItem.attemptResize(QgsLayoutSize(mapWidth, mapHeight, QgsUnitTypes.LayoutMillimeters))
-        mapItem.setScale(scale)
-        mapItem.refresh()
-        self.centerMapInAreaCarta(composition)
+            mapItem.refresh()
+            mapItem.setCrs(QgsCoordinateReferenceSystem(f'EPSG:{epsg}'))
+            mapItem.setExtent(mapExtentsTransformed)
+            mapItem.setScale(scale)
+            if scale == 250000:
+                mapWidth, mapHeight = self.defaultMapSize[1]
+            else:
+                mapWidth, mapHeight = self.defaultMapSize[0]
+            mapItem.attemptResize(QgsLayoutSize(mapWidth, mapHeight, QgsUnitTypes.LayoutMillimeters))
+            mapItem.setScale(scale)
+            mapItem.refresh()
+            self.centerMap(composition)
 
-    def centerMapInAreaCarta(self, composition: QgsPrintLayout):
-        ''' Sets reference point for map and area_reservada_carta elements
+    def centerMap(self, composition: QgsPrintLayout):
+        '''Sets reference point for map (centralizes the map)
+        Args:
+            composition (QgsPrintLayout): composition to be updated
         '''
-        if (mapReservedArea:=composition.itemById('area_reservada_carta')) is not None:
+        if mapReservedArea:=composition.itemById('area_reservada_carta'):
             mapReservedArea.setReferencePoint(QgsLayoutItem.Middle)
             mapReservedArea.refresh()
             positionMapReservedArea = mapReservedArea.positionWithUnits()
-        if (mapItem:=composition.itemById('map')) is not None:
+        if (mapItem:=composition.itemById('map')) and positionMapReservedArea in locals():
             mapItem.setReferencePoint(QgsLayoutItem.Middle)
             mapItem.attemptMove(positionMapReservedArea)
