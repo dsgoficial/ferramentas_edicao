@@ -12810,7 +12810,7 @@
      <Option name="properties" type="Map">
       <Option name="dataDefinedSource" type="Map">
        <Option value="true" name="active" type="bool"/>
-       <Option value="to_string(@commonFolder) + '/folderOrientation250k.jpg'" name="expression" type="QString"/>
+       <Option value="to_string(@commonFolder) + '/folderOrientation250k.png'" name="expression" type="QString"/>
        <Option value="3" name="type" type="int"/>
       </Option>
      </Option>
