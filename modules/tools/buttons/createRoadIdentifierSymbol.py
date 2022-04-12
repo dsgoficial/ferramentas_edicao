@@ -6,7 +6,8 @@ from qgis.core import (QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject, Q
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
-from .utils.comboBox import ComboBox
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtGui import QCursor
 
 
 class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
@@ -18,8 +19,6 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
-        self.box = ComboBox(self.iface.mainWindow())
-        self.box.textActivated.connect(self.createFeature)
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
@@ -39,7 +38,7 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
 
     def mouseClick(self, pos, btn):
         if self.isActive():
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance)
+            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=self.tolerance+2)
             # Option 1 (actual): Use a QgsFeatureRequest
             # Option 2: Use a dict lookup
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
@@ -50,8 +49,8 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
                     self.currPos = self.projectPosition(pos, feat)
                     if ';' in roadAbrev:
                         options = roadAbrev.split(';')
-                        self.box.updateItems(options)
-                        self.box.showComboBox()
+                        menu = self.createMenu(options)
+                        menu.exec_(QCursor.pos())
                     else:
                         self.createFeature(roadAbrev)
                 else:
@@ -61,8 +60,15 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
             else:
                 self.displayErrorMessage('Não foi encontrada uma via de deslocamento dentro da tolerância')
 
+    def createMenu(self, options):
+        menu = QMenu()
+        for option in options:
+            action = menu.addAction(option)
+            action.triggered.connect(lambda b, n=option: self.createFeature(n))
+        return menu
+        
+
     def createFeature(self, name):
-        self.box.hide()
         toInsert = QgsFeature(self.dstLyr.fields())
         jurisd, abbrv = name.split('-')
         jurisd = self.getjurisdiction(jurisd)
