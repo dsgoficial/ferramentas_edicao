@@ -75,7 +75,10 @@ class MapBuildController(MapBuildControllerUtils):
             lat, lon = centroid.y(), centroid.x()
             inom = self.grid.get_INOM_from_lat_lon(lon, lat, 1)
             epsg = self.getEpsg(inom[0], int(inom[3:5]))
-            templateType, scale, angle = self.getInfoOmMap(polygonWkt, epsg)
+            if (angle:=jsonData.get('rotacao_poligono')) and (orientedBbox:=jsonData.get('poligono_rotacionado')):
+                templateType, scale = self.getInfoOmMapGivenRotation(orientedBbox, epsg)
+            else:
+                templateType, scale, angle = self.getInfoOmMap(polygonWkt, epsg)
             jsonData.update({
                 'omTemplateType': templateType,
                 'rotationAngle': angle})

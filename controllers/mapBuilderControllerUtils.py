@@ -77,7 +77,7 @@ class MapBuildControllerUtils:
         layer, feat = self.createLayerFromGeom('mapExtents', geom)
         return layer, feat
 
-    def getInfoOmMap(self, polygonWkt: str, epsg: str) -> tuple[float,float,float]:
+    def getInfoOmMap(self, polygonWkt: str, epsg: str) -> tuple[int,float,float]:
         '''Gets the centroid of a from a wkt geometry and its desired scale representation.
         Uses the OBB class to extract the orientedMinimumBoundingBox (QGIS version is broken until 3.22)
         Args:
@@ -94,6 +94,18 @@ class MapBuildControllerUtils:
         templateType, scale = self.getOmScale(orientedBbox, epsg)
         return templateType, scale, angle
 
+    def getInfoOmMapGivenRotation(self, polygonWkt: str, epsg: str) -> tuple[int,float,float]:
+        '''If the oriented bounding box is given by the user, it is used (instead of being calculated)
+        to get the template type for the OM map and the scale.
+        Args:
+            polgonWkt: WKT string representation of the polygon
+            epsg: Destination EPSG, eg. 31982
+        Returns:
+            Tuple of lat / long / scale related to this polygon
+        '''
+        orientedBbox = QgsGeometry.fromWkt(polygonWkt)
+        templateType, scale = self.getOmScale(orientedBbox, epsg)
+        return templateType, scale
 
     def getEpsg(self, hemisphere: str, timeZone: str) -> int:
         ''' Calculates the epsg by using the hemisphere and the timezone
