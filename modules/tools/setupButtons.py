@@ -83,7 +83,9 @@ class SetupButtons:
             self.unsetMapToolsOnToggle(idx)
         else:
             self.mapCanvas.setMapTool(self.mapTools[idx])
-            self.mapTools[idx].getLayers()
+            status = self.mapTools[idx].getLayers()
+            if status is None:
+                self.unsetMapToolsOnToggle(idx)
 
     def unsetMapToolsOnToggle(self, idx):
         self.mapCanvas.unsetMapTool(self.mapTools[idx])
