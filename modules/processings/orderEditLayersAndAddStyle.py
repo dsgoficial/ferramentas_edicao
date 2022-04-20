@@ -75,7 +75,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
-        gridScale = 25000
+
         if (gridScaleParam==0):
             gridScale = 25000
         elif (gridScaleParam==1):
@@ -151,10 +151,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
-        feedback.setProgressText('Configurando escala de renderização...')
-        self.renderizar( layers, gridScale)
-        if feedback.isCanceled():
-            return {self.OUTPUT: 'Cancelado'}
+        #feedback.setProgressText('Configurando escala de renderização...')
+        #self.renderizar( layers, gridScale)
+        #if feedback.isCanceled():
+        #    return {self.OUTPUT: 'Cancelado'}
 
         #feedback.setProgressText('Carregando as máscaras...') 
         #self.loadMasks(carta, layers)
@@ -240,31 +240,31 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             }
         )
     
-    def renderizar(self, layers, scale):
-        for layer in layers:
-            qgs_feature_renderer = layer.renderer()
-            qgs_feature_renderer.setReferenceScale(scale)
-            layer.reload()
+    # def renderizar(self, layers, scale):
+    #     for layer in layers:
+    #         qgs_feature_renderer = layer.renderer()
+    #         qgs_feature_renderer.setReferenceScale(scale)
+    #         layer.reload()
     
-    def loadMasks(self, carta, layers):
-        jsonPathMask = os.path.join(
-                os.path.abspath(os.path.join(
-                    os.path.dirname(os.path.dirname(__file__))
-                )),
-                'mapBuilder',
-                'resources',
-                'products',
-                carta,
-                'masks.json'
-            )
-        r = processing.run(
-            'ferramentasedicao:loadmasks',
-            {   'INPUT_LAYERS' : layers,
-                'JSON_FILE': jsonPathMask,
-                'OUTPUT' : 'TEMPORARY_OUTPUT'
-            }
-        )
-        return r['OUTPUT']   
+    # def loadMasks(self, carta, layers):
+    #     jsonPathMask = os.path.join(
+    #             os.path.abspath(os.path.join(
+    #                 os.path.dirname(os.path.dirname(__file__))
+    #             )),
+    #             'mapBuilder',
+    #             'resources',
+    #             'products',
+    #             carta,
+    #             'masks.json'
+    #         )
+    #     r = processing.run(
+    #         'ferramentasedicao:loadmasks',
+    #         {   'INPUT_LAYERS' : layers,
+    #             'JSON_FILE': jsonPathMask,
+    #             'OUTPUT' : 'TEMPORARY_OUTPUT'
+    #         }
+    #     )
+    #     return r['OUTPUT']   
 
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
