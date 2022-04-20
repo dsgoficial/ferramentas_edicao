@@ -75,7 +75,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
-
+        gridScale = 25000
         if (gridScaleParam==0):
             gridScale = 25000
         elif (gridScaleParam==1):
@@ -152,7 +152,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             return {self.OUTPUT: 'Cancelado'}
 
         feedback.setProgressText('Configurando escala de renderização...')
-        self.renderizar( layers, gridScaleParam)
+        self.renderizar( layers, gridScale)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
