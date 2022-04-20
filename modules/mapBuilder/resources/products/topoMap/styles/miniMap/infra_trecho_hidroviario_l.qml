@@ -180,7 +180,7 @@
               <Option value="MM" name="dash_pattern_offset_unit" type="QString"/>
               <Option value="0" name="draw_inside_polygon" type="QString"/>
               <Option value="bevel" name="joinstyle" type="QString"/>
-              <Option value="35,35,35,255" name="line_color" type="QString"/>
+              <Option value="0,0,0,255" name="line_color" type="QString"/>
               <Option value="solid" name="line_style" type="QString"/>
               <Option value="0.26" name="line_width" type="QString"/>
               <Option value="MM" name="line_width_unit" type="QString"/>
@@ -202,7 +202,7 @@
             <prop v="MM" k="dash_pattern_offset_unit"/>
             <prop v="0" k="draw_inside_polygon"/>
             <prop v="bevel" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
+            <prop v="0,0,0,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
             <prop v="0.26" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>

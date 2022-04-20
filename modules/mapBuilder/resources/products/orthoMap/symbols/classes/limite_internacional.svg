@@ -77,7 +77,7 @@
        font-weight="400"
        font-style="normal"
        id="g14"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#232323;stroke-width:1.70079005;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:14.1732, 2.83465, 4.25197, 2.83465, 4.25197, 2.83465;stroke-dashoffset:0;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#000000;stroke-width:1.70079005;stroke-linecap:butt;stroke-linejoin:bevel;stroke-dasharray:14.1732, 2.83465, 4.25197, 2.83465, 4.25197, 2.83465;stroke-dashoffset:0;stroke-opacity:1">
       <path
          d="M 0,13.6654 H 32"
          id="path12"

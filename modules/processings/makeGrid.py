@@ -47,7 +47,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         inputFrameLayer = self.parameterAsSource( parameters,self.INPUT_FRAME, context )
         boolVar = self.parameterAsBool( parameters,self.INPUT_FRAME, context )
         gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
-        frameLayer = self.runAddCount(inputFrameLayer, boolVar)
+        frameLayer2 = self.runAddCount(inputFrameLayer, boolVar)
 
         if (gridScaleParam==0):
             gridScale = 25000
@@ -58,12 +58,10 @@ class MakeGrid(QgsProcessingAlgorithm):
         elif (gridScaleParam==3):
             gridScale = 250000
 
-        self.runCreateSpatialIndex(frameLayer)
+        self.runCreateSpatialIndex(frameLayer2)
         # Converter moldura para lat long
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        frameLayer.startEditing()
-        frameLayer.setCrs(crs)
-        frameLayer.commitChanges()
+        frameLayer = self.reprojectLayer(frameLayer2, crs)
         # Pegar centro da moldura  (se tiver mais de um polígono na camada de moldura pegar o centro dos centros)
         if frameLayer.featureCount()>1:
             xs=[]
