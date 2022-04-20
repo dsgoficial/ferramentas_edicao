@@ -65,7 +65,7 @@
        font-weight="400"
        font-style="normal"
        id="g10"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="M 10.3307,10.3307 H 21.6693 V 21.6693 H 10.3307 V 10.3307"
          id="path8"
@@ -78,14 +78,14 @@
        font-weight="400"
        font-style="normal"
        id="g12"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
     <g
        transform="matrix(1.33333,0,0,1.33333,16,16)"
        font-size="8.25"
        font-weight="400"
        font-style="normal"
        id="g14"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
     <g
        transform="matrix(0.014662,0,0,0.014662,11.748,11.748)"
        font-size="8.25"
@@ -118,19 +118,19 @@
        font-weight="400"
        font-style="normal"
        id="g24"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
     <g
        transform="translate(16,16)"
        font-size="8.25"
        font-weight="400"
        font-style="normal"
        id="g26"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
     <g
        font-size="8.25"
        font-weight="400"
        font-style="normal"
        id="g28"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1" />
   </g>
 </svg>

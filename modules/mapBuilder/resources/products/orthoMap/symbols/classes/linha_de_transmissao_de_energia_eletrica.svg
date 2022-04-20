@@ -77,7 +77,7 @@
        font-weight="400"
        font-style="normal"
        id="g14"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="M 2.55118,16.5 H -2.55118"
          id="path12"
@@ -101,7 +101,7 @@
        font-weight="400"
        font-style="normal"
        id="g22"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="M 11.0551,16.5 H 5.95276"
          id="path20"
@@ -125,7 +125,7 @@
        font-weight="400"
        font-style="normal"
        id="g30"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="M 19.5591,16.5 H 14.4567"
          id="path28"
@@ -149,7 +149,7 @@
        font-weight="400"
        font-style="normal"
        id="g38"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#232323;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:none;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="M 28.063,16.5 H 22.9606"
          id="path36"
@@ -179,7 +179,7 @@
        font-weight="400"
        font-style="normal"
        id="g48"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#232323;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="m 4.8189,16.5 c 0,0.3131 -0.25383,0.5669 -0.56693,0.5669 -0.31311,0 -0.56693,-0.2538 -0.56693,-0.5669 0,-0.3131 0.25382,-0.5669 0.56693,-0.5669 0.3131,0 0.56693,0.2538 0.56693,0.5669"
          id="path46"
@@ -203,7 +203,7 @@
        font-weight="400"
        font-style="normal"
        id="g56"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#232323;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="m 13.3228,16.5 c 0,0.3131 -0.2538,0.5669 -0.5669,0.5669 -0.3131,0 -0.5669,-0.2538 -0.5669,-0.5669 0,-0.3131 0.2538,-0.5669 0.5669,-0.5669 0.3131,0 0.5669,0.2538 0.5669,0.5669"
          id="path54"
@@ -227,7 +227,7 @@
        font-weight="400"
        font-style="normal"
        id="g64"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#232323;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="m 21.8268,16.5 c 0,0.3131 -0.2539,0.5669 -0.567,0.5669 -0.3131,0 -0.5669,-0.2538 -0.5669,-0.5669 0,-0.3131 0.2538,-0.5669 0.5669,-0.5669 0.3131,0 0.567,0.2538 0.567,0.5669"
          id="path62"
@@ -251,7 +251,7 @@
        font-weight="400"
        font-style="normal"
        id="g72"
-       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#232323;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <path
          d="m 30.3307,16.5 c 0,0.3131 -0.2538,0.5669 -0.5669,0.5669 -0.3131,0 -0.5669,-0.2538 -0.5669,-0.5669 0,-0.3131 0.2538,-0.5669 0.5669,-0.5669 0.3131,0 0.5669,0.2538 0.5669,0.5669"
          id="path70"

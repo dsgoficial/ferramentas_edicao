@@ -36,7 +36,7 @@
             <Option name="offset" type="QString" value="0,0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
             <Option name="offset_unit" type="QString" value="MM"/>
-            <Option name="outline_color" type="QString" value="35,35,35,255"/>
+            <Option name="outline_color" type="QString" value="0,0,0,255"/>
             <Option name="outline_width" type="QString" value="0"/>
             <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
             <Option name="outline_width_unit" type="QString" value="MM"/>
@@ -55,7 +55,7 @@
           <prop v="0,0" k="offset"/>
           <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
           <prop v="MM" k="offset_unit"/>
-          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0,0,0,255" k="outline_color"/>
           <prop v="0" k="outline_width"/>
           <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
           <prop v="MM" k="outline_width_unit"/>
@@ -168,7 +168,7 @@
               <Option name="dash_pattern_offset_unit" type="QString" value="MM"/>
               <Option name="draw_inside_polygon" type="QString" value="0"/>
               <Option name="joinstyle" type="QString" value="bevel"/>
-              <Option name="line_color" type="QString" value="35,35,35,255"/>
+              <Option name="line_color" type="QString" value="0,0,0,255"/>
               <Option name="line_style" type="QString" value="solid"/>
               <Option name="line_width" type="QString" value="0.26"/>
               <Option name="line_width_unit" type="QString" value="MM"/>
@@ -190,7 +190,7 @@
             <prop v="MM" k="dash_pattern_offset_unit"/>
             <prop v="0" k="draw_inside_polygon"/>
             <prop v="bevel" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
+            <prop v="0,0,0,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
             <prop v="0.26" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>

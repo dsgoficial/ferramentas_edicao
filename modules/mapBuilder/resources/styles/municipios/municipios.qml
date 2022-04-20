@@ -15,7 +15,7 @@
           <prop v="MM" k="customdash_unit"/>
           <prop v="0" k="draw_inside_polygon"/>
           <prop v="bevel" k="joinstyle"/>
-          <prop v="35,35,35,255" k="line_color"/>
+          <prop v="0,0,0,255" k="line_color"/>
           <prop v="solid" k="line_style"/>
           <prop v="0.2" k="line_width"/>
           <prop v="MM" k="line_width_unit"/>

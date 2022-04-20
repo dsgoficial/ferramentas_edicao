@@ -411,7 +411,7 @@
 <Option type="QString" name="dash_pattern_offset_unit" value="MM"/>
 <Option type="QString" name="draw_inside_polygon" value="0"/>
 <Option type="QString" name="joinstyle" value="bevel"/>
-<Option type="QString" name="line_color" value="35,35,35,255"/>
+<Option type="QString" name="line_color" value="0,0,0,255"/>
 <Option type="QString" name="line_style" value="solid"/>
 <Option type="QString" name="line_width" value="0.26"/>
 <Option type="QString" name="line_width_unit" value="MM"/>
@@ -439,7 +439,7 @@
 <prop v="MM" k="dash_pattern_offset_unit"/>
 <prop v="0" k="draw_inside_polygon"/>
 <prop v="bevel" k="joinstyle"/>
-<prop v="35,35,35,255" k="line_color"/>
+<prop v="0,0,0,255" k="line_color"/>
 <prop v="solid" k="line_style"/>
 <prop v="0.26" k="line_width"/>
 <prop v="MM" k="line_width_unit"/>
@@ -823,22 +823,38 @@
 <editforminit/>
 <editforminitcodesource>0</editforminitcodesource>
 <editforminitfilepath></editforminitfilepath>
-<editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-QGIS forms can have a Python function that is called when the form is
-opened.
-
-Use this function to add extra logic to your forms.
-
-Enter the name of the function in the "Python Init function"
-field.
-An example follows:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+<editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+
+"""
+
+QGIS forms can have a Python function that is called when the form is
+
+opened.
+
+
+
+Use this function to add extra logic to your forms.
+
+
+
+Enter the name of the function in the "Python Init function"
+
+field.
+
+An example follows:
+
+"""
+
+from qgis.PyQt.QtWidgets import QWidget
+
+
+
+def my_form_open(dialog, layer, feature):
+
+	geom = feature.geometry()
+
+	control = dialog.findChild(QWidget, "MyLineEdit")
+
 ]]></editforminitcode>
 <featformsuppress>0</featformsuppress>
 <editorlayout>generatedlayout</editorlayout>

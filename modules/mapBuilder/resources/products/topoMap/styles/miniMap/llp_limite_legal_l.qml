@@ -235,7 +235,7 @@
               <Option type="QString" value="MM" name="dash_pattern_offset_unit"/>
               <Option type="QString" value="0" name="draw_inside_polygon"/>
               <Option type="QString" value="bevel" name="joinstyle"/>
-              <Option type="QString" value="35,35,35,255" name="line_color"/>
+              <Option type="QString" value="0,0,0,255" name="line_color"/>
               <Option type="QString" value="solid" name="line_style"/>
               <Option type="QString" value="0.3" name="line_width"/>
               <Option type="QString" value="MM" name="line_width_unit"/>
@@ -257,7 +257,7 @@
             <prop v="MM" k="dash_pattern_offset_unit"/>
             <prop v="0" k="draw_inside_polygon"/>
             <prop v="bevel" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
+            <prop v="0,0,0,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
             <prop v="0.3" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>
@@ -350,7 +350,7 @@
               <Option type="QString" value="MM" name="dash_pattern_offset_unit"/>
               <Option type="QString" value="0" name="draw_inside_polygon"/>
               <Option type="QString" value="miter" name="joinstyle"/>
-              <Option type="QString" value="35,35,35,255" name="line_color"/>
+              <Option type="QString" value="0,0,0,255" name="line_color"/>
               <Option type="QString" value="solid" name="line_style"/>
               <Option type="QString" value="0.5" name="line_width"/>
               <Option type="QString" value="MM" name="line_width_unit"/>
@@ -372,7 +372,7 @@
             <prop v="MM" k="dash_pattern_offset_unit"/>
             <prop v="0" k="draw_inside_polygon"/>
             <prop v="miter" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
+            <prop v="0,0,0,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
             <prop v="0.5" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>
@@ -465,7 +465,7 @@
               <Option type="QString" value="MM" name="dash_pattern_offset_unit"/>
               <Option type="QString" value="0" name="draw_inside_polygon"/>
               <Option type="QString" value="miter" name="joinstyle"/>
-              <Option type="QString" value="35,35,35,255" name="line_color"/>
+              <Option type="QString" value="0,0,0,255" name="line_color"/>
               <Option type="QString" value="solid" name="line_style"/>
               <Option type="QString" value="0.3" name="line_width"/>
               <Option type="QString" value="MM" name="line_width_unit"/>
@@ -487,7 +487,7 @@
             <prop v="MM" k="dash_pattern_offset_unit"/>
             <prop v="0" k="draw_inside_polygon"/>
             <prop v="miter" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
+            <prop v="0,0,0,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
             <prop v="0.3" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>
@@ -564,7 +564,7 @@
                   <Option type="QString" value="0,0" name="offset"/>
                   <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
                   <Option type="QString" value="MM" name="offset_unit"/>
-                  <Option type="QString" value="35,35,35,255" name="outline_color"/>
+                  <Option type="QString" value="0,0,0,255" name="outline_color"/>
                   <Option type="QString" value="no" name="outline_style"/>
                   <Option type="QString" value="0" name="outline_width"/>
                   <Option type="QString" value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale"/>
@@ -583,7 +583,7 @@
                 <prop v="0,0" k="offset"/>
                 <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
                 <prop v="MM" k="offset_unit"/>
-                <prop v="35,35,35,255" k="outline_color"/>
+                <prop v="0,0,0,255" k="outline_color"/>
                 <prop v="no" k="outline_style"/>
                 <prop v="0" k="outline_width"/>
                 <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
@@ -705,7 +705,7 @@
               <Option type="QString" value="MM" name="dash_pattern_offset_unit"/>
               <Option type="QString" value="0" name="draw_inside_polygon"/>
               <Option type="QString" value="bevel" name="joinstyle"/>
-              <Option type="QString" value="35,35,35,255" name="line_color"/>
+              <Option type="QString" value="0,0,0,255" name="line_color"/>
               <Option type="QString" value="solid" name="line_style"/>
               <Option type="QString" value="0.26" name="line_width"/>
               <Option type="QString" value="MM" name="line_width_unit"/>
@@ -727,7 +727,7 @@
             <prop v="MM" k="dash_pattern_offset_unit"/>
             <prop v="0" k="draw_inside_polygon"/>
             <prop v="bevel" k="joinstyle"/>
-            <prop v="35,35,35,255" k="line_color"/>
+            <prop v="0,0,0,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
             <prop v="0.26" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>

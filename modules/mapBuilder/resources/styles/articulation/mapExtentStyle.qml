@@ -15,7 +15,7 @@
           <prop v="0,0" k="offset"/>
           <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
           <prop v="MM" k="offset_unit"/>
-          <prop v="35,35,35,255" k="outline_color"/>
+          <prop v="0,0,0,255" k="outline_color"/>
           <prop v="solid" k="outline_style"/>
           <prop v="0.26" k="outline_width"/>
           <prop v="MM" k="outline_width_unit"/>
