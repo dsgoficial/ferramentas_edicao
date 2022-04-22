@@ -52,11 +52,13 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
+        self.scales = [self.tr('1:25.000'), self.tr('1:50.000'), self.tr('1:100.000'), self.tr('1:250.000')]
+
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.INPUT_SCALE,
                 self.tr('Selecione a escala de edição:'),
-                options = [self.tr('1:25.000'), self.tr('1:50.000'), self.tr('1:100.000'), self.tr('1:250.000')]
+                options = self.scales
             )
         )
 
@@ -75,12 +77,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         gridScaleParam = self.parameterAsEnum(parameters, self.INPUT_SCALE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
-        
+
         if gridScaleParam==0:
             gridScale = 25
         elif gridScaleParam==1:
             gridScale = 50
-        if gridScaleParam==2:
+        elif gridScaleParam==2:
             gridScale = 100
         elif gridScaleParam==3:
             gridScale = 250
