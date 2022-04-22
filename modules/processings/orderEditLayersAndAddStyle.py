@@ -77,13 +77,15 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
 
         if (gridScaleParam==0):
-            gridScale = 25000
+            gridScale = 25
         elif (gridScaleParam==1):
-            gridScale = 50000
+            gridScale = 50
         if (gridScaleParam==2):
-            gridScale = 100000
+            gridScale = 100
         elif (gridScaleParam==3):
-            gridScale = 250000
+            gridScale = 250
+        else:
+            return {self.OUTPUT: 'Valor para escala inválido'}
 
         project = context.project()
         
@@ -103,6 +105,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             carta = 'orthoMap'
         else:
             return {self.OUTPUT: 'Valor para tipo de carta inválido'}
+        
         jsonConfigData = self.getJSONConfig(
             os.path.join(
                 os.path.abspath(os.path.join(
@@ -114,6 +117,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 carta,
                 'camadas.json'
             ))
+        
         if mode==0:
             styleOption = 'mapEdition'
             groupName = 'map'
@@ -122,6 +126,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             groupName = 'miniMap'
         else:
             return {self.OUTPUT: 'Valor para modo inválido'}
+        
         stylePath =os.path.join(
                 os.path.abspath(os.path.join(
                     os.path.dirname(os.path.dirname(__file__))
@@ -133,6 +138,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'styles',
                 styleOption
             )
+        
         feedback.setProgressText('Calculando dicionário QML...')
         qmlDict = self.buildQmlDict(stylePath)
         
@@ -147,7 +153,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             return {self.OUTPUT: 'Cancelado'}
 
         feedback.setProgressText('Carregando estilos...')
-        self.estilos( layers, qmlDict, feedback)
+        self.estilos( layers, qmlDict, gridScale, feedback)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
@@ -188,30 +194,43 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
         order = []
+        originalOrder = project.layerTreeRoot().layerOrder()
+        for layer in originalOrder:
+            if layer in layers:
+                break
+            order.append(layer)
+        n = len(order)
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
             order.insert( 
-            layerNames.index( layerName ), 
+            layerNames.index( layerName )+n, 
             layer
             )
-
+        if len(order):
+            for layer in originalOrder[len(order)-1:]:
+                if layer not in layers:
+                    order.append(layer)
         project.layerTreeRoot().setHasCustomLayerOrder(True)
         project.layerTreeRoot().setCustomLayerOrder( order )
 
         return
 
-    def estilos(self, layers, qmlDict, feedback):
+    def estilos(self, layers, qmlDict, escala, feedback):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
                 return 
             layerName = layer.dataProvider().uri().table()
+            layerNameWithScale = '{0}_{1}'.format(layerName,escala)
+            if(layerNameWithScale in qmlDict):
+                self.applyStyle(layer, qmlDict[layerNameWithScale])
+            else:
+                self.applyStyle(layer, qmlDict[layerName])
             feedback.setProgress( step * progressStep )
-            self.applyStyle(layer, qmlDict[layerName])
 
         return
 
