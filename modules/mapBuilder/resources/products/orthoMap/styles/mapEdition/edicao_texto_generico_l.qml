@@ -22,8 +22,8 @@
             <Option name="dash_pattern_offset_unit" value="MM" type="QString"/>
             <Option name="draw_inside_polygon" value="0" type="QString"/>
             <Option name="joinstyle" value="bevel" type="QString"/>
-            <Option name="line_color" value="255,0,0,255" type="QString"/>
-            <Option name="line_style" value="solid" type="QString"/>
+            <Option name="line_color" value="125,139,143,255" type="QString"/>
+            <Option name="line_style" value="no" type="QString"/>
             <Option name="line_width" value="0.26" type="QString"/>
             <Option name="line_width_unit" value="MM" type="QString"/>
             <Option name="offset" value="0" type="QString"/>
@@ -50,8 +50,8 @@
           <prop v="MM" k="dash_pattern_offset_unit"/>
           <prop v="0" k="draw_inside_polygon"/>
           <prop v="bevel" k="joinstyle"/>
-          <prop v="255,0,0,255" k="line_color"/>
-          <prop v="solid" k="line_style"/>
+          <prop v="125,139,143,255" k="line_color"/>
+          <prop v="no" k="line_style"/>
           <prop v="0.26" k="line_width"/>
           <prop v="MM" k="line_width_unit"/>
           <prop v="0" k="offset"/>
@@ -81,8 +81,8 @@
     <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{8b1e1879-37b3-408e-8c5d-e1b6d67fbb39}">
-      <rule description="Carta principal" key="{13595d9f-dba2-42bd-8fd8-27859dc8f661}" filter=" &quot;carta_simbolizacao&quot; = 1">
+    <rules key="{90c00b57-f9ae-47b7-95a2-4c092940b7cd}">
+      <rule description="Carta principal" key="{43791fa5-b57d-4c26-9bd0-f69883f90da1}" filter=" &quot;carta_simbolizacao&quot; = 1">
         <settings calloutType="simple">
           <text-style fontUnderline="0" fontStrikeout="0" fontItalic="1" capitalization="0" blendMode="0" namedStyle="Italic" previewBkgrdColor="255,255,255,255" fontFamily="Noto Sans" textColor="255,255,255,255" textOpacity="1" fontWordSpacing="0" fontWeight="50" legendString="Aa" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="16" multilineHeight="1" allowHtml="0" fontLetterSpacing="0" useSubstitutions="0" fontSizeUnit="Point" fontKerning="1" isExpression="0" textOrientation="horizontal" fieldName="texto_edicao">
             <families/>
@@ -264,7 +264,7 @@
                 </Option>
                 <Option name="Show" type="Map">
                   <Option name="active" value="true" type="bool"/>
-                  <Option name="expression" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects(  $geometry,  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)" type="QString"/>
+                  <Option name="expression" value="with_variable(&#xd;&#xa;&#xd;&#xa; 'moldura',&#xd;&#xa;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xa;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xa;&#xd;&#xa;THEN &#xd;&#xa;&#xd;&#xa;intersects( $geometry,  @moldura) &#xd;&#xa;&#xd;&#xa;ELSE&#xd;&#xa;&#xd;&#xa;true&#xd;&#xa;&#xd;&#xa;END&#xd;&#xa;&#xd;&#xa;)" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
                 <Option name="Size" type="Map">

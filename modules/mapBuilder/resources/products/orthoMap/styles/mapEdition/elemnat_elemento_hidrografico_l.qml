@@ -23,7 +23,7 @@
             <Option name="draw_inside_polygon" value="0" type="QString"/>
             <Option name="joinstyle" value="bevel" type="QString"/>
             <Option name="line_color" value="255,0,0,255" type="QString"/>
-            <Option name="line_style" value="solid" type="QString"/>
+            <Option name="line_style" value="no" type="QString"/>
             <Option name="line_width" value="0.66" type="QString"/>
             <Option name="line_width_unit" value="MM" type="QString"/>
             <Option name="offset" value="0" type="QString"/>
@@ -51,7 +51,7 @@
           <prop v="0" k="draw_inside_polygon"/>
           <prop v="bevel" k="joinstyle"/>
           <prop v="255,0,0,255" k="line_color"/>
-          <prop v="solid" k="line_style"/>
+          <prop v="no" k="line_style"/>
           <prop v="0.66" k="line_width"/>
           <prop v="MM" k="line_width_unit"/>
           <prop v="0" k="offset"/>
@@ -81,8 +81,8 @@
     <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{cade8bc8-2a11-449a-91d6-414c45ed463b}">
-      <rule key="{378b1bbd-3aaa-4cad-a7e1-81c5c233e9b4}">
+    <rules key="{f2f1f0fd-015f-431b-8cae-9fe49b0f54b6}">
+      <rule key="{f8d2f489-5804-4e6d-9c97-e95d76bfbdc8}">
         <settings calloutType="simple">
           <text-style fontUnderline="0" fontStrikeout="0" fontItalic="1" capitalization="0" blendMode="0" namedStyle="Condensed Italic" previewBkgrdColor="255,255,255,255" fontFamily="Noto Sans" textColor="255,255,255,255" textOpacity="1" fontWordSpacing="0" fontWeight="50" legendString="Aa" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="7" multilineHeight="0.80000000000000004" allowHtml="0" fontLetterSpacing="0" useSubstitutions="0" fontSizeUnit="Point" fontKerning="1" isExpression="0" textOrientation="horizontal" fieldName="texto_edicao">
             <families/>

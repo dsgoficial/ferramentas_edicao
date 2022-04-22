@@ -17,7 +17,7 @@
           <Option type="Map">
             <Option type="QString" value="0" name="angle"/>
             <Option type="QString" value="square" name="cap_style"/>
-            <Option type="QString" value="255,0,0,255" name="color"/>
+            <Option type="QString" value="243,166,178,0" name="color"/>
             <Option type="QString" value="1" name="horizontal_anchor_point"/>
             <Option type="QString" value="bevel" name="joinstyle"/>
             <Option type="QString" value="circle" name="name"/>
@@ -26,7 +26,7 @@
             <Option type="QString" value="MM" name="offset_unit"/>
             <Option type="QString" value="0,0,0,255" name="outline_color"/>
             <Option type="QString" value="no" name="outline_style"/>
-            <Option type="QString" value="0.4" name="outline_width"/>
+            <Option type="QString" value="0" name="outline_width"/>
             <Option type="QString" value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale"/>
             <Option type="QString" value="MM" name="outline_width_unit"/>
             <Option type="QString" value="diameter" name="scale_method"/>
@@ -37,7 +37,7 @@
           </Option>
           <prop k="angle" v="0"/>
           <prop k="cap_style" v="square"/>
-          <prop k="color" v="255,0,0,255"/>
+          <prop k="color" v="243,166,178,0"/>
           <prop k="horizontal_anchor_point" v="1"/>
           <prop k="joinstyle" v="bevel"/>
           <prop k="name" v="circle"/>
@@ -46,7 +46,7 @@
           <prop k="offset_unit" v="MM"/>
           <prop k="outline_color" v="0,0,0,255"/>
           <prop k="outline_style" v="no"/>
-          <prop k="outline_width" v="0.4"/>
+          <prop k="outline_width" v="0"/>
           <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="outline_width_unit" v="MM"/>
           <prop k="scale_method" v="diameter"/>
@@ -66,8 +66,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{895f5dbf-0279-48e0-8c81-404cb09ce57b}">
-      <rule key="{468a5b22-5cb3-4d33-93fc-1c0329e287c5}" filter=" &quot;carta_simbolizacao&quot; = 1" description="Carta">
+    <rules key="{f674c380-4c2f-4e9b-af19-2e8b04b30ca2}">
+      <rule key="{45448386-e645-4493-bfc5-7f967ec1745e}" filter=" &quot;carta_simbolizacao&quot; = 1" description="Carta">
         <settings calloutType="simple">
           <text-style fieldName="texto_edicao" legendString="Aa" fontStrikeout="0" previewBkgrdColor="255,255,255,255" fontUnderline="0" fontSize="16" namedStyle="Italic" textColor="255,255,255,255" multilineHeight="0.80000000000000004" allowHtml="0" fontLetterSpacing="0" textOrientation="horizontal" blendMode="0" textOpacity="1" fontSizeUnit="Point" fontFamily="Noto Sans" fontKerning="1" isExpression="0" fontWordSpacing="0" fontWeight="50" fontItalic="1" useSubstitutions="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" capitalization="0">
             <families/>
