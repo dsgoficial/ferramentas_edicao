@@ -72,17 +72,17 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback): 
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
-        gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
+        gridScaleParam = self.parameterAsEnum(parameters, self.INPUT_SCALE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
-
-        if (gridScaleParam==0):
+        
+        if gridScaleParam==0:
             gridScale = 25
-        elif (gridScaleParam==1):
+        elif gridScaleParam==1:
             gridScale = 50
-        if (gridScaleParam==2):
+        if gridScaleParam==2:
             gridScale = 100
-        elif (gridScaleParam==3):
+        elif gridScaleParam==3:
             gridScale = 250
         else:
             return {self.OUTPUT: 'Valor para escala inválido'}
