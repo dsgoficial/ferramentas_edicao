@@ -460,9 +460,9 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         for feat in lyr.getFeatures():
             for key, value in mapping.items():
                 if value == 'nome':
-                    if feat.attribute(key) is NULL:
+                    if feat.attribute(key) == NULL:
                         lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), feat.attribute('nome'))
-                elif feat.attribute(key) is NULL or feat.attribute(key) == 9999:
+                elif feat.attribute(key) == NULL or feat.attribute(key) == 9999:
                     lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), value)
 
     def setDefaultAttrCalc(self, lyrName, lyr):
@@ -480,7 +480,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             lyr.startEditing()
             for feat in lyr.getFeatures():
                 text = self.labelRules(feat)
-                if feat.attribute('texto_edicao') is not NULL:
+                if not feat.attribute('texto_edicao') == NULL:
                     lyr.changeAttributeValue(feat.id(), fieldIdx, text)
         elif lyrName == 'elemnat_curva_nivel_l':
             lyr.startEditing()
