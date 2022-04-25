@@ -110,7 +110,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
             'elemnat_ilha_p': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 6,
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
@@ -119,7 +119,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
             'elemnat_toponimo_fisiografico_natural_p': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 6,
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'espacamento': 0,
                 'rotular_carta_mini': 1
@@ -138,32 +138,37 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'justificativa_txt': 1
             },
             'infra_pista_pouso_p': {
-                'justificativa_txt': 2
+                'justificativa_txt': 1,
+                'visivel': 1
             },
             'llp_aglomerado_rural_p': {
                 'texto_edicao': 'nome',
-                'justificativa_txt': 2,
-                'rotular_carta_mini': 1
+                'justificativa_txt': 1,
+                'rotular_carta_mini': 1,
+                'simbolizar_carta_mini': 2,
+                'visivel': 1
             },
             'llp_localidade_p': {
                 'texto_edicao': 'nome',
-                'justificativa_txt': 2,
-                'rotular_carta_mini': 1
+                'justificativa_txt': 1,
+                'rotular_carta_mini': 1,
+                'simbolizar_carta_mini': 2,
+                'visivel': 1
             },
             'llp_nome_local_p': {
                 'texto_edicao': 'nome',
-                'justificativa_txt': 2
+                'justificativa_txt': 1
             },
             'elemnat_curva_nivel_l': {
                 'visivel': 1
             },
             'elemnat_elemento_hidrografico_l': {
                 'texto_edicao': 'nome',
-                'justificativa_txt': 2
+                'justificativa_txt': 1
             },
             'elemnat_toponimo_fisiografico_natural_l': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 6,
+                'tamanho_txt': 7,
                 'espacamento': 0,
                 'rotular_carta_mini': 1
             },
@@ -182,7 +187,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'simbolizar_carta_mini': 1
             },
             'infra_pista_pouso_l': {
-                'justificativa_txt': 2
+                'justificativa_txt': 1,
+                'visivel': 1
             },
             'infra_via_deslocamento_l': {
                 'visivel': 1,
@@ -205,13 +211,14 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'exibir_rotulo_aproximado': 1
             },
             'aux_area_sem_dados_a': {
-                'tamanho_txt': 8,
+                'texto_edicao': 'ÁREA SEM DADOS',
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
             'cobter_massa_dagua_a': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 6,
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
@@ -226,7 +233,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
             'elemnat_ilha_a': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 6,
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
@@ -236,23 +243,24 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'justificativa_txt': 1
             },
             'infra_pista_pouso_a': {
-                'justificativa_txt': 2
+                'justificativa_txt': 1,
+                'visivel': 1
             },
             'llp_area_pub_militar_a': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 8,
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
             'llp_terra_indigena_a': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 8,
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
             'llp_unidade_conservacao_a': {
                 'texto_edicao': 'nome',
-                'tamanho_txt': 8,
+                'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             }  
@@ -443,8 +451,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
 
     @staticmethod
     def setDefaultAttrV2(lyr, mapping):
-        '''Updates features according to the mapping. If any item from the mapping has a "nome" value, 
-        the feature is updated with feature's attribute "nome". V2 uses changeAttributeValue on lyr, making
+        '''Updates features according to the mapping. If any item from the mapping has a "nome" value and if 
+        texto_edicao is NULL, the feature is updated with feature's attribute "nome". V2 uses changeAttributeValue on lyr, making
         it possible to roolback changes
         '''
         provider = lyr.dataProvider()
@@ -452,8 +460,9 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         for feat in lyr.getFeatures():
             for key, value in mapping.items():
                 if value == 'nome':
-                    lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), feat.attribute('nome'))
-                else:
+                    if feat.attribute(key) is NULL:
+                        lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), feat.attribute('nome'))
+                elif feat.attribute(key) is NULL or feat.attribute(key) == 9999:
                     lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), value)
 
     def setDefaultAttrCalc(self, lyrName, lyr):
@@ -471,7 +480,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             lyr.startEditing()
             for feat in lyr.getFeatures():
                 text = self.labelRules(feat)
-                lyr.changeAttributeValue(feat.id(), fieldIdx, text)
+                if feat.attribute('texto_edicao') is not NULL:
+                    lyr.changeAttributeValue(feat.id(), fieldIdx, text)
         elif lyrName == 'elemnat_curva_nivel_l':
             lyr.startEditing()
             for feat in lyr.getFeatures():
@@ -529,11 +539,11 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         '''Join attribute values for the layer 'elemnat_curva_nivel_l'
         '''
         expression = ''
-        if elevation:=lyr.attribute(field) is not None:
-            if elevation == 0:
+        if lyr.attribute(field) is not None:
+            if lyr.attribute(field) == 0:
                 expression = 'ZERO'
             else:
-                expression = f'{elevation}'
+                expression = f'{lyr.attribute(field)}'
         return expression
 
     def labelRules(self, feat: QgsFeature) -> str:
@@ -594,6 +604,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                         _updated = True
                         lyr.changeAttributeValue(feat1.id(), provider.fieldNameIndex('sobreposto'), 1)
                         break
+                    else:
+                        lyr.changeAttributeValue(feat1.id(), provider.fieldNameIndex('sobreposto'), 2)
                 if _updated is True:
                     _updated = False
                     break
