@@ -144,18 +144,18 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         feedback.setProgressText('Calculando dicionário QML...')
         qmlDict = self.buildQmlDict(stylePath)
         
-        feedback.setProgressText('Removendo as camadas...')
-        layers = self.remove( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback, project)
+        feedback.setProgressText('Mudando visibilidade das camadas...')
+        visibleLayers, invisibleLayers = self.changeVisibility( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
         feedback.setProgressText('Ordenando as camadas...')
-        self.order( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, feedback, project)
+        self.order( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, invisibleLayers, feedback, project)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
         feedback.setProgressText('Carregando estilos...')
-        self.estilos( layers, qmlDict, gridScale, feedback)
+        self.estilos( visibleLayers, qmlDict, gridScale, feedback)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
@@ -172,10 +172,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         return {self.OUTPUT: ''}
 
 
-    def remove(self, layerNames, layers, qmlDict, feedback, project):
+    def changeVisibility(self, layerNames, layers, qmlDict, feedback):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
-        toBeRemoved = []
+        toBeChanged = []
         layersOk = []
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
@@ -183,16 +183,19 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
             if not( layerName in layerNames ) or not layerName in qmlDict:
-                toBeRemoved.append(layer.id())
+                toBeChanged.append(layer)
             else:
                 layersOk.append(layer)
 
-        if toBeRemoved:
-            project.removeMapLayers( toBeRemoved )
+        if toBeChanged:
+            for layer in toBeChanged:
+                node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
+                if node:
+                    node.setItemVisibilityChecked(False)
 
-        return layersOk
+        return layersOk, toBeChanged
 
-    def order(self, layerNames, layers, feedback, project):
+    def order(self, layerNames, layers, invisibleLayers, feedback, project):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
         order = []
@@ -201,16 +204,26 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             if layer in layers:
                 break
             order.append(layer)
-        n = len(order)
+        dictOrderedLayers = {}
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
-            order.insert( 
-            layerNames.index( layerName )+n, 
-            layer
-            )
+            if layer in invisibleLayers:
+                continue
+            dictOrderedLayers[layer]=layerNames.index( layerName )
+            orderedDictOrderedLayers =  dict(sorted(dictOrderedLayers.items(), key=lambda item: item[1]))
+        for step2, layer in enumerate(orderedDictOrderedLayers):
+            if feedback.isCanceled():
+                return 
+            feedback.setProgress( (step+step2) * progressStep )
+            if layer in invisibleLayers:
+                continue
+            order.append( layer )
+        if len(invisibleLayers):
+            for layer in invisibleLayers:
+                order.append(layer)
         if len(order):
             for layer in originalOrder[len(order)-1:]:
                 if layer not in layers:
