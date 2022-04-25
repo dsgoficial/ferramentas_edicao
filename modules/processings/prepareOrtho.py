@@ -6,7 +6,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsFeature, QgsFeatureRequest, QgsGeometry,
                        QgsProcessing, QgsProcessingAlgorithm, QgsProperty,
                        QgsProcessingParameterMultipleLayers, QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterNumber, QgsUnitTypes,
+                       NULL, QgsUnitTypes,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink, QgsFeatureSink)
 from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
@@ -470,7 +470,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         elif lyrName in ('infra_pista_pouso_p', 'infra_pista_pouso_l', 'infra_pista_pouso_a'):
             lyr.startEditing()
             for feat in lyr.getFeatures():
-                text = self.coalesceAttributeV2(feat, 'nome', 'situacao_fisica', 'revestimento', 'altitude')
+                text = self.labelRules(feat)
                 lyr.changeAttributeValue(feat.id(), fieldIdx, text)
         elif lyrName == 'elemnat_curva_nivel_l':
             lyr.startEditing()
@@ -499,8 +499,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                         expression = f'{expression}|{feat.attribute(field)}'
         return expression
 
-    @staticmethod
-    def coalesceAttributeV2(feat, *fields):
+    def coalesceAttributeV2(self, feat, *fields):
         '''Join attribute values for the layers 'infra_pista_pouso_p', 'infra_pista_pouso_l' and 'infra_pista_pouso_a'
         '''
         _first = True
@@ -508,13 +507,19 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             if feat.attribute(field):
                 if _first:
                     _first = False
-                    if field == 'situacaofisica':
-                        expression = f'({feat.attribute(field)})'
+                    if field == 'situacao_fisica':
+                        expression = f'({self.dictModeling(int(feat.attribute(field)), "situacao_fisica")})'
+                    elif field == 'revestimento':
+                        if int(feat.attribute(field)) in [1,2,4]:
+                            expression = f'{self.dictModeling(int(feat.attribute(field)), "revestimento")}'
                     else:
                         expression = f'{feat.attribute(field)}'
                 else:
-                    if field == 'situacaofisica':
-                        expression = f'{expression}|({feat.attribute(field)})'
+                    if field == 'situacao_fisica':
+                        expression = f'{expression}|({self.dictModeling(int(feat.attribute(field)), "situacao_fisica")})'
+                    elif field == 'revestimento':
+                        if int(feat.attribute(field)) in [1,2,4]:
+                            expression = f'{expression}|{self.dictModeling(int(feat.attribute(field)), "revestimento")}'
                     else:
                         expression = f'{expression}|{feat.attribute(field)}'
         return expression          
@@ -530,6 +535,34 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             else:
                 expression = f'{elevation}'
         return expression
+
+    def labelRules(self, feat: QgsFeature) -> str:
+        '''Label rules for the layers 'infra_pista_pouso_p', 'infra_pista_pouso_l' and 'infra_pista_pouso_a
+        for attribute texto_edicao
+        '''
+        if feat['tipo']==11: #Heliponto
+            if int(feat['situacao_fisica']) in [1,2,4]:
+                sit_fis = self.dictModeling(int(feat['situacao_fisica']), 'situacao_fisica')
+                return f"({sit_fis})"
+            else:
+                return NULL
+        elif feat['tipo']==10: #Pista de taxi
+            return NULL
+        elif feat['tipo']==9:
+            return self.coalesceAttributeV2(feat, 'nome', 'situacao_fisica', 'revestimento', 'altitude')
+
+    @staticmethod
+    def dictModeling(code:int, field:str)-> str:
+        '''Dict values edgv_300_orto
+        '''
+        situacao_fisica = {0: 'Desconhecida', 1 :'Abandonada', 2: 'Destruída', 3: 'Construída', 4:'Em construção', 9999:'A SER PREENCHIDO'}
+        revestimento = {0: 'Desconhecido', 1:'Leito natural', 2:'Revestimento primário', 3:'Pavimentado', 4:'Calçado', 9999:'A SER PREENCHIDO'}
+        if field == 'situacao_fisica':
+            return situacao_fisica[code]
+        elif field == 'revestimento':
+            return revestimento[code]
+        else: 
+            raise Exception(f"Campo {field} não encontrado")
 
     @staticmethod
     def highestSpot(lyr, moldura):
