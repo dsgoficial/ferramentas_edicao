@@ -2,6 +2,7 @@ from pathlib import Path
 
 from PyQt5.QtWidgets import QButtonGroup, QActionGroup
 
+from .buttons.productTypeSelector import ProductTypeSelector
 from .buttons.mapTypeSelector import MapTypeSelector
 from .buttons.scaleSelector import ScaleSelector
 from .buttons.cycleVisibility import CycleVisibility
@@ -24,6 +25,9 @@ class SetupButtons:
         self.mapToolsActions = list()
 
     def initToolBar(self):
+        productTypeSelector = ProductTypeSelector(self.iface, self.toolBar)
+        productTypeSelector.setupUi()
+        
         mapTypeSelector = MapTypeSelector(self.iface, self.toolBar)
         mapTypeSelector.setupUi()
         scaleSelector = ScaleSelector(self.iface, self.toolBar)
@@ -36,8 +40,10 @@ class SetupButtons:
         copyToGenericLabelButton.setupUi()
         cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
-        createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector)
+        createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         createVegetationSymbol.setupUi()
+        if not productTypeSelector.currentIndex() == 1:
+            createVegetationSymbol._action.setEnabled(False)
         createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
         createRoadIdentifierSymbol.setupUi()
         createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
@@ -57,6 +63,7 @@ class SetupButtons:
             createRiverLabel._action
         ])
         self.tools.extend([
+            productTypeSelector,
             mapTypeSelector,
             scaleSelector,
             cycleTextJustificationButton,
@@ -69,6 +76,7 @@ class SetupButtons:
             createRiverLabel
         ])
         self.actionGroup = self.setupActionGroup(*self.mapTools)
+        productTypeSelector.currentIndexChanged.connect(lambda idx, compareIdx=[1], btn=createVegetationSymbol._action: self.disableAction(idx, compareIdx, btn))
 
     def setupActionGroup(self, *tools):
         actionGroup = QActionGroup(self.iface.mainWindow())
@@ -114,6 +122,12 @@ class SetupButtons:
         button = self.buttonGroup.button(idx)
         button.setChecked(False)
         self.buttonGroup.setExclusive(True)
+    
+    def disableAction(self, idx, compareIdx, btn):
+        if not idx in compareIdx:
+            btn.setEnabled(False)
+        else:
+            btn.setEnabled(True)
 
     def unload(self):
         # TODO: unregisterMapToolHandler for MapTools

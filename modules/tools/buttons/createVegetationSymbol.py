@@ -9,11 +9,12 @@ from .baseTools import BaseTools
 
 class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
-    def __init__(self, iface, toolBar, scaleSelector):
+    def __init__(self, iface, toolBar, scaleSelector, productTypeSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
         self.mapCanvas = iface.mapCanvas()
+        self.productTypeSelector = productTypeSelector
         self.scaleSelector = scaleSelector
         self.canvasClicked.connect(self.mouseClick)
 
@@ -73,6 +74,11 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
         self.tol = self.mapCanvas.mapSettings().mapUnitsPerPixel()
 
     def getLayers(self):
+        if not self.productTypeSelector.currentIndex() == 1:
+            self.displayErrorMessage(self.tr(
+                'Essa ferramenta só pode ser utilizada para Carta Topográfica'
+            ))
+            return None
         srcLyr = QgsProject.instance().mapLayersByName('cobter_vegetacao_a')
         dstLyr = QgsProject.instance().mapLayersByName('edicao_simb_vegetacao_p')
         if len(srcLyr) == 1:
