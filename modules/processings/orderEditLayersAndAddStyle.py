@@ -175,7 +175,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     def changeVisibility(self, layerNames, layers, qmlDict, feedback):
         listSize = len(layers)
         progressStep = 100/(listSize+1) if listSize else 0
-        toBeChanged = []
+        invisibleLayers = []
         layersOk = []
         for step, layer in enumerate(layers):
             if feedback.isCanceled():
@@ -183,17 +183,14 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
             if not( layerName in layerNames ) or not layerName in qmlDict:
-                toBeChanged.append(layer)
-            else:
-                layersOk.append(layer)
-
-        if toBeChanged:
-            for layer in toBeChanged:
+                invisibleLayers.append(layer)
                 node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
                 if node:
                     node.setItemVisibilityChecked(False)
+            else:
+                layersOk.append(layer)
 
-        return layersOk, toBeChanged
+        return layersOk, invisibleLayers
 
     def order(self, layerNames, layers, invisibleLayers, feedback, project):
         listSize = len(layers)
