@@ -12,12 +12,13 @@ from .utils.comboBox import ComboBox
 
 class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
 
-    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector):
+    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector, productTypeSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
         self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
+        self.productTypeSelector = productTypeSelector
         self.mapCanvas = iface.mapCanvas()
         self.box = ComboBox(self.iface.mainWindow())
         self.box.textActivated.connect(self.createFeature)
@@ -68,9 +69,18 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
         toInsert.setAttribute('justificativa_txt', 2)
         toInsert.setAttribute('espacamento', 0)
-        toInsert.setAttribute('cor', '#00a0df')
+        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
+            toInsert.setAttribute('cor', '#ffffff')
+        elif self.productTypeSelector.currentIndex() == 1: #Topografica
+            toInsert.setAttribute('cor', '#00a0df')
+        else:
+            toInsert.setAttribute('cor', '#00a0df')
+            self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         toInsert.setAttribute('tamanho_txt', self.getLabelSize(feat))
+        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
+            toInsert.setAttribute('tamanho_buffer', 1)
+            toInsert.setAttribute('cor_buffer', '#00a0df')
         toInsertGeom = QgsGeometry.fromPointXY(self.currPos)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()

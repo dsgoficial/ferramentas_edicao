@@ -46,7 +46,7 @@ class SetupButtons:
             createVegetationSymbol._action.setEnabled(False)
         createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
         createRoadIdentifierSymbol.setupUi()
-        createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
+        createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
         createLakeLabel.setupUi()
         createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
         createRiverLabel.setupUi()

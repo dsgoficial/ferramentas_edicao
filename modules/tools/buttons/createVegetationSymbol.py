@@ -74,7 +74,7 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
         self.tol = self.mapCanvas.mapSettings().mapUnitsPerPixel()
 
     def getLayers(self):
-        if not self.productTypeSelector.currentIndex() == 1:
+        if not self.productTypeSelector.currentIndex() == 1: #1 = Topografica
             self.displayErrorMessage(self.tr(
                 'Essa ferramenta só pode ser utilizada para Carta Topográfica'
             ))
