@@ -15,13 +15,14 @@ from .utils.comboBox import ComboBox
 
 class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
-    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector):
+    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector, productTypeSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
         self.dstLyr = None
         self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
+        self.productTypeSelector = productTypeSelector
         self.mapCanvas = iface.mapCanvas()
         self.box = ComboBox(self.iface.mainWindow())
         self.canvasClicked.connect(self.mouseClick)
@@ -75,11 +76,20 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute('texto_edicao', feat.attribute('nome'))
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
         toInsert.setAttribute('espacamento', 0)
-        toInsert.setAttribute('cor', '#00a0df')
+        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
+            toInsert.setAttribute('cor', '#ffffff')
+        elif self.productTypeSelector.currentIndex() == 1: #Topografica
+            toInsert.setAttribute('cor', '#00a0df')
+        else:
+            toInsert.setAttribute('cor', '#00a0df')
+            self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         labelSize = self.getLabelFontSizeA(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
+        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
+            toInsert.setAttribute('tamanho_buffer', 1)
+            toInsert.setAttribute('cor_buffer', '#00a0df')
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
@@ -90,11 +100,20 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute('texto_edicao', feat.attribute('nome').upper())
         toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
         toInsert.setAttribute('espacamento', 0)
-        toInsert.setAttribute('cor', '#00a0df')
+        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
+            toInsert.setAttribute('cor', '#ffffff')
+        elif self.productTypeSelector.currentIndex() == 1: #Topografica
+            toInsert.setAttribute('cor', '#00a0df')
+        else:
+            toInsert.setAttribute('cor', '#00a0df')
+            self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         labelSize = self.getLabelFontSizeB(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
+        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
+            toInsert.setAttribute('tamanho_buffer', 1)
+            toInsert.setAttribute('cor_buffer', '#00a0df')
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
