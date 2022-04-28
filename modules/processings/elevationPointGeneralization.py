@@ -316,13 +316,16 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
     
     def generalizePoint(self, grid, pointLayer, pointsIdsSelected, summitsOrBottoms, isDepressionField):
         isDep = 1
-        isNotDep = 2  
-        for g in grid.getFeatures():
-            request = QgsFeatureRequest().setFilterRect( g.geometry().boundingBox() )  
+        isNotDep = 2
+        spatialIdx, idDict = ProcessingUtils().buildSpatialIndexAndIdDict(
+            inputLyr=pointLayer
+        )
+        for g in grid.getFeatures(): 
             pointsIdsSelectedinGrid=[]
             summitsOrBottomsPoints = {}
             hasSoBPoints = False
-            for point in pointLayer.getFeatures(request):
+            for pointId in spatialIdx.intersects(g.geometry().boundingBox()):
+                point = idDict[pointId]
                 for SoB in summitsOrBottoms:
                     if (point.geometry().within(SoB.geometry())):
                         if (SoB['id'] in summitsOrBottomsPoints.keys()):
@@ -364,9 +367,12 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             4,
             setCRS
         )
-
-        for feature in features:
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+        list(
+            map(
+                lambda x: sink.addFeature(x, QgsFeatureSink.FastInsert),
+                features
+            )
+        )
         return newLayer
         
     def tr(self, string):
