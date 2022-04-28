@@ -128,13 +128,15 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             xs=[]
             ys=[]
             for poly in frameLayerForInput.getFeatures():
-                centroid=QgsPointXY(poly.geometry().centroid().constGet())
+                centroidGeom = poly.geometry().centroid()
+                centroid=QgsPointXY(centroidGeom.constGet())
                 xs.append(centroid.x())
                 ys.append(centroid.y())
             centroid= QgsPointXY(sum(xs)/len(xs), sum(ys)/len(ys))
         else:
             for poly in frameLayerForInput.getFeatures():
-                centroid=QgsPointXY(poly.geometry().centroid().constGet())
+                centroidGeom = poly.geometry().centroid()
+                centroid=QgsPointXY(centroidGeom.constGet())
          # Descobrir o utm
         utmString = self.getSirgasAuthIdByPointLatLong(centroid.y(), centroid.x())
         utm = QgsCoordinateReferenceSystem(utmString)
