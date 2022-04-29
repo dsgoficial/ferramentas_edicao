@@ -20,18 +20,13 @@ curvas = {
         "mestra": "100"
     },
     "100": {
-        "auxiliar": "25",
+        "auxiliar": "20",
         "normal": "40",
         "mestra": "200"
     },
     "250": {
         "auxiliar": "50",
         "normal": "100",
-        "mestra": "500"
-    },
-    "1000": {
-        "auxiliar": "100",
-        "normal": "200",
         "mestra": "500"
     }
 }
@@ -173,14 +168,27 @@ class Table(IComponent,ComponentUtils):
             hemisphere = 'Norte' if hemisphere == 'N' else 'Sul'
             falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
             centralMeridian = -180+(int(timeZone)-1)*6 + 3
+
             if str(scale) in curvas:
                 curveData = [x for x in curvas[str(scale)].values()]
             else:
                 curveData = [0,0,0]
+
+            equidistancia_mestra = tecnicalInfo.get('equidistancia_mestra', 0)
+            equidistancia_normal = tecnicalInfo.get('equidistancia_normal', 0)
+            equidistancia_auxiliar = tecnicalInfo.get('equidistancia_auxiliar', 0)
+
+            if equidistancia_auxiliar:
+                curveData[0] = equidistancia_auxiliar
+            if equidistancia_normal:
+                curveData[1] = equidistancia_normal
+            if equidistancia_mestra:
+                curveData[2] = equidistancia_mestra
+
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
             lenThirdData = 3 + len(thirdPartyData)
-            displayAuxContour = tecnicalInfo.get('curva_auxiliar', True)
+            displayAuxContour = tecnicalInfo.get('curva_auxiliar', False)
             nContourInTable = '3' if displayAuxContour else '2'
 
             intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
@@ -253,7 +261,7 @@ class Table(IComponent,ComponentUtils):
             secondTable = next(tables)
             if tecnicalInfo.get('observacao_homologacao', True):
                 _tmp = self.generateElement(secondTable, 'tr')
-                _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '* Limites sujeitos  à homologação do referido órgão.')
+                _ = self.generateElement(_tmp, 'td', {'class':'phases'}, '* Limites sujeitos à homologação do referido órgão.')
             _tmp = self.generateElement(secondTable, 'tr')
             _ = self.generateElement(_tmp, 'td', {'class':'phases'}, 'Para maiores informações consulte o arquivo de metadados.')
 
