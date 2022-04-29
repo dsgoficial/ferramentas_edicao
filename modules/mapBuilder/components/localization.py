@@ -4,9 +4,10 @@ from PyQt5.QtGui import QColor
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
                        QgsFeatureRequest, QgsGeometry, QgsLayerTreeGroup,
                        QgsPalLayerSettings, QgsPrintLayout, QgsProject,
-                       QgsRectangle, QgsRuleBasedLabeling,
+                       QgsRectangle, QgsRuleBasedLabeling,QgsTextBufferSettings,
                        QgsRuleBasedRenderer, QgsSymbol, QgsSymbolLayerRegistry,
-                       QgsTextFormat, QgsVectorLayer)
+                       QgsTextFormat, QgsVectorLayer,
+                       QgsPainting)
 
 from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
@@ -166,6 +167,21 @@ class Localization(ComponentUtils,IComponent):
         textFormat = QgsTextFormat()
         textFormat.setColor(QColor(0, 0, 0, 255))
         textFormat.setSize(6)
+
+        #buffer
+        buffer = QgsTextBufferSettings()
+        buffer.setEnabled(True)
+        buffer.setSize(1)
+        buffer.setColor(QColor('#c9c9c9'))
+        buffer.setBlendMode(
+            QgsPainting.getCompositionMode(
+                stateLayer.customProperty(
+                    'labeling/bufferBlendMode', 
+                    QgsPainting.BlendLighten
+                )
+            )
+        )
+        textFormat.setBuffer(buffer)
         settings.setFormat(textFormat)
 
         # Add rule to root and apply to stateLayer
