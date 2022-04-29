@@ -4,7 +4,7 @@ from PyQt5.QtGui import QColor
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
                        QgsFeatureRequest, QgsGeometry, QgsLayerTreeGroup,
                        QgsPalLayerSettings, QgsPrintLayout, QgsProject,
-                       QgsRectangle, QgsRuleBasedLabeling,
+                       QgsRectangle, QgsRuleBasedLabeling,QgsTextBufferSettings,
                        QgsRuleBasedRenderer, QgsSymbol, QgsSymbolLayerRegistry,
                        QgsTextFormat, QgsVectorLayer,
                        QgsPainting)
@@ -175,7 +175,7 @@ class Localization(ComponentUtils,IComponent):
         buffer.setColor(QColor('#c9c9c9'))
         buffer.setBlendMode(
             QgsPainting.getCompositionMode(
-                layer.customProperty(
+                stateLayer.customProperty(
                     'labeling/bufferBlendMode', 
                     QgsPainting.BlendLighten
                 )
