@@ -181,6 +181,7 @@ class Localization(ComponentUtils,IComponent):
                 )
             )
         )
+        textFormat.setBuffer(buffer)
         settings.setFormat(textFormat)
 
         # Add rule to root and apply to stateLayer
