@@ -68,7 +68,7 @@ class ComponentUtils:
         if pathShp.is_file():
             layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
             if layer.isValid():
-                if isinstance(pathStyle, Path) and pathStyle.is_file():
+                if pathStyle and isinstance(pathStyle, Path) and pathStyle.is_file():
                     layer.loadNamedStyle(str(pathStyle))
                     layer.triggerRepaint()
                 layer.setProviderEncoding(u'UTF-8')

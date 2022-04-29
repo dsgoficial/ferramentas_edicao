@@ -89,8 +89,7 @@ class Division(ComponentUtils,IComponent):
         '''
 
         uriPath = self.shpFolder / 'Municipios_2020.shp'
-        stylePath = self.styleFolder / 'municipio.qml'
-        layerCountyArea = self.loadShapeLayer(uriPath, stylePath, 'counties')
+        layerCountyArea = self.loadShapeLayer(uriPath, None, 'counties')
 
         uriPath = self.shpFolder / 'Limites_Municipios_2020.shp'
         stylePath = self.styleFolder / 'municipio_l.qml'
