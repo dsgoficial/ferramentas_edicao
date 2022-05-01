@@ -182,12 +182,14 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 return 
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress( step * progressStep )
+            node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
             if not( layerName in layerNames ) or not layerName in qmlDict:
                 invisibleLayers.append(layer)
-                node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
                 if node:
                     node.setItemVisibilityChecked(False)
             else:
+                if node:
+                    node.setItemVisibilityChecked(True)
                 layersOk.append(layer)
 
         return layersOk, invisibleLayers
