@@ -11,6 +11,8 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsProcessingParameterFeatureSink, QgsFeatureSink)
 from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 
+from .processingUtils import ProcessingUtils
+
 
 class PrepareOrtho(QgsProcessingAlgorithm): 
 
@@ -78,6 +80,10 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             'infra_pista_pouso_l',
             'infra_pista_pouso_a',
             'elemnat_curva_nivel_l'
+        ]
+        layersToCalculateDefaultsBasedOnSize = [
+            'elemnat_trecho_drenagem_l',
+            'cobter_massa_dagua_a'
         ]
         layersToCalculateSobreposition = [
             'llp_area_pub_militar_l',
@@ -275,6 +281,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 self.setDefaultAttrV2(lyr, valuesToCommit)
             if lyrName in layersToCalculateDefaults:
                 self.setDefaultAttrCalc(lyrName, lyr)
+            if lyrName in layersToCalculateDefaultsBasedOnSize:
+                self.setDefaultAttrCalcBasedOnSize(lyrName, lyr, scale)
             if lyrName in layersToCalculateSobreposition:
                 self.checkIntersectionAndSetAttr(lyr, refLayersSobreposition)
             if lyrName in layerToCreateSpacedSymbolsCase1:
@@ -489,6 +497,56 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 lyr.changeAttributeValue(feat.id(), fieldIdx, text)
         # lyr.commitChanges()
 
+    def setDefaultAttrCalcBasedOnSize(self, lyrName, lyr, scale):
+        '''Updates "tamanho_txt" attribute based on feature size (length or area)
+        '''
+        provider = lyr.dataProvider()
+        fieldIdx = provider.fieldNameIndex('tamanho_txt')
+        lyrCrs = lyr.dataProvider().crs()
+        if lyrName == 'cobter_massa_dagua_a':
+            lyr.startEditing()
+            for feat in lyr.getFeatures():
+                size = ProcessingUtils.getWaterPolyLabelFontSize(feat, scale, lyrCrs)
+                lyr.changeAttributeValue(feat.id(), fieldIdx, size)
+        elif lyrName == 'elemnat_trecho_drenagem_l':
+            drainageLayer = ProcessingUtils().runAddCount(lyr)
+            ProcessingUtils().runCreateSpatialIndex(drainageLayer)
+            self.mergeRivers(drainageLayer)
+            lyr.startEditing()
+            for feat in lyr.getFeatures():
+                spatialIdx, idDict = ProcessingUtils().buildSpatialIndexAndIdDict(
+                    inputLyr=drainageLayer
+                )
+                featGeom = feat.geometry()
+                mergedRiverFound=False
+                for riverId in spatialIdx.intersects(featGeom.boundingBox()):
+                    river = idDict[riverId]
+                    riverGeom = river.geometry()
+                    if riverGeom.equals(featGeom) or riverGeom.contains(featGeom):
+                        mergedRiver = river
+                        mergedRiverFound = True
+                        break
+                if not mergedRiverFound:
+                    mergedRiver = feat
+                if feat.attribute('situacao_em_poligono') == 1:
+                    size = ProcessingUtils.getRiverOutPolyLabelFontSize(mergedRiver, scale, lyrCrs)
+                    lyr.changeAttributeValue(feat.id(), fieldIdx, size)
+                elif feat.attribute('situacao_em_poligono') in (2,3):
+                    size = ProcessingUtils.getRiverInPolyLabelFontSize(mergedRiver, scale, lyrCrs)
+                    lyr.changeAttributeValue(feat.id(), fieldIdx, size)
+    
+    def mergeRivers(self, drainageLayer):
+        merge = {}
+        for drainageFeature in drainageLayer.getFeatures():
+            if not drainageFeature['nome']:
+                continue
+            mergeKey = '{0}_{1}'.format( drainageFeature['nome'].lower(), drainageFeature['tipo'])
+            if not( mergeKey in merge):
+                merge[ mergeKey ] = []
+            merge[ mergeKey ].append( drainageFeature )
+        for mergeKey in merge:
+            ProcessingUtils().mergeLineFeaturesCommit( merge[ mergeKey ], drainageLayer )
+
     @staticmethod
     def coalesceAttributeV1(feat, *fields):
         '''Join attribute values for the layer 'infra_obstaculo_vertical_p'
@@ -535,15 +593,15 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return expression          
 
     @staticmethod
-    def coalesceAttributeV3(lyr, field):
+    def coalesceAttributeV3(feat, field):
         '''Join attribute values for the layer 'elemnat_curva_nivel_l'
         '''
         expression = ''
-        if lyr.attribute(field) is not None:
-            if lyr.attribute(field) == 0:
+        if feat.attribute(field) is not None:
+            if feat.attribute(field) == 0:
                 expression = 'ZERO'
             else:
-                expression = f'{lyr.attribute(field)}'
+                expression = f'{feat.attribute(field)}'
         return expression
 
     def labelRules(self, feat: QgsFeature) -> str:
@@ -730,7 +788,10 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             if sigla:=mapping.get('sigla'):
                 if not len(sigla.split(';'))>n:
                     continue
-                name = sigla.split(';')[n].split('-')[1]
+                try:
+                    name = sigla.split(';')[n].split('-')[1]
+                except IndexError:
+                    continue
                 feat.setAttribute('sigla', name)
                 siglasEstados = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
                 if sigla.split(';')[n].split('-')[0]=='BR':

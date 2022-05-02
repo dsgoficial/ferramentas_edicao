@@ -1,8 +1,6 @@
-from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
-                       QgsLayout, QgsLayoutItem, QgsLayoutPoint,QgsCoordinateTransform,
-                       QgsPrintLayout, QgsProject, QgsRasterLayer, QgsRectangle, QgsCoordinateTransformContext,
-                       QgsReadWriteContext, QgsVectorLayer, QgsSpatialIndex)
-
+from qgis.core import (QgsUnitTypes, QgsFeature, QgsDistanceArea,
+                       QgsVectorLayer, QgsSpatialIndex, QgsCoordinateReferenceSystem)
+from qgis import processing
 
 
 class ProcessingUtils:
@@ -72,3 +70,122 @@ class ProcessingUtils:
         spatialIdx.addFeature(feat)
         if feedback is not None:
             feedback.setProgress(size * current)
+
+    def getWaterPolyLabelFontSize(feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem) -> int:
+        '''return label font size based on feature area according to MTM '''
+        if lyrCrs.isGeographic():
+            convertArea = QgsDistanceArea()
+            convertArea.setEllipsoid(lyrCrs.authid())
+            measure = convertArea.measureArea(feat.geometry())
+            area = convertArea.convertAreaMeasurement(measure, QgsUnitTypes.AreaSquareMeters)
+        else:
+            area = feat.geometry().area()
+        scaleComparator = (scale/1000)**2
+        if area < 770*scaleComparator:
+            return 6
+        elif area < 2300*scaleComparator:
+            return 7
+        elif area < 3600*scaleComparator:
+            return 8
+        elif area < 5200*scaleComparator:
+            return 9
+        elif area < 9800*scaleComparator:
+            return 10
+        elif area < 16500*scaleComparator:
+            return 12
+        elif area < 25000*scaleComparator:
+            return 14
+        elif area < 36000*scaleComparator:
+            return 16
+        else:
+            return 18
+        
+    def getRiverOutPolyLabelFontSize(feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem) -> int:
+        '''return label font size based on feature length and type (outside water polygon, 'situacao_em_poligono' == 1) according to MTM '''
+        if lyrCrs.isGeographic():
+            convertLength = QgsDistanceArea()
+            convertLength.setEllipsoid(lyrCrs.authid())
+            measure = convertLength.measureLength(feat.geometry())
+            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
+        else:
+            length = feat.geometry().length()
+        scaleComparator = scale/1000
+        if length < 80*scaleComparator:
+            return 6
+        elif length < 120*scaleComparator:
+            return 7
+        elif length < 160*scaleComparator:
+            return 8
+        else:
+            return 9
+
+    def getRiverInPolyLabelFontSize(feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem) -> int:
+        '''return label font size based on feature length and type (inside water polygon, 'situacao_em_poligono' == 2,3) according to MTM '''
+        if lyrCrs.isGeographic():
+            convertLength = QgsDistanceArea()
+            convertLength.setEllipsoid(lyrCrs.authid())
+            measure = convertLength.measureLength(feat.geometry())
+            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
+        else:
+            length = feat.geometry().length()
+        scaleComparator = scale/1000
+        if length < 65*scaleComparator:
+            return 7
+        elif length < 80*scaleComparator:
+            return 8
+        elif length < 100*scaleComparator:
+            return 9
+        elif length < 120*scaleComparator:
+            return 10
+        elif length < 160*scaleComparator:
+            return 12
+        elif length < 200*scaleComparator:
+            return 14
+        else:
+            return 16
+
+    def runAddCount(self, inputLyr):
+        output = processing.run(
+            "native:addautoincrementalfield",
+            {
+                'INPUT':inputLyr,
+                'FIELD_NAME':'AUTO',
+                'START':0,
+                'GROUP_FIELDS':[],
+                'SORT_EXPRESSION':'',
+                'SORT_ASCENDING':False,
+                'SORT_NULLS_FIRST':False,
+                'OUTPUT':'TEMPORARY_OUTPUT'
+            }
+        )
+        return output['OUTPUT']
+    def runCreateSpatialIndex(self, inputLyr):
+        processing.run(
+            "native:createspatialindex",
+            {'INPUT':inputLyr}
+        )
+
+        return False
+
+    def mergeLineFeaturesCommit(self, features, layer):
+        layer.startEditing()
+        idsToRemove = []
+        featureIds = [ f.id() for f in features ]
+        for featureAId in featureIds:
+            if featureAId in idsToRemove:
+                continue
+            for featureBId in featureIds:
+                if featureAId == featureBId or featureBId in idsToRemove:
+                    continue
+                featureA = layer.getFeature( featureAId )
+                featureB = layer.getFeature( featureBId )
+                if not featureA.geometry().touches( featureB.geometry() ):
+                    continue
+                newGeometry = featureA.geometry().combine( featureB.geometry() ).mergeLines()
+                featureA.setGeometry( newGeometry )
+                layer.updateFeature( featureA )
+                idsToRemove.append( featureBId )
+        layer.deleteFeatures( idsToRemove )
+        layer.commitChanges()
+    
+        
