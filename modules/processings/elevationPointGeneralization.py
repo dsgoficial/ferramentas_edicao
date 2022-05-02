@@ -3,7 +3,7 @@ from qgis import processing
 from qgis.core import (QgsFeatureRequest, QgsFeatureSink, QgsProcessing, QgsProject, QgsPointXY,
                        QgsProcessingAlgorithm, QgsProcessingParameterEnum, QgsCoordinateReferenceSystem,
                        QgsProcessingParameterFeatureSink, QgsProcessingFeatureSourceDefinition,
-                       QgsProcessingParameterField, QgsGeometry,
+                       QgsProcessingParameterField, QgsGeometry, QgsSpatialIndex,
                        QgsProcessingParameterVectorLayer, QgsProcessingMultiStepFeedback)
 from qgis.PyQt.QtCore import QCoreApplication
 from .makeGrid import MakeGrid
@@ -422,6 +422,10 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             inputLyr=pointLayer,
             feedback=multiStepFeedback
         )
+        sobIdDict, sobSpatialIdx = dict(), QgsSpatialIndex()
+        for sob in summitsOrBottoms:
+            sobIdDict[sob.id()] = sob
+            sobSpatialIdx.addFeature(sob)
         if len(idDict) == 0:
             return {}
         if multiStepFeedback is not None:
@@ -434,9 +438,11 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             pointsIdsSelectedinGrid=[]
             summitsOrBottomsPoints = {}
             hasSoBPoints = False
-            for pointId in spatialIdx.intersects(g.geometry().boundingBox()):
+            roi = g.geometry().boundingBox()
+            for pointId in spatialIdx.intersects(roi):
                 point = idDict[pointId]
-                for SoB in summitsOrBottoms:
+                for sobId in sobSpatialIdx.intersects(roi):
+                    SoB = sobIdDict[sobId]
                     if (point.geometry().within(SoB.geometry())):
                         if (SoB['id'] in summitsOrBottomsPoints.keys()):
                             if (SoB[isDepressionField] == isNotDep):
