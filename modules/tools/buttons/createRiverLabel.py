@@ -1,3 +1,4 @@
+from lib2to3.pytree import convert
 from pathlib import Path
 import numpy as np
 from numpy.core.fromnumeric import sort
@@ -201,9 +202,15 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
 
     def getLabelFontSizeA(self, feat):
-        length = feat.geometry().length()
         scale = self.getScale()
         scaleComparator = scale/1000
+        if self.lyrCrs.isGeographic():
+            convertLength = QgsDistanceArea()
+            convertLength.setEllipsoid(self.lyrCrs.authid())
+            measure = convertLength.measureLength(feat.geometry())
+            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
+        else:
+            length = feat.geometry().length()
         if length < 80*scaleComparator:
             return 6
         elif length < 120*scaleComparator:
@@ -214,9 +221,15 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
             return 9
 
     def getLabelFontSizeB(self, feat):
-        length = feat.geometry().length()
         scale = self.getScale()
         scaleComparator = scale/1000
+        if self.lyrCrs.isGeographic():
+            convertLength = QgsDistanceArea()
+            convertLength.setEllipsoid(self.lyrCrs.authid())
+            measure = convertLength.measureLength(feat.geometry())
+            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
+        else:
+            length = feat.geometry().length()
         if length < 65*scaleComparator:
             return 7
         elif length < 80*scaleComparator:
@@ -249,7 +262,8 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
                 'Camada "edicao_texto_generico_l" não encontrada'
             ))
             return None
-        if self.srcLyr.dataProvider().crs().isGeographic():
+        self.lyrCrs = self.srcLyr.dataProvider().crs()
+        if self.lyrCrs.isGeographic():
             d = QgsDistanceArea()
             d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
             self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.005, QgsUnitTypes.DistanceDegrees)
