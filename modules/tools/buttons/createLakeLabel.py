@@ -94,9 +94,15 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         return 2
 
     def getLabelSize(self, feat):
-        area = feat.geometry().area()
         scale = self.getScale()
         scaleComparator = (scale/1000)**2
+        if self.lyrCrs.isGeographic():
+            convertArea = QgsDistanceArea()
+            convertArea.setEllipsoid(self.lyrCrs.authid())
+            measure = convertArea.measureArea(feat.geometry())
+            area = convertArea.convertAreaMeasurement(measure, QgsUnitTypes.AreaSquareMeters)
+        else:
+            area = feat.geometry().area()
         if area < 770*scaleComparator:
             return 6
         elif area < 2300*scaleComparator:
@@ -139,7 +145,8 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
                 'Camada "edicao_texto_generico_p" não encontrada'
             ))
             return None
-        if self.srcLyr.dataProvider().crs().isGeographic():
+        self.lyrCrs = self.srcLyr.dataProvider().crs()
+        if self.lyrCrs.isGeographic():
             d = QgsDistanceArea()
             d.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsCoordinateTransformContext())
             self.tolerance = d.convertLengthMeasurement(self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees)
