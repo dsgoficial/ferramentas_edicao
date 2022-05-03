@@ -117,14 +117,13 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             multiStepFeedback.pushInfo(self.tr('Selecting summits or bottoms.'))
         self.selectSummitsAndBottoms(countourLayer, summitsOrBottoms, feedback=multiStepFeedback)
         CRSstr = pointLayer.sourceCrs()
-        pointsIdsSelected = []
         gridScale = self.gridScaleDict[gridScaleParam]
         extentGeom = self.getExtentGeom(gridScaleParam, pointLayer, gridScale)
         grid = self.makeGrid(extentGeom, CRSstr, gridScale, parameters, context, feedback=multiStepFeedback)
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(6)
             multiStepFeedback.pushInfo(self.tr('Generalizing points.'))
-        idDict = self.generalizePoint(grid, pointLayer, pointsIdsSelected, summitsOrBottoms, isDepressionField, feedback=multiStepFeedback)
+        idDict, pointsIdsSelected = self.generalizePoint(grid, pointLayer, summitsOrBottoms, isDepressionField, feedback=multiStepFeedback)
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(7)
             multiStepFeedback.pushInfo(self.tr('Updating point features visualization attribute.'))
@@ -418,7 +417,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
 
     
     
-    def generalizePoint(self, grid, pointLayer, pointsIdsSelected, summitsOrBottoms, isDepressionField, feedback=None):
+    def generalizePoint(self, grid, pointLayer, summitsOrBottoms, isDepressionField, feedback=None):
         isDep = 1
         isNotDep = 2
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback) if feedback is not None else None
@@ -430,7 +429,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             feedback=multiStepFeedback
         )
         sobIdDict, sobSpatialIdx = dict(), QgsSpatialIndex()
-        selectedPointsSet = set(pointsIdsSelected)
+        selectedPointsSet = set()
         for sob in summitsOrBottoms:
             sobIdDict[sob.id()] = sob
             sobSpatialIdx.addFeature(sob)
@@ -444,7 +443,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
                 return set()
             pointsIdsSelectedinGrid=[]
             summitsOrBottomsPoints = {}
-            returnedIdsList = []
+            returnedIdsSet = set()
             hasSoBPoints = False
             roi = feat.geometry().boundingBox()
             for pointId in spatialIdx.intersects(roi):
@@ -473,12 +472,12 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
                     if (pointLayer.getFeature(pointsIdsSelectedinGrid[-1])['cota']<point['cota']):
                         pointsIdsSelectedinGrid.append(point.id())
             if (pointsIdsSelectedinGrid):
-                if (pointsIdsSelectedinGrid[-1] not in pointsIdsSelected):
-                    returnedIdsList.append(pointsIdsSelectedinGrid[-1])
+                returnedIdsSet.add(pointsIdsSelectedinGrid[-1])
             if (summitsOrBottomsPoints):
-                for point in summitsOrBottomsPoints.values():
-                    returnedIdsList.append(point.id())
-            return set(returnedIdsList)
+                returnedIdsSet.union({
+                    point.id() for point in summitsOrBottomsPoints.values()
+                })
+            return returnedIdsSet
         
         step = 100/grid.featureCount()
         futures = set()
@@ -491,10 +490,10 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         for current, x in enumerate(concurrent.futures.as_completed(futures)):
             if multiStepFeedback is not None and multiStepFeedback.isCanceled():
                 break
-            multiStepFeedback.setProgress(current * step)
-            selectedPointsSet.union(x.result())
-        pointsIdsSelected += list(selectedPointsSet)
-        return idDict
+            selectedPointsSet = selectedPointsSet.union(x.result())
+            if multiStepFeedback is not None:
+                multiStepFeedback.setProgress(current * step)
+        return idDict, list(selectedPointsSet)
 
             
     def outLayer(self, parameters, context, features, setCRS):
