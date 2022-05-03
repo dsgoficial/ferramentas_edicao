@@ -115,7 +115,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(5)
             multiStepFeedback.pushInfo(self.tr('Selecting summits or bottoms.'))
-        self.selectSummitsAndBottoms(countourLayer, summitsOrBottoms, feedback=multiStepFeedback)
+        sobIdDict, sobSpatialIdx = self.selectSummitsAndBottoms(countourLayer, feedback=multiStepFeedback)
         CRSstr = pointLayer.sourceCrs()
         gridScale = self.gridScaleDict[gridScaleParam]
         extentGeom = self.getExtentGeom(gridScaleParam, pointLayer, gridScale)
@@ -123,7 +123,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(6)
             multiStepFeedback.pushInfo(self.tr('Generalizing points.'))
-        idDict, pointsIdsSelected = self.generalizePoint(grid, pointLayer, summitsOrBottoms, isDepressionField, feedback=multiStepFeedback)
+        idDict, pointsIdsSelected = self.generalizePoint(grid, pointLayer, sobIdDict, sobSpatialIdx, isDepressionField, feedback=multiStepFeedback)
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(7)
             multiStepFeedback.pushInfo(self.tr('Updating point features visualization attribute.'))
@@ -301,8 +301,9 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         countourLayerPoly.commitChanges()
         return False
 
-    def selectSummitsAndBottoms(self, countourLayer, summitsOrBottoms, feedback=None):
+    def selectSummitsAndBottoms(self, countourLayer, feedback=None):
         toBeAdd = False
+        summitsOrBottomsIdDict, summitsOrBottomsSpatialIdx = dict(), QgsSpatialIndex()
         if feedback is not None:
             nFeats = countourLayer.featureCount()
             if nFeats == 0:
@@ -313,11 +314,13 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
                 break
             cGeom = countour.geometry()
             toBeRemoved = []
-            if (not summitsOrBottoms):
-                summitsOrBottoms.append(countour)
+            if (not summitsOrBottomsIdDict):
+                summitsOrBottomsIdDict[countour.id()] = countour
+                summitsOrBottomsSpatialIdx.addFeature(countour)
                 continue
-            
-            for SoB in summitsOrBottoms:
+            bbox = cGeom.boundingBox()
+            for SobId in summitsOrBottomsSpatialIdx.intersects(bbox):
+                SoB = summitsOrBottomsIdDict[SobId]
                 toBeAdd = True
                 SoBgeom = SoB.geometry()
                 if (cGeom.equals(SoBgeom)):
@@ -328,12 +331,14 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
                     toBeAdd = False
                     break
             if (toBeAdd):
-                summitsOrBottoms.append(countour)
+                summitsOrBottomsIdDict[countour.id()] = countour
+                summitsOrBottomsSpatialIdx.addFeature(countour)
             for tBR in toBeRemoved:
-                summitsOrBottoms.remove(tBR)
+                summitsOrBottomsIdDict.pop(tBR.id())
+                summitsOrBottomsSpatialIdx.deleteFeature(tBR)
             if feedback is not None:
                 feedback.setProgress(current * step)
-
+        return summitsOrBottomsIdDict, summitsOrBottomsSpatialIdx
 
     def runAddCount(self, inputLyr, feedback=None):
         output = processing.run(
@@ -417,7 +422,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
 
     
     
-    def generalizePoint(self, grid, pointLayer, summitsOrBottoms, isDepressionField, feedback=None):
+    def generalizePoint(self, grid, pointLayer, sobIdDict, sobSpatialIdx, isDepressionField, feedback=None):
         isDep = 1
         isNotDep = 2
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback) if feedback is not None else None
@@ -428,11 +433,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             inputLyr=pointLayer,
             feedback=multiStepFeedback
         )
-        sobIdDict, sobSpatialIdx = dict(), QgsSpatialIndex()
         selectedPointsSet = set()
-        for sob in summitsOrBottoms:
-            sobIdDict[sob.id()] = sob
-            sobSpatialIdx.addFeature(sob)
         if len(idDict) == 0:
             return {}
         if multiStepFeedback is not None:
@@ -474,7 +475,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             if (pointsIdsSelectedinGrid):
                 returnedIdsSet.add(pointsIdsSelectedinGrid[-1])
             if (summitsOrBottomsPoints):
-                returnedIdsSet.union({
+                returnedIdsSet = returnedIdsSet.union({
                     point.id() for point in summitsOrBottomsPoints.values()
                 })
             return returnedIdsSet
