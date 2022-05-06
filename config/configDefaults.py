@@ -298,8 +298,8 @@ class ConfigDefaults:
             'linwidth_utm': 0.2,
             'linwidth_buffer_geo': 0.1,
             'linwidth_buffer_utm': 0.1,
-            'geo_grid_color': QColor('white'),
-            'utm_grid_color': QColor('white'),
+            'geo_grid_color': QColor(211,211,211),
+            'utm_grid_color': QColor(211,211,211),
             'geo_grid_buffer_color': QColor('black'),
             'utm_grid_buffer_color': QColor('black'),
             'masks_check': True
