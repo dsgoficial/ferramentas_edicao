@@ -6,6 +6,8 @@ from qgis import processing
 from processing.gui.wrappers import WidgetWrapper
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition,
+                       QgsProcessingParameterNumber,
+                       QgsExpressionContextUtils,
                        QgsProcessingParameterEnum, QgsProject)
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -17,6 +19,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     INPUT_SCALE = 'INPUT_SCALE'
     GROUP = 'GROUP'
     MODE = 'MODE'
+    EQUIDISTANCIA = 'EQUIDISTANCIA'
     OUTPUT = 'OUTPUT'
 
     def flags(self):
@@ -69,6 +72,15 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.EQUIDISTANCIA,
+                self.tr('Definir equidistância fora do padrão'),
+                optional = True,
+                type=QgsProcessingParameterNumber.Integer,
+            )
+        )
+
     def parameterAsGroup(self, parameters, name, context):
         return parameters[name]
 
@@ -77,17 +89,25 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         gridScaleParam = self.parameterAsEnum(parameters, self.INPUT_SCALE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
+        equidistanciaCustom = self.parameterAsInt(parameters, self.EQUIDISTANCIA, context)
 
         if gridScaleParam==0:
             gridScale = 25
+            equidistancia = 10
         elif gridScaleParam==1:
             gridScale = 50
+            equidistancia = 20
         elif gridScaleParam==2:
             gridScale = 100
+            equidistancia = 40
         elif gridScaleParam==3:
             gridScale = 250
+            equidistancia = 100
         else:
             return {self.OUTPUT: 'Valor para escala inválido'}
+
+        if equidistanciaCustom:
+            equidistancia = equidistanciaCustom
 
         project = context.project()
         
@@ -159,6 +179,11 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
+        feedback.setProgressText('Configurando equidistancia...')
+        self.setEquidistancia( visibleLayers, equidistancia, feedback)
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
+
         #feedback.setProgressText('Configurando escala de renderização...')
         #self.renderizar( layers, gridScale)
         #if feedback.isCanceled():
@@ -171,6 +196,15 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         return {self.OUTPUT: ''}
 
+    def setEquidistancia(self, layers, equidistancia, feedback):
+        for layer in layers:
+            if feedback.isCanceled():
+                return 
+            layerName = layer.dataProvider().uri().table()
+            if layerName == 'elemnat_curva_nivel_l':
+                QgsExpressionContextUtils.setLayerVariable(layer,'equidistancia', equidistancia)
+
+        return
 
     def changeVisibility(self, layerNames, layers, qmlDict, feedback):
         listSize = len(layers)

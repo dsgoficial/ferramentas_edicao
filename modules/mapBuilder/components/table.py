@@ -8,27 +8,11 @@ from qgis.core import QgsFeature, QgsPrintLayout, QgsCoordinateTransform, QgsCoo
 from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
 
-curvas = {
-    "25":	{
-        "auxiliar": "5",
-        "normal": "10",
-        "mestra": "50"
-    },
-    "50":	{
-        "auxiliar": "10",
-        "normal": "20",
-        "mestra": "100"
-    },
-    "100": {
-        "auxiliar": "20",
-        "normal": "40",
-        "mestra": "200"
-    },
-    "250": {
-        "auxiliar": "50",
-        "normal": "100",
-        "mestra": "500"
-    }
+equidistancia = {
+    "25": 10,
+    "50": 20,
+    "100": 40,
+    "250": 100
 }
 
 class Table(IComponent,ComponentUtils):
@@ -169,21 +153,11 @@ class Table(IComponent,ComponentUtils):
             falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
             centralMeridian = -180+(int(timeZone)-1)*6 + 3
 
-            if str(scale) in curvas:
-                curveData = [x for x in curvas[str(scale)].values()]
-            else:
-                curveData = [0,0,0]
+            equidistancia_config = tecnicalInfo.get('equidistancia', equidistancia[str(scale)])
 
-            equidistancia_mestra = tecnicalInfo.get('equidistancia_mestra', 0)
-            equidistancia_normal = tecnicalInfo.get('equidistancia_normal', 0)
-            equidistancia_auxiliar = tecnicalInfo.get('equidistancia_auxiliar', 0)
-
-            if equidistancia_auxiliar:
-                curveData[0] = equidistancia_auxiliar
-            if equidistancia_normal:
-                curveData[1] = equidistancia_normal
-            if equidistancia_mestra:
-                curveData[2] = equidistancia_mestra
+            curveData[0] = int(equidistancia_config)/2
+            curveData[1] = int(equidistancia_config)
+            curveData[2] = int(equidistancia_config)*5
 
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
