@@ -60,4 +60,4 @@ class BaseTools:
 
     @staticmethod
     def tr(message):
-        return QCoreApplication.translate('EditionPlugin', message)
+        return QCoreApplication.translate(u'FerramentasEdicao', message)
