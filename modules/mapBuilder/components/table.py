@@ -8,13 +8,6 @@ from qgis.core import QgsFeature, QgsPrintLayout, QgsCoordinateTransform, QgsCoo
 from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
 
-equidistancia = {
-    "25": 10,
-    "50": 20,
-    "100": 40,
-    "250": 100
-}
-
 class Table(IComponent,ComponentUtils):
 
     def __init__(self, *args, **kwargs) -> None:
@@ -143,6 +136,7 @@ class Table(IComponent,ComponentUtils):
     def customTecnicalInfo(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature):
         label = composition.itemById("label_tabela_info_carta")
         scale = data.get('scale')
+        equidistancia = data.get('equidistancia')
         hemisphere = data.get('hemisphere')
         timeZone = data.get('timeZone')
         tecnicalInfo: dict = data.get('info_tecnica')
@@ -153,11 +147,9 @@ class Table(IComponent,ComponentUtils):
             falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
             centralMeridian = -180+(int(timeZone)-1)*6 + 3
 
-            equidistancia_config = tecnicalInfo.get('equidistancia', equidistancia[str(scale)])
-
-            curveData[0] = int(equidistancia_config)/2
-            curveData[1] = int(equidistancia_config)
-            curveData[2] = int(equidistancia_config)*5
+            curveData[0] = int(equidistancia)/2
+            curveData[1] = int(equidistancia)
+            curveData[2] = int(equidistancia)*5
 
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())

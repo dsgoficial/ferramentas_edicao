@@ -56,6 +56,7 @@ class MapBuilderUtils:
         layersList = []
         layersIDsList = []
         scale = data.get('scale')
+        equidistancia = data.get('equidistancia')
         productType = data.get('productType')
         useLayerFilter = data.get('useLayerFilter', True)
         stylesFolder = productPath / 'styles' / group
@@ -65,6 +66,9 @@ class MapBuilderUtils:
             layer = self.getLayerFromPostgres(uri, lyr)
             if layer.isValid():
                 self.instance.addMapLayer(layer, False)
+                layerName = layer.dataProvider().uri().table()
+                if layerName == 'elemnat_curva_nivel_l':
+                    QgsExpressionContextUtils.setLayerVariable(layer,'equidistancia', equidistancia)
                 if useLayerFilter and mapAreaFeature:
                     mapAreaFeature = QgsFeature(mapAreaFeature)
                     mapAreaGeometry = self.transformGeometryIfNecessary(
