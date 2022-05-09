@@ -92,6 +92,7 @@ class MapBuildController(MapBuildControllerUtils):
         }
         info_tecnica = jsonData.get('info_tecnica')
         equidistancia = info_tecnica.get('equidistancia_personalizada', equidistanciaDefault[str(scale)])
+        exibirAuxiliar = info_tecnica.get('exibir_curva_auxiliar', 0)
 
         jsonData.update({
             'mi': mi,
@@ -100,7 +101,8 @@ class MapBuildController(MapBuildControllerUtils):
             'timeZone': int(inom[3:5]),
             'scale': scale,
             'epsg': self.getEpsg(inom[0], int(inom[3:5])),
-            'equidistancia': equidistancia
+            'equidistancia': equidistancia,
+            'exibirAuxiliar': exibirAuxiliar
         })
         return mapExtentsLyr, mapExtentsFeat
 

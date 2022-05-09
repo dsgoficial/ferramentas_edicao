@@ -21,6 +21,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     MODE = 'MODE'
     EQUIDISTANCIA = 'EQUIDISTANCIA'
     OUTPUT = 'OUTPUT'
+    EXIBIR_AUXILIAR = 'EXIBIR_AUXILIAR'
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
@@ -72,6 +73,17 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
+        self.exibir_auxiliar_domain = [self.tr('Não'), self.tr('Sim')]
+
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.EXIBIR_AUXILIAR,
+                self.tr('Deseja exibir curvas auxiliares?'),
+                options = self.exibir_auxiliar_domain,
+                defaultValue=0
+            )
+        )
+
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.EQUIDISTANCIA,
@@ -90,6 +102,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
         equidistanciaCustom = self.parameterAsInt(parameters, self.EQUIDISTANCIA, context)
+        exibirAuxiliar = self.parameterAsEnum(parameters,self.EXIBIR_AUXILIAR,context)
 
         if gridScaleParam==0:
             gridScale = 25
@@ -180,7 +193,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             return {self.OUTPUT: 'Cancelado'}
 
         feedback.setProgressText('Configurando equidistancia...')
-        self.setEquidistancia( visibleLayers, equidistancia, feedback)
+        self.setEquidistancia( visibleLayers, equidistancia, exibirAuxiliar, feedback)
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
@@ -196,13 +209,14 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         return {self.OUTPUT: ''}
 
-    def setEquidistancia(self, layers, equidistancia, feedback):
+    def setEquidistancia(self, layers, equidistancia, exibirAuxiliar, feedback):
         for layer in layers:
             if feedback.isCanceled():
                 return 
             layerName = layer.dataProvider().uri().table()
             if layerName == 'elemnat_curva_nivel_l':
                 QgsExpressionContextUtils.setLayerVariable(layer,'equidistancia', equidistancia)
+                QgsExpressionContextUtils.setLayerVariable(layer,'exibir_auxiliar', exibirAuxiliar)
 
         return
 

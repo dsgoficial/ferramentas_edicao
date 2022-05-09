@@ -137,6 +137,7 @@ class Table(IComponent,ComponentUtils):
         label = composition.itemById("label_tabela_info_carta")
         scale = data.get('scale')
         equidistancia = data.get('equidistancia')
+        displayAuxContour = data.get('exibirAuxiliar')
         hemisphere = data.get('hemisphere')
         timeZone = data.get('timeZone')
         tecnicalInfo: dict = data.get('info_tecnica')
@@ -152,8 +153,7 @@ class Table(IComponent,ComponentUtils):
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
             lenThirdData = 3 + len(thirdPartyData)
-            displayAuxContour = tecnicalInfo.get('curva_auxiliar', False)
-            nContourInTable = '3' if displayAuxContour else '2'
+            nContourInTable = '3' if displayAuxContour == 1 else '2'
 
             intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
 
