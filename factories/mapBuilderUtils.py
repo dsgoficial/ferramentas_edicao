@@ -6,7 +6,7 @@ from typing import Callable, Union
 from qgis import processing
 from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject, QgsFeature, QgsGeometry,
                        QgsVectorLayer, QgsCoordinateReferenceSystem, QgsRasterLayer, QgsCoordinateTransform,
-                       QgsCoordinateTransformContext)
+                       QgsCoordinateTransformContext, QgsExpressionContextUtils)
 
 from ..config.configDefaults import ConfigDefaults
 
