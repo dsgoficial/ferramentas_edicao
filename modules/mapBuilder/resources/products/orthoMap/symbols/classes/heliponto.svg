@@ -7,86 +7,79 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="3.7000179mm"
-   height="3.7000179mm"
-   viewBox="0 0 10.488229 10.488229"
-   version="1.2"
-   id="svg20"
-   sodipodi:docname="heliponto.svg"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+   width="3mm"
+   height="3mm"
+   viewBox="0 0 3.0000001 2.9999997"
+   version="1.1"
+   id="svg1266"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="P10902C.svg">
+  <defs
+     id="defs1260">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 1.4999999 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="3.0000001 : 1.4999999 : 1"
+       inkscape:persp3d-origin="1.5 : 0.9999999 : 1"
+       id="perspective844" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="63.356767"
+     inkscape:cx="4.7034042"
+     inkscape:cy="5.4210666"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="340"
+     inkscape:window-maximized="1"
+     inkscape:document-rotation="0" />
   <metadata
-     id="metadata24">
+     id="metadata1263">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>Qt SVG Document</dc:title>
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     id="namedview22"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:zoom="5.5312444"
-     inkscape:cx="99.269687"
-     inkscape:cy="13.746904"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg20" />
-  <title
-     id="title2">Qt SVG Document</title>
-  <desc
-     id="desc4">Generated with Qt</desc>
-  <defs
-     id="defs6" />
   <g
-     style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1"
-     id="g10"
-     font-style="normal"
-     font-weight="400"
-     font-size="8.25"
-     transform="translate(-11.039336,-11.889736)">
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(35.499503,-114.74614)">
+    <circle
+       r="1.375"
+       cy="116.24614"
+       cx="-33.999504"
+       id="circle1016"
+       style="fill:#ffffff;fill-opacity:1;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke" />
     <path
-       style="vector-effect:none;fill-rule:evenodd"
-       inkscape:connector-curvature="0"
-       id="path8"
-       d="m 21.2441,17.1339 c 0,2.7396 -2.221,4.9606 -4.9606,4.9606 -2.7397,0 -4.9607,-2.221 -4.9607,-4.9606 0,-2.7397 2.221,-4.9607 4.9607,-4.9607 2.7396,0 4.9606,2.221 4.9606,4.9607" />
-  </g>
-  <g
-     style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel"
-     id="g14"
-     font-style="normal"
-     font-weight="400"
-     font-size="8.25"
-     transform="translate(5.3573995,4.1073945)">
+       style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -34.4745,115.49614 v 1.5"
+       id="path1018"
+       inkscape:connector-curvature="0" />
     <path
-       style="vector-effect:none;fill-rule:evenodd"
        inkscape:connector-curvature="0"
-       id="path12"
-       d="m -2.35938,4 v -5.72656 h 0.75782 V 0.625 H 1.375 V -1.72656 H 2.13281 V 4 H 1.375 V 1.30078 H -1.60156 V 4 h -0.75782" />
+       id="path1020"
+       d="m -33.3995,116.24614 h -1.2"
+       style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path1027"
+       d="m -33.5245,115.49614 v 1.5"
+       style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
-  <g
-     style="font-style:normal;font-weight:400;font-size:8.25px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.56692898;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1"
-     id="g16"
-     font-style="normal"
-     font-weight="400"
-     font-size="8.25"
-     transform="translate(-11.039336,-11.889736)" />
 </svg>

@@ -65,9 +65,9 @@
     <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{110b8182-c3b9-4742-99c9-28a9d85b64e7}">
-      <rule key="{6c6925db-fbd2-45fc-b0d5-391d324cd623}" filter="visivel = 1">
-        <rule key="{ddb86959-57bc-4fb8-9ae8-6ff7d516456d}" filter="tipo = 6" description="Povoado 5a importância 8pt">
+    <rules key="{7e200b9d-d5b3-4e55-833d-b12a1a480f49}">
+      <rule key="{c05f536f-af69-4b31-a049-f1a99f2962c5}" filter="visivel = 1">
+        <rule key="{b6cbc953-e043-4dd8-ba45-c17e0bf97738}" filter="tipo = 6" description="Povoado 5a importância 8pt">
           <settings calloutType="simple">
             <text-style fontFamily="Noto Sans" isExpression="0" fontKerning="1" multilineHeight="0.80000000000000004" allowHtml="0" fontUnderline="0" textOrientation="horizontal" previewBkgrdColor="255,255,255,255" textColor="255,255,255,255" fontWordSpacing="0" legendString="Aa" namedStyle="Condensed" textOpacity="1" fontLetterSpacing="0" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" useSubstitutions="0" fontWeight="50" fontSize="8" blendMode="0" fontSizeUnit="Point" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="0">
               <families/>
@@ -252,7 +252,7 @@
             </callout>
           </settings>
         </rule>
-        <rule key="{a745d884-b644-41cb-a79f-9e7f9ba166e7}" filter="tipo in (5,7)" description="Lugarejo / Núcleo 5a importância 7pt">
+        <rule key="{f087fe7b-2ec6-4cfd-8208-9ad3e1c84700}" filter="tipo in (5,7)" description="Lugarejo / Núcleo 5a importância 7pt">
           <settings calloutType="simple">
             <text-style fontFamily="Noto Sans" isExpression="0" fontKerning="1" multilineHeight="0.80000000000000004" allowHtml="0" fontUnderline="0" textOrientation="horizontal" previewBkgrdColor="255,255,255,255" textColor="255,255,255,255" fontWordSpacing="0" legendString="Aa" namedStyle="Condensed" textOpacity="1" fontLetterSpacing="0" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" useSubstitutions="0" fontWeight="50" fontSize="7" blendMode="0" fontSizeUnit="Point" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="0">
               <families/>
