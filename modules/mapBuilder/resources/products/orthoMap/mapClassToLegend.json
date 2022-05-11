@@ -66,15 +66,15 @@
         },
         "infra_pista_pouso_p": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso", "heliponto"]
         },
         "infra_pista_pouso_l": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
             "group": "sistema_de_transporte",
@@ -220,15 +220,15 @@
         },
         "infra_pista_pouso_p": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso", "heliponto"]
         },
         "infra_pista_pouso_l": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
             "group": "sistema_de_transporte",
@@ -374,15 +374,15 @@
         },
         "infra_pista_pouso_p": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso", "heliponto"]
         },
         "infra_pista_pouso_l": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
             "group": "sistema_de_transporte",
@@ -528,15 +528,15 @@
         },
         "infra_pista_pouso_p": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso", "heliponto"]
         },
         "infra_pista_pouso_l": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
             "group": "sistema_de_transporte",
-            "labels": ["pista_pouso_heliponto"]
+            "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
             "group": "sistema_de_transporte",
