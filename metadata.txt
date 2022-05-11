@@ -1,8 +1,8 @@
 # Mandatory
 [general]
-name=Edition Plugin
-qgisMinimumVersion=3.20
-description=This plugin helps the edition of maps.
+name=Ferramentas de Edição
+qgisMinimumVersion=3.22
+description=Plugin para realização a edição de mapas seguindo as normas nacionais
 version=1.0
 author=1º CGEO
 email=eliton.filho@eb.mil.br

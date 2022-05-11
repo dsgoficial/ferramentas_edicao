@@ -82,13 +82,27 @@ class MapBuildController(MapBuildControllerUtils):
             jsonData.update({
                 'omTemplateType': templateType,
                 'rotationAngle': angle})
+
+
+        equidistanciaDefault = {
+            "25": 10,
+            "50": 20,
+            "100": 40,
+            "250": 100
+        }
+        info_tecnica = jsonData.get('info_tecnica')
+        equidistancia = info_tecnica.get('equidistancia_personalizada', equidistanciaDefault[str(scale)])
+        exibirAuxiliar = info_tecnica.get('exibir_curva_auxiliar', 0)
+
         jsonData.update({
             'mi': mi,
             'inom': inom,
             'hemisphere': inom[0],
             'timeZone': int(inom[3:5]),
             'scale': scale,
-            'epsg': self.getEpsg(inom[0], int(inom[3:5]))
+            'epsg': self.getEpsg(inom[0], int(inom[3:5])),
+            'equidistancia': equidistancia,
+            'exibirAuxiliar': exibirAuxiliar
         })
         return mapExtentsLyr, mapExtentsFeat
 

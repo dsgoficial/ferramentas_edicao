@@ -6,7 +6,7 @@ from typing import Callable, Union
 from qgis import processing
 from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject, QgsFeature, QgsGeometry,
                        QgsVectorLayer, QgsCoordinateReferenceSystem, QgsRasterLayer, QgsCoordinateTransform,
-                       QgsCoordinateTransformContext)
+                       QgsCoordinateTransformContext, QgsExpressionContextUtils)
 
 from ..config.configDefaults import ConfigDefaults
 
@@ -56,6 +56,8 @@ class MapBuilderUtils:
         layersList = []
         layersIDsList = []
         scale = data.get('scale')
+        equidistancia = data.get('equidistancia')
+        exibirAuxiliar = data.get('exibirAuxiliar')
         productType = data.get('productType')
         useLayerFilter = data.get('useLayerFilter', True)
         stylesFolder = productPath / 'styles' / group
@@ -65,6 +67,10 @@ class MapBuilderUtils:
             layer = self.getLayerFromPostgres(uri, lyr)
             if layer.isValid():
                 self.instance.addMapLayer(layer, False)
+                layerName = layer.dataProvider().uri().table()
+                if layerName == 'elemnat_curva_nivel_l':
+                    QgsExpressionContextUtils.setLayerVariable(layer,'equidistancia', equidistancia)
+                    QgsExpressionContextUtils.setLayerVariable(layer,'exibir_auxiliar', exibirAuxiliar)
                 if useLayerFilter and mapAreaFeature:
                     mapAreaFeature = QgsFeature(mapAreaFeature)
                     mapAreaGeometry = self.transformGeometryIfNecessary(

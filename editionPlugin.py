@@ -42,7 +42,7 @@ class EditionPlugin:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Edition Plugin')
+        self.menu = self.tr(u'&Ferramentas de Edição')
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -61,7 +61,7 @@ class EditionPlugin:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('EditionPlugin', message)
+        return QCoreApplication.translate(u'FerramentasEdicao', message)
 
 
     def add_action(
@@ -144,7 +144,7 @@ class EditionPlugin:
         icon_path = Path(__file__).parent / 'icon.png'
         self.add_action(
             str(icon_path),
-            text=self.tr(u'Edition Plugin'),
+            text=self.tr(u'Ferramentas de Edição'),
             callback=self.run,
             parent=self.iface.mainWindow())
         self.firstStart = True
@@ -166,7 +166,7 @@ class EditionPlugin:
             self.dlg.close()
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&Edition Plugin'),
+                self.tr(u'&Ferramentas de Edição'),
                 action)
             self.iface.removeToolBarIcon(action)
 
