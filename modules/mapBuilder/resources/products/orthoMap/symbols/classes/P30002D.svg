@@ -7,10 +7,11 @@
    viewBox="0 0 12 3.9999999"
    version="1.1"
    id="svg8"
-   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="P30002D.svg"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300"
+   inkscape:export-filename="C:\Users\diogo\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_edicao\modules\mapBuilder\resources\products\orthoMap\symbols\classes\P30002D.png"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -36,15 +37,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.919596"
-     inkscape:cx="3.5986684"
-     inkscape:cy="-7.3867404"
+     inkscape:cx="2.7779195"
+     inkscape:cy="-7.3236059"
      inkscape:document-units="mm"
-     inkscape:current-layer="g876"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:pagecheckerboard="true"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="1912"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
@@ -76,7 +77,7 @@
        height="0.5"
        x="1.6653345e-16"
        y="295.04999"
-       style="fill:#ff0000;fill-opacity:1;stroke-width:0.192577" />
+       style="fill:#955058;fill-opacity:1;stroke-width:0.192577" />
     <circle
        id="path871"
        cx="6"
