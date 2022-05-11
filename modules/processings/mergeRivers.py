@@ -1,12 +1,12 @@
 from qgis import processing
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsProcessing,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingFeatureSourceDefinition,
-                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback,
+                       QgsFeatureRequest, QgsVectorLayer, QgsField,
+                       QgsProcessingParameterFeatureSink,QgsGeometry,
                        QgsProcessingParameterVectorLayer, QgsWkbTypes)
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.utils import iface
-
+from .processingUtils import ProcessingUtils
 
 class MergeRivers(QgsProcessingAlgorithm): 
 
@@ -38,7 +38,7 @@ class MergeRivers(QgsProcessingAlgorithm):
             )
         ) 
 
-    def runAddCount(self, inputLyr):
+    def runAddCount(self, inputLyr, context, feedback):
         output = processing.run(
             "native:addautoincrementalfield",
             {
@@ -50,14 +50,18 @@ class MergeRivers(QgsProcessingAlgorithm):
                 'SORT_ASCENDING':False,
                 'SORT_NULLS_FIRST':False,
                 'OUTPUT':'TEMPORARY_OUTPUT'
-            }
+            },
+            context = context,
+            feedback = feedback
         )
         return output['OUTPUT']
     
-    def runCreateSpatialIndex(self, inputLyr):
+    def runCreateSpatialIndex(self, inputLyr, context, feedback):
         processing.run(
             "native:createspatialindex",
-            {'INPUT':inputLyr}
+            {'INPUT':inputLyr},
+            context = context,
+            feedback = feedback
         )
 
     def processAlgorithm(self, parameters, context, feedback):      
@@ -72,26 +76,35 @@ class MergeRivers(QgsProcessingAlgorithm):
             QgsWkbTypes.MultiLineString,
             QgsCoordinateReferenceSystem( iface.mapCanvas().mapSettings().destinationCrs().authid() )
         )
-
-        drainageLayer = self.runAddCount(drainageLayer)
-        self.runCreateSpatialIndex(drainageLayer)
-
-        merge = {}
-        for drainageFeature in drainageLayer.getFeatures():
-            if not drainageFeature['nome']:
-                continue
-            mergeKey = '{0}_{1}'.format( drainageFeature['nome'].lower(), drainageFeature['tipo'])
-            if not( mergeKey in merge):
-                merge[ mergeKey ] = []
-            merge[ mergeKey ].append( drainageFeature )
-
-        for mergeKey in merge:
-            self.mergeLineFeatures( merge[ mergeKey ], drainageLayer )
+        steps = 5
+        if frameLayer is not None:
+            steps = 6
+        multiStepFeedback = QgsProcessingMultiStepFeedback(steps, feedback) if feedback is not None else None
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(0)
+            multiStepFeedback.pushInfo(self.tr('Creating count field on river layer.'))
+        drainageLayer = self.runAddCount(drainageLayer, context, feedback = multiStepFeedback)
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(1)
+            multiStepFeedback.pushInfo(self.tr('Creating spatial index river layer.'))
+        self.runCreateSpatialIndex(drainageLayer, context, feedback = multiStepFeedback)
 
         if frameLayer is not None:
-            drainageLayer = self.clipLayer( drainageLayer, frameLayer)
+            if multiStepFeedback is not None:
+                multiStepFeedback.setCurrentStep(2)
+                multiStepFeedback.pushInfo(self.tr('Clipping on frame layer.'))
+            drainageLayer = self.clipLayer( drainageLayer, frameLayer, context, feedback=multiStepFeedback)
 
-        for feature in drainageLayer.getFeatures():
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(steps-2)
+            multiStepFeedback.pushInfo(self.tr('Merging lines.'))
+        newLayer = self.mergeLinesFeatures(drainageLayer, feedback = multiStepFeedback)
+        
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(steps-1)
+            multiStepFeedback.pushInfo(self.tr('Adding features to output layer.'))
+
+        for feature in newLayer.getFeatures():
             self.addSink( feature, sink_l)
 
         return {self.OUTPUT_LAYER_L: sinkId_l}
@@ -100,37 +113,50 @@ class MergeRivers(QgsProcessingAlgorithm):
         newFeature = QgsFeature( feature.fields() )
         newFeature.setAttributes( feature.attributes() )
         newFeature.setGeometry( feature.geometry() )
-        sink.addFeature( newFeature )
+        sink.addFeature( newFeature )   
+    
+    def mergeLinesFeatures(self, layer, feedback=None):
+        '''creates a new layer, with the same fields as the input, to add lines, 
+        if the line added touches another with the same name and type, they are merged'''
+        newLayer = QgsVectorLayer("MultiLineString", "Nova camada", "memory")
+        newLayer.startEditing()
+        for field in layer.fields():
+            newLayer.addAttribute(field)
+        newLayer.updateFields()
+        features = list(layer.getFeatures())
+        for current, currentFeature in enumerate(features):
+            if feedback is not None and feedback.isCanceled():
+                break
+            newGeom = currentFeature.geometry()
+            featuresRequest = list( newLayer.getFeatures( QgsFeatureRequest().setFilterRect( newGeom.boundingBox() ) ) )
+            for idx, currentFeature2 in enumerate(featuresRequest):
+                if newGeom.intersects( currentFeature2.geometry() ) and self.condition(currentFeature, currentFeature2):
+                    newGeom = newGeom.combine( currentFeature2.geometry() ).mergeLines()
+                    newLayer.deleteFeature( currentFeature2.id() )
+            feat = QgsFeature()
+            feat.setFields(newLayer.fields())
+            for field in newLayer.fields().names():
+                feat.setAttribute(newLayer.fields().indexFromName(field), currentFeature[field])
+            feat.setGeometry( newGeom )
+            newLayer.addFeatures( [ feat ] )
+            if feedback is not None:
+                feedback.setProgress(current * 100/len(features))
 
-    def mergeLineFeatures(self, features, layer):
-        layer.startEditing()
-        idsToRemove = []
-        featureIds = [ f.id() for f in features ]
-        for featureAId in featureIds:
-            if featureAId in idsToRemove:
-                continue
-            for featureBId in featureIds:
-                if featureAId == featureBId or featureBId in idsToRemove:
-                    continue
-                featureA = layer.getFeature( featureAId )
-                featureB = layer.getFeature( featureBId )
-                if not featureA.geometry().touches( featureB.geometry() ):
-                    continue
-                newGeometry = featureA.geometry().combine( featureB.geometry() ).mergeLines()
-                featureA.setGeometry( newGeometry )
-                layer.updateFeature( featureA )
-                idsToRemove.append( featureBId )
-        layer.deleteFeatures( idsToRemove )
-        #layer.commitChanges()
+        return newLayer
+    
+    def condition(self, feat1, feat2):
+        return(feat1['tipo']==feat2['tipo'] and feat1['nome']==feat2['nome'])
 
-    def clipLayer(self, layer, frame):
+    def clipLayer(self, layer, frame, context, feedback):
         r = processing.run(
             'native:clip',
             {   'FIELD': [], 
                 'INPUT': layer,
                 'OVERLAY': frame,
                 'OUTPUT': 'TEMPORARY_OUTPUT'
-            }
+            },
+            context = context,
+            feedback = feedback
         )
         return r['OUTPUT']
 
