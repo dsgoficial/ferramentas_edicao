@@ -7,7 +7,7 @@
    viewBox="0 0 12 3.9999999"
    version="1.1"
    id="svg8"
-   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="L10606B.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -27,7 +27,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="18.321568"
      inkscape:cx="15.801049"
-     inkscape:cy="13.781572"
+     inkscape:cy="13.808862"
      inkscape:document-units="mm"
      inkscape:current-layer="g840"
      showgrid="false"
@@ -60,7 +60,7 @@
        transform="matrix(0.99747663,0,0,0.94833486,0.01469983,15.249289)"
        style="stroke:#000000;stroke-width:0.0514088;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7">
       <rect
-         style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0822541;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7;paint-order:fill markers stroke"
+         style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.0822541;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:1;paint-order:fill markers stroke"
          id="rect4935"
          width="11.948103"
          height="0.26624995"

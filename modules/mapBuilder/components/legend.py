@@ -30,8 +30,8 @@ class Legend():
         },
         'limites_e_localidades': {
             'order': 4,
-            'order_classes': ['capital_federal_simbolo', 'capital_federal_texto', 'capital_estadual_simbolo', 'capital_estadual_texto', 
-            'cidade_simbolo', 'cidade_texto','vila_simbolo', 'vila_texto', 'aglomerado_rural', 'nome_local', 'area_publica_militar', 'terra_indigena', 
+            'order_classes': ['capital_federal_simbolo', 'cidade_1a_importancia', 'capital_estadual_simbolo', 'cidade_2a_importancia', 
+            'cidade_simbolo', 'cidade_3a_importancia','vila_simbolo', 'vila_texto', 'aglomerado_rural', 'nome_local', 'area_publica_militar', 'terra_indigena', 
             'unidade_conservacao', 'limite_estadual', 'limite_internacional']
         },
         'relevo': {

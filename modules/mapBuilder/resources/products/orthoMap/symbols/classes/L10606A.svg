@@ -7,10 +7,11 @@
    viewBox="0 0 12 3.9999999"
    version="1.1"
    id="svg8"
-   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="L10606A.svg"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300"
+   inkscape:export-filename="C:\Users\diogo\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_edicao\modules\mapBuilder\resources\products\orthoMap\symbols\classes\L10606A.png"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +53,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="16"
      inkscape:cx="25.46875"
-     inkscape:cy="6.09375"
+     inkscape:cy="6.125"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -81,7 +82,7 @@
      id="layer1"
      transform="translate(0,-293.3)">
     <rect
-       style="opacity:1;fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999991;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.0999991;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:1"
        id="rect4935"
        width="4.2505212"
        height="0.40000001"
@@ -89,17 +90,17 @@
        y="295.10001" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';stroke:#ffffff;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill:#ffffff;fill-opacity:1"
        x="4.4738846"
        y="296.00873"
        id="text1385"><tspan
          sodipodi:role="line"
          id="tspan1383"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.7"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans Condensed';fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          x="4.4738846"
          y="296.00873">100</tspan></text>
     <rect
-       style="fill:#facc8e;fill-opacity:1;stroke:#000000;stroke-width:0.0999997;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:0.7"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.0999997;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.295;stroke-opacity:1"
        id="rect4935-8"
        width="4.1843758"
        height="0.40000001"

@@ -2,7 +2,7 @@
     "25": {
         "llp_localidade_p": {
             "group": "limites_e_localidades",
-            "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
+            "labels": ["vila_texto", "cidade_3a_importancia", "cidade_2a_importancia", "cidade_1a_importancia"]
         },
         "infra_via_deslocamento_l": {
             "group": "sistema_de_transporte",
@@ -156,7 +156,7 @@
     "50": {
         "llp_localidade_p": {
             "group": "limites_e_localidades",
-            "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
+            "labels": ["vila_texto", "cidade_3a_importancia", "cidade_2a_importancia", "cidade_1a_importancia"]
         },
         "infra_via_deslocamento_l": {
             "group": "sistema_de_transporte",
@@ -310,7 +310,7 @@
     "100": {
         "llp_localidade_p": {
             "group": "limites_e_localidades",
-            "labels": ["vila_texto", "cidade_texto", "capital_estadual_texto", "capital_federal_texto"]
+            "labels": ["vila_texto", "cidade_3a_importancia", "cidade_2a_importancia", "cidade_1a_importancia"]
         },
         "infra_via_deslocamento_l": {
             "group": "sistema_de_transporte",
