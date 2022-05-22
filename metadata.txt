@@ -1,7 +1,7 @@
 # Mandatory
 [general]
 name=Ferramentas de Edição
-qgisMinimumVersion=3.22
+qgisMinimumVersion=3.24
 description=Plugin para realização a edição de mapas seguindo as normas nacionais
 version=1.0
 author=1º CGEO

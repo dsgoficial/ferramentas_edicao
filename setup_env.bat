@@ -1,5 +1,5 @@
 @echo off
-@REM set OSGEO4W_ROOT="C:\Program Files\QGIS 3.22.1"
+@REM set OSGEO4W_ROOT="C:\Program Files\QGIS 3.24.3"
 set OSGEO4W_ROOT=%1
 set OSGEO4W_ROOT=%OSGEO4W_ROOT:"=%
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
