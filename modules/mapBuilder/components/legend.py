@@ -114,8 +114,13 @@ class Legend():
 
     def build(self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults):
         scale = jsonData.get('scale')
+        displayAuxContour = jsonData.get('exibirAuxiliar')
         complementaryClasses = jsonData.get('classes_complementares', [])
         legendMappingData = self.legendMappingData.get(str(scale))
+
+        if displayAuxContour:
+            legendMappingData['elemnat_curva_nivel_l']['labels'].insert(0, "curva_nivel_auxiliar")
+
         legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(complementaryClasses)))
         legendClassesGrouped = self.groupLegend(legendClassesToDisplay, legendMappingData)
         legendClassesOrdered = self.orderLegend(legendClassesGrouped)

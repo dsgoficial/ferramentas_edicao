@@ -58,7 +58,7 @@
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_auxiliar", "curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
@@ -212,7 +212,7 @@
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_auxiliar", "curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
@@ -366,7 +366,7 @@
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_auxiliar", "curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
@@ -520,7 +520,7 @@
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_auxiliar", "curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
