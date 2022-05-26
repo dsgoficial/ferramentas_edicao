@@ -118,7 +118,7 @@ class Legend():
         complementaryClasses = jsonData.get('classes_complementares', [])
         legendMappingData = self.legendMappingData.get(str(scale))
 
-        if displayAuxContour:
+        if displayAuxContour == 1:
             legendMappingData['elemnat_curva_nivel_l']['labels'].insert(0, "curva_nivel_auxiliar")
 
         legendClassesToDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(set(complementaryClasses)))

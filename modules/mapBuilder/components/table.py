@@ -181,7 +181,7 @@ class Table(IComponent,ComponentUtils):
             if not isOmMap:
                 _tmp = self.generateElement(firstTable, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':nContourInTable}, 'Equidistância das curvas de nível')
-                if displayAuxContour:
+                if displayAuxContour == 1:
                     _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Auxiliar: {curveData[0]} metros')
                     _tmp = self.generateElement(firstTable, 'tr')
                 _ = self.generateElement(_tmp, 'td', {'class':'right'}, f'Normal: {curveData[1]} metros')
