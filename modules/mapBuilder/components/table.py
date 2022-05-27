@@ -148,7 +148,7 @@ class Table(IComponent,ComponentUtils):
             falseNorth = '+ 0' if hemisphere == 'Norte' else '+ 10.000'
             centralMeridian = -180+(int(timeZone)-1)*6 + 3
 
-            curveData = [int(equidistancia)/2, int(equidistancia), int(equidistancia)*5]
+            curveData = [int(equidistancia/2), int(equidistancia), int(equidistancia)*5]
 
             position = 'W' if centralMeridian < 0 else 'E'
             thirdPartyData = tecnicalInfo.get('dados_terceiros', ())
