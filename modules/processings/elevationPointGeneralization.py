@@ -22,6 +22,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
     INPUT_SCALE = 'INPUT_SCALE'
     INPUT_ELEVATION_POINTS = 'INPUT_ELEVATION_POINTS'
     INPUT_ELEVATION_POINTS = 'INPUT_ELEVATION_POINTS'
+    GEOGRAPHIC_BOUNDARY = 'GEOGRAPHIC_BOUNDARY'
     INPUT_IS_DEPRESSION_FIELD ='INPUT_IS_DEPRESSION_FIELD'
     INPUT_IS_VISIBLE_FIELD ='INPUT_IS_VISIBLE_FIELD'
     OUTPUT = 'OUTPUT'
@@ -38,14 +39,24 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 'INPUT_ELEVATION_POINTS',
                 self.tr('Selecione a camada contendo os pontos cotados'),
-                types=[QgsProcessing.TypeVectorPoint]
+                types=[QgsProcessing.TypeVectorPoint],
+                defaultValue='elemnat_ponto_cotado_p'
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 'INPUT_COUNTOUR_LINES',
                 self.tr('Selecione a camada contendo as curvas de nível'),
-                types=[QgsProcessing.TypeVectorLine]
+                types=[QgsProcessing.TypeVectorLine],
+                defaultValue='elemnat_curva_nivel_l'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.GEOGRAPHIC_BOUNDARY,
+                self.tr('Limite geográfico'),
+                [QgsProcessing.TypeVectorPolygon],
+                optional=True
             )
         )
         self.addParameter(
@@ -83,49 +94,81 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):      
         feedback.setProgressText('Iniciando...')
         gridScaleParam = self.parameterAsEnums(parameters,'INPUT_SCALE', context)[0]
-        pointLayer = self.parameterAsVectorLayer( parameters,'INPUT_ELEVATION_POINTS', context )
+        pointLayer = self.parameterAsVectorLayer(parameters,'INPUT_ELEVATION_POINTS', context)
         nFeats = pointLayer.featureCount()
         if nFeats == 0:
             return {self.OUTPUT: "Camada sem elementos."}
-        countourLayerpre = self.parameterAsVectorLayer( parameters,'INPUT_COUNTOUR_LINES', context )
+        countourLayerpre = self.parameterAsVectorLayer(parameters,'INPUT_COUNTOUR_LINES', context)
         isDepressionField = self.parameterAsFields (parameters,'INPUT_IS_DEPRESSION_FIELD', context)[0]
         isVisibleField = self.parameterAsFields (parameters,'INPUT_IS_VISIBLE_FIELD', context)[0]
-        multiStepFeedback = QgsProcessingMultiStepFeedback(8, feedback) if feedback is not None else None
+        geographicBoundaryLyr = self.parameterAsLayer(
+            parameters,
+            self.GEOGRAPHIC_BOUNDARY,
+            context
+        )
+        nSteps = 8 if geographicBoundaryLyr is None else 10
+        multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback) if feedback is not None else None
+        currentStep = 0
+        if geographicBoundaryLyr is not None:
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.pushInfo(self.tr('Filtering contours with geographic boundary.'))
+            countourLayerpre = self.filterWithGeographicBoundary(
+                inputLyr=countourLayerpre,
+                geographicBoundaryLayer=geographicBoundaryLyr,
+                feedback=multiStepFeedback
+            )
+            currentStep += 1
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.pushInfo(self.tr('Filtering points with geographic boundary.'))
+            pointLayer = self.filterWithGeographicBoundary(
+                inputLyr=pointLayer,
+                geographicBoundaryLayer=geographicBoundaryLyr,
+                feedback=multiStepFeedback
+            )
+            currentStep += 1
+
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(0)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Creating count field on countour line layer.'))
         countourLayerLine = self.runAddCount(countourLayerpre, feedback=multiStepFeedback)
+        currentStep += 1
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(1)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Creating spatial index on countour line layer.'))
         self.runCreateSpatialIndex(countourLayerLine, feedback=multiStepFeedback)
+        currentStep += 1
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(2)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Creating polygons with countour lines.'))
         countourLayerHoles = self.lineToPolygons(countourLayerLine,context, feedback=multiStepFeedback)
+        currentStep += 1
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(3)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Filling holes.'))
         countourLayer = self.fillHoles(countourLayerHoles, context, feedback=multiStepFeedback)
+        currentStep += 1
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(4)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Filling fields.'))
         self.fillField(countourLayerLine, countourLayer, feedback=multiStepFeedback)
+        currentStep += 1
         summitsOrBottoms = []
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(5)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Selecting summits or bottoms.'))
         sobIdDict, sobSpatialIdx = self.selectSummitsAndBottoms(countourLayer, feedback=multiStepFeedback)
         CRSstr = pointLayer.sourceCrs()
         gridScale = self.gridScaleDict[gridScaleParam]
         extentGeom = self.getExtentGeom(gridScaleParam, pointLayer, gridScale)
         grid = self.makeGrid(extentGeom, CRSstr, gridScale, parameters, context, feedback=multiStepFeedback)
+        currentStep += 1
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(6)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Generalizing points.'))
         idDict, pointsIdsSelected = self.generalizePoint(grid, pointLayer, sobIdDict, sobSpatialIdx, isDepressionField, feedback=multiStepFeedback)
+        currentStep += 1
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(7)
+            multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Updating point features visualization attribute.'))
         self.setVisualizationAttribute(pointLayer, idDict, isVisibleField, pointsIdsSelected, feedback=multiStepFeedback)
         return {self.OUTPUT: "Camada modificada"}
@@ -173,6 +216,19 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             (int(ymin/size)-1)*size,
             (int(ymax/size)+1)*size
         )
+    
+    def filterWithGeographicBoundary(self, inputLyr, geographicBoundaryLayer, feedback=None):
+        processOutputLyr = processing.run(
+            "native:extractbylocation",
+            {
+                'INPUT': inputLyr,
+                'PREDICATE': [0],
+                'INTERSECT': geographicBoundaryLayer,
+                'OUTPUT': 'TEMPORARY_OUTPUT'
+            },
+            feedback=feedback
+        )
+        return processOutputLyr['OUTPUT']
 
     def makeGrid(self, extentGeom, CRS, gridScale, parameters, context, feedback):
         multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback) if feedback is not None else None
