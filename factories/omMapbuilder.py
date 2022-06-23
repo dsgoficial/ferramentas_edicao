@@ -2,7 +2,7 @@ from pathlib import Path
 
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
                        QgsVectorLayer, QgsProperty)
-
+from typing import Dict
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
 from ..interfaces.iMapBuilder import IMapBuilder
@@ -24,7 +24,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'table':self.componentFactory.getComponent('Table')})
         self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
 
-    def handleMapRotation(self, data: dict, composition: QgsPrintLayout):
+    def handleMapRotation(self, data: Dict, composition: QgsPrintLayout):
         '''Rotates the north indication
         Args:
             data: dict holding the map info
@@ -36,7 +36,7 @@ class OmMapBuilder(IMapBuilder,MapBuilderUtils):
         if item:=composition.itemById('quadriculaRotationLabel'):
             item.setText(f'ROTAÇÃO DE {rotationAngle:.2f}°')
 
-    def handleOmInfo(self, data: dict, composition: QgsPrintLayout):
+    def handleOmInfo(self, data: Dict, composition: QgsPrintLayout):
         '''Sets the correct OM info in the composition: OM name / symbol and subordination's name / symbol 
         Args:
             data: dict holding the map info
