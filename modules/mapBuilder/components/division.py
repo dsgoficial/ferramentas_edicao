@@ -2,8 +2,6 @@ import math
 import os
 from pathlib import Path
 
-import shapely.geometry
-import shapely.wkt
 from PyQt5.QtCore import QVariant
 from PyQt5.QtGui import QColor
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
@@ -154,15 +152,15 @@ class Division(ComponentUtils,IComponent):
         show = False if radiusPerMapArea < maxRadiusPerMapArea else True
         return radiusPerMapArea, show
 
-    def convertPolygonToMultilineGeometry(self, geom):
-        _geom = geom.asWkt()
-        loaded_poly = shapely.wkt.loads(_geom)
-        shapely_multipoly = shapely.geometry.Polygon(loaded_poly)
-        shapely_multipoly_boundary = shapely_multipoly.boundary
-        boundary_polyline = QgsLineString()
-        boundary_polyline.fromWkt(shapely_multipoly_boundary.wkt)
-        boundary_geom = QgsGeometry(boundary_polyline)
-        return boundary_geom
+    # def convertPolygonToMultilineGeometry(self, geom):
+    #     _geom = geom.asWkt()
+    #     loaded_poly = shapely.wkt.loads(_geom)
+    #     shapely_multipoly = shapely.geometry.Polygon(loaded_poly)
+    #     shapely_multipoly_boundary = shapely_multipoly.boundary
+    #     boundary_polyline = QgsLineString()
+    #     boundary_polyline.fromWkt(shapely_multipoly_boundary.wkt)
+    #     boundary_geom = QgsGeometry(boundary_polyline)
+    #     return boundary_geom
 
     def getIntersections(self, layerCounty, outerExtents, mapAreaFeature, data):
         '''
@@ -171,7 +169,7 @@ class Division(ComponentUtils,IComponent):
         isInternational = data.get('territorio_internacional')
         d = QgsDistanceArea()
         outerExtentsGeometry = QgsGeometry.fromRect(outerExtents)
-        contourOuterExtents = self.convertPolygonToMultilineGeometry(outerExtentsGeometry)
+        # contourOuterExtents = self.convertPolygonToMultilineGeometry(outerExtentsGeometry)
         countiesToDisplay = []
         mapAreaCentroid = mapAreaFeature.geometry().centroid().asPoint()
         request = QgsFeatureRequest().setFilterRect(outerExtents)
