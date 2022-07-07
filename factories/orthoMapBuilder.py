@@ -1,6 +1,6 @@
 from functools import partial
 from pathlib import Path
-
+from typing import Dict, List
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
                        QgsVectorLayer, QgsMapLayer)
 
@@ -31,7 +31,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
         self.grid = GridAndLabelCreator()
 
-    def filterLayers(self, mapType: str, jsonData: dict, defaults: ConfigDefaults, mapLayers:list[dict]):
+    def filterLayers(self, mapType: str, jsonData: Dict, defaults: ConfigDefaults, mapLayers:List[Dict]):
         '''Filters displayed classes by merging mandatory layers from ConfigDefaults and desired classes from json file.
         Args:
             mapType: map or miniMap

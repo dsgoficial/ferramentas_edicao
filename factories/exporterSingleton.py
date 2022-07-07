@@ -1,13 +1,13 @@
 import subprocess
 from pathlib import Path
-from typing import NamedTuple
+from typing import NamedTuple, Dict
 
 from qgis.core import QgsLayoutExporter, QgsPrintLayout, QgsRasterLayer
 
 
 class ExporterSingleton:
 
-    def setParams(self, dlg: NamedTuple, data: dict, debugMode: bool):
+    def setParams(self, dlg: NamedTuple, data: Dict, debugMode: bool):
         '''Sets parameters for each export process
         Args:
             dlg: holds the interface info

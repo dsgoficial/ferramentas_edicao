@@ -4,13 +4,14 @@ from qgis.core import (QgsLayout, QgsLayoutItem, QgsLayoutPoint,
                        QgsPrintLayout, QgsProject, QgsReadWriteContext)
 from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtXml import QDomDocument
-
+from typing import List, Dict
 from ..config.configDefaults import ConfigDefaults
 
 
 class CompositionSingleton:
 
-    def __init__(self, config: ConfigDefaults = ConfigDefaults()) -> None:
+    def __init__(self, config: ConfigDefaults ) -> None:
+        config = config if config is not None else ConfigDefaults()
         self.compositions = dict()
         self.config = config
         self.previousQpts = {
@@ -21,7 +22,7 @@ class CompositionSingleton:
         }
         self.resourcesPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products'
 
-    def getComposition(self, jsonData: dict) -> QgsPrintLayout:
+    def getComposition(self, jsonData: Dict) -> QgsPrintLayout:
         '''Returns the desired composition based on product type and scale.
         Also creates the composition if it does not exist and holds it in self.compositions for future reusability.
         Args:
@@ -38,7 +39,7 @@ class CompositionSingleton:
         self.updatePrintLayoutFromConfig(self.compositions[productType][scale], jsonData)
         return self.compositions[productType][scale]
 
-    def createComposition(self, productType: str, jsonData: dict) -> QgsPrintLayout:
+    def createComposition(self, productType: str, jsonData: Dict) -> QgsPrintLayout:
         productType = jsonData.get('productType')
         scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
         compositionRootPath = self.resourcesPath / productType
@@ -65,7 +66,7 @@ class CompositionSingleton:
         layout.setCustomProperty('variableValues', [str(productFolder), str(commonFolder)])
         return layout
 
-    def updatePrintLayoutFromConfig(self, composition: QgsPrintLayout, jsonData: dict):
+    def updatePrintLayoutFromConfig(self, composition: QgsPrintLayout, jsonData: Dict):
         '''Creates 4 qpts (header, product, reproduction rights and BDGEx acess info) based on defined qpt paths,
         following the search order jsonData -> product defaults -> config defaults. The json keys to be filled for
         the 4 qpts (if necessary) are (cabecalho, projeto, direitos_reproducao, acesso_informacao), respectively.
@@ -104,7 +105,7 @@ class CompositionSingleton:
             qptsToInsert.append(bdgexAcessInfoConfig)
         self.insertCompositions(composition, qptsToInsert)
 
-    def insertCompositions(self, compositionToUpdate: QgsPrintLayout, qptsToInsert: list[dict]):
+    def insertCompositions(self, compositionToUpdate: QgsPrintLayout, qptsToInsert: List[Dict]):
         # Option 1: Use the method addItemsFromXml to insert a QDomDOcument into the layout
         writeContext = QgsReadWriteContext()
         layout = QgsLayout(QgsProject.instance())

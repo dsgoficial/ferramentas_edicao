@@ -1,7 +1,7 @@
 import json
 import re
 from pathlib import Path
-from typing import Callable, Union
+from typing import Callable, Union, Dict, Tuple, List
 
 from qgis import processing
 from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject, QgsFeature, QgsGeometry,
@@ -17,7 +17,7 @@ class MapBuilderUtils:
 
     instance = QgsProject.instance()
 
-    def setParams(self, jsonData: dict, defaults: ConfigDefaults, connection: QgsDataSourceUri, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, mapAreaLayer: QgsVectorLayer):
+    def setParams(self, jsonData: Dict, defaults: ConfigDefaults, connection: QgsDataSourceUri, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, mapAreaLayer: QgsVectorLayer):
         ''' Sets necessary parameters to create the map.
         Args:
             jsonData: dict with json data + other parameters
@@ -37,8 +37,8 @@ class MapBuilderUtils:
         self.mapAreaLayer = mapAreaLayer
 
     def getLayersFromDB(
-        self, uri: QgsDataSourceUri, data:dict, defaults: ConfigDefaults, productPath: Path, group: str,
-        filterF: Callable, mapAreaFeature: Union[QgsFeature,None] = None) -> tuple[list[QgsVectorLayer],list[str]]:
+        self, uri: QgsDataSourceUri, data:Dict, defaults: ConfigDefaults, productPath: Path, group: str,
+        filterF: Callable, mapAreaFeature: Union[QgsFeature,None] = None) -> Tuple[List[QgsVectorLayer],List[str]]:
         ''' Reads layer from "uri". The layers to be read are defined by "productType" and "group" and filtered by "filterF",
         which is callable. If mapAreaFeature is given, it will be used as a filter query in the layer.
         Returns a tuple of two lists containing QgsMapLayers and its ids, respectively.
@@ -84,7 +84,7 @@ class MapBuilderUtils:
                 layersIDsList.append(layer.id())
         return layersList, layersIDsList
 
-    def getLayerFromPostgres(self, uri: QgsDataSourceUri, data: dict) -> QgsVectorLayer:
+    def getLayerFromPostgres(self, uri: QgsDataSourceUri, data: Dict) -> QgsVectorLayer:
         ''' Reads a vector layer from a postgres database.
         Args:
             uri: URI definition holding the database info
@@ -97,7 +97,7 @@ class MapBuilderUtils:
         uri.setDataSource(schema, table, 'geom')
         return QgsVectorLayer(uri.uri(False), table, 'postgres')
 
-    def classifiedMapHandler(self, composition: QgsPrintLayout, data: dict):
+    def classifiedMapHandler(self, composition: QgsPrintLayout, data: Dict):
         '''Switches the visibility status of QgsLayoutItems that are influentiated by the "acesso_restrito" json key
         Args:
             composition: QgsPrintLayout
@@ -148,7 +148,7 @@ class MapBuilderUtils:
         if p.exists():
             return p
 
-    def createRasterLayers(self, listDictImages: list[dict]) -> tuple[list[QgsRasterLayer],list[str]]:
+    def createRasterLayers(self, listDictImages: List[Dict]) -> Tuple[List[QgsRasterLayer],List[str]]:
         instance = QgsProject.instance()
         imageLayers = []
         imageLayersIDs = []
@@ -197,7 +197,7 @@ class MapBuilderUtils:
             rasterPath = Path(rasterUri)
             return QgsRasterLayer(str(rasterPath), rasterPath.stem) 
 
-    def readJsonFromPath(self, jsonPath: Path) -> dict:
+    def readJsonFromPath(self, jsonPath: Path) -> Dict:
         '''Reads a json file.
         Args:
             jsonPath: json's path instance
@@ -248,7 +248,7 @@ class MapBuilderUtils:
             geom.transform(transform)
         return geom
 
-    def setupMasks(self, productPath: Path, layers: list[QgsVectorLayer]):
+    def setupMasks(self, productPath: Path, layers: List[QgsVectorLayer]):
         ''' Runs the "loadmasks" processing to setup the layers masks.
         Args:
             productPath: Product Path instance

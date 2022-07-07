@@ -1,5 +1,5 @@
 from qgis.core import QgsDataSourceUri, QgsCredentials
-
+from typing import Dict
 
 class ConnectionSingleton:
     ''' Singleton which handles the Postgres connection by using a QgsDataSourceUri
@@ -7,7 +7,7 @@ class ConnectionSingleton:
 
     conn = None
 
-    def getConnection(self, connSettings: dict, username: str, password: str) -> QgsDataSourceUri:
+    def getConnection(self, connSettings: Dict, username: str, password: str) -> QgsDataSourceUri:
         ''' Gets the (Postgres) database connection. If the connSettings are the same returns the old connection.
         Args:
             connSettings: python dict containing keys 'servidor', 'porta' and 'nome'
