@@ -292,7 +292,7 @@
     <rules key="{f2fb6eb6-a64a-418a-a272-e1718002e6b5}">
       <rule description="Texto aproximado" key="{5398cf25-6c82-42a9-9d5e-fffa544fb50e}" filter=" &quot;geometria_aproximada&quot; = 1 and  &quot;exibir_rotulo_aproximado&quot; = 1 ">
         <settings calloutType="simple">
-          <text-style fontStrikeout="0" fontLetterSpacing="0" fieldName="'APROXIMADO'" textColor="255,255,255,255" fontUnderline="0" textOpacity="1" useSubstitutions="0" fontWordSpacing="0" allowHtml="0" fontSize="7" textOrientation="horizontal" blendMode="0" fontFamily="Noto Sans" fontSizeUnit="Point" capitalization="1" isExpression="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" multilineHeight="1" namedStyle="Condensed" fontItalic="0" fontWeight="50" legendString="Aa" previewBkgrdColor="255,255,255,255" fontKerning="1">
+          <text-style fontStrikeout="0" fontLetterSpacing="0" fieldName="'APROXIMADO'" textColor="255,255,255,255" fontUnderline="0" textOpacity="1" useSubstitutions="0" fontWordSpacing="0" allowHtml="0" fontSize="6" textOrientation="horizontal" blendMode="0" fontFamily="Noto Sans" fontSizeUnit="Point" capitalization="1" isExpression="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" multilineHeight="1" namedStyle="Condensed" fontItalic="0" fontWeight="50" legendString="Aa" previewBkgrdColor="255,255,255,255" fontKerning="1">
             <families/>
             <text-buffer bufferDraw="1" bufferColor="0,0,0,255" bufferSizeUnits="Point" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferBlendMode="0" bufferOpacity="1" bufferJoinStyle="128" bufferNoFill="1" bufferSize="1"/>
             <text-mask maskEnabled="1" maskJoinStyle="128" maskedSymbolLayers="" maskSizeUnits="MM" maskType="0" maskSize="0.20000000000000001" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskOpacity="1"/>
