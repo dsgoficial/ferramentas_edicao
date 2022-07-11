@@ -503,7 +503,7 @@
    <node y="0" x="12.1502"/>
   </nodes>
  </LayoutItem>
- <LayoutItem positionOnPage="37,3.95,mm" id="fundo_categoria_1_linha_1_column_left" svgBorderWidth="0.2" frameJoinStyle="miter" templateUuid="{7ba97722-4746-45fc-8ab9-95534a1b2ee3}" mode="0" zValue="2" svgBorderColor="0,0,0,255" svgFillColor="255,255,255,255" opacity="1" pictureRotation="0" mapUuid="" northOffset="0" anchorPoint="4" size="15,4,mm" type="65640" itemRotation="0" pictureWidth="15" resizeMode="1" positionLock="false" northMode="0" outlineWidthM="0.3,mm" groupUuid="" uuid="{7ba97722-4746-45fc-8ab9-95534a1b2ee3}" pictureHeight="4" frame="false" background="false" position="37,3.95,mm" visibility="0" blendMode="0" referencePoint="6" file="" excludeFromExports="0">
+ <LayoutItem positionOnPage="37,3.95,mm" id="fundo_categoria_1_linha_1_column_left" svgBorderWidth="0.2" frameJoinStyle="miter" templateUuid="{7ba97722-4746-45fc-8ab9-95534a1b2ee3}" mode="0" zValue="2" svgBorderColor="0,0,0,255" svgFillColor="255,255,255,255" opacity="1" pictureRotation="0" mapUuid="" northOffset="0" anchorPoint="4" size="15,4,mm" type="65640" itemRotation="0" pictureWidth="15" resizeMode="1" positionLock="false" northMode="0" outlineWidthM="0.3,mm" groupUuid="" uuid="{7ba97722-4746-45fc-8ab9-95534a1b2ee3}" pictureHeight="4" frame="false" background="false" position="37,3.95,mm" visibility="1" blendMode="0" referencePoint="6" file="" excludeFromExports="0">
   <FrameColor alpha="255" green="0" red="0" blue="0"/>
   <BackgroundColor alpha="255" green="255" red="255" blue="255"/>
   <LayoutObject>
