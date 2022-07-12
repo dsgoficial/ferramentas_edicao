@@ -300,6 +300,7 @@ class Division(ComponentUtils,IComponent):
         settings.Placement = QgsPalLayerSettings.OverPoint
         settings.centroidInside = True
         settings.isExpression = True
+        settings.fitInPolygonOnly = True
         textFormat = QgsTextFormat()
         textFormat.setColor(QColor(0, 0, 0, 255))
         textFormat.setSize(6)
