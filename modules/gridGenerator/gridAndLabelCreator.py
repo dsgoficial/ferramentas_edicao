@@ -153,7 +153,7 @@ class GridAndLabelCreator(QObject):
             pgrid.transform(trUTMLL)
         #Label Format Settings
         settings = QgsPalLayerSettings()
-        settings.placement = 1
+        settings.placement = Qgis.LabelPlacement(1)
         settings.isExpression = True
         textprop = QgsTextFormat()
         textprop.setColor(llcolor)
