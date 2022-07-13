@@ -45,13 +45,13 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         if mapType == 'map':
             if 'infra_elemento_energia_l' in _toDisplay:
                 layersToDisplay.insert(0, {
-                    "tabela": "edicao_simb_torre_energia_p",
+                    "table": "edicao_simb_torre_energia_p",
                     "schema": "edgv"
             })
 
             if 'elemnat_curva_nivel_l' in _toDisplay:
                 layersToDisplay.insert(0, {
-                    "tabela": "edicao_simb_cota_mestra_l",
+                    "table": "edicao_simb_cota_mestra_l",
                     "schema": "edgv"
             })
         return layersToDisplay
