@@ -615,7 +615,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         for attribute texto_edicao
         '''
         if feat['tipo']==11: #Heliponto
-            if int(feat['situacao_fisica']) in [0,1,2,4]:
+            if int(feat['situacao_fisica']) in [1,2,4]:
                 sit_fis = self.dictModeling(int(feat['situacao_fisica']), 'situacao_fisica')
                 return f"({sit_fis})"
             else:
@@ -623,7 +623,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         elif feat['tipo']==10: #Pista de taxi
             return NULL
         elif feat['tipo']==9:
-            if int(feat['situacao_fisica']) in [0,1,2,4]:
+            if int(feat['situacao_fisica']) in [1,2,4]:
                 if int(feat['revestimento']) in [0,1,2]:
                     return self.coalesceAttributeV2(feat, 'nome', 'situacao_fisica', 'revestimento', 'altitude')
                 else:
@@ -638,7 +638,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
     def dictModeling(code:int, field:str)-> str:
         '''Dict values edgv_300_orto
         '''
-        situacao_fisica = {0: 'resconhecida', 1 :'abandonada', 2: 'destruída', 3: 'construída', 4:'em construção', 9999:'A SER PREENCHIDO'}
+        situacao_fisica = {0: 'desconhecida', 1 :'abandonada', 2: 'destruída', 3: 'construída', 4:'em construção', 9999:'A SER PREENCHIDO'}
         revestimento = {0: 'Revestimento desconhecido', 1:'Não pavimentado', 2:'Não Pavimentado', 3:'Pavimentado', 4:'Calçado', 9999:'A SER PREENCHIDO'}
         if field == 'situacao_fisica':
             return situacao_fisica[code]
