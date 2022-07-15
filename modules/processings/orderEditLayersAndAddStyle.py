@@ -261,7 +261,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         originalOrder = project.layerTreeRoot().layerOrder()
         for layer in originalOrder:
             if layer in layers:
-                continue
+                break
             order.append(layer)
         dictOrderedLayers = {}
         for step, layer in enumerate(layers):
