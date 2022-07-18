@@ -610,16 +610,22 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     if field == 'situacao_fisica':
                         expression = f'({self.dictModeling(int(feat.attribute(field)), "situacao_fisica")})'
                     elif field == 'revestimento':
-                        if int(feat.attribute(field)) in [1,2,4]:
+                        if int(feat.attribute(field)) in [0,1,2,4]:
                             expression = f'{self.dictModeling(int(feat.attribute(field)), "revestimento")}'
+                    elif field == 'altitude':
+                        print(f'{round(feat.attribute(field))}')
+                        expression = f'{round(feat.attribute(field))}'
                     else:
                         expression = f'{feat.attribute(field)}'
                 else:
                     if field == 'situacao_fisica':
                         expression = f'{expression}|({self.dictModeling(int(feat.attribute(field)), "situacao_fisica")})'
                     elif field == 'revestimento':
-                        if int(feat.attribute(field)) in [1,2,4]:
+                        if int(feat.attribute(field)) in [0,1,2,4]:
                             expression = f'{expression}|{self.dictModeling(int(feat.attribute(field)), "revestimento")}'
+                    elif field == 'altitude':
+                        print(f'{round(feat.attribute(field))}')
+                        expression = f'{expression}|{round(feat.attribute(field))}'
                     else:
                         expression = f'{expression}|{feat.attribute(field)}'
         return expression          
@@ -649,14 +655,23 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         elif feat['tipo']==10: #Pista de taxi
             return NULL
         elif feat['tipo']==9:
-            return self.coalesceAttributeV2(feat, 'nome', 'situacao_fisica', 'revestimento', 'altitude')
+            if int(feat['situacao_fisica']) in [1,2,4]:
+                if int(feat['revestimento']) in [0,1,2]:
+                    return self.coalesceAttributeV2(feat, 'nome', 'situacao_fisica', 'revestimento', 'altitude')
+                else:
+                    return self.coalesceAttributeV2(feat, 'nome', 'situacao_fisica', 'altitude')
+            else:
+                if int(feat['revestimento']) in [0,1,2]:
+                    return self.coalesceAttributeV2(feat, 'nome', 'revestimento', 'altitude')
+                else:
+                    return self.coalesceAttributeV2(feat, 'nome', 'altitude')
 
     @staticmethod
     def dictModeling(code:int, field:str)-> str:
         '''Dict values edgv_300_orto
         '''
-        situacao_fisica = {0: 'Desconhecida', 1 :'Abandonada', 2: 'Destruída', 3: 'Construída', 4:'Em construção', 9999:'A SER PREENCHIDO'}
-        revestimento = {0: 'Desconhecido', 1:'Leito natural', 2:'Revestimento primário', 3:'Pavimentado', 4:'Calçado', 9999:'A SER PREENCHIDO'}
+        situacao_fisica = {0: 'desconhecida', 1 :'abandonada', 2: 'destruída', 3: 'construída', 4:'em construção', 9999:'A SER PREENCHIDO'}
+        revestimento = {0: 'Revestimento desconhecido', 1:'Não pavimentado', 2:'Não Pavimentado', 3:'Pavimentado', 4:'Calçado', 9999:'A SER PREENCHIDO'}
         if field == 'situacao_fisica':
             return situacao_fisica[code]
         elif field == 'revestimento':

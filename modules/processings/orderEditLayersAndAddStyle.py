@@ -174,8 +174,20 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 styleOption
             )
         
+        stylePathPrinting =os.path.join(
+                os.path.abspath(os.path.join(
+                    os.path.dirname(os.path.dirname(__file__))
+                )),
+                'mapBuilder',
+                'resources',
+                'products',
+                carta,
+                'styles',
+                groupName
+            )
+
         feedback.setProgressText('Calculando dicionário QML...')
-        qmlDict = self.buildQmlDict(stylePath)
+        qmlDict = self.buildQmlDict(stylePath, stylePathPrinting)
         
         feedback.setProgressText('Mudando visibilidade das camadas...')
         visibleLayers, invisibleLayers = self.changeVisibility( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback)
@@ -300,7 +312,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         with open(jsonFilePath, 'r') as f:
             return json.load( f )
 
-    def buildQmlDict(self, inputDir):
+    def buildQmlDict(self, inputDir, inputDirPrinting):
         """
         Builds a dict with the format 
         {'fileName':'filePath'}
@@ -311,6 +323,13 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 continue
             fileName = fileNameWithExtension.split('.')[0]
             qmlDict[fileName] = os.path.join(inputDir, fileNameWithExtension)
+        for fileNameWithExtension in os.listdir(inputDirPrinting):
+            if not fileNameWithExtension.endswith(".qml"):
+                continue
+            fileName = fileNameWithExtension.split('.')[0]
+            if fileName in qmlDict:
+                continue
+            qmlDict[fileName] = os.path.join(inputDirPrinting, fileNameWithExtension)
         return qmlDict
     
     def applyStyle(self, lyr, styleQmlPath):

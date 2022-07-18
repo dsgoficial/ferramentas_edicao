@@ -18,6 +18,7 @@ class ExporterSingleton:
             self.basename = data.get('nome')
         else:
             self.basename = data.get('mi') or data.get('inom')
+        self.basename = f"{data.get('productType')}_{self.basename}"
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
