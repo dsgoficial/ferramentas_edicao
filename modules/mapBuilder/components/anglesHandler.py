@@ -90,8 +90,7 @@ class AnglesHandler:
         # Yearly declination delta
         label_yearlyDeclinationDelta = composition.itemById('label_yearlyDeclinationDelta')
         if label_yearlyDeclinationDelta is not None:
-            base_text = "A DECLINAÇÃO MAGNÉTICA\
-						CRESCE {} ANUALMENTE"
+            base_text = "A DECLINAÇÃO MAGNÉTICA CRESCE {} ANUALMENTE"
             label_yearlyDeclinationDelta_text = base_text.format(
                 self.generateDeltaSTR(yearlydelta_declination))
             label_yearlyDeclinationDelta.setText(label_yearlyDeclinationDelta_text)
