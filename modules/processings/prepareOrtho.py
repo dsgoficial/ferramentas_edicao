@@ -1,4 +1,6 @@
 import math
+import os
+from PyQt5.QtCore import QFileInfo, QFile
 
 from qgis import processing
 from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
@@ -8,7 +10,8 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsProcessingParameterMultipleLayers, QgsProcessingParameterVectorLayer,
                        NULL, QgsUnitTypes,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink, QgsFeatureSink)
+                       QgsProcessingParameterFeatureSink, QgsFeatureSink,
+                       QgsVectorLayer, QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme)
 from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 
 from .processingUtils import ProcessingUtils
@@ -54,7 +57,36 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             )
         ) 
 
+    def setColorPalette(self):
+        schemeName = "plugin_edicao"
+        filePath = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "..", 
+            "mapBuilder",
+            "resources",
+            "products",
+            "common",
+            "paleta_orto.gpl"
+        )
+        fileInfo = QFileInfo(filePath)
+        importedColors = QgsSymbolLayerUtils.importColorsFromGpl(QFile(filePath), schemeName)
+        currentScheme = None
+        schemes = QgsApplication.colorSchemeRegistry().schemes()
+        for s in schemes:
+            if not(s.schemeName() == schemeName):
+                continue
+            currentScheme = s
+        if currentScheme:
+            currentScheme.setColors(importedColors[0])
+        else:
+            currentScheme = QgsUserColorScheme(fileInfo.fileName())
+            currentScheme.setName(schemeName)
+            currentScheme.setColors(importedColors[0])
+            QgsApplication.colorSchemeRegistry().addColorScheme(currentScheme)
+
+
     def processAlgorithm(self, parameters, context, feedback):      
+        self.setColorPalette()
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
 
