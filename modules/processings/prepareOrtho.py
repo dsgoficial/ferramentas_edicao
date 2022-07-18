@@ -1,4 +1,5 @@
 import math
+import os
 
 from qgis import processing
 from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
@@ -8,7 +9,8 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        QgsProcessingParameterMultipleLayers, QgsProcessingParameterVectorLayer,
                        NULL, QgsUnitTypes,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink, QgsFeatureSink)
+                       QgsProcessingParameterFeatureSink, QgsFeatureSink,
+                       QgsVectorLayer)
 from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 
 from .processingUtils import ProcessingUtils
@@ -53,6 +55,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 self.tr('Flag Preparar Ortoimagem')
             )
         ) 
+
+
 
     def processAlgorithm(self, parameters, context, feedback):      
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
