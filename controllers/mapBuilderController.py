@@ -4,9 +4,12 @@ from collections import namedtuple
 from pathlib import Path
 from typing import Any, NamedTuple, Tuple, Union
 
-from qgis.core import QgsFeature, QgsVectorLayer
+from qgis.core import QgsFeature, QgsVectorLayer, QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtWidgets import QDialog
+
+import os
+from PyQt5.QtCore import QFileInfo, QFile
 
 from ..config.configDefaults import ConfigDefaults
 from ..factories.compositionSingleton import CompositionSingleton
@@ -33,6 +36,35 @@ class MapBuildController(MapBuildControllerUtils):
         self.debugMode = (Path(__file__).parent.parent / '.env').exists()
         self.exporter = ExporterSingleton()
         self.builders = dict()
+        self.setColorPalette()
+
+    def setColorPalette(self):
+        schemeName = "plugin_edicao"
+        filePath = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "..", 
+            "modules",
+            "mapBuilder",
+            "resources",
+            "products",
+            "common",
+            "paleta_orto.gpl"
+        )
+        fileInfo = QFileInfo(filePath)
+        importedColors = QgsSymbolLayerUtils.importColorsFromGpl(QFile(filePath), schemeName)
+        currentScheme = None
+        schemes = QgsApplication.colorSchemeRegistry().schemes()
+        for s in schemes:
+            if not(s.schemeName() == schemeName):
+                continue
+            currentScheme = s
+        if currentScheme:
+            currentScheme.setColors(importedColors[0])
+        else:
+            currentScheme = QgsUserColorScheme(fileInfo.fileName())
+            currentScheme.setName(schemeName)
+            currentScheme.setColors(importedColors[0])
+            QgsApplication.colorSchemeRegistry().addColorScheme(currentScheme)
 
     def checkJsonFiles(self):
         '''Verify consistency of JSON files'''

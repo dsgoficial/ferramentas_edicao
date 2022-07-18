@@ -1,5 +1,6 @@
 import json
 import os
+from PyQt5.QtCore import QFileInfo, QFile
 
 from PyQt5 import QtWidgets
 from qgis import processing
@@ -8,7 +9,8 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterNumber,
                        QgsExpressionContextUtils,
-                       QgsProcessingParameterEnum, QgsProject)
+                       QgsProcessingParameterEnum, QgsProject,
+                       QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme)
 from qgis.PyQt.QtCore import QCoreApplication
 
 
@@ -96,7 +98,35 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     def parameterAsGroup(self, parameters, name, context):
         return parameters[name]
 
+    def setColorPalette(self):
+        schemeName = "plugin_edicao"
+        filePath = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "..", 
+            "mapBuilder",
+            "resources",
+            "products",
+            "common",
+            "paleta_orto.gpl"
+        )
+        fileInfo = QFileInfo(filePath)
+        importedColors = QgsSymbolLayerUtils.importColorsFromGpl(QFile(filePath), schemeName)
+        currentScheme = None
+        schemes = QgsApplication.colorSchemeRegistry().schemes()
+        for s in schemes:
+            if not(s.schemeName() == schemeName):
+                continue
+            currentScheme = s
+        if currentScheme:
+            currentScheme.setColors(importedColors[0])
+        else:
+            currentScheme = QgsUserColorScheme(fileInfo.fileName())
+            currentScheme.setName(schemeName)
+            currentScheme.setColors(importedColors[0])
+            QgsApplication.colorSchemeRegistry().addColorScheme(currentScheme)
+
     def processAlgorithm(self, parameters, context, feedback): 
+        self.setColorPalette()
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
         gridScaleParam = self.parameterAsEnum(parameters, self.INPUT_SCALE, context)
         mode = self.parameterAsEnum(parameters,self.MODE,context)
