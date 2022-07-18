@@ -39,7 +39,7 @@ class MapBuildController(MapBuildControllerUtils):
         self.setColorPalette()
 
     def setColorPalette(self):
-        schemeName = "plugin_edicao"
+        schemeName = "Project colors"
         filePath = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
             "..", 
@@ -48,7 +48,7 @@ class MapBuildController(MapBuildControllerUtils):
             "resources",
             "products",
             "common",
-            "paleta_orto.gpl"
+            "paleta.gpl"
         )
         fileInfo = QFileInfo(filePath)
         importedColors = QgsSymbolLayerUtils.importColorsFromGpl(QFile(filePath), schemeName)

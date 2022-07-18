@@ -2,7 +2,7 @@ GIMP Palette
 Name: QGIS Palette
 Columns: 4
 #
-  0   0   0	preto_0-0-0_#000000
+ 75  75  75	preto_75-75-75_#4B4B4B
 224 224 224	cinza12_224-224-224_#E0E0E0
 201 201 201	cinza21_201-201-201_#C9C9C9
 148 148 148	cinza42_148-148-148_#949494
