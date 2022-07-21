@@ -237,7 +237,7 @@ class MapBuildController(MapBuildControllerUtils):
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
             # builder.cleanProject(False)
-            builder.removeLayers(False)
+            # builder.removeLayers(False)
             composition = self.compositions.getComposition(jsonData).clone()
             connection = self.conn.getConnection(jsonData.get('banco'), dlgCfg.username, dlgCfg.password)
             # Build components

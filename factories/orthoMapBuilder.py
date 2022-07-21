@@ -110,7 +110,10 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.mapAreaFeature)
             elif key == 'qrcode':
                 component.build(self.composition, self.data, self.mapAreaFeature)
-        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds))
+
+        auxLayerIds = [lyr.id() for lyr in QgsMapLayerRegistry.instance().mapLayers().values() if lyr.name() in ("convexhull", "auxiliar_moldura_outside")]
+
+        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
         self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
         self.classifiedMapHandler(self.composition, self.data)
         self.setupMasks(self.productPath, mapLayers)
