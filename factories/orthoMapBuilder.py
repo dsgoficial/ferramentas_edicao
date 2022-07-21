@@ -2,7 +2,7 @@ from functools import partial
 from pathlib import Path
 from typing import Dict, List
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
-                       QgsVectorLayer, QgsMapLayer, QgsMapLayerRegistry)
+                       QgsVectorLayer, QgsMapLayer, QgsProject)
 
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
@@ -111,7 +111,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             elif key == 'qrcode':
                 component.build(self.composition, self.data, self.mapAreaFeature)
 
-        auxLayerIds = [lyr.id() for lyr in QgsMapLayerRegistry.instance().mapLayers().values() if lyr.name() in ("convexhull", "auxiliar_moldura_outside")]
+        auxLayerIds = [lyr.id() for lyr in QgsProject.instance().mapLayers().values() if lyr.name() in ("convexhull", "auxiliar_moldura_outside")]
 
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
         self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
