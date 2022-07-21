@@ -2,7 +2,7 @@ from functools import partial
 from pathlib import Path
 from typing import Dict, List
 from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
-                       QgsVectorLayer, QgsMapLayer)
+                       QgsVectorLayer, QgsMapLayer, QgsMapLayerRegistry)
 
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
