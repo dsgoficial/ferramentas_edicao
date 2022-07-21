@@ -57,6 +57,18 @@
             "schema": "edgv"
         },
         {
+            "table": "llp_limite_legal_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "llp_area_pub_militar_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "llp_area_pub_militar_a",
+            "schema": "edgv"
+        },
+        {
             "table": "llp_terra_indigena_l",
             "schema": "edgv"
         },
@@ -70,18 +82,6 @@
         },
         {
             "table": "llp_unidade_conservacao_a",
-            "schema": "edgv"
-        },
-        {
-            "table": "llp_area_pub_militar_l",
-            "schema": "edgv"
-        },
-        {
-            "table": "llp_area_pub_militar_a",
-            "schema": "edgv"
-        },
-        {
-            "table": "llp_limite_legal_l",
             "schema": "edgv"
         },
         {
@@ -207,6 +207,10 @@
             "schema": "edgv"
         },
         {
+            "table": "llp_limite_legal_l",
+            "schema": "edgv"
+        },
+        {
             "table": "llp_area_pub_militar_l",
             "schema": "edgv"
         },
@@ -228,10 +232,6 @@
         },
         {
             "table": "llp_unidade_conservacao_a",
-            "schema": "edgv"
-        },
-        {
-            "table": "llp_limite_legal_l",
             "schema": "edgv"
         },
         {

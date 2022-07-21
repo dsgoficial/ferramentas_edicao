@@ -77,10 +77,6 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_legal_a",
-            "schema": "edgv"
-        },
-        {
             "table": "llp_ponto_controle_p",
             "schema": "edgv"
         },
