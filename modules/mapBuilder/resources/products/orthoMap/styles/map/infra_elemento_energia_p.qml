@@ -75,7 +75,7 @@
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" value="true" type="bool"/>
-                  <Option name="expression" value="project_color('preto_75-75-75_#4B4B4B')" type="QString"/>
+                  <Option name="expression" value="project_color('preto0_0-0-0_#000000')" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
               </Option>
@@ -267,7 +267,7 @@
                 </Option>
                 <Option name="BufferColor" type="Map">
                   <Option name="active" value="true" type="bool"/>
-                  <Option name="expression" value="project_color('preto_75-75-75_#4B4B4B')" type="QString"/>
+                  <Option name="expression" value="project_color('preto0_0-0-0_#000000')" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
                 <Option name="Color" type="Map">

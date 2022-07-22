@@ -65,12 +65,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -185,12 +185,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -305,12 +305,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -374,12 +374,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -494,12 +494,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -614,12 +614,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -683,12 +683,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -803,12 +803,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -872,12 +872,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -992,12 +992,12 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="outlineColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                  <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
               </Option>
@@ -1203,7 +1203,7 @@
                   </Option>
                   <Option name="BufferColor" type="Map">
                     <Option name="active" type="bool" value="true"/>
-                    <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                    <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                     <Option name="type" type="int" value="3"/>
                   </Option>
                   <Option name="Color" type="Map">
@@ -1398,7 +1398,7 @@
                   </Option>
                   <Option name="BufferColor" type="Map">
                     <Option name="active" type="bool" value="true"/>
-                    <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                    <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                     <Option name="type" type="int" value="3"/>
                   </Option>
                   <Option name="Color" type="Map">
@@ -1593,7 +1593,7 @@
                   </Option>
                   <Option name="BufferColor" type="Map">
                     <Option name="active" type="bool" value="true"/>
-                    <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                    <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                     <Option name="type" type="int" value="3"/>
                   </Option>
                   <Option name="Color" type="Map">
@@ -1788,7 +1788,7 @@
                   </Option>
                   <Option name="BufferColor" type="Map">
                     <Option name="active" type="bool" value="true"/>
-                    <Option name="expression" type="QString" value="project_color('preto_75-75-75_#4B4B4B')"/>
+                    <Option name="expression" type="QString" value="project_color('preto0_0-0-0_#000000')"/>
                     <Option name="type" type="int" value="3"/>
                   </Option>
                   <Option name="Color" type="Map">

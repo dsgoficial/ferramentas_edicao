@@ -149,7 +149,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option type="bool" value="true" name="active"/>
-                    <Option type="QString" value="project_color('preto_75-75-75_#4B4B4B')" name="expression"/>
+                    <Option type="QString" value="project_color('preto0_0-0-0_#000000')" name="expression"/>
                     <Option type="int" value="3" name="type"/>
                   </Option>
                 </Option>
@@ -300,7 +300,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option type="bool" value="true" name="active"/>
-                    <Option type="QString" value="project_color('preto_75-75-75_#4B4B4B')" name="expression"/>
+                    <Option type="QString" value="project_color('preto0_0-0-0_#000000')" name="expression"/>
                     <Option type="int" value="3" name="type"/>
                   </Option>
                 </Option>
@@ -405,12 +405,12 @@
                     <Option type="Map" name="properties">
                       <Option type="Map" name="fillColor">
                         <Option type="bool" value="true" name="active"/>
-                        <Option type="QString" value="project_color('preto_75-75-75_#4B4B4B')" name="expression"/>
+                        <Option type="QString" value="project_color('preto0_0-0-0_#000000')" name="expression"/>
                         <Option type="int" value="3" name="type"/>
                       </Option>
                       <Option type="Map" name="outlineColor">
                         <Option type="bool" value="true" name="active"/>
-                        <Option type="QString" value="project_color('preto_75-75-75_#4B4B4B')" name="expression"/>
+                        <Option type="QString" value="project_color('preto0_0-0-0_#000000')" name="expression"/>
                         <Option type="int" value="3" name="type"/>
                       </Option>
                     </Option>
