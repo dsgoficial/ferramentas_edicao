@@ -67,7 +67,11 @@ class Subtitle(ComponentUtils,IComponent):
             if isInternational:
                 labelText = ' E '.join(regionsIntersected)
             else:
-                labelText = 'REGIÃO {regiao} DO BRASIL'.format(regiao=' E '.join(regionsIntersected))
+                sortedRegion = sorted(set(regionsIntersected))
+                labelText = 'REGIÃO {lista_regiao} E {ultima_regiao} DO BRASIL'.format(
+                    lista_regiao=', '.join(sortedRegion[:-1]),
+                    ultima_regiao=sortedRegion[-1]
+                ) if len(sortedRegion) > 2 else 'REGIÃO {regiao} DO BRASIL'.format(regiao=' E '.join(regionsIntersected))
                 case1 = set(['SUL', 'SUDESTE', 'CENTRO-OESTE']) # 11
                 case2 = set(['NORDESTE', 'SUDESTE', 'CENTRO-OESTE']) # 10
                 case3 = set(['NORTE', 'SUDESTE', 'CENTRO-OESTE']) # 10

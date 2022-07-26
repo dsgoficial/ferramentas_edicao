@@ -6,7 +6,7 @@ from typing import Any, NamedTuple, Tuple, Union
 
 from qgis.core import QgsFeature, QgsVectorLayer, QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme
 from qgis.gui import QgisInterface
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 import os
 from PyQt5.QtCore import QFileInfo, QFile
@@ -248,3 +248,4 @@ class MapBuildController(MapBuildControllerUtils):
             exporter.export(composition)
             builder.removeLayers(self.debugMode)
         builder.cleanProject(self.debugMode)
+        QMessageBox.warning(self.dlg, "Informação", "A exportação foi concluída")
