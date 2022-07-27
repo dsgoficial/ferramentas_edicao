@@ -45,14 +45,15 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
             closestFeat = self.srcLyr.getFeatures(request)
             if closestSpatialID:
                 feat = next(closestFeat)
+                roadType = feat.attribute('tipo')
                 if roadAbrev:=feat.attribute('sigla'):
                     self.currPos = self.projectPosition(pos, feat)
                     if ';' in roadAbrev:
                         options = roadAbrev.split(';')
-                        menu = self.createMenu(options)
+                        menu = self.createMenu(options, roadType)
                         menu.exec_(QCursor.pos())
                     else:
-                        self.createFeature(roadAbrev)
+                        self.createFeature(roadAbrev, roadType)
                 else:
                     self.displayErrorMessage(self.tr(
                         f'Feição selecionada possui atributo "sigla" inválido'
@@ -60,20 +61,21 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
             else:
                 self.displayErrorMessage('Não foi encontrada uma via de deslocamento dentro da tolerância')
 
-    def createMenu(self, options):
+    def createMenu(self, option, roadType):
         menu = QMenu()
         for option in options:
             action = menu.addAction(option)
-            action.triggered.connect(lambda b, n=option: self.createFeature(n))
+            action.triggered.connect(lambda b, n=option: self.createFeature(n, roadType))
         return menu
         
 
-    def createFeature(self, name):
+    def createFeature(self, name, roadType):
         toInsert = QgsFeature(self.dstLyr.fields())
         jurisd, abbrv = name.split('-')
         jurisd = self.getjurisdiction(jurisd)
         toInsert.setAttribute('jurisdicao', jurisd)
         toInsert.setAttribute('sigla', abbrv)
+        toInsert.setAttribute('tipo', roadType)
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         toInsert.setGeometry(self.currPos)
         self.dstLyr.startEditing()
