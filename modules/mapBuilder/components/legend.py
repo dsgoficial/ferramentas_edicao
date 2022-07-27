@@ -41,7 +41,7 @@ class Legend():
         },
         'classes_auxiliares': {
             'order': 6,
-            'order_classes': ['obstaculo_vertical', 'area_sem_dados']
+            'order_classes': ['area_sem_dados']
         }
     }
 
