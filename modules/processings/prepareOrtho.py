@@ -220,7 +220,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'sobreposto': 2,
                 'exibir_rotulo_aproximado': 1
             },
-            'aux_area_sem_dados_a': {
+            'edicao_area_sem_dados_a': {
                 'texto_edicao': 'ÁREA SEM DADOS',
                 'tamanho_txt': 7,
                 'justificativa_txt': 1,

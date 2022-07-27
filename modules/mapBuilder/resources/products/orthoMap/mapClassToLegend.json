@@ -24,7 +24,7 @@
             "group": "hidrografia",
             "labels": ["trecho_drenagem"]
         },
-        "aux_area_sem_dados_a":{
+        "edicao_area_sem_dados_a":{
             "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },
@@ -178,7 +178,7 @@
             "group": "hidrografia",
             "labels": ["trecho_drenagem"]
         },
-        "aux_area_sem_dados_a":{
+        "edicao_area_sem_dados_a":{
             "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },
@@ -332,7 +332,7 @@
             "group": "hidrografia",
             "labels": ["trecho_drenagem"]
         },
-        "aux_area_sem_dados_a":{
+        "edicao_area_sem_dados_a":{
             "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },
@@ -486,7 +486,7 @@
             "group": "hidrografia",
             "labels": ["trecho_drenagem"]
         },
-        "aux_area_sem_dados_a":{
+        "edicao_area_sem_dados_a":{
             "group": "classes_auxiliares",
             "labels": ["area_sem_dados"]
         },

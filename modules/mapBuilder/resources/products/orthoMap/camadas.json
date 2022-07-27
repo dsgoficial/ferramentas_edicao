@@ -161,7 +161,7 @@
             "schema": "edgv"
         },
         {
-            "table": "aux_area_sem_dados_a",
+            "table": "edicao_area_sem_dados_a",
             "schema": "edgv"
         },
         {
@@ -247,7 +247,7 @@
             "schema": "edgv"
         },
         {
-            "table": "aux_area_sem_dados_a",
+            "table": "edicao_area_sem_dados_a",
             "schema": "edgv"
         },
         {
