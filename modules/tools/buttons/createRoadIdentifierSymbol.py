@@ -61,7 +61,7 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
             else:
                 self.displayErrorMessage('Não foi encontrada uma via de deslocamento dentro da tolerância')
 
-    def createMenu(self, option, roadType):
+    def createMenu(self, options, roadType):
         menu = QMenu()
         for option in options:
             action = menu.addAction(option)
