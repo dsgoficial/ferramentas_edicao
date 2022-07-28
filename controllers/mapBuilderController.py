@@ -123,7 +123,7 @@ class MapBuildController(MapBuildControllerUtils):
             "250": 100
         }
         info_tecnica = jsonData.get('info_tecnica')
-        equidistancia = info_tecnica.get('equidistancia_personalizada', equidistanciaDefault[str(scale)])
+        equidistancia = info_tecnica.get('equidistancia_personalizada', equidistanciaDefault.get(str(scale), 0))
         exibirAuxiliar = info_tecnica.get('exibir_curva_auxiliar', 0)
         exibirAuxiliar = int(exibirAuxiliar)
 
