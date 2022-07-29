@@ -145,7 +145,7 @@ class Localization(ComponentUtils,IComponent):
         registry = QgsSymbolLayerRegistry()
         fillMeta = registry.symbolLayerMetadata("SimpleFill")
         fillSymbolLayer = fillMeta.createSymbolLayer({
-            'color': '201,201,201',
+            'color': '211,211,211',
             'outline_width': 0.1
             })
         # Replace the default style
@@ -189,7 +189,7 @@ class Localization(ComponentUtils,IComponent):
         buffer = QgsTextBufferSettings()
         buffer.setEnabled(True)
         buffer.setSize(1)
-        buffer.setColor(QColor('#c9c9c9'))
+        buffer.setColor(QColor('#d3d3d3'))
         buffer.setBlendMode(
             QgsPainting.getCompositionMode(
                 stateLayer.customProperty(
