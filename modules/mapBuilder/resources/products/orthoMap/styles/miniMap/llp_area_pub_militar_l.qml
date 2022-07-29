@@ -77,7 +77,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option name="active" type="bool" value="true"/>
-                    <Option name="expression" type="QString" value="project_color('cinza42_148-148-148_#949494')"/>
+                    <Option name="expression" type="QString" value="project_color('cinza54_139-139-139_#8B8B8B')"/>
                     <Option name="type" type="int" value="3"/>
                   </Option>
                 </Option>
