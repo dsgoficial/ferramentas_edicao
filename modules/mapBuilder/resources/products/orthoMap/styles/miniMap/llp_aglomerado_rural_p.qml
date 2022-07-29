@@ -328,10 +328,10 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{86326554-5cda-403d-bb19-dbd43fe18977}">
-      <rule filter="&quot;tipo&quot; in (5,6,7) and &quot;rotular_carta_mini&quot; = 1" key="{c2f87866-9efa-4755-a616-53bce67d016c}" description="Outras localidades">
+    <rules key="{de646bc7-b5fe-4ecb-967a-9a91c808ab4c}">
+      <rule filter="&quot;tipo&quot; in (5,6,7) and &quot;rotular_carta_mini&quot; = 1" key="{3358adac-92b5-4d75-9d2e-ef731fe404a2}" description="Outras localidades">
         <settings calloutType="simple">
-          <text-style textOpacity="1" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="50" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="0" multilineHeight="0.80000000000000004" fontSize="6" namedStyle="Condensed" blendMode="0" capitalization="0" fontSizeUnit="Point" isExpression="0">
+          <text-style textOpacity="1" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="50" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="0" multilineHeight="0.80000000000000004" fontSize="7" namedStyle="Condensed" blendMode="0" capitalization="0" fontSizeUnit="Point" isExpression="0">
             <families/>
             <text-buffer bufferBlendMode="0" bufferDraw="1" bufferOpacity="1" bufferJoinStyle="128" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="0,0,0,255" bufferSizeUnits="Point" bufferSize="0.5" bufferNoFill="1"/>
             <text-mask maskType="0" maskJoinStyle="128" maskSize="0.20000000000000001" maskOpacity="1" maskEnabled="0" maskSizeUnits="MM" maskedSymbolLayers="" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>

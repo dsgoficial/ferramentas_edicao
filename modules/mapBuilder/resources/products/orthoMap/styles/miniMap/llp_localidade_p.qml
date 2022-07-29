@@ -1128,9 +1128,9 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{4df2bf43-86a5-4a92-99b9-2b9522d29475}">
-      <rule filter="visivel = 1 and &quot;rotular_carta_mini&quot; = 1" key="{483632db-1975-40aa-b402-d67e26c9ac68}">
-        <rule filter="tipo in (1,2,3) AND populacao >= 500000" key="{26dcd51c-2b0e-4969-b1c4-647cfcc29627}" description="Cidade 1a importância">
+    <rules key="{c1a61b25-6e7c-46c8-8c15-5f2db63506df}">
+      <rule filter="visivel = 1 and &quot;rotular_carta_mini&quot; = 1" key="{160569f8-8ff8-4b75-bb72-be4a82f9c515}">
+        <rule filter="tipo in (1,2,3) AND populacao >= 500000" key="{da4f30a8-6afe-4342-93c6-caf4fdfac2bb}" description="Cidade 1a importância">
           <settings calloutType="simple">
             <text-style textOpacity="1" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="75" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="0" multilineHeight="0.80000000000000004" fontSize="8" namedStyle="Condensed Bold" blendMode="0" capitalization="1" fontSizeUnit="Point" isExpression="0">
               <families/>
@@ -1325,7 +1325,7 @@
             </callout>
           </settings>
         </rule>
-        <rule filter="tipo in (1,2,3) AND populacao &lt; 500000 AND populacao >= 100000" key="{1398ef08-b9ad-4c98-8745-442eda98980b}" description="Cidade 2a importância">
+        <rule filter="tipo in (1,2,3) AND populacao &lt; 500000 AND populacao >= 100000" key="{14ed4da2-48fc-4144-b8a2-b6650c789321}" description="Cidade 2a importância">
           <settings calloutType="simple">
             <text-style textOpacity="1" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="75" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="0" multilineHeight="0.80000000000000004" fontSize="7" namedStyle="Condensed Bold" blendMode="0" capitalization="1" fontSizeUnit="Point" isExpression="0">
               <families/>
@@ -1520,7 +1520,7 @@
             </callout>
           </settings>
         </rule>
-        <rule filter="tipo in (1,2,3) AND populacao &lt; 100000" key="{e4dd5887-7cbc-47e9-82d1-7108afeb96ac}" description="Cidade 3a importância">
+        <rule filter="tipo in (1,2,3) AND populacao &lt; 100000" key="{1b225b04-11fc-4a79-a860-c0bc123b53ce}" description="Cidade 3a importância">
           <settings calloutType="simple">
             <text-style textOpacity="1" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="75" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="0" multilineHeight="0.80000000000000004" fontSize="7" namedStyle="Condensed Bold" blendMode="0" capitalization="0" fontSizeUnit="Point" isExpression="0">
               <families/>
@@ -1715,9 +1715,9 @@
             </callout>
           </settings>
         </rule>
-        <rule filter="tipo = 4" key="{72fecc10-584d-42ee-94bd-e06d2deb54c4}" description="Vila 4a importância">
+        <rule filter="tipo = 4" key="{af7c92b8-580d-4e83-9beb-0b79c612060b}" description="Vila 4a importância">
           <settings calloutType="simple">
-            <text-style textOpacity="1" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="50" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="0" multilineHeight="0.80000000000000004" fontSize="6" namedStyle="Condensed" blendMode="0" capitalization="0" fontSizeUnit="Point" isExpression="0">
+            <text-style textOpacity="1" fieldName="texto_edicao" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="50" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="0" multilineHeight="0.80000000000000004" fontSize="7" namedStyle="Condensed" blendMode="0" capitalization="0" fontSizeUnit="Point" isExpression="0">
               <families/>
               <text-buffer bufferBlendMode="0" bufferDraw="1" bufferOpacity="1" bufferJoinStyle="128" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="0,0,0,255" bufferSizeUnits="Point" bufferSize="0.5" bufferNoFill="1"/>
               <text-mask maskType="0" maskJoinStyle="128" maskSize="0.20000000000000001" maskOpacity="1" maskEnabled="1" maskSizeUnits="MM" maskedSymbolLayers="" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>

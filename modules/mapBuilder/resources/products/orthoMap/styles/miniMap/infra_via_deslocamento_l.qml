@@ -175,7 +175,7 @@
               <Option name="joinstyle" value="round" type="QString"/>
               <Option name="line_color" value="149,80,88,255" type="QString"/>
               <Option name="line_style" value="solid" type="QString"/>
-              <Option name="line_width" value="0.25" type="QString"/>
+              <Option name="line_width" value="0.2" type="QString"/>
               <Option name="line_width_unit" value="MM" type="QString"/>
               <Option name="offset" value="0" type="QString"/>
               <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
@@ -203,7 +203,7 @@
             <prop v="round" k="joinstyle"/>
             <prop v="149,80,88,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
-            <prop v="0.25" k="line_width"/>
+            <prop v="0.2" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>
             <prop v="0" k="offset"/>
             <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
@@ -770,7 +770,7 @@
               <Option name="joinstyle" value="round" type="QString"/>
               <Option name="line_color" value="149,80,88,255" type="QString"/>
               <Option name="line_style" value="solid" type="QString"/>
-              <Option name="line_width" value="0.25" type="QString"/>
+              <Option name="line_width" value="0.2" type="QString"/>
               <Option name="line_width_unit" value="MM" type="QString"/>
               <Option name="offset" value="0" type="QString"/>
               <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
@@ -798,7 +798,7 @@
             <prop v="round" k="joinstyle"/>
             <prop v="149,80,88,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
-            <prop v="0.25" k="line_width"/>
+            <prop v="0.2" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>
             <prop v="0" k="offset"/>
             <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>

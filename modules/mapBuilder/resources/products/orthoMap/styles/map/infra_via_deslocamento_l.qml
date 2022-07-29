@@ -175,7 +175,7 @@
               <Option name="joinstyle" value="round" type="QString"/>
               <Option name="line_color" value="149,80,88,255" type="QString"/>
               <Option name="line_style" value="solid" type="QString"/>
-              <Option name="line_width" value="0.25" type="QString"/>
+              <Option name="line_width" value="0.2" type="QString"/>
               <Option name="line_width_unit" value="MM" type="QString"/>
               <Option name="offset" value="0" type="QString"/>
               <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
@@ -203,7 +203,7 @@
             <prop v="round" k="joinstyle"/>
             <prop v="149,80,88,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
-            <prop v="0.25" k="line_width"/>
+            <prop v="0.2" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>
             <prop v="0" k="offset"/>
             <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
@@ -770,7 +770,7 @@
               <Option name="joinstyle" value="round" type="QString"/>
               <Option name="line_color" value="149,80,88,255" type="QString"/>
               <Option name="line_style" value="solid" type="QString"/>
-              <Option name="line_width" value="0.25" type="QString"/>
+              <Option name="line_width" value="0.2" type="QString"/>
               <Option name="line_width_unit" value="MM" type="QString"/>
               <Option name="offset" value="0" type="QString"/>
               <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
@@ -798,7 +798,7 @@
             <prop v="round" k="joinstyle"/>
             <prop v="149,80,88,255" k="line_color"/>
             <prop v="solid" k="line_style"/>
-            <prop v="0.25" k="line_width"/>
+            <prop v="0.2" k="line_width"/>
             <prop v="MM" k="line_width_unit"/>
             <prop v="0" k="offset"/>
             <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
@@ -1213,8 +1213,8 @@
     </orderby>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{446915af-8070-4e67-929f-585fd94392ce}">
-      <rule filter="nr_faixas > 2" key="{66612c1a-eb49-4853-9aa1-b01fccaebb7b}">
+    <rules key="{91a8ab58-725a-4f65-b7ad-9a5ae435523f}">
+      <rule filter="nr_faixas > 2" key="{39c00104-103e-46f0-aba8-e4c41788d2cf}">
         <settings calloutType="simple">
           <text-style textOpacity="1" fieldName="nr_faixas||' FAIXAS'" previewBkgrdColor="255,255,255,255" fontKerning="1" fontUnderline="0" fontLetterSpacing="0" textColor="255,255,255,255" useSubstitutions="0" fontStrikeout="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" legendString="Aa" textOrientation="horizontal" fontWeight="50" fontFamily="Noto Sans" fontWordSpacing="0" fontItalic="1" multilineHeight="1" fontSize="6" namedStyle="Condensed Italic" blendMode="0" capitalization="0" fontSizeUnit="Point" isExpression="1">
             <families/>
