@@ -184,10 +184,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             ))
         
         if mode==0:
-            styleOption = 'mapEdition'
+            styleOption = 'map'
             groupName = 'map'
         elif mode==1:
-            styleOption = 'miniMapEdition'
+            styleOption = 'miniMap'
             groupName = 'miniMap'
         else:
             return {self.OUTPUT: 'Valor para modo inválido'}
