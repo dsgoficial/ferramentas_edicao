@@ -528,7 +528,7 @@ class GridAndLabelCreator(QObject):
         bound_UTM_bb = str(feature_bbox).replace(',','').replace('>','')
         feature_geometry.transform(trUTMLL)
         feature_geo_bbox = feature_geometry.boundingBox()
-        feature_bbox_or = feature_geometry.orientedMinimumBoundingBox()
+        # feature_bbox_or = feature_geometry.orientedMinimumBoundingBox()
         geo_bound_bb = str(feature_geo_bbox).replace(',','').replace('>','')
         # oriented_geo_bb = str(feature_bbox_or).replace(',','').replace('>','').replace('((','').replace('))','')
         oriented_geo_bb = feature_geometry.boundingBox()
