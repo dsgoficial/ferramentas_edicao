@@ -16,7 +16,8 @@ from .componentUtils import ComponentUtils
 class Localization(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
         self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'styles' / 'localization'
-        self.stateShpPath =  Path(__file__).parent.parent / 'resources' / 'limits' / '2020' / 'Estados_2020.shp'
+        self.shpFolder = Path(__file__).parent.parent / 'resources' / 'limits' / '2020'
+        self.stateShpPath = self.shpFolder / 'Estados_2020.shp'
 
     def build(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, showLayers: bool=False):
@@ -36,12 +37,28 @@ class Localization(ComponentUtils,IComponent):
         self.setLabel(stateLayerBackground, isInternational)
         mapIDsToBeDisplayed.append(stateLayerBackground.id())
 
+        uriPath = self.shpFolder / 'Paises_2020.shp'
+        stylePath = self.stylesFolder / 'paises.qml'
+        layerCountryArea = self.loadShapeLayer(uriPath, stylePath, 'countries')
+
+        uriPath = self.shpFolder / 'Oceano_2020.shp'
+        stylePath = self.stylesFolder / 'oceano.qml'
+        layerOcean = self.loadShapeLayer(uriPath, stylePath, 'ocean')
+
+        stylePath = self.stylesFolder / 'estados.qml'
+        layerState = self.loadShapeLayer(self.stateShpPath, stylePath, 'states')
+
+        mapIDsToBeDisplayed.extend([ layerOcean.id(), layerCountryArea.id(), layerState.id()])
+
+        layersToShow = (stateLayerBackground, layerState, layerCountryArea, layerOcean)
         # Adding layers
-        instance.addMapLayer(stateLayerBackground, False)
+        for layer in layersToShow:
+            instance.addMapLayer(layer, False)
+
         instance.addMapLayer(mapAreaLayer, False)
 
         # Updating composition
-        self.updateComposition(composition, stateLayerBackground, mapAreaLayer, mapExtents)
+        self.updateComposition(composition, layersToShow, mapAreaLayer, mapExtents)
 
         if showLayers:
             localizationGroupNode = QgsLayerTreeGroup('localization')
@@ -128,7 +145,7 @@ class Localization(ComponentUtils,IComponent):
         registry = QgsSymbolLayerRegistry()
         fillMeta = registry.symbolLayerMetadata("SimpleFill")
         fillSymbolLayer = fillMeta.createSymbolLayer({
-            'color': '201,201,201',
+            'color': '211,211,211',
             'outline_width': 0.1
             })
         # Replace the default style
@@ -172,7 +189,7 @@ class Localization(ComponentUtils,IComponent):
         buffer = QgsTextBufferSettings()
         buffer.setEnabled(True)
         buffer.setSize(1)
-        buffer.setColor(QColor('#c9c9c9'))
+        buffer.setColor(QColor('#d3d3d3'))
         buffer.setBlendMode(
             QgsPainting.getCompositionMode(
                 stateLayer.customProperty(
@@ -193,11 +210,11 @@ class Localization(ComponentUtils,IComponent):
         stateLayer.setLabelsEnabled(True)
         stateLayer.triggerRepaint()
 
-    def updateComposition(self, composition: QgsPrintLayout, stateLayer: QgsVectorLayer, mapAreaLayer: QgsVectorLayer, bounds: QgsRectangle):
+    def updateComposition(self, composition: QgsPrintLayout, layersToShow: tuple[QgsVectorLayer], mapAreaLayer: QgsVectorLayer, bounds: QgsRectangle):
         if (mapItem := composition.itemById("localization")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
             mapItem.setExtent(bounds)
             mapItem.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
-            mapItem.setLayers([mapAreaLayer, stateLayer])
+            mapItem.setLayers([mapAreaLayer, *layersToShow])
             mapItem.refresh()
