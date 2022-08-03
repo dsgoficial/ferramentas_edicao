@@ -1,6 +1,6 @@
 from pathlib import Path
 
-
+from qgis import processing
 from PyQt5.QtCore import QVariant
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsFeature, QgsField, QgsLayerTreeGroup, QgsLayoutItem, 
@@ -32,7 +32,17 @@ class MapOM(ComponentUtils,IComponent):
         layersToComposition = [omLayer, *layers]
 
         utmGeom = self.transformGeometry(mapAreaFeature.geometry(), 'EPSG:4674', f'EPSG:{jsonData.get("epsg")}' )
-        mapAreaFeaureAdjustPlacement = OBB.build_from_geom(utmGeom).rectangle
+        obb_native = processing.run(
+                'native:orientedminimumboundingbox',
+                {
+                    'INPUT': mapAreaLayer,
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                }
+            )
+            
+        mapAreaFeaureAdjustPlacement = next(obb_native['OUTPUT'].getFeatures()).geometry()
+        mapAreaFeaureAdjustPlacement = self.transformGeometry(mapAreaFeaureAdjustPlacement, 'EPSG:4674', f'EPSG:{jsonData.get("epsg")}' )
+        mapAreaFeaureAdjustPlacement = QgsRectangle().fromWkt(mapAreaFeaureAdjustPlacement.asWkt())
         self.updateComposition(composition, omLayer, layersToComposition, jsonData, mapAreaFeaureAdjustPlacement)
 
         if showLayers:
@@ -79,14 +89,14 @@ class MapOM(ComponentUtils,IComponent):
 
         return gridLayer
 
+    '''
     def calculateRotationDisplacement(self, data: dict, mapAreaFeature: QgsFeature) -> QgsRectangle:
-        '''Calculates the new extents of the map after the rotation of the map area
+        Calculates the new extents of the map after the rotation of the map area
         Args:
             data (dict): Holds the map metadata
             mapAreaFeature (QgsFeature): Feature holding the geometry of the map area
         Returns:
             The new bounding box of the map layout item
-        '''
         transformer = QgsCoordinateTransform(
             QgsCoordinateReferenceSystem('EPSG:4674'),
             QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}'),
@@ -95,6 +105,7 @@ class MapOM(ComponentUtils,IComponent):
         geom.transform(transformer)
         bboxOriented, _, _, _, _ = geom.orientedMinimumBoundingBox()
         return bboxOriented.boundingBox()
+    '''
 
     def updateComposition(self, composition: QgsPrintLayout, omLayer: QgsVectorLayer,
         layersToComposition: list[QgsMapLayer], data: dict, mapAreaExtentsAfterRotation: QgsRectangle):

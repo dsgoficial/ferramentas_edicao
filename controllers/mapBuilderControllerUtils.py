@@ -1,8 +1,8 @@
-from math import ceil
-
+from math import ceil, floor
+from qgis import processing
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsCoordinateTransformContext, QgsFeature, QgsField,
-                       QgsFields, QgsGeometry, QgsRectangle, QgsVectorLayer)
+                       QgsFields, QgsGeometry, QgsRectangle, QgsVectorLayer, QgsPoint)
 from qgis.PyQt.QtCore import QVariant
 
 from ..modules.mapBuilder.components.componentUtils import OBB
@@ -89,8 +89,16 @@ class MapBuildControllerUtils:
         '''
         geom = QgsGeometry.fromWkt(polygonWkt)
         _, _, angle, _, _ = geom.orientedMinimumBoundingBox()
-        orientedBbox = OBB.build_from_geom(geom).rectangle
-        orientedBbox = QgsGeometry.fromRect(orientedBbox)
+        obb_native = processing.run(
+                'native:orientedminimumboundingbox',
+                {
+                    'INPUT': self.createLayerFromWkt(polygonWkt)[0],
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                }
+            )
+        orientedBbox = next(obb_native['OUTPUT'].getFeatures()).geometry()
+        # orientedBbox = OBB.build_from_geom(geom).rectangle
+        # orientedBbox = QgsGeometry.fromRect(orientedBbox)
         templateType, scale = self.getOmScale(orientedBbox, epsg)
         return templateType, scale, angle
 
@@ -126,7 +134,7 @@ class MapBuildControllerUtils:
     def getOmScale(self, orientedBboxGeom: QgsGeometry, epsg: str) -> float:
         ''' Returns the OM map scale based on the geometry's bounding box. The choice
         is made by comparing the bbox's dimensions with the map dimensions from the 2 OM map templates.
-        Also returns which tmeplate is the best suited for the bbox
+        Also returns which template is the best suited for the bbox
         Args:
             orientedBboxGeom: the minimum oriented geometry from mapAreaFeature bounding box
             epsg: Destination EPSG to calculate width / height in meters, eg. 31982  
@@ -141,13 +149,25 @@ class MapBuildControllerUtils:
             QgsCoordinateReferenceSystem(f'EPSG:{epsg}'),
             QgsCoordinateTransformContext())
         orientedBboxGeom.transform(transformer)
-        width = orientedBboxGeom.boundingBox().width()
-        height = orientedBboxGeom.boundingBox().height()
-        templateType = 1 if max(width, height) > 2500 else 2 # For the scale 1:500, the layout2 is approx. 2.5km wide
-        if templateType == 1:
-            scale = max(width / layout1Dims[0], height / layout1Dims[1])
-            scale = ceil(scale / 100) * 100
-        elif templateType == 2:
+        comp_0 = orientedBboxGeom.vertexAt(0)
+        comp_1 = orientedBboxGeom.vertexAt(1)
+        comp_2 = orientedBboxGeom.vertexAt(3)
+        dim1 = QgsPoint.distance(comp_0, comp_1)
+        dim2 = QgsPoint.distance(comp_0, comp_2)
+        if dim1 > dim2:
+            width = dim1
+            height = dim2
+        else:
+            width = dim2
+            height = dim1 
+        # width = orientedBboxGeom.boundingBox().width()
+        # height = orientedBboxGeom.boundingBox().height()
+        # templateType = 1 if max(width, height) > 2500 else 2 # For the scale 1:500, the layout2 is approx. 2.5km wide
+        scale = max(width / layout1Dims[0], height / layout1Dims[1])
+        scale = ceil(scale / 100) * 100
+        templateType = 1
+        if scale <= 500:
+            templateType = 2
             scale = max(width / layout2Dims[0], height / layout2Dims[1])
             scale = ceil(scale / 100) * 100
             maxScale = ceil(1 / (100*self.getMaxScaleOmMap())) * 100
