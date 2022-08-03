@@ -88,10 +88,6 @@
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
-        "infra_obstaculo_vertical_p": {
-            "group": "classes_auxiliares",
-            "labels": ["obstaculo_vertical"]
-        },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",
             "labels": ["queda_dagua_corredeira"]
@@ -241,10 +237,6 @@
         "infra_elemento_infraestrutura_a": {
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
-        },
-        "infra_obstaculo_vertical_p": {
-            "group": "classes_auxiliares",
-            "labels": ["obstaculo_vertical"]
         },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",
@@ -396,10 +388,6 @@
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
         },
-        "infra_obstaculo_vertical_p": {
-            "group": "classes_auxiliares",
-            "labels": ["obstaculo_vertical"]
-        },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",
             "labels": ["queda_dagua_corredeira"]
@@ -549,10 +537,6 @@
         "infra_elemento_infraestrutura_a": {
             "group": "sistema_de_transporte",
             "labels": ["atracadouro_terminal"]
-        },
-        "infra_obstaculo_vertical_p": {
-            "group": "classes_auxiliares",
-            "labels": ["obstaculo_vertical"]
         },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",

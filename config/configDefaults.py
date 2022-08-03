@@ -18,7 +18,7 @@ class ConfigDefaults:
         'llp_limite_legal_l', 'elemnat_curva_nivel_l', 'elemnat_ponto_cotado_p',
         'infra_pista_pouso_p', 'infra_pista_pouso_l', 'infra_pista_pouso_a', 'infra_elemento_infraestrutura_p',
         'infra_elemento_infraestrutura_l', 'infra_elemento_infraestrutura_a',
-        'infra_obstaculo_vertical_p', 'elemnat_elemento_hidrografico_p',
+        'elemnat_elemento_hidrografico_p',
         'elemnat_elemento_hidrografico_l', 'elemnat_elemento_hidrografico_a', 'elemnat_toponimo_fisiografico_natural_p',
         'elemnat_toponimo_fisiografico_natural_l', 'elemnat_ilha_p', 'elemnat_ilha_a', 'llp_nome_local_p',
         'llp_aglomerado_rural_p', 'llp_area_pub_militar_l', 
