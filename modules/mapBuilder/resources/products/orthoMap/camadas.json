@@ -45,10 +45,6 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_obstaculo_vertical_p",
-            "schema": "edgv"
-        },
-        {
             "table": "elemnat_ilha_p",
             "schema": "edgv"
         },
