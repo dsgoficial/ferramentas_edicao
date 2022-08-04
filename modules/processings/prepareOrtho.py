@@ -79,7 +79,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         if frameLayer:
             frameLinesLayer = self.convertPolygonToLines(frameLayer)
         layersToCalculateDefaults = [
-            'infra_obstaculo_vertical_p',
             'infra_pista_pouso_p',
             'infra_pista_pouso_l',
             'infra_pista_pouso_a',
@@ -141,10 +140,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
             'infra_elemento_infraestrutura_p': {
                 'texto_edicao': 'nome',
-                'justificativa_txt': 1
-            },
-            'infra_obstaculo_vertical_p': {
-                'visivel': 1,
                 'justificativa_txt': 1
             },
             'infra_pista_pouso_p': {

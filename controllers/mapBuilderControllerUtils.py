@@ -166,12 +166,14 @@ class MapBuildControllerUtils:
         scale = max(width / layout1Dims[0], height / layout1Dims[1])
         scale = ceil(scale / 100) * 100
         templateType = 1
+        '''
         if scale <= 500:
             templateType = 2
             scale = max(width / layout2Dims[0], height / layout2Dims[1])
             scale = ceil(scale / 100) * 100
             maxScale = ceil(1 / (100*self.getMaxScaleOmMap())) * 100
             scale = max(scale, maxScale)
+        '''    
         return templateType, scale
 
     def getMaxScaleOmMap(self) -> float:
