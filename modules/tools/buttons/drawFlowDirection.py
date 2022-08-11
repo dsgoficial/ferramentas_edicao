@@ -224,11 +224,6 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
     def startEdition(self, event):
         #Método para iniciar a aquisição
         #Parâmetro de entrada: event (Evento)
-        snapRubberBand = self.getSnapRubberBand()
-        if snapRubberBand:
-            snapRubberBand.reset(geometryType=core.QgsWkbTypes.PointGeometry)
-            snapRubberBand.hide()
-            self.setSnapRubberBand(None)
         layer = self.dstLyr
         if layer:
             mapPoint = event.snapPoint()            
@@ -282,31 +277,22 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
 
     def finishEdition(self, event):
         #Método para finalizar a aquisição
-        if self.getRubberBand():
-            event.snapPoint()
-            self.getRubberBand().addPoint(event.mapPoint())
-        if not self.getRubberBand():
+        rb = self.getRubberBand()
+        if not rb:
             return
-        if self.getRubberBand().numberOfVertices() > 2:
-            geom = self.getRubberBand().asGeometry()
-            if not self.controlPressed:
-                self.acquisitionFinished.emit(geom)
-            else:
-                self.doReshape(geom)
-        self.cancelEdition()
-
-    def doReshape(self, geom):
-        line = ''
-        if geom.type() == core.QgsWkbTypes.LineGeometry:
-            line = geom.asPolyline()
-        elif geom.type() == core.QgsWkbTypes.PolygonGeometry:
-            if geom.isMultipart():
-                line = geom.asMultiPolygon()[0][0]
-            else:
-                line = geom.asPolygon()[0]
-            del line[-1]
         
-        self.reshapeLineCreated.emit(QgsGeometry.fromPolylineXY(line))
+        pointCount = rb.numberOfVertices()
+        if pointCount < 2:
+            return
+
+        point_from = rb.getPoint(0)
+        point_to = event.mapPoint()
+
+        azimuth = point_from.azimuth(point_to)
+        symbolRot = azimuth - 90.0
+
+        self.addArrow(point_from, symbolRot)
+        self.cancelEdition()
 
     def activate(self):
         #Método chamado ao ativar a ferramenta
@@ -327,3 +313,15 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
             ))
             return None
         return True
+    
+    def addArrow(self, point : core.QgsPointXY, rot : float):
+        """ Adiciona a seta indicativa da direcao da corrente """
+
+        toInsert = QgsFeature(self.dstLyr.fields())
+        toInsert.setAttribute('simb_rot', rot)
+        toInsertGeom = QgsGeometry.fromPointXY(point)
+        toInsert.setGeometry(toInsertGeom)
+
+        self.dstLyr.startEditing()
+        self.dstLyr.addFeature(toInsert)
+        self.canvas.refresh()
