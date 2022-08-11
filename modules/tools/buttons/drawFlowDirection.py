@@ -250,9 +250,6 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         mapPoint = event.mapPoint()
         currentPointCount = self.getRubberBand().numberOfVertices()
         if(currentPointCount > 2):
-            self.displayErrorMessage(self.tr(
-                'Erro inesperado!'
-            ))
             return
         if(currentPointCount == 2):
             self.getRubberBand().removeLastPoint()
