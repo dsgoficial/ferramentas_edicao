@@ -185,11 +185,7 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
     def keyPressEvent(self, event):
         #Método para receber os eventos do teclado
         #Parâmetro de entrada: event (Evento que chamou o método)
-        if event.key() in [QtCore.Qt.Key_Delete, QtCore.Qt.Key_Backspace]:
-            self.setStopedState(True)
-            self.removeVertice()
-            event.ignore()
-        elif event.key() == QtCore.Qt.Key_Escape:
+        if event.key() == QtCore.Qt.Key_Escape:
             self.cancelEdition()
             event.ignore()
 
@@ -210,57 +206,7 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         settings.beginGroup('PythonPlugins/DsgTools/Options')
         undoPoints = settings.value('undoPoints')
         settings.endGroup()
-        return int(undoPoints)
-   
-    def removeVertice(self):
-        #Método para remover vertices
-        firstPoint = None
-        lastPoint = None
-        rubberBand = self.getRubberBand()
-        qtnUndoPoints = self.getParametersFromConfig()
-        if rubberBand and rubberBand.numberOfVertices() > qtnUndoPoints:
-            for x in range(qtnUndoPoints):
-                rubberBand.removeLastPoint()
-            if not self.isPolygon():
-                lastPoint = rubberBand.asGeometry().asPolyline()[-1]
-                new_rubberBand = gui.QgsRubberBand(self.getCanvas(), core.QgsWkbTypes.LineGeometry)
-                new_rubberBand.setColor(QtGui.QColor(255, 0, 0, 150))
-            else:                
-                if len(rubberBand.asGeometry().asPolygon()[0]) > 1:
-                    firstPoint = rubberBand.asGeometry().asPolygon()[0][0]
-                    lastPoint = rubberBand.asGeometry().asPolygon()[0][-2]
-                new_rubberBand = gui.QgsRubberBand(self.getCanvas(), core.QgsWkbTypes.PolygonGeometry)
-                new_rubberBand.setColor(QtGui.QColor(255, 0, 0, 63))
-            new_rubberBand.setWidth(1)
-            rubberBandToStopState = self.getRubberBandToStopState()
-            if rubberBandToStopState:
-                rubberBandToStopState.reset()
-            new_rubberBand.setLineStyle(QtCore.Qt.DotLine)
-            new_rubberBand.addPoint(lastPoint)
-            if firstPoint:
-                new_rubberBand.addPoint(firstPoint)
-            self.setRubberBandToStopState(new_rubberBand)
-        elif rubberBand:
-            self.setStopedState(False)
-            self.getRubberBandToStopState().reset() if self.getRubberBandToStopState() else ''
-            self.cancelEdition()
-
-    def createSnapCursor(self, point):
-        #Método para criar rubberBand do snap
-        rubberBand = self.getSnapRubberBand()
-        if rubberBand:
-            rubberBand.reset()
-        else:
-            rubberBand = gui.QgsRubberBand(
-                self.getCanvas(), 
-                geometryType = core.QgsWkbTypes.PointGeometry
-            )
-        rubberBand.setColor(QtGui.QColor(255, 0, 0, 200))
-        rubberBand.setFillColor(QtGui.QColor(255, 0, 0, 40))
-        rubberBand.setWidth(5)
-        rubberBand.setIcon(gui.QgsRubberBand.ICON_X)
-        rubberBand.addPoint(point)
-        self.setSnapRubberBand(rubberBand)         
+        return int(undoPoints) 
 		    
     def canvasReleaseEvent(self, event):
         #Método para receber os eventos release do canvas do Qgis
