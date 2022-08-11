@@ -283,7 +283,7 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
             snapRubberBand.reset(geometryType=core.QgsWkbTypes.PointGeometry)
             snapRubberBand.hide()
             self.setSnapRubberBand(None)
-        layer = self.getCanvas().currentLayer()
+        layer = self.dstLyr
         if layer:
             mapPoint = event.snapPoint()            
             self.startRubberBand(mapPoint, layer)
@@ -292,39 +292,31 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         #Método para iniciar o rubberBand da aquisição
         #Parâmetro de entrada: pointMap (Primeiro ponto da feição em aquisição), layer (Camada ativa)
         self.setDrawingState(True)
-        self.setGeometryType(layer.geometryType())
-        if self.isPolygon():
-            rubberBand = gui.QgsRubberBand(self.getCanvas(), core.QgsWkbTypes.PolygonGeometry)
-            rubberBand.setColor(QtGui.QColor(255, 0, 0, 63))
-            rubberBand.setWidth(2)
-        else:
-            rubberBand = gui.QgsRubberBand(self.getCanvas(), core.QgsWkbTypes.LineGeometry)
-            rubberBand.setColor(QtGui.QColor(255, 0, 0, 150))
-            rubberBand.setWidth(1)
+        self.setGeometryType(core.QgsWkbTypes.LineGeometry)
+        rubberBand = gui.QgsRubberBand(self.getCanvas(), core.QgsWkbTypes.LineGeometry)
+        rubberBand.setColor(QtGui.QColor(255, 0, 0, 150))
+        rubberBand.setWidth(1)
         rubberBand.addPoint(pointMap)
         self.setRubberBand(rubberBand)
         
     def canvasMoveEvent(self, event):
         #Método para receber os eventos canvas move do Qgis
         #Parâmetro de entrada: event (Evento que chamou o método)
-        if not(self.getStopedState()):
-            snapRubberBand = self.getSnapRubberBand()
-            if snapRubberBand:
-                snapRubberBand.hide()
-                snapRubberBand.reset(geometryType=core.QgsWkbTypes.PointGeometry)
-                self.setSnapRubberBand(None)
-            oldPoint = event.mapPoint()
-            event.snapPoint()
-            point = event.mapPoint()
-            self.createSnapCursor(point) if oldPoint != point else ''
-            if self.getRubberBand() and self.getRubberBand().numberOfVertices() == 0:
-                self.getRubberBand().addPoint(point)
-            elif self.getRubberBand():
-                self.getRubberBand().addPoint(oldPoint)
-        if self.getRubberBandToStopState():
-            self.updateRubberBandToStopState(
-                self.toMapCoordinates( event.pos() )
-            )
+
+        if(self.getStopedState() or not self.getRubberBand()):
+            return
+        
+        mapPoint = event.mapPoint()
+        currentPointCount = self.getRubberBand().numberOfVertices()
+        if(currentPointCount > 2):
+            self.displayErrorMessage(self.tr(
+                'Erro inesperado!'
+            ))
+            return
+        if(currentPointCount == 2):
+            self.getRubberBand().removeLastPoint()
+        
+        self.getRubberBand().addPoint(mapPoint)
 
     def updateRubberBandToStopState(self, point):
         #Método para atualizar o rubberband do pause da ferramenta
