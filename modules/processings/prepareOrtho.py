@@ -378,7 +378,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 feature[ 'texto_edicao' ] = 'Água'
                 self.updateLayerFeature( layer, feature)
 
-        elif layerName in [ 'infra_trecho_hidroviario_l' ]:
+        elif layerName in [ 'infra_travessia_hidroviaria_l' ]:
             for feature in layer.getFeatures():
                 if not( feature['tipo'] == 1 ):
                     continue
