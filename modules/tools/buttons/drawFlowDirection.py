@@ -96,62 +96,62 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         #Parâmetro de retorno: cursor (cursor usado na ferramenta)
         return self.cur
 
-    def setCanvas(self, canvas):
+    def setCanvas(self, canvas : gui.QgsMapCanvas):
         #Método para definir o canvas do Qgis
         #Parâmetro de entrada: canvas (Canvas do Qgis)
         self.canvas = canvas
 
-    def getCanvas(self):
+    def getCanvas(self) -> gui.QgsMapCanvas:
         #Método para obter o canvas do Qgis
         #Parâmetro de retorno: canvas (Canvas do Qgis)
         return self.canvas
 
-    def setActiveState(self, state):
+    def setActiveState(self, state : bool):
         #Método para definir se a ferramenta está ativa ou não
         #Parâmetro de entrada: state (Boleano)
         self.active = state 
     
-    def getActiveState(self):
+    def getActiveState(self) -> bool:
         #Método para obter se a ferramenta está ativa ou não
         #Parâmetro de retorno: state (Boleano)
         return self.active
      
-    def setStopedState(self, state):
+    def setStopedState(self, state : bool):
         #Método para definir se a ferramenta está pausada
         #Parâmetro de entrada: state (Boleano)
         self.stopState = state
     
-    def getStopedState(self):
+    def getStopedState(self) -> bool:
         #Método para obter se a ferramenta está pausada
         #Parâmetro de retorno: state (Boleano)
         return self.stopState
 
-    def setDrawingState(self, state):
+    def setDrawingState(self, state : bool):
         #Método para definir se a ferramenta está desenhando
         #Parâmetro de entrada: state (Boleano)
         self.drawing = state
 
-    def getDrawingState(self):
+    def getDrawingState(self) -> bool:
         #Método para obter se a ferramenta está desenhando
         #Parâmetro de retorno: state (Boleano)
         return self.drawing
 
-    def setRubberBand(self, rb):
+    def setRubberBand(self, rb : gui.QgsRubberBand):
         #Método para definir o rubberBand de aquisição
         #Parâmetro de entrada: rb (rubberBand)
         self.rubberBand = rb
 
-    def getRubberBand(self):
+    def getRubberBand(self) -> gui.QgsRubberBand:
         #Método para obter o rubberBand de aquisição
         #Parâmetro de retorno: rb (rubberBand)
         return self.rubberBand
 
-    def setRubberBandToStopState(self, rb):
+    def setRubberBandToStopState(self, rb : gui.QgsRubberBand):
         #Método para definir o rubberBand de pausa da ferramenta
         #Parâmetro de entrada: rb (rubberBand)
         self.rubberBandToStopState = rb
 
-    def getRubberBandToStopState(self):
+    def getRubberBandToStopState(self) -> gui.QgsRubberBand:
         #Método para obter o rubberBand de pausa da ferramenta
         #Parâmetro de retorno: rb (rubberBand)
         return self.rubberBandToStopState
@@ -166,17 +166,17 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         #Parâmetro de retorno: geomType (Tipo da geometria)
         return self.geometryType
 
-    def setSnapRubberBand(self, snapRb):
+    def setSnapRubberBand(self, snapRb : gui.QgsRubberBand):
         #Método para definir o rubberBand do snap
         #Parâmetro de entrada: rb (rubberBand)
         self.snapCursorRubberBand = snapRb   
 
-    def getSnapRubberBand(self):
+    def getSnapRubberBand(self) -> gui.QgsRubberBand:
         #Método para obter o rubberBand do snap
         #Parâmetro de entrada: rb (rubberBand)
         return self.snapCursorRubberBand
 
-    def isPolygon(self):
+    def isPolygon(self) -> bool:
         #Método para testar se a camada atual é polígono
         #Parâmetro de retorno: isPolygon (Boleano)
         isPolygon = (self.getGeometryType() != core.QgsWkbTypes.LineGeometry)
