@@ -117,9 +117,9 @@ class PrepareTopo(QgsProcessingAlgorithm):
                 'texto_edicao': 'nome',
                 'justificativa_txt': 1
             },
-            'elemnat_ilha_p': {
+            'elemnat_ilha_p': { # BA030 (area) pg 327:  (LP-0050 - menor tamanho 6)
                 'texto_edicao': 'nome',
-                'tamanho_txt': 7,
+                'tamanho_txt': 6, 
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
@@ -196,7 +196,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
             },
             'infra_via_deslocamento_l': {
                 'visivel': 1,
-                'simbolizar_carta_mini': 1
+                'simbolizar_carta_mini': 2
             },
             'llp_area_pub_militar_l': {
                 'sobreposto': 2,
@@ -215,7 +215,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
                 'exibir_rotulo_aproximado': 1
             },
             'edicao_area_sem_dados_a': {
-                'texto_edicao': 'ÁREA SEM DADOS',
+                'texto_edicao': 'DADOS INCOMPLETOS',
                 'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
