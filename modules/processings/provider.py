@@ -14,6 +14,7 @@ from .mergeLinesByAngle import MergeLinesByAngle
 from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
 from .prepareOrtho import PrepareOrtho
+from .prepareTopo import PrepareTopo
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
 
@@ -28,6 +29,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MergeHighway())
         self.addAlgorithm(MergeRivers())
         self.addAlgorithm(PrepareOrtho())
+        self.addAlgorithm(PrepareTopo())
         self.addAlgorithm(HighestSpotOnTheFrame())
         self.addAlgorithm(MergeLinesByAngle())
         self.addAlgorithm(LoadMasks())
