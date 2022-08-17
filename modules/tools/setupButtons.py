@@ -9,6 +9,7 @@ from .buttons.cycleVisibility import CycleVisibility
 from .buttons.cycleTextJustification import CycleTextJustification
 from .buttons.copyToGenericLabel import CopyToGenericLabel
 from .buttons.cycleLabelPosition import CycleLabelPosition
+from .buttons.alternateTextVisibility import AlternateTextVisibility
 from .buttons.createVegetationSymbol import CreateVegetationSymbol
 from .buttons.createRoadIdentifierSymbol import CreateRoadIdentifierSymbol
 from .buttons.createLakeLabel import CreateLakeLabel
@@ -41,6 +42,8 @@ class SetupButtons:
         copyToGenericLabelButton.setupUi()
         cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
+        alternateTextVisibilityButton = AlternateTextVisibility(self.toolBar, self.iface)
+        alternateTextVisibilityButton.setupUi()
         createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         createVegetationSymbol.setupUi()
         if not productTypeSelector.currentIndex() == 1:
@@ -74,6 +77,7 @@ class SetupButtons:
             cycleTextJustificationButton,
             copyToGenericLabelButton,
             cycleLabelPositionButton,
+            alternateTextVisibilityButton,
             cycleVisibilityButton,
             createVegetationSymbol,
             createRoadIdentifierSymbol,
