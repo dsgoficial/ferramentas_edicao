@@ -14,6 +14,8 @@ from .mergeLinesByAngle import MergeLinesByAngle
 from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
 from .prepareOrtho import PrepareOrtho
+from .insertEnergyTower import InsertEnergyTower
+from .insertIdentificadorRodovia import InsertIdentificadorRodovia
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
 
@@ -28,6 +30,8 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MergeHighway())
         self.addAlgorithm(MergeRivers())
         self.addAlgorithm(PrepareOrtho())
+        self.addAlgorithm(InsertEnergyTower())
+        self.addAlgorithm(InsertIdentificadorRodovia())
         self.addAlgorithm(HighestSpotOnTheFrame())
         self.addAlgorithm(MergeLinesByAngle())
         self.addAlgorithm(LoadMasks())
