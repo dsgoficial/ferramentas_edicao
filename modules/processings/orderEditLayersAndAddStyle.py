@@ -10,7 +10,8 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterNumber,
                        QgsExpressionContextUtils,
                        QgsProcessingParameterEnum, QgsProject,
-                       QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme)
+                       QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme,
+                       QgsProcessingMultiStepFeedback)
 from qgis.PyQt.QtCore import QCoreApplication
 
 
@@ -215,28 +216,44 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'styles',
                 groupName
             )
-
-        feedback.setProgressText('Calculando dicionário QML...')
-        qmlDict = self.buildQmlDict(stylePath, stylePathPrinting)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
+        multiStepFeedback.setCurrentStep(0)
+        multiStepFeedback.setProgressText('Calculando dicionário QML...')
+        qmlDict = self.buildQmlDict(stylePath, stylePathPrinting, feedback=multiStepFeedback)
         
-        feedback.setProgressText('Mudando visibilidade das camadas...')
-        visibleLayers, invisibleLayers = self.changeVisibility( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, qmlDict, feedback)
+        multiStepFeedback.setCurrentStep(1)
+        multiStepFeedback.setProgressText('Mudando visibilidade das camadas...')
+        visibleLayers, invisibleLayers = self.changeVisibility(
+            layerNames=[ i['table'] for i in jsonConfigData[ groupName ] ],
+            layers=layers,
+            qmlDict=qmlDict,
+            feedback=multiStepFeedback
+        )
         if feedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
-        feedback.setProgressText('Ordenando as camadas...')
-        self.order( [ i['table'] for i in jsonConfigData[ groupName ] ], layers, invisibleLayers, feedback, project)
-        if feedback.isCanceled():
+        multiStepFeedback.setCurrentStep(2)
+        multiStepFeedback.setProgressText('Ordenando as camadas...')
+        self.order(
+            layerNames=[ i['table'] for i in jsonConfigData[ groupName ] ],
+            layers=layers,
+            invisibleLayers=invisibleLayers,
+            feedback=multiStepFeedback,
+            project=project
+        )
+        if multiStepFeedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
-        feedback.setProgressText('Carregando estilos...')
-        self.estilos( visibleLayers, qmlDict, gridScale, feedback)
-        if feedback.isCanceled():
+        multiStepFeedback.setCurrentStep(3)
+        multiStepFeedback.setProgressText('Carregando estilos...')
+        self.estilos( visibleLayers, qmlDict, gridScale, multiStepFeedback)
+        if multiStepFeedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
-        feedback.setProgressText('Configurando equidistancia...')
-        self.setEquidistancia( visibleLayers, equidistancia, exibirAuxiliar, feedback)
-        if feedback.isCanceled():
+        multiStepFeedback.setCurrentStep(4)
+        multiStepFeedback.setProgressText('Configurando equidistancia...')
+        self.setEquidistancia( visibleLayers, equidistancia, exibirAuxiliar, multiStepFeedback)
+        if multiStepFeedback.isCanceled():
             return {self.OUTPUT: 'Cancelado'}
 
         #feedback.setProgressText('Configurando escala de renderização...')
@@ -342,18 +359,22 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         with open(jsonFilePath, 'r') as f:
             return json.load( f )
 
-    def buildQmlDict(self, inputDir, inputDirPrinting):
+    def buildQmlDict(self, inputDir, inputDirPrinting, feedback):
         """
         Builds a dict with the format 
         {'fileName':'filePath'}
         """
         qmlDict = dict()
         for fileNameWithExtension in os.listdir(inputDir):
+            if feedback.isCanceled():
+                break
             if not fileNameWithExtension.endswith(".qml"):
                 continue
             fileName = fileNameWithExtension.split('.')[0]
             qmlDict[fileName] = os.path.join(inputDir, fileNameWithExtension)
         for fileNameWithExtension in os.listdir(inputDirPrinting):
+            if feedback.isCanceled():
+                break
             if not fileNameWithExtension.endswith(".qml"):
                 continue
             fileName = fileNameWithExtension.split('.')[0]
