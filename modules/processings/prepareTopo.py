@@ -16,7 +16,7 @@ from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 from .processingUtils import ProcessingUtils
 
 
-class PrepareOrtho(QgsProcessingAlgorithm): 
+class PrepareTopo(QgsProcessingAlgorithm): 
 
     INPUT_LAYERS = 'INPUT_LAYERS'
     INPUT_FRAME = 'INPUT_FRAME'
@@ -52,7 +52,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
-                self.tr('Flag Preparar Ortoimagem')
+                self.tr('Flag Preparar Topográfica')
             )
         ) 
 
@@ -117,9 +117,9 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'texto_edicao': 'nome',
                 'justificativa_txt': 1
             },
-            'elemnat_ilha_p': {
+            'elemnat_ilha_p': { # BA030 (area) pg 327:  (LP-0050 - menor tamanho 6)
                 'texto_edicao': 'nome',
-                'tamanho_txt': 7,
+                'tamanho_txt': 6, 
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
             },
@@ -156,8 +156,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             'llp_localidade_p': {
                 'texto_edicao': 'nome',
                 'justificativa_txt': 1,
-                'rotular_carta_mini': 1,
-                'simbolizar_carta_mini': 2,
+                'rotular_carta_mini': 1,                
                 'visivel': 1
             },
             'llp_nome_local_p': {
@@ -197,7 +196,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
             'infra_via_deslocamento_l': {
                 'visivel': 1,
-                'simbolizar_carta_mini': 1
+                'simbolizar_carta_mini': 2
             },
             'llp_area_pub_militar_l': {
                 'sobreposto': 2,
@@ -216,7 +215,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'exibir_rotulo_aproximado': 1
             },
             'edicao_area_sem_dados_a': {
-                'texto_edicao': 'ÁREA SEM DADOS',
+                'texto_edicao': 'DADOS INCOMPLETOS',
                 'tamanho_txt': 7,
                 'justificativa_txt': 1,
                 'rotular_carta_mini': 1
@@ -378,7 +377,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 feature[ 'texto_edicao' ] = 'Água'
                 self.updateLayerFeature( layer, feature)
 
-        elif layerName in [ 'infra_travessia_hidroviaria_l' ]:
+        elif layerName in [ 'infra_trecho_hidroviario_l' ]:
             for feature in layer.getFeatures():
                 if not( feature['tipo'] == 1 ):
                     continue
@@ -921,13 +920,13 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
-        return PrepareOrtho()
+        return PrepareTopo()
 
     def name(self):
-        return 'prepareortho'
+        return 'preparetopo'
 
     def displayName(self):
-        return self.tr('Prepara carta ortoimagem')
+        return self.tr('Prepara carta topográfica')
 
     def group(self):
         return self.tr('Edição')
@@ -936,5 +935,5 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return 'edicao'
 
     def shortHelpString(self):
-        return self.tr("O algoritmo prepara os atributos para carta ortoimagem")
+        return self.tr("O algoritmo prepara os atributos para carta topográfica")
     

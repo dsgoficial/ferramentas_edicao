@@ -9,10 +9,12 @@ from .buttons.cycleVisibility import CycleVisibility
 from .buttons.cycleTextJustification import CycleTextJustification
 from .buttons.copyToGenericLabel import CopyToGenericLabel
 from .buttons.cycleLabelPosition import CycleLabelPosition
+from .buttons.alternateTextVisibility import AlternateTextVisibility
 from .buttons.createVegetationSymbol import CreateVegetationSymbol
 from .buttons.createRoadIdentifierSymbol import CreateRoadIdentifierSymbol
 from .buttons.createLakeLabel import CreateLakeLabel
 from .buttons.createRiverLabel import CreateRiverLabel
+from .buttons.drawFlowDirection import DrawFlowDirection
 from .buttons.createBorderLabel import CreateBorderLabel
 
 class SetupButtons:
@@ -41,6 +43,8 @@ class SetupButtons:
         copyToGenericLabelButton.setupUi()
         cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
+        alternateTextVisibilityButton = AlternateTextVisibility(self.toolBar, self.iface)
+        alternateTextVisibilityButton.setupUi()
         createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         createVegetationSymbol.setupUi()
         if not productTypeSelector.currentIndex() == 1:
@@ -51,6 +55,8 @@ class SetupButtons:
         createLakeLabel.setupUi()
         createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
         createRiverLabel.setupUi()
+        drawFlowDirection = DrawFlowDirection(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
+        drawFlowDirection.setupUi()
         createBorderLabel = CreateBorderLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
         createBorderLabel.setupUi()
         self.mapTools.extend([
@@ -58,6 +64,7 @@ class SetupButtons:
             createRoadIdentifierSymbol,
             createLakeLabel,
             createRiverLabel,
+            drawFlowDirection,
             createBorderLabel
         ])
         self.mapToolsActions.extend([
@@ -65,6 +72,7 @@ class SetupButtons:
             createRoadIdentifierSymbol._action,
             createLakeLabel._action,
             createRiverLabel._action,
+            drawFlowDirection._action,
             createBorderLabel._action
         ])
         self.tools.extend([
@@ -74,11 +82,13 @@ class SetupButtons:
             cycleTextJustificationButton,
             copyToGenericLabelButton,
             cycleLabelPositionButton,
+            alternateTextVisibilityButton,
             cycleVisibilityButton,
             createVegetationSymbol,
             createRoadIdentifierSymbol,
             createLakeLabel,
             createRiverLabel,
+            drawFlowDirection,
             createBorderLabel
         ])
         self.actionGroup = self.setupActionGroup(*self.mapTools)

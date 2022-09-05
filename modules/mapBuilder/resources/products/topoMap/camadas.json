@@ -177,7 +177,7 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_trecho_hidroviario_l",
+            "table": "infra_travessia_hidroviaria_l",
             "schema": "edgv"
         },
         {
@@ -303,7 +303,7 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_trecho_hidroviario_l",
+            "table": "infra_travessia_hidroviaria_l",
             "schema": "edgv"
         },
         {
