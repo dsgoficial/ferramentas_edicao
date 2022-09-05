@@ -474,20 +474,6 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         
         return polyA.intersection(polyB)
     
-    def addArrow(self, point : core.QgsPointXY, rot : float):
-        """ Adiciona a seta indicativa da direcao da corrente """
-
-        # TODO: DELETE THIS
-
-        toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert.setAttribute('simb_rot', rot)
-        toInsertGeom = QgsGeometry.fromPointXY(point)
-        toInsert.setGeometry(toInsertGeom)
-
-        self.dstLyr.startEditing()
-        self.dstLyr.addFeature(toInsert)
-        self.canvas.refresh()
-    
     @staticmethod
     def versorFromLineGeometry(lineGeometry : QgsGeometry) -> tuple[float, float]:
         p1 = lineGeometry.asPolyline()[0]
