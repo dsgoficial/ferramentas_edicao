@@ -484,4 +484,3 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         dy = p2.y() - p1.y()
 
         return dx/dist, dy/dist
-        
