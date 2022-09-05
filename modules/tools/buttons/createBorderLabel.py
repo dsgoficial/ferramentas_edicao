@@ -366,46 +366,27 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         """ Adiciona o rótulo de fronteira """
 
         toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert.setAttribute('texto_edicao', labelText)
-        toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
+        toInsert.setAttribute('texto_edicao', labelText.upper())
+        toInsert.setAttribute('estilo_fonte', 'Condensed Bold')
         toInsert.setAttribute('espacamento', 0)
         if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
             toInsert.setAttribute('cor', '#ffffff')
         elif self.productTypeSelector.currentIndex() == 1: #Topografica
-            toInsert.setAttribute('cor', '#00a0df')
+            toInsert.setAttribute('cor', '#000000')
         else:
-            toInsert.setAttribute('cor', '#00a0df')
-            self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
+            toInsert.setAttribute('cor', '#000000')
+            self.displayErrorMessage('Tipo de produto inválido, cor = #000000, mesma da carta topográfica')
         toInsert.setAttribute('carta_simbolizacao', self.getMapType())
-        fontSize = self.getLabelFontSize(border)
+        fontSize = 10
         toInsert.setAttribute('tamanho_txt', fontSize)
         toInsertGeom = self.getLabelGeometry(border, point, fontSize * len(labelText))
         if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
-            toInsert.setAttribute('tamanho_buffer', 1)
-            toInsert.setAttribute('cor_buffer', '#00a0df')
+            toInsert.setAttribute('tamanho_buffer', 0.5)
+            toInsert.setAttribute('cor_buffer', '#000000')
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
         self.dstLyr.triggerRepaint()
-    
-    def getLabelFontSize(self, geometry : QgsGeometry) -> float:
-        scale = self.getScale()
-        scaleComparator = scale/1000
-        if self.lyrCrs.isGeographic():
-            convertLength = QgsDistanceArea()
-            convertLength.setEllipsoid(self.lyrCrs.authid())
-            measure = convertLength.measureLength(geometry)
-            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
-        else:
-            length = geometry.length()
-        if length < 80*scaleComparator:
-            return 6
-        elif length < 120*scaleComparator:
-            return 7
-        elif length < 160*scaleComparator:
-            return 8
-        else:
-            return 9
     
     def getLabelGeometry(self, geom : core.QgsGeometry, clickPos : core.QgsPointXY, labelSize : float):
         interpolateSize = labelSize * self.tolerance / 15
