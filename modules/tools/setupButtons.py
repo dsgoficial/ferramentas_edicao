@@ -15,6 +15,7 @@ from .buttons.createRoadIdentifierSymbol import CreateRoadIdentifierSymbol
 from .buttons.createLakeLabel import CreateLakeLabel
 from .buttons.createRiverLabel import CreateRiverLabel
 from .buttons.drawFlowDirection import DrawFlowDirection
+from .buttons.createBorderLabel import CreateBorderLabel
 
 class SetupButtons:
 
@@ -56,19 +57,23 @@ class SetupButtons:
         createRiverLabel.setupUi()
         drawFlowDirection = DrawFlowDirection(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
         drawFlowDirection.setupUi()
+        createBorderLabel = CreateBorderLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
+        createBorderLabel.setupUi()
         self.mapTools.extend([
             createVegetationSymbol,
             createRoadIdentifierSymbol,
             createLakeLabel,
             createRiverLabel,
-            drawFlowDirection
+            drawFlowDirection,
+            createBorderLabel
         ])
         self.mapToolsActions.extend([
             createVegetationSymbol._action,
             createRoadIdentifierSymbol._action,
             createLakeLabel._action,
             createRiverLabel._action,
-            drawFlowDirection._action
+            drawFlowDirection._action,
+            createBorderLabel._action
         ])
         self.tools.extend([
             productTypeSelector,
@@ -83,7 +88,8 @@ class SetupButtons:
             createRoadIdentifierSymbol,
             createLakeLabel,
             createRiverLabel,
-            drawFlowDirection
+            drawFlowDirection,
+            createBorderLabel
         ])
         self.actionGroup = self.setupActionGroup(*self.mapTools)
         productTypeSelector.currentIndexChanged.connect(lambda idx, compareIdx=[1], btn=createVegetationSymbol._action: self.disableAction(idx, compareIdx, btn))
