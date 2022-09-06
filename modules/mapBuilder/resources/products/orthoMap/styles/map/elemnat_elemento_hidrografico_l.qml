@@ -373,7 +373,7 @@
                 </Option>
                 <Option name="BufferColor" type="Map">
                   <Option name="active" value="true" type="bool"/>
-                  <Option name="expression" value="project_color('ciano_0-160-223_#00A0DF')" type="QString"/>
+                  <Option name="expression" value="project_color('ciano_0-255-255_#00FFFF')" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
                 <Option name="Color" type="Map">
