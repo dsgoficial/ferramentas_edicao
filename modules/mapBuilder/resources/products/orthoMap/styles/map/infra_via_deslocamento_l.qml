@@ -83,7 +83,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -154,7 +154,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('marrom_149-80-88_#955058')" type="QString" name="expression"/>
+                    <Option value="project_color('marrom-escuro_148-20-56_#941438')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -305,7 +305,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -376,7 +376,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('marrom_149-80-88_#955058')" type="QString" name="expression"/>
+                    <Option value="project_color('marrom-escuro_148-20-56_#941438')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -456,7 +456,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -527,7 +527,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('marrom_149-80-88_#955058')" type="QString" name="expression"/>
+                    <Option value="project_color('marrom-escuro_148-20-56_#941438')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -678,7 +678,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -749,7 +749,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('marrom54_180-127-140_#B47F8C')" type="QString" name="expression"/>
+                    <Option value="project_color('marrom-escuro-54_197-109-134_#C56D86')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -900,7 +900,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -971,7 +971,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('marrom54_180-127-140_#B47F8C')" type="QString" name="expression"/>
+                    <Option value="project_color('marrom-escuro-54_197-109-134_#C56D86')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -1051,7 +1051,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -1122,7 +1122,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('marrom54_180-127-140_#B47F8C')" type="QString" name="expression"/>
+                    <Option value="project_color('marrom-escuro-54_197-109-134_#C56D86')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -1273,7 +1273,7 @@
                 <Option type="Map" name="properties">
                   <Option type="Map" name="outlineColor">
                     <Option value="true" type="bool" name="active"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                     <Option value="3" type="int" name="type"/>
                   </Option>
                 </Option>
@@ -1493,7 +1493,7 @@
               <Option type="Map" name="properties">
                 <Option type="Map" name="BufferColor">
                   <Option value="true" type="bool" name="active"/>
-                  <Option value="project_color('preto0_0-0-0_#000000')" type="QString" name="expression"/>
+                  <Option value="project_color('preto_0-0-0_#000000')" type="QString" name="expression"/>
                   <Option value="3" type="int" name="type"/>
                 </Option>
                 <Option type="Map" name="Color">

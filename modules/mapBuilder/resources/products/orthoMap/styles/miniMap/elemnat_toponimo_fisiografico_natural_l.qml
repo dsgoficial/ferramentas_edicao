@@ -215,7 +215,7 @@
                   </Option>
                   <Option name="BufferColor" type="Map">
                     <Option value="true" name="active" type="bool"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" name="expression" type="QString"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" name="expression" type="QString"/>
                     <Option value="3" name="type" type="int"/>
                   </Option>
                   <Option name="Color" type="Map">
@@ -405,7 +405,7 @@
                   </Option>
                   <Option name="BufferColor" type="Map">
                     <Option value="true" name="active" type="bool"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" name="expression" type="QString"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" name="expression" type="QString"/>
                     <Option value="3" name="type" type="int"/>
                   </Option>
                   <Option name="Color" type="Map">
@@ -590,7 +590,7 @@
                 <Option name="properties" type="Map">
                   <Option name="BufferColor" type="Map">
                     <Option value="true" name="active" type="bool"/>
-                    <Option value="project_color('preto0_0-0-0_#000000')" name="expression" type="QString"/>
+                    <Option value="project_color('preto_0-0-0_#000000')" name="expression" type="QString"/>
                     <Option value="3" name="type" type="int"/>
                   </Option>
                   <Option name="Color" type="Map">
