@@ -78,7 +78,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option value="true" name="active" type="bool"/>
-                    <Option value="project_color('ciano_0-255-255_#00FFFF')" name="expression" type="QString"/>
+                    <Option value="project_color('ciano-100_0-160-223_#00A0DF')" name="expression" type="QString"/>
                     <Option value="3" name="type" type="int"/>
                   </Option>
                 </Option>
@@ -452,12 +452,12 @@
               <Option name="properties" type="Map">
                 <Option name="BufferColor" type="Map">
                   <Option value="true" name="active" type="bool"/>
-                  <Option value="project_color('ciano_0-255-255_#00FFFF')" name="expression" type="QString"/>
+                  <Option value="project_color('ciano-100_0-160-223_#00A0DF')" name="expression" type="QString"/>
                   <Option value="3" name="type" type="int"/>
                 </Option>
                 <Option name="Color" type="Map">
                   <Option value="true" name="active" type="bool"/>
-                  <Option value="project_color('branco_255-255-255_#FFFFFF')" name="expression" type="QString"/>
+                  <Option value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression" type="QString"/>
                   <Option value="3" name="type" type="int"/>
                 </Option>
                 <Option name="Show" type="Map">
@@ -786,12 +786,12 @@
               <Option name="properties" type="Map">
                 <Option name="BufferColor" type="Map">
                   <Option value="true" name="active" type="bool"/>
-                  <Option value="project_color('ciano_0-255-255_#00FFFF')" name="expression" type="QString"/>
+                  <Option value="project_color('ciano-100_0-160-223_#00A0DF')" name="expression" type="QString"/>
                   <Option value="3" name="type" type="int"/>
                 </Option>
                 <Option name="Color" type="Map">
                   <Option value="true" name="active" type="bool"/>
-                  <Option value="project_color('branco_255-255-255_#FFFFFF')" name="expression" type="QString"/>
+                  <Option value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression" type="QString"/>
                   <Option value="3" name="type" type="int"/>
                 </Option>
                 <Option name="LinePlacementFlags" type="Map">

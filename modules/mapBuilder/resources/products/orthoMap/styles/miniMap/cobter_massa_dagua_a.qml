@@ -341,12 +341,12 @@
                 </Option>
                 <Option type="Map" name="BufferColor">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('ciano_0-255-255_#00FFFF')" name="expression"/>
+                  <Option type="QString" value="project_color('ciano-100_0-160-223_#00A0DF')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="Color">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('branco_255-255-255_#FFFFFF')" name="expression"/>
+                  <Option type="QString" value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="MultiLineAlignment">

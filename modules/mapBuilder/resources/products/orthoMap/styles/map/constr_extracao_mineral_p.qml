@@ -61,12 +61,12 @@
               <Option type="Map" name="properties">
                 <Option type="Map" name="fillColor">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="project_color('branco_255-255-255_#FFFFFF')"/>
+                  <Option type="QString" name="expression" value="project_color('branco-100_255-255-255_#FFFFFF')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
                 <Option type="Map" name="outlineColor">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="project_color('preto_0-0-0_#000000')"/>
+                  <Option type="QString" name="expression" value="project_color('preto-0_0-0-0_#000000')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
               </Option>
@@ -177,12 +177,12 @@
               <Option type="Map" name="properties">
                 <Option type="Map" name="fillColor">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="project_color('branco_255-255-255_#FFFFFF')"/>
+                  <Option type="QString" name="expression" value="project_color('branco-100_255-255-255_#FFFFFF')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
                 <Option type="Map" name="outlineColor">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="project_color('preto_0-0-0_#000000')"/>
+                  <Option type="QString" name="expression" value="project_color('preto-0_0-0-0_#000000')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
               </Option>
@@ -374,12 +374,12 @@
                 </Option>
                 <Option type="Map" name="BufferColor">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="project_color('preto_0-0-0_#000000')"/>
+                  <Option type="QString" name="expression" value="project_color('preto-0_0-0-0_#000000')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
                 <Option type="Map" name="Color">
                   <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="project_color('branco_255-255-255_#FFFFFF')"/>
+                  <Option type="QString" name="expression" value="project_color('branco-100_255-255-255_#FFFFFF')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
                 <Option type="Map" name="MultiLineAlignment">

@@ -78,7 +78,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option name="active" value="true" type="bool"/>
-                    <Option name="expression" value="project_color('marrom-escuro-54_197-109-134_#C56D86')" type="QString"/>
+                    <Option name="expression" value="project_color('marrom-escuro202-54_180-127-140_#B47F8C')" type="QString"/>
                     <Option name="type" value="3" type="int"/>
                   </Option>
                 </Option>
@@ -149,7 +149,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option name="active" value="true" type="bool"/>
-                    <Option name="expression" value="project_color('preto_0-0-0_#000000')" type="QString"/>
+                    <Option name="expression" value="project_color('preto-0_0-0-0_#000000')" type="QString"/>
                     <Option name="type" value="3" type="int"/>
                   </Option>
                 </Option>
@@ -229,7 +229,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option name="active" value="true" type="bool"/>
-                    <Option name="expression" value="project_color('marrom-escuro-42_208-138-158_#D08A9E')" type="QString"/>
+                    <Option name="expression" value="project_color('marrom-escuro202-42_194-151-165_#C297A5')" type="QString"/>
                     <Option name="type" value="3" type="int"/>
                   </Option>
                 </Option>
@@ -300,7 +300,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option name="active" value="true" type="bool"/>
-                    <Option name="expression" value="project_color('preto_0-0-0_#000000')" type="QString"/>
+                    <Option name="expression" value="project_color('preto-0_0-0-0_#000000')" type="QString"/>
                     <Option name="type" value="3" type="int"/>
                   </Option>
                 </Option>
@@ -405,12 +405,12 @@
                     <Option name="properties" type="Map">
                       <Option name="fillColor" type="Map">
                         <Option name="active" value="true" type="bool"/>
-                        <Option name="expression" value="project_color('preto_0-0-0_#000000')" type="QString"/>
+                        <Option name="expression" value="project_color('preto-0_0-0-0_#000000')" type="QString"/>
                         <Option name="type" value="3" type="int"/>
                       </Option>
                       <Option name="outlineColor" type="Map">
                         <Option name="active" value="true" type="bool"/>
-                        <Option name="expression" value="project_color('preto_0-0-0_#000000')" type="QString"/>
+                        <Option name="expression" value="project_color('preto-0_0-0-0_#000000')" type="QString"/>
                         <Option name="type" value="3" type="int"/>
                       </Option>
                     </Option>
@@ -553,12 +553,12 @@
               <Option name="properties" type="Map">
                 <Option name="BufferColor" type="Map">
                   <Option name="active" value="false" type="bool"/>
-                  <Option name="expression" value="project_color('preto_0-0-0_#000000')" type="QString"/>
+                  <Option name="expression" value="project_color('preto-0_0-0-0_#000000')" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
                 <Option name="Color" type="Map">
                   <Option name="active" value="false" type="bool"/>
-                  <Option name="expression" value="project_color('branco_255-255-255_#FFFFFF')" type="QString"/>
+                  <Option name="expression" value="project_color('branco-100_255-255-255_#FFFFFF')" type="QString"/>
                   <Option name="type" value="3" type="int"/>
                 </Option>
               </Option>

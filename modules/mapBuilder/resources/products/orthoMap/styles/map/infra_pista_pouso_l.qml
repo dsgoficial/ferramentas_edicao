@@ -109,12 +109,12 @@
                   <Option type="Map" name="properties">
                     <Option type="Map" name="fillColor">
                       <Option type="bool" value="true" name="active"/>
-                      <Option type="QString" value="project_color('branco_255-255-255_#FFFFFF')" name="expression"/>
+                      <Option type="QString" value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression"/>
                       <Option type="int" value="3" name="type"/>
                     </Option>
                     <Option type="Map" name="outlineColor">
                       <Option type="bool" value="true" name="active"/>
-                      <Option type="QString" value="project_color('azul-escuro_20-77-255_#144DFF')" name="expression"/>
+                      <Option type="QString" value="project_color('azul72-100_56-70-157_#38469D')" name="expression"/>
                       <Option type="int" value="3" name="type"/>
                     </Option>
                   </Option>
@@ -228,12 +228,12 @@
                   <Option type="Map" name="properties">
                     <Option type="Map" name="fillColor">
                       <Option type="bool" value="true" name="active"/>
-                      <Option type="QString" value="project_color('branco_255-255-255_#FFFFFF')" name="expression"/>
+                      <Option type="QString" value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression"/>
                       <Option type="int" value="3" name="type"/>
                     </Option>
                     <Option type="Map" name="outlineColor">
                       <Option type="bool" value="true" name="active"/>
-                      <Option type="QString" value="project_color('azul-escuro-42_156-181-255_#9CB5FF')" name="expression"/>
+                      <Option type="QString" value="project_color('azul72-42_121-135-200_#7987C8')" name="expression"/>
                       <Option type="int" value="3" name="type"/>
                     </Option>
                   </Option>
@@ -380,12 +380,12 @@
                 </Option>
                 <Option type="Map" name="BufferColor">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('azul-escuro_20-77-255_#144DFF')" name="expression"/>
+                  <Option type="QString" value="project_color('azul72-100_56-70-157_#38469D')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="Color">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('branco_255-255-255_#FFFFFF')" name="expression"/>
+                  <Option type="QString" value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="MultiLineAlignment">

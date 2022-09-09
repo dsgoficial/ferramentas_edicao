@@ -198,12 +198,12 @@
                 </Option>
                 <Option type="Map" name="BufferColor">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('preto_0-0-0_#000000')" name="expression"/>
+                  <Option type="QString" value="project_color('preto-0_0-0-0_#000000')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="Color">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('branco_255-255-255_#FFFFFF')" name="expression"/>
+                  <Option type="QString" value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="FontLetterSpacing">
@@ -403,12 +403,12 @@
                 </Option>
                 <Option type="Map" name="BufferColor">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('preto_0-0-0_#000000')" name="expression"/>
+                  <Option type="QString" value="project_color('preto-0_0-0-0_#000000')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="Color">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('branco_255-255-255_#FFFFFF')" name="expression"/>
+                  <Option type="QString" value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="FontLetterSpacing">
@@ -608,12 +608,12 @@
                 </Option>
                 <Option type="Map" name="BufferColor">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('preto_0-0-0_#000000')" name="expression"/>
+                  <Option type="QString" value="project_color('preto-0_0-0-0_#000000')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="Color">
                   <Option type="bool" value="true" name="active"/>
-                  <Option type="QString" value="project_color('branco_255-255-255_#FFFFFF')" name="expression"/>
+                  <Option type="QString" value="project_color('branco-100_255-255-255_#FFFFFF')" name="expression"/>
                   <Option type="int" value="3" name="type"/>
                 </Option>
                 <Option type="Map" name="FontLetterSpacing">

@@ -77,7 +77,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option name="active" value="true" type="bool"/>
-                    <Option name="expression" value="project_color('verde-346-42_196-255-201_#C4FFC9')" type="QString"/>
+                    <Option name="expression" value="project_color('verde346-42_131-194-164_#83C2A4')" type="QString"/>
                     <Option name="type" value="3" type="int"/>
                   </Option>
                 </Option>
@@ -148,7 +148,7 @@
                 <Option name="properties" type="Map">
                   <Option name="outlineColor" type="Map">
                     <Option name="active" value="true" type="bool"/>
-                    <Option name="expression" value="project_color('preto_0-0-0_#000000')" type="QString"/>
+                    <Option name="expression" value="project_color('preto-0_0-0-0_#000000')" type="QString"/>
                     <Option name="type" value="3" type="int"/>
                   </Option>
                 </Option>
