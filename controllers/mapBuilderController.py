@@ -36,7 +36,6 @@ class MapBuildController(MapBuildControllerUtils):
         self.debugMode = (Path(__file__).parent.parent / '.env').exists()
         self.exporter = ExporterSingleton()
         self.builders = dict()
-        self.setColorPalette()
 
     def setColorPalette(self):
         schemeName = "Project colors"
@@ -229,6 +228,7 @@ class MapBuildController(MapBuildControllerUtils):
         # TODO: run in a different thread
         # TODO: better layers / composition cleanup
         '''Runs the specified MapBuilder according to dlg / json preferences'''
+        self.setColorPalette()
         dlgCfg = self.setupDlgCfg(self.dlg)
         for jsonPath in dlgCfg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
