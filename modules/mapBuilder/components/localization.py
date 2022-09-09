@@ -63,7 +63,7 @@ class Localization(ComponentUtils,IComponent):
         if showLayers:
             localizationGroupNode = QgsLayerTreeGroup('localization')
             localizationGroupNode.setItemVisibilityChecked(False)
-            for layer in (mapAreaLayer, stateLayerBackground):
+            for layer in (mapAreaLayer, stateLayerBackground, layerState, layerCountryArea, layerOcean):
                 localizationGroupNode.addLayer(layer)
             root = instance.layerTreeRoot()
             root.addChildNode(localizationGroupNode)
