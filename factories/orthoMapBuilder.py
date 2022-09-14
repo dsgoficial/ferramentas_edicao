@@ -73,12 +73,10 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             mapAreaFeature=self.mapAreaFeature
         )
         mapLayers, mapLayersIds = getLayersFromDbLambda('map')
-        elevationDiagramLayers, elevationDiagramLayersIds = getLayersFromDbLambda('miniMap')
+        elevationDiagramLayers, elevationDiagramLayersIds = getLayersFromDbLambda('elevationDiagram')
         imgLayers, imgLayersIds = self.createRasterLayers(self.data.get('imagens', tuple()))
         mapLayers = [*mapLayers, *imgLayers]
         mapLayersIds = [*mapLayersIds, *imgLayersIds]
-        elevationDiagramLayers = [*elevationDiagramLayers, *imgLayers]
-        elevationDiagramLayersIds = [*elevationDiagramLayersIds, *imgLayersIds]
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()
@@ -93,7 +91,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
                     self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid, debugMode)
             elif key == 'elevationDiagram':
                 elevationDiagramLayersIds = component.build(
-                    self.composition, self.mapAreaFeature, elevationDiagramLayers, debugMode)
+                    self.composition, self.data, self.mapAreaFeature, elevationDiagramLayers, debugMode)
             elif key == 'localization':
                 localizationLayersIds = component.build(
                     self.composition, self.data, self.mapAreaFeature, debugMode)
