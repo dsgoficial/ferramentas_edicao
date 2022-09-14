@@ -39,7 +39,14 @@ class ElevationDiagram(ComponentUtils,IComponent):
         elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr)
         
         layers.append(elevationSlicingLyr)
-        self.updateComposition(composition, mapExtents, layers, nClasses, scale=data.get('scale'))
+        self.updateComposition(
+            composition,
+            mapExtents,
+            layers,
+            nClasses,
+            scale=data.get('scale'),
+            elevationSlicingLyr=elevationSlicingLyr
+        )
         if showLayers:
             elevationDiagramGroupNode = QgsLayerTreeGroup('elevationDiagram')	
             elevationDiagramGroupNode.setItemVisibilityChecked(False)								
@@ -78,7 +85,10 @@ class ElevationDiagram(ComponentUtils,IComponent):
         layerProvider = elevationSlicingLyr.dataProvider()
         layerProvider.addFeatures([feat for feat in processingOutput.getFeatures()])
         nClasses = max(int(feat['class']) for feat in elevationSlicingLyr.getFeatures()) + 1
-        elevationSlicingLyr.loadNamedStyle(str(self.stylesFolder / f'edicao_fatiamento_terreno_{nClasses}_classes_a.qml'), True)
+        elevationSlicingLyr.loadNamedStyle(
+            str(self.stylesFolder / f'edicao_fatiamento_terreno_{nClasses}_classes_a.qml'),
+            True
+        )
         elevationSlicingLyr.triggerRepaint()
         QgsProject.instance().addMapLayer(elevationSlicingLyr, False)
         return elevationSlicingLyr, nClasses
@@ -96,7 +106,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         return layer
 
     
-    def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: List[QgsMapLayer], nClasses: int, scale: int):
+    def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: List[QgsMapLayer], nClasses: int, scale: int, elevationSlicingLyr: QgsVectorLayer):
         mapItem = composition.itemById("elevationDiagram")
         if mapItem is None:
             return
@@ -128,6 +138,9 @@ class ElevationDiagram(ComponentUtils,IComponent):
             return
         scaleBar.setPicturePath(str(self.barSvgFolder / f'diagrama_{nClasses}_classes.svg'))
         scaleBar.refresh()
+
+        self.setBarClassText(composition, nClasses)
+        self.setRangeClass(composition, nClasses, elevationSlicingLyr)
 
     
     @staticmethod
@@ -183,3 +196,46 @@ class ElevationDiagram(ComponentUtils,IComponent):
         gridLayoutItem.setAnnotationEnabled(True)
         gridLayoutItem.setEnabled(True)
         return gridLayoutItem
+
+    def setBarClassText(self, composition: QgsPrintLayout, nClasses: int):
+        baixoItem = composition.itemById(f"textoBaixo_{nClasses}classes")  
+        baixoItem.setText("Baixo")
+        baixoItem.refresh()
+
+        altoItem = composition.itemById(f"textoAlto_{nClasses}classes")  
+        altoItem.setText("Alto")
+        altoItem.refresh()
+
+        if nClasses == 2:
+            return
+        medioItem = composition.itemById(f"textoMedio_{nClasses}classes")
+        medioItem.setText("Médio")
+        medioItem.refresh()
+
+        if nClasses == 3:
+            return
+        maisAltoItem = composition.itemById(f"textoMaisAlto_{nClasses}classes")
+        maisAltoItem.setText("Mais Alto")
+        maisAltoItem.refresh()
+
+    def setRangeClass(self, composition: QgsPrintLayout, nClasses: int, elevationSlicingLyr: QgsVectorLayer):
+        rangeClassDict = {
+            feat['class']: str(feat['class_max']) for feat in elevationSlicingLyr.getFeatures()
+        }
+        maxClasseZeroItem = composition.itemById(f"maxClasse0_{nClasses}classes")
+        maxClasseZeroItem.setText(rangeClassDict[0])
+        maxClasseZeroItem.refresh()
+
+        if nClasses == 2:
+            return
+
+        maxClasseUmItem = composition.itemById(f"maxClasse1_{nClasses}classes")
+        maxClasseUmItem.setText(rangeClassDict[1])
+        maxClasseUmItem.refresh()
+        
+        if nClasses == 3:
+            return
+        
+        maxClasseUmItem = composition.itemById(f"maxClasse2_{nClasses}classes")
+        maxClasseUmItem.setText(rangeClassDict[2])
+        maxClasseUmItem.refresh()
