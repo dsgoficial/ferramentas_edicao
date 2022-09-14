@@ -21,6 +21,12 @@ class ElevationDiagram(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
         self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'styles' / 'elevationDiagram'
         self.barSvgFolder = Path(__file__).parent.parent / 'resources' / 'products' / 'common'
+        self.gridSpacingDict = {
+            25: 5000,
+            50: 10000,
+            100: 20000,
+            250: 40000,
+        }
 
     def build(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature,
@@ -33,7 +39,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr)
         
         layers.append(elevationSlicingLyr)
-        self.updateComposition(composition, mapExtents, layers, nClasses)
+        self.updateComposition(composition, mapExtents, layers, nClasses, scale=data.get('scale'))
         if showLayers:
             elevationDiagramGroupNode = QgsLayerTreeGroup('elevationDiagram')	
             elevationDiagramGroupNode.setItemVisibilityChecked(False)								
@@ -90,22 +96,22 @@ class ElevationDiagram(ComponentUtils,IComponent):
         return layer
 
     
-    def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: List[QgsMapLayer], nClasses: int):
+    def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: List[QgsMapLayer], nClasses: int, scale: int):
         mapItem = composition.itemById("elevationDiagram")
         if mapItem is None:
             return
         crs = QgsCoordinateReferenceSystem(getSirgasAuthIdByPointLatLong(mapExtents.center().y(), mapExtents.center().x()))
         gridX = self.createGridX(
             parentLayoutItem=mapItem,
-            gridIntervalX=10000,
-            gridIntervalY=10000,
+            gridIntervalX=self.gridSpacingDict[scale],
+            gridIntervalY=self.gridSpacingDict[scale],
             crs=crs,
         )
         mapItem.grids().addGrid(gridX)
         gridY = self.createGridY(
             parentLayoutItem=mapItem,
-            gridIntervalX=10000,
-            gridIntervalY=10000,
+            gridIntervalX=self.gridSpacingDict[scale],
+            gridIntervalY=self.gridSpacingDict[scale],
             crs=crs,
         )
         mapItem.grids().addGrid(gridY)
@@ -136,9 +142,10 @@ class ElevationDiagram(ComponentUtils,IComponent):
 
     def createGridX(self, parentLayoutItem: QgsLayoutItemMap, gridIntervalX: int, gridIntervalY: int, crs: QgsCoordinateReferenceSystem) -> QgsLayoutItemMapGrid:
         gridLayoutItem = QgsLayoutItemMapGrid('x-grid', parentLayoutItem)
-        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.FrameAnnotationsOnly)
+        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.Solid)
         gridLayoutItem.setIntervalX(gridIntervalX)
         gridLayoutItem.setIntervalY(gridIntervalY)
+        gridLayoutItem.lineSymbol().setWidth(0.1)
         gridLayoutItem.setAnnotationFormat(QgsLayoutItemMapGrid.CustomFormat)
         gridLayoutItem.setAnnotationExpression(
             """if(left(right( @grid_number , 4),1) = 0, 
@@ -157,9 +164,10 @@ class ElevationDiagram(ComponentUtils,IComponent):
 
     def createGridY(self, parentLayoutItem: QgsLayoutItemMap, gridIntervalX: int, gridIntervalY: int, crs: QgsCoordinateReferenceSystem) -> QgsLayoutItemMapGrid:
         gridLayoutItem = QgsLayoutItemMapGrid('y-grid', parentLayoutItem)
-        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.FrameAnnotationsOnly)
+        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.Solid)
         gridLayoutItem.setIntervalX(gridIntervalX)
         gridLayoutItem.setIntervalY(gridIntervalY)
+        gridLayoutItem.lineSymbol().setWidth(0.1)
         gridLayoutItem.setAnnotationFormat(QgsLayoutItemMapGrid.CustomFormat)
         gridLayoutItem.setAnnotationExpression(
             """if(left(right( @grid_number , 4),1) = 0, 
