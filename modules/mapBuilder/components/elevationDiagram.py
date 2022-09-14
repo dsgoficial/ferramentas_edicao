@@ -30,9 +30,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
         if not isinstance(layers, list):
             layers = [layers]
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
-        elevationSlicingLyr = self.getElevationSlicing(data, geographicBoundsLyr)
-        nClasses = max(int(feat['class']) for feat in elevationSlicingLyr.getFeatures()) + 1
-        elevationSlicingLyr.loadNamedStyle(str(self.stylesFolder / f'edicao_fatiamento_terreno_{nClasses}_a.qml'), True)
+        elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr)
+        
         layers.append(elevationSlicingLyr)
         self.updateComposition(composition, mapExtents, layers, nClasses)
         if showLayers:
@@ -72,8 +71,11 @@ class ElevationDiagram(ComponentUtils,IComponent):
         )['OUTPUT_POLYGONS']
         layerProvider = elevationSlicingLyr.dataProvider()
         layerProvider.addFeatures([feat for feat in processingOutput.getFeatures()])
+        nClasses = max(int(feat['class']) for feat in elevationSlicingLyr.getFeatures()) + 1
+        elevationSlicingLyr.loadNamedStyle(str(self.stylesFolder / f'edicao_fatiamento_terreno_{nClasses}_classes_a.qml'), True)
+        elevationSlicingLyr.triggerRepaint()
         QgsProject.instance().addMapLayer(elevationSlicingLyr, False)
-        return elevationSlicingLyr
+        return elevationSlicingLyr, nClasses
     
     def createTerrainLayer(self):
         layer = QgsVectorLayer('Polygon?crs=EPSG:4674', 'terrainSlicing', 'memory')
