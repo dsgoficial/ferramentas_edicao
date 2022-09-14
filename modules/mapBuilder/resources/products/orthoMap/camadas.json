@@ -250,5 +250,23 @@
             "table": "cobter_massa_dagua_a",
             "schema": "edgv"
         }
+    ],
+    "elevationDiagram": [
+        {
+            "table": "elemnat_ponto_cotado_p",
+            "schema": "edgv"
+        },
+        {
+            "table": "elemnat_trecho_drenagem_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_area_sem_dados_a",
+            "schema": "edgv"
+        },
+        {
+            "table": "cobter_massa_dagua_a",
+            "schema": "edgv"
+        }
     ]
 }
