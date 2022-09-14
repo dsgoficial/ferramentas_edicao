@@ -89,10 +89,8 @@ class PrepareTopo(QgsProcessingAlgorithm):
             'cobter_massa_dagua_a'
         ]
         layersToCalculateSobreposition = [
-            'llp_area_pub_militar_l',
-            'llp_limite_legal_l',
-            'llp_terra_indigena_l',
-            'llp_unidade_conservacao_l'
+            'edicao_limite_legal_l',
+            'edicao_limite_especial_l'
         ]
         _refLayersNamesSobreposition = [
             'elemnat_trecho_drenagem_l',
@@ -198,19 +196,11 @@ class PrepareTopo(QgsProcessingAlgorithm):
                 'visivel': 1,
                 'simbolizar_carta_mini': 2
             },
-            'llp_area_pub_militar_l': {
+            'edicao_limite_legal_l': {
                 'sobreposto': 2,
                 'exibir_rotulo_aproximado': 1
             },
-            'llp_limite_legal_l': {
-                'sobreposto': 2,
-                'exibir_rotulo_aproximado': 1
-            },
-            'llp_terra_indigena_l': {
-                'sobreposto': 2,
-                'exibir_rotulo_aproximado': 1
-            },
-            'llp_unidade_conservacao_l': {
+            'edicao_limite_especial_l': {
                 'sobreposto': 2,
                 'exibir_rotulo_aproximado': 1
             },
@@ -384,7 +374,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
                 feature[ 'texto_edicao' ] = 'Balsa'
                 self.updateLayerFeature( layer, feature)
 
-        elif layerName in [ 'llp_limite_especial_l' ]:
+        elif layerName in [ 'edicao_limite_especial_l' ]:
             for feature in layer.getFeatures():
                 feature[ 'texto_edicao' ] = 'Aproximado'
                 self.updateLayerFeature( layer, feature)

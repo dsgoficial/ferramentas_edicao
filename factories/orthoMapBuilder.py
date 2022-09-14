@@ -54,6 +54,31 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
                     "table": "edicao_simb_cota_mestra_l",
                     "schema": "edgv"
             })
+
+            if 'llp_unidade_federacao_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_limite_legal_l",
+                    "schema": "edgv"
+            })
+
+            if 'llp_area_pub_militar_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_area_pub_militar_l",
+                    "schema": "edgv"
+            })
+
+            if 'llp_terra_indigena_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_terra_indigena_l",
+                    "schema": "edgv"
+            })
+
+            if 'llp_unidade_conservacao_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_unidade_conservacao_l",
+                    "schema": "edgv"
+            })
+            
         return layersToDisplay
 
     def run(self, debugMode: bool = False):
