@@ -65,11 +65,11 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_legal_l",
+            "table": "edicao_limite_legal_l",
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_especial_l",
+            "table": "edicao_limite_especial_l",
             "schema": "edgv"
         },
         {
@@ -295,11 +295,11 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_legal_l",
+            "table": "edicao_limite_legal_l",
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_especial_l",
+            "table": "edicao_limite_especial_l",
             "schema": "edgv"
         },
         {

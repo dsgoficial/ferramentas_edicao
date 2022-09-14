@@ -15,15 +15,13 @@ class ConfigDefaults:
     orthoOptionalClasses: set = field(default_factory=lambda: set([
         'infra_elemento_energia_l', 'infra_elemento_energia_p', 'infra_elemento_energia_a', 'constr_extracao_mineral_a',
         'constr_extracao_mineral_p', 'elemnat_terreno_sujeito_inundacao_a',
-        'llp_limite_legal_l', 'elemnat_curva_nivel_l', 'elemnat_ponto_cotado_p',
+        'llp_unidade_federacao_a', 'elemnat_curva_nivel_l', 'elemnat_ponto_cotado_p',
         'infra_pista_pouso_p', 'infra_pista_pouso_l', 'infra_pista_pouso_a', 'infra_elemento_infraestrutura_p',
         'infra_elemento_infraestrutura_l', 'infra_elemento_infraestrutura_a',
         'elemnat_elemento_hidrografico_p',
         'elemnat_elemento_hidrografico_l', 'elemnat_elemento_hidrografico_a', 'elemnat_toponimo_fisiografico_natural_p',
         'elemnat_toponimo_fisiografico_natural_l', 'elemnat_ilha_p', 'elemnat_ilha_a', 'llp_nome_local_p',
-        'llp_aglomerado_rural_p', 'llp_area_pub_militar_l', 
-        'llp_area_pub_militar_a', 'llp_terra_indigena_l', 'llp_terra_indigena_a', 'llp_unidade_conservacao_l',
-        'llp_unidade_conservacao_a'
+        'llp_aglomerado_rural_p', 'llp_area_pub_militar_a', 'llp_terra_indigena_a', 'llp_unidade_conservacao_a'
     ]))
     scaleBasedStyleTopo: set = field(default_factory=lambda: set(['llp_localidade_p']))
     scaleBasedStyleOrtho: set = field(default_factory=lambda: set(['llp_localidade_p']))

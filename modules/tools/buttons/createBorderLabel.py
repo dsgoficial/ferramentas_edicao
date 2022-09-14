@@ -79,8 +79,8 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
             'Rótulo Fronteira',
             None,
             lambda _: None,
-            self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "llp_limite_legal_l"'),
-            self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "llp_limite_legal_l"'),
+            self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "edicao_limite_legal_l"'),
+            self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "edicao_limite_legal_l"'),
             self.iface
         )
         self._action.setCheckable(True)
@@ -326,13 +326,13 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         gui.QgsMapTool.deactivate(self)
 
     def getLayers(self):
-        srcLyr = QgsProject.instance().mapLayersByName('llp_limite_legal_l')
+        srcLyr = QgsProject.instance().mapLayersByName('edicao_limite_legal_l')
         dstLyr = QgsProject.instance().mapLayersByName('edicao_texto_generico_l')
         if len(srcLyr) == 1:
             self.srcLyr = srcLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Camada "llp_limite_legal_l" não encontrada'
+                'Camada "edicao_limite_legal_l" não encontrada'
             ))
             return None
         if len(dstLyr) == 1:
