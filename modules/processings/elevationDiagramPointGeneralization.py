@@ -97,7 +97,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             context,
             inputPointsLyr.fields(),
             QgsWkbTypes.Point,
-            inputPointsLyr.sourceCrs()
+            QgsCoordinateReferenceSystem("EPSG:4326")
         )
         (self.grid_sink, self.grid_sink_id) = self.parameterAsSink(
             parameters,
@@ -136,7 +136,11 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             return
         multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
         multiStepFeedback.setCurrentStep(0)
-        cachedPoints = self.runAddFeatIdField(inputPointsLyr, context, feedback=multiStepFeedback)
+        cachedPoints = self.reprojectLayer(
+            inputPointsLyr,
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+            feedback=multiStepFeedback
+        )
         multiStepFeedback.setCurrentStep(1)
         self.runCreateSpatialIndex(cachedPoints, feedback=multiStepFeedback)
         multiStepFeedback.setCurrentStep(2)
