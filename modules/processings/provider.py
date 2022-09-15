@@ -6,6 +6,7 @@ from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
 
 from .elevationPointGeneralization import ElevationPointsGeneralization
+from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
 from .loadMasks import LoadMasks
 from .makeGrid import MakeGrid
@@ -40,6 +41,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(SaveLayerStylesToFile())
         self.addAlgorithm(SaveMasks())
         self.addAlgorithm(ElevationPointsGeneralization())
+        self.addAlgorithm(ElevationDiagramPointGeneralization())
         self.addAlgorithm(MakeGrid())
 
     def load(self):

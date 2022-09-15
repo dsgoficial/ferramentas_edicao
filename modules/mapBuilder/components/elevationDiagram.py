@@ -27,6 +27,12 @@ class ElevationDiagram(ComponentUtils,IComponent):
             100: 20000,
             250: 40000,
         }
+        self.scalesDict = {
+            25: 0,
+            50: 1,
+            100: 2,
+            250: 3,
+        }
 
     def build(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature,
@@ -39,6 +45,12 @@ class ElevationDiagram(ComponentUtils,IComponent):
         elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr)
         
         layers.append(elevationSlicingLyr)
+        elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
+
+        generalizedPoints, outputGrid = self.getGeneralizedPoints(pointsLayer, geographicBoundsLyr, data.get('scale'))
+        layers[elevationPointsIdx] = generalizedPoints
+        layers.append(outputGrid)
+
         self.updateComposition(
             composition,
             mapExtents,
@@ -104,6 +116,38 @@ class ElevationDiagram(ComponentUtils,IComponent):
         layerProvider.addAttributes(fields)
         layer.commitChanges()
         return layer
+
+    def getGeneralizedPoints(self, pointsLayer, geographicBoundsLyr, scale):
+
+        processingOutput = processing.run(
+            "ferramentasedicao:elevationdiagrampointgeneralization",
+            {
+                'INPUT_ELEVATION_POINTS': pointsLayer,
+                'ELEVATION_FIELD': 'cota',
+                'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
+                'INPUT_SCALE': self.scalesDict[scale],
+                'OUTPUT_POINTS':'TEMPORARY_OUTPUT',
+                'OUTPUT_GRID':'TEMPORARY_OUTPUT'
+            },
+            context=QgsProcessingContext(),
+            feedback=QgsProcessingFeedback()
+        )
+        outputPoints = processingOutput['OUTPUT_POINTS']
+        outputPoints.loadNamedStyle(
+            str(self.stylesFolder / 'elemnat_ponto_cotado_p.qml'),
+            True
+        )
+        outputPoints.triggerRepaint()
+        QgsProject.instance().addMapLayer(outputPoints, False)
+
+        outputGrid = processingOutput['OUTPUT_GRID']
+        outputGrid.loadNamedStyle(
+            str(self.stylesFolder / 'edicao_grid_diagrama_elevacao_a.qml'),
+            True
+        )
+        outputGrid.triggerRepaint()
+        QgsProject.instance().addMapLayer(outputGrid, False)
+        return outputPoints, outputGrid
 
     
     def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: List[QgsMapLayer], nClasses: int, scale: int, elevationSlicingLyr: QgsVectorLayer):
