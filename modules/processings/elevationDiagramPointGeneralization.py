@@ -85,7 +85,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
         elevationField = self.parameterAsFields (parameters, self.ELEVATION_FIELD, context)[0]
         gridScaleParam = self.parameterAsEnums(parameters, self.INPUT_SCALE, context)[0]
         if inputPointsLyr.featureCount() == 0:
-            return {self.OUTPUT: "Camada sem elementos."}
+            return {self.OUTPUT_POINTS: "Camada sem elementos."}
         geographicBoundaryLyr = self.parameterAsLayer(
             parameters,
             self.GEOGRAPHIC_BOUNDARY,
@@ -108,7 +108,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             geographicBoundaryLyr.sourceCrs()
         )
         if geographicBoundaryLyr.featureCount() == 0:
-            return {self.OUTPUT: "Camada de limite geográfico sem elementos."}
+            return {self.OUTPUT_POINTS: "Camada de limite geográfico sem elementos."}
         nSteps = 2
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback) if feedback is not None else None
         currentStep = 0
@@ -391,7 +391,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
 
         (sink, newLayer) = self.parameterAsSink(
             parameters,
-            self.OUTPUT,
+            self.OUTPUT_POINTS,
             context,
             features[0].fields(),
             4,
