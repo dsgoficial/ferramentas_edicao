@@ -249,6 +249,10 @@
             "schema": "edgv"
         },
         {
+            "table": "edicao_area_sem_dados_a",
+            "schema": "edgv"
+        },
+        {
             "table": "cobter_area_construida_a",
             "schema": "edgv"
         },
@@ -316,6 +320,10 @@
         },
         {
             "table": "elemnat_trecho_drenagem_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_area_sem_dados_a",
             "schema": "edgv"
         },
         {
