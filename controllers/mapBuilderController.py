@@ -231,10 +231,11 @@ class MapBuildController(MapBuildControllerUtils):
         self.setColorPalette()
         dlgCfg = self.setupDlgCfg(self.dlg)
         productType, productName = self.getProductType(dlgCfg.productType)
+        builder = None
         for jsonPath in dlgCfg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
             if 'tipo_produto' not in jsonData:
-                QMessageBox.error(
+                QMessageBox.warning(
                     self.dlg,
                     "Erro",
                     f"A chave tipo_produto não foi encontrada no json de entrada {jsonPath}, ignorando produto. "
@@ -242,7 +243,7 @@ class MapBuildController(MapBuildControllerUtils):
                 )
                 continue
             if dlgCfg.productType != jsonData['tipo_produto']:
-                QMessageBox.error(
+                QMessageBox.warning(
                     self.dlg,
                     "Erro", 
                     f"O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json {jsonPath}, ignorando produto. "
@@ -263,5 +264,9 @@ class MapBuildController(MapBuildControllerUtils):
             exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
             exporter.export(composition)
             builder.removeLayers(self.debugMode)
-        builder.cleanProject(self.debugMode)
-        QMessageBox.warning(self.dlg, "Informação", "A exportação foi concluída")
+        
+        if builder:
+            builder.cleanProject(self.debugMode)
+            QMessageBox.warning(self.dlg, "Informação", "A exportação foi concluída")
+        else:
+            QMessageBox.warning(self.dlg, "Informação", "Não há cartas a serem exportadas")
