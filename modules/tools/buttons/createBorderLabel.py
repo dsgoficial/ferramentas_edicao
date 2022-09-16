@@ -200,15 +200,6 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         self.setActiveState(False)
         self.contadorVert = 0
         self.getCanvas().refresh()
-    
-    def getParametersFromConfig(self):
-        #Método para obter as configurações da tool do QSettings
-        #Parâmetro de retorno: parameters (Todas os parâmetros do QSettings usado na ferramenta)
-        settings = QtCore.QSettings()
-        settings.beginGroup('PythonPlugins/DsgTools/Options')
-        undoPoints = settings.value('undoPoints')
-        settings.endGroup()
-        return int(undoPoints) 
 		    
     def canvasReleaseEvent(self, event):
         #Método para receber os eventos release do canvas do Qgis

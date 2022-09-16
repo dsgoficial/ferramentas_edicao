@@ -1,4 +1,6 @@
 from typing import Any
+
+from ..components.elevationDiagram import ElevationDiagram
 from ..components.anglesHandler import AnglesHandler
 from ..components.articulation import Articulation
 from ..components.division import Division
@@ -30,6 +32,7 @@ class ComponentFactory:
             'Localization': Localization,
             'Map': Map,
             'MapOM': MapOM,
+            'ElevationDiagram': ElevationDiagram,
             'MiniMap': MiniMap,
             'Subtitle': Subtitle,
             'Table': Table,

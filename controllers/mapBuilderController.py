@@ -230,9 +230,25 @@ class MapBuildController(MapBuildControllerUtils):
         '''Runs the specified MapBuilder according to dlg / json preferences'''
         self.setColorPalette()
         dlgCfg = self.setupDlgCfg(self.dlg)
+        productType, productName = self.getProductType(dlgCfg.productType)
         for jsonPath in dlgCfg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
-            productType, productName = self.getProductType(dlgCfg.productType)
+            if 'tipo_produto' not in jsonData:
+                QMessageBox.error(
+                    self.dlg,
+                    "Erro",
+                    f"A chave tipo_produto não foi encontrada no json de entrada {jsonPath}, ignorando produto. "
+                    "Adicione a chave e tente novamente."
+                )
+                continue
+            if dlgCfg.productType != jsonData['tipo_produto']:
+                QMessageBox.error(
+                    self.dlg,
+                    "Erro", 
+                    f"O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json {jsonPath}, ignorando produto. "
+                    "Escolha corretamente o produto ou altere o json de entrada e tente novamente."
+                )
+                continue
             jsonData.update({'productType':productType,'productName': productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
