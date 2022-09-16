@@ -10,7 +10,7 @@ from .controllers.mapBuilderController import MapBuildController
 from .modules.processings.pluginProvider import ProcessingProvider
 from .modules.tools.setupButtons import SetupButtons
 from .resources.dialogs.editionPluginDialog import EditionPluginDialog
-
+from .modules.expressionFunctions import loadExpressionFunctions
 
 class EditionPlugin:
     """QGIS Plugin Implementation."""
@@ -152,6 +152,7 @@ class EditionPlugin:
         self.tools.initToolBar()
         self.processingProvider = ProcessingProvider()
         self.processingProvider.initProcessing()
+        loadExpressionFunctions()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
