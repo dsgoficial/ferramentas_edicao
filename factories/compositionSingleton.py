@@ -77,30 +77,46 @@ class CompositionSingleton:
         # TODO: insert qpts on demand: not every product will need every qpt
         qptsToInsert = list()
         productType = jsonData.get('productType')
-        scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
+        scale = jsonData.get(
+            'scale') if productType != 'omMap' else jsonData.get('omTemplateType')
         productParams: dict = getattr(self.config, productType)
-        headerQptPath = self.setupPath(jsonData.get('cabecalho')) or productParams.get('qpt', {}).get(scale, {}).get('headerPath', None) or self.config.header
-        projectQptPath = self.setupPath(jsonData.get('projeto')) or productParams.get('qpt', {}).get(scale, {}).get('projectPath', None) or self.config.project
-        repRightsQptPath = self.setupPath(jsonData.get('direitos_reproducao')) or productParams.get('qpt', {}).get(scale, {}).get('reproductionRightsPath', None) or self.config.reproductionRights
-        bdgexAcessInfoQptPath = self.setupPath(jsonData.get('acesso_informacao')) or self.config.bdgexAcessInfo
-        if headerQptPath != self.previousQpts.get('header') or composition != self.compositions.get(productType, {}).get(scale):
+        headerQptPath = self.setupPath(jsonData.get('cabecalho')) or \
+            productParams.get('qpt', {}).get(scale, {}).get('headerPath', None) or \
+            self.config.header
+        projectQptPath = self.setupPath(jsonData.get('projeto')) or \
+            productParams.get('qpt', {}).get(scale, {}).get('projectPath', None) or \
+            self.config.project
+        repRightsQptPath = self.setupPath(jsonData.get('direitos_reproducao')) or \
+            productParams.get('qpt', {}).get(scale, {}).get('reproductionRightsPath', None) or \
+            self.config.reproductionRights
+        bdgexAcessInfoQptPath = self.setupPath(jsonData.get(
+            'acesso_informacao')) or self.config.bdgexAcessInfo
+        if headerQptPath != self.previousQpts.get('header') or \
+            composition != self.compositions.get(productType, {}).get(scale):
             self.previousQpts['header'] = headerQptPath
             headerConfig = productParams['qpt'][scale]['header'].copy()
             headerConfig.update({'path': headerQptPath})
             qptsToInsert.append(headerConfig)
-        if projectQptPath != self.previousQpts.get('project') or composition != self.compositions.get(productType, {}).get(scale):
+        if projectQptPath != self.previousQpts.get('project') or \
+            composition != self.compositions.get(productType, {}).get(scale):
             self.previousQpts['project'] = projectQptPath
             projectConfig = productParams['qpt'][scale]['project'].copy()
             projectConfig.update({'path': projectQptPath})
             qptsToInsert.append(projectConfig)
-        if repRightsQptPath != self.previousQpts.get('reproductionRights') or composition != self.compositions.get(productType, {}).get(scale):
+        if repRightsQptPath != self.previousQpts.get('reproductionRights') or \
+            composition != self.compositions.get(productType, {}).get(scale):
             self.previousQpts['reproductionRights'] = repRightsQptPath
-            repRightsConfig = productParams['qpt'][scale]['reproductionRights'].copy()
+            repRightsConfig = productParams['qpt'][scale]['reproductionRights'].copy(
+            )
             repRightsConfig.update({'path': repRightsQptPath})
             qptsToInsert.append(repRightsConfig)
-        if productType in ('orthoMap', 'omMap') and (bdgexAcessInfoQptPath != self.previousQpts.get('bdgexAcessInfo') or composition != self.compositions.get(productType, {}).get(scale)):
+        if productType in ('orthoMap', 'omMap') and (
+            bdgexAcessInfoQptPath != self.previousQpts.get('bdgexAcessInfo') \
+                or composition != self.compositions.get(productType, {}).get(scale)
+        ):
             self.previousQpts['bdgexAcessInfo'] = bdgexAcessInfoQptPath
-            bdgexAcessInfoConfig = productParams['qpt'][scale]['bdgexAcessInfo'].copy()
+            bdgexAcessInfoConfig = productParams['qpt'][scale]['bdgexAcessInfo'].copy(
+            )
             bdgexAcessInfoConfig.update({'path': bdgexAcessInfoQptPath})
             qptsToInsert.append(bdgexAcessInfoConfig)
         self.insertCompositions(composition, qptsToInsert)
@@ -122,19 +138,20 @@ class CompositionSingleton:
             doc = QDomDocument()
             doc.setContent(template)
             layoutItems, sucess = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
-            if sucess:
-                for layoutItem in layoutItems:
-                    refPoint = layoutItem.referencePoint()
-                    layoutItem.setReferencePoint(QgsLayoutItem.UpperLeft)
-                    x = layoutItem.pagePos().x() + qpt.get('x_0')
-                    y = layoutItem.pagePos().y() + qpt.get('y_0')
-                    _tmpDoc = QDomDocument('_tmpDoc')
-                    _tmpElem = _tmpDoc.createElement('_tmpElem')
-                    layoutItem.writeXml(_tmpElem, _tmpDoc, writeContext)
-                    compositionToUpdate.addItemsFromXml(_tmpElem, _tmpDoc, writeContext, QPointF(x, y))
-                    compositionToUpdate.itemById(layoutItem.id()).attemptMove(QgsLayoutPoint(x, y))
-                    compositionToUpdate.itemById(layoutItem.id()).refresh()
-                    layoutItem.setReferencePoint(refPoint)
+            if not sucess:
+                continue
+            for layoutItem in layoutItems:
+                refPoint = layoutItem.referencePoint()
+                layoutItem.setReferencePoint(QgsLayoutItem.UpperLeft)
+                x = layoutItem.pagePos().x() + qpt.get('x_0')
+                y = layoutItem.pagePos().y() + qpt.get('y_0')
+                _tmpDoc = QDomDocument('_tmpDoc')
+                _tmpElem = _tmpDoc.createElement('_tmpElem')
+                layoutItem.writeXml(_tmpElem, _tmpDoc, writeContext)
+                compositionToUpdate.addItemsFromXml(_tmpElem, _tmpDoc, writeContext, QPointF(x, y))
+                compositionToUpdate.itemById(layoutItem.id()).attemptMove(QgsLayoutPoint(x, y))
+                compositionToUpdate.itemById(layoutItem.id()).refresh()
+                layoutItem.setReferencePoint(refPoint)
 
     def setupPath(self, path, isDir=False):
         pathObj = Path(path) if path else None
