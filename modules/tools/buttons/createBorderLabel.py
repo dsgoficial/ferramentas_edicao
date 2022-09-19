@@ -449,7 +449,7 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         return xTranslate, yTranslate
     
     def scaleTransform(self, x, y):
-        d = self.tolerance
+        d = self.tolerance * 0.9
         scaleFactor = (d**2 / ((x**2 + y**2)))**0.5
         return scaleFactor*x, scaleFactor*y
     
