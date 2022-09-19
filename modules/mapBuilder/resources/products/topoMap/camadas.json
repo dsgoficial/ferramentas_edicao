@@ -5,7 +5,7 @@
             "schema": "edgv"
         },
         {
-            "table": "edicao_direcao_corrente_p",
+            "table": "edicao_simb_direcao_corrente_p",
             "schema": "edgv"
         },
         {
