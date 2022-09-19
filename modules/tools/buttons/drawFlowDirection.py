@@ -77,8 +77,8 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
             'Sentido Corrente',
             None,
             lambda _: None,
-            self.tr('Cria feições em "edicao_direcao_corrente_p" baseadas no input do usuario'),
-            self.tr('Cria feições em "edicao_direcao_corrente_p" baseadas no input do usuario'),
+            self.tr('Cria feições em "edicao_simb_direcao_corrente_p" baseadas no input do usuario'),
+            self.tr('Cria feições em "edicao_simb_direcao_corrente_p" baseadas no input do usuario'),
             self.iface
         )
         self._action.setCheckable(True)
@@ -292,12 +292,12 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         gui.QgsMapTool.deactivate(self)
 
     def getLayers(self):
-        dstLyr = QgsProject.instance().mapLayersByName('edicao_direcao_corrente_p')
+        dstLyr = QgsProject.instance().mapLayersByName('edicao_simb_direcao_corrente_p')
         if len(dstLyr) == 1:
             self.dstLyr = dstLyr[0]
         else:
             self.displayErrorMessage(self.tr(
-                'Camada "edicao_direcao_corrente_p" não encontrada'
+                'Camada "edicao_simb_direcao_corrente_p" não encontrada'
             ))
             return None
         return True
