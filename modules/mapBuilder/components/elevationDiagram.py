@@ -84,14 +84,15 @@ class ElevationDiagram(ComponentUtils,IComponent):
             epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
             raster_mde.setCrs(epsgId)
         elevationSlicingLyr = self.createTerrainLayer()
+        slicingParams = data.get('param_diagrama_elevacao', {})
         processingOutput = processing.run(
             "dsgtools:buildterrainslicingfromcontours",
             {
                 'INPUT': raster_mde,
-                'CONTOUR_INTERVAL': 10,
+                'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
-                'MIN_PIXEL_GROUP_SIZE': 100,
-                'SMOOTHING_PARAMETER': 0.001,
+                'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 100),
+                'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0.001),
                 'OUTPUT_POLYGONS': 'TEMPORARY_OUTPUT',
                 'OUTPUT_RASTER': 'TEMPORARY_OUTPUT'
             },
