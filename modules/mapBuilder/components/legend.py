@@ -110,7 +110,7 @@ class Legend():
     def getAnchor(scale):
         if str(scale) == '250':
             return 848, 16
-        return 724, 14
+        return 723, 14
 
     def build(self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults):
         scale = jsonData.get('scale')

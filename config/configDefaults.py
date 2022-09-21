@@ -176,7 +176,7 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 727,
                     'y_0': 450,
                     'width': 105,
                     'height': 100,
@@ -208,7 +208,7 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 727,
                     'y_0': 450,
                     'width': 105,
                     'height': 100,
@@ -240,7 +240,7 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 727,
                     'y_0': 450,
                     'width': 105,
                     'height': 100,
@@ -373,7 +373,7 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 723,
                     'y_0': 175,
                     'width': 105,
                     'height': 100,
