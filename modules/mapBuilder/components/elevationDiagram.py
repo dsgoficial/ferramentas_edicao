@@ -43,8 +43,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
             layers = [layers]
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
         elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr)
-        
-        layers.append(elevationSlicingLyr)
+        if elevationSlicingLyr is not None:
+            layers.append(elevationSlicingLyr)
         elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
 
         generalizedPoints, outputGrid = self.getGeneralizedPoints(pointsLayer, geographicBoundsLyr, data.get('scale'))
@@ -74,11 +74,15 @@ class ElevationDiagram(ComponentUtils,IComponent):
     def getElevationSlicing(self, data, geographicBoundsLyr):
         tag_mde_elevacao = data.get('mde_diagrama_elevacao', None)
         if tag_mde_elevacao is None:
-            return None
+            return None, 2
         raster_mde_path = tag_mde_elevacao.get('caminho_mde', None)
         if raster_mde_path is None:
-            return None
+            return None, 2
         raster_mde = self.createLayerRaster(rasterPath=raster_mde_path)
+        epsg = tag_mde_elevacao.get('epsg', None)
+        if epsg is not None:
+            epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
+            raster_mde.setCrs(epsgId)
         elevationSlicingLyr = self.createTerrainLayer()
         processingOutput = processing.run(
             "dsgtools:buildterrainslicingfromcontours",
@@ -183,8 +187,9 @@ class ElevationDiagram(ComponentUtils,IComponent):
         scaleBar.setPicturePath(str(self.barSvgFolder / f'diagrama_{nClasses}_classes.svg'))
         scaleBar.refresh()
 
-        self.setBarClassText(composition, nClasses)
-        self.setRangeClass(composition, nClasses, elevationSlicingLyr)
+        if elevationSlicingLyr is not None:
+            self.setBarClassText(composition, nClasses)
+            self.setRangeClass(composition, nClasses, elevationSlicingLyr)
 
     
     @staticmethod
