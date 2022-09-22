@@ -32,7 +32,7 @@ class CopyToGenericLabel(BaseTools):
         destFeat.setAttribute('tamanho_txt', 6)
         destFeat.setAttribute('justificativa_txt', 2)
         destFeat.setAttribute('espacamento', 0)
-        destFeat.setAttribute('cor', '#000000')
+        destFeat.setAttribute('cor', '#4b4b4b')
         destFeat.setAttribute('carta_simbolizacao', self.mapTypeSelector.options.get(self.mapTypeSelector.currentText()))
         destFeat.setGeometry(originFeat.geometry())
 
@@ -41,7 +41,7 @@ class CopyToGenericLabel(BaseTools):
         destFeat.setAttribute('estilo_fonte', 'Condensed')
         destFeat.setAttribute('tamanho_txt', 6)
         destFeat.setAttribute('espacamento', 0)
-        destFeat.setAttribute('cor', '#000000')
+        destFeat.setAttribute('cor', '#4b4b4b')
         destFeat.setAttribute('carta_simbolizacao', self.mapTypeSelector.options.get(self.mapTypeSelector.currentText()))
         destFeat.setGeometry(originFeat.geometry())
 
