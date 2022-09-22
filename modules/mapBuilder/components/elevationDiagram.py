@@ -42,7 +42,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
         if not isinstance(layers, list):
             layers = [layers]
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
-        elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr)
+        areaWithoutDataLayer = next(filter(lambda x: x.name() == 'edicao_area_sem_dados_a', layers))
+        elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr, areaWithoutDataLayer)
         if elevationSlicingLyr is not None:
             layers.append(elevationSlicingLyr)
         elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
@@ -71,7 +72,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
 
         return mapIDsToBeDisplayed
     
-    def getElevationSlicing(self, data, geographicBoundsLyr):
+    def getElevationSlicing(self, data, geographicBoundsLyr, areaWithoutDataLyr):
         tag_mde_elevacao = data.get('mde_diagrama_elevacao', None)
         if tag_mde_elevacao is None:
             return None, 2
@@ -91,6 +92,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
                 'INPUT': raster_mde,
                 'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
+                'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
                 'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 100),
                 'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0.001),
                 'OUTPUT_POLYGONS': 'TEMPORARY_OUTPUT',
