@@ -125,12 +125,6 @@ class ConfigDefaults:
                 }
             },
             250: {
-                'project': {
-                    'x_0': 7,
-                    'y_0': 395,
-                    'width': 110,
-                    'height': 70,
-                },
                 'header': {
                     'x_0': 7,
                     'y_0': 7,
@@ -143,9 +137,15 @@ class ConfigDefaults:
                     'width': 120,
                     'height': 20
                 },
+                'project': {
+                    'x_0': 721,
+                    'y_0': 502,
+                    'width': 110,
+                    'height': 70,
+                },
                 'reproductionRights': {
-                    'x_0': 7,
-                    'y_0': 464,
+                    'x_0': 721,
+                    'y_0': 571,
                     'width': 110,
                     'height': 20
                 }
@@ -253,12 +253,6 @@ class ConfigDefaults:
                 }
             },
             250: {
-                'project': {
-                    'x_0': 7,
-                    'y_0': 395,
-                    'width': 110,
-                    'height': 70,
-                },
                 'header': {
                     'x_0': 7,
                     'y_0': 7,
@@ -277,9 +271,15 @@ class ConfigDefaults:
                     'width': 105,
                     'height': 100,
                 },
+                'project': {
+                    'x_0': 721,
+                    'y_0': 502,
+                    'width': 110,
+                    'height': 70,
+                },
                 'reproductionRights': {
-                    'x_0': 7,
-                    'y_0': 464,
+                    'x_0': 721,
+                    'y_0': 571,
                     'width': 110,
                     'height': 20
                 }
