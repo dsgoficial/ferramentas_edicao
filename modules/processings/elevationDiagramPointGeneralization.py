@@ -118,7 +118,10 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
         gridScale = self.gridScaleDict[gridScaleParam]
-        minDistance = self.distanceBufferDict[gridScaleParam]
+        minDistance = QgsDistanceArea().convertLengthMeasurement(
+            self.distanceBufferDict[gridScaleParam],
+            inputPointsLyr.crs().mapUnits()
+        )
         CRSstr = geographicBoundaryLyr.sourceCrs()
         extentGeom = self.getExtentGeom(
             gridScaleParam, geographicBoundaryLyr, gridScale)
