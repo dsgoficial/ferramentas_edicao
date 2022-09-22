@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QFont, QColor
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
                        QgsFeatureRequest, QgsGeometry, QgsLayerTreeGroup,
                        QgsPalLayerSettings, QgsPrintLayout, QgsProject,
@@ -184,6 +184,7 @@ class Localization(ComponentUtils,IComponent):
         textFormat = QgsTextFormat()
         textFormat.setColor(QColor(0, 0, 0, 255))
         textFormat.setSize(6)
+        textFormat.setFont(QFont('Noto Sans'))
 
         #buffer
         buffer = QgsTextBufferSettings()
