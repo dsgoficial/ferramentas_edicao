@@ -77,6 +77,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             2: 100000,
             3: 250000
         }
+        self.distanceBufferDict = {k: 5e-4 * v for k, v in self.gridScaleDict.items()}
 
 
     def processAlgorithm(self, parameters, context, feedback):      
@@ -117,6 +118,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
         gridScale = self.gridScaleDict[gridScaleParam]
+        minDistance = self.distanceBufferDict[gridScaleParam]
         CRSstr = geographicBoundaryLyr.sourceCrs()
         extentGeom = self.getExtentGeom(
             gridScaleParam, geographicBoundaryLyr, gridScale)
@@ -129,10 +131,10 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             )
         )
         multiStepFeedback.setCurrentStep(currentStep)
-        self.generalizePoints(inputPointsLyr, elevationField, grid, geographicBoundaryLyr, context, feedback=multiStepFeedback)
+        self.generalizePoints(inputPointsLyr, elevationField, grid, geographicBoundaryLyr, minDistance, context, feedback=multiStepFeedback)
         return {self.OUTPUT_GRID: self.grid_sink_id, self.OUTPUT_POINTS: self.points_sink_id}
     
-    def generalizePoints(self, inputPointsLyr, elevationField, grid, geographicBoundaryLyr, context, feedback):
+    def generalizePoints(self, inputPointsLyr, elevationField, grid, geographicBoundaryLyr, minDistance, context, feedback):
         # encontrar cota máxima
         nGridFeats = grid.featureCount()
         if nGridFeats == 0:
@@ -178,7 +180,6 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
                     idGridWithMinFeat = gridFeat.id()
                     if 'visivel' in [i.name() for i in feat.fields()]:
                         feat['visivel'] = 1
-                    selectedFeaturesSet.add(feat)
                     break
             if feat[elevationField] == maxValue and maxFeat is None:
                 maxFeat = feat
@@ -188,7 +189,8 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
                         feat['visivel'] = 1
                     selectedFeaturesSet.add(feat)
                     break
-
+        if minFeat.geometry().distance(maxFeat.geometry()) > minDistance:
+            selectedFeaturesSet.add(minFeat)
         stepSize = 100 / nGridFeats
 
         for current, gridPolygonFeat in enumerate(grid.getFeatures()):
