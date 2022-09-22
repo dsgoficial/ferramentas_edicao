@@ -32,8 +32,8 @@ class ConfigDefaults:
             'crossX': 4,
             'crossY': 4,
             'fontSize': 1.9,
-            'font': QFont('Arial'),
-            'fontLL': QFont('Arial'),
+            'font': QFont('Noto Sans'),
+            'fontLL': QFont('Noto Sans'),
             'llcolor': QColor('black'),
             'linwidth_geo': 0.07,
             'linwidth_utm': 0.05,
@@ -67,7 +67,7 @@ class ConfigDefaults:
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 550,
+                    'y_0': 555,
                     'width': 110,
                     'height': 20
                 }
@@ -93,7 +93,7 @@ class ConfigDefaults:
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 550,
+                    'y_0': 555,
                     'width': 110,
                     'height': 20
                 }
@@ -119,7 +119,7 @@ class ConfigDefaults:
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 550,
+                    'y_0': 555,
                     'width': 110,
                     'height': 20
                 }
@@ -176,14 +176,14 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 727,
                     'y_0': 450,
                     'width': 105,
                     'height': 100,
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 561,
+                    'y_0': 555,
                     'width': 110,
                     'height': 20
                 }
@@ -208,14 +208,14 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 727,
                     'y_0': 450,
                     'width': 105,
                     'height': 100,
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 561,
+                    'y_0': 555,
                     'width': 110,
                     'height': 20
                 }
@@ -240,14 +240,14 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 727,
                     'y_0': 450,
                     'width': 105,
                     'height': 100,
                 },
                 'reproductionRights': {
                     'x_0': 7,
-                    'y_0': 561,
+                    'y_0': 555,
                     'width': 110,
                     'height': 20
                 }
@@ -289,8 +289,8 @@ class ConfigDefaults:
             'crossX': 4,
             'crossY': 4,
             'fontSize': 1.9,
-            'font': QFont('Arial'),
-            'fontLL': QFont('Arial'),
+            'font': QFont('Noto Sans'),
+            'fontLL': QFont('Noto Sans'),
             'llcolor': QColor('black'),
             'linwidth_geo': 0.3,
             'linwidth_utm': 0.2,
@@ -373,7 +373,7 @@ class ConfigDefaults:
                     'height': 20
                 },
                 'bdgexAcessInfo':{
-                    'x_0': 729,
+                    'x_0': 723,
                     'y_0': 175,
                     'width': 105,
                     'height': 100,
