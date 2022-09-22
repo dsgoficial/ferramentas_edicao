@@ -303,13 +303,13 @@ class GridAndLabelCreator(QObject):
         if u == min(rangetest) and any(spec_lbl in desc for spec_lbl in ('Bot','Left')):
             extra_label = 'N'
             dyT = 1.4*scale*fSize/1.5
-            dxT = 7.1*scale*fSize/1.5
-            dxH = 8.1*scale*fSize/1.5
+            dxT = 7.2*scale*fSize/1.5
+            dxH = 8.2*scale*fSize/1.5
             if isVertical:
                 extra_label = 'E'
                 dyT = 1.6*scale*fSize/1.5
-                dxT = 7.0*scale*fSize/1.5
-                dxH = 7.9*scale*fSize/1.5
+                dxT = 7.2*scale*fSize/1.5
+                dxH = 8.1*scale*fSize/1.5
 
             plac_new = QgsPoint(plac.x()+dxT, plac.y()+dyT)
             plac_new.transform(trUTMLL)

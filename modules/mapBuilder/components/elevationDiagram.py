@@ -199,7 +199,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         textprop.setColor(QColor('black'))
         textprop.setSizeUnit(QgsUnitTypes.RenderPoints)
         textprop.setSize(8.9762)
-        textprop.setFont(QFont('Arial'))
+        textprop.setFont(QFont('Noto Sans'))
         return textprop
 
 
