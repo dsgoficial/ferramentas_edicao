@@ -268,5 +268,11 @@
             "table": "cobter_massa_dagua_a",
             "schema": "edgv"
         }
+    ],
+    "imageArticulation": [
+        {
+            "table": "edicao_articulacao_imagem_a",
+            "schema": "edgv"
+        }
     ]
 }
