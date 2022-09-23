@@ -317,7 +317,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
                 'HOVERLAY': 0,
                 'VOVERLAY': 0,
                 'CRS':utm,
-                'OUTPUT': 'TEMPORARY_LAYER'
+                'OUTPUT': 'memory:'
             },
             feedback=multiStepFeedback
         )['OUTPUT']
