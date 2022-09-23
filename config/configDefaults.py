@@ -139,13 +139,13 @@ class ConfigDefaults:
                 },
                 'project': {
                     'x_0': 721,
-                    'y_0': 502,
+                    'y_0': 482,
                     'width': 110,
                     'height': 70,
                 },
                 'reproductionRights': {
                     'x_0': 721,
-                    'y_0': 571,
+                    'y_0': 561,
                     'width': 110,
                     'height': 20
                 }
@@ -273,13 +273,13 @@ class ConfigDefaults:
                 },
                 'project': {
                     'x_0': 721,
-                    'y_0': 502,
+                    'y_0': 482,
                     'width': 110,
                     'height': 70,
                 },
                 'reproductionRights': {
                     'x_0': 721,
-                    'y_0': 571,
+                    'y_0': 561,
                     'width': 110,
                     'height': 20
                 }
