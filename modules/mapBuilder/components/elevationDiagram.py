@@ -80,6 +80,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
         if raster_mde_path is None:
             return None, 2
         raster_mde = self.createLayerRaster(rasterPath=raster_mde_path)
+        if raster_mde is None:
+            return None, 2
         epsg = tag_mde_elevacao.get('epsg', None)
         if epsg is not None:
             epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
@@ -223,6 +225,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         gridLayoutItem.setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top)
         gridLayoutItem.setAnnotationDisplay(QgsLayoutItemMapGrid.ShowAll, QgsLayoutItemMapGrid.Bottom)
         gridLayoutItem.setCrs(crs)
+        gridLayoutItem.setAnnotationPrecision(0)
         gridLayoutItem.setAnnotationEnabled(True)
         gridLayoutItem.setEnabled(True)
         return gridLayoutItem
@@ -245,6 +248,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         gridLayoutItem.setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top)
         gridLayoutItem.setAnnotationDisplay(QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Bottom)
         gridLayoutItem.setCrs(crs)
+        gridLayoutItem.setAnnotationPrecision(0)
         gridLayoutItem.setAnnotationEnabled(True)
         gridLayoutItem.setEnabled(True)
         return gridLayoutItem
