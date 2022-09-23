@@ -19,6 +19,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components = dict()
         self.components.update({'map':self.componentFactory.getComponent('Map', 'orthoMap')})
         self.components.update({'elevationDiagram':self.componentFactory.getComponent('ElevationDiagram')})
+        self.components.update({'imageArticulation':self.componentFactory.getComponent('ImageArticulation')})
         self.components.update({'localization':self.componentFactory.getComponent('Localization', 'orthoMap')})
         self.components.update({'articulation':self.componentFactory.getComponent('Articulation', 'orthoMap')})
         self.components.update({'division':self.componentFactory.getComponent('Division')})

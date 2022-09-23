@@ -110,7 +110,7 @@ class CompositionSingleton:
             )
             repRightsConfig.update({'path': repRightsQptPath})
             qptsToInsert.append(repRightsConfig)
-        if productType in ('orthoMap', 'omMap') and (
+        if productType in ('omMap') and (
             bdgexAcessInfoQptPath != self.previousQpts.get('bdgexAcessInfo') \
                 or composition != self.compositions.get(productType, {}).get(scale)
         ):

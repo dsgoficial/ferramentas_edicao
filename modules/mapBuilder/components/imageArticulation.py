@@ -22,20 +22,22 @@ class ImageArticulation(ComponentUtils,IComponent):
     def __init__(self, *args, **kwargs):
         self.stylesFolder =  Path(__file__).parent.parent / 'resources' / 'styles' / 'imageArticulation'
         self.htmlTablePath = Path(__file__).parent.parent / 'htmlBarebone' / 'imageArticulation.html'
-        self.n_maxlines = 10
+        self.n_maxlines = 6
 
-    def build(self, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, showLayers: bool = False):
+    def build(self, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, layers: List[QgsVectorLayer], showLayers: bool = False):
 
         mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
         if not isinstance(layers, list):
             layers = [layers]
         imageArticulationLayer = next(filter(lambda x: x.name() == 'edicao_articulacao_imagem_a', layers))
+        # imageArticulationLayer = QgsVectorLayer("D:\\borba\\edicao_articulacao_imagem\\2724-2_edicao_articulacao_imagem_a.geojson","edicao_articulacao_imagem_a","ogr")
+        # QgsProject.instance().addMapLayer(imageArticulationLayer, False)
+        # layers = [imageArticulationLayer]
         if imageArticulationLayer is None:
             return
-        mapIDsToBeDisplayed = [imageArticulationLayer.id()]
 
         orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer)
-        self.setStyle(imageArticulationLayer)
+        self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
 
         # Inserting counties table
         html_tabledata = self.customcreateHtmlTableData(orderedFeaturesByDateAndSensor)
@@ -50,6 +52,7 @@ class ImageArticulation(ComponentUtils,IComponent):
             root.addChildNode(imageArticulationGroupNode)
             
         self.updateComposition(composition, mapExtents, layers)
+        mapIDsToBeDisplayed = [imageArticulationLayer.id()]
         return mapIDsToBeDisplayed
     
     @staticmethod
@@ -122,8 +125,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         tableColumns = []
         tableRows = []
         for feat_index, feat in enumerate(sortedFeatures):
-            n_municipio = feat_index + 1
-            cell_str = f"{feat['nome_sensor']} ({feat['data']})"
+            cell_str = f"{feat_index + 1} - {feat['nome_sensor']} ({feat['data']})"
             tableColumn = basecolumn_str.format(cell_str)
             tableColumns.append(tableColumn)
             if self.goToNextColumn(feat_index, nColumn1, nColumn2, nColumn3):
@@ -172,6 +174,7 @@ class ImageArticulation(ComponentUtils,IComponent):
             str(self.stylesFolder / 'edicao_articulacao_imagem_a.qml'),
             True
         )
+        imageArticulationLayer.triggerRepaint()
         rulesRoot = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
         for n, feat in enumerate(orderedFeaturesByDateAndSensor):
             rule = self.createRule(
@@ -185,7 +188,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         imageArticulationLayer.triggerRepaint()
 
     def updateComposition(self, composition: QgsPrintLayout, mapExtent: QgsRectangle, layersToShow: Tuple[QgsVectorLayer]):
-        mapItem = composition.itemById("map_articulacao_imagens")
+        mapItem = composition.itemById("imageArticulation")
         if mapItem is None:
             return
         mapItem.setExtent(mapExtent)
