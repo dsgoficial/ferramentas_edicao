@@ -258,44 +258,51 @@ class ElevationDiagram(ComponentUtils,IComponent):
         return gridLayoutItem
 
     def setBarClassText(self, composition: QgsPrintLayout, nClasses: int):
-        baixoItem = composition.itemById(f"textoBaixo_{nClasses}classes")  
-        baixoItem.setText("Baixo")
-        baixoItem.refresh()
+        baixoItem = composition.itemById(f"textoBaixo_{nClasses}classes")
+        if baixoItem is not None:
+            baixoItem.setText("Baixo")
+            baixoItem.refresh()
 
         altoItem = composition.itemById(f"textoAlto_{nClasses}classes")  
-        altoItem.setText("Alto")
-        altoItem.refresh()
+        if altoItem is not None:
+            altoItem.setText("Alto")
+            altoItem.refresh()
 
         if nClasses == 2:
             return
         medioItem = composition.itemById(f"textoMedio_{nClasses}classes")
-        medioItem.setText("Médio")
-        medioItem.refresh()
+        if medioItem is not None:
+            medioItem.setText("Médio")
+            medioItem.refresh()
 
         if nClasses == 3:
             return
         maisAltoItem = composition.itemById(f"textoMaisAlto_{nClasses}classes")
-        maisAltoItem.setText("Mais Alto")
-        maisAltoItem.refresh()
+        if maisAltoItem is not None:
+            maisAltoItem.setText("Mais Alto")
+            maisAltoItem.refresh()
 
     def setRangeClass(self, composition: QgsPrintLayout, nClasses: int, elevationSlicingLyr: QgsVectorLayer):
         rangeClassDict = {
             feat['class']: str(feat['class_max']) for feat in elevationSlicingLyr.getFeatures()
         }
         maxClasseZeroItem = composition.itemById(f"maxClasse0_{nClasses}classes")
-        maxClasseZeroItem.setText(rangeClassDict[0])
-        maxClasseZeroItem.refresh()
+        if maxClasseZeroItem is not None:
+            maxClasseZeroItem.setText(rangeClassDict[0])
+            maxClasseZeroItem.refresh()
 
         if nClasses == 2:
             return
 
         maxClasseUmItem = composition.itemById(f"maxClasse1_{nClasses}classes")
-        maxClasseUmItem.setText(rangeClassDict[1])
-        maxClasseUmItem.refresh()
+        if maxClasseUmItem is not None:
+            maxClasseUmItem.setText(rangeClassDict[1])
+            maxClasseUmItem.refresh()
         
         if nClasses == 3:
             return
         
-        maxClasseUmItem = composition.itemById(f"maxClasse2_{nClasses}classes")
-        maxClasseUmItem.setText(rangeClassDict[2])
-        maxClasseUmItem.refresh()
+        maxClasseDoisItem = composition.itemById(f"maxClasse2_{nClasses}classes")
+        if maxClasseDoisItem is not None:
+            maxClasseDoisItem.setText(rangeClassDict[2])
+            maxClasseDoisItem.refresh()

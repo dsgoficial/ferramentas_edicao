@@ -19,6 +19,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components = dict()
         self.components.update({'map':self.componentFactory.getComponent('Map', 'orthoMap')})
         self.components.update({'elevationDiagram':self.componentFactory.getComponent('ElevationDiagram')})
+        self.components.update({'imageArticulation':self.componentFactory.getComponent('ImageArticulation')})
         self.components.update({'localization':self.componentFactory.getComponent('Localization', 'orthoMap')})
         self.components.update({'articulation':self.componentFactory.getComponent('Articulation', 'orthoMap')})
         self.components.update({'division':self.componentFactory.getComponent('Division')})
@@ -99,6 +100,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         )
         mapLayers, mapLayersIds = getLayersFromDbLambda('map')
         elevationDiagramLayers, elevationDiagramLayersIds = getLayersFromDbLambda('elevationDiagram')
+        imageArticulationLayers, imageArticulationIds = getLayersFromDbLambda('imageArticulation')
         imgLayers, imgLayersIds = self.createRasterLayers(self.data.get('imagens', tuple()))
         mapLayers = [*mapLayers, *imgLayers]
         mapLayersIds = [*mapLayersIds, *imgLayersIds]
@@ -117,6 +119,9 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             elif key == 'elevationDiagram':
                 elevationDiagramLayersIds = component.build(
                     self.composition, self.data, self.mapAreaFeature, elevationDiagramLayers, debugMode)
+            elif key == 'imageArticulation':
+                imageArticulationIds = component.build(
+                    self.composition, self.mapAreaFeature, imageArticulationLayers, debugMode)
             elif key == 'localization':
                 localizationLayersIds = component.build(
                     self.composition, self.data, self.mapAreaFeature, debugMode)
@@ -141,7 +146,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
 
         auxLayerIds = [lyr.id() for lyr in QgsProject.instance().mapLayers().values() if lyr.name() in ("convexhull", "auxiliar_moldura_outside")]
 
-        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *elevationDiagramLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
-        self.groupsToBeRemoved.extend(['map','elevationDiagram','localization','articulation','division'])
+        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *elevationDiagramLayersIds, *imageArticulationIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
+        self.groupsToBeRemoved.extend(['map', 'elevationDiagram', 'imageArticulation', 'localization', 'articulation', 'division'])
         self.classifiedMapHandler(self.composition, self.data)
         self.setupMasks(self.productPath, mapLayers)
