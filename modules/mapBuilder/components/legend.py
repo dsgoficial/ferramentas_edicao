@@ -109,7 +109,7 @@ class Legend():
     @staticmethod
     def getAnchor(scale):
         if str(scale) == '250':
-            return 848, 16
+            return 6, 266
         return 723, 14
 
     def build(self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults):
