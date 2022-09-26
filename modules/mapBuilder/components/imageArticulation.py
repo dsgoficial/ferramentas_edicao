@@ -24,8 +24,9 @@ class ImageArticulation(ComponentUtils,IComponent):
         self.htmlTablePath = Path(__file__).parent.parent / 'htmlBarebone' / 'imageArticulation.html'
         self.n_maxlines = 6
 
-    def build(self, composition: QgsPrintLayout, mapAreaFeature: QgsFeature, layers: List[QgsVectorLayer], showLayers: bool = False):
-
+    def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, layers: List[QgsVectorLayer], showLayers: bool = False):
+        if data.get('scale') == 250000:
+            self.n_maxlines = 4
         mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
         if not isinstance(layers, list):
             layers = [layers]
