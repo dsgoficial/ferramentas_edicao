@@ -40,6 +40,8 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             defaults: instance of configuration defaults
             mapLayers: Dict with available layers
         '''
+        if mapType == 'imageArticulation':
+            return [x for x in mapLayers if x.get('table') == 'edicao_articulacao_imagem_a']
         _complementarClasses = set(jsonData.get('classes_complementares', list()))
         _toDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(_complementarClasses))
         layersToDisplay = [x for x in mapLayers if x.get('table') in _toDisplay]
