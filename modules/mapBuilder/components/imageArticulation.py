@@ -30,12 +30,12 @@ class ImageArticulation(ComponentUtils,IComponent):
         mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
         if not isinstance(layers, list):
             layers = [layers]
-        imageArticulationLayer = next(filter(lambda x: x.name() == 'edicao_articulacao_imagem_a', layers))
+        imageArticulationLayer = next(filter(lambda x: x.name() == 'edicao_articulacao_imagem_a', layers), None)
         # imageArticulationLayer = QgsVectorLayer("D:\\borba\\edicao_articulacao_imagem\\2724-2_edicao_articulacao_imagem_a.geojson","edicao_articulacao_imagem_a","ogr")
         # QgsProject.instance().addMapLayer(imageArticulationLayer, False)
         # layers = [imageArticulationLayer]
         if imageArticulationLayer is None:
-            return
+            return []
 
         orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer)
         self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
