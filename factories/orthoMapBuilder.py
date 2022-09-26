@@ -121,7 +121,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
                     self.composition, self.data, self.mapAreaFeature, elevationDiagramLayers, debugMode)
             elif key == 'imageArticulation':
                 imageArticulationIds = component.build(
-                    self.composition, self.mapAreaFeature, imageArticulationLayers, debugMode)
+                    self.composition, self.data, self.mapAreaFeature, imageArticulationLayers, debugMode)
             elif key == 'localization':
                 localizationLayersIds = component.build(
                     self.composition, self.data, self.mapAreaFeature, debugMode)
