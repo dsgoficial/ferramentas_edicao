@@ -44,7 +44,7 @@
     </data_defined_properties>
    </layer>
   </symbol>
-  <LayoutItem id="" positionOnPage="0,0,mm" uuid="{3b7c4596-489b-4f91-b95f-15d9310ed353}" background="true" itemRotation="0" opacity="1" frame="false" positionLock="false" type="65638" templateUuid="{3b7c4596-489b-4f91-b95f-15d9310ed353}" zValue="0" groupUuid="" visibility="1" position="0,0,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="0" frameJoinStyle="miter" size="112,5.7,mm">
+  <LayoutItem id="" positionOnPage="0,0,mm" uuid="{8bfb4b40-85e7-4457-889d-1b39356fc90c}" background="true" itemRotation="0" opacity="1" frame="false" positionLock="false" type="65638" templateUuid="{8bfb4b40-85e7-4457-889d-1b39356fc90c}" zValue="0" groupUuid="" visibility="1" position="0,0,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="0" frameJoinStyle="miter" size="112,3.5,mm">
    <FrameColor green="0" alpha="255" blue="0" red="0"/>
    <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
    <LayoutObject>
@@ -104,7 +104,7 @@
   </LayoutItem>
   <GuideCollection visible="1"/>
  </PageCollection>
- <LayoutItem id="" labelText="LAGO" positionOnPage="77.7907,3.97093,mm" uuid="{6cc3868f-485c-4431-b20a-d1129cfd85cd}" background="false" itemRotation="0" valign="128" opacity="1" marginX="0" frame="false" positionLock="false" type="65641" templateUuid="{6cc3868f-485c-4431-b20a-d1129cfd85cd}" zValue="10" htmlState="0" groupUuid="" visibility="1" position="77.7907,3.97093,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="4" halign="4" marginY="0" frameJoinStyle="miter" size="12,4,mm">
+ <LayoutItem id="" labelText="LAGO" positionOnPage="74.1015,1.725,mm" uuid="{29ad1d7a-31ce-498b-b499-8306119eab9f}" background="false" itemRotation="0" valign="128" opacity="1" marginX="0" frame="false" positionLock="false" type="65641" templateUuid="{29ad1d7a-31ce-498b-b499-8306119eab9f}" zValue="10" htmlState="0" groupUuid="" visibility="1" position="74.1015,1.725,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="4" halign="4" marginY="0" frameJoinStyle="miter" size="12,3.55,mm">
   <FrameColor green="0" alpha="255" blue="0" red="0"/>
   <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
   <LayoutObject>
@@ -246,25 +246,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem id="" positionOnPage="54.7477,1.88022,mm" uuid="{41fb5929-7761-4c26-bafe-50f87ce51330}" background="true" itemRotation="0" opacity="1" frame="false" positionLock="false" type="65637" templateUuid="{41fb5929-7761-4c26-bafe-50f87ce51330}" zValue="9" groupUuid="" visibility="1" position="54.7477,1.88022,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="0" frameJoinStyle="miter" size="12,4,mm">
-  <FrameColor green="0" alpha="255" blue="0" red="0"/>
-  <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
-  <LayoutObject>
-   <dataDefinedProperties>
-    <Option type="Map">
-     <Option value="" type="QString" name="name"/>
-     <Option name="properties"/>
-     <Option value="collection" type="QString" name="type"/>
-    </Option>
-   </dataDefinedProperties>
-   <customproperties>
-    <Option/>
-   </customproperties>
-  </LayoutObject>
-  <ComposerItemGroupElement uuid="{4bc50e47-9cda-47e7-b431-47a59738487c}"/>
-  <ComposerItemGroupElement uuid="{63ffa10e-e63f-4367-9d6c-f557cdce54de}"/>
- </LayoutItem>
- <LayoutItem id="" outlineWidth="1" arrowHeadOutlineColor="0,0,0,255" endMarkerFile="" positionOnPage="60.7477,5.28022,mm" uuid="{4bc50e47-9cda-47e7-b431-47a59738487c}" background="false" itemRotation="0" startMarkerMode="0" opacity="1" arrowHeadFillColor="0,0,0,255" frame="false" positionLock="false" type="65645" startMarkerFile="" templateUuid="{4bc50e47-9cda-47e7-b431-47a59738487c}" zValue="8" markerMode="0" groupUuid="{41fb5929-7761-4c26-bafe-50f87ce51330}" visibility="1" position="60.7477,5.28022,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" arrowHeadWidth="4" referencePoint="4" frameJoinStyle="miter" size="12,0,mm">
+ <LayoutItem id="" outlineWidth="1" arrowHeadOutlineColor="0,0,0,255" endMarkerFile="" positionOnPage="60.4072,2.9,mm" uuid="{82a57ed3-7b16-465c-9e00-22bd5035ad2a}" background="false" itemRotation="0" startMarkerMode="0" opacity="1" arrowHeadFillColor="0,0,0,255" frame="false" positionLock="false" type="65645" startMarkerFile="" templateUuid="{82a57ed3-7b16-465c-9e00-22bd5035ad2a}" zValue="8" markerMode="0" groupUuid="" visibility="1" position="60.4072,2.9,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" arrowHeadWidth="4" referencePoint="4" frameJoinStyle="miter" size="11.7,0.0779945,mm">
   <FrameColor green="0" alpha="255" blue="0" red="0"/>
   <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
   <LayoutObject>
@@ -361,10 +343,10 @@
   </symbol>
   <nodes>
    <node x="0" y="0"/>
-   <node x="12" y="0"/>
+   <node x="11.7" y="0"/>
   </nodes>
  </LayoutItem>
- <LayoutItem id="" labelText="Rio" positionOnPage="60.7477,3.88022,mm" uuid="{63ffa10e-e63f-4367-9d6c-f557cdce54de}" background="false" itemRotation="0" valign="128" opacity="1" marginX="0" frame="false" positionLock="false" type="65641" templateUuid="{63ffa10e-e63f-4367-9d6c-f557cdce54de}" zValue="7" htmlState="0" groupUuid="{41fb5929-7761-4c26-bafe-50f87ce51330}" visibility="1" position="60.7477,3.88022,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="4" halign="4" marginY="0" frameJoinStyle="miter" size="12,4,mm">
+ <LayoutItem id="" labelText="Rio" positionOnPage="60.4072,1.37962,mm" uuid="{9dfd9991-9e80-4c10-a966-0c5fed8637bf}" background="false" itemRotation="0" valign="128" opacity="1" marginX="0" frame="false" positionLock="false" type="65641" templateUuid="{9dfd9991-9e80-4c10-a966-0c5fed8637bf}" zValue="7" htmlState="0" groupUuid="" visibility="1" position="60.4072,1.37962,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="4" halign="4" marginY="0" frameJoinStyle="miter" size="12,2.40926,mm">
   <FrameColor green="0" alpha="255" blue="0" red="0"/>
   <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
   <LayoutObject>
@@ -506,7 +488,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem id="line_categoria_3_linha_1_column_left" outlineWidth="1" arrowHeadOutlineColor="0,0,0,255" endMarkerFile="" positionOnPage="36.0224,5.3,mm" uuid="{378606a1-4a67-4b4c-8417-d06149e168a3}" background="false" itemRotation="0" startMarkerMode="0" opacity="1" arrowHeadFillColor="0,0,0,255" frame="false" positionLock="false" type="65645" startMarkerFile="" templateUuid="{378606a1-4a67-4b4c-8417-d06149e168a3}" zValue="3" markerMode="0" groupUuid="" visibility="1" position="36.0224,5.3,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" arrowHeadWidth="4" referencePoint="3" frameJoinStyle="miter" size="17.836,-1.66533e-16,mm">
+ <LayoutItem id="line_categoria_3_linha_1_column_left" outlineWidth="1" arrowHeadOutlineColor="0,0,0,255" endMarkerFile="" positionOnPage="34.5063,2.9,mm" uuid="{d756166c-2f55-41a3-af45-8fe2e88e3f6e}" background="false" itemRotation="0" startMarkerMode="0" opacity="1" arrowHeadFillColor="0,0,0,255" frame="false" positionLock="false" type="65645" startMarkerFile="" templateUuid="{d756166c-2f55-41a3-af45-8fe2e88e3f6e}" zValue="3" markerMode="0" groupUuid="" visibility="1" position="34.5063,2.9,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" arrowHeadWidth="4" referencePoint="3" frameJoinStyle="miter" size="19.3517,-1.66533e-16,mm">
   <FrameColor green="0" alpha="255" blue="0" red="0"/>
   <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
   <LayoutObject>
@@ -597,10 +579,10 @@
   </symbol>
   <nodes>
    <node x="0" y="0"/>
-   <node x="17.836" y="0"/>
+   <node x="19.3517" y="0"/>
   </nodes>
  </LayoutItem>
- <LayoutItem id="categoria_3_linha_1_column_left" labelText="Trecho de drenagem; Massa d'água" positionOnPage="1.7,5.7,mm" uuid="{94f32019-99ed-49fa-b1d4-dc5b2843b80f}" background="false" itemRotation="0" valign="128" opacity="1" marginX="0" frame="false" positionLock="false" type="65641" templateUuid="{94f32019-99ed-49fa-b1d4-dc5b2843b80f}" zValue="1" htmlState="0" groupUuid="" visibility="1" position="1.7,5.7,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="6" halign="1" marginY="0" frameJoinStyle="miter" size="34.5847,3.19941,mm">
+ <LayoutItem id="categoria_3_linha_1_column_left" labelText="Trecho de drenagem; Massa d'água" positionOnPage="0,3.5,mm" uuid="{8944d44a-3fcc-459f-8187-2365aac2f0b1}" background="false" itemRotation="0" valign="128" opacity="1" marginX="0" frame="false" positionLock="false" type="65641" templateUuid="{8944d44a-3fcc-459f-8187-2365aac2f0b1}" zValue="1" htmlState="0" groupUuid="" visibility="1" position="0,3.5,mm" excludeFromExports="0" outlineWidthM="0.3,mm" blendMode="0" referencePoint="6" halign="1" marginY="0" frameJoinStyle="miter" size="34.585,3.5,mm">
   <FrameColor green="0" alpha="255" blue="0" red="0"/>
   <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
   <LayoutObject>
