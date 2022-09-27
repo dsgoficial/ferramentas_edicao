@@ -52,10 +52,16 @@ class Legend():
         with open(_p / 'mapClassToLegend.json') as mappingData:
             self.legendMappingData = json.load(mappingData)
     
+    @staticmethod
+    def getSizeFromDomComponent(domGroup):
+        sizeStr = domGroup.elementsByTagName("LayoutItem").item(0).toElement().attribute('size')
+        w, h, unit = sizeStr.split(',')
+        return (float(w), float(h))
+    
     def buildLegend(self, composition, legendDict, anchor):
         xAnchor, yAnchor = anchor
         x, y = xAnchor, yAnchor
-        ySpacing = 4.8
+        ySpacing = 0.5
         xSpacingFirstColumn = 2
         xSpacing = 56
         width = 115
@@ -64,16 +70,18 @@ class Legend():
             position = QPointF(x,y)
             domGroup = self.loadQDomComponent(self.qptsPath / f'group_{group}.qpt')
             composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
-            y += 1.2*ySpacing
+            w, h = self.getSizeFromDomComponent(domGroup)
+            y += h
             for label in labels:
                 x += xSpacingFirstColumn
                 position = QPointF(x,y)
                 domGroup = self.loadQDomComponent(self.qptsPath / f'{label}.qpt')
                 composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
+                w, h = self.getSizeFromDomComponent(domGroup)
                 x = xAnchor
-                y = y + ySpacing
+                y = y + h
             x = xAnchor
-            y += 1.5*ySpacing
+            y += ySpacing
 
     def groupLegend(self, classes, legendMappingData):
         groupedClasses = dict()
