@@ -59,7 +59,6 @@ class Legend():
         xSpacingFirstColumn = 2
         xSpacing = 56
         width = 115
-        changeColumn = True
         context = QgsReadWriteContext()
         for group, labels in legendDict.items():
             position = QPointF(x,y)
@@ -71,12 +70,10 @@ class Legend():
                 position = QPointF(x,y)
                 domGroup = self.loadQDomComponent(self.qptsPath / f'{label}.qpt')
                 composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
-                x = xAnchor + xSpacing if changeColumn else xAnchor
-                y = y + ySpacing if not changeColumn else y
-                changeColumn = not changeColumn
+                x = xAnchor
+                y = y + ySpacing
             x = xAnchor
-            y += ySpacing if changeColumn else 1.5*ySpacing
-            changeColumn = True
+            y += 1.5*ySpacing
 
     def groupLegend(self, classes, legendMappingData):
         groupedClasses = dict()
