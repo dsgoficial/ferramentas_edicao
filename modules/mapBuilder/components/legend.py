@@ -70,16 +70,16 @@ class Legend():
             position = QPointF(x,y)
             domGroup = self.loadQDomComponent(self.qptsPath / f'group_{group}.qpt')
             composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
-            w, h = self.getSizeFromDomComponent(domGroup)
-            y += h
+            _, title_h = self.getSizeFromDomComponent(domGroup)
+            y += title_h
             for label in labels:
                 x += xSpacingFirstColumn
                 position = QPointF(x,y)
                 domGroup = self.loadQDomComponent(self.qptsPath / f'{label}.qpt')
                 composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
-                w, h = self.getSizeFromDomComponent(domGroup)
+                _, label_item_h = self.getSizeFromDomComponent(domGroup)
                 x = xAnchor
-                y = y + h
+                y = y + label_item_h
             x = xAnchor
             y += ySpacing
 
