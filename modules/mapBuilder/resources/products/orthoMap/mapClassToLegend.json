@@ -1,20 +1,20 @@
 {
     "25": {
         "llp_localidade_p": {
-            "group": "limites_e_localidades",
-            "labels": ["vila_texto", "cidade_3a_importancia", "cidade_2a_importancia", "cidade_1a_importancia"]
+            "group": "localidades",
+            "labels": ["vila", "cidade"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistema_de_transporte",
-            "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "infra_ferrovia_l":{
-            "group": "sistema_de_transporte",
-            "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
+            "group": "ferrovias",
+            "labels": ["ferrovia"]
         },
         "cobter_massa_dagua_a":{
             "group": "hidrografia",
@@ -22,30 +22,30 @@
         },
         "elemnat_trecho_drenagem_l":{
             "group": "hidrografia",
-            "labels": ["trecho_drenagem"]
+            "labels": ["massa_dagua"]
         },
         "edicao_area_sem_dados_a":{
-            "group": "classes_auxiliares",
+            "group": "limites",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica", "trecho_de_energia"]
         },
         "infra_elemento_energia_p": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "infra_elemento_energia_a": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "constr_extracao_mineral_a": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "constr_extracao_mineral_p": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "elemnat_terreno_sujeito_inundacao_a": {
@@ -53,52 +53,52 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_unidade_federacao_a": {
-            "group": "limites_e_localidades",
-            "labels": ["limite_internacional", "limite_estadual"]
+            "group": "limites",
+            "labels": ["limite_legal"]
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["pista_pouso", "heliponto"]
+            "group": "transporte_aereo",
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_l": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_a": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_l": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_a": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_toponimo_fisiografico_natural_p": {
             "group": "relevo",
@@ -117,42 +117,42 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "limites_e_localidades",
+            "group": "localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "limites_e_localidades",
+            "group": "localidades",
             "labels": ["aglomerado_rural"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites_e_localidades",
-            "labels": ["area_publica_militar"]
+            "group": "limites",
+            "labels": ["area_militar"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["unidade_conservacao"]
         }
     },
     "50": {
         "llp_localidade_p": {
-            "group": "limites_e_localidades",
-            "labels": ["vila_texto", "cidade_3a_importancia", "cidade_2a_importancia", "cidade_1a_importancia"]
+            "group": "localidades",
+            "labels": ["cidade", "vila"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistema_de_transporte",
-            "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "infra_ferrovia_l":{
-            "group": "sistema_de_transporte",
-            "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
+            "group": "ferrovias",
+            "labels": ["ferrovia"]
         },
         "cobter_massa_dagua_a":{
             "group": "hidrografia",
@@ -160,30 +160,30 @@
         },
         "elemnat_trecho_drenagem_l":{
             "group": "hidrografia",
-            "labels": ["trecho_drenagem"]
+            "labels": ["massa_dagua"]
         },
         "edicao_area_sem_dados_a":{
-            "group": "classes_auxiliares",
+            "group": "limites",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica", "trecho_de_energia"]
         },
         "infra_elemento_energia_p": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "infra_elemento_energia_a": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "constr_extracao_mineral_a": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "constr_extracao_mineral_p": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "elemnat_terreno_sujeito_inundacao_a": {
@@ -191,52 +191,52 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_unidade_federacao_a": {
-            "group": "limites_e_localidades",
-            "labels": ["limite_internacional", "limite_estadual"]
+            "group": "limites",
+            "labels": ["limite_legal"]
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["pista_pouso", "heliponto"]
+            "group": "transporte_aereo",
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_l": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_a": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_l": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_a": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_toponimo_fisiografico_natural_p": {
             "group": "relevo",
@@ -255,42 +255,42 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "limites_e_localidades",
+            "group": "localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "limites_e_localidades",
+            "group": "localidades",
             "labels": ["aglomerado_rural"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites_e_localidades",
-            "labels": ["area_publica_militar"]
+            "group": "limites",
+            "labels": ["area_militar"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["unidade_conservacao"]
         }
     },
     "100": {
         "llp_localidade_p": {
-            "group": "limites_e_localidades",
-            "labels": ["vila_texto", "cidade_3a_importancia", "cidade_2a_importancia", "cidade_1a_importancia"]
+            "group": "localidades",
+            "labels": ["cidade", "vila"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistema_de_transporte",
-            "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "infra_ferrovia_l":{
-            "group": "sistema_de_transporte",
-            "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
+            "group": "ferrovias",
+            "labels": ["ferrovia"]
         },
         "cobter_massa_dagua_a":{
             "group": "hidrografia",
@@ -298,30 +298,30 @@
         },
         "elemnat_trecho_drenagem_l":{
             "group": "hidrografia",
-            "labels": ["trecho_drenagem"]
+            "labels": ["massa_dagua"]
         },
         "edicao_area_sem_dados_a":{
-            "group": "classes_auxiliares",
+            "group": "limites",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica", "trecho_de_energia"]
         },
         "infra_elemento_energia_p": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "infra_elemento_energia_a": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "constr_extracao_mineral_a": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "constr_extracao_mineral_p": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "elemnat_terreno_sujeito_inundacao_a": {
@@ -329,52 +329,52 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_unidade_federacao_a": {
-            "group": "limites_e_localidades",
-            "labels": ["limite_internacional", "limite_estadual"]
+            "group": "limites",
+            "labels": ["limite_legal"]
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["pista_pouso", "heliponto"]
+            "group": "transporte_aereo",
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_l": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_a": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_l": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_a": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_toponimo_fisiografico_natural_p": {
             "group": "relevo",
@@ -393,42 +393,42 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "limites_e_localidades",
+            "group": "localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "limites_e_localidades",
+            "group": "localidades",
             "labels": ["aglomerado_rural"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites_e_localidades",
-            "labels": ["area_publica_militar"]
+            "group": "limites",
+            "labels": ["area_militar"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["unidade_conservacao"]
         }
     },
     "250": {
         "llp_localidade_p": {
-            "group": "limites_e_localidades",
-            "labels": ["vila_simbolo", "cidade_simbolo", "capital_estadual_simbolo", "capital_federal_simbolo"]
+            "group": "localidades",
+            "labels": ["cidade_250", "vila_250"]
         },
         "infra_via_deslocamento_l": {
-            "group": "sistema_de_transporte",
-            "labels": ["rodovia_pavimentada", "rodovia_nao_pavimentada"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "edicao_identificador_trecho_rod_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["prefixo_rodovia_federal", "prefixo_rodovia_estadual"]
+            "group": "rodovias",
+            "labels": ["rodovia"]
         },
         "infra_ferrovia_l":{
-            "group": "sistema_de_transporte",
-            "labels": ["ferrovia_bitola_metrica", "ferrovia_bitola_internacional_larga"]
+            "group": "ferrovias",
+            "labels": ["ferrovia"]
         },
         "cobter_massa_dagua_a":{
             "group": "hidrografia",
@@ -436,30 +436,30 @@
         },
         "elemnat_trecho_drenagem_l":{
             "group": "hidrografia",
-            "labels": ["trecho_drenagem"]
+            "labels": ["massa_dagua"]
         },
         "edicao_area_sem_dados_a":{
-            "group": "classes_auxiliares",
+            "group": "limites",
             "labels": ["area_sem_dados"]
         },
         "infra_elemento_energia_l":{
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica", "trecho_de_energia"]
         },
         "infra_elemento_energia_p": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "infra_elemento_energia_a": {
-            "group": "energia_e_comunicacoes",
+            "group": "estruturas",
             "labels": ["subestacao_energia_eletrica"]
         },
         "constr_extracao_mineral_a": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "constr_extracao_mineral_p": {
-            "group": "estrutura_economica",
+            "group": "estruturas",
             "labels": ["extracao_mineral"]
         },
         "elemnat_terreno_sujeito_inundacao_a": {
@@ -467,52 +467,52 @@
             "labels": ["terreno_sujeito_inundacao"]
         },
         "llp_unidade_federacao_a": {
-            "group": "limites_e_localidades",
-            "labels": ["limite_internacional", "limite_estadual"]
+            "group": "limites",
+            "labels": ["limite_legal"]
         },
         "elemnat_curva_nivel_l": {
             "group": "relevo",
-            "labels": ["curva_nivel_depressao", "curva_nivel_mestra", "curva_nivel_normal"]
+            "labels": ["curva_nivel"]
         },
         "elemnat_ponto_cotado_p": {
             "group": "relevo",
             "labels": ["ponto_cotado"]
         },
         "infra_pista_pouso_p": {
-            "group": "sistema_de_transporte",
-            "labels": ["pista_pouso", "heliponto"]
+            "group": "transporte_aereo",
+            "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_l": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_pista_pouso_a": {
-            "group": "sistema_de_transporte",
+            "group": "transporte_aereo",
             "labels": ["pista_pouso"]
         },
         "infra_elemento_infraestrutura_p": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_l": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "infra_elemento_infraestrutura_a": {
-            "group": "sistema_de_transporte",
+            "group": "estruturas",
             "labels": ["atracadouro_terminal"]
         },
         "elemnat_elemento_hidrografico_p": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_l": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_elemento_hidrografico_a": {
             "group": "hidrografia",
-            "labels": ["queda_dagua_corredeira"]
+            "labels": ["queda_dagua"]
         },
         "elemnat_toponimo_fisiografico_natural_p": {
             "group": "relevo",
@@ -531,23 +531,23 @@
             "labels": ["ilha"]
         },
         "llp_nome_local_p": {
-            "group": "limites_e_localidades",
+            "group": "localidades",
             "labels": ["nome_local"]
         },
         "llp_aglomerado_rural_p": {
-            "group": "limites_e_localidades",
-            "labels": ["aglomerado_rural"]
+            "group": "localidades",
+            "labels": ["aglomerado_rural_250"]
         },
         "llp_area_pub_militar_a": {
-            "group": "limites_e_localidades",
-            "labels": ["area_publica_militar"]
+            "group": "limites",
+            "labels": ["area_militar"]
         },
         "llp_terra_indigena_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["terra_indigena"]
         },
         "llp_unidade_conservacao_a": {
-            "group": "limites_e_localidades",
+            "group": "limites",
             "labels": ["unidade_conservacao"]
         }
     }

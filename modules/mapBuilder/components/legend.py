@@ -11,37 +11,38 @@ from qgis.core import QgsPrintLayout, QgsReadWriteContext
 class Legend():
 
     order_group = {
-        'sistema_de_transporte': {
+        'localidades': {
             'order': 0,
-            'order_classes': ['rodovia_pavimentada', 'prefixo_rodovia_federal', 'rodovia_nao_pavimentada', 'prefixo_rodovia_estadual',
-            'ferrovia_bitola_metrica', 'ferrovia_bitola_internacional_larga', 'pista_pouso', 'heliponto', 'atracadouro_terminal']
+            'order_classes': ['cidade', 'cidade_250', 'vila', 'vila_250', 'aglomerado_rural', 'aglomerado_rural_250', 'nome_local']
+        },
+        'rodovias': {
+            'order': 1,
+            'order_classes': ['rodovia']
+        },
+        'ferrovias': {
+            'order': 2,
+            'order_classes': ['ferrovia']
+        },
+        'limites': {
+            'order': 3,
+            'order_classes': ['limite_legal', 'area_militar', 'terra_indigena', 
+            'unidade_conservacao',  'area_sem_dados']
+        },
+        'estruturas': {
+            'order': 4,
+            'order_classes': ['atracadouro_terminal', 'extracao_mineral', 'subestacao_energia_eletrica', 'trecho_de_energia']
+        },
+        'transporte_aereo': {
+            'order': 5,
+            'order_classes': ['pista_pouso', 'heliponto']
         },
         'hidrografia': {
-            'order': 1,
-            'order_classes': ['massa_dagua', 'trecho_drenagem', 'terreno_sujeito_inundacao', 'queda_dagua_corredeira', 'ilha']
-        },
-        'energia_e_comunicacoes': {
-            'order': 2,
-            'order_classes': ['subestacao_energia_eletrica', 'trecho_de_energia']
-        },
-        'estrutura_economica': {
-            'order': 3,
-            'order_classes': ['extracao_mineral']
-        },
-        'limites_e_localidades': {
-            'order': 4,
-            'order_classes': ['capital_federal_simbolo', 'cidade_1a_importancia', 'capital_estadual_simbolo', 'cidade_2a_importancia', 
-            'cidade_simbolo', 'cidade_3a_importancia','vila_simbolo', 'vila_texto', 'aglomerado_rural', 'nome_local', 'area_publica_militar', 'terra_indigena', 
-            'unidade_conservacao', 'limite_estadual', 'limite_internacional']
+            'order': 6,
+            'order_classes': ['massa_dagua', 'terreno_sujeito_inundacao', 'queda_dagua_corredeira', 'ilha']
         },
         'relevo': {
-            'order': 5,
-            'order_classes': ['curva_nivel_mestra', 'curva_nivel_depressao', 'curva_nivel_normal', 'ponto_cotado', 'curva_nivel_auxiliar',
-            'elemento_fisiografico']
-        },
-        'classes_auxiliares': {
-            'order': 6,
-            'order_classes': ['area_sem_dados']
+            'order': 7,
+            'order_classes': ['curva_nivel',  'ponto_cotado', 'elemento_fisiografico']
         }
     }
 
