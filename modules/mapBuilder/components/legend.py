@@ -38,7 +38,7 @@ class Legend():
         },
         'hidrografia': {
             'order': 6,
-            'order_classes': ['massa_dagua', 'terreno_sujeito_inundacao', 'queda_dagua_corredeira', 'ilha']
+            'order_classes': ['massa_dagua', 'terreno_sujeito_inundacao', 'queda_dagua', 'ilha']
         },
         'relevo': {
             'order': 7,
