@@ -3,7 +3,7 @@ from pathlib import Path
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
 
 from .config.configDefaults import ConfigDefaults
 from .controllers.mapBuilderController import MapBuildController
@@ -186,5 +186,14 @@ class EditionPlugin:
     def run(self):
         """Run method that performs all the real work"""
         self.initialize()
+        locale = QSettings().value('locale/userLocale')[0:2]
+        if 'en' not in locale:
+            QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "Erro",
+                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuidas corretamente. "
+                    "Mude o idioma do QGIS nas opções, reinicie o QGIS e tente novamente."
+                )
+            return
         self.dlg.show()
         self.dlg.exec_()
