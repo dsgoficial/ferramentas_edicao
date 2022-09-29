@@ -185,7 +185,6 @@ class EditionPlugin:
 
     def run(self):
         """Run method that performs all the real work"""
-        self.initialize()
         locale = QSettings().value('locale/userLocale')[0:2]
         if 'en' not in locale:
             QMessageBox.warning(
@@ -195,5 +194,6 @@ class EditionPlugin:
                     "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente."
                 )
             return
+        self.initialize()
         self.dlg.show()
         self.dlg.exec_()
