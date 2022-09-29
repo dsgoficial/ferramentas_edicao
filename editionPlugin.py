@@ -191,7 +191,7 @@ class EditionPlugin:
             QMessageBox.warning(
                     self.iface.mainWindow(),
                     "Erro",
-                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuidas corretamente. "
+                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
                     "Mude o idioma do QGIS nas opções, reinicie o QGIS e tente novamente."
                 )
             return
