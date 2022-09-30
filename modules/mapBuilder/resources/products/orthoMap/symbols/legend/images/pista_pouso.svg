@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="109.71201mm"
    height="4.211319mm"
    viewBox="0 0 109.71201 4.211319"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
    sodipodi:docname="pista_pouso.svg"
    inkscape:export-filename="pista_pouso.png"
    inkscape:export-xdpi="600"
-   inkscape:export-ydpi="600"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:dc="http://purl.org/dc/elements/1.1/">
+   inkscape:export-ydpi="600">
   <metadata
      id="metadata9860">
     <rdf:RDF>
@@ -38,21 +38,22 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="226.36548"
-     inkscape:cy="-25.271206"
+     inkscape:zoom="2.6301886"
+     inkscape:cx="180.07582"
+     inkscape:cy="27.531754"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="283"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8141-1-6"
+     inkscape:current-layer="g9270"
      showborder="false"
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:snap-global="false" />
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -151,14 +152,14 @@
            sodipodi:role="line"
            x="-28.646622"
            y="144.717"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">Pista de pouso:  op, não op; Heliponto: op, não op.</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">Pista de pouso:  op, não op; Heliponto</tspan></text>
       <path
-         inkscape:original-d="m 19.570625,144.74742 c 5.513979,-5.3e-4 11.027176,-5.3e-4 16.539639,0"
+         inkscape:original-d="m 7.5998421,144.74742 c 9.5047939,-5.3e-4 19.0082409,-5.3e-4 28.5104219,0"
          inkscape:path-effect="#path-effect3120"
          inkscape:connector-curvature="0"
          id="path3118"
-         d="m 19.570625,144.74742 c 5.513979,0 11.027176,0 16.539639,0"
-         style="fill:none;stroke:#000000;stroke-width:0.125403;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 7.5998421,144.74742 c 9.5047939,0 19.0082409,0 28.5104219,0"
+         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />
@@ -195,110 +196,62 @@
         </g>
       </g>
       <g
-         id="g10815"
-         transform="matrix(1.1982157,0,0,1.1982157,37.475676,141.97445)">
-        <g
-           inkscape:label="Camada 1"
-           id="layer1-30"
-           transform="translate(-110.66177,-75.577141)">
-          <ellipse
-             style="fill:none;fill-opacity:1;stroke:#34469d;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-             id="path990-7"
-             cx="112.16177"
-             cy="77.077141"
-             rx="1.3772337"
-             ry="1.3772339" />
-        </g>
-        <g
-           id="layer2-6"
-           inkscape:label="Camada 2">
-          <ellipse
-             style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.240511;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-             id="path990-1"
-             cx="112.15076"
-             cy="77.082619"
-             rx="1.317667"
-             ry="1.3322834"
-             transform="translate(-110.66177,-75.577142)" />
-        </g>
-        <g
-           id="layer3-3"
-           inkscape:label="Camada 3">
-          <path
-             id="path1887"
-             style="fill:#34469d;fill-opacity:1;stroke:none;stroke-width:0.0499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 112.16151,75.944662 -0.21291,0.783932 -0.92914,0.619598 0.88109,-0.155027 0.20308,0.881081 -0.23254,0.125574 0.28112,0.0098 0.29972,-0.0098 -0.23202,-0.125574 0.20308,-0.881081 0.88109,0.155027 -0.92914,-0.619598 z"
-             transform="translate(-110.66177,-75.577142)" />
-        </g>
-      </g>
-      <g
-         id="g10815-1"
-         transform="matrix(1.1982157,0,0,1.1982157,46.684935,141.97447)">
-        <g
-           inkscape:label="Camada 1"
-           id="layer1-30-8"
-           transform="translate(-110.66177,-75.577141)">
-          <ellipse
-             style="fill:none;fill-opacity:1;stroke:#7987c8;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-             id="path990-7-8"
-             cx="112.16177"
-             cy="77.077141"
-             rx="1.3772337"
-             ry="1.3772339" />
-        </g>
-        <g
-           id="layer2-6-3"
-           inkscape:label="Camada 2">
-          <ellipse
-             style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.240511;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-             id="path990-1-3"
-             cx="112.15076"
-             cy="77.082619"
-             rx="1.317667"
-             ry="1.3322834"
-             transform="translate(-110.66177,-75.577142)" />
-        </g>
-        <g
-           id="layer3-3-6"
-           inkscape:label="Camada 3">
-          <path
-             id="path1887-8"
-             style="fill:#7987c8;fill-opacity:1;stroke:none;stroke-width:0.0499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 112.16151,75.944662 -0.21291,0.783932 -0.92914,0.619598 0.88109,-0.155027 0.20308,0.881081 -0.23254,0.125574 0.28112,0.0098 0.29972,-0.0098 -0.23202,-0.125574 0.20308,-0.881081 0.88109,0.155027 -0.92914,-0.619598 z"
-             transform="translate(-110.66177,-75.577142)" />
-        </g>
-      </g>
-      <g
-         id="g67667-4"
-         transform="translate(-74.546346,72.487526)"
-         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         id="g8685"
+         transform="translate(-183.78601,22.713844)"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600">
+        <path
+           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m -88.683114,167.9782 v 0.87527"
+           id="path915"
+           inkscape:connector-curvature="0"
+           transform="translate(311.74953,-49.44422)" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path917"
+           d="m -88.683114,172.14668 v 0.87526"
+           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(311.74953,-49.44422)" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path919"
+           d="m -86.146329,170.499 h -0.875267"
+           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(311.74953,-49.44422)" />
+        <path
+           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m -90.350385,170.499 h -0.875266"
+           id="path921"
+           inkscape:connector-curvature="0"
+           transform="translate(311.74953,-49.44422)" />
         <circle
-           style="fill:none;fill-opacity:1;stroke:#7987c8;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-           id="circle1016-5"
-           cx="140.96504"
-           cy="71.330414"
+           style="fill:none;fill-opacity:1;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+           id="circle1016-4-3"
+           cx="223.06641"
+           cy="121.05478"
            r="1.65" />
-        <g
-           id="g1084-5"
-           transform="matrix(1.2,0,0,1.2,19.165034,-19.594605)">
-          <path
-             inkscape:connector-curvature="0"
-             id="path1018-1"
-             d="m 101.02501,75.020851 v 1.5"
-             style="fill:#000000;fill-opacity:0;stroke:#7987c8;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-          <path
-             style="fill:#000000;fill-opacity:0;stroke:#7987c8;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 102.10001,75.77085 -1.2,2e-6"
-             id="path1020-5"
-             inkscape:connector-curvature="0" />
-          <path
-             style="fill:#000000;fill-opacity:0;stroke:#7987c8;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 101.97501,75.020851 v 1.5"
-             id="path1027-4"
-             inkscape:connector-curvature="0" />
-        </g>
+      </g>
+      <g
+         id="g9307"
+         transform="translate(-163.57278,22.668333)">
+        <path
+           inkscape:connector-curvature="0"
+           id="path968"
+           d="m -100.60584,169.63324 1.800502,1.8005"
+           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           transform="translate(311.74953,-49.44422)" />
+        <path
+           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m -98.805337,169.63324 -1.800503,1.8005"
+           id="path972"
+           inkscape:connector-curvature="0"
+           transform="translate(311.74953,-49.44422)" />
+        <circle
+           style="fill:none;fill-opacity:1;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+           id="circle1016-4-3-8"
+           cx="212.04393"
+           cy="121.08927"
+           r="1.65" />
       </g>
     </g>
     <g
