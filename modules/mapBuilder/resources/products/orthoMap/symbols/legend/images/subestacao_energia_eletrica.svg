@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="109.71203mm"
+   height="4.9000015mm"
+   viewBox="0 0 109.71203 4.9000015"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="subestacao_energia_eletrica.svg"
+   inkscape:export-filename="subestacao_energia_eletrica.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata
+     id="metadata9860">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.8598242"
+     inkscape:cx="198.40585"
+     inkscape:cy="-10.753705"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="892"
+     inkscape:window-y="185"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g8141-1-6"
+     showborder="false"
+     inkscape:document-rotation="0"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8945"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8920"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8895"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8870"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8798"
+       effect="bspline"
+       lpeversion="0" />
+    <linearGradient
+       id="linearGradient6634"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop6632" />
+    </linearGradient>
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect2277"
+       effect="bspline"
+       lpeversion="0" />
+  </defs>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(28.509944,-124.1122)">
+    <g
+       id="g9202"
+       transform="translate(0.0326735,1.8260987)">
+      <path
+         inkscape:original-d="m -6.5804504,125.80979 c 8.6087489,-4.1e-4 17.2162554,-4.1e-4 25.8225264,0"
+         inkscape:path-effect="#path-effect2277"
+         inkscape:connector-curvature="0"
+         id="path2275"
+         d="m -6.5804504,125.80979 c 8.6087489,0 17.2162554,0 25.8225264,0"
+         style="fill:none;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+         x="-28.449066"
+         y="125.82513"
+         id="text1360"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600"><tspan
+           sodipodi:role="line"
+           id="tspan1358"
+           x="-28.449066"
+           y="125.82513"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Subestação de energia</tspan></text>
+      <g
+         id="g10730"
+         transform="translate(-24.423283,-17.082109)">
+        <g
+           id="g1145-5"
+           transform="matrix(1.2,0,0,1.2,-74.564678,-9.5850799)"
+           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+           inkscape:export-xdpi="600"
+           inkscape:export-ydpi="600">
+          <path
+             inkscape:connector-curvature="0"
+             id="path4196-2"
+             d="m 100.06516,126.5 v -0.43484 H 100.5 100.93484 V 126.5 126.93484 H 100.5 100.06516 Z"
+             style="opacity:1;fill:#7987c8;fill-opacity:1;stroke:#000000;stroke-width:0.130325;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+          <path
+             sodipodi:nodetypes="cccc"
+             inkscape:connector-curvature="0"
+             id="path1127-6"
+             d="m 100.5,124.53755 -0.425,0.7375 h 0.85 l -0.44962,0.77081"
+             style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <rect
+           style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:square;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+           id="rect10722"
+           width="2.0670574"
+           height="3.5057292"
+           x="45.001793"
+           y="139.56212"
+           rx="0"
+           ry="0" />
+      </g>
+    </g>
+    <g
+       id="g8141-1-6"
+       transform="translate(0.13025171,33.378798)" />
+  </g>
+</svg>

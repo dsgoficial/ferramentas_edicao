@@ -62,9 +62,6 @@ class Legend():
         xAnchor, yAnchor = anchor
         x, y = xAnchor, yAnchor
         ySpacing = 0.5
-        xSpacingFirstColumn = 2
-        xSpacing = 56
-        width = 115
         context = QgsReadWriteContext()
         for group, labels in legendDict.items():
             position = QPointF(x,y)
@@ -73,14 +70,11 @@ class Legend():
             _, title_h = self.getSizeFromDomComponent(domGroup)
             y += title_h
             for label in labels:
-                x += xSpacingFirstColumn
                 position = QPointF(x,y)
                 domGroup = self.loadQDomComponent(self.qptsPath / f'{label}.qpt')
                 composition.addItemsFromXml(domGroup.documentElement(), domGroup, context, position)
                 _, label_item_h = self.getSizeFromDomComponent(domGroup)
-                x = xAnchor
                 y = y + label_item_h
-            x = xAnchor
             y += ySpacing
 
     def groupLegend(self, classes, legendMappingData):
