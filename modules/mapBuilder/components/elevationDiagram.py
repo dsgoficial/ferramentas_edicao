@@ -52,6 +52,14 @@ class ElevationDiagram(ComponentUtils,IComponent):
         layers[elevationPointsIdx] = generalizedPoints
         layers.append(outputGrid)
 
+        massaDaguaLayer = next(filter(lambda x: x.name() == 'cobter_massa_dagua_a', layers), None)
+        if massaDaguaLayer is not None:
+            massaDaguaLayer.loadNamedStyle(
+                str(self.stylesFolder / 'cobter_massa_dagua_a.qml'),
+                True
+            )
+            massaDaguaLayer.triggerRepaint()
+
         self.updateComposition(
             composition,
             mapExtents,

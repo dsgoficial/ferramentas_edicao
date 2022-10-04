@@ -1,5 +1,7 @@
 import math
 import os
+from uuid import uuid4
+import processing
 from pathlib import Path
 from itertools import chain
 from typing import List, Tuple
@@ -25,19 +27,25 @@ class ImageArticulation(ComponentUtils,IComponent):
         self.n_maxlines = 6
 
     def build(self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature, layers: List[QgsVectorLayer], showLayers: bool = False):
-        if data.get('scale') == 250000:
+        if data.get('scale') == 250:
             self.n_maxlines = 4
         mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
         if not isinstance(layers, list):
             layers = [layers]
-        imageArticulationLayer = next(filter(lambda x: x.name() == 'edicao_articulacao_imagem_a', layers), None)
-        # imageArticulationLayer = QgsVectorLayer("D:\\borba\\edicao_articulacao_imagem\\2724-2_edicao_articulacao_imagem_a.geojson","edicao_articulacao_imagem_a","ogr")
-        # QgsProject.instance().addMapLayer(imageArticulationLayer, False)
-        # layers = [imageArticulationLayer]
+        imageArticulationLayerIdx, imageArticulationLayer = next(filter(lambda x: x[1].name() == 'edicao_articulacao_imagem_a', enumerate(layers)), (None, None))
         if imageArticulationLayer is None:
             return []
+        imageArticulationLayer = processing.run(
+            "native:multiparttosingleparts",
+            {
+                'INPUT': imageArticulationLayer,
+                'OUTPUT': 'memory:'
+            }
+        )['OUTPUT']
+        QgsProject.instance().addMapLayer(imageArticulationLayer, False)
+        layers[imageArticulationLayerIdx] = imageArticulationLayer
 
-        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer)
+        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer, mapAreaFeature)
         self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
 
         # Inserting counties table
@@ -56,13 +64,53 @@ class ImageArticulation(ComponentUtils,IComponent):
         mapIDsToBeDisplayed = [imageArticulationLayer.id()]
         return mapIDsToBeDisplayed
     
-    @staticmethod
-    def getOrderedFeatures(imageArticulationLayer: QgsVectorLayer):
-        return sorted(
-            imageArticulationLayer.getFeatures(),
-            reverse=False,
-            key = lambda feat: tuple(chain(reversed(feat["data"].split('/')), [feat["nome_sensor"]]))
+    def getOrderedFeatures(self, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature):
+        geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
+        featureList = self.getAreasWithoutImageCoverage(imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
+        imageArticulationLayer.startEditing()
+        imageArticulationLayer.beginEditCommand('')
+        imageArticulationLayer.addFeatures(featureList)
+        imageArticulationLayer.endEditCommand()
+        imageArticulationLayer.commitChanges()
+        featList = list(imageArticulationLayer.getFeatures())
+        return list(
+            chain(
+                sorted(
+                    filter(lambda x: x['data'] is not None, featList),
+                    reverse=False,
+                    key = lambda feat: tuple(
+                        chain(reversed(feat["data"].split('/')), [feat["nome_sensor"]]))
+                ),
+                filter(lambda x: x['data'] is None, featList)
+            )
         )
+    
+    @staticmethod
+    def getAreasWithoutImageCoverage(imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
+        symDiffOutputLyr = processing.run(
+            "native:symmetricaldifference",
+            {
+                'INPUT': geographicBoundsLyr,
+                'OVERLAY': imageArticulationLayer,
+                'OVERLAY_FIELDS_PREFIX':'',
+                'OUTPUT':'memory:'
+            }
+        )['OUTPUT']
+        outputPolygonLyr = processing.run(
+            "native:multiparttosingleparts",
+            {
+                'INPUT': symDiffOutputLyr,
+                'OUTPUT': 'memory:'
+            }
+        )['OUTPUT']
+        boundsGeom = mapAreaFeature.geometry()
+        outputFeaturesList = []
+        for feat in outputPolygonLyr.getFeatures():
+            if not feat.geometry().pointOnSurface().intersects(boundsGeom):
+                continue
+            feat['id'] = str(uuid4())
+            outputFeaturesList.append(feat)
+        return outputFeaturesList
 
     def getNumberOfColumns(self, n_total: int):
         n_columns = 1
@@ -109,6 +157,12 @@ class ImageArticulation(ComponentUtils,IComponent):
             return False
 
     def customcreateHtmlTableData(self, sortedFeatures: List[QgsFeature]):
+        noneFeats = list(filter(lambda x: x['nome_sensor'] is None and x['data'] is None, sortedFeatures))
+        sortedFeatures = list(
+            filter(lambda x: x['nome_sensor'] is not None and x['data'] is not None, sortedFeatures),
+        )
+        if len(noneFeats) > 0:
+            sortedFeatures.append(noneFeats[0])
         nImages = len(sortedFeatures)
         nColumns = math.ceil(nImages/self.n_maxlines)
         nColumns = 1 if nColumns == 0 else nColumns
@@ -126,7 +180,9 @@ class ImageArticulation(ComponentUtils,IComponent):
         tableColumns = []
         tableRows = []
         for feat_index, feat in enumerate(sortedFeatures):
-            cell_str = f"{feat_index + 1} - {feat['nome_sensor']} ({feat['data']})"
+            cell_str = f"{feat_index + 1} - {feat['nome_sensor']} ({feat['data']})" \
+                if feat['nome_sensor'] is not None and feat['data'] is not None \
+                else f"{feat_index + 1} - Área sem imagem"
             tableColumn = basecolumn_str.format(cell_str)
             tableColumns.append(tableColumn)
             if self.goToNextColumn(feat_index, nColumn1, nColumn2, nColumn3):
@@ -178,6 +234,13 @@ class ImageArticulation(ComponentUtils,IComponent):
         imageArticulationLayer.triggerRepaint()
         rulesRoot = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
         for n, feat in enumerate(orderedFeaturesByDateAndSensor):
+            if feat["nome_sensor"] is None and feat["data"] is None:
+                rule = self.createRule(
+                    f"'{n+1}'",
+                    f""" "nome_sensor" is NULL AND "data" is NULL """
+                )
+                rulesRoot.appendChild(rule)
+                break
             rule = self.createRule(
                 f"'{n+1}'",
                 f""" "nome_sensor" = '{feat["nome_sensor"]}' AND "data" = '{feat["data"]}' """

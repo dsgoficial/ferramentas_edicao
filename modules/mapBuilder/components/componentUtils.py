@@ -154,8 +154,8 @@ class ComponentUtils:
         return layer
     
     @staticmethod
-    def cloneVectorLayer(layer, layerName):
-        dataProviderUri = layer.dataProvider().dataSourceUri()
+    def cloneVectorLayer(layer, layerName, customDataProviderUri=None):
+        dataProviderUri = layer.dataProvider().dataSourceUri() if customDataProviderUri is None else customDataProviderUri
         copyLayer = QgsVectorLayer(dataProviderUri, layerName, 'memory')
         copyLayerDataProvider = copyLayer.dataProvider()
         renameDict = {x:layer.attributeDisplayName(x) for x in layer.attributeList()}
