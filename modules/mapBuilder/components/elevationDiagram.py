@@ -94,6 +94,25 @@ class ElevationDiagram(ComponentUtils,IComponent):
         if epsg is not None:
             epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
             raster_mde.setCrs(epsgId)
+        raster_mde = raster_mde if int(epsg) in (4674, 4326) \
+            else processing.run(
+                "gdal:warpreproject",
+                {
+                    'INPUT':'D:/borba/teste_perrut/DTM_Bloco_176.tif',
+                    'SOURCE_CRS':epsgId,
+                    'TARGET_CRS':QgsCoordinateReferenceSystem('EPSG:4674'),
+                    'RESAMPLING':0,
+                    'NODATA':None,
+                    'TARGET_RESOLUTION':None,
+                    'OPTIONS':'',
+                    'DATA_TYPE':0,
+                    'TARGET_EXTENT':None,
+                    'TARGET_EXTENT_CRS':None,
+                    'MULTITHREADING':True,
+                    'EXTRA':'',
+                    'OUTPUT':'TEMPORARY_OUTPUT'
+                }
+            )['OUTPUT']
         elevationSlicingLyr = self.createTerrainLayer()
         slicingParams = data.get('param_diagrama_elevacao', {})
         processingOutput = processing.run(
