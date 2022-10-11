@@ -262,11 +262,14 @@ class MapBuildController(MapBuildControllerUtils):
             builder.run(self.debugMode)
             # Export
             exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
-            exporter.export(composition)
+            exportResult, exportMessage = exporter.export(composition)
             builder.removeLayers(self.debugMode)
         
+        messageType = "Informação"
         if builder:
             builder.cleanProject(self.debugMode)
-            QMessageBox.warning(self.dlg, "Informação", "A exportação foi concluída")
+            messageType = "Informação" if exportResult == True else "Erro"
+            msg = "A exportação foi concluída com sucesso." if exportResult == True else f"Ocorreu um erro durante a exportação: {exportMessage}"
         else:
-            QMessageBox.warning(self.dlg, "Informação", "Não há cartas a serem exportadas")
+            msg = "Não há cartas a serem exportadas"
+        QMessageBox.warning(self.dlg, messageType, msg)
