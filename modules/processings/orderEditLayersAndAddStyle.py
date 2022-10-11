@@ -11,8 +11,8 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsExpressionContextUtils,
                        QgsProcessingParameterEnum, QgsProject,
                        QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme,
-                       QgsProcessingMultiStepFeedback)
-from qgis.PyQt.QtCore import QCoreApplication
+                       QgsProcessingMultiStepFeedback, QgsProcessingException)
+from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
 
 class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm): 
@@ -126,7 +126,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             currentScheme.setColors(importedColors[0])
             QgsApplication.colorSchemeRegistry().addColorScheme(currentScheme)
 
-    def processAlgorithm(self, parameters, context, feedback): 
+    def processAlgorithm(self, parameters, context, feedback):
+        if 'en' not in QSettings().value('locale/userLocale')[0:2]:
+            raise QgsProcessingException(
+                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
+                    "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente."
+                )
         self.setColorPalette()
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
         gridScaleParam = self.parameterAsEnum(parameters, self.INPUT_SCALE, context)
