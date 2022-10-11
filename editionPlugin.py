@@ -173,6 +173,15 @@ class EditionPlugin:
 
     def initialize(self):
         ''' Starts main plugin dialog and the main controller '''
+        locale = QSettings().value('locale/userLocale')[0:2]
+        if 'en' not in locale:
+            QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "Erro",
+                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
+                    "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente."
+                )
+            return
         if self.firstStart:
             self.firstStart = False
             self.dlg = EditionPluginDialog()
