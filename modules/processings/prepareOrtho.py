@@ -272,8 +272,15 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         }
         destLayersToCreateSpacedSymbolsCase1 = False
         destLayersToCreateSpacedSymbolsCase2 = False
-        for lyr in layers:
+        nSteps = len(layers)
+        if nSteps == 0:
+            return {self.OUTPUT: 'concluído'}
+        stepSize = 100/nSteps
+        for current, lyr in enumerate(layers):
+            if feedback.isCanceled():
+                break
             lyrName = lyr.dataProvider().uri().table()
+            feedback.pushInfo(f"Preparando camada {lyr.name()}")
             # self.updateLayer(lyr, lyrName)
             if lyrName in attrDefault:
                 valuesToCommit = attrDefault.get(lyrName)
@@ -333,6 +340,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     self.removePointsNextToFrame(frameLinesLayer, destLayersToCreateSpacedSymbolsCase2, distanceNextToFrame)
             if lyrName == 'elemnat_ponto_cotado_p' and frameLayer:
                 self.highestSpot(lyr, frameLayer)
+            feedback.setProgress(current * stepSize)
         if destLayersToCreateSpacedSymbolsCase2:
             addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, distanceToRemoveEnergySymbol, destLayersToCreateSpacedSymbolsCase2, distanceToRemoveRoadSymbol)            
         else:
