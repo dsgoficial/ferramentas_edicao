@@ -44,7 +44,7 @@ class Articulation(ComponentUtils,IComponent):
         return mapIDsToBeDisplayed
 
     def loadStyleToGridLayer(self, layer: QgsVectorLayer, scale: int) -> QgsVectorLayer:
-        if scale == 250000:
+        if scale == 250:
             styleFile = self.stylesFolder / 'articulacao_especial_25k_v6_250.qml'
         else:
             styleFile = self.stylesFolder / 'articulacao_especial_25k_v6.qml'

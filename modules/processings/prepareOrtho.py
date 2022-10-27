@@ -79,7 +79,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         if frameLayer:
             frameLinesLayer = self.convertPolygonToLines(frameLayer)
         layersToCalculateDefaults = [
-            'infra_obstaculo_vertical_p',
             'infra_pista_pouso_p',
             'infra_pista_pouso_l',
             'infra_pista_pouso_a',
@@ -90,10 +89,10 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             'cobter_massa_dagua_a'
         ]
         layersToCalculateSobreposition = [
-            'llp_area_pub_militar_l',
-            'llp_limite_legal_l',
-            'llp_terra_indigena_l',
-            'llp_unidade_conservacao_l'
+            'edicao_area_pub_militar_l',
+            'edicao_limite_legal_l',
+            'edicao_terra_indigena_l',
+            'edicao_unidade_conservacao_l'
         ]
         _refLayersNamesSobreposition = [
             'elemnat_trecho_drenagem_l',
@@ -141,10 +140,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
             'infra_elemento_infraestrutura_p': {
                 'texto_edicao': 'nome',
-                'justificativa_txt': 1
-            },
-            'infra_obstaculo_vertical_p': {
-                'visivel': 1,
                 'justificativa_txt': 1
             },
             'infra_pista_pouso_p': {
@@ -204,23 +199,23 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'visivel': 1,
                 'simbolizar_carta_mini': 1
             },
-            'llp_area_pub_militar_l': {
+            'edicao_area_pub_militar_l': {
                 'sobreposto': 2,
                 'exibir_rotulo_aproximado': 1
             },
-            'llp_limite_legal_l': {
+            'edicao_limite_legal_l': {
                 'sobreposto': 2,
                 'exibir_rotulo_aproximado': 1
             },
-            'llp_terra_indigena_l': {
+            'edicao_terra_indigena_l': {
                 'sobreposto': 2,
                 'exibir_rotulo_aproximado': 1
             },
-            'llp_unidade_conservacao_l': {
+            'edicao_unidade_conservacao_l': {
                 'sobreposto': 2,
                 'exibir_rotulo_aproximado': 1
             },
-            'aux_area_sem_dados_a': {
+            'edicao_area_sem_dados_a': {
                 'texto_edicao': 'ÁREA SEM DADOS',
                 'tamanho_txt': 7,
                 'justificativa_txt': 1,
@@ -277,8 +272,15 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         }
         destLayersToCreateSpacedSymbolsCase1 = False
         destLayersToCreateSpacedSymbolsCase2 = False
-        for lyr in layers:
+        nSteps = len(layers)
+        if nSteps == 0:
+            return {self.OUTPUT: 'concluído'}
+        stepSize = 100/nSteps
+        for current, lyr in enumerate(layers):
+            if feedback.isCanceled():
+                break
             lyrName = lyr.dataProvider().uri().table()
+            feedback.pushInfo(f"Preparando camada {lyr.name()}")
             # self.updateLayer(lyr, lyrName)
             if lyrName in attrDefault:
                 valuesToCommit = attrDefault.get(lyrName)
@@ -338,6 +340,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                     self.removePointsNextToFrame(frameLinesLayer, destLayersToCreateSpacedSymbolsCase2, distanceNextToFrame)
             if lyrName == 'elemnat_ponto_cotado_p' and frameLayer:
                 self.highestSpot(lyr, frameLayer)
+            feedback.setProgress(current * stepSize)
         if destLayersToCreateSpacedSymbolsCase2:
             addToSinkDict = self.removeCloseEnergyAndHighwaySymbols(destLayersToCreateSpacedSymbolsCase1, distanceToRemoveEnergySymbol, destLayersToCreateSpacedSymbolsCase2, distanceToRemoveRoadSymbol)            
         else:
@@ -383,14 +386,14 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 feature[ 'texto_edicao' ] = 'Água'
                 self.updateLayerFeature( layer, feature)
 
-        elif layerName in [ 'infra_trecho_hidroviario_l' ]:
+        elif layerName in [ 'infra_travessia_hidroviaria_l' ]:
             for feature in layer.getFeatures():
                 if not( feature['tipo'] == 1 ):
                     continue
                 feature[ 'texto_edicao' ] = 'Balsa'
                 self.updateLayerFeature( layer, feature)
 
-        elif layerName in [ 'llp_limite_especial_l' ]:
+        elif layerName in [ 'edicao_limite_especial_l' ]:
             for feature in layer.getFeatures():
                 feature[ 'texto_edicao' ] = 'Aproximado'
                 self.updateLayerFeature( layer, feature)

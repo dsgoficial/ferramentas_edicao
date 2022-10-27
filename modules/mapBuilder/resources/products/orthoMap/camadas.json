@@ -45,10 +45,6 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_obstaculo_vertical_p",
-            "schema": "edgv"
-        },
-        {
             "table": "elemnat_ilha_p",
             "schema": "edgv"
         },
@@ -57,11 +53,11 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_legal_l",
+            "table": "edicao_limite_legal_l",
             "schema": "edgv"
         },
         {
-            "table": "llp_area_pub_militar_l",
+            "table": "edicao_area_pub_militar_l",
             "schema": "edgv"
         },
         {
@@ -69,7 +65,7 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_terra_indigena_l",
+            "table": "edicao_terra_indigena_l",
             "schema": "edgv"
         },
         {
@@ -77,7 +73,7 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_unidade_conservacao_l",
+            "table": "edicao_unidade_conservacao_l",
             "schema": "edgv"
         },
         {
@@ -161,7 +157,7 @@
             "schema": "edgv"
         },
         {
-            "table": "aux_area_sem_dados_a",
+            "table": "edicao_area_sem_dados_a",
             "schema": "edgv"
         },
         {
@@ -207,11 +203,11 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_legal_l",
+            "table": "edicao_limite_legal_l",
             "schema": "edgv"
         },
         {
-            "table": "llp_area_pub_militar_l",
+            "table": "edicao_area_pub_militar_l",
             "schema": "edgv"
         },
         {
@@ -219,7 +215,7 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_terra_indigena_l",
+            "table": "edicao_terra_indigena_l",
             "schema": "edgv"
         },
         {
@@ -227,7 +223,7 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_unidade_conservacao_l",
+            "table": "edicao_unidade_conservacao_l",
             "schema": "edgv"
         },
         {
@@ -247,11 +243,35 @@
             "schema": "edgv"
         },
         {
-            "table": "aux_area_sem_dados_a",
+            "table": "edicao_area_sem_dados_a",
             "schema": "edgv"
         },
         {
             "table": "cobter_massa_dagua_a",
+            "schema": "edgv"
+        }
+    ],
+    "elevationDiagram": [
+        {
+            "table": "elemnat_ponto_cotado_p",
+            "schema": "edgv"
+        },
+        {
+            "table": "elemnat_trecho_drenagem_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_area_sem_dados_a",
+            "schema": "edgv"
+        },
+        {
+            "table": "cobter_massa_dagua_a",
+            "schema": "edgv"
+        }
+    ],
+    "imageArticulation": [
+        {
+            "table": "edicao_articulacao_imagem_a",
             "schema": "edgv"
         }
     ]

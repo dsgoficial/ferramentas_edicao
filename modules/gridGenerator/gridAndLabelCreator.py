@@ -303,13 +303,13 @@ class GridAndLabelCreator(QObject):
         if u == min(rangetest) and any(spec_lbl in desc for spec_lbl in ('Bot','Left')):
             extra_label = 'N'
             dyT = 1.4*scale*fSize/1.5
-            dxT = 7.1*scale*fSize/1.5
-            dxH = 8.1*scale*fSize/1.5
+            dxT = 7.2*scale*fSize/1.5
+            dxH = 8.2*scale*fSize/1.5
             if isVertical:
                 extra_label = 'E'
                 dyT = 1.6*scale*fSize/1.5
-                dxT = 7.0*scale*fSize/1.5
-                dxH = 7.9*scale*fSize/1.5
+                dxT = 7.2*scale*fSize/1.5
+                dxH = 8.1*scale*fSize/1.5
 
             plac_new = QgsPoint(plac.x()+dxT, plac.y()+dyT)
             plac_new.transform(trUTMLL)
@@ -528,7 +528,7 @@ class GridAndLabelCreator(QObject):
         bound_UTM_bb = str(feature_bbox).replace(',','').replace('>','')
         feature_geometry.transform(trUTMLL)
         feature_geo_bbox = feature_geometry.boundingBox()
-        feature_bbox_or = feature_geometry.orientedMinimumBoundingBox()
+        # feature_bbox_or = feature_geometry.orientedMinimumBoundingBox()
         geo_bound_bb = str(feature_geo_bbox).replace(',','').replace('>','')
         # oriented_geo_bb = str(feature_bbox_or).replace(',','').replace('>','').replace('((','').replace('))','')
         oriented_geo_bb = feature_geometry.boundingBox()

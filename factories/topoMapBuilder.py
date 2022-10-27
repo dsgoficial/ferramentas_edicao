@@ -18,7 +18,7 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.productPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'topoMap'
         self.components = dict()
         self.components.update({'map':self.componentFactory.getComponent('Map', 'topoMap')})
-        self.components.update({'miniMap':self.componentFactory.getComponent('MiniMap')})
+        self.components.update({'elevationDiagram':self.componentFactory.getComponent('ElevationDiagram')})
         self.components.update({'localization':self.componentFactory.getComponent('Localization', 'topoMap')})
         self.components.update({'articulation':self.componentFactory.getComponent('Articulation', 'topoMap')})
         self.components.update({'division':self.componentFactory.getComponent('Division')})
@@ -26,7 +26,6 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
-        self.components.update({'miniMapCoords':self.componentFactory.getComponent('MiniMapCoords')})
         self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
         self.grid = GridAndLabelCreator()
 
@@ -38,7 +37,7 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
         mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x, self.mapAreaFeature)
-        miniMapLayers, miniMapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'miniMap', lambda x: x, self.mapAreaFeature)
+        elevationDiagramLayers, elevationDiagramLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'elevationDiagram', lambda x: x, self.mapAreaFeature)
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()
@@ -51,9 +50,9 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
             if key == 'map':
                 mapLayersIds = component.build(
                     self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid, debugMode)
-            elif key == 'miniMap':
-                miniMapLayersIds = component.build(
-                    self.composition, self.mapAreaFeature, miniMapLayers, debugMode)
+            elif key == 'elevationDiagram':
+                elevationDiagramLayersIds = component.build(
+                    self.composition, self.data, self.mapAreaFeature, elevationDiagramLayers, debugMode)
             elif key == 'localization':
                 localizationLayersIds = component.build(
                     self.composition, self.data, self.mapAreaFeature, debugMode)
@@ -71,12 +70,10 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.data, self.mapAreaFeature)
             elif key == 'anglesHandler':
                 component.build(self.composition, self.mapAreaFeature)
-            elif key == 'miniMapCoords':
-                component.build(self.composition, self.mapAreaFeature)
             elif key == 'qrcode':
                 component.build(self.composition, self.data, self.mapAreaFeature)
-        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds))
-        self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
+        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *elevationDiagramLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds))
+        self.groupsToBeRemoved.extend(['map','elevationDiagram','localization','articulation','division'])
         self.classifiedMapHandler(self.composition, self.data)
         self.setupMasks(self.productPath, mapLayers)
 

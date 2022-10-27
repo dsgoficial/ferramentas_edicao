@@ -6,7 +6,7 @@ from typing import Any, NamedTuple, Tuple, Union
 
 from qgis.core import QgsFeature, QgsVectorLayer, QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme
 from qgis.gui import QgisInterface
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 import os
 from PyQt5.QtCore import QFileInfo, QFile
@@ -21,6 +21,7 @@ from ..factories.topoMapBuilder import TopoMapBuilder
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 from .mapBuilderControllerUtils import MapBuildControllerUtils
+from ..config import jsonStructure
 
 
 class MapBuildController(MapBuildControllerUtils):
@@ -36,7 +37,6 @@ class MapBuildController(MapBuildControllerUtils):
         self.debugMode = (Path(__file__).parent.parent / '.env').exists()
         self.exporter = ExporterSingleton()
         self.builders = dict()
-        self.setColorPalette()
 
     def setColorPalette(self):
         schemeName = "Project colors"
@@ -123,7 +123,7 @@ class MapBuildController(MapBuildControllerUtils):
             "250": 100
         }
         info_tecnica = jsonData.get('info_tecnica')
-        equidistancia = info_tecnica.get('equidistancia_personalizada', equidistanciaDefault[str(scale)])
+        equidistancia = info_tecnica.get('equidistancia_personalizada', equidistanciaDefault.get(str(scale), 0))
         exibirAuxiliar = info_tecnica.get('exibir_curva_auxiliar', 0)
         exibirAuxiliar = int(exibirAuxiliar)
 
@@ -229,10 +229,38 @@ class MapBuildController(MapBuildControllerUtils):
         # TODO: run in a different thread
         # TODO: better layers / composition cleanup
         '''Runs the specified MapBuilder according to dlg / json preferences'''
+        self.setColorPalette()
         dlgCfg = self.setupDlgCfg(self.dlg)
+        productType, productName = self.getProductType(dlgCfg.productType)
+        builder = None
         for jsonPath in dlgCfg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
-            productType, productName = self.getProductType(dlgCfg.productType)
+            if 'tipo_produto' not in jsonData:
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"A chave tipo_produto não foi encontrada no json de entrada {jsonPath}, ignorando produto. "
+                    "Adicione a chave e tente novamente."
+                )
+                continue
+            if not self.debugMode and not jsonStructure.validate_dict(jsonData):
+                missingKeySet = jsonStructure.find_missing_required_keys(jsonData)
+                missingKeyText = ",".join(list(missingKeySet))
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. "
+                    "Corrija o json e tente novamente."
+                )
+                continue
+            if dlgCfg.productType != jsonData['tipo_produto']:
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro", 
+                    f"O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json {jsonPath}, ignorando produto. "
+                    "Escolha corretamente o produto ou altere o json de entrada e tente novamente."
+                )
+                continue
             jsonData.update({'productType':productType,'productName': productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
@@ -245,6 +273,14 @@ class MapBuildController(MapBuildControllerUtils):
             builder.run(self.debugMode)
             # Export
             exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
-            exporter.export(composition)
+            exportResult, exportMessage = exporter.export(composition)
             builder.removeLayers(self.debugMode)
-        builder.cleanProject(self.debugMode)
+        
+        messageType = "Informação"
+        if builder:
+            builder.cleanProject(self.debugMode)
+            messageType = "Informação" if exportResult == True else "Erro"
+            msg = "A exportação foi concluída com sucesso." if exportResult == True else f"Ocorreu um erro durante a exportação: {exportMessage}"
+        else:
+            msg = "Não há cartas a serem exportadas"
+        QMessageBox.warning(self.dlg, messageType, msg)

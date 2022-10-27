@@ -140,21 +140,22 @@ class ComponentUtils:
         layer = QgsVectorLayer('Polygon?crs=EPSG:4674', layerName, 'memory')
         layerProvider = layer.dataProvider()
         featsToAdd = list()
-        if hasattr(iterable, '__iter__'):
-            for item in iterable:
-                if isinstance(item, QgsFeature):
-                    feat = QgsFeature(item)
-                    featsToAdd.append(feat)
-                elif isinstance(item, QgsGeometry):
-                    feat = QgsFeature()
-                    feat.setGeometry(item)
-                    featsToAdd.append(feat)
-            layerProvider.addFeatures(featsToAdd)
+        if not hasattr(iterable, '__iter__'):
+            return layer
+        for item in iterable:
+            if isinstance(item, QgsFeature):
+                feat = QgsFeature(item)
+                featsToAdd.append(feat)
+            elif isinstance(item, QgsGeometry):
+                feat = QgsFeature()
+                feat.setGeometry(item)
+                featsToAdd.append(feat)
+        layerProvider.addFeatures(featsToAdd)
         return layer
     
     @staticmethod
-    def cloneVectorLayer(layer, layerName):
-        dataProviderUri = layer.dataProvider().dataSourceUri()
+    def cloneVectorLayer(layer, layerName, customDataProviderUri=None):
+        dataProviderUri = layer.dataProvider().dataSourceUri() if customDataProviderUri is None else customDataProviderUri
         copyLayer = QgsVectorLayer(dataProviderUri, layerName, 'memory')
         copyLayerDataProvider = copyLayer.dataProvider()
         renameDict = {x:layer.attributeDisplayName(x) for x in layer.attributeList()}

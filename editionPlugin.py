@@ -3,14 +3,16 @@ from pathlib import Path
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
+
+from qgis.core import QgsFontUtils
 
 from .config.configDefaults import ConfigDefaults
 from .controllers.mapBuilderController import MapBuildController
 from .modules.processings.pluginProvider import ProcessingProvider
 from .modules.tools.setupButtons import SetupButtons
 from .resources.dialogs.editionPluginDialog import EditionPluginDialog
-
+from .modules.expressionFunctions import loadExpressionFunctions
 
 class EditionPlugin:
     """QGIS Plugin Implementation."""
@@ -152,6 +154,7 @@ class EditionPlugin:
         self.tools.initToolBar()
         self.processingProvider = ProcessingProvider()
         self.processingProvider.initProcessing()
+        loadExpressionFunctions()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -172,6 +175,24 @@ class EditionPlugin:
 
     def initialize(self):
         ''' Starts main plugin dialog and the main controller '''
+        locale = QSettings().value('locale/userLocale')[0:2]
+        if 'en' not in locale:
+            QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "Erro",
+                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
+                    "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente."
+                )
+            return
+        fontsInstalled, errorMsg = self.fontsAreInstalled()
+        if not fontsInstalled:
+            QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "Erro",
+                    f"Erro na instalação das fontes. {errorMsg}"
+                    "Feche o QGIS, corrija a instalação, reinicie o QGIS e tente novamente."
+                )
+            return
         if self.firstStart:
             self.firstStart = False
             self.dlg = EditionPluginDialog()
@@ -181,9 +202,27 @@ class EditionPlugin:
                 self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json')
                 self.dlg.exportFolder.setFilePath('D:\\export')
                 self.dlg.jsonConfigs.setFilter("JSON (*.json)")
+    
+    def fontsAreInstalled(self):
+        fontUtils = QgsFontUtils()
+        if not fontUtils.fontFamilyOnSystem("Noto Sans"):
+            return False, "A fonte Noto Sans não está instalada no sistema."
+        fontStyles = ["Regular", "Bold", "Bold Italic", "Italic", "Condensed", "Condensed Bold", "Condensed Bold Italic", "Condensed Italic", "Light", "Light Italic"]
+        return all(
+            fontUtils.fontFamilyHasStyle("Noto Sans", style) for style in fontStyles
+        ), ",".join(filter(lambda x: fontUtils.fontFamilyHasStyle("Noto Sans", x), fontStyles))
 
     def run(self):
         """Run method that performs all the real work"""
+        locale = QSettings().value('locale/userLocale')[0:2]
+        if 'en' not in locale:
+            QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "Erro",
+                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
+                    "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente."
+                )
+            return
         self.initialize()
         self.dlg.show()
         self.dlg.exec_()

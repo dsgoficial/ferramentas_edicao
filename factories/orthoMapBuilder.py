@@ -18,7 +18,8 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.productPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'orthoMap'
         self.components = dict()
         self.components.update({'map':self.componentFactory.getComponent('Map', 'orthoMap')})
-        self.components.update({'miniMap':self.componentFactory.getComponent('MiniMap')})
+        self.components.update({'elevationDiagram':self.componentFactory.getComponent('ElevationDiagram')})
+        self.components.update({'imageArticulation':self.componentFactory.getComponent('ImageArticulation')})
         self.components.update({'localization':self.componentFactory.getComponent('Localization', 'orthoMap')})
         self.components.update({'articulation':self.componentFactory.getComponent('Articulation', 'orthoMap')})
         self.components.update({'division':self.componentFactory.getComponent('Division')})
@@ -27,7 +28,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
         self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
         self.components.update({'table':self.componentFactory.getComponent('Table')})
-        self.components.update({'miniMapCoords':self.componentFactory.getComponent('MiniMapCoords')})
+        # self.components.update({'miniMapCoords':self.componentFactory.getComponent('MiniMapCoords')})
         self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
         self.grid = GridAndLabelCreator()
 
@@ -39,6 +40,8 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             defaults: instance of configuration defaults
             mapLayers: Dict with available layers
         '''
+        if mapType == 'imageArticulation':
+            return [x for x in mapLayers if x.get('table') == 'edicao_articulacao_imagem_a']
         _complementarClasses = set(jsonData.get('classes_complementares', list()))
         _toDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(_complementarClasses))
         layersToDisplay = [x for x in mapLayers if x.get('table') in _toDisplay]
@@ -54,6 +57,31 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
                     "table": "edicao_simb_cota_mestra_l",
                     "schema": "edgv"
             })
+
+            if 'llp_unidade_federacao_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_limite_legal_l",
+                    "schema": "edgv"
+            })
+
+            if 'llp_area_pub_militar_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_area_pub_militar_l",
+                    "schema": "edgv"
+            })
+
+            if 'llp_terra_indigena_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_terra_indigena_l",
+                    "schema": "edgv"
+            })
+
+            if 'llp_unidade_conservacao_a' in _toDisplay:
+                layersToDisplay.insert(0, {
+                    "table": "edicao_unidade_conservacao_l",
+                    "schema": "edgv"
+            })
+            
         return layersToDisplay
 
     def run(self, debugMode: bool = False):
@@ -63,15 +91,21 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         '''
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
-        mapLayers, mapLayersIds = self.getLayersFromDB(
-            self.conn, self.data, self.defaults, self.productPath, 'map', partial(self.filterLayers, 'map', self.data, self.defaults), self.mapAreaFeature)
-        miniMapLayers, miniMapLayersIds = self.getLayersFromDB(
-            self.conn, self.data, self.defaults, self.productPath, 'miniMap', partial(self.filterLayers, 'miniMap', self.data, self.defaults), self.mapAreaFeature)
+        getLayersFromDbLambda = lambda x: self.getLayersFromDB(
+            uri=self.conn,
+            data=self.data,
+            defaults=self.defaults,
+            productPath=self.productPath,
+            group=x,
+            filterF=partial(self.filterLayers, x, self.data, self.defaults),
+            mapAreaFeature=self.mapAreaFeature
+        )
+        mapLayers, mapLayersIds = getLayersFromDbLambda('map')
+        elevationDiagramLayers, elevationDiagramLayersIds = getLayersFromDbLambda('elevationDiagram')
+        imageArticulationLayers, imageArticulationIds = getLayersFromDbLambda('imageArticulation')
         imgLayers, imgLayersIds = self.createRasterLayers(self.data.get('imagens', tuple()))
         mapLayers = [*mapLayers, *imgLayers]
         mapLayersIds = [*mapLayersIds, *imgLayersIds]
-        miniMapLayers = [*miniMapLayers, *imgLayers]
-        miniMapLayersIds = [*miniMapLayersIds, *imgLayersIds]
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()
@@ -84,9 +118,12 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             if key == 'map':
                 mapLayersIds = component.build(
                     self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid, debugMode)
-            elif key == 'miniMap':
-                miniMapLayersIds = component.build(
-                    self.composition, self.mapAreaFeature, miniMapLayers, debugMode)
+            elif key == 'elevationDiagram':
+                elevationDiagramLayersIds = component.build(
+                    self.composition, self.data, self.mapAreaFeature, elevationDiagramLayers, debugMode)
+            elif key == 'imageArticulation':
+                imageArticulationIds = component.build(
+                    self.composition, self.data, self.mapAreaFeature, imageArticulationLayers, debugMode)
             elif key == 'localization':
                 localizationLayersIds = component.build(
                     self.composition, self.data, self.mapAreaFeature, debugMode)
@@ -104,8 +141,6 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
                 component.build(self.composition, self.data)
             elif key == 'table':
                 component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == 'miniMapCoords':
-                component.build(self.composition, self.mapAreaFeature)
             elif key == 'anglesHandler':
                 component.build(self.composition, self.mapAreaFeature)
             elif key == 'qrcode':
@@ -113,7 +148,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
 
         auxLayerIds = [lyr.id() for lyr in QgsProject.instance().mapLayers().values() if lyr.name() in ("convexhull", "auxiliar_moldura_outside")]
 
-        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *miniMapLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
-        self.groupsToBeRemoved.extend(['map','miniMap','localization','articulation','division'])
+        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *elevationDiagramLayersIds, *imageArticulationIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
+        self.groupsToBeRemoved.extend(['map', 'elevationDiagram', 'imageArticulation', 'localization', 'articulation', 'division'])
         self.classifiedMapHandler(self.composition, self.data)
         self.setupMasks(self.productPath, mapLayers)

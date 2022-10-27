@@ -33,6 +33,7 @@ class ExporterSingleton:
         '''
         exporter = QgsLayoutExporter(composition)
         exportStatus = 0
+        errorMessage = ''
         if not self.debugMode:
             pdfFilePath = Path(self.exportFolder, f'{self.basename}.pdf')
             pdfExportSettings = QgsLayoutExporter.PdfExportSettings()
@@ -42,17 +43,38 @@ class ExporterSingleton:
             pdfExportSettings.exportMetadata = False
             pdfExportSettings.dpi = self.dpi
             exportStatus += exporter.exportToPdf(str(pdfFilePath), pdfExportSettings)
+            errorMessage += self.getErrorMessage(exportStatus)
         if self.exportTiff:
             tiffFilePath = Path(self.exportFolder, f'{self.basename}.tif')
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
             tiffExporterSettings.dpi = self.dpi
             statusTiff = exporter.exportToImage(str(tiffFilePath), tiffExporterSettings)
+            errorMessage += self.getErrorMessage(exportStatus, fileType='tif')
             exportStatus += statusTiff
             self.reproject(tiffFilePath)
             self.compress(tiffFilePath)
             self.cleanup(tiffFilePath)
         # del exporter
-        return not bool(exportStatus)
+        return not bool(exportStatus), errorMessage
+    
+    def getErrorMessage(self, exportStatus, fileType=None):
+        fileType = 'pdf' if fileType is None else fileType
+        if exportStatus == QgsLayoutExporter.Success:
+            return ''
+        elif exportStatus == QgsLayoutExporter.Canceled:
+            return 'Processo cancelado pelo usuário.\n'
+        elif exportStatus == QgsLayoutExporter.MemoryError:
+            return 'Erro de memória. Não foi possível alocar a memória necessária para a exportação.\n'
+        elif exportStatus == QgsLayoutExporter.FileError:
+            return f'Não foi possível escrever no arquivo de destino. Provavelmente o arquivo {fileType} está aberto por outro programa. Feche o arquivo e tente novamente.\n'
+        elif exportStatus == QgsLayoutExporter.PrintError:
+            return 'Não foi possível iniciar a impressão no dispositivo escolhido.\n'
+        elif exportStatus == QgsLayoutExporter.SvgLayerError:
+            return 'Não foi possível criar o arquivo SVG de destino.\n'
+        elif exportStatus == QgsLayoutExporter.IteratorError:
+            return 'Erro ao iterar sobre o layout.\n'
+        else:
+            return 'Erro desconhecido.\n'
 
     def reproject(self, path: Path):
         '''Calls gdalwarp to reproject a tiff file to EPSG:4674 (BDGEx default)

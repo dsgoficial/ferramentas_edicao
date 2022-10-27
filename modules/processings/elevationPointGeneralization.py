@@ -94,8 +94,8 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):      
         feedback.setProgressText('Iniciando...')
         gridScaleParam = self.parameterAsEnums(parameters,'INPUT_SCALE', context)[0]
-        pointLayer = self.parameterAsVectorLayer(parameters,'INPUT_ELEVATION_POINTS', context)
-        nFeats = pointLayer.featureCount()
+        originalPointLayer = self.parameterAsVectorLayer(parameters,'INPUT_ELEVATION_POINTS', context)
+        nFeats = originalPointLayer.featureCount()
         if nFeats == 0:
             return {self.OUTPUT: "Camada sem elementos."}
         countourLayerpre = self.parameterAsVectorLayer(parameters,'INPUT_COUNTOUR_LINES', context)
@@ -106,9 +106,12 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             self.GEOGRAPHIC_BOUNDARY,
             context
         )
-        nSteps = 8 if geographicBoundaryLyr is None else 10
+        nSteps = 9 if geographicBoundaryLyr is None else 11
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback) if feedback is not None else None
         currentStep = 0
+        multiStepFeedback.setCurrentStep(currentStep)
+        pointWithOriginalIdField = self.runAddFeatIdField(originalPointLayer, context, feedback=multiStepFeedback)
+        currentStep += 1
         if geographicBoundaryLyr is not None:
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Filtering contours with geographic boundary.'))
@@ -120,8 +123,8 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Filtering points with geographic boundary.'))
-            pointLayer = self.filterWithGeographicBoundary(
-                inputLyr=pointLayer,
+            pointWithOriginalIdField = self.filterWithGeographicBoundary(
+                inputLyr=pointWithOriginalIdField,
                 geographicBoundaryLayer=geographicBoundaryLyr,
                 feedback=multiStepFeedback
             )
@@ -157,21 +160,45 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Selecting summits or bottoms.'))
         sobIdDict, sobSpatialIdx = self.selectSummitsAndBottoms(countourLayer, feedback=multiStepFeedback)
-        CRSstr = pointLayer.sourceCrs()
+        CRSstr = pointWithOriginalIdField.sourceCrs()
         gridScale = self.gridScaleDict[gridScaleParam]
-        extentGeom = self.getExtentGeom(gridScaleParam, pointLayer, gridScale)
+        extentGeom = self.getExtentGeom(
+            gridScaleParam, pointWithOriginalIdField, gridScale)
         grid = self.makeGrid(extentGeom, CRSstr, gridScale, parameters, context, feedback=multiStepFeedback)
         currentStep += 1
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Generalizing points.'))
-        idDict, pointsIdsSelected = self.generalizePoint(grid, pointLayer, sobIdDict, sobSpatialIdx, isDepressionField, feedback=multiStepFeedback)
+        idDict, pointsIdsSelected = self.generalizePoint(
+            grid, pointWithOriginalIdField, sobIdDict, sobSpatialIdx, isDepressionField, feedback=multiStepFeedback)
         currentStep += 1
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.pushInfo(self.tr('Updating point features visualization attribute.'))
-        self.setVisualizationAttribute(pointLayer, idDict, isVisibleField, pointsIdsSelected, feedback=multiStepFeedback)
+        self.setVisualizationAttribute(originalPointLayer, idDict, isVisibleField, pointsIdsSelected, feedback=multiStepFeedback)
         return {self.OUTPUT: "Camada modificada"}
+    
+    def runAddFeatIdField(self, originalPointLayer, context, feedback):
+        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
+        multiStepFeedback.setCurrentStep(0)
+        outputLyr = processing.run(
+            "qgis:advancedpythonfieldcalculator",
+            {
+                'INPUT': originalPointLayer,
+                'FIELD_NAME': 'featid',
+                'FIELD_TYPE': 0,
+                'FIELD_LENGTH': 1000,
+                'FIELD_PRECISION': 3,
+                'GLOBAL': '',
+                'FORMULA': 'value = $id',
+                'OUTPUT': 'TEMPORARY_OUTPUT'
+            },
+            context=context,
+            feedback=multiStepFeedback,
+        )['OUTPUT']
+        multiStepFeedback.setCurrentStep(1)
+        self.runCreateSpatialIndex(outputLyr, feedback=multiStepFeedback)
+        return outputLyr
 
     def setVisualizationAttribute(self, pointLayer, idDict, isVisibleField, pointsIdsSelected, feedback=None):
         provider = pointLayer.dataProvider()
@@ -185,7 +212,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             if feedback is not None and feedback.isCanceled():
                 return
             pointLayer.changeAttributeValue(
-                point.id(),
+                point['featid'],
                 provider.fieldNameIndex(isVisibleField),
                 attrValueFunc(point)
             )
@@ -538,7 +565,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         
         step = 100/grid.featureCount()
         futures = set()
-        pool = concurrent.futures.ThreadPoolExecutor(os.cpu_count())
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()-1)
         
         for gridFeat in grid.getFeatures(): 
             if multiStepFeedback is not None and multiStepFeedback.isCanceled():

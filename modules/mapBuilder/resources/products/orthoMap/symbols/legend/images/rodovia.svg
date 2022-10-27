@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="109.712mm"
+   height="26.509485mm"
+   viewBox="0 0 109.712 26.509485"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="rodovia.svg"
+   inkscape:export-filename="rodovia.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata
+     id="metadata9860">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.8598242"
+     inkscape:cx="183.35066"
+     inkscape:cy="94.094915"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="892"
+     inkscape:window-y="185"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g8141-1-6"
+     showborder="false"
+     inkscape:document-rotation="0"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8945"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8920"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8895"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8870"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect8798"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect258388"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect252622"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect252593"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect252564"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect252341"
+       effect="bspline"
+       lpeversion="0" />
+    <linearGradient
+       id="linearGradient6634"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop6632" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7455"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7451"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect7447"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect7443"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect7439"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7435"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7308"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7296"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect7266"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect7246"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect7234"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7222"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7218"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7194"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7166"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.333333"
+       is_visible="true"
+       id="path-effect7154"
+       effect="bspline"
+       lpeversion="0" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect7166-3"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       lpeversion="0" />
+  </defs>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(28.509755,-49.995998)">
+    <text
+       id="text5224"
+       y="57.971642"
+       x="-28.46398"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264585"
+       xml:space="preserve"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264585"
+         y="57.971642"
+         x="-28.46398"
+         id="tspan5222"
+         sodipodi:role="line">Rodovia pavimentada / não pavimentada</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path936-8"
+       d="m 22.677131,52.985635 26.28143,-0.0079"
+       style="fill:none;stroke:#000000;stroke-width:1.65;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path7097"
+       d="m 48.840191,52.602189 5.69117,-2.018842 16.03333,-0.0039"
+       style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       x="-28.308756"
+       y="53.845146"
+       id="text7091"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         sodipodi:role="line"
+         id="tspan7089"
+         x="-28.308756"
+         y="53.845146"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Via: com/sem canteiro divisório</tspan></text>
+    <path
+       sodipodi:nodetypes="ccc"
+       style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 48.840191,53.306424 5.69117,2.018842 16.03333,0.0039"
+       id="path7099"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path7108"
+       d="m 22.677381,52.606089 24.59875,-0.0039 -24.59875,0.0039 26.16281,-0.0039 5.69117,-2.018842 16.03333,-0.0039"
+       style="fill:none;stroke:#955058;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#955058;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 22.677381,53.302524 24.59875,0.0039 -24.59875,-0.0039 26.16281,0.0039 5.69117,2.018842 16.03333,0.0039"
+       id="path7118"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path940-0"
+       d="m 22.677131,52.985635 26.28143,-0.0079"
+       style="fill:none;stroke:#000000;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path940-0-0"
+       d="m 22.677131,52.985635 26.28143,-0.0079"
+       style="fill:none;stroke:#ffffff;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       x="-26.486219"
+       y="61.890434"
+       id="text7122"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         sodipodi:role="line"
+         id="tspan7120"
+         x="-26.486219"
+         y="61.890434"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Jurisdição internacional/federal</tspan></text>
+    <text
+       id="text7134"
+       y="65.831314"
+       x="-26.486219"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       xml:space="preserve"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586"
+         y="65.831314"
+         x="-26.486219"
+         id="tspan7132"
+         sodipodi:role="line">Jurisdição estadual</tspan></text>
+    <path
+       inkscape:original-d="m 14.794102,61.420647 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:path-effect="#path-effect7154"
+       inkscape:connector-curvature="0"
+       id="path7152"
+       d="m 14.794102,61.420647 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#000000;stroke-width:1.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       style="fill:none;stroke:#955058;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 14.794102,61.420647 c 6.666909,0 13.333579,0 20.000019,0"
+       id="path7164"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7166"
+       inkscape:original-d="m 14.794102,61.420647 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 14.794102,65.653983 c 6.666909,0 13.333579,0 20.000019,0"
+       id="path7192"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7194"
+       inkscape:original-d="m 14.794102,65.653983 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       style="fill:none;stroke:#b47f8c;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 14.794102,65.653983 c 6.666909,0 13.333579,0 20.000019,0"
+       id="path7216"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7218"
+       inkscape:original-d="m 14.794102,65.653983 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 39.702519,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
+       id="path7220"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7222"
+       inkscape:original-d="m 39.702519,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 39.702519,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
+       id="path7294"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7296"
+       inkscape:original-d="m 39.702519,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:original-d="m 39.702519,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:path-effect="#path-effect7234"
+       inkscape:connector-curvature="0"
+       id="path7232"
+       d="m 39.702519,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#955058;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.5, 1.5;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:original-d="m 39.768665,65.75193 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:path-effect="#path-effect7246"
+       inkscape:connector-curvature="0"
+       id="path7244"
+       d="m 39.768665,65.75193 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#000000;stroke-width:1.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:original-d="m 39.768665,65.75193 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:path-effect="#path-effect7266"
+       inkscape:connector-curvature="0"
+       id="path7264"
+       d="m 39.768665,65.75193 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#ffffff;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       style="fill:none;stroke:#b47f8c;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.5, 1.5;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 39.768665,65.75193 c 6.666909,0 13.333579,0 20.000019,0"
+       id="path7306"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7308"
+       inkscape:original-d="m 39.768665,65.75193 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <text
+       id="text7407"
+       y="69.942383"
+       x="-28.308756"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       xml:space="preserve"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586"
+         y="69.942383"
+         x="-28.308756"
+         id="tspan7405"
+         sodipodi:role="line">Via não operacional: com/sem canteiro divisório</tspan></text>
+    <g
+       transform="translate(-31.78919,-10.83762)"
+       id="g7473"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600">
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 81,79.783336 c 6.66689,0 13.33356,0 20,0"
+         id="path7441"
+         inkscape:connector-curvature="0"
+         inkscape:path-effect="#path-effect7443"
+         inkscape:original-d="m 81,79.783336 c 6.66689,-2.27e-4 13.33356,-2.27e-4 20,0" />
+      <path
+         inkscape:original-d="m 81,79.783336 c 6.66689,-2.27e-4 13.33356,-2.27e-4 20,0"
+         inkscape:path-effect="#path-effect7435"
+         inkscape:connector-curvature="0"
+         id="path7433"
+         d="m 81,79.783336 c 6.66689,0 13.33356,0 20,0"
+         style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.5, 0.5;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         style="fill:none;stroke:#ffffff;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 81,79.783336 c 6.66689,0 13.33356,0 20,0"
+         id="path7437"
+         inkscape:connector-curvature="0"
+         inkscape:path-effect="#path-effect7439"
+         inkscape:original-d="m 81,79.783336 c 6.66689,-2.27e-4 13.33356,-2.27e-4 20,0" />
+    </g>
+    <g
+       transform="translate(-77.789188,-11.18762)"
+       id="g7468"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.5, 0.5;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 104,79.783336 c 6.66689,0 13.33355,0 19.99999,0"
+         id="path7445"
+         inkscape:connector-curvature="0"
+         inkscape:path-effect="#path-effect7447"
+         inkscape:original-d="m 104,79.783336 c 6.66689,-2.03e-4 13.33355,-2.03e-4 19.99999,0" />
+      <path
+         inkscape:original-d="m 104,79.783336 c 6.66689,-2.03e-4 13.33355,-2.03e-4 19.99999,0"
+         inkscape:path-effect="#path-effect7451"
+         inkscape:connector-curvature="0"
+         id="path7449"
+         d="m 104,79.783336 c 6.66689,0 13.33355,0 19.99999,0"
+         style="fill:none;stroke:#ffffff;stroke-width:1.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         inkscape:original-d="m 104,79.783336 c 6.66689,-2.03e-4 13.33355,-2.03e-4 19.99999,0"
+         inkscape:path-effect="#path-effect7455"
+         inkscape:connector-curvature="0"
+         id="path7453"
+         d="m 104,79.783336 c 6.66689,0 13.33355,0 19.99999,0"
+         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.5, 0.5;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       x="-28.46398"
+       y="74.547897"
+       id="text7481"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         sodipodi:role="line"
+         id="tspan7479"
+         x="-28.46398"
+         y="74.547897"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Prefixo de rodovia: federal, estadual</tspan></text>
+    <path
+       inkscape:original-d="m 6.2677333,74.625871 c 10.6741557,-7.6e-4 21.3467417,-7.6e-4 32.0179277,0"
+       inkscape:path-effect="#path-effect252341"
+       inkscape:connector-curvature="0"
+       id="path1346-1"
+       d="m 6.2677333,74.625871 c 10.6741557,0 21.3467417,0 32.0179277,0"
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:original-d="m 17.839151,69.930243 c 2.61282,-7.6e-4 5.22525,-7.6e-4 7.83734,0"
+       inkscape:path-effect="#path-effect258388"
+       inkscape:connector-curvature="0"
+       id="path1346-1-9"
+       d="m 17.839151,69.930243 c 2.61282,0 5.22525,0 7.83734,0"
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:original-d="m 1.8263674,53.867285 c 6.6467688,-7.6e-4 13.2925596,-7.6e-4 19.9374436,0"
+       inkscape:path-effect="#path-effect252564"
+       inkscape:connector-curvature="0"
+       id="path1346-1-3-3"
+       d="m 1.8263674,53.867285 c 6.6467688,0 13.2925596,0 19.9374436,0"
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:original-d="m 3.766333,61.961895 c 3.43908,-7.6e-4 6.877657,-7.6e-4 10.315762,0"
+       inkscape:path-effect="#path-effect252593"
+       inkscape:connector-curvature="0"
+       id="path1346-1-3-3-4"
+       d="m 3.766333,61.961895 c 3.43908,0 6.877657,0 10.315762,0"
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       inkscape:original-d="m 1.898836,65.870609 c 4.025471,-7.6e-4 8.050352,-7.6e-4 12.074683,0"
+       inkscape:path-effect="#path-effect252622"
+       inkscape:connector-curvature="0"
+       id="path1346-1-3-3-4-6"
+       d="m 1.898836,65.870609 c 4.025471,0 8.050352,0 12.074683,0"
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <rect
+       style="fill:#000000;stroke-width:0.192454"
+       y="74.117126"
+       x="39.081749"
+       height="0.69999999"
+       width="10.700521"
+       id="rect817-6" />
+    <rect
+       id="rect10-3"
+       width="10.535156"
+       height="0.5"
+       x="39.180992"
+       y="74.217133"
+       style="fill:#955058;fill-opacity:1;stroke-width:0.161391" />
+    <rect
+       id="rect903-1"
+       width="4.1270394"
+       height="2.0270393"
+       x="42.434662"
+       y="73.453613"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.0729608;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       ry="0.50614578" />
+    <text
+       id="text7499-8-4"
+       y="75.202599"
+       x="43.067299"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       xml:space="preserve"><tspan
+         y="75.202599"
+         x="43.067299"
+         id="tspan7497-0-1"
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">101</tspan></text>
+    <rect
+       style="fill:#000000;stroke-width:0.187522"
+       y="74.118492"
+       x="50.61599"
+       height="0.69999999"
+       width="10.159111"
+       id="rect817" />
+    <rect
+       id="rect10"
+       width="10.040054"
+       height="0.5"
+       x="50.657219"
+       y="74.218498"
+       style="fill:#b47f8c;fill-opacity:1;stroke-width:0.157553" />
+    <circle
+       id="path871"
+       cx="55.525055"
+       cy="74.468498"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       r="1.6996659" />
+    <text
+       id="text7499-8-4-0"
+       y="75.27092"
+       x="54.098335"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       xml:space="preserve"><tspan
+         y="75.27092"
+         x="54.098335"
+         id="tspan7497-0-1-4"
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">101</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0"
+       d="m 22.70371,52.977735 c 8.751927,0 17.50354,0 26.254851,0"
+       id="path7164-7"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect7166-3"
+       inkscape:original-d="m 22.70371,52.977735 c 8.751927,-2.27e-4 17.50354,-2.27e-4 26.254851,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <text
+       xml:space="preserve"
+       x="28.268847"
+       y="71.887398"
+       id="text27908-25-3"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none"><tspan
+         sodipodi:role="line"
+         id="tspan27906-8-4"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+         x="28.268847"
+         y="71.887398">(EM CONSTRUÇÃO)</tspan></text>
+    <text
+       xml:space="preserve"
+       x="54.586739"
+       y="71.880363"
+       id="text27908-25-3-7"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none"><tspan
+         sodipodi:role="line"
+         id="tspan27906-8-4-6"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+         x="54.586739"
+         y="71.880363">(DESTRUÍDA)</tspan></text>
+    <g
+       id="g8141-1-6"
+       transform="translate(0.13025171,33.378798)" />
+  </g>
+</svg>
