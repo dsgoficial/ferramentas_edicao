@@ -21,6 +21,7 @@ from ..factories.topoMapBuilder import TopoMapBuilder
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 from .mapBuilderControllerUtils import MapBuildControllerUtils
+from ..config import jsonStructure
 
 
 class MapBuildController(MapBuildControllerUtils):
@@ -240,6 +241,16 @@ class MapBuildController(MapBuildControllerUtils):
                     "Erro",
                     f"A chave tipo_produto não foi encontrada no json de entrada {jsonPath}, ignorando produto. "
                     "Adicione a chave e tente novamente."
+                )
+                continue
+            if not self.debugMode and not jsonStructure.validate_dict(jsonData):
+                missingKeySet = jsonStructure.find_missing_required_keys(jsonData)
+                missingKeyText = ",".join(list(missingKeySet))
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. "
+                    "Corrija o json e tente novamente."
                 )
                 continue
             if dlgCfg.productType != jsonData['tipo_produto']:
