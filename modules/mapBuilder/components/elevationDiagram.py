@@ -42,7 +42,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         if not isinstance(layers, list):
             layers = [layers]
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
-        areaWithoutDataLayer = next(filter(lambda x: x.name() == 'edicao_area_sem_dados_a', layers))
+        areaWithoutDataLayer = next(filter(lambda x: x.name() == 'edicao_area_sem_dados_a', layers), None)
         elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr, areaWithoutDataLayer)
         if elevationSlicingLyr is not None:
             layers.append(elevationSlicingLyr)

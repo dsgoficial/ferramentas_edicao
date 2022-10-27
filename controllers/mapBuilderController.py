@@ -243,8 +243,8 @@ class MapBuildController(MapBuildControllerUtils):
                     "Adicione a chave e tente novamente."
                 )
                 continue
-            if not self.debugMode and not jsonStructure.validate_dict(jsonData):
-                missingKeySet = jsonStructure.find_missing_required_keys(jsonData)
+            if not self.debugMode and not jsonStructure.validate_dict(jsonData, product_type=jsonData['tipo_produto']):
+                missingKeySet = jsonStructure.find_missing_required_keys_on_dict(jsonData, product_type=jsonData['tipo_produto'])
                 missingKeyText = ",".join(list(missingKeySet))
                 QMessageBox.warning(
                     self.dlg,
