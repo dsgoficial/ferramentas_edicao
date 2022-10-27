@@ -94,11 +94,37 @@ class ElevationDiagram(ComponentUtils,IComponent):
         if epsg is not None:
             epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
             raster_mde.setCrs(epsgId)
+        raster_mde = self.getRasterMDE(raster_mde, epsg, epsgId)
+        elevationSlicingLyr = self.createTerrainLayer()
+        slicingParams = data.get('param_diagrama_elevacao', {})
+        processingOutput, nClasses = self.getTerrainSlicingFromProcessing(
+            geographicBoundsLyr, areaWithoutDataLyr, raster_mde, slicingParams
+        )
+        if nClasses == 1 or processingOutput.featureCount() == 0:
+            slicingParams.update({
+                "min_pixel_group_size": 1,
+                "smoothing_parameter": 0
+            })
+            processingOutput, nClasses = self.getTerrainSlicingFromProcessing(
+                geographicBoundsLyr, areaWithoutDataLyr, raster_mde, slicingParams
+            )
+
+        layerProvider = elevationSlicingLyr.dataProvider()
+        layerProvider.addFeatures([feat for feat in processingOutput.getFeatures()])
+        elevationSlicingLyr.loadNamedStyle(
+            str(self.stylesFolder / f'edicao_fatiamento_terreno_{nClasses}_classes_a.qml'),
+            True
+        )
+        elevationSlicingLyr.triggerRepaint()
+        QgsProject.instance().addMapLayer(elevationSlicingLyr, False)
+        return elevationSlicingLyr, nClasses
+
+    def getRasterMDE(self, raster_mde, epsg, epsgId):
         raster_mde = raster_mde if int(epsg) in (4674, 4326) \
             else processing.run(
                 "gdal:warpreproject",
                 {
-                    'INPUT':'D:/borba/teste_perrut/DTM_Bloco_176.tif',
+                    'INPUT':raster_mde,
                     'SOURCE_CRS':epsgId,
                     'TARGET_CRS':QgsCoordinateReferenceSystem('EPSG:4674'),
                     'RESAMPLING':0,
@@ -113,8 +139,9 @@ class ElevationDiagram(ComponentUtils,IComponent):
                     'OUTPUT':'TEMPORARY_OUTPUT'
                 }
             )['OUTPUT']
-        elevationSlicingLyr = self.createTerrainLayer()
-        slicingParams = data.get('param_diagrama_elevacao', {})
+        return raster_mde
+
+    def getTerrainSlicingFromProcessing(self, geographicBoundsLyr, areaWithoutDataLyr, raster_mde, slicingParams):
         processingOutput = processing.run(
             "dsgtools:buildterrainslicingfromcontours",
             {
@@ -122,24 +149,16 @@ class ElevationDiagram(ComponentUtils,IComponent):
                 'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
-                'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 100),
-                'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0.001),
+                'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 10),
+                'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0.0001),
                 'OUTPUT_POLYGONS': 'TEMPORARY_OUTPUT',
                 'OUTPUT_RASTER': 'TEMPORARY_OUTPUT'
             },
             context=QgsProcessingContext(),
             feedback=QgsProcessingFeedback()
         )['OUTPUT_POLYGONS']
-        layerProvider = elevationSlicingLyr.dataProvider()
-        layerProvider.addFeatures([feat for feat in processingOutput.getFeatures()])
-        nClasses = max(int(feat['class']) for feat in elevationSlicingLyr.getFeatures()) + 1
-        elevationSlicingLyr.loadNamedStyle(
-            str(self.stylesFolder / f'edicao_fatiamento_terreno_{nClasses}_classes_a.qml'),
-            True
-        )
-        elevationSlicingLyr.triggerRepaint()
-        QgsProject.instance().addMapLayer(elevationSlicingLyr, False)
-        return elevationSlicingLyr, nClasses
+        nClasses = max(int(feat['class']) for feat in processingOutput.getFeatures()) + 1
+        return processingOutput, nClasses
     
     def createTerrainLayer(self):
         layer = QgsVectorLayer('Polygon?crs=EPSG:4674', 'terrainSlicing', 'memory')
@@ -216,10 +235,14 @@ class ElevationDiagram(ComponentUtils,IComponent):
         scaleBar = composition.itemById("elevationDiagramColorBar")
         if scaleBar is None:
             return
-        scaleBar.setPicturePath(str(self.barSvgFolder / f'diagrama_{nClasses}_classes.svg'))
-        scaleBar.refresh()
+        scaleBarPicturePath = str(self.barSvgFolder / f'diagrama_{nClasses}_classes.svg')
+        if os.path.exists(scaleBarPicturePath):
+            scaleBar.setPicturePath(scaleBarPicturePath)
+            scaleBar.refresh()
+        else:
+            composition.removeLayoutItem(scaleBar)
 
-        if elevationSlicingLyr is not None:
+        if elevationSlicingLyr is not None and nClasses > 1:
             self.setBarClassText(composition, nClasses)
             self.setRangeClass(composition, nClasses, elevationSlicingLyr)
 
