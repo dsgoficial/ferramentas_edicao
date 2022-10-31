@@ -120,9 +120,9 @@ class Table(IComponent,ComponentUtils):
                     edited = self.replaceStr(htmlData, sensorData)
                 elif 1 < nSensors < 4:
                     multipleSensorData = '<tr >\
+                        <td>{nome}</td>\
                         <td>{tipo}</td>\
                         <td>{plataforma}</td>\
-                        <td>{nome}</td>\
                         <td>{resolucao}</td>\
                         <td>{bandas}</td>\
                         <td>{nivel_do_produto}</td>\
@@ -261,7 +261,7 @@ class Table(IComponent,ComponentUtils):
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'right'}, f'Latitude: {omPoint.y():.3f}º')
             _tmp = self.generateElement(table, 'tr')
-            self.generateElement(_tmp, 'td', {'class':'right'}, f'Longidute: {omPoint.x():.3f}º')
+            self.generateElement(_tmp, 'td', {'class':'right'}, f'Longitude: {omPoint.x():.3f}º')
             _tmp = self.generateElement(table, 'tr')
             self.generateElement(_tmp, 'td', {'class':'left', 'rowspan':'3'}, 'Coordenadas UTM')
             self.generateElement(_tmp, 'td', {'class':'right'},
