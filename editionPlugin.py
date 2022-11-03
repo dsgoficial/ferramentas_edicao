@@ -189,7 +189,7 @@ class EditionPlugin:
             QMessageBox.warning(
                     self.iface.mainWindow(),
                     "Erro",
-                    f"Erro na instalação das fontes. {errorMsg}"
+                    f"Erro na instalação das fontes: {errorMsg}.\n"
                     "Feche o QGIS, corrija a instalação, reinicie o QGIS e tente novamente."
                 )
             return
@@ -207,10 +207,10 @@ class EditionPlugin:
         fontUtils = QgsFontUtils()
         if not fontUtils.fontFamilyOnSystem("Noto Sans"):
             return False, "A fonte Noto Sans não está instalada no sistema."
-        fontStyles = ["Regular", "Bold", "Bold Italic", "Italic", "Condensed", "Condensed Bold", "Condensed Bold Italic", "Condensed Italic", "Light", "Light Italic"]
+        fontStyles = ["Regular", "Bold", "Bold Italic", "Italic", "Condensed", "Condensed Bold", "Condensed Bold Italic", "Condensed Italic", "Light", "Light Italic", "Condensed Light Italic", "Condensed Light"]
         return all(
             fontUtils.fontFamilyHasStyle("Noto Sans", style) for style in fontStyles
-        ), ",".join(filter(lambda x: fontUtils.fontFamilyHasStyle("Noto Sans", x), fontStyles))
+        ), ",".join(filter(lambda x: fontUtils.fontFamilyHasStyle("Noto Sans", x) is False, fontStyles))
 
     def run(self):
         """Run method that performs all the real work"""
@@ -224,5 +224,7 @@ class EditionPlugin:
                 )
             return
         self.initialize()
+        if not hasattr(self, "dlg"):
+            return
         self.dlg.show()
         self.dlg.exec_()
