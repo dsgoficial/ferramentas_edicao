@@ -311,8 +311,8 @@ class ConfigDefaults:
         'name': 'Carta Especial',
         'qpt': {
             1: {
-                'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
-                'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
+                #'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
+                #'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
                 # 'reproductionRightsPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'reproductionRights.qpt',
                 'header': {
                     'x_0': 7,
@@ -346,8 +346,8 @@ class ConfigDefaults:
                 }
             },
             2: {
-                'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
-                'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
+                #'headerPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'header.qpt',
+                #'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'omMap' / 'qpts' / 'project.qpt',
                 'header': {
                     'x_0': 7,
                     'y_0': 7,
