@@ -75,6 +75,6 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *elevationDiagramLayersIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds))
         self.groupsToBeRemoved.extend(['map','elevationDiagram','localization','articulation','division'])
         self.classifiedMapHandler(self.composition, self.data)
-        self.setupMasks(self.productPath, mapLayers)
+        # self.setupMasks(self.productPath, mapLayers)
 
 

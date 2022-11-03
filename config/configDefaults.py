@@ -43,7 +43,7 @@ class ConfigDefaults:
             'utm_grid_color': QColor('black'),
             'geo_grid_buffer_color': QColor('black'),
             'utm_grid_buffer_color': QColor('black'),
-            'masks_check': True
+            'masks_check': False
         },
         'qpt': {
             25: {
@@ -300,7 +300,7 @@ class ConfigDefaults:
             'utm_grid_color': QColor(211,211,211),
             'geo_grid_buffer_color': QColor('black'),
             'utm_grid_buffer_color': QColor('black'),
-            'masks_check': True
+            'masks_check': False
         },
         'html': {
             'info_tecnica': '',

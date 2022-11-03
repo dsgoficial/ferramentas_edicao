@@ -151,4 +151,4 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *elevationDiagramLayersIds, *imageArticulationIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
         self.groupsToBeRemoved.extend(['map', 'elevationDiagram', 'imageArticulation', 'localization', 'articulation', 'division'])
         self.classifiedMapHandler(self.composition, self.data)
-        self.setupMasks(self.productPath, mapLayers)
+        # self.setupMasks(self.productPath, mapLayers)
