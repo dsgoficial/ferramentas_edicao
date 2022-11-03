@@ -106,7 +106,45 @@ data_structure = {
             {"key": "dados_terceiros", "type": list, "children": None, "required": True},
             {"key": "observacao_homologacao", "type": str, "children": None, "required": False},
         ], "required": True},
-    ]
+    ],
+    "Carta Ortoimagem OM": [
+        {"key": "tipo_produto", "type": str, "children": None, "required": True},
+        {"key": "poligono", "type": str, "children": None, "required": True},
+        {"key": "nome", "type": str, "children": None, "required": True},
+        {"key": "imagemOM", "type": str, "children": None, "required": True},
+        {"key": "imagemSubordinacao", "type": str, "children": None, "required": True},
+        {"key": "subordinacao1", "type": str, "children": None, "required": False},
+        {"key": "subordinacao2", "type": str, "children": None, "required": False},
+        {"key": "endereco", "type": str, "children": None, "required": True},
+        {"key": "altitude", "type": str, "children": None, "required": True},
+        {"key": "fases", "type": list, "children": [
+            {"key": "nome", "type": str, "children": None, "required": True},
+            {"key": "executantes", "type": list, "children": [
+                {"key": "nome", "type": str, "children": None, "required": True},
+                {"key": "ano", "type": str, "children": None, "required": True},
+            ], "required": True},
+        ], "required": True},
+        {"key": "imagens", "type": list, "children": [
+            {"key": "caminho_imagem", "type": str, "children": None, "required": True},
+            {"key": "caminho_estilo", "type": str, "children": None, "required": True},
+            {"key": "epsg", "type": str, "children": None, "required": True},
+        ], "required": True},
+        {"key": "info_tecnica", "type": dict, "children": [
+            {"key": "pec_planimetrico", "type": str, "children": None, "required": True},
+            {"key": "pec_altimetrico", "type": str, "children": None, "required": True},
+            {"key": "datum_vertical", "type": str, "children": None, "required": True},
+            {"key": "origem_dados_altimetricos", "type": str, "children": None, "required": True},
+            {"key": "dados_terceiros", "type": list, "children": None, "required": True},
+        ], "required": True},
+        {"key": "sensores", "type": list, "children": [
+            {"key": "tipo", "type": str, "children": None, "required": True},
+            {"key": "plataforma", "type": str, "children": None, "required": True},
+            {"key": "nome", "type": str, "children": None, "required": True},
+            {"key": "resolucao", "type": str, "children": None, "required": True},
+            {"key": "bandas", "type": str, "children": None, "required": True},
+            {"key": "nivel_produto", "type": str, "children": None, "required": True},
+        ], "required": True}
+    ],
 }
 
 def validate_dict(input_dict: dict, product_type: str) -> bool:
