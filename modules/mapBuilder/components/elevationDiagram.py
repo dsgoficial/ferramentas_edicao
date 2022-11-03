@@ -150,7 +150,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
                 'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 10),
-                'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0.0001),
+                'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0),
                 'OUTPUT_POLYGONS': 'TEMPORARY_OUTPUT',
                 'OUTPUT_RASTER': 'TEMPORARY_OUTPUT'
             },
