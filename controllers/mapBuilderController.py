@@ -233,6 +233,22 @@ class MapBuildController(MapBuildControllerUtils):
         dlgCfg = self.setupDlgCfg(self.dlg)
         productType, productName = self.getProductType(dlgCfg.productType)
         builder = None
+        if self.dlg.productType.currentText() == 'Carta Ortoimagem OM':
+            self.debugMode = True
+        if self.dlg.jsonConfigs.filePath() == '':
+            QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Não foi inserido um arquivo ou pasta de JSON para produto solicitado."
+                )
+            return
+        if self.dlg.exportFolder.filePath() == '':
+            QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Não foi inserida uma pasta de saída para o produto solicitado."
+                )
+            return
         for jsonPath in dlgCfg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
             if 'tipo_produto' not in jsonData:
