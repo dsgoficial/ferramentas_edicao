@@ -139,6 +139,18 @@ class MapBuildController(MapBuildControllerUtils):
         })
         return mapExtentsLyr, mapExtentsFeat
 
+    def qptDlg(self):
+        qptCheck = QMessageBox(self.dlg)
+        qptCheck.setIcon(QMessageBox.Question)
+        qptCheck.setText('Deseja gerar o QPT para esse produto?')
+        qptCheck.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = qptCheck.exec_()
+        if result == QMessageBox.Yes:
+            self.debugMode = True
+        else:
+            self.debugMode = False
+        return self.qptDlg
+
     def setupDlgCfg(self, dlg: Union[QDialog,Namespace]) -> NamedTuple:
         '''Organizes the configuration according to its origin (dialog or headless).
         Args:
@@ -233,8 +245,6 @@ class MapBuildController(MapBuildControllerUtils):
         dlgCfg = self.setupDlgCfg(self.dlg)
         productType, productName = self.getProductType(dlgCfg.productType)
         builder = None
-        if self.dlg.productType.currentText() == 'Carta Ortoimagem OM':
-            self.debugMode = True
         if self.dlg.jsonConfigs.filePath() == '':
             QMessageBox.warning(
                     self.dlg,
@@ -249,6 +259,8 @@ class MapBuildController(MapBuildControllerUtils):
                     f"Não foi inserida uma pasta de saída para o produto solicitado."
                 )
             return
+        if self.dlg.productType.currentText() == 'Carta Ortoimagem OM':
+            self.qptDlg()
         for jsonPath in dlgCfg.jsonFilePaths:
             jsonData = self.readJson(jsonPath)
             if 'tipo_produto' not in jsonData:
