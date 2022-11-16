@@ -10,7 +10,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsField,
                        NULL, QgsUnitTypes,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink, QgsFeatureSink,
-                       QgsVectorLayer)
+                       QgsVectorLayer, QgsProcessingMultiStepFeedback)
 from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 
 from .processingUtils import ProcessingUtils
@@ -261,7 +261,12 @@ class PrepareTopo(QgsProcessingAlgorithm):
         }
         destLayersToCreateSpacedSymbolsCase1 = False
         destLayersToCreateSpacedSymbolsCase2 = False
-        for lyr in layers:
+        multiStepFeedback = QgsProcessingMultiStepFeedback(len(layers), feedback)
+        for currentStep, lyr in enumerate(layers):
+            if feedback.isCanceled():
+                break
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(f"Processando camada {lyr.name()}")
             lyrName = lyr.dataProvider().uri().table()
             # self.updateLayer(lyr, lyrName)
             if lyrName in attrDefault:
@@ -453,11 +458,13 @@ class PrepareTopo(QgsProcessingAlgorithm):
         '''
         provider = lyr.dataProvider()
         lyr.startEditing()
+        attributeList = [i.name() for i in lyr.fields()]
         for feat in lyr.getFeatures():
             for key, value in mapping.items():
-                if value == 'nome':
-                    if feat.attribute(key) == NULL or str(feat.attribute(key)).strip() == '':
-                        lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), feat.attribute('nome'))
+                if key not in attributeList:
+                    continue
+                if value == 'nome' and feat.attribute(key) == NULL or str(feat.attribute(key)).strip() == '':
+                    lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), feat.attribute('nome'))
                 elif feat.attribute(key) == NULL or feat.attribute(key) == 9999 or str(feat.attribute(key)).strip() == '':
                     lyr.changeAttributeValue(feat.id(), provider.fieldNameIndex(key), value)
 
