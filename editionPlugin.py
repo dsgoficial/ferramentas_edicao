@@ -6,6 +6,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 
 from qgis.core import QgsFontUtils
+from qgis.utils import active_plugins
 
 from .config.configDefaults import ConfigDefaults
 from .controllers.mapBuilderController import MapBuildController
@@ -193,6 +194,22 @@ class EditionPlugin:
                     "Feche o QGIS, corrija a instalação, reinicie o QGIS e tente novamente."
                 )
             return
+        if "grassprovider" not in active_plugins:
+            QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "Erro",
+                    f"Erro no grass plugin. Ative o plugin e tente novamente."
+                )
+            return
+        if "DsgTools" not in active_plugins:
+            QMessageBox.warning(
+                    self.iface.mainWindow(),
+                    "Erro",
+                    f"Erro no DsgTools. Ative o plugin e tente novamente."
+                )
+            return
+
+
         if self.firstStart:
             self.firstStart = False
             self.dlg = EditionPluginDialog()
