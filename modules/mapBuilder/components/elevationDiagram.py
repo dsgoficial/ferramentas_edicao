@@ -103,7 +103,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
         if nClasses == 1 or processingOutput.featureCount() == 0:
             slicingParams.update({
                 "min_pixel_group_size": 1,
-                "smoothing_parameter": 0
+                "smoothing_parameter": 0,
+                "contour_interval": 1,
             })
             processingOutput, nClasses = self.getTerrainSlicingFromProcessing(
                 geographicBoundsLyr, areaWithoutDataLyr, raster_mde, slicingParams
