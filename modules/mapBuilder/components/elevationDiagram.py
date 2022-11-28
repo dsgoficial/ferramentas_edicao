@@ -266,7 +266,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         gridLayoutItem.lineSymbol().setWidth(0.1)
         gridLayoutItem.setAnnotationFormat(QgsLayoutItemMapGrid.CustomFormat)
         gridLayoutItem.setAnnotationExpression(
-            """if(left(right( @grid_number , 4),1) = 0, 
+            """if(left(right( @grid_number , 3),1) = 0, 
                 if( @grid_axis = 'x', substr(longNumber( @grid_number ), 0, 3), ''),
                 shortNumber( @grid_number ))"""
         )
@@ -291,8 +291,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
         gridLayoutItem.setAnnotationExpression(
             """ with_variable( 
             'casas',
-            if(length(	@grid_number) = 6, 3, 4),
-            if(left(right( @grid_number , @casas),1) = 0, 
+            if(length(	@grid_number) = 7, 4, 3),
+            if(left(right( @grid_number , @casas-1),1) = 0, 
                         if( @grid_axis = 'y', substr(longNumber( @grid_number ), 0, @casas), ''),
                         '' )
             )"""
