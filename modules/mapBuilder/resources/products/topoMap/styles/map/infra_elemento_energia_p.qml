@@ -3,7 +3,7 @@
   <renderer-v2 forceraster="0" symbollevels="0" referencescale="-1" enableorderby="0" type="RuleRenderer">
     <rules key="{7a9efdbe-2548-4e64-a3f2-2a3482b5be1e}">
       <rule key="{13610b09-0185-4a86-9089-9a7fc27d07b6}" filter="&quot;visivel&quot; = 1">
-        <rule key="{595fe633-b083-4911-9fad-c8e84e433727}" symbol="0" label="Grupo transformadores" filter="&quot;tipo&quot; = 601"/>
+        <rule key="{595fe633-b083-4911-9fad-c8e84e433727}" symbol="0" label="Substação de energia" filter="&quot;tipo&quot; = 1801"/>
         <rule key="{c09d9db6-6c90-4daf-8ea2-01ae84199a0a}" symbol="1" label="Estação geradora de energia" filter="&quot;tipo&quot; in (406,409)"/>
         <rule key="{687a1b0e-1f1a-4ea8-a1b0-9840b32b24ad}" symbol="2" filter="&quot;tipo&quot; = 1401"/>
         <rule key="{cbf853d9-f8ab-47de-b6ab-0663551ce14a}" symbol="3" filter="ELSE"/>
@@ -243,9 +243,9 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{1079191c-56e2-49f8-ab4e-280611fdf2a3}">
-      <rule key="{7cf52441-d90f-45f7-b544-4ebbc447b839}" filter="&quot;visivel&quot; = 1">
-        <rule key="{f9c0b3d4-9e41-4507-b18d-5c32b39162e7}" description="Elemento energia">
+    <rules key="{de87e66d-442a-49fc-82b5-2ed731e2b177}">
+      <rule key="{8495beab-fc13-466b-98dc-d58a0e11bdf8}" filter="&quot;visivel&quot; = 1">
+        <rule key="{bff388db-bfd2-4df4-9ee9-c618fbb45378}" description="Elemento energia">
           <settings calloutType="simple">
             <text-style fontSizeMapUnitScale="3x:0,0,0,0,0,0" capitalization="0" previewBkgrdColor="255,255,255,255" fontUnderline="0" textOpacity="1" allowHtml="0" multilineHeight="0.80000000000000004" textColor="0,0,0,255" fontSizeUnit="Point" fontWeight="50" fontKerning="1" useSubstitutions="0" blendMode="0" fontSize="6" fontLetterSpacing="0" namedStyle="Condensed" isExpression="0" legendString="Aa" textOrientation="horizontal" fontItalic="0" fieldName="texto_edicao" fontFamily="Noto Sans" fontWordSpacing="0" fontStrikeout="0">
               <families/>
