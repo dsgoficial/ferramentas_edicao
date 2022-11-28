@@ -170,8 +170,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{7573854c-4705-4bd9-9b6b-54d68e55797d}">
-      <rule key="{8b3f7caf-f0c3-437f-a2d8-c90855eb1b41}" description="Depósito" filter="&quot;visivel&quot; = 1">
+    <rules key="{0c9a90d5-abcd-4bba-9d01-fe962bb65088}">
+      <rule key="{2487b795-e08f-413a-ad5f-4999726bd0ef}" description="Depósito" filter="&quot;visivel&quot; = 1">
         <settings calloutType="simple">
           <text-style fontSizeMapUnitScale="3x:0,0,0,0,0,0" capitalization="0" previewBkgrdColor="255,255,255,255" fontUnderline="0" textOpacity="1" allowHtml="0" multilineHeight="0.80000000000000004" textColor="0,0,0,255" fontSizeUnit="Point" fontWeight="50" fontKerning="1" useSubstitutions="0" blendMode="0" fontSize="6" fontLetterSpacing="0" namedStyle="Condensed" isExpression="0" legendString="Aa" textOrientation="horizontal" fontItalic="0" fieldName="texto_edicao" fontFamily="Noto Sans" fontWordSpacing="0" fontStrikeout="0">
             <families/>
