@@ -3,54 +3,12 @@
   <renderer-v2 type="RuleRenderer" symbollevels="0" referencescale="-1" enableorderby="0" forceraster="0">
     <rules key="{d6a0f073-ddcc-430a-897d-73175ec4da29}">
       <rule key="{441dde93-489a-414e-8a81-00e9211942d3}" filter="&quot;visivel&quot; = 1">
-        <rule key="{882a7d72-4f1c-4413-8893-154232755d6e}" symbol="0" filter="ELSE"/>
-        <rule label="Est Gerad Energia" key="{079d7999-4d19-453f-8496-61c2b150cd5b}" symbol="1" filter="(&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (4)"/>
+        <rule label="Est Gerad Energia" key="{079d7999-4d19-453f-8496-61c2b150cd5b}" symbol="0" filter="&quot;tipo&quot; = 1801 or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (4)"/>
+        <rule key="{3d016883-9351-4699-b2e6-90ff848c9341}" symbol="1" filter="ELSE"/>
       </rule>
     </rules>
     <symbols>
       <symbol type="fill" name="0" force_rhr="0" alpha="1" clip_to_extent="1">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option type="QString" name="name" value=""/>
-            <Option name="properties"/>
-            <Option type="QString" name="type" value="collection"/>
-          </Option>
-        </data_defined_properties>
-        <layer locked="0" enabled="1" class="SimpleFill" pass="0">
-          <Option type="Map">
-            <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="color" value="255,1,5,255"/>
-            <Option type="QString" name="joinstyle" value="bevel"/>
-            <Option type="QString" name="offset" value="0,0"/>
-            <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
-            <Option type="QString" name="offset_unit" value="MM"/>
-            <Option type="QString" name="outline_color" value="0,0,0,255"/>
-            <Option type="QString" name="outline_style" value="solid"/>
-            <Option type="QString" name="outline_width" value="0.26"/>
-            <Option type="QString" name="outline_width_unit" value="MM"/>
-            <Option type="QString" name="style" value="solid"/>
-          </Option>
-          <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
-          <prop v="255,1,5,255" k="color"/>
-          <prop v="bevel" k="joinstyle"/>
-          <prop v="0,0" k="offset"/>
-          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
-          <prop v="MM" k="offset_unit"/>
-          <prop v="0,0,0,255" k="outline_color"/>
-          <prop v="solid" k="outline_style"/>
-          <prop v="0.26" k="outline_width"/>
-          <prop v="MM" k="outline_width_unit"/>
-          <prop v="solid" k="style"/>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option type="QString" name="name" value=""/>
-              <Option name="properties"/>
-              <Option type="QString" name="type" value="collection"/>
-            </Option>
-          </data_defined_properties>
-        </layer>
-      </symbol>
-      <symbol type="fill" name="1" force_rhr="0" alpha="1" clip_to_extent="1">
         <data_defined_properties>
           <Option type="Map">
             <Option type="QString" name="name" value=""/>
@@ -124,11 +82,53 @@
           </data_defined_properties>
         </layer>
       </symbol>
+      <symbol type="fill" name="1" force_rhr="0" alpha="1" clip_to_extent="1">
+        <data_defined_properties>
+          <Option type="Map">
+            <Option type="QString" name="name" value=""/>
+            <Option name="properties"/>
+            <Option type="QString" name="type" value="collection"/>
+          </Option>
+        </data_defined_properties>
+        <layer locked="0" enabled="1" class="SimpleFill" pass="0">
+          <Option type="Map">
+            <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="color" value="255,1,5,255"/>
+            <Option type="QString" name="joinstyle" value="bevel"/>
+            <Option type="QString" name="offset" value="0,0"/>
+            <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="offset_unit" value="MM"/>
+            <Option type="QString" name="outline_color" value="0,0,0,255"/>
+            <Option type="QString" name="outline_style" value="solid"/>
+            <Option type="QString" name="outline_width" value="0.26"/>
+            <Option type="QString" name="outline_width_unit" value="MM"/>
+            <Option type="QString" name="style" value="solid"/>
+          </Option>
+          <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+          <prop v="255,1,5,255" k="color"/>
+          <prop v="bevel" k="joinstyle"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MM" k="offset_unit"/>
+          <prop v="0,0,0,255" k="outline_color"/>
+          <prop v="solid" k="outline_style"/>
+          <prop v="0.26" k="outline_width"/>
+          <prop v="MM" k="outline_width_unit"/>
+          <prop v="solid" k="style"/>
+          <data_defined_properties>
+            <Option type="Map">
+              <Option type="QString" name="name" value=""/>
+              <Option name="properties"/>
+              <Option type="QString" name="type" value="collection"/>
+            </Option>
+          </data_defined_properties>
+        </layer>
+      </symbol>
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{c4002bd4-b1d5-4116-9701-bd447857bcc3}">
-      <rule description="Energia" key="{271cc4fc-c252-42a6-91e3-b09a869d98c5}" filter="&quot;visivel&quot; = 1">
+    <rules key="{00fe9ce3-6aba-4b5c-9e43-7f68bc25b7d3}">
+      <rule description="Energia" key="{5aeb7c8b-73cb-4317-801e-96984b812769}" filter="&quot;visivel&quot; = 1">
         <settings calloutType="simple">
           <text-style useSubstitutions="0" fontSize="6" textOpacity="1" isExpression="0" namedStyle="Condensed" legendString="Aa" fontUnderline="0" fontWeight="50" textOrientation="horizontal" fontSizeUnit="Point" blendMode="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontKerning="1" fontWordSpacing="0" fontStrikeout="0" previewBkgrdColor="255,255,255,255" fontItalic="0" fontLetterSpacing="0" allowHtml="0" fontFamily="Noto Sans" textColor="0,0,0,255" capitalization="0" fieldName="texto_edicao" multilineHeight="0.80000000000000004">
             <families/>
