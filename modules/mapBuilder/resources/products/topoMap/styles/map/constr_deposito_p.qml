@@ -497,8 +497,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{4545e3e2-51cd-404a-b308-cd1923d024b3}">
-      <rule key="{1094a8d8-0d72-4341-8174-a2ae28296517}" description="Depósito" filter=" &quot;visivel&quot; = 1">
+    <rules key="{072d36d8-ea0d-4dcc-995d-b5c0db6720bd}">
+      <rule key="{3c3e8066-bb82-41f4-bba8-0f46e322409e}" description="Depósito" filter=" &quot;visivel&quot; = 1">
         <settings calloutType="simple">
           <text-style fontLetterSpacing="0" fontWeight="50" namedStyle="Condensed" useSubstitutions="0" isExpression="0" fontWordSpacing="0" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontFamily="Noto Sans" allowHtml="0" textColor="0,0,0,255" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fieldName="texto_edicao" fontSizeUnit="Point" capitalization="0" textOpacity="1" blendMode="0" legendString="Aa" fontStrikeout="0" fontUnderline="0" multilineHeight="0.80000000000000004" fontItalic="0">
             <families/>
