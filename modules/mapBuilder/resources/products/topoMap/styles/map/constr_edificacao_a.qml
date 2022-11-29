@@ -3,7 +3,7 @@
   <renderer-v2 enableorderby="0" referencescale="-1" symbollevels="0" type="RuleRenderer" forceraster="0">
     <rules key="{7e7c5e8b-3835-4813-bc90-01d87c84467a}">
       <rule key="{c9d1e298-fe17-4fe3-b8a6-842e7904d800}" filter="&quot;visivel&quot; = 1">
-        <rule symbol="0" key="{3026e123-049d-4763-bc61-54758e1d138a}" description="Energia, Industria, Genérico" filter="&quot;tipo&quot; in (0, 1298) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (2, 4, 5, 6, 8, 9, 10, 13, 19, 20, 22, 23, 24, 30)" label="A20403A"/>
+        <rule symbol="0" key="{3026e123-049d-4763-bc61-54758e1d138a}" description="Energia, Industria, Genérico" filter="&quot;tipo&quot; in (0, 1298) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (2, 4, 5, 6, 8, 9, 10, 13, 19, 17, 20, 22, 23, 24, 30)" label="A20403A"/>
         <rule key="{5dea4b5f-b74b-4539-924c-c5be6d2d8914}" filter="&quot;tipo&quot; = 1216" label="A20405A"/>
         <rule symbol="1" key="{78509594-2c3b-4a2e-83ba-c2cfb831b683}" filter="&quot;tipo&quot; = 1215"/>
         <rule symbol="2" key="{e9053e2d-98dd-4112-a0e5-90e560cbd045}" filter="ELSE"/>
@@ -209,9 +209,9 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{82076a38-20c4-429c-b61c-d1cec998a973}">
-      <rule key="{0c030428-6d1c-4c36-b441-7257f47c5d69}" filter="&quot;visivel&quot; = 1">
-        <rule key="{18d49bb7-2001-4707-a66e-8694e7f67408}" description="Edificação">
+    <rules key="{a7cfd0ef-0588-4a21-a1cc-3b2a171d0491}">
+      <rule key="{0a4e9b9b-987c-4f5a-893f-1cb074cc7050}" filter="&quot;visivel&quot; = 1">
+        <rule key="{7e4ad177-2144-4f4e-9cb8-520700b672a0}" description="Edificação">
           <settings calloutType="simple">
             <text-style fontLetterSpacing="0" fontWeight="50" namedStyle="Condensed" useSubstitutions="0" isExpression="0" fontWordSpacing="0" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontFamily="Noto Sans" allowHtml="0" textColor="0,0,0,255" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fieldName="texto_edicao" fontSizeUnit="Point" capitalization="0" textOpacity="1" blendMode="0" legendString="Aa" fontStrikeout="0" fontUnderline="0" multilineHeight="0.80000000000000004" fontItalic="0">
               <families/>
