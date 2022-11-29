@@ -43,7 +43,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
             layers = [layers]
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
         areaWithoutDataLayer = next(filter(lambda x: x.name() == 'edicao_area_sem_dados_a', layers), None)
-        elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr, areaWithoutDataLayer)
+        massaDaguaLayer = next(filter(lambda x: x.name() == 'cobter_massa_dagua_a', layers), None)
+        elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr, areaWithoutDataLayer, massaDaguaLayer)
         if elevationSlicingLyr is not None:
             layers.append(elevationSlicingLyr)
         elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
@@ -51,8 +52,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         generalizedPoints, outputGrid = self.getGeneralizedPoints(pointsLayer, geographicBoundsLyr, data.get('scale'))
         layers[elevationPointsIdx] = generalizedPoints
         layers.append(outputGrid)
-
-        massaDaguaLayer = next(filter(lambda x: x.name() == 'cobter_massa_dagua_a', layers), None)
+        
         if massaDaguaLayer is not None:
             massaDaguaLayer.loadNamedStyle(
                 str(self.stylesFolder / 'cobter_massa_dagua_a.qml'),
@@ -80,7 +80,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
 
         return mapIDsToBeDisplayed
     
-    def getElevationSlicing(self, data, geographicBoundsLyr, areaWithoutDataLyr):
+    def getElevationSlicing(self, data, geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr):
         tag_mde_elevacao = data.get('mde_diagrama_elevacao', None)
         if tag_mde_elevacao is None:
             return None, 1
@@ -98,7 +98,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
         elevationSlicingLyr = self.createTerrainLayer()
         slicingParams = data.get('param_diagrama_elevacao', {})
         processingOutput, nClasses = self.getTerrainSlicingFromProcessing(
-            geographicBoundsLyr, areaWithoutDataLyr, raster_mde, slicingParams
+            geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr, raster_mde, slicingParams
         )
         if nClasses == 1 or processingOutput.featureCount() == 0:
             slicingParams.update({
@@ -142,7 +142,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
             )['OUTPUT']
         return raster_mde
 
-    def getTerrainSlicingFromProcessing(self, geographicBoundsLyr, areaWithoutDataLyr, raster_mde, slicingParams):
+    def getTerrainSlicingFromProcessing(self, geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr, raster_mde, slicingParams):
         processingOutput = processing.run(
             "dsgtools:buildterrainslicingfromcontours",
             {
@@ -150,6 +150,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
                 'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
+                'WATER_BODIES_POLYGONS': waterBodiesLyr,
                 'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 10),
                 'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0),
                 'OUTPUT_POLYGONS': 'TEMPORARY_OUTPUT',
