@@ -432,7 +432,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         return 'odereditlayersandaddstyle'
 
     def displayName(self):
-        return self.tr('Configurar para o preparo de edição')
+        return self.tr('Configurar estilo de edição')
 
     def group(self):
         return self.tr('Edição')
