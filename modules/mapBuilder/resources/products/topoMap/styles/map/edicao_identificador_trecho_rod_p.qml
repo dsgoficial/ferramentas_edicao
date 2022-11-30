@@ -2,11 +2,9 @@
 <qgis styleCategories="Symbology|Labeling" version="3.24.3-Tisler" labelsEnabled="1">
   <renderer-v2 type="RuleRenderer" symbollevels="0" referencescale="-1" enableorderby="0" forceraster="0">
     <rules key="{c73726db-cd31-451a-b365-8ed7defe6d7e}">
-      <rule filter=" &quot;carta_simbolizacao&quot; = 1" key="{8dc91eb7-1879-4135-aa3f-80a493cf6457}" label="Carta Principal">
-        <rule filter="jurisdicao = 1 and tipo = 4" key="{3700bac0-1c6e-45bb-b368-87ba0be45657}" label="autoestrada federal" symbol="0"/>
-        <rule filter="jurisdicao = 1 and tipo = 2" key="{305a570d-9301-468e-b88a-63ca3db48735}" label="rodovia federal" symbol="1"/>
-        <rule filter="jurisdicao = 2" key="{ca7c780e-d82f-4681-a2a7-b11650496489}" label="rodovia estadual" symbol="2"/>
-      </rule>
+      <rule filter="jurisdicao = 1 and tipo = 4" key="{db5a4f56-82e5-488d-a6a4-e32bb63a7de9}" label="autoestrada federal" symbol="0"/>
+      <rule filter="jurisdicao = 1 and tipo = 2" key="{d9dd3e76-abd4-4e84-88bd-7002e1a91e5c}" label="rodovia federal" symbol="1"/>
+      <rule filter="jurisdicao = 2" key="{9ead9a35-5cd2-4f4c-a423-783f9b5636ff}" label="rodovia estadual" symbol="2"/>
     </rules>
     <symbols>
       <symbol alpha="1" type="marker" clip_to_extent="1" name="0" force_rhr="0">
@@ -193,8 +191,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{c966f1bc-053d-4511-9a8e-5d0e95889865}">
-      <rule filter="&quot;carta_simbolizacao&quot; = 1" description="Sigla carta" key="{f62cc57e-90d2-4076-90f7-56292421b1ad}">
+    <rules key="{eeff85be-59fd-46a9-b44c-fee739b4de27}">
+      <rule description="Sigla carta" key="{b3877f02-e557-4af9-8e07-04f23ea080c3}">
         <settings calloutType="simple">
           <text-style fontWordSpacing="0" namedStyle="Condensed" fontWeight="50" isExpression="0" useSubstitutions="0" multilineHeight="1" fontSizeUnit="Point" fontFamily="Noto Sans" allowHtml="0" capitalization="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontUnderline="0" fontItalic="0" previewBkgrdColor="255,255,255,255" fontSize="6" blendMode="0" fontKerning="1" textOrientation="horizontal" fontStrikeout="0" fieldName="sigla" textOpacity="1" textColor="0,0,0,255" fontLetterSpacing="0" legendString="Aa">
             <families/>
