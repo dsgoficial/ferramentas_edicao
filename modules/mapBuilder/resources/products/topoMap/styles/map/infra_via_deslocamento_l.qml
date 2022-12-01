@@ -3,7 +3,7 @@
   <renderer-v2 symbollevels="0" referencescale="-1" enableorderby="0" forceraster="0" type="mergedFeatureRenderer">
     <renderer-v2 symbollevels="1" referencescale="-1" enableorderby="0" forceraster="0" type="RuleRenderer">
       <rules key="{8b45b4bb-4fb7-44a3-aa62-5672c279e3b9}">
-        <rule symbol="0" filter="&quot;visivel&quot; = 1 and &quot;tipo&quot; in (2,4) and &quot;situacao_fisica&quot; IN (0,3) and&#xd;&#xd;&#xa;&quot;canteiro_divisorio&quot; =  1" label="L11302A" key="{abacada7-6415-4698-8775-45ecfcc12a47}"/>
+        <rule symbol="0" filter="&quot;visivel&quot; = 1 and &quot;tipo&quot; in (2,4) and &quot;situacao_fisica&quot; IN (0,3) and&#xd;&#xd;&#xa;&quot;canteiro_divisorio&quot; =  1 and jurisdicao != 2" label="L11302A" key="{abacada7-6415-4698-8775-45ecfcc12a47}"/>
         <rule symbol="1" filter=" &quot;visivel&quot; = 1 and &quot;tipo&quot; in (2,4) and &quot;situacao_fisica&quot; IN (0,3) and &quot;revestimento&quot; = 3 and  &quot;canteiro_divisorio&quot; = 1 and &quot;jurisdicao&quot; in (2)" label="L11302_Est_Pav_cant_div" key="{29ed2422-15fb-466c-b3b3-af375808b362}"/>
         <rule symbol="2" filter="&quot;visivel&quot; = 1 and &quot;tipo&quot; in (2,4) and &quot;situacao_fisica&quot; IN (0,3) and&#xd;&#xd;&#xa;&quot;canteiro_divisorio&quot; = 2 and &quot;revestimento&quot; =  3 and&#xa; &quot;jurisdicao&quot; = 1 and &quot;nr_faixas&quot;  >= 4" label="L11302B" key="{d8b1d7f1-902c-4cd8-8d0d-cb37a340a19c}"/>
         <rule symbol="3" filter="&quot;visivel&quot; = 1 and &quot;tipo&quot; in (2,4) and &quot;situacao_fisica&quot; IN (0,3) and&#xd;&#xd;&#xa;&quot;canteiro_divisorio&quot; = 2 and  &quot;revestimento&quot; =  3 and&#xd;&#xd;&#xa; &quot;jurisdicao&quot; = 1 and&#xd;(&quot;nr_faixas&quot;  IN (2,3) or &quot;nr_faixas&quot; is null)" label="L11302C" key="{bc07a595-5d0d-41ca-8c3a-9be354d5ca94}"/>
@@ -333,7 +333,7 @@
           <layer enabled="1" pass="0" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
-              <Option name="capstyle" type="QString" value="round"/>
+              <Option name="capstyle" type="QString" value="flat"/>
               <Option name="customdash" type="QString" value="5;2"/>
               <Option name="customdash_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
               <Option name="customdash_unit" type="QString" value="MM"/>
@@ -361,7 +361,7 @@
               <Option name="width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
             </Option>
             <prop v="0" k="align_dash_pattern"/>
-            <prop v="round" k="capstyle"/>
+            <prop v="flat" k="capstyle"/>
             <prop v="5;2" k="customdash"/>
             <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
             <prop v="MM" k="customdash_unit"/>
@@ -404,7 +404,7 @@
           <layer enabled="1" pass="6" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
-              <Option name="capstyle" type="QString" value="round"/>
+              <Option name="capstyle" type="QString" value="flat"/>
               <Option name="customdash" type="QString" value="5;2"/>
               <Option name="customdash_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
               <Option name="customdash_unit" type="QString" value="MM"/>
@@ -432,7 +432,7 @@
               <Option name="width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
             </Option>
             <prop v="0" k="align_dash_pattern"/>
-            <prop v="round" k="capstyle"/>
+            <prop v="flat" k="capstyle"/>
             <prop v="5;2" k="customdash"/>
             <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
             <prop v="MM" k="customdash_unit"/>
@@ -694,7 +694,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="1" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="7" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -916,7 +916,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="1" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="6" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -1138,7 +1138,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="1" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="6" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -1360,7 +1360,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="1" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="7" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -3989,7 +3989,7 @@
           <layer enabled="1" pass="6" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
-              <Option name="capstyle" type="QString" value="square"/>
+              <Option name="capstyle" type="QString" value="flat"/>
               <Option name="customdash" type="QString" value="3.5;1.5"/>
               <Option name="customdash_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
               <Option name="customdash_unit" type="QString" value="MM"/>
@@ -4017,7 +4017,7 @@
               <Option name="width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
             </Option>
             <prop v="0" k="align_dash_pattern"/>
-            <prop v="square" k="capstyle"/>
+            <prop v="flat" k="capstyle"/>
             <prop v="3.5;1.5" k="customdash"/>
             <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
             <prop v="MM" k="customdash_unit"/>
@@ -4057,7 +4057,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="1" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="7" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -4279,7 +4279,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="1" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="7" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -4363,8 +4363,8 @@
     </orderby>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{41d43431-83e5-42b4-a2ae-c8589520268f}">
-      <rule filter="nr_faixas > 2 and situacao_fisica in (0,3) and tipo in (2,4)" key="{6e53f854-590c-4679-9a60-1084093166e1}">
+    <rules key="{be8cefb5-b3b1-4108-8f06-2a3fb3b9828d}">
+      <rule filter="nr_faixas > 2 and situacao_fisica in (0,3) and tipo in (2,4)" key="{8f687ffa-040b-4307-bd00-9cced7be3161}">
         <settings calloutType="simple">
           <text-style textColor="75,75,75,255" allowHtml="0" fontKerning="1" isExpression="1" textOrientation="horizontal" fieldName="nr_faixas||' FAIXAS'" fontLetterSpacing="0" fontWordSpacing="0" fontSize="6" fontUnderline="0" fontStrikeout="0" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" blendMode="0" fontItalic="1" capitalization="0" useSubstitutions="0" legendString="Aa" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textOpacity="1" multilineHeight="1" fontSizeUnit="Point" namedStyle="Condensed Italic">
             <families/>
@@ -4529,7 +4529,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="situacao_fisica in (1,2,4) and tipo in (2,4)" key="{58309022-0386-47c5-84b8-69102d06562f}">
+      <rule filter="situacao_fisica in (1,2,4) and tipo in (2,4)" key="{d7ea4a41-ea20-4441-ad8b-ac1b5eaaa323}">
         <settings calloutType="simple">
           <text-style textColor="75,75,75,255" allowHtml="0" fontKerning="1" isExpression="0" textOrientation="horizontal" fieldName="texto_edicao" fontLetterSpacing="0" fontWordSpacing="0" fontSize="6" fontUnderline="0" fontStrikeout="0" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" blendMode="0" fontItalic="1" capitalization="0" useSubstitutions="0" legendString="Aa" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textOpacity="1" multilineHeight="1" fontSizeUnit="Point" namedStyle="Condensed Italic">
             <families/>
