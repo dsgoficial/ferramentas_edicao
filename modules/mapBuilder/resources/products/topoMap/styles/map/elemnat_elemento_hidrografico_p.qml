@@ -62,9 +62,9 @@
               <Option name="name" type="QString" value=""/>
               <Option name="properties" type="Map">
                 <Option name="angle" type="Map">
-                  <Option name="active" type="bool" value="true"/>
-                  <Option name="field" type="QString" value="simb_rot"/>
-                  <Option name="type" type="int" value="2"/>
+                  <Option name="active" type="bool" value="false"/>
+                  <Option name="type" type="int" value="1"/>
+                  <Option name="val" type="QString" value=""/>
                 </Option>
               </Option>
               <Option name="type" type="QString" value="collection"/>
@@ -264,8 +264,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{6f875104-5716-43bb-8193-6969a88de8e8}">
-      <rule description="Corredeira e queda dágua" filter="&quot;tipo&quot; in (9, 10, 11, 12) and &quot;visivel&quot; = 1" key="{e1668ac4-6320-42f3-8847-9d58bf0c1361}">
+    <rules key="{4d8565d9-6a34-4620-9a21-35e942ea8b16}">
+      <rule description="Corredeira e queda dágua" filter="&quot;tipo&quot; in (9, 10, 11, 12) and &quot;visivel&quot; = 1" key="{6a2c5756-23f1-4176-8769-ddcc95cb184c}">
         <settings calloutType="simple">
           <text-style fontSize="6" previewBkgrdColor="255,255,255,255" fieldName="texto_edicao" fontStrikeout="0" fontFamily="Noto Sans" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,160,223,255" fontItalic="1" isExpression="0" allowHtml="0" blendMode="0" fontUnderline="0" useSubstitutions="0" textOrientation="horizontal" legendString="Aa" fontWeight="50" multilineHeight="0.80000000000000004" fontSizeUnit="Point" capitalization="0" namedStyle="Condensed Italic" textOpacity="1" fontWordSpacing="0" fontLetterSpacing="0">
             <families/>
