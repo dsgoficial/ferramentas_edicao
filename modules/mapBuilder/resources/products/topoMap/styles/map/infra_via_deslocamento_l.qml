@@ -108,7 +108,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="6" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="8" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -2488,7 +2488,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="6" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="8" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -3231,7 +3231,7 @@
               </Option>
             </data_defined_properties>
           </layer>
-          <layer enabled="1" pass="6" class="SimpleLine" locked="0">
+          <layer enabled="1" pass="8" class="SimpleLine" locked="0">
             <Option type="Map">
               <Option name="align_dash_pattern" type="QString" value="0"/>
               <Option name="capstyle" type="QString" value="flat"/>
@@ -4363,8 +4363,8 @@
     </orderby>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{be8cefb5-b3b1-4108-8f06-2a3fb3b9828d}">
-      <rule filter="nr_faixas > 2 and situacao_fisica in (0,3) and tipo in (2,4)" key="{8f687ffa-040b-4307-bd00-9cced7be3161}">
+    <rules key="{06fe30d8-01f9-4925-b715-77a9bc099484}">
+      <rule filter="nr_faixas > 2 and situacao_fisica in (0,3) and tipo in (2,4)" key="{abc2e462-7b97-4ccc-80a1-8966ef22ab6b}">
         <settings calloutType="simple">
           <text-style textColor="75,75,75,255" allowHtml="0" fontKerning="1" isExpression="1" textOrientation="horizontal" fieldName="nr_faixas||' FAIXAS'" fontLetterSpacing="0" fontWordSpacing="0" fontSize="6" fontUnderline="0" fontStrikeout="0" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" blendMode="0" fontItalic="1" capitalization="0" useSubstitutions="0" legendString="Aa" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textOpacity="1" multilineHeight="1" fontSizeUnit="Point" namedStyle="Condensed Italic">
             <families/>
@@ -4529,7 +4529,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="situacao_fisica in (1,2,4) and tipo in (2,4)" key="{d7ea4a41-ea20-4441-ad8b-ac1b5eaaa323}">
+      <rule filter="situacao_fisica in (1,2,4) and tipo in (2,4)" key="{48f47b1f-d881-4192-8a5a-3369693abfe9}">
         <settings calloutType="simple">
           <text-style textColor="75,75,75,255" allowHtml="0" fontKerning="1" isExpression="0" textOrientation="horizontal" fieldName="texto_edicao" fontLetterSpacing="0" fontWordSpacing="0" fontSize="6" fontUnderline="0" fontStrikeout="0" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" blendMode="0" fontItalic="1" capitalization="0" useSubstitutions="0" legendString="Aa" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textOpacity="1" multilineHeight="1" fontSizeUnit="Point" namedStyle="Condensed Italic">
             <families/>
