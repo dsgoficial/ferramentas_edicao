@@ -2,7 +2,7 @@
 <qgis labelsEnabled="1" version="3.24.3-Tisler" styleCategories="Symbology|Labeling">
   <renderer-v2 referencescale="-1" symbollevels="0" enableorderby="0" type="RuleRenderer" forceraster="0">
     <rules key="{4681daff-84d1-423c-a18d-3b71f9ec7106}">
-      <rule filter="&quot;visivel&quot; = 1" key="{d1d963ba-db4c-45b8-8807-d960ba725f2f}">
+      <rule label="Visível" filter="&quot;visivel&quot; = 1" key="{d1d963ba-db4c-45b8-8807-d960ba725f2f}">
         <rule symbol="0" label="L20307A" filter="(&quot;tipo&quot; - &quot;tipo&quot;%100)/100 = 3" key="{097e7f89-03b1-4183-a33d-bcb5fb098278}"/>
         <rule symbol="1" filter="ELSE" key="{c2f1b34a-0f27-491c-87d3-38458d2d504c}"/>
       </rule>
@@ -159,9 +159,9 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{a74e1bcc-0aad-4a1f-aad0-243453342419}">
-      <rule filter="&quot;visivel&quot; = 1" key="{970e784b-85b3-458b-ab02-33d1ec5ff1eb}">
-        <rule description="Ocupação do solo" key="{cba5b8bf-281d-45c5-9b5b-ed0e97a57ed2}">
+    <rules key="{4e52c34a-8034-410b-af92-f880a22203de}">
+      <rule filter="&quot;visivel&quot; = 1" key="{25f5db25-a780-471c-83dd-ff483b2dbce5}">
+        <rule description="Ocupação do solo" key="{fb5b18c6-3353-45c1-ae83-f0bbb2aa9062}">
           <settings calloutType="simple">
             <text-style fontSize="6" previewBkgrdColor="255,255,255,255" fieldName="texto_edicao" fontStrikeout="0" fontFamily="Noto Sans" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" fontItalic="0" isExpression="0" allowHtml="0" blendMode="0" fontUnderline="0" useSubstitutions="0" textOrientation="horizontal" legendString="Aa" fontWeight="50" multilineHeight="0.80000000000000004" fontSizeUnit="Point" capitalization="0" namedStyle="Condensed" textOpacity="1" fontWordSpacing="0" fontLetterSpacing="0">
               <families/>
