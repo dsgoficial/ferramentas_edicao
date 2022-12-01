@@ -3,8 +3,8 @@
   <renderer-v2 referencescale="-1" symbollevels="0" enableorderby="0" type="RuleRenderer" forceraster="0">
     <rules key="{f90668d0-bcbf-4ab0-b992-a3a7023aa098}">
       <rule filter="&quot;visivel&quot; = 1" key="{ab6cd03f-78b6-4834-a3f7-0603bccf6b32}">
-        <rule symbol="0" description="Reservatório" label="A20403A" filter="&quot;tipo&quot; in (108, 132, 201, 204, 113, 109)" key="{f20c2b3e-2a68-4b94-a517-835ef9a264f0}"/>
-        <rule symbol="1" label="Tanque de Saneamento" filter="&quot;tipo&quot; = 301" key="{d4480d7d-fe8b-4e17-a4ce-c466f3fb0e75}"/>
+        <rule symbol="0" description="Reservatório" label="A20403A" filter="&quot;tipo&quot; in (108, 132, 204, 113, 109)" key="{f20c2b3e-2a68-4b94-a517-835ef9a264f0}"/>
+        <rule symbol="1" label="Tanque de Saneamento" filter="&quot;tipo&quot; in (201, 301)" key="{d4480d7d-fe8b-4e17-a4ce-c466f3fb0e75}"/>
         <rule symbol="2" description="Aterro sanitário" label="A20214D" filter="&quot;tipo&quot; in (108, 132, 305)" key="{a4d71eb4-85cb-4c4a-b104-975029b57333}"/>
         <rule symbol="3" filter="ELSE" key="{582ca24f-2794-4040-9626-0dd48d5cb8fd}"/>
       </rule>
@@ -213,8 +213,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{cfaffaf4-2d40-4a78-a91d-644e644f60d3}">
-      <rule description="Depósito" filter="&quot;visivel&quot; = 1" key="{c1a55567-a6a0-4f5e-9eb4-124ebac33e5e}">
+    <rules key="{7bc5fa7d-6ebf-42f5-a014-ca170fb20edc}">
+      <rule description="Depósito" filter="&quot;visivel&quot; = 1" key="{55e67df1-93d9-4d3c-be24-b0a1068c9e14}">
         <settings calloutType="simple">
           <text-style fontSize="6" previewBkgrdColor="255,255,255,255" fieldName="texto_edicao" fontStrikeout="0" fontFamily="Noto Sans" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" fontItalic="0" isExpression="0" allowHtml="0" blendMode="0" fontUnderline="0" useSubstitutions="0" textOrientation="horizontal" legendString="Aa" fontWeight="50" multilineHeight="0.80000000000000004" fontSizeUnit="Point" capitalization="0" namedStyle="Condensed" textOpacity="1" fontWordSpacing="0" fontLetterSpacing="0">
             <families/>
