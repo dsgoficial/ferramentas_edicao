@@ -5,9 +5,13 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
 
+from .bridgeAndManholeRotation import BridgeAndManholeRotation
+from .elevationDiagramPointGeneralization import \
+    ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
-from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
+from .insertEnergyTower import InsertEnergyTower
+from .insertIdentificadorRodovia import InsertIdentificadorRodovia
 from .loadMasks import LoadMasks
 from .makeGrid import MakeGrid
 from .mergeHighway import MergeHighway
@@ -16,8 +20,6 @@ from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
 from .prepareOrtho import PrepareOrtho
 from .prepareTopo import PrepareTopo
-from .insertEnergyTower import InsertEnergyTower
-from .insertIdentificadorRodovia import InsertIdentificadorRodovia
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
 
@@ -43,6 +45,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ElevationPointsGeneralization())
         self.addAlgorithm(ElevationDiagramPointGeneralization())
         self.addAlgorithm(MakeGrid())
+        self.addAlgorithm(BridgeAndManholeRotation)
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
