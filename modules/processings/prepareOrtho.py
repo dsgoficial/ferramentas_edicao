@@ -935,13 +935,13 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return 'prepareortho'
 
     def displayName(self):
-        return self.tr('Preparo de Edição')
+        return self.tr('Prepara carta ortoimagem')
 
     def group(self):
-        return self.tr('Edição')
+        return self.tr('Preparo de Edição')
 
     def groupId(self):
-        return 'edicao'
+        return 'preparo_edicao'
 
     def shortHelpString(self):
         return self.tr("O algoritmo prepara os atributos para carta ortoimagem")

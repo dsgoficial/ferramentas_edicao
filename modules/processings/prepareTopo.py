@@ -929,7 +929,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
         return self.tr('Preparo de Edição')
 
     def groupId(self):
-        return 'edicao'
+        return 'preparo_edicao'
 
     def shortHelpString(self):
         return self.tr("O algoritmo prepara os atributos para carta topográfica")
