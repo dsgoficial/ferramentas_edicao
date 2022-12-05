@@ -300,7 +300,7 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
 
         # 3. Split the 'name' into 2 label texts
 
-        labelTexts = borderFeat.attribute('nome').split('|')
+        labelTexts = borderFeat.attribute('texto_edicao').split('|')
 
         # 4. Add a border label for each point-text pair
 
