@@ -36,7 +36,8 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_P,
                 self.tr('Selecionar camada de elemento viário (Ponto)'),
-                [QgsProcessing.TypeVectorPoint]
+                [QgsProcessing.TypeVectorPoint],
+                defaultValue='infra_elemento_viario_p'
             )
         )
         self.addParameter(
@@ -45,7 +46,8 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 self.tr('Selecionar o atributo de largura'), 
                 type=core.QgsProcessingParameterField.Any, 
                 parentLayerParameterName=self.INPUT_LAYER_P,
-                allowMultiple=False
+                allowMultiple=False,
+                defaultValue='largura_simbologia'
             )
         )
 
@@ -53,7 +55,8 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_L,
                 self.tr('Selecionar camada de elemento viário (Linha)'),
-                [QgsProcessing.TypeVectorLine]
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='infra_elemento_viario_l'
             )
         )
         self.addParameter(
@@ -62,7 +65,8 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 self.tr('Selecionar o atributo de largura'), 
                 type=core.QgsProcessingParameterField.Any, 
                 parentLayerParameterName=self.INPUT_LAYER_L,
-                allowMultiple=False
+                allowMultiple=False,
+                defaultValue='largura_simbologia'
             )
         )
 
@@ -70,7 +74,8 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_HIGHWAY,
                 self.tr('Selecionar camada de rodovia'),
-                [QgsProcessing.TypeVectorLine]
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='infra_via_deslocamento_l'
             )
         )
 
