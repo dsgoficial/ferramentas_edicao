@@ -45,7 +45,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ElevationPointsGeneralization())
         self.addAlgorithm(ElevationDiagramPointGeneralization())
         self.addAlgorithm(MakeGrid())
-        self.addAlgorithm(BridgeAndManholeRotation)
+        self.addAlgorithm(BridgeAndManholeRotation())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
