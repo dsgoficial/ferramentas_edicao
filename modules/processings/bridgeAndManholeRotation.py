@@ -81,12 +81,14 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
         pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_P, context)
         rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD_LAYER_P, context)[0]
         highwayLayer = self.parameterAsVectorLayer(parameters, self.INPUT_HIGHWAY, context)
+        riverLayer = self.parameterAsVectorLayer(parameters, self.INPUT_RIVER, context)
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
 
         self.setRotationFieldOnLayer( 
             pointLayer, 
             rotationField, 
-            highwayLayer, 
+            highwayLayer,
+            riverLayer,
             distance,
             [201,202,203,204,501]
         )
