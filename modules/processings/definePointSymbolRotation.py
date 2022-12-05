@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import itertools
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
                         QgsProcessing,
@@ -80,31 +81,21 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
         lineList = self.parameterAsLayerList(parameters, self.INPUT_LINES, context)
         areaList = self.parameterAsLayerList(parameters, self.INPUT_AREAS, context)
 
-        for pointFeature in pointLayer.getFeatures():
+        featuresToUpdateList = []
+        nFeats = pointLayer.featureCount()
+        if nFeats == 0:
+            return {self.OUTPUT: ''}
+        stepSize = 100/nFeats
+        for current, pointFeature in enumerate(pointLayer.getFeatures()):
+            if feedback.isCanceled():
+                break
             pointGeometry = pointFeature.geometry()
             point = pointGeometry.asMultiPoint()[0]
             request = self.getFeatureRequestByPoint( pointGeometry,  distance)
-            nearestGeometry = None
-            shortestDistance = None     
-
-            for layerList in [lineList, areaList]: 
-                for layer in layerList:
-
-                    for feature in layer.getFeatures(request):
-                        geometry = feature.geometry()
-                        distanceFound = pointGeometry.distance( geometry )
-                        if distanceFound > distance:
-                            continue
-                        if not shortestDistance:
-                            nearestGeometry = geometry
-                            shortestDistance = distanceFound  
-                        elif distanceFound < shortestDistance:
-                            nearestGeometry = geometry
-                            shortestDistance = distanceFound
-                        
+            nearestGeometry = self.getNearestGeometry(distance, lineList, areaList, pointGeometry, request)
             if not nearestGeometry:
+                feedback.setProgress(current * stepSize)
                 continue   
-                
             projectedPoint = core.QgsGeometryUtils.closestPoint( 
                 nearestGeometry.constGet(), 
                 core.QgsPoint( point.x(), point.y()) 
@@ -112,20 +103,39 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
             angleRadian = math.atan2( projectedPoint.y() - point.y(), projectedPoint.x() - point.x() ) + math.pi/2
             if angleRadian < 0:
                 angleRadian += 2 * math.pi
-            angleDegrees = 360 - round( math.degrees( angleRadian ) )
+            angleDegrees = math.degrees( angleRadian ) % 360
             pointFeature[ rotationField ] = angleDegrees
-            self.updateLayerFeature( pointLayer, pointFeature)
+            featuresToUpdateList.append(pointFeature)
+            feedback.setProgress(current * stepSize)
+        if featuresToUpdateList == []:
+            return {self.OUTPUT: ''}
+        pointLayer.startEditing()
+        pointLayer.beginEditCommand("Rotacionando simbolos")
+        updateFunc = lambda x: pointLayer.updateFeature(x)
+        list(map(updateFunc, featuresToUpdateList))
+        pointLayer.endEditCommand()
         
         return {self.OUTPUT: ''}
+
+    def getNearestGeometry(self, distance, lineList, areaList, pointGeometry, request):
+        nearestGeometry = None
+        shortestDistance = None     
+
+        for layer in itertools.chain.from_iterable([lineList, areaList]):
+            for feature in layer.getFeatures(request):
+                geometry = feature.geometry()
+                distanceFound = pointGeometry.distance( geometry )
+                if distanceFound > distance:
+                    continue
+                elif shortestDistance is None or distanceFound < shortestDistance:
+                    nearestGeometry = geometry
+                    shortestDistance = distanceFound
+        return nearestGeometry
 
     def getFeatureRequestByPoint(self, geometry, distance, segment=5):
         return QgsFeatureRequest().setFilterRect(
             geometry.buffer(distance, segment).boundingBox()
         )
-   
-    def updateLayerFeature(self, layer, feature):
-        layer.startEditing()
-        layer.updateFeature(feature)
    
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
@@ -137,7 +147,7 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
         return 'definepointsymbolrotation'
 
     def displayName(self):
-        return self.tr('Definir rotação')
+        return self.tr('Definir rotação de símbolo')
 
     def group(self):
         return self.tr('Edição')
