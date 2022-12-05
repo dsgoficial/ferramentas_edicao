@@ -11,6 +11,7 @@ from .definePointSymbolRotation import DefinePointSymbolRotation
 from .elevationDiagramPointGeneralization import \
     ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
+from .generalizeBuildings import GeneralizeBuildings
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
 from .insertEnergyTower import InsertEnergyTower
 from .insertIdentificadorRodovia import InsertIdentificadorRodovia
@@ -51,6 +52,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(BridgeAndManholeRotation())
         self.addAlgorithm(DamWidth())
         self.addAlgorithm(DefinePointSymbolRotation())
+        self.addAlgorithm(GeneralizeBuildings())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
