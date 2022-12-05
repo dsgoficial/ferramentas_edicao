@@ -926,7 +926,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
         return self.tr('Prepara carta topográfica')
 
     def group(self):
-        return self.tr('Edição')
+        return self.tr('Preparo de Edição')
 
     def groupId(self):
         return 'edicao'
