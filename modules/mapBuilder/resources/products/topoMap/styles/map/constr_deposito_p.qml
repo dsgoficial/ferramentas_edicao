@@ -71,6 +71,11 @@
                   <Option type="QString" name="field" value="simb_rot"/>
                   <Option type="int" name="type" value="2"/>
                 </Option>
+                <Option type="Map" name="fillColor">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
+                </Option>
               </Option>
               <Option type="QString" name="type" value="collection"/>
             </Option>
@@ -129,7 +134,13 @@
           <data_defined_properties>
             <Option type="Map">
               <Option type="QString" name="name" value=""/>
-              <Option name="properties"/>
+              <Option type="Map" name="properties">
+                <Option type="Map" name="outlineColor">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
+                </Option>
+              </Option>
               <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
@@ -178,7 +189,13 @@
           <data_defined_properties>
             <Option type="Map">
               <Option type="QString" name="name" value=""/>
-              <Option name="properties"/>
+              <Option type="Map" name="properties">
+                <Option type="Map" name="fillColor">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
+                </Option>
+              </Option>
               <Option type="QString" name="type" value="collection"/>
             </Option>
           </data_defined_properties>
@@ -241,6 +258,11 @@
                   <Option type="bool" name="active" value="false"/>
                   <Option type="int" name="type" value="1"/>
                   <Option type="QString" name="val" value=""/>
+                </Option>
+                <Option type="Map" name="fillColor">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
                 </Option>
               </Option>
               <Option type="QString" name="type" value="collection"/>
@@ -524,10 +546,10 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{0e27e2d5-303d-4be3-be16-d26949f01eb8}">
-      <rule filter="&quot;visivel&quot; = 1" description="Depósito" key="{0366d239-7529-4232-b77b-fe2231bb6889}">
+    <rules key="{03803e62-b584-4a2e-bb8e-de0c9152daa7}">
+      <rule filter="&quot;visivel&quot; = 1" description="Depósito" key="{93fb6db4-82ee-405c-b16d-8de0f6257eb3}">
         <settings calloutType="simple">
-          <text-style fontWeight="50" fontStrikeout="0" fieldName="texto_edicao" textColor="0,0,0,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed" fontLetterSpacing="0" fontSize="6" multilineHeight="0.80000000000000004" useSubstitutions="0">
+          <text-style fontWeight="50" fontStrikeout="0" fieldName="texto_edicao" textColor="75,75,75,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed" fontLetterSpacing="0" fontSize="6" multilineHeight="0.80000000000000004" useSubstitutions="0">
             <families/>
             <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferNoFill="1" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferColor="255,255,255,255" bufferJoinStyle="128"/>
             <text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSize="0.20000000000000001" maskSizeUnits="MM" maskOpacity="1" maskType="0" maskEnabled="1" maskJoinStyle="128"/>
@@ -659,6 +681,11 @@
                   <Option type="bool" name="active" value="false"/>
                   <Option type="int" name="type" value="1"/>
                   <Option type="QString" name="val" value=""/>
+                </Option>
+                <Option type="Map" name="Color">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
                 </Option>
                 <Option type="Map" name="MultiLineAlignment">
                   <Option type="bool" name="active" value="true"/>

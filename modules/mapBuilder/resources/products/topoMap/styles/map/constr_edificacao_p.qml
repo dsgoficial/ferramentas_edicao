@@ -83,9 +83,9 @@
                   <Option type="int" name="type" value="3"/>
                 </Option>
                 <Option type="Map" name="outlineColor">
-                  <Option type="bool" name="active" value="true"/>
-                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
-                  <Option type="int" name="type" value="3"/>
+                  <Option type="bool" name="active" value="false"/>
+                  <Option type="int" name="type" value="1"/>
+                  <Option type="QString" name="val" value=""/>
                 </Option>
               </Option>
               <Option type="QString" name="type" value="collection"/>
@@ -150,6 +150,11 @@
                   <Option type="bool" name="active" value="true"/>
                   <Option type="QString" name="field" value="simb_rot"/>
                   <Option type="int" name="type" value="2"/>
+                </Option>
+                <Option type="Map" name="fillColor">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
                 </Option>
               </Option>
               <Option type="QString" name="type" value="collection"/>
@@ -847,6 +852,11 @@
                   <Option type="QString" name="field" value="simb_rot"/>
                   <Option type="int" name="type" value="2"/>
                 </Option>
+                <Option type="Map" name="fillColor">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
+                </Option>
               </Option>
               <Option type="QString" name="type" value="collection"/>
             </Option>
@@ -856,8 +866,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{7e289344-dbd9-4e73-a432-eec0051990b1}">
-      <rule filter="&quot;tipo&quot; = 1212 and &quot;visivel&quot; = 1" description="Sede operacional de fazenda" key="{c00c9d7c-32c1-4267-b58e-e3020dd80031}">
+    <rules key="{7418afff-4621-4d7e-9a4b-844ddc4735a7}">
+      <rule filter="&quot;tipo&quot; = 1212 and &quot;visivel&quot; = 1" description="Sede operacional de fazenda" key="{f1137211-8e24-415b-803b-6aaa2a2d6149}">
         <settings calloutType="simple">
           <text-style fontWeight="25" fontStrikeout="0" fieldName="texto_edicao" textColor="75,75,75,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed Light" fontLetterSpacing="0" fontSize="6" multilineHeight="0.80000000000000004" useSubstitutions="0">
             <families/>
@@ -1047,7 +1057,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; = 1218 and &quot;visivel&quot; = 1" description="Curral" key="{fac061f1-0d3e-4ad1-91a3-8173464f0c45}">
+      <rule filter="&quot;tipo&quot; = 1218 and &quot;visivel&quot; = 1" description="Curral" key="{f8453135-18b3-4110-b550-e17267013a39}">
         <settings calloutType="simple">
           <text-style fontWeight="50" fontStrikeout="0" fieldName="texto_edicao" textColor="75,75,75,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed" fontLetterSpacing="0" fontSize="6" multilineHeight="0.80000000000000004" useSubstitutions="0">
             <families/>
@@ -1183,7 +1193,7 @@
                   <Option type="QString" name="val" value=""/>
                 </Option>
                 <Option type="Map" name="Color">
-                  <Option type="bool" name="active" value="false"/>
+                  <Option type="bool" name="active" value="true"/>
                   <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
@@ -1237,9 +1247,9 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; = 2429" description="Aero - Hangar" key="{23bd502f-6f2a-45b7-a1c8-38a77a5e1d03}">
+      <rule filter="&quot;tipo&quot; = 2429" description="Aero - Hangar" key="{55b5e757-b446-4210-8066-5c3c07d22397}">
         <settings calloutType="simple">
-          <text-style fontWeight="50" fontStrikeout="0" fieldName="nome" textColor="0,0,0,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed" fontLetterSpacing="0" fontSize="6" multilineHeight="1" useSubstitutions="0">
+          <text-style fontWeight="50" fontStrikeout="0" fieldName="nome" textColor="75,75,75,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed" fontLetterSpacing="0" fontSize="6" multilineHeight="1" useSubstitutions="0">
             <families/>
             <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferNoFill="1" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferColor="250,250,250,255" bufferJoinStyle="128"/>
             <text-mask maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSize="0" maskSizeUnits="MM" maskOpacity="1" maskType="0" maskEnabled="0" maskJoinStyle="128"/>
@@ -1361,7 +1371,13 @@
           <dd_properties>
             <Option type="Map">
               <Option type="QString" name="name" value=""/>
-              <Option name="properties"/>
+              <Option type="Map" name="properties">
+                <Option type="Map" name="Color">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
+                  <Option type="int" name="type" value="3"/>
+                </Option>
+              </Option>
               <Option type="QString" name="type" value="collection"/>
             </Option>
           </dd_properties>
@@ -1391,7 +1407,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; not in (1212, 1218, 2429) and &quot;visivel&quot; = 1" description="Edificação" key="{4ef67070-057e-4cda-8b34-3d3070a92e84}">
+      <rule filter="&quot;tipo&quot; not in (1212, 1218, 2429) and &quot;visivel&quot; = 1" description="Edificação" key="{4e7c880a-f426-42fe-b524-02ac49d8b612}">
         <settings calloutType="simple">
           <text-style fontWeight="50" fontStrikeout="0" fieldName="texto_edicao" textColor="75,75,75,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed" fontLetterSpacing="0" fontSize="6" multilineHeight="0.80000000000000004" useSubstitutions="0">
             <families/>
@@ -1527,7 +1543,7 @@
                   <Option type="QString" name="val" value=""/>
                 </Option>
                 <Option type="Map" name="Color">
-                  <Option type="bool" name="active" value="false"/>
+                  <Option type="bool" name="active" value="true"/>
                   <Option type="QString" name="expression" value="project_color('preto-75_75-75-75_#4B4B4B')"/>
                   <Option type="int" name="type" value="3"/>
                 </Option>
