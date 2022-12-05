@@ -23,6 +23,7 @@ from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
 from .prepareOrtho import PrepareOrtho
 from .prepareTopo import PrepareTopo
+from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
 
@@ -53,6 +54,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(DamWidth())
         self.addAlgorithm(DefinePointSymbolRotation())
         self.addAlgorithm(GeneralizeBuildings())
+        self.addAlgorithm(RapidsAndWaterfallRotation())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
