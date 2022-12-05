@@ -16,6 +16,45 @@
             <Option type="QString" name="type" value="collection"/>
           </Option>
         </data_defined_properties>
+        <layer enabled="1" locked="0" class="SimpleFill" pass="0">
+          <Option type="Map">
+            <Option type="QString" name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="color" value="0,0,255,255"/>
+            <Option type="QString" name="joinstyle" value="bevel"/>
+            <Option type="QString" name="offset" value="0,0"/>
+            <Option type="QString" name="offset_map_unit_scale" value="3x:0,0,0,0,0,0"/>
+            <Option type="QString" name="offset_unit" value="MM"/>
+            <Option type="QString" name="outline_color" value="35,35,35,255"/>
+            <Option type="QString" name="outline_style" value="no"/>
+            <Option type="QString" name="outline_width" value="0.26"/>
+            <Option type="QString" name="outline_width_unit" value="MM"/>
+            <Option type="QString" name="style" value="solid"/>
+          </Option>
+          <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="color" v="0,0,255,255"/>
+          <prop k="joinstyle" v="bevel"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="outline_color" v="35,35,35,255"/>
+          <prop k="outline_style" v="no"/>
+          <prop k="outline_width" v="0.26"/>
+          <prop k="outline_width_unit" v="MM"/>
+          <prop k="style" v="solid"/>
+          <data_defined_properties>
+            <Option type="Map">
+              <Option type="QString" name="name" value=""/>
+              <Option type="Map" name="properties">
+                <Option type="Map" name="fillColor">
+                  <Option type="bool" name="active" value="true"/>
+                  <Option type="QString" name="expression" value="project_color('branco-100_255-255-255_#FFFFFF')"/>
+                  <Option type="int" name="type" value="3"/>
+                </Option>
+              </Option>
+              <Option type="QString" name="type" value="collection"/>
+            </Option>
+          </data_defined_properties>
+        </layer>
         <layer enabled="1" locked="0" class="SimpleLine" pass="0">
           <Option type="Map">
             <Option type="QString" name="align_dash_pattern" value="1"/>
@@ -133,8 +172,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{cbb8b100-e9ef-4988-a203-4db0d9c21960}">
-      <rule filter="&quot;visivel&quot; = 1" description="Energia" key="{c670c4c3-24b5-4f9c-bd60-04bf99aeffd9}">
+    <rules key="{37cf6a2f-a41f-43e9-a170-bdaf2789dc93}">
+      <rule filter="&quot;visivel&quot; = 1" description="Energia" key="{b932314f-3408-4c1b-a663-4ee8eec1ff2c}">
         <settings calloutType="simple">
           <text-style fontWeight="50" fontStrikeout="0" fieldName="texto_edicao" textColor="75,75,75,255" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontWordSpacing="0" allowHtml="0" blendMode="0" fontItalic="0" textOpacity="1" fontKerning="1" fontFamily="Noto Sans" capitalization="0" isExpression="0" fontSizeUnit="Point" previewBkgrdColor="255,255,255,255" fontUnderline="0" legendString="Aa" namedStyle="Condensed" fontLetterSpacing="0" fontSize="6" multilineHeight="0.80000000000000004" useSubstitutions="0">
             <families/>
