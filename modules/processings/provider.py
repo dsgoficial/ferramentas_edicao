@@ -6,6 +6,7 @@ from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
 
 from .bridgeAndManholeRotation import BridgeAndManholeRotation
+from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .elevationDiagramPointGeneralization import \
     ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
@@ -45,6 +46,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ElevationPointsGeneralization())
         self.addAlgorithm(ElevationDiagramPointGeneralization())
         self.addAlgorithm(MakeGrid())
+        self.addAlgorithm(BridgeAndManholeWidth())
         self.addAlgorithm(BridgeAndManholeRotation())
 
     def load(self):
