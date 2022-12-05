@@ -7,6 +7,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from .bridgeAndManholeRotation import BridgeAndManholeRotation
 from .bridgeAndManholeWidth import BridgeAndManholeWidth
+from .damWidth import DamWidth
 from .elevationDiagramPointGeneralization import \
     ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
@@ -48,6 +49,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MakeGrid())
         self.addAlgorithm(BridgeAndManholeWidth())
         self.addAlgorithm(BridgeAndManholeRotation())
+        self.addAlgorithm(DamWidth())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
