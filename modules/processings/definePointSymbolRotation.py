@@ -23,28 +23,29 @@ import math
 
 class DefinePointSymbolRotation(QgsProcessingAlgorithm): 
 
-    INPUT_POINTS = 'INPUT_POINTS'
+    INPUT_POINT = 'INPUT_POINT'
     INPUT_MIN_DIST= 'INPUT_MIN_DIST'
     INPUT_LINES = 'INPUT_LINES'
     INPUT_AREAS = 'INPUT_AREAS'
-    INPUT_FIELDS = 'INPUT_FIELDS'
+    INPUT_FIELD = 'INPUT_FIELD'
     OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
-                self.INPUT_POINTS,
+                self.INPUT_POINT,
                 self.tr('Selecionar camada ponto'),
                 [QgsProcessing.TypeVectorPoint]
             )
         )
         self.addParameter(
             core.QgsProcessingParameterField(
-                self.INPUT_FIELDS,
+                self.INPUT_FIELD,
                 self.tr('Selecionar o atributo de rotação da camada'), 
                 type=core.QgsProcessingParameterField.Any, 
-                parentLayerParameterName=self.INPUT_POINTS,
-                allowMultiple=True
+                parentLayerParameterName=self.INPUT_POINT,
+                allowMultiple=False,
+                defaultValue='simb_rot'
             )
         )
         self.addParameter(
@@ -73,8 +74,8 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):      
-        pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_POINTS, context)
-        rotationField = self.parameterAsFields(parameters, self.INPUT_FIELDS, context)[0]
+        pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_POINT, context)
+        rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD, context)[0]
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
         lineList = self.parameterAsLayerList(parameters, self.INPUT_LINES, context)
         areaList = self.parameterAsLayerList(parameters, self.INPUT_AREAS, context)
