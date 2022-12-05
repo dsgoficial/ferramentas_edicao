@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -8,6 +7,7 @@ from qgis.PyQt.QtGui import QIcon
 from .bridgeAndManholeRotation import BridgeAndManholeRotation
 from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .damWidth import DamWidth
+from .definePointSymbolRotation import DefinePointSymbolRotation
 from .elevationDiagramPointGeneralization import \
     ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
@@ -50,6 +50,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(BridgeAndManholeWidth())
         self.addAlgorithm(BridgeAndManholeRotation())
         self.addAlgorithm(DamWidth())
+        self.addAlgorithm(DefinePointSymbolRotation())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
