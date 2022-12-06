@@ -108,7 +108,7 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
                 nearestGeometry.constGet(), 
                 core.QgsPoint( point.x(), point.y()) 
             )
-            angle = core.QgsPoint(point.x(), point.y()).azimuth(projectedPoint)
+            angle = core.QgsPoint(point.x(), point.y()).azimuth(projectedPoint) + 180
             return pointFeature, angle
         
         for current, pointFeature in enumerate(iterator):
