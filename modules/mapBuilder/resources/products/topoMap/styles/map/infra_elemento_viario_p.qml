@@ -2,10 +2,12 @@
 <qgis labelsEnabled="1" styleCategories="Symbology|Labeling" version="3.24.3-Tisler">
   <renderer-v2 referencescale="-1" type="RuleRenderer" forceraster="0" symbollevels="0" enableorderby="0">
     <rules key="{3a91b4d7-b34c-4db6-9ed7-c948731286fd}">
-      <rule symbol="0" filter="&quot;tipo&quot; in (201, 202, 203, 204)" key="{9e7a33f3-9de2-41af-9862-35c3d15e5801}"/>
-      <rule symbol="1" filter="&quot;tipo&quot; in (401, 402)" label="P10813A" key="{387b3e9b-3365-47e1-a853-61f92f1c64d8}"/>
-      <rule symbol="2" filter="&quot;tipo&quot; in (501)" label="P11001A" key="{9b34aaff-477f-4a1f-96e7-347cce1b736f}"/>
-      <rule symbol="3" filter="ELSE" key="{3a1ca760-0c3f-4412-a65d-024e704d4ebe}"/>
+      <rule filter="visivel = 1" key="{fa37ecf0-f3d2-4526-bee7-f1aaf8742ddd}">
+        <rule symbol="0" filter="&quot;tipo&quot; in (201, 202, 203, 204)" key="{19e878c5-6b1f-493c-a08f-9902bbb17c0f}"/>
+        <rule symbol="1" filter="&quot;tipo&quot; in (401, 402)" label="P10813A" key="{ddbd7125-7fac-4e04-878f-a1cca61b5a9e}"/>
+        <rule symbol="2" filter="&quot;tipo&quot; in (501)" label="P11001A" key="{e3dc2808-fbc2-49f1-b570-b354e9e4fcb0}"/>
+        <rule symbol="3" filter="ELSE" key="{9a51bafd-2350-4d17-bf37-fb9cbca65d31}"/>
+      </rule>
     </rules>
     <symbols>
       <symbol alpha="1" type="marker" force_rhr="0" name="0" clip_to_extent="1">
@@ -377,8 +379,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{58b2d65c-3552-40c1-9644-4e3258d5380f}">
-      <rule filter="&quot;tipo&quot; in (201, 202, 203, 204)" key="{ada4aa95-92d9-4ecc-af49-9b89d9711e83}">
+    <rules key="{ba55dc7a-459a-46e4-aec8-2121644aabc1}">
+      <rule filter="&quot;tipo&quot; in (201, 202, 203, 204)" key="{685899ee-24dc-4149-ad67-a5e96e5a7256}">
         <settings calloutType="simple">
           <text-style multilineHeight="1" namedStyle="Condensed" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="nome" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="0" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
             <families/>
@@ -532,7 +534,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; in (401, 402)" key="{81a8c0ab-4c07-44ed-aa6c-d2c579a4cf7f}">
+      <rule filter="&quot;tipo&quot; in (401, 402)" key="{7d34bcfd-0a24-4ca6-9500-16423137e488}">
         <settings calloutType="simple">
           <text-style multilineHeight="1" namedStyle="Condensed Italic" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="nome" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="1" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
             <families/>
@@ -686,7 +688,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; in (501)" key="{9a46eb17-abc3-459a-a7bd-a44a171dc406}"/>
+      <rule filter="&quot;tipo&quot; in (501)" key="{658c9f65-5ab3-4eb5-b98e-b7b009dd0ab1}"/>
     </rules>
   </labeling>
   <blendMode>0</blendMode>

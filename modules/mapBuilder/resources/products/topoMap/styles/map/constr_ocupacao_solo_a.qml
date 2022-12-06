@@ -204,10 +204,15 @@
             <Option type="Map">
               <Option value="" type="QString" name="name"/>
               <Option type="Map" name="properties">
-                <Option type="Map" name="outlineColor">
+                <Option type="Map" name="fillColor">
                   <Option value="true" type="bool" name="active"/>
                   <Option value="project_color('preto-75_75-75-75_#4B4B4B')" type="QString" name="expression"/>
                   <Option value="3" type="int" name="type"/>
+                </Option>
+                <Option type="Map" name="outlineColor">
+                  <Option value="false" type="bool" name="active"/>
+                  <Option value="1" type="int" name="type"/>
+                  <Option value="" type="QString" name="val"/>
                 </Option>
               </Option>
               <Option value="collection" type="QString" name="type"/>
@@ -426,9 +431,9 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{47a9ac05-92ac-4510-a811-acb5c64502e6}">
-      <rule filter="&quot;visivel&quot; = 1" key="{b431424d-6c58-4460-94ce-3b05c74a40ae}">
-        <rule description="Ocupação do solo" key="{acf1a9c2-006f-4f3b-83f7-2ec02a772655}">
+    <rules key="{0d4adae9-e474-47ca-b417-38b1a9e525cc}">
+      <rule filter="&quot;visivel&quot; = 1" key="{6b654f9f-7a57-405a-8d48-9af8413a80fb}">
+        <rule description="Ocupação do solo" key="{898dcca5-f54e-4097-b190-5a1cc486c135}">
           <settings calloutType="simple">
             <text-style multilineHeight="0.80000000000000004" namedStyle="Condensed" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="75,75,75,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="texto_edicao" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="0" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
               <families/>
