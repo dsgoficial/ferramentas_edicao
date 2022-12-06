@@ -156,7 +156,7 @@
             <Option value="Condensed" type="QString" name="font_style"/>
             <Option value="1" type="QString" name="horizontal_anchor_point"/>
             <Option value="bevel" type="QString" name="joinstyle"/>
-            <Option value="0,0" type="QString" name="offset"/>
+            <Option value="0,-0.34999999999999998" type="QString" name="offset"/>
             <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
             <Option value="MM" type="QString" name="offset_unit"/>
             <Option value="35,35,35,255" type="QString" name="outline_color"/>
@@ -175,7 +175,7 @@
           <prop k="font_style" v="Condensed"/>
           <prop k="horizontal_anchor_point" v="1"/>
           <prop k="joinstyle" v="bevel"/>
-          <prop k="offset" v="0,0"/>
+          <prop k="offset" v="0,-0.34999999999999998"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
           <prop k="outline_color" v="35,35,35,255"/>
