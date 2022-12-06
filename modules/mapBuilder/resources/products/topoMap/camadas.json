@@ -81,10 +81,6 @@
             "schema": "edgv"
         },
         {
-            "table": "elemnat_curva_nivel_l",
-            "schema": "edgv"
-        },
-        {
             "table": "infra_elemento_viario_p",
             "schema": "edgv"
         },
@@ -205,14 +201,6 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_vala_l",
-            "schema": "edgv"
-        },
-        {
-            "table": "elemnat_trecho_drenagem_l",
-            "schema": "edgv"
-        },
-        {
             "table": "elemnat_elemento_fisiografico_a",
             "schema": "edgv"
         },
@@ -234,6 +222,18 @@
         },
         {
             "table": "infra_elemento_infraestrutura_a",
+            "schema": "edgv"
+        },
+        {
+            "table": "infra_vala_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "elemnat_trecho_drenagem_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "elemnat_curva_nivel_l",
             "schema": "edgv"
         },
         {
