@@ -1,30 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import itertools
+import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
                         QgsProcessing,
-                        QgsFeatureSink,
                         QgsProcessingAlgorithm,
-                        QgsProcessingParameterFeatureSink,
-                        QgsCoordinateReferenceSystem,
                         QgsProcessingParameterMultipleLayers,
-                        QgsFeature,
                         QgsProcessingParameterVectorLayer,
-                        QgsFields,
                         QgsFeatureRequest,
                         QgsProcessingParameterNumber,
-                        QgsGeometry,
-                        QgsPointXY
+                        QgsProcessingParameterBoolean,
+                        QgsProcessingMultiStepFeedback
                     )
-from qgis import processing
-from qgis import core, gui
-from qgis.utils import iface
+from qgis import core
 import math
+import concurrent.futures
 
 class DefinePointSymbolRotation(QgsProcessingAlgorithm): 
 
     INPUT_POINT = 'INPUT_POINT'
+    ONLY_SELECTED = 'ONLY_SELECTED'
     INPUT_MIN_DIST= 'INPUT_MIN_DIST'
     INPUT_LINES = 'INPUT_LINES'
     INPUT_AREAS = 'INPUT_AREAS'
@@ -35,8 +31,14 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_POINT,
-                self.tr('Selecionar camada ponto'),
+                self.tr('Camada ponto'),
                 [QgsProcessing.TypeVectorPoint]
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.ONLY_SELECTED,
+                self.tr('Executar somente nas feições selecionadas')
             )
         )
         self.addParameter(
@@ -76,43 +78,59 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):      
         pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_POINT, context)
+        onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
         rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD, context)[0]
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
         lineList = self.parameterAsLayerList(parameters, self.INPUT_LINES, context)
         areaList = self.parameterAsLayerList(parameters, self.INPUT_AREAS, context)
 
         featuresToUpdateList = []
-        nFeats = pointLayer.featureCount()
+        iterator = pointLayer.getFeatures() if not onlySelected else pointLayer.getSelectedFeatures()
+        nFeats = pointLayer.featureCount() if not onlySelected else pointLayer.selectedFeatureCount()
         if nFeats == 0:
             return {self.OUTPUT: ''}
         stepSize = 100/nFeats
-        for current, pointFeature in enumerate(pointLayer.getFeatures()):
+        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
+        multiStepFeedback.setCurrentStep(0)
+        multiStepFeedback.setProgressText("Submetendo tarefas para as threads")
+        futures = set()
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()-1)
+        def evaluate(pointFeature):
             if feedback.isCanceled():
-                break
+                return None, None
             pointGeometry = pointFeature.geometry()
             point = pointGeometry.asMultiPoint()[0]
-            request = self.getFeatureRequestByPoint( pointGeometry,  distance)
+            request = self.getFeatureRequestByPoint(pointGeometry, distance)
             nearestGeometry = self.getNearestGeometry(distance, lineList, areaList, pointGeometry, request)
             if not nearestGeometry:
-                feedback.setProgress(current * stepSize)
-                continue   
+                return None, None
             projectedPoint = core.QgsGeometryUtils.closestPoint( 
                 nearestGeometry.constGet(), 
                 core.QgsPoint( point.x(), point.y()) 
             )
-            angleRadian = math.atan2( projectedPoint.y() - point.y(), projectedPoint.x() - point.x() ) + math.pi/2
-            if angleRadian < 0:
-                angleRadian += 2 * math.pi
-            angleDegrees = math.degrees( angleRadian ) % 360
-            pointFeature[ rotationField ] = angleDegrees
-            featuresToUpdateList.append(pointFeature)
-            feedback.setProgress(current * stepSize)
-        if featuresToUpdateList == []:
-            return {self.OUTPUT: ''}
+            angle = core.QgsPoint(point.x(), point.y()).azimuth(projectedPoint)
+            return pointFeature, angle
+        
+        for current, pointFeature in enumerate(iterator):
+            if multiStepFeedback.isCanceled():
+                return {self.OUTPUT: ''}
+            futures.add(pool.submit(evaluate, pointFeature))
+            multiStepFeedback.setProgress(current * stepSize)
+        
+        multiStepFeedback.setCurrentStep(1)
+        multiStepFeedback.setProgressText("Rotacionando símbolos")
         pointLayer.startEditing()
         pointLayer.beginEditCommand("Rotacionando simbolos")
-        updateFunc = lambda x: pointLayer.updateFeature(x)
-        list(map(updateFunc, featuresToUpdateList))
+        def commit_changes(input):
+            current, future = input
+            if multiStepFeedback.isCanceled():
+                return
+            pointFeature, angle = future.result()
+            if pointFeature is None or pointFeature[rotationField] == angle:
+                return
+            pointFeature[rotationField] = angle
+            pointLayer.updateFeature(pointFeature)
+        list(map(commit_changes, enumerate(concurrent.futures.as_completed(futures))))
         pointLayer.endEditCommand()
         
         return {self.OUTPUT: ''}
