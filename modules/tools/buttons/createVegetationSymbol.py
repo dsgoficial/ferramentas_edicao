@@ -47,7 +47,7 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
                 if feat.geometry().intersects(posGeom):
                     toInsert = QgsFeature(self.dstLyr.fields())
                     if vegName:=self.getVegetationMapping(feat):
-                        toInsert.setAttribute('texto', vegName)
+                        toInsert.setAttribute('texto_edicao', vegName)
                         toInsert.setGeometry(posGeom)
                         self.dstLyr.startEditing()
                         self.dstLyr.addFeature(toInsert)
