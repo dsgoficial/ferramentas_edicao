@@ -3,30 +3,24 @@
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
                         QgsProcessing,
-                        QgsFeatureSink,
                         QgsProcessingAlgorithm,
-                        QgsProcessingParameterFeatureSink,
-                        QgsCoordinateReferenceSystem,
-                        QgsProcessingParameterMultipleLayers,
-                        QgsFeature,
                         QgsProcessingParameterVectorLayer,
-                        QgsFields,
                         QgsFeatureRequest,
                         QgsProcessingParameterNumber,
-                        QgsGeometry,
-                        QgsPointXY
+                        QgsProcessingParameterBoolean
                     )
-from qgis import processing
-from qgis import core, gui
-from qgis.utils import iface
+from qgis import core
 import math
+import processing
 
 class BridgeAndManholeRotation(QgsProcessingAlgorithm): 
 
     INPUT_LAYER_P = 'INPUT_LAYER_P'
+    ONLY_SELECTED = 'ONLY_SELECTED'
     INPUT_FIELD_LAYER_P = 'INPUT_FIELD_LAYER_P'
     INPUT_HIGHWAY = 'INPUT_HIGHWAY'
     INPUT_RIVER = 'INPUT_RIVER'
+    INPUT_DITCH = 'INPUT_DITCH'
     INPUT_MIN_DIST = 'INPUT_MIN_DIST'
     OUTPUT = 'OUTPUT'
 
@@ -37,6 +31,12 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
                 self.tr('Selecionar camada de elemento viário'),
                 [QgsProcessing.TypeVectorPoint],
                 defaultValue='infra_elemento_viario_p'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.ONLY_SELECTED,
+                self.tr('Executar somente nas feições selecionadas')
             )
         )
         self.addParameter(
@@ -77,38 +77,59 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_DITCH,
+                self.tr('Selecionar camada de vala'),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='infra_vala_l',
+                optional=True
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):      
         pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_P, context)
+        onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
         rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD_LAYER_P, context)[0]
         highwayLayer = self.parameterAsVectorLayer(parameters, self.INPUT_HIGHWAY, context)
         riverLayer = self.parameterAsVectorLayer(parameters, self.INPUT_RIVER, context)
+        ditchLayer = self.parameterAsVectorLayer(parameters, self.INPUT_DITCH, context)
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
 
-        self.setRotationFieldOnLayer( 
-            pointLayer, 
-            rotationField, 
-            highwayLayer,
-            riverLayer,
-            distance,
-            [201,202,203,204,501]
-        )
-
-        return {self.OUTPUT: ''}
-
-    def setRotationFieldOnLayer(self, layer, rotationField, highwayLayer, riverLayer, distance, filterType):
+        pointIterator = pointLayer.getFeatures() if not onlySelected else pointLayer.getSelectedFeatures()
+        nFeats = pointLayer.featureCount() if not onlySelected else pointLayer.selectedFeatureCount()
+        if nFeats == 0:
+            return {self.OUTPUT: ''}
+        stepSize = 100/nFeats
         featuresToUpdate = []
-        for layerFeature in layer.getFeatures():
-            if not( layerFeature['tipo'] in filterType ):
+        if ditchLayer is not None:
+            riverLayer = processing.run(
+                'native:mergevectorlayers',
+                {
+                    'LAYERS' : [riverLayer, ditchLayer],
+                    'CRS' : None,
+                    'OUTPUT' : "memory:"
+                },
+                context=context,
+            )['OUTPUT']
+            processing.run(
+            "native:createspatialindex",
+                {'INPUT':riverLayer},
+                context=context
+            )
+        for current, layerFeature in enumerate(pointIterator):
+            if feedback.isCanceled():
+                break
+            if not( layerFeature['tipo'] in [201,202,203,204,501] ):
                 continue
             layerGeometry = layerFeature.geometry()
-            request = QgsFeatureRequest().setFilterRect( layerGeometry.boundingBox() )
+            buffer = layerGeometry.buffer(distance, -1)
+            request = QgsFeatureRequest().setFilterRect( buffer.boundingBox() )
             iterator = highwayLayer.getFeatures(request) if layerFeature['tipo'] != 501 \
                 else riverLayer.getFeatures(request)
             for lineFeature in iterator:
                 lineFeatureGeometry = lineFeature.geometry()
-                if not( lineFeatureGeometry.intersects( layerGeometry ) ):
-                    continue
-                clippedGeometry = lineFeatureGeometry.clipped( layerGeometry.buffer(distance, 5).boundingBox() )
+                clippedGeometry = lineFeatureGeometry.clipped( buffer.boundingBox() )
                 if not( clippedGeometry.type() == core.QgsWkbTypes.LineGeometry ):
                     continue
 
@@ -117,17 +138,22 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
                 angleDegrees = self.evaluateAngle(layerFeature, p1, p2)
                 layerFeature[ rotationField ] = angleDegrees
                 featuresToUpdate.append(layerFeature)
+            feedback.setProgress(current * stepSize)
         if featuresToUpdate == []:
-            return
-        layer.startEditing()
-        updateLambda = lambda x: layer.updateFeature(x)
+            return {self.OUTPUT: ''}
+        pointLayer.startEditing()
+        pointLayer.beginEditCommand("Rotacionando pontes e bueiros do tipo ponto")
+        updateLambda = lambda x: pointLayer.updateFeature(x)
         list(map(updateLambda, featuresToUpdate))
+        pointLayer.endEditCommand()
+        return {self.OUTPUT: ''}
 
     def evaluateAngle(self, layerFeature, p1, p2):
+        if layerFeature['tipo'] == 501:
+            return core.QgsPoint(p1.x(), p1.y()).azimuth(core.QgsPoint(p2.x(), p2.y()))
         angleDegrees = 0
         if ( p2.y() - p1.y() ) != 0:
-            angleRadian = math.atan2( p2.x() - p1.x(), p2.y() - p1.y() ) - math.pi/2 if layerFeature['tipo'] != 501 \
-                        else math.atan2( p2.x() - p1.x(), p2.y() - p1.y() )
+            angleRadian = math.atan2( p2.x() - p1.x(), p2.y() - p1.y() ) - math.pi/2
             if angleRadian >= math.pi:
                 angleRadian -= math.pi
             elif angleRadian <= -math.pi:
