@@ -21,6 +21,7 @@ from .mergeHighway import MergeHighway
 from .mergeLinesByAngle import MergeLinesByAngle
 from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
+from .placeSportsGroundSymbol import PlaceSportsGroundSymbol
 from .prepareOrtho import PrepareOrtho
 from .prepareTopo import PrepareTopo
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
@@ -55,6 +56,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(DefinePointSymbolRotation())
         self.addAlgorithm(GeneralizeBuildings())
         self.addAlgorithm(RapidsAndWaterfallRotation())
+        self.addAlgorithm(PlaceSportsGroundSymbol())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
