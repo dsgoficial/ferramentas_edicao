@@ -2,9 +2,11 @@
 <qgis labelsEnabled="0" version="3.24.3-Tisler" styleCategories="Symbology|Labeling">
   <renderer-v2 symbollevels="0" referencescale="-1" type="RuleRenderer" forceraster="0" enableorderby="0">
     <rules key="{56b9a550-d8af-4e2b-a20c-06cfb7818973}">
-      <rule label="Ciclovia" symbol="0" key="{efeaf259-f01e-4345-9e00-aad3fcad4a13}" filter="&quot;tipo&quot; = 2"/>
-      <rule label="Rua pedestre (acesso)" symbol="1" key="{28927674-d01b-4524-b37f-c98271e83323}" filter="&quot;tipo&quot; = 1"/>
-      <rule symbol="2" key="{5aade37c-8cf2-4fda-9b8a-80160fd05ebc}" filter="ELSE"/>
+      <rule label="Visivel" key="{5f6db61d-9076-4f40-9e05-302906dffdfd}" filter="visivel = 1">
+        <rule label="Ciclovia" symbol="0" key="{4195075d-e236-41ac-bad4-f03f52199476}" filter="&quot;tipo&quot; = 2"/>
+        <rule label="Rua pedestre (acesso)" symbol="1" key="{370aaa5b-2bc3-4ae0-829f-b826e71debec}" filter="&quot;tipo&quot; = 1"/>
+        <rule symbol="2" key="{048a1faf-06c9-4c04-9a7e-c8807914b31a}" filter="ELSE"/>
+      </rule>
     </rules>
     <symbols>
       <symbol type="line" name="0" alpha="1" force_rhr="0" clip_to_extent="1">
