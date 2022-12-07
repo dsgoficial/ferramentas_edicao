@@ -121,16 +121,16 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
         multiStepFeedback.setProgressText("Rotacionando símbolos")
         pointLayer.startEditing()
         pointLayer.beginEditCommand("Rotacionando simbolos")
-        def commit_changes(input):
-            current, future = input
+        for current, future in enumerate(concurrent.futures.as_completed(futures)):
             if multiStepFeedback.isCanceled():
-                return
+                break
             pointFeature, angle = future.result()
             if pointFeature is None or pointFeature[rotationField] == angle:
-                return
+                continue
             pointFeature[rotationField] = angle
             pointLayer.updateFeature(pointFeature)
-        list(map(commit_changes, enumerate(concurrent.futures.as_completed(futures))))
+            multiStepFeedback.setProgress(current * stepSize)
+        
         pointLayer.endEditCommand()
         
         return {self.OUTPUT: ''}
