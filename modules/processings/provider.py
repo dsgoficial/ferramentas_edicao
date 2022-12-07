@@ -21,7 +21,11 @@ from .mergeHighway import MergeHighway
 from .mergeLinesByAngle import MergeLinesByAngle
 from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
-from .placeSportsGroundSymbol import PlaceSportsGroundSymbol
+from .placeAllAreaPointSymbols import PlaceAllAreaPointSymbols
+from .placeHospitalSymbol import PlaceHospitalSymbol
+from .placeMineralExtractionSymbol import PlaceMineralExtractionSymbol
+from .placePointSymbolInsideArea import PlacePointSymbolInsideArea
+from .placePowerPlantSymbol import PlacePowerPlantSymbol
 from .placeSymbolsOnTopOfAreaBuildings import PlaceSymbolsOnTopOfAreaBuildings
 from .prepareOrtho import PrepareOrtho
 from .prepareTopo import PrepareTopo
@@ -57,8 +61,12 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(DefinePointSymbolRotation())
         self.addAlgorithm(GeneralizeBuildings())
         self.addAlgorithm(RapidsAndWaterfallRotation())
-        self.addAlgorithm(PlaceSportsGroundSymbol())
+        self.addAlgorithm(PlacePointSymbolInsideArea())
         self.addAlgorithm(PlaceSymbolsOnTopOfAreaBuildings())
+        self.addAlgorithm(PlaceHospitalSymbol())
+        self.addAlgorithm(PlacePowerPlantSymbol())
+        self.addAlgorithm(PlaceMineralExtractionSymbol())
+        self.addAlgorithm(PlaceAllAreaPointSymbols())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
