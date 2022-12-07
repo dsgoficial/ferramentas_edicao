@@ -41,7 +41,6 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 self.MAP_TYPE,
                 self.tr('Tipo da carta'),
                 options=self.map,
-                defaultValue=1
             )
         )
 
