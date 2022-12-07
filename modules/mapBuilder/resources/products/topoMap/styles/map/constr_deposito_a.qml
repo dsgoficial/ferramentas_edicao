@@ -4,9 +4,10 @@
     <rules key="{f90668d0-bcbf-4ab0-b992-a3a7023aa098}">
       <rule filter="&quot;visivel&quot; = 1" key="{ab6cd03f-78b6-4834-a3f7-0603bccf6b32}">
         <rule symbol="0" description="Reservatório" filter="&quot;tipo&quot; in (108, 132, 204, 113, 109)" label="A20403A" key="{f20c2b3e-2a68-4b94-a517-835ef9a264f0}"/>
-        <rule symbol="1" filter="&quot;tipo&quot; in (201, 301)" label="Tanque de Saneamento" key="{d4480d7d-fe8b-4e17-a4ce-c466f3fb0e75}"/>
-        <rule symbol="2" description="Aterro sanitário" filter="&quot;tipo&quot; in (304,305,306)" label="A20214D" key="{a4d71eb4-85cb-4c4a-b104-975029b57333}"/>
-        <rule symbol="3" filter="ELSE" key="{582ca24f-2794-4040-9626-0dd48d5cb8fd}"/>
+        <rule symbol="1" filter="&quot;tipo&quot; in (201, 301)" label="Tanque de Saneamento" key="{d844d7ad-7bb3-45e6-9704-f4b1878dc8e4}"/>
+        <rule symbol="2" filter="&quot;tipo&quot; in (203)" label="Cisterna" key="{d4480d7d-fe8b-4e17-a4ce-c466f3fb0e75}"/>
+        <rule symbol="3" description="Aterro sanitário" filter="&quot;tipo&quot; in (304,305,306)" label="A20214D" key="{a4d71eb4-85cb-4c4a-b104-975029b57333}"/>
+        <rule symbol="4" filter="ELSE" key="{582ca24f-2794-4040-9626-0dd48d5cb8fd}"/>
       </rule>
     </rules>
     <symbols>
@@ -112,6 +113,54 @@
         </layer>
       </symbol>
       <symbol alpha="1" type="fill" force_rhr="0" name="2" clip_to_extent="1">
+        <data_defined_properties>
+          <Option type="Map">
+            <Option value="" type="QString" name="name"/>
+            <Option name="properties"/>
+            <Option value="collection" type="QString" name="type"/>
+          </Option>
+        </data_defined_properties>
+        <layer enabled="1" locked="0" pass="0" class="SimpleFill">
+          <Option type="Map">
+            <Option value="3x:0,0,0,0,0,0" type="QString" name="border_width_map_unit_scale"/>
+            <Option value="158,210,241,255" type="QString" name="color"/>
+            <Option value="bevel" type="QString" name="joinstyle"/>
+            <Option value="0,0" type="QString" name="offset"/>
+            <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
+            <Option value="MM" type="QString" name="offset_unit"/>
+            <Option value="0,0,0,255" type="QString" name="outline_color"/>
+            <Option value="no" type="QString" name="outline_style"/>
+            <Option value="0.1" type="QString" name="outline_width"/>
+            <Option value="MM" type="QString" name="outline_width_unit"/>
+            <Option value="solid" type="QString" name="style"/>
+          </Option>
+          <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="color" v="158,210,241,255"/>
+          <prop k="joinstyle" v="bevel"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="outline_color" v="0,0,0,255"/>
+          <prop k="outline_style" v="no"/>
+          <prop k="outline_width" v="0.1"/>
+          <prop k="outline_width_unit" v="MM"/>
+          <prop k="style" v="solid"/>
+          <data_defined_properties>
+            <Option type="Map">
+              <Option value="" type="QString" name="name"/>
+              <Option type="Map" name="properties">
+                <Option type="Map" name="outlineColor">
+                  <Option value="false" type="bool" name="active"/>
+                  <Option value="1" type="int" name="type"/>
+                  <Option value="" type="QString" name="val"/>
+                </Option>
+              </Option>
+              <Option value="collection" type="QString" name="type"/>
+            </Option>
+          </data_defined_properties>
+        </layer>
+      </symbol>
+      <symbol alpha="1" type="fill" force_rhr="0" name="3" clip_to_extent="1">
         <data_defined_properties>
           <Option type="Map">
             <Option value="" type="QString" name="name"/>
@@ -230,7 +279,7 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" type="fill" force_rhr="0" name="3" clip_to_extent="1">
+      <symbol alpha="1" type="fill" force_rhr="0" name="4" clip_to_extent="1">
         <data_defined_properties>
           <Option type="Map">
             <Option value="" type="QString" name="name"/>
@@ -275,8 +324,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{e55d331b-36b5-4a48-8dad-2321197f23e8}">
-      <rule description="Depósito" filter="&quot;visivel&quot; = 1" key="{5ad8f382-5118-42a4-b07c-db602b5146b4}">
+    <rules key="{3e6343fc-573b-4b3a-b7b6-587ee71682e7}">
+      <rule description="Depósito" filter="&quot;visivel&quot; = 1" key="{2be2492a-f84c-40df-b0cc-7d00e8cc5766}">
         <settings calloutType="simple">
           <text-style multilineHeight="0.80000000000000004" namedStyle="Condensed" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="75,75,75,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="texto_edicao" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="0" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
             <families/>

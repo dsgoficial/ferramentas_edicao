@@ -3,7 +3,7 @@
   <renderer-v2 referencescale="-1" type="RuleRenderer" forceraster="0" symbollevels="0" enableorderby="0">
     <rules key="{7e7c5e8b-3835-4813-bc90-01d87c84467a}">
       <rule filter="&quot;visivel&quot; = 1" key="{c9d1e298-fe17-4fe3-b8a6-842e7904d800}">
-        <rule symbol="0" description="Energia, Industria, Genérico" filter="&quot;tipo&quot; in (0, 1298) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (2, 4, 5, 6, 8, 9, 10, 13, 19, 17, 20, 22, 23, 24, 26, 30)" label="A20403A" key="{3026e123-049d-4763-bc61-54758e1d138a}"/>
+        <rule symbol="0" description="Energia, Industria, Genérico" filter="&quot;tipo&quot; in (0, 1212, 1298) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 19, 17, 20, 21,  22, 23, 24, 26, 30)" label="A20403A" key="{3026e123-049d-4763-bc61-54758e1d138a}"/>
         <rule symbol="1" filter="&quot;tipo&quot; = 1216" label="A20405A" key="{5dea4b5f-b74b-4539-924c-c5be6d2d8914}"/>
         <rule symbol="2" filter="&quot;tipo&quot; = 1215" key="{78509594-2c3b-4a2e-83ba-c2cfb831b683}"/>
         <rule symbol="3" filter="ELSE" key="{e9053e2d-98dd-4112-a0e5-90e560cbd045}"/>
@@ -257,9 +257,9 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{452ea2c9-7ff3-4205-99c3-f23024beb1b7}">
-      <rule filter="&quot;visivel&quot; = 1" key="{e1201c48-648f-46c6-9f6d-ec6077a51cf0}">
-        <rule description="Edificação" key="{543ba171-5c60-4b68-b43a-297a612c8f1d}">
+    <rules key="{8872cf1f-12cc-48dd-816f-ed09e5703fe3}">
+      <rule filter="&quot;visivel&quot; = 1" key="{8a6374e3-a9c8-400b-b8d6-e869d6a74eb3}">
+        <rule description="Edificação" key="{8dd5ff7a-9098-4c13-852b-f8a4a07615bd}">
           <settings calloutType="simple">
             <text-style multilineHeight="0.80000000000000004" namedStyle="Condensed" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="75,75,75,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="texto_edicao" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="0" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
               <families/>

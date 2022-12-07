@@ -6,7 +6,7 @@
         <rule symbol="0" description="Galpão, armazém" filter="&quot;tipo&quot; in (108, 132, 198)" label="P20214E" key="{7cd9d25e-c353-460b-9708-b4f3f0dcd74f}"/>
         <rule symbol="1" filter="&quot;tipo&quot; = 109" label="P20214A" key="{9578b293-d8bc-4df0-9394-00e3dc45ca84}"/>
         <rule symbol="2" filter="&quot;tipo&quot; = 113" label="P20214B" key="{c985b851-ad25-4a76-9625-5c2552703ea0}"/>
-        <rule symbol="3" description="Tanque dagua" filter="&quot;tipo&quot; = 201" label="P20214C" key="{f2dbd971-2a05-4177-a181-42a55334620f}"/>
+        <rule symbol="3" description="Tanque dagua" filter="&quot;tipo&quot; in (201,301)" label="P20214C" key="{f2dbd971-2a05-4177-a181-42a55334620f}"/>
         <rule symbol="4" filter="&quot;tipo&quot; = 202" label="P10704A" key="{2de32ca8-9fc1-41c9-a306-3cfefb65aa34}"/>
         <rule symbol="5" description="Cisterna" filter="&quot;tipo&quot; = 203" label="P10704B" key="{d4f82235-073f-404c-a548-19a152bbb46d}"/>
         <rule symbol="6" filter="ELSE" key="{93e1af9a-e884-4697-9b99-1670f82aa670}"/>
@@ -546,8 +546,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{816caaa6-08a1-4576-a05d-6e44f34dbb0b}">
-      <rule description="Depósito" filter="&quot;visivel&quot; = 1" key="{e457ddda-0506-46ef-b12f-944806f5c44e}">
+    <rules key="{52802f35-0f85-4c37-9336-c46b29a2acc6}">
+      <rule description="Depósito" filter="&quot;visivel&quot; = 1" key="{b1471557-76f4-42e4-80a0-dc94ccf718ff}">
         <settings calloutType="simple">
           <text-style multilineHeight="0.80000000000000004" namedStyle="Condensed" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="75,75,75,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="texto_edicao" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="0" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
             <families/>

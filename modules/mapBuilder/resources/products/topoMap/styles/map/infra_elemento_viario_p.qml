@@ -3,10 +3,11 @@
   <renderer-v2 referencescale="-1" type="RuleRenderer" forceraster="0" symbollevels="0" enableorderby="0">
     <rules key="{3a91b4d7-b34c-4db6-9ed7-c948731286fd}">
       <rule filter="visivel = 1" key="{fa37ecf0-f3d2-4526-bee7-f1aaf8742ddd}">
-        <rule symbol="0" filter="&quot;tipo&quot; in (201, 202, 203, 204)" key="{19e878c5-6b1f-493c-a08f-9902bbb17c0f}"/>
+        <rule symbol="0" filter="&quot;tipo&quot; in (201, 202, 203, 204, 302)" key="{19e878c5-6b1f-493c-a08f-9902bbb17c0f}"/>
         <rule symbol="1" filter="&quot;tipo&quot; in (401, 402)" label="P10813A" key="{ddbd7125-7fac-4e04-878f-a1cca61b5a9e}"/>
-        <rule symbol="2" filter="&quot;tipo&quot; in (501)" label="P11001A" key="{e3dc2808-fbc2-49f1-b570-b354e9e4fcb0}"/>
-        <rule symbol="3" filter="ELSE" key="{9a51bafd-2350-4d17-bf37-fb9cbca65d31}"/>
+        <rule symbol="2" filter="&quot;tipo&quot; in (501)" label="P11001A" key="{75ea30c5-5c8a-4603-bae0-73bc8c7fe8f4}"/>
+        <rule symbol="3" filter="&quot;tipo&quot; in (609)" label="Pedestre" key="{e3dc2808-fbc2-49f1-b570-b354e9e4fcb0}"/>
+        <rule symbol="4" filter="ELSE" key="{9a51bafd-2350-4d17-bf37-fb9cbca65d31}"/>
       </rule>
     </rules>
     <symbols>
@@ -326,6 +327,73 @@
             <Option value="collection" type="QString" name="type"/>
           </Option>
         </data_defined_properties>
+        <layer enabled="1" locked="0" pass="0" class="SvgMarker">
+          <Option type="Map">
+            <Option value="0" type="QString" name="angle"/>
+            <Option value="255,0,0,255" type="QString" name="color"/>
+            <Option value="0" type="QString" name="fixedAspectRatio"/>
+            <Option value="1" type="QString" name="horizontal_anchor_point"/>
+            <Option value="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB3aWR0aD0iMi43MjkwOTAybW0iCiAgIGhlaWdodD0iMS4zNzY4NDY5bW0iCiAgIHZpZXdCb3g9IjAgMCAyLjcyOTA5MDIgMS4zNzY4NDY5IgogICB2ZXJzaW9uPSIxLjEiCiAgIGlkPSJzdmc0NzI4IgogICBpbmtzY2FwZTp2ZXJzaW9uPSIxLjIuMiAoYjBhODQ4NjU0MSwgMjAyMi0xMi0wMSkiCiAgIHNvZGlwb2RpOmRvY25hbWU9InN2ZzA4XzIuc3ZnIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxzb2RpcG9kaTpuYW1lZHZpZXcKICAgICBpZD0ibmFtZWR2aWV3NDczMCIKICAgICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiCiAgICAgYm9yZGVyb3BhY2l0eT0iMS4wIgogICAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAuMCIKICAgICBpbmtzY2FwZTpwYWdlY2hlY2tlcmJvYXJkPSIwIgogICAgIGlua3NjYXBlOmRvY3VtZW50LXVuaXRzPSJtbSIKICAgICBzaG93Z3JpZD0iZmFsc2UiCiAgICAgaW5rc2NhcGU6c25hcC1nbG9iYWw9InRydWUiCiAgICAgc2hvd2d1aWRlcz0idHJ1ZSIKICAgICBpbmtzY2FwZTpndWlkZS1iYm94PSJ0cnVlIgogICAgIGlua3NjYXBlOnNuYXAtYmJveD0iZmFsc2UiCiAgICAgaW5rc2NhcGU6c25hcC1vdGhlcnM9InRydWUiCiAgICAgaW5rc2NhcGU6c25hcC1ub2Rlcz0idHJ1ZSIKICAgICBpbmtzY2FwZTp6b29tPSI0NS4yNTQ4MzQiCiAgICAgaW5rc2NhcGU6Y3g9IjMuNzEyMzEwNiIKICAgICBpbmtzY2FwZTpjeT0iMS43NDU2Njk5IgogICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iMTkyMCIKICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSIxMDE3IgogICAgIGlua3NjYXBlOndpbmRvdy14PSItOCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMzc5IgogICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiCiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ibGF5ZXIxIgogICAgIGlua3NjYXBlOnNuYXAtaW50ZXJzZWN0aW9uLXBhdGhzPSJ0cnVlIgogICAgIGlua3NjYXBlOm9iamVjdC1ub2Rlcz0idHJ1ZSIKICAgICBpbmtzY2FwZTpvYmplY3QtcGF0aHM9InRydWUiCiAgICAgaW5rc2NhcGU6c25hcC1zbW9vdGgtbm9kZXM9InRydWUiCiAgICAgaW5rc2NhcGU6c25hcC1taWRwb2ludHM9ImZhbHNlIgogICAgIGlua3NjYXBlOnNuYXAtb2JqZWN0LW1pZHBvaW50cz0iZmFsc2UiCiAgICAgaW5rc2NhcGU6YmJveC1wYXRocz0idHJ1ZSIKICAgICBpbmtzY2FwZTpiYm94LW5vZGVzPSJ0cnVlIgogICAgIGlua3NjYXBlOnNuYXAtYmJveC1lZGdlLW1pZHBvaW50cz0idHJ1ZSIKICAgICBpbmtzY2FwZTpzbmFwLWJib3gtbWlkcG9pbnRzPSJ0cnVlIgogICAgIGlua3NjYXBlOnNob3dwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIgLz4KICA8ZGVmcwogICAgIGlkPSJkZWZzNDcyNSI+CiAgICA8cGF0dGVybgogICAgICAgaWQ9IkVNRmhiYXNlcGF0dGVybiIKICAgICAgIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiCiAgICAgICB3aWR0aD0iNiIKICAgICAgIGhlaWdodD0iNiIKICAgICAgIHg9IjAiCiAgICAgICB5PSIwIiAvPgogIDwvZGVmcz4KICA8ZwogICAgIGlua3NjYXBlOmxhYmVsPSJDYW1hZGEgMSIKICAgICBpbmtzY2FwZTpncm91cG1vZGU9ImxheWVyIgogICAgIGlkPSJsYXllcjEiCiAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTI4LjIzMTY2NCwtMTU3LjU1ODA0KSI+CiAgICA8cGF0aAogICAgICAgaWQ9InBhdGgxMjgyNSIKICAgICAgIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiM0YjRiNGI7c3Ryb2tlLXdpZHRoOjAuNTY2OTI5O3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1vcGFjaXR5OjEiCiAgICAgICBkPSJNIDAuMjAxMTcxODgsMC4yMDExNzE4OCAyLjMyNjE3MTksMi4zMjYxNzE5IEggNy45ODgyODEyIEwgMTAuMTEzMjgxLDAuMjAxMTcxODggbSAwLDQuODAyNzM0MzIgLTIuMTI0OTk5OCwtMi4xMjUgSCAyLjMyNjE3MTkgbCAtMi4xMjUwMDAwMiwyLjEyNSIKICAgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuMjY0NTgzMzMsMCwwLDAuMjY0NTgzMzMsMjguMjMxNjY0LDE1Ny41NTgwNCkiCiAgICAgICBzb2RpcG9kaTpub2RldHlwZXM9ImNjY2NjY2NjIiAvPgogIDwvZz4KPC9zdmc+Cg==" type="QString" name="name"/>
+            <Option value="0,0" type="QString" name="offset"/>
+            <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
+            <Option value="MM" type="QString" name="offset_unit"/>
+            <Option value="0,0,0,255" type="QString" name="outline_color"/>
+            <Option value="0" type="QString" name="outline_width"/>
+            <Option value="3x:0,0,0,0,0,0" type="QString" name="outline_width_map_unit_scale"/>
+            <Option value="MM" type="QString" name="outline_width_unit"/>
+            <Option name="parameters"/>
+            <Option value="diameter" type="QString" name="scale_method"/>
+            <Option value="2.742" type="QString" name="size"/>
+            <Option value="3x:0,0,0,0,0,0" type="QString" name="size_map_unit_scale"/>
+            <Option value="MM" type="QString" name="size_unit"/>
+            <Option value="1" type="QString" name="vertical_anchor_point"/>
+          </Option>
+          <prop k="angle" v="0"/>
+          <prop k="color" v="255,0,0,255"/>
+          <prop k="fixedAspectRatio" v="0"/>
+          <prop k="horizontal_anchor_point" v="1"/>
+          <prop k="name" v="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB3aWR0aD0iMi43MjkwOTAybW0iCiAgIGhlaWdodD0iMS4zNzY4NDY5bW0iCiAgIHZpZXdCb3g9IjAgMCAyLjcyOTA5MDIgMS4zNzY4NDY5IgogICB2ZXJzaW9uPSIxLjEiCiAgIGlkPSJzdmc0NzI4IgogICBpbmtzY2FwZTp2ZXJzaW9uPSIxLjIuMiAoYjBhODQ4NjU0MSwgMjAyMi0xMi0wMSkiCiAgIHNvZGlwb2RpOmRvY25hbWU9InN2ZzA4XzIuc3ZnIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxzb2RpcG9kaTpuYW1lZHZpZXcKICAgICBpZD0ibmFtZWR2aWV3NDczMCIKICAgICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiCiAgICAgYm9yZGVyb3BhY2l0eT0iMS4wIgogICAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiCiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAuMCIKICAgICBpbmtzY2FwZTpwYWdlY2hlY2tlcmJvYXJkPSIwIgogICAgIGlua3NjYXBlOmRvY3VtZW50LXVuaXRzPSJtbSIKICAgICBzaG93Z3JpZD0iZmFsc2UiCiAgICAgaW5rc2NhcGU6c25hcC1nbG9iYWw9InRydWUiCiAgICAgc2hvd2d1aWRlcz0idHJ1ZSIKICAgICBpbmtzY2FwZTpndWlkZS1iYm94PSJ0cnVlIgogICAgIGlua3NjYXBlOnNuYXAtYmJveD0iZmFsc2UiCiAgICAgaW5rc2NhcGU6c25hcC1vdGhlcnM9InRydWUiCiAgICAgaW5rc2NhcGU6c25hcC1ub2Rlcz0idHJ1ZSIKICAgICBpbmtzY2FwZTp6b29tPSI0NS4yNTQ4MzQiCiAgICAgaW5rc2NhcGU6Y3g9IjMuNzEyMzEwNiIKICAgICBpbmtzY2FwZTpjeT0iMS43NDU2Njk5IgogICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iMTkyMCIKICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSIxMDE3IgogICAgIGlua3NjYXBlOndpbmRvdy14PSItOCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMzc5IgogICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjEiCiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ibGF5ZXIxIgogICAgIGlua3NjYXBlOnNuYXAtaW50ZXJzZWN0aW9uLXBhdGhzPSJ0cnVlIgogICAgIGlua3NjYXBlOm9iamVjdC1ub2Rlcz0idHJ1ZSIKICAgICBpbmtzY2FwZTpvYmplY3QtcGF0aHM9InRydWUiCiAgICAgaW5rc2NhcGU6c25hcC1zbW9vdGgtbm9kZXM9InRydWUiCiAgICAgaW5rc2NhcGU6c25hcC1taWRwb2ludHM9ImZhbHNlIgogICAgIGlua3NjYXBlOnNuYXAtb2JqZWN0LW1pZHBvaW50cz0iZmFsc2UiCiAgICAgaW5rc2NhcGU6YmJveC1wYXRocz0idHJ1ZSIKICAgICBpbmtzY2FwZTpiYm94LW5vZGVzPSJ0cnVlIgogICAgIGlua3NjYXBlOnNuYXAtYmJveC1lZGdlLW1pZHBvaW50cz0idHJ1ZSIKICAgICBpbmtzY2FwZTpzbmFwLWJib3gtbWlkcG9pbnRzPSJ0cnVlIgogICAgIGlua3NjYXBlOnNob3dwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIgLz4KICA8ZGVmcwogICAgIGlkPSJkZWZzNDcyNSI+CiAgICA8cGF0dGVybgogICAgICAgaWQ9IkVNRmhiYXNlcGF0dGVybiIKICAgICAgIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiCiAgICAgICB3aWR0aD0iNiIKICAgICAgIGhlaWdodD0iNiIKICAgICAgIHg9IjAiCiAgICAgICB5PSIwIiAvPgogIDwvZGVmcz4KICA8ZwogICAgIGlua3NjYXBlOmxhYmVsPSJDYW1hZGEgMSIKICAgICBpbmtzY2FwZTpncm91cG1vZGU9ImxheWVyIgogICAgIGlkPSJsYXllcjEiCiAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTI4LjIzMTY2NCwtMTU3LjU1ODA0KSI+CiAgICA8cGF0aAogICAgICAgaWQ9InBhdGgxMjgyNSIKICAgICAgIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiM0YjRiNGI7c3Ryb2tlLXdpZHRoOjAuNTY2OTI5O3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1vcGFjaXR5OjEiCiAgICAgICBkPSJNIDAuMjAxMTcxODgsMC4yMDExNzE4OCAyLjMyNjE3MTksMi4zMjYxNzE5IEggNy45ODgyODEyIEwgMTAuMTEzMjgxLDAuMjAxMTcxODggbSAwLDQuODAyNzM0MzIgLTIuMTI0OTk5OCwtMi4xMjUgSCAyLjMyNjE3MTkgbCAtMi4xMjUwMDAwMiwyLjEyNSIKICAgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuMjY0NTgzMzMsMCwwLDAuMjY0NTgzMzMsMjguMjMxNjY0LDE1Ny41NTgwNCkiCiAgICAgICBzb2RpcG9kaTpub2RldHlwZXM9ImNjY2NjY2NjIiAvPgogIDwvZz4KPC9zdmc+Cg=="/>
+          <prop k="offset" v="0,0"/>
+          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="outline_color" v="0,0,0,255"/>
+          <prop k="outline_width" v="0"/>
+          <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="outline_width_unit" v="MM"/>
+          <prop k="parameters" v=""/>
+          <prop k="scale_method" v="diameter"/>
+          <prop k="size" v="2.742"/>
+          <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+          <prop k="size_unit" v="MM"/>
+          <prop k="vertical_anchor_point" v="1"/>
+          <data_defined_properties>
+            <Option type="Map">
+              <Option value="" type="QString" name="name"/>
+              <Option type="Map" name="properties">
+                <Option type="Map" name="angle">
+                  <Option value="true" type="bool" name="active"/>
+                  <Option value="simb_rot" type="QString" name="field"/>
+                  <Option value="2" type="int" name="type"/>
+                </Option>
+                <Option type="Map" name="offset">
+                  <Option value="false" type="bool" name="active"/>
+                  <Option value="1" type="int" name="type"/>
+                  <Option value="" type="QString" name="val"/>
+                </Option>
+              </Option>
+              <Option value="collection" type="QString" name="type"/>
+            </Option>
+          </data_defined_properties>
+        </layer>
+      </symbol>
+      <symbol alpha="1" type="marker" force_rhr="0" name="4" clip_to_extent="1">
+        <data_defined_properties>
+          <Option type="Map">
+            <Option value="" type="QString" name="name"/>
+            <Option name="properties"/>
+            <Option value="collection" type="QString" name="type"/>
+          </Option>
+        </data_defined_properties>
         <layer enabled="1" locked="0" pass="0" class="SimpleMarker">
           <Option type="Map">
             <Option value="0" type="QString" name="angle"/>
@@ -379,8 +447,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{ba55dc7a-459a-46e4-aec8-2121644aabc1}">
-      <rule filter="&quot;tipo&quot; in (201, 202, 203, 204)" key="{685899ee-24dc-4149-ad67-a5e96e5a7256}">
+    <rules key="{2a106628-14ca-40e9-a9fd-021f28a24ab7}">
+      <rule filter="&quot;tipo&quot; in (201, 202, 203, 204)" key="{9cf0371c-3551-40f4-8a25-972a876ebcc1}">
         <settings calloutType="simple">
           <text-style multilineHeight="1" namedStyle="Condensed" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="nome" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="0" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
             <families/>
@@ -534,7 +602,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; in (401, 402)" key="{7d34bcfd-0a24-4ca6-9500-16423137e488}">
+      <rule filter="&quot;tipo&quot; in (401, 402)" key="{3e3b946f-5277-4fe1-904b-6b247807c861}">
         <settings calloutType="simple">
           <text-style multilineHeight="1" namedStyle="Condensed Italic" fontSizeUnit="Point" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255" blendMode="0" capitalization="0" textOpacity="1" fontSize="6" fontFamily="Noto Sans" previewBkgrdColor="255,255,255,255" useSubstitutions="0" fieldName="nome" isExpression="0" fontKerning="1" allowHtml="0" fontItalic="1" fontLetterSpacing="0" fontStrikeout="0" legendString="Aa" textOrientation="horizontal" fontUnderline="0" fontWordSpacing="0">
             <families/>
@@ -688,7 +756,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; in (501)" key="{658c9f65-5ab3-4eb5-b98e-b7b009dd0ab1}"/>
+      <rule filter="&quot;tipo&quot; in (501)" key="{87370000-daf6-4f28-a776-4b9855761c22}"/>
     </rules>
   </labeling>
   <blendMode>0</blendMode>
