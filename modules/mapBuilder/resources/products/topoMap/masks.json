@@ -28,47 +28,6 @@
                 [
                     0
                 ]
-            ],
-            [
-                "elemnat_curva_nivel_l",
-                "{a429cfcb-5c0d-40e4-bf7f-faaa5613b935}",
-                [
-                    0
-                ]
-            ]
-        ]
-    },
-    "elemnat_ponto_cotado_p": {
-        "Cota mais alta": [
-            [
-                "elemnat_curva_nivel_l",
-                "{25710cad-1fb3-44d5-9456-1335a0349db3}",
-                [
-                    0
-                ]
-            ],
-            [
-                "elemnat_curva_nivel_l",
-                "{726ee8af-3df0-44d0-90db-829b9792358b}",
-                [
-                    0
-                ]
-            ]
-        ],
-        "": [
-            [
-                "elemnat_curva_nivel_l",
-                "{25710cad-1fb3-44d5-9456-1335a0349db3}",
-                [
-                    0
-                ]
-            ],
-            [
-                "elemnat_curva_nivel_l",
-                "{726ee8af-3df0-44d0-90db-829b9792358b}",
-                [
-                    0
-                ]
             ]
         ]
     }
