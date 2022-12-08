@@ -3,23 +3,12 @@
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
                         QgsProcessing,
-                        QgsFeatureSink,
                         QgsProcessingAlgorithm,
-                        QgsProcessingParameterFeatureSink,
-                        QgsCoordinateReferenceSystem,
-                        QgsProcessingParameterMultipleLayers,
-                        QgsFeature,
                         QgsProcessingParameterVectorLayer,
-                        QgsFields,
                         QgsFeatureRequest,
-                        QgsProcessingParameterNumber,
-                        QgsGeometry,
-                        QgsPointXY
+                        QgsProcessingMultiStepFeedback
                     )
-from qgis import processing
-from qgis import core, gui
-from qgis.utils import iface
-import math
+from qgis import core
 
 class BridgeAndManholeWidth(QgsProcessingAlgorithm): 
 
@@ -86,27 +75,38 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         lineWidthField = self.parameterAsFields(parameters, self.INPUT_FIELD_LAYER_L, context)[0]
         highwayLayer = self.parameterAsVectorLayer(parameters, self.INPUT_HIGHWAY, context)
         
+        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
+        multiStepFeedback.setCurrentStep(0)
         self.setWidthFieldOnLayer( 
             pointLayer, 
             pointWidthField, 
             highwayLayer, 
-            [201,202,203,204,501]
+            [201,202,203,204,501,302],
+            feedback=multiStepFeedback
         )
-
+        multiStepFeedback.setCurrentStep(1)
         self.setWidthFieldOnLayer( 
             lineLayer, 
             lineWidthField, 
             highwayLayer, 
-            [201,202,203,204]
+            [201, 202, 203, 204, 302],
+            feedback=multiStepFeedback
         )
         return {self.OUTPUT: ''}
 
-    def setWidthFieldOnLayer(self, layer, widthField, highwayLayer, filterType):
-        for layerFeature in layer.getFeatures():
+    def setWidthFieldOnLayer(self, layer, widthField, highwayLayer, filterType, feedback):
+        nFeats = layer.featureCount()
+        if nFeats == 0:
+            return
+        stepSize = 100/nFeats
+        for current, layerFeature in enumerate(layer.getFeatures()):
+            if feedback.isCanceled():
+                break
             if not( layerFeature['tipo'] in filterType ):
                 continue
             layerGeometry = layerFeature.geometry()
-            request = QgsFeatureRequest().setFilterRect( layerGeometry.boundingBox() ) 
+            request = QgsFeatureRequest().setFilterRect( layerGeometry.boundingBox() )
+            width = 0
             for highwayFeature in highwayLayer.getFeatures(request):
                 highwayFeatureGeometry = highwayFeature.geometry()
                 if not( highwayFeatureGeometry.intersects( layerGeometry ) ):
@@ -114,8 +114,12 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 intersection = highwayFeatureGeometry.intersection( layerGeometry )
                 if not( intersection.type() == layer.geometryType() ):
                     continue
-                layerFeature[ widthField ] = self.getSymbolWidth( highwayFeature )
-                self.updateLayerFeature( layer, layerFeature)
+                newWidth = self.getSymbolWidth( highwayFeature )
+                if newWidth > width:
+                    width = newWidth
+            layerFeature[ widthField ] = width
+            self.updateLayerFeature( layer, layerFeature)
+            feedback.setProgress(current * stepSize)
 
     def updateLayerFeature(self, layer, feature):
         layer.startEditing()
