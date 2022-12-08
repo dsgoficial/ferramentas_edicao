@@ -15,9 +15,6 @@ class PlaceHospitalSymbol(QgsProcessingAlgorithm):
 
     INPUT = 'INPUT'
     ONLY_SELECTED = 'ONLY_SELECTED'
-    INPUT_VISIBLE_FIELD = 'INPUT_VISIBLE_FIELD'
-    HIDE_FEATS = 'HIDE_FEATS'
-    SCALE = 'SCALE'
     INPUT_SYMBOL_LAYER = 'INPUT_SYMBOL_LAYER'
     OUTPUT = 'OUTPUT'
 
@@ -37,23 +34,6 @@ class PlaceHospitalSymbol(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            core.QgsProcessingParameterField(
-                self.INPUT_VISIBLE_FIELD,
-                self.tr('Selecionar o atributo de "visibilidade" da camada de entrada'), 
-                type=core.QgsProcessingParameterField.Any, 
-                parentLayerParameterName=self.INPUT,
-                allowMultiple=False,
-                defaultValue='visivel'
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.HIDE_FEATS,
-                self.tr('Ocultar feições que não tem tamanho suficiente'),
-                defaultValue=False
-            )
-        )
-        self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_SYMBOL_LAYER,
                 self.tr('Selecionar camada de camada de edição'),
@@ -65,8 +45,6 @@ class PlaceHospitalSymbol(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):      
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
-        hideFeats = self.parameterAsBool(parameters, self.HIDE_FEATS, context)
-        inputLyrVisibleField = self.parameterAsFields(parameters, self.INPUT_VISIBLE_FIELD, context)[0]
         simbAreaLayer = self.parameterAsVectorLayer(parameters, self.INPUT_SYMBOL_LAYER, context)
         request = QgsFeatureRequest().setFilterExpression('("tipo" - "tipo"%100)/100 in (20)')
         if onlySelected:
@@ -93,9 +71,7 @@ class PlaceHospitalSymbol(QgsProcessingAlgorithm):
         simbAreaLayer.addFeatures(newFeatList)
         simbAreaLayer.endEditCommand()
         return {self.OUTPUT: ''}
-        
-        
-    
+
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
 
