@@ -548,8 +548,8 @@
     </renderer-v2>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{9bbbdaf6-f319-43e8-a1bf-f91237f2ee80}">
-      <rule key="{3b2cecd6-61e0-4434-87d4-17833b09c917}">
+    <rules key="{8c1b8bf7-51d9-4b23-bc8f-c2538b6a6866}">
+      <rule key="{6b456eb3-f691-4b95-9d68-0045f01ed77c}">
         <settings calloutType="simple">
           <text-style fontLetterSpacing="0" previewBkgrdColor="255,255,255,255" capitalization="1" fieldName="texto_edicao" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontKerning="1" fontStrikeout="0" textOpacity="1" fontWordSpacing="0" textColor="0,160,223,255" allowHtml="0" isExpression="0" legendString="Aa" blendMode="0" fontWeight="50" fontItalic="1" namedStyle="Condensed Italic" fontUnderline="0" fontSizeUnit="Point" fontFamily="Noto Sans" fontSize="6" textOrientation="horizontal" multilineHeight="0.80000000000000004" useSubstitutions="0">
             <families/>
@@ -688,6 +688,11 @@
                   <Option value="true" name="active" type="bool"/>
                   <Option value="label_y" name="field" type="QString"/>
                   <Option value="2" name="type" type="int"/>
+                </Option>
+                <Option name="Size" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="coalesce( &quot;tamanho_txt&quot; , 6)" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
                 </Option>
               </Option>
               <Option value="collection" name="type" type="QString"/>
