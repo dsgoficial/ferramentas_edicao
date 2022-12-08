@@ -6,6 +6,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from .bridgeAndManholeRotation import BridgeAndManholeRotation
 from .bridgeAndManholeWidth import BridgeAndManholeWidth
+from .buildElevationDiagram import BuildElevationDiagram
 from .damWidth import DamWidth
 from .definePointSymbolRotation import DefinePointSymbolRotation
 from .elevationDiagramPointGeneralization import \
@@ -67,6 +68,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PlacePowerPlantSymbol())
         self.addAlgorithm(PlaceMineralExtractionSymbol())
         self.addAlgorithm(PlaceAllAreaPointSymbols())
+        self.addAlgorithm(BuildElevationDiagram())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
