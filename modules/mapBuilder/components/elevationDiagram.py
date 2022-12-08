@@ -1,7 +1,10 @@
+import json
 import os
 import processing
 from pathlib import Path
 from typing import List
+import numpy as np
+from osgeo import gdal
 
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import QVariant
@@ -10,7 +13,8 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature,
                        QgsLayerTreeGroup, QgsLayoutItemMap,
                        QgsLayoutItemMapGrid, QgsMapLayer, QgsPrintLayout,
                        QgsProject, QgsRectangle, QgsTextFormat, QgsUnitTypes,
-                       QgsProcessingContext, QgsProcessingFeedback, QgsVectorLayer, QgsFields, QgsField)
+                       QgsProcessingContext, QgsProcessingFeedback, QgsVectorLayer, QgsFields, QgsField,
+                       QgsRasterLayer, QgsProcessingUtils)
 
 from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
@@ -44,9 +48,12 @@ class ElevationDiagram(ComponentUtils,IComponent):
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
         areaWithoutDataLayer = next(filter(lambda x: x.name() == 'edicao_area_sem_dados_a', layers), None)
         massaDaguaLayer = next(filter(lambda x: x.name() == 'cobter_massa_dagua_a', layers), None)
-        elevationSlicingLyr, nClasses = self.getElevationSlicing(data, geographicBoundsLyr, areaWithoutDataLayer, massaDaguaLayer)
-        if elevationSlicingLyr is not None:
-            layers.append(elevationSlicingLyr)
+        elevationSlicingRasterLyr, elevationSlicingContourRasterLyr, nClasses, classThresholdDict = self.getElevationSlicing(
+            data, geographicBoundsLyr, areaWithoutDataLayer, massaDaguaLayer)
+        if elevationSlicingContourRasterLyr is not None:
+            layers.append(elevationSlicingContourRasterLyr)
+        if elevationSlicingRasterLyr is not None:
+            layers.append(elevationSlicingRasterLyr)
         elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
 
         generalizedPoints, outputGrid = self.getGeneralizedPoints(pointsLayer, geographicBoundsLyr, data.get('scale'))
@@ -66,7 +73,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
             layers,
             nClasses,
             scale=data.get('scale'),
-            elevationSlicingLyr=elevationSlicingLyr
+            elevationSlicingRasterLyr=elevationSlicingRasterLyr,
+            classThresholdDict=classThresholdDict
         )
         if showLayers:
             elevationDiagramGroupNode = QgsLayerTreeGroup('elevationDiagram')	
@@ -95,30 +103,31 @@ class ElevationDiagram(ComponentUtils,IComponent):
             epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
             raster_mde.setCrs(epsgId)
         raster_mde = self.getRasterMDE(raster_mde, epsg, epsgId)
-        elevationSlicingLyr = self.createTerrainLayer()
+        elevationSlicingRasterLyr = self.createTerrainLayer()
         slicingParams = data.get('param_diagrama_elevacao', {})
-        processingOutput, nClasses = self.getTerrainSlicingFromProcessing(
+        processingOutput, classThresholdDict, nClasses = self.getTerrainSlicingFromProcessing(
             geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr, raster_mde, slicingParams
         )
-        if nClasses == 1 or processingOutput.featureCount() == 0:
+        if nClasses == 1:
             slicingParams.update({
                 "min_pixel_group_size": 1,
-                "smoothing_parameter": 0,
                 "contour_interval": 1,
             })
-            processingOutput, nClasses = self.getTerrainSlicingFromProcessing(
-                geographicBoundsLyr, areaWithoutDataLyr, raster_mde, slicingParams
+            processingOutput, classThresholdDict, nClasses = self.getTerrainSlicingFromProcessing(
+                geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr, raster_mde, slicingParams
             )
-
-        layerProvider = elevationSlicingLyr.dataProvider()
-        layerProvider.addFeatures([feat for feat in processingOutput.getFeatures()])
-        elevationSlicingLyr.loadNamedStyle(
-            str(self.stylesFolder / f'edicao_fatiamento_terreno_{nClasses}_classes_a.qml'),
-            True
+        elevationSlicingRasterLyr = self.createLayerRaster(
+            rasterPath=processingOutput['OUTPUT_RASTER'],
+            stylePath=str(self.stylesFolder / f'edicao_raster_fatiamento_terreno_{nClasses}_classes.qml')
         )
-        elevationSlicingLyr.triggerRepaint()
-        QgsProject.instance().addMapLayer(elevationSlicingLyr, False)
-        return elevationSlicingLyr, nClasses
+        QgsProject.instance().addMapLayer(elevationSlicingRasterLyr, False)
+        elevationSlicingContourRasterLyr = self.createLayerRaster(
+            rasterPath=processingOutput['OUTPUT_RASTER'],
+            stylePath=str(self.stylesFolder / f'edicao_raster_curvas_diagrama_elevacao.qml')
+        )
+        QgsProject.instance().addMapLayer(elevationSlicingContourRasterLyr, False)
+
+        return elevationSlicingRasterLyr, elevationSlicingContourRasterLyr, nClasses, classThresholdDict
 
     def getRasterMDE(self, raster_mde, epsg, epsgId):
         raster_mde = raster_mde if int(epsg) in (4674, 4326) \
@@ -144,7 +153,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
 
     def getTerrainSlicingFromProcessing(self, geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr, raster_mde, slicingParams):
         processingOutput = processing.run(
-            "dsgtools:buildterrainslicingfromcontours",
+            "ferramentasedicao:buildelevationdiagram",
             {
                 'INPUT': raster_mde,
                 'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
@@ -152,16 +161,19 @@ class ElevationDiagram(ComponentUtils,IComponent):
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
                 'WATER_BODIES_POLYGONS': waterBodiesLyr,
                 'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 10),
-                'SMOOTHING_PARAMETER': slicingParams.get('smoothing_parameter', 0),
-                'OUTPUT_POLYGONS': 'TEMPORARY_OUTPUT',
-                'OUTPUT_RASTER': 'TEMPORARY_OUTPUT'
+                # 'OUTPUT_RASTER': QgsProcessingUtils.generateTempFilename('raster_diagrama_elevacao.tif'),
+                'OUTPUT_RASTER': 'TEMPORARY_OUTPUT',
+                'OUTPUT_JSON': QgsProcessingUtils.generateTempFilename('slicingDict.json')
             },
             context=QgsProcessingContext(),
-            feedback=QgsProcessingFeedback()
-        )['OUTPUT_POLYGONS']
-        nClasses = max(int(feat['class']) for feat in processingOutput.getFeatures()) + 1
-        return processingOutput, nClasses
-    
+            feedback=QgsProcessingFeedback(),
+            is_child_algorithm=True
+        )
+        with open(processingOutput['OUTPUT_JSON'], 'r') as f:
+            classThresholdDict = json.load(f)
+        nClasses = len(classThresholdDict.keys())
+        return processingOutput, classThresholdDict, nClasses
+
     def createTerrainLayer(self):
         layer = QgsVectorLayer('Polygon?crs=EPSG:4674', 'terrainSlicing', 'memory')
         layer.startEditing()
@@ -183,8 +195,8 @@ class ElevationDiagram(ComponentUtils,IComponent):
                 'ELEVATION_FIELD': 'cota',
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'INPUT_SCALE': self.scalesDict[scale],
-                'OUTPUT_POINTS':'TEMPORARY_OUTPUT',
-                'OUTPUT_GRID':'TEMPORARY_OUTPUT'
+                'OUTPUT_POINTS':'memory:',
+                'OUTPUT_GRID':'memory:'
             },
             context=QgsProcessingContext(),
             feedback=QgsProcessingFeedback()
@@ -207,7 +219,10 @@ class ElevationDiagram(ComponentUtils,IComponent):
         return outputPoints, outputGrid
 
     
-    def updateComposition(self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: List[QgsMapLayer], nClasses: int, scale: int, elevationSlicingLyr: QgsVectorLayer):
+    def updateComposition(
+        self, composition: QgsPrintLayout, mapExtents: QgsRectangle, layers: List[QgsMapLayer], \
+        nClasses: int, scale: int, elevationSlicingRasterLyr: QgsRasterLayer, classThresholdDict: dict
+    ):
         mapItem = composition.itemById("elevationDiagram")
         if mapItem is None:
             return
@@ -244,9 +259,9 @@ class ElevationDiagram(ComponentUtils,IComponent):
         else:
             composition.removeLayoutItem(scaleBar)
 
-        if elevationSlicingLyr is not None and nClasses > 1:
+        if elevationSlicingRasterLyr is not None and nClasses > 1:
             self.setBarClassText(composition, nClasses)
-            self.setRangeClass(composition, nClasses, elevationSlicingLyr)
+            self.setRangeClass(composition, nClasses, classThresholdDict)
 
     
     @staticmethod
@@ -334,27 +349,10 @@ class ElevationDiagram(ComponentUtils,IComponent):
             maisAltoItem.setText("Mais Alto")
             maisAltoItem.refresh()
 
-    def setRangeClass(self, composition: QgsPrintLayout, nClasses: int, elevationSlicingLyr: QgsVectorLayer):
-        rangeClassDict = {
-            feat['class']: str(feat['class_max']) for feat in elevationSlicingLyr.getFeatures()
-        }
-        maxClasseZeroItem = composition.itemById(f"maxClasse0_{nClasses}classes")
-        if maxClasseZeroItem is not None:
-            maxClasseZeroItem.setText(rangeClassDict[0])
-            maxClasseZeroItem.refresh()
-
-        if nClasses == 2:
-            return
-
-        maxClasseUmItem = composition.itemById(f"maxClasse1_{nClasses}classes")
-        if maxClasseUmItem is not None:
-            maxClasseUmItem.setText(rangeClassDict[1])
-            maxClasseUmItem.refresh()
-        
-        if nClasses == 3:
-            return
-        
-        maxClasseDoisItem = composition.itemById(f"maxClasse2_{nClasses}classes")
-        if maxClasseDoisItem is not None:
-            maxClasseDoisItem.setText(rangeClassDict[2])
-            maxClasseDoisItem.refresh()
+    def setRangeClass(self, composition: QgsPrintLayout, nClasses: int, rangeClassDict: dict):
+        for classe, (_, maxValue) in rangeClassDict.items():
+            item = composition.itemById(f"maxClasse{classe}_{nClasses}classes")
+            if item is None:
+                continue
+            item.setText(str(maxValue))
+            item.refresh()
