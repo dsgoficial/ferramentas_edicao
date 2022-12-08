@@ -22,6 +22,7 @@
 """
 
 import numpy as np
+import json
 import processing
 from osgeo import gdal
 from PyQt5.QtCore import QCoreApplication, QVariant
@@ -33,10 +34,7 @@ from qgis.core import (QgsFeature, QgsFeatureSink, QgsField, QgsFields,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterRasterLayer, QgsProcessingUtils,
-                       QgsProject, QgsVectorLayer, QgsWkbTypes)
-
-from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from DsgTools.core.GeometricTools.geometryHandler import GeometryHandler
+                       QgsProject, QgsVectorLayer, QgsWkbTypes, QgsProcessingParameterFileDestination)
 
 
 class BuildElevationDiagram(QgsProcessingAlgorithm):
@@ -48,6 +46,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
     WATER_BODIES_POLYGONS = 'WATER_BODIES_POLYGONS'
     MIN_PIXEL_GROUP_SIZE = 'MIN_PIXEL_GROUP_SIZE'
     OUTPUT_RASTER = 'OUTPUT_RASTER'
+    OUTPUT_JSON = 'OUTPUT_JSON'
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -106,12 +105,19 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT_RASTER,
-                self.tr('Output slicing')
+                self.tr('Output Elevation Diagram')
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterFileDestination(
+                self.OUTPUT_JSON,
+                self.tr('Output json'),
+                fileFilter='*.json'
             )
         )
     
     def processAlgorithm(self, parameters, context, feedback):
-        self.geometryHandler = GeometryHandler()
         inputRaster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         threshold = self.parameterAsInt(
             parameters, self.CONTOUR_INTERVAL, context)
@@ -125,6 +131,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             parameters, self.MIN_PIXEL_GROUP_SIZE, context
         )
         outputRaster = self.parameterAsOutputLayer(parameters, self.OUTPUT_RASTER, context)
+        outputJsonPath = self.parameterAsFileOutput(parameters, self.OUTPUT_JSON, context)
         multiStepFeedback = QgsProcessingMultiStepFeedback(7, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
@@ -196,8 +203,12 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             outputRaster=outputRaster
         )
 
+        with open(outputJsonPath, 'w') as f:
+            f.write(json.dumps(slicingThresholdDict))
+
         return {
             "OUTPUT_RASTER": sieveOutput,
+            "OUTPUT_JSON": outputJsonPath,
         }
 
     def findSlicingThresholdDict(self, inputRaster):
@@ -393,7 +404,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         return BuildElevationDiagram()
 
     def name(self):
-        return 'BuildElevationDiagram'
+        return 'buildelevationdiagram'
 
     def displayName(self):
         return self.tr('Constrói diagrama de elevação')
