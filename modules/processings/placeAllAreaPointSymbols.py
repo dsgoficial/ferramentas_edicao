@@ -142,9 +142,6 @@ class PlaceAllAreaPointSymbols(QgsProcessingAlgorithm):
             {
                 'INPUT': inputAreaBuildingsLyr,
                 'ONLY_SELECTED': onlySelected,
-                'INPUT_VISIBLE_FIELD': 'visivel',
-                'HIDE_FEATS': hideFeats,
-                'SCALE': scaleIdx,
                 'INPUT_SYMBOL_LAYER': simbAreaLayer,
             },
             feedback=multiStepFeedback,
