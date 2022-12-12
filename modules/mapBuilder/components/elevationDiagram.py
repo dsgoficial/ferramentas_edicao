@@ -4,6 +4,7 @@ import processing
 from pathlib import Path
 from typing import List
 import numpy as np
+from uuid import uuid4
 from osgeo import gdal
 
 from PyQt5.QtGui import QFont, QColor
@@ -155,13 +156,13 @@ class ElevationDiagram(ComponentUtils,IComponent):
             "ferramentasedicao:buildelevationdiagram",
             {
                 'INPUT': raster_mde,
-                'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
+                'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 1),
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
                 'WATER_BODIES_POLYGONS': waterBodiesLyr,
-                # 'OUTPUT_RASTER': QgsProcessingUtils.generateTempFilename('raster_diagrama_elevacao.tif'),
-                'OUTPUT_RASTER': 'TEMPORARY_OUTPUT',
-                'OUTPUT_JSON': QgsProcessingUtils.generateTempFilename('slicingDict.json')
+                'OUTPUT_RASTER': QgsProcessingUtils.generateTempFilename(f'raster_diagrama_elevacao_{str(uuid4())}.tif'),
+                # 'OUTPUT_RASTER': 'TEMPORARY_OUTPUT',
+                'OUTPUT_JSON': QgsProcessingUtils.generateTempFilename(f'slicingDict_{str(uuid4())}.json')
             },
             context=QgsProcessingContext(),
             feedback=QgsProcessingFeedback(),
