@@ -91,13 +91,13 @@ class ElevationDiagram(ComponentUtils,IComponent):
     def getElevationSlicing(self, data, geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr):
         tag_mde_elevacao = data.get('mde_diagrama_elevacao', None)
         if tag_mde_elevacao is None:
-            return None, 1
+            return None, None, None, 1
         raster_mde_path = tag_mde_elevacao.get('caminho_mde', None)
         if raster_mde_path is None:
-            return None, 1
+            return None, None, None, 1
         raster_mde = self.createLayerRaster(rasterPath=raster_mde_path)
         if raster_mde is None:
-            return None, 1
+            return None, None, None, 1
         epsg = tag_mde_elevacao.get('epsg', None)
         if epsg is not None:
             epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
