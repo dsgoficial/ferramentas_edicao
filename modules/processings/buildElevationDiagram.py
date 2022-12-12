@@ -201,8 +201,8 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         numberOfElevationBands = self.getNumberOfElevationBands(maxValue - minValue)
         areaRatioList = self.getAreaRatioList(numberOfElevationBands)
         uniqueValues, uniqueCount = np.unique(npRaster_without_nodata, return_counts=True)
-        cumulativePercentage = np.cumsum(uniqueCount) / (np.prod(npRaster_without_nodata.shape) - nodataRasterPixelCount)
-        areaPercentageValues = uniqueCount / (np.prod(npRaster_without_nodata.shape) - nodataRasterPixelCount)
+        cumulativePercentage = np.cumsum(uniqueCount) / (npRaster.shape[0] * npRaster.shape[1] - nodataRasterPixelCount)
+        areaPercentageValues = uniqueCount / (npRaster.shape[0] * npRaster.shape[1] - nodataRasterPixelCount)
         if any(areaPercentageValues >= 0.48) and numberOfElevationBands > 2:
             """
             The MTM spec states that if there is an elevation slice that covers more than
