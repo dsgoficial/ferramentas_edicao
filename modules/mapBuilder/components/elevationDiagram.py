@@ -110,7 +110,6 @@ class ElevationDiagram(ComponentUtils,IComponent):
         )
         if nClasses == 1:
             slicingParams.update({
-                "min_pixel_group_size": 1,
                 "contour_interval": 1,
             })
             processingOutput, classThresholdDict, nClasses = self.getTerrainSlicingFromProcessing(
@@ -156,11 +155,10 @@ class ElevationDiagram(ComponentUtils,IComponent):
             "ferramentasedicao:buildelevationdiagram",
             {
                 'INPUT': raster_mde,
-                'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 1),
+                'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
                 'WATER_BODIES_POLYGONS': waterBodiesLyr,
-                'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 10),
                 # 'OUTPUT_RASTER': QgsProcessingUtils.generateTempFilename('raster_diagrama_elevacao.tif'),
                 'OUTPUT_RASTER': 'TEMPORARY_OUTPUT',
                 'OUTPUT_JSON': QgsProcessingUtils.generateTempFilename('slicingDict.json')

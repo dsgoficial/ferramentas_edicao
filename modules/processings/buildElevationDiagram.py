@@ -44,7 +44,6 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
     GEOGRAPHIC_BOUNDARY = 'GEOGRAPHIC_BOUNDARY'
     AREA_WITHOUT_INFORMATION_POLYGONS = 'AREA_WITHOUT_INFORMATION_POLYGONS'
     WATER_BODIES_POLYGONS = 'WATER_BODIES_POLYGONS'
-    MIN_PIXEL_GROUP_SIZE = 'MIN_PIXEL_GROUP_SIZE'
     OUTPUT_RASTER = 'OUTPUT_RASTER'
     OUTPUT_JSON = 'OUTPUT_JSON'
 
@@ -93,16 +92,6 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterNumber(
-                self.MIN_PIXEL_GROUP_SIZE,
-                self.tr('Minimum pixel group size'), 
-                type=QgsProcessingParameterNumber.Integer, 
-                minValue=0,
-                defaultValue=100
-            )
-        )
-
-        self.addParameter(
             QgsProcessingParameterRasterDestination(
                 self.OUTPUT_RASTER,
                 self.tr('Output Elevation Diagram')
@@ -127,12 +116,9 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             parameters, self.AREA_WITHOUT_INFORMATION_POLYGONS, context)
         waterBodiesSource = self.parameterAsSource(
             parameters, self.WATER_BODIES_POLYGONS, context)
-        minPixelGroupSize = self.parameterAsInt(
-            parameters, self.MIN_PIXEL_GROUP_SIZE, context
-        )
         outputRaster = self.parameterAsOutputLayer(parameters, self.OUTPUT_RASTER, context)
         outputJsonPath = self.parameterAsFileOutput(parameters, self.OUTPUT_JSON, context)
-        multiStepFeedback = QgsProcessingMultiStepFeedback(7, feedback)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
 
@@ -180,49 +166,43 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
-        slicingThresholdDict = self.findSlicingThresholdDict(slicedDEM)
-        expression = '\n'.join(
-            [
-                f"{a} thru {b} = {i}" for i, (a, b) in slicingThresholdDict.items()
-            ]
-        )
-        currentStep += 1
+        slicingThresholdDict, npRaster, ds = self.findSlicingThresholdDict(slicedDEM)
 
-        multiStepFeedback.setCurrentStep(currentStep)
-        classifiedRaster = self.runGrassReclass(
-            slicedDEM, expression, context=context, feedback=multiStepFeedback
-        )
+        self.writeOutputRaster(outputRaster, npRaster, ds)
+        
         currentStep += 1
-
-        multiStepFeedback.setCurrentStep(currentStep)
-        sieveOutput = self.runSieve(
-            classifiedRaster,
-            threshold=minPixelGroupSize,
-            context=context,
-            feedback=multiStepFeedback,
-            outputRaster=outputRaster
-        )
 
         with open(outputJsonPath, 'w') as f:
             f.write(json.dumps(slicingThresholdDict))
 
         return {
-            "OUTPUT_RASTER": sieveOutput,
+            "OUTPUT_RASTER": outputRaster,
             "OUTPUT_JSON": outputJsonPath,
         }
+
+    def writeOutputRaster(self, outputRaster, npRaster, ds):
+        driver = gdal.GetDriverByName("GTiff")
+        out_ds = driver.Create(outputRaster, npRaster.shape[1], npRaster.shape[0], 1, gdal.GDT_Int32)
+        out_ds.SetProjection(ds.GetProjection())
+        out_ds.SetGeoTransform(ds.GetGeoTransform())
+        out_ds.GetRasterBand(1).SetNoDataValue(-9999)
+        band = out_ds.GetRasterBand(1)
+        band.WriteArray(npRaster)
+        band.FlushCache()
+        band.ComputeStatistics(False)
 
     def findSlicingThresholdDict(self, inputRaster):
         ds = gdal.Open(inputRaster)
         npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
-        npRaster = npRaster[~np.isnan(npRaster)] # removes nodata values
+        npRaster_without_nodata = npRaster[~np.isnan(npRaster)] # removes nodata values
         nodataRasterPixelCount = np.count_nonzero(np.isnan(npRaster))
-        minValue = np.amin(npRaster)
-        maxValue = np.amax(npRaster)
+        minValue = np.amin(npRaster_without_nodata)
+        maxValue = np.amax(npRaster_without_nodata)
         numberOfElevationBands = self.getNumberOfElevationBands(maxValue - minValue)
         areaRatioList = self.getAreaRatioList(numberOfElevationBands)
-        uniqueValues, uniqueCount = np.unique(npRaster, return_counts=True)
-        cumulativePercentage = np.cumsum(uniqueCount) / np.prod(npRaster.shape)
-        areaPercentageValues = uniqueCount / (np.prod(npRaster.shape) - nodataRasterPixelCount)
+        uniqueValues, uniqueCount = np.unique(npRaster_without_nodata, return_counts=True)
+        cumulativePercentage = np.cumsum(uniqueCount) / (np.prod(npRaster_without_nodata.shape) - nodataRasterPixelCount)
+        areaPercentageValues = uniqueCount / (np.prod(npRaster_without_nodata.shape) - nodataRasterPixelCount)
         if any(areaPercentageValues >= 0.48) and numberOfElevationBands > 2:
             """
             The MTM spec states that if there is an elevation slice that covers more than
@@ -230,39 +210,47 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             """
             idx = np.argmax(areaPercentageValues >= 0.5)
             if idx == 0:
-                return {
+                classDict = {
                     0: (int(uniqueValues[0]), int(uniqueValues[1])),
                     1: (int(uniqueValues[1]), int(uniqueValues[-1])),
-                }
+                } 
             elif idx == len(areaPercentageValues):
-                return {
+                classDict = {
                     0: (int(uniqueValues[0]), int(uniqueValues[-2])),
                     1: (int(uniqueValues[-2]), int(uniqueValues[-1])),
                 }
             else:
-                return {
+                classDict = {
                     0: (int(uniqueValues[0]), int(uniqueValues[idx])),
                     1: (int(uniqueValues[idx]), int(uniqueValues[idx+1])),
                 }
         
-        if numberOfElevationBands == 2 and np.argmax(areaPercentageValues >= 0.5) == 0:
-            return {
+        elif numberOfElevationBands == 2 and np.argmax(areaPercentageValues >= 0.5) == 0:
+            classDict = {
                     0: (int(uniqueValues[0]), int(uniqueValues[1])),
                     1: (int(uniqueValues[1]), int(uniqueValues[-1])),
                 }
+        else:
+            classThresholds = list(uniqueValues[
+                    np.searchsorted(
+                        cumulativePercentage,
+                        np.cumsum(areaRatioList)
+                    )
+                ]
+            )
+            lowerBounds = [minValue]+classThresholds if minValue not in classThresholds else classThresholds
+            classDict = {
+                i: (int(a), int(b)) for i, (a, b) in enumerate(zip(lowerBounds, classThresholds))
+            }
+        outputRaster = np.zeros_like(npRaster, dtype=np.int)
+        outputRaster[np.isnan(npRaster)] = -9999
+        for i, (minB, maxB) in classDict.items():
+            if int(i) == 0:
+                outputRaster[ np.where( (minB <= npRaster) & (npRaster <= maxB) )] = int(i)
+            else:
+                outputRaster[ np.where( (minB < npRaster) & (npRaster <= maxB) )] = int(i)
 
-        classThresholds = list(uniqueValues[
-                np.searchsorted(
-                    cumulativePercentage,
-                    np.cumsum(areaRatioList)
-                )
-            ]
-        )
-        classDict = dict()
-        lowerBounds = [minValue]+classThresholds if minValue not in classThresholds else classThresholds
-        for i, (a, b) in enumerate(zip(lowerBounds, classThresholds)):
-            classDict[i] = (int(a), int(b))
-        return classDict
+        return classDict, outputRaster, ds
 
 
     def getAreaRatioList(self, numberOfElevationBands):
