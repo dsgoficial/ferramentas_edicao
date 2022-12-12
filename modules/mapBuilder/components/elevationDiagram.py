@@ -4,6 +4,7 @@ import processing
 from pathlib import Path
 from typing import List
 import numpy as np
+from uuid import uuid4
 from osgeo import gdal
 
 from PyQt5.QtGui import QFont, QColor
@@ -91,13 +92,13 @@ class ElevationDiagram(ComponentUtils,IComponent):
     def getElevationSlicing(self, data, geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr):
         tag_mde_elevacao = data.get('mde_diagrama_elevacao', None)
         if tag_mde_elevacao is None:
-            return None, 1
+            return None, None, None, 1
         raster_mde_path = tag_mde_elevacao.get('caminho_mde', None)
         if raster_mde_path is None:
-            return None, 1
+            return None, None, None, 1
         raster_mde = self.createLayerRaster(rasterPath=raster_mde_path)
         if raster_mde is None:
-            return None, 1
+            return None, None, None, 1
         epsg = tag_mde_elevacao.get('epsg', None)
         if epsg is not None:
             epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
@@ -110,7 +111,6 @@ class ElevationDiagram(ComponentUtils,IComponent):
         )
         if nClasses == 1:
             slicingParams.update({
-                "min_pixel_group_size": 1,
                 "contour_interval": 1,
             })
             processingOutput, classThresholdDict, nClasses = self.getTerrainSlicingFromProcessing(
@@ -160,10 +160,9 @@ class ElevationDiagram(ComponentUtils,IComponent):
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
                 'WATER_BODIES_POLYGONS': waterBodiesLyr,
-                'MIN_PIXEL_GROUP_SIZE': slicingParams.get('min_pixel_group_size', 10),
-                # 'OUTPUT_RASTER': QgsProcessingUtils.generateTempFilename('raster_diagrama_elevacao.tif'),
-                'OUTPUT_RASTER': 'TEMPORARY_OUTPUT',
-                'OUTPUT_JSON': QgsProcessingUtils.generateTempFilename('slicingDict.json')
+                'OUTPUT_RASTER': QgsProcessingUtils.generateTempFilename(f'raster_diagrama_elevacao_{str(uuid4())}.tif'),
+                # 'OUTPUT_RASTER': 'TEMPORARY_OUTPUT',
+                'OUTPUT_JSON': QgsProcessingUtils.generateTempFilename(f'slicingDict_{str(uuid4())}.json')
             },
             context=QgsProcessingContext(),
             feedback=QgsProcessingFeedback(),
