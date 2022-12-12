@@ -49,17 +49,17 @@ class ElevationDiagram(ComponentUtils,IComponent):
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
         areaWithoutDataLayer = next(filter(lambda x: x.name() == 'edicao_area_sem_dados_a', layers), None)
         massaDaguaLayer = next(filter(lambda x: x.name() == 'cobter_massa_dagua_a', layers), None)
+        elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
+        generalizedPoints, outputGrid = self.getGeneralizedPoints(pointsLayer, geographicBoundsLyr, data.get('scale'))
+        layers[elevationPointsIdx] = generalizedPoints
+        layers.append(outputGrid)
         elevationSlicingRasterLyr, elevationSlicingContourRasterLyr, nClasses, classThresholdDict = self.getElevationSlicing(
             data, geographicBoundsLyr, areaWithoutDataLayer, massaDaguaLayer)
         if elevationSlicingContourRasterLyr is not None:
             layers.append(elevationSlicingContourRasterLyr)
         if elevationSlicingRasterLyr is not None:
             layers.append(elevationSlicingRasterLyr)
-        elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
 
-        generalizedPoints, outputGrid = self.getGeneralizedPoints(pointsLayer, geographicBoundsLyr, data.get('scale'))
-        layers[elevationPointsIdx] = generalizedPoints
-        layers.append(outputGrid)
         
         if massaDaguaLayer is not None:
             massaDaguaLayer.loadNamedStyle(
@@ -156,7 +156,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
             "ferramentasedicao:buildelevationdiagram",
             {
                 'INPUT': raster_mde,
-                'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 1),
+                'CONTOUR_INTERVAL': slicingParams.get('contour_interval', 10),
                 'GEOGRAPHIC_BOUNDARY': geographicBoundsLyr,
                 'AREA_WITHOUT_INFORMATION_POLYGONS': areaWithoutDataLyr,
                 'WATER_BODIES_POLYGONS': waterBodiesLyr,
