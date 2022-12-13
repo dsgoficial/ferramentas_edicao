@@ -134,17 +134,17 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         
         currentStep += 1
 
-        multiStepFeedback.setCurrentStep(currentStep)
-        geographicBounds = self.overlayPolygonLayer(
-            inputLyr=geographicBounds,
-            polygonLyr=parameters[self.WATER_BODIES_POLYGONS],
-            crs=inputRaster.crs() if inputRaster is not None else QgsProject.instance().crs(),
-            context=context,
-            feedback=multiStepFeedback,
-            operator=2
-        ) if waterBodiesSource is not None and \
-            waterBodiesSource.featureCount() > 0 else geographicBounds
-        currentStep += 1
+        # multiStepFeedback.setCurrentStep(currentStep)
+        # geographicBounds = self.overlayPolygonLayer(
+        #     inputLyr=geographicBounds,
+        #     polygonLyr=parameters[self.WATER_BODIES_POLYGONS],
+        #     crs=inputRaster.crs() if inputRaster is not None else QgsProject.instance().crs(),
+        #     context=context,
+        #     feedback=multiStepFeedback,
+        #     operator=2
+        # ) if waterBodiesSource is not None and \
+        #     waterBodiesSource.featureCount() > 0 else geographicBounds
+        # currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
         clippedRaster = self.runClipRasterLayer(
@@ -226,12 +226,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                     0: (int(uniqueValues[0]), int(uniqueValues[idx])),
                     1: (int(uniqueValues[idx]), int(uniqueValues[idx+1])),
                 }
-        
-        elif numberOfElevationBands == 2 and np.argmax(areaPercentageValues >= 0.5) == 0:
-            classDict = {
-                    0: (int(uniqueValues[0]), int(uniqueValues[1])),
-                    1: (int(uniqueValues[1]), int(uniqueValues[-1])),
-                }
+    
         else:
             classThresholds = list(uniqueValues[
                     np.searchsorted(
