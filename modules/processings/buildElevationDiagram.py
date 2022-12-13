@@ -134,17 +134,17 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         
         currentStep += 1
 
-        # multiStepFeedback.setCurrentStep(currentStep)
-        # geographicBounds = self.overlayPolygonLayer(
-        #     inputLyr=geographicBounds,
-        #     polygonLyr=parameters[self.WATER_BODIES_POLYGONS],
-        #     crs=inputRaster.crs() if inputRaster is not None else QgsProject.instance().crs(),
-        #     context=context,
-        #     feedback=multiStepFeedback,
-        #     operator=2
-        # ) if waterBodiesSource is not None and \
-        #     waterBodiesSource.featureCount() > 0 else geographicBounds
-        # currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        geographicBounds = self.overlayPolygonLayer(
+            inputLyr=geographicBounds,
+            polygonLyr=parameters[self.WATER_BODIES_POLYGONS],
+            crs=inputRaster.crs() if inputRaster is not None else QgsProject.instance().crs(),
+            context=context,
+            feedback=multiStepFeedback,
+            operator=2
+        ) if waterBodiesSource is not None and \
+            waterBodiesSource.featureCount() > 0 else geographicBounds
+        currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
         clippedRaster = self.runClipRasterLayer(
@@ -155,15 +155,6 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             noData=-9999
         )
         currentStep += 1
-
-        # multiStepFeedback.setCurrentStep(currentStep)
-        # slicedDEM = self.runGrassMapCalcSimple(
-        #     inputA=clippedRaster,
-        #     expression=f'{threshold} * floor(A / {threshold})',
-        #     context=context,
-        #     feedback=multiStepFeedback
-        # )
-        # currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
         slicingThresholdDict, npRaster, ds = self.findSlicingThresholdDict(clippedRaster, threshold)
