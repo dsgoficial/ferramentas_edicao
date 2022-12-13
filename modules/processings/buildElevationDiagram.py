@@ -156,17 +156,17 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         )
         currentStep += 1
 
-        multiStepFeedback.setCurrentStep(currentStep)
-        slicedDEM = self.runGrassMapCalcSimple(
-            inputA=clippedRaster,
-            expression=f'{threshold} * floor(A / {threshold})',
-            context=context,
-            feedback=multiStepFeedback
-        )
-        currentStep += 1
+        # multiStepFeedback.setCurrentStep(currentStep)
+        # slicedDEM = self.runGrassMapCalcSimple(
+        #     inputA=clippedRaster,
+        #     expression=f'{threshold} * floor(A / {threshold})',
+        #     context=context,
+        #     feedback=multiStepFeedback
+        # )
+        # currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
-        slicingThresholdDict, npRaster, ds = self.findSlicingThresholdDict(slicedDEM)
+        slicingThresholdDict, npRaster, ds = self.findSlicingThresholdDict(clippedRaster, threshold)
 
         self.writeOutputRaster(outputRaster, npRaster, ds)
         
@@ -191,10 +191,12 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         band.FlushCache()
         band.ComputeStatistics(False)
 
-    def findSlicingThresholdDict(self, inputRaster):
+    def findSlicingThresholdDict(self, inputRaster, threshold):
         ds = gdal.Open(inputRaster)
         npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
+        npRaster[npRaster < 0] = np.nan
         npRaster_without_nodata = npRaster[~np.isnan(npRaster)] # removes nodata values
+        npRaster_without_nodata = threshold * np.floor(npRaster_without_nodata / threshold).astype(int)
         nodataRasterPixelCount = np.count_nonzero(np.isnan(npRaster))
         minValue = np.amin(npRaster_without_nodata)
         maxValue = np.amax(npRaster_without_nodata)
@@ -236,7 +238,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                         cumulativePercentage,
                         np.cumsum(areaRatioList)
                     )
-                ]
+                ] + threshold
             )
             lowerBounds = [minValue]+classThresholds if minValue not in classThresholds else classThresholds
             classDict = {

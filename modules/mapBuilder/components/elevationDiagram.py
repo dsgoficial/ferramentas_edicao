@@ -49,6 +49,19 @@ class ElevationDiagram(ComponentUtils,IComponent):
         geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
         areaWithoutDataLayer = next(filter(lambda x: x.name() == 'edicao_area_sem_dados_a', layers), None)
         massaDaguaLayer = next(filter(lambda x: x.name() == 'cobter_massa_dagua_a', layers), None)
+        if massaDaguaLayer is not None:
+            massaDaguaLayer.loadNamedStyle(
+                str(self.stylesFolder / 'cobter_massa_dagua_a.qml'),
+                True
+            )
+            massaDaguaLayer.triggerRepaint()
+        drenagemLayer = next(filter(lambda x: x.name() == 'elemnat_trecho_drenagem_l', layers), None)
+        if drenagemLayer is not None:
+            drenagemLayer.loadNamedStyle(
+                str(self.stylesFolder / 'elemnat_trecho_drenagem_l.qml'),
+                True
+            )
+            drenagemLayer.triggerRepaint()
         elevationPointsIdx, pointsLayer = next(filter(lambda x: x[1].name() == 'elemnat_ponto_cotado_p', enumerate(layers)))
         generalizedPoints, outputGrid = self.getGeneralizedPoints(pointsLayer, geographicBoundsLyr, data.get('scale'))
         layers[elevationPointsIdx] = generalizedPoints
@@ -59,14 +72,6 @@ class ElevationDiagram(ComponentUtils,IComponent):
             layers.append(elevationSlicingContourRasterLyr)
         if elevationSlicingRasterLyr is not None:
             layers.append(elevationSlicingRasterLyr)
-
-        
-        if massaDaguaLayer is not None:
-            massaDaguaLayer.loadNamedStyle(
-                str(self.stylesFolder / 'cobter_massa_dagua_a.qml'),
-                True
-            )
-            massaDaguaLayer.triggerRepaint()
 
         self.updateComposition(
             composition,
