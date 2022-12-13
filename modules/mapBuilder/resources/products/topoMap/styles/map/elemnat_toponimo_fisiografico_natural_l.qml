@@ -22,7 +22,7 @@
             <Option value="MM" name="dash_pattern_offset_unit" type="QString"/>
             <Option value="0" name="draw_inside_polygon" type="QString"/>
             <Option value="bevel" name="joinstyle" type="QString"/>
-            <Option value="219,30,42,255" name="line_color" type="QString"/>
+            <Option value="255,255,255,255" name="line_color" type="QString"/>
             <Option value="solid" name="line_style" type="QString"/>
             <Option value="1.06" name="line_width" type="QString"/>
             <Option value="MM" name="line_width_unit" type="QString"/>
@@ -50,7 +50,7 @@
           <prop k="dash_pattern_offset_unit" v="MM"/>
           <prop k="draw_inside_polygon" v="0"/>
           <prop k="joinstyle" v="bevel"/>
-          <prop k="line_color" v="219,30,42,255"/>
+          <prop k="line_color" v="255,255,255,255"/>
           <prop k="line_style" v="solid"/>
           <prop k="line_width" v="1.06"/>
           <prop k="line_width_unit" v="MM"/>
@@ -81,8 +81,8 @@
     <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{03154932-4b4f-4c72-b617-8b253b403c6e}">
-      <rule description="Serra" key="{ef517d51-19ce-497d-94fa-95b7bb5d71ee}" filter="&quot;tipo&quot; = 1">
+    <rules key="{86e16316-24c4-470e-806d-d90da337a47e}">
+      <rule description="Serra" key="{ea8b8de0-3ea9-4179-8ca5-8e624779a85b}" filter="&quot;tipo&quot; = 1">
         <settings calloutType="simple">
           <text-style fontLetterSpacing="5" previewBkgrdColor="255,255,255,255" fontWeight="50" fontSizeUnit="Point" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontStrikeout="0" multilineHeight="1" textOpacity="1" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" fontSize="12" fontFamily="Noto Sans" fontUnderline="0" blendMode="0" namedStyle="Italic" useSubstitutions="0" textColor="75,75,75,255" fontWordSpacing="5" capitalization="1" isExpression="0" allowHtml="0">
             <families/>
@@ -277,7 +277,7 @@
           </callout>
         </settings>
       </rule>
-      <rule description="Morro" key="{be1ea339-31ad-42e4-b68f-a069cbff0871}" filter="&quot;tipo&quot; =2">
+      <rule description="Morro" key="{3051af64-4c80-4138-b3ba-8df29352a5ea}" filter="&quot;tipo&quot; =2">
         <settings calloutType="simple">
           <text-style fontLetterSpacing="5" previewBkgrdColor="255,255,255,255" fontWeight="25" fontSizeUnit="Point" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontStrikeout="0" multilineHeight="1" textOpacity="1" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" fontSize="7" fontFamily="Noto Sans" fontUnderline="0" blendMode="0" namedStyle="Condensed Light Italic" useSubstitutions="0" textColor="75,75,75,255" fontWordSpacing="5" capitalization="0" isExpression="0" allowHtml="0">
             <families/>
@@ -467,7 +467,7 @@
           </callout>
         </settings>
       </rule>
-      <rule description="Praia" key="{11795f8b-8264-4cef-a141-a760bb651b47}" filter="&quot;tipo&quot; = 12">
+      <rule description="Praia" key="{6ac241ba-afb9-4a18-b358-f2e2b53ac00a}" filter="&quot;tipo&quot; = 12">
         <settings calloutType="simple">
           <text-style fontLetterSpacing="0" previewBkgrdColor="255,255,255,255" fontWeight="50" fontSizeUnit="Point" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontStrikeout="0" multilineHeight="0.80000000000000004" textOpacity="1" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" fontSize="6" fontFamily="Noto Sans" fontUnderline="0" blendMode="0" namedStyle="Condensed Italic" useSubstitutions="0" textColor="75,75,75,255" fontWordSpacing="0" capitalization="0" isExpression="0" allowHtml="0">
             <families/>
