@@ -61,7 +61,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
 
     @staticmethod
     def checkFeature(feat):
-        return (int(feat.attribute('tipo')) in (3,4,5,6,7,11)) and feat.attribute('nome')
+        return (int(feat.attribute('tipo')) in (3,4,5,6,7,9,11)) and feat.attribute('nome')
 
     def createFeature(self, feat):
         toInsert = QgsFeature(self.dstLyr.fields())

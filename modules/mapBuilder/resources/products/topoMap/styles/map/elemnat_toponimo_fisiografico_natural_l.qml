@@ -81,8 +81,8 @@
     <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{84f7dbce-249a-4037-ad83-b93303df905d}">
-      <rule description="Serra" key="{d80db35b-859c-40ea-96d7-4c0a2160903a}" filter="&quot;tipo&quot; = 1">
+    <rules key="{03154932-4b4f-4c72-b617-8b253b403c6e}">
+      <rule description="Serra" key="{ef517d51-19ce-497d-94fa-95b7bb5d71ee}" filter="&quot;tipo&quot; = 1">
         <settings calloutType="simple">
           <text-style fontLetterSpacing="5" previewBkgrdColor="255,255,255,255" fontWeight="50" fontSizeUnit="Point" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontStrikeout="0" multilineHeight="1" textOpacity="1" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" fontSize="12" fontFamily="Noto Sans" fontUnderline="0" blendMode="0" namedStyle="Italic" useSubstitutions="0" textColor="75,75,75,255" fontWordSpacing="5" capitalization="1" isExpression="0" allowHtml="0">
             <families/>
@@ -277,7 +277,7 @@
           </callout>
         </settings>
       </rule>
-      <rule description="Morro" key="{a8eb541b-3702-4dc2-a628-3fd6d26fdc5b}" filter="&quot;tipo&quot; =2">
+      <rule description="Morro" key="{be1ea339-31ad-42e4-b68f-a069cbff0871}" filter="&quot;tipo&quot; =2">
         <settings calloutType="simple">
           <text-style fontLetterSpacing="5" previewBkgrdColor="255,255,255,255" fontWeight="25" fontSizeUnit="Point" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontStrikeout="0" multilineHeight="1" textOpacity="1" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" fontSize="7" fontFamily="Noto Sans" fontUnderline="0" blendMode="0" namedStyle="Condensed Light Italic" useSubstitutions="0" textColor="75,75,75,255" fontWordSpacing="5" capitalization="0" isExpression="0" allowHtml="0">
             <families/>
@@ -467,9 +467,9 @@
           </callout>
         </settings>
       </rule>
-      <rule description="Praia" key="{9c8126a6-5aec-4008-9508-aae91b68e912}" filter="&quot;tipo&quot; = 12">
+      <rule description="Praia" key="{11795f8b-8264-4cef-a141-a760bb651b47}" filter="&quot;tipo&quot; = 12">
         <settings calloutType="simple">
-          <text-style fontLetterSpacing="0" previewBkgrdColor="255,255,255,255" fontWeight="50" fontSizeUnit="Point" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontStrikeout="0" multilineHeight="1" textOpacity="1" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" fontSize="6" fontFamily="Noto Sans" fontUnderline="0" blendMode="0" namedStyle="Condensed Italic" useSubstitutions="0" textColor="75,75,75,255" fontWordSpacing="0" capitalization="0" isExpression="0" allowHtml="0">
+          <text-style fontLetterSpacing="0" previewBkgrdColor="255,255,255,255" fontWeight="50" fontSizeUnit="Point" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontItalic="1" fontStrikeout="0" multilineHeight="0.80000000000000004" textOpacity="1" legendString="Aa" fieldName="texto_edicao" textOrientation="horizontal" fontSize="6" fontFamily="Noto Sans" fontUnderline="0" blendMode="0" namedStyle="Condensed Italic" useSubstitutions="0" textColor="75,75,75,255" fontWordSpacing="0" capitalization="0" isExpression="0" allowHtml="0">
             <families/>
             <text-buffer bufferNoFill="1" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="Point" bufferBlendMode="0" bufferSize="1" bufferColor="0,0,0,255" bufferJoinStyle="128"/>
             <text-mask maskSize="0.20000000000000001" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskOpacity="1" maskType="0" maskEnabled="1" maskJoinStyle="128" maskedSymbolLayers=""/>
@@ -585,7 +585,7 @@
             </dd_properties>
             <substitutions/>
           </text-style>
-          <text-format multilineAlign="0" formatNumbers="0" wrapChar="" rightDirectionSymbol=">" placeDirectionSymbol="0" autoWrapLength="0" useMaxLineLengthForAutoWrap="1" decimals="3" plussign="0" reverseDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;"/>
+          <text-format multilineAlign="0" formatNumbers="0" wrapChar="|" rightDirectionSymbol=">" placeDirectionSymbol="0" autoWrapLength="0" useMaxLineLengthForAutoWrap="1" decimals="3" plussign="0" reverseDirectionSymbol="0" addDirectionSymbol="0" leftDirectionSymbol="&lt;"/>
           <placement labelOffsetMapUnitScale="3x:0,0,0,0,0,0" repeatDistance="0" maxCurvedCharAngleIn="30" maxCurvedCharAngleOut="-30" placementFlags="9" rotationAngle="0" overrunDistanceMapUnitScale="3x:0,0,0,0,0,0" repeatDistanceUnits="MM" dist="0" lineAnchorClipping="0" geometryGenerator="with_variable(&#xd;&#xd;&#xa; 'moldura',&#xd;&#xd;&#xa; geometry(get_feature('aux_label', 'id', '1')),&#xd;&#xd;&#xa;CASE WHEN @moldura is not null &#xd;&#xd;&#xa;THEN &#xd;&#xd;&#xa;intersection($geometry,  @moldura) &#xd;&#xd;&#xa;ELSE&#xd;&#xd;&#xa;$geometry&#xd;&#xd;&#xa;END&#xd;&#xd;&#xa;)" polygonPlacementFlags="2" predefinedPositionOrder="TR,TL,BR,BL,R,L,TSR,BSR" quadOffset="4" centroidInside="0" geometryGeneratorType="LineGeometry" distUnits="MM" centroidWhole="0" overrunDistanceUnit="MM" geometryGeneratorEnabled="1" preserveRotation="0" rotationUnit="AngleDegrees" priority="6" offsetUnits="MM" overrunDistance="0" yOffset="0" repeatDistanceMapUnitScale="3x:0,0,0,0,0,0" layerType="LineGeometry" offsetType="0" placement="4" lineAnchorPercent="0.5" lineAnchorType="0" xOffset="0" distMapUnitScale="3x:0,0,0,0,0,0" fitInPolygonOnly="0"/>
           <rendering minFeatureSize="0" scaleVisibility="0" obstacleType="1" upsidedownLabels="0" fontMaxPixelSize="10000" obstacleFactor="1" maxNumLabels="2000" scaleMax="0" labelPerPart="0" fontMinPixelSize="3" obstacle="0" unplacedVisibility="0" limitNumLabels="0" zIndex="0" drawLabels="1" mergeLines="0" displayAll="0" scaleMin="0" fontLimitPixelSize="0"/>
           <dd_properties>
