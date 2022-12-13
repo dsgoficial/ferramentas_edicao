@@ -6,7 +6,8 @@ from qgis.core import (
                         QgsProcessingAlgorithm,
                         QgsProcessingParameterVectorLayer,
                         QgsFeatureRequest,
-                        QgsProcessingMultiStepFeedback
+                        QgsProcessingMultiStepFeedback,
+                        QgsProcessingParameterBoolean
                     )
 from qgis import core
 
@@ -17,6 +18,8 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
     INPUT_LAYER_L = 'INPUT_LAYER_L'
     INPUT_FIELD_LAYER_L = 'INPUT_FIELD_LAYER_L'
     INPUT_HIGHWAY = 'INPUT_HIGHWAY'
+    ONLY_SELECTED_P = 'ONLY_SELECTED_P'
+    ONLY_SELECTED_L = 'ONLY_SELECTED_L'
     
     OUTPUT = 'OUTPUT'
 
@@ -27,6 +30,12 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 self.tr('Selecionar camada de elemento viário (Ponto)'),
                 [QgsProcessing.TypeVectorPoint],
                 defaultValue='infra_elemento_viario_p'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.ONLY_SELECTED_P,
+                self.tr('Executar somente nas feições ponto selecionadas')
             )
         )
         self.addParameter(
@@ -46,6 +55,12 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 self.tr('Selecionar camada de elemento viário (Linha)'),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue='infra_elemento_viario_l'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.ONLY_SELECTED_L,
+                self.tr('Executar somente nas feições linha selecionadas')
             )
         )
         self.addParameter(
@@ -70,15 +85,18 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):      
         pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_P, context)
+        onlySelectedP = self.parameterAsBool(parameters, self.ONLY_SELECTED_P, context)
         pointWidthField = self.parameterAsFields(parameters, self.INPUT_FIELD_LAYER_P, context)[0]
         lineLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
+        onlySelectedL = self.parameterAsBool(parameters, self.ONLY_SELECTED_L, context)
         lineWidthField = self.parameterAsFields(parameters, self.INPUT_FIELD_LAYER_L, context)[0]
         highwayLayer = self.parameterAsVectorLayer(parameters, self.INPUT_HIGHWAY, context)
         
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
         self.setWidthFieldOnLayer( 
-            pointLayer, 
+            pointLayer,
+            onlySelectedP,
             pointWidthField, 
             highwayLayer, 
             [201,202,203,204,501,302],
@@ -86,7 +104,8 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         )
         multiStepFeedback.setCurrentStep(1)
         self.setWidthFieldOnLayer( 
-            lineLayer, 
+            lineLayer,
+            onlySelectedL,
             lineWidthField, 
             highwayLayer, 
             [201, 202, 203, 204, 302],
@@ -94,12 +113,13 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         )
         return {self.OUTPUT: ''}
 
-    def setWidthFieldOnLayer(self, layer, widthField, highwayLayer, filterType, feedback):
-        nFeats = layer.featureCount()
+    def setWidthFieldOnLayer(self, layer, onlySelected, widthField, highwayLayer, filterType, feedback):
+        nFeats = layer.featureCount() if not onlySelected else layer.selectedFeatureCount()
+        iterator = layer.getFeatures() if not onlySelected else layer.getSelectedFeatures()
         if nFeats == 0:
             return
         stepSize = 100/nFeats
-        for current, layerFeature in enumerate(layer.getFeatures()):
+        for current, layerFeature in enumerate(iterator):
             if feedback.isCanceled():
                 break
             if not( layerFeature['tipo'] in filterType ):
@@ -117,8 +137,9 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 newWidth = self.getSymbolWidth( highwayFeature )
                 if newWidth > width:
                     width = newWidth
-            layerFeature[ widthField ] = width
-            self.updateLayerFeature( layer, layerFeature)
+            if width != 0 and width != layerFeature[ widthField ]:
+                layerFeature[ widthField ] = width
+                self.updateLayerFeature( layer, layerFeature)
             feedback.setProgress(current * stepSize)
 
     def updateLayerFeature(self, layer, feature):
