@@ -15,7 +15,7 @@ from .elevationPointGeneralization import ElevationPointsGeneralization
 from .generalizeBuildings import GeneralizeBuildings
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
 from .insertEnergyTower import InsertEnergyTower
-from .insertIdentificadorRodovia import InsertIdentificadorRodovia
+from .insertRoadMarker import InsertRoadMarker
 from .loadMasks import LoadMasks
 from .makeGrid import MakeGrid
 from .mergeHighway import MergeHighway
@@ -47,7 +47,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PrepareOrtho())
         self.addAlgorithm(PrepareTopo())
         self.addAlgorithm(InsertEnergyTower())
-        self.addAlgorithm(InsertIdentificadorRodovia())
+        self.addAlgorithm(InsertRoadMarker())
         self.addAlgorithm(HighestSpotOnTheFrame())
         self.addAlgorithm(MergeLinesByAngle())
         self.addAlgorithm(LoadMasks())

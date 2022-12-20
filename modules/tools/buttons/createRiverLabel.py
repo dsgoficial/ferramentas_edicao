@@ -84,7 +84,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         else:
             toInsert.setAttribute('cor', '#00a0df')
             self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
-        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         labelSize = self.getLabelFontSizeA(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
@@ -108,7 +107,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         else:
             toInsert.setAttribute('cor', '#00a0df')
             self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
-        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         labelSize = self.getLabelFontSizeB(feat)
         toInsert.setAttribute('tamanho_txt', labelSize)
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
