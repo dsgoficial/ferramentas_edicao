@@ -185,11 +185,11 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_mobilidade_urbana_l",
+            "table": "infra_via_deslocamento_l",
             "schema": "edgv"
         },
         {
-            "table": "infra_via_deslocamento_l",
+            "table": "infra_mobilidade_urbana_l",
             "schema": "edgv"
         },
         {
