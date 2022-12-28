@@ -367,7 +367,6 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         else:
             toInsert.setAttribute('cor', '#4b4b4b')
             self.displayErrorMessage('Tipo de produto inválido, cor = #4b4b4b, mesma da carta topográfica')
-        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         fontSize = 10
         toInsert.setAttribute('tamanho_txt', fontSize)
         toInsertGeom = self.getLabelGeometry(border, point, fontSize * len(labelText))
