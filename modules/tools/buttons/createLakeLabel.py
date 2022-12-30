@@ -76,7 +76,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         else:
             toInsert.setAttribute('cor', '#00a0df')
             self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
-        toInsert.setAttribute('carta_simbolizacao', self.getMapType())
+        #toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         toInsert.setAttribute('tamanho_txt', self.getLabelSize(feat))
         if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
             toInsert.setAttribute('tamanho_buffer', 1)

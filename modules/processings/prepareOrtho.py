@@ -825,7 +825,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 feat.setAttribute('jurisdicao', jurisdicao)
             # if jurisdicao:=mapping.get('jurisdicao'):
             #     feat.setAttribute('jurisdicao', jurisdicao)
-            feat.setAttribute('carta_simbolizacao', isMiniMap)
+            #feat.setAttribute('carta_simbolizacao', isMiniMap)
             layer.addFeature(feat)
         # layer.commitChanges()
 
