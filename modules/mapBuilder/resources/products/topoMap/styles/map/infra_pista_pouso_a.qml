@@ -44,7 +44,18 @@
           <data_defined_properties>
             <Option type="Map">
               <Option value="" name="name" type="QString"/>
-              <Option name="properties"/>
+              <Option name="properties" type="Map">
+                <Option name="fillColor" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="project_color('azul72-100_56-70-157_#38469D')" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
+                </Option>
+                <Option name="outlineColor" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="project_color('azul72-100_56-70-157_#38469D')" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
+                </Option>
+              </Option>
               <Option value="collection" name="type" type="QString"/>
             </Option>
           </data_defined_properties>
@@ -86,7 +97,18 @@
           <data_defined_properties>
             <Option type="Map">
               <Option value="" name="name" type="QString"/>
-              <Option name="properties"/>
+              <Option name="properties" type="Map">
+                <Option name="fillColor" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="project_color('azul72-42_121-135-200_#7987C8')" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
+                </Option>
+                <Option name="outlineColor" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="project_color('azul72-100_56-70-157_#38469D')" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
+                </Option>
+              </Option>
               <Option value="collection" name="type" type="QString"/>
             </Option>
           </data_defined_properties>
@@ -128,7 +150,18 @@
           <data_defined_properties>
             <Option type="Map">
               <Option value="" name="name" type="QString"/>
-              <Option name="properties"/>
+              <Option name="properties" type="Map">
+                <Option name="fillColor" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="project_color('azul72-12_192-199-233_#C0C7E9')" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
+                </Option>
+                <Option name="outlineColor" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="project_color('azul72-100_56-70-157_#38469D')" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
+                </Option>
+              </Option>
               <Option value="collection" name="type" type="QString"/>
             </Option>
           </data_defined_properties>
@@ -179,8 +212,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{fa44d1a6-326d-46a4-99b2-097e2e69f86f}">
-      <rule key="{964862a0-85fe-40e6-b4da-9b0f4dfe5196}" description="Pista de Pouso">
+    <rules key="{14db8308-0805-4aea-acf2-0a73c9ca80d2}">
+      <rule key="{cd6ae1b5-c933-4e44-9378-92729060491f}" description="Pista de Pouso">
         <settings calloutType="simple">
           <text-style multilineHeight="0.80000000000000004" textColor="56,70,157,255" fontWordSpacing="0" namedStyle="Condensed" useSubstitutions="0" textOpacity="1" textOrientation="horizontal" fontKerning="1" fontStrikeout="0" fieldName="texto_edicao" fontFamily="Noto Sans" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" capitalization="0" fontSizeUnit="Point" blendMode="0" fontLetterSpacing="0" legendString="Aa" previewBkgrdColor="255,255,255,255" fontItalic="0" isExpression="0" fontUnderline="0" fontSize="7" allowHtml="0">
             <families/>
