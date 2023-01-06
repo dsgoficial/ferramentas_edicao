@@ -49,8 +49,8 @@
     <sizescale/>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{0626cdb9-8ef0-46a5-ad57-c884ad6adc49}">
-      <rule key="{e129b955-f50d-4cba-9168-f5dcaeb3d78c}" description="Named Location">
+    <rules key="{d02c694f-8b3f-4258-bb59-e22614b366cb}">
+      <rule key="{9c5be896-bff1-400b-8074-b4db2e9e617b}" description="Named Location">
         <settings calloutType="simple">
           <text-style multilineHeight="1" textColor="75,75,75,255" fontWordSpacing="0" namedStyle="Condensed Light" useSubstitutions="0" textOpacity="1" textOrientation="horizontal" fontKerning="1" fontStrikeout="0" fieldName="texto_edicao" fontFamily="Noto Sans" fontWeight="25" fontSizeMapUnitScale="3x:0,0,0,0,0,0" capitalization="1" fontSizeUnit="Point" blendMode="0" fontLetterSpacing="0" legendString="Aa" previewBkgrdColor="255,255,255,255" fontItalic="0" isExpression="0" fontUnderline="0" fontSize="10" allowHtml="0">
             <families/>
@@ -178,6 +178,11 @@
                 <Option name="Color" type="Map">
                   <Option value="true" name="active" type="bool"/>
                   <Option value="project_color('preto-75_75-75-75_#4B4B4B')" name="expression" type="QString"/>
+                  <Option value="3" name="type" type="int"/>
+                </Option>
+                <Option name="MultiLineAlignment" type="Map">
+                  <Option value="true" name="active" type="bool"/>
+                  <Option value="CASE &#xd;&#xa;WHEN &quot;justificativa_txt&quot; = 1 THEN 'Left'&#xd;&#xa;WHEN &quot;justificativa_txt&quot; = 2 THEN 'Center'&#xd;&#xa;WHEN &quot;justificativa_txt&quot; = 3 THEN 'Right'&#xd;&#xa;ELSE 'Left' END" name="expression" type="QString"/>
                   <Option value="3" name="type" type="int"/>
                 </Option>
                 <Option name="MultiLineWrapChar" type="Map">
