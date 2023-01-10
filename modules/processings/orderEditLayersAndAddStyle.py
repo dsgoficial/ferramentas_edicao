@@ -13,6 +13,8 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme,
                        QgsProcessingMultiStepFeedback, QgsProcessingException)
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.utils import iface
+from qgis import gui, core
 
 
 class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm): 
@@ -270,6 +272,16 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         #if feedback.isCanceled():
         #    return {self.OUTPUT: 'Cancelado'}
 
+        # Adicionar tema após aplicação dos estilos
+        themeCollection = core.QgsProject.instance().mapThemeCollection()
+        if mapType==0:
+            themeName = 'Carta Topográfica'
+        elif mapType==1:
+            themeName = 'Carta Ortoimagem'
+        root = core.QgsProject().instance().layerTreeRoot().clone()
+        model = core.QgsLayerTreeModel(root)
+        themeCollection.insert(themeName, core.QgsMapThemeCollection.createThemeFromCurrentState(root, model))
+        
         return {self.OUTPUT: ''}
 
     def setEquidistancia(self, layers, equidistancia, exibirAuxiliar, feedback):
@@ -428,7 +440,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         return OrderEditLayersAndAddStyle()
 
     def name(self):
-        return 'odereditlayersandaddstyle'
+        return 'ordereditlayersandaddstyle'
 
     def displayName(self):
         return self.tr('Configurar estilo de edição')
