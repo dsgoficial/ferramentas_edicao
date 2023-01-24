@@ -65,7 +65,7 @@ class Division(ComponentUtils,IComponent):
 
         # Update map in correct sequence
         layersToShow = (
-            gridRectangleLayer, layerOcean, layerCountryLine, layerCountryArea, layerStateLine, layerCountyLine, layerCountyArea)
+            layerCountryLine, layerStateLine, layerCountyLine, gridRectangleLayer, layerOcean, layerCountryArea, layerCountyArea)
         for layer in layersToShow:
             instance.addMapLayer(layer, False)
                 
