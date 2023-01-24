@@ -53,6 +53,10 @@
             "schema": "edgv"
         },
         {
+            "table": "infra_elemento_energia_l",
+            "schema": "edgv"
+        },
+        {
             "table": "elemnat_ponto_cotado_p",
             "schema": "edgv"
         },
@@ -130,10 +134,6 @@
         },
         {
             "table": "elemnat_sumidouro_vertedouro_p",
-            "schema": "edgv"
-        },
-        {
-            "table": "infra_elemento_energia_l",
             "schema": "edgv"
         },
         {
