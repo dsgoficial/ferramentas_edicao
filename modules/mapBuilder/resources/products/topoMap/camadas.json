@@ -253,11 +253,11 @@
             "schema": "edgv"
         },
         {
-            "table": "cobter_area_construida_a",
+            "table": "cobter_massa_dagua_a",
             "schema": "edgv"
         },
         {
-            "table": "cobter_massa_dagua_a",
+            "table": "cobter_area_construida_a",
             "schema": "edgv"
         },
         {
