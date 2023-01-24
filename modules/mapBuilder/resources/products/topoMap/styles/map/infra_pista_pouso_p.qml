@@ -2,10 +2,12 @@
 <qgis styleCategories="Symbology|Labeling" labelsEnabled="1" version="3.24.3-Tisler">
   <renderer-v2 type="RuleRenderer" enableorderby="0" forceraster="0" symbollevels="0" referencescale="-1">
     <rules key="{62a3dea4-17b6-4639-a67e-4acc783c4aec}">
-      <rule key="{081a9ce5-307c-4974-a769-21654d7aebf3}" symbol="0" filter="visivel = 1"/>
-      <rule key="{ea5311d0-4336-43ba-905b-22d982976eac}" symbol="1" filter="tipo = 9 and &quot;visivel&quot; = 1 and situacao_fisica in (0,3)" label="Pista de pouso Constr ou Desc"/>
-      <rule key="{fb803820-f2c6-4662-a535-b221994a06c7}" symbol="2" filter="tipo = 9 and &quot;visivel&quot; = 1 and situacao_fisica in (1,2,4)" label="Pista de pouso Aband ou Destr ou Em constr"/>
-      <rule key="{ab20a2c0-a907-4e78-b874-6e6446e7dc1f}" symbol="3" filter="ELSE"/>
+      <rule key="{dc04f51f-52ab-4781-a847-baf3ae769b72}" filter="visivel = 1">
+        <rule key="{a0c616e9-fa55-4381-b0a7-d97c14382965}" symbol="0" filter="tipo = 11 and &quot;visivel&quot; = 1 and situacao_fisica in (0,3)" label="Heliponto"/>
+        <rule key="{70e76cbb-c087-493f-a0ab-f1dd6ab7f163}" symbol="1" filter="tipo = 9 and &quot;visivel&quot; = 1 and situacao_fisica in (0,3)" label="Pista de pouso Constr ou Desc"/>
+        <rule key="{f5173aaf-7bdf-4c25-ac59-e74c175e8d46}" symbol="2" filter="tipo = 9 and &quot;visivel&quot; = 1 and situacao_fisica in (1,2,4)" label="Pista de pouso Aband ou Destr ou Em constr"/>
+        <rule key="{94bb1444-5afb-462d-a90c-527d08d84045}" symbol="3" filter="ELSE"/>
+      </rule>
     </rules>
     <symbols>
       <symbol force_rhr="0" type="marker" alpha="1" clip_to_extent="1" name="0">
@@ -259,9 +261,9 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{602ad465-57a4-47f3-b5e5-99d4fd747394}">
-      <rule key="{17b1d0b7-714c-4aa4-8141-c088dd5d31ca}" filter="&quot;visivel&quot; = 1">
-        <rule key="{b3fa4fe4-a66a-4a6e-ab68-e7d83d40a8be}">
+    <rules key="{9c87550d-040f-4ead-b4f8-428d3695fc82}">
+      <rule key="{2e3555cc-5991-4700-b0a6-c40e9ff127fb}" filter="&quot;visivel&quot; = 1">
+        <rule key="{fa5dc993-79e4-42e9-a37e-da4d5f0f72d1}">
           <settings calloutType="simple">
             <text-style useSubstitutions="0" fontStrikeout="0" namedStyle="Condensed" fontItalic="0" fontUnderline="0" fieldName="texto_edicao" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontLetterSpacing="0" fontFamily="Noto Sans" isExpression="0" legendString="Aa" fontKerning="1" fontSize="6" previewBkgrdColor="255,255,255,255" textColor="89,94,168,255" blendMode="0" textOpacity="1" fontWordSpacing="0" fontSizeUnit="Point" fontWeight="50" multilineHeight="0.80000000000000004" capitalization="0" allowHtml="0">
               <families/>
