@@ -363,10 +363,10 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
             toInsert.setAttribute('cor', '#ffffff')
         elif self.productTypeSelector.currentIndex() == 1: #Topografica
-            toInsert.setAttribute('cor', '#4b4b4b')
+            toInsert.setAttribute('cor', '#241F21')
         else:
-            toInsert.setAttribute('cor', '#4b4b4b')
-            self.displayErrorMessage('Tipo de produto inválido, cor = #4b4b4b, mesma da carta topográfica')
+            toInsert.setAttribute('cor', '#241F21')
+            self.displayErrorMessage('Tipo de produto inválido, cor = #241F21, mesma da carta topográfica')
         fontSize = 10
         toInsert.setAttribute('tamanho_txt', fontSize)
         toInsertGeom = self.getLabelGeometry(border, point, fontSize * len(labelText))
