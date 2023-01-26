@@ -33,10 +33,6 @@
             "schema": "edgv"
         },
         {
-            "table": "edicao_simb_hidrografia_l",
-            "schema": "edgv"
-        },
-        {
             "table": "edicao_simb_hidrografia_p",
             "schema": "edgv"
         },
@@ -49,35 +45,11 @@
             "schema": "edgv"
         },
         {
-            "table": "elemnat_toponimo_fisiografico_natural_l",
-            "schema": "edgv"
-        },
-        {
-            "table": "infra_elemento_energia_l",
-            "schema": "edgv"
-        },
-        {
             "table": "elemnat_ponto_cotado_p",
             "schema": "edgv"
         },
         {
             "table": "elemnat_ilha_p",
-            "schema": "edgv"
-        },
-        {
-            "table": "elemnat_ilha_a",
-            "schema": "edgv"
-        },
-        {
-            "table": "edicao_limite_legal_l",
-            "schema": "edgv"
-        },
-        {
-            "table": "edicao_limite_especial_l",
-            "schema": "edgv"
-        },
-        {
-            "table": "llp_limite_especial_a",
             "schema": "edgv"
         },
         {
@@ -113,18 +85,6 @@
             "schema": "edgv"
         },
         {
-            "table": "constr_deposito_a",
-            "schema": "edgv"
-        },
-        {
-            "table": "constr_edificacao_p",
-            "schema": "edgv"
-        },
-        {
-            "table": "constr_edificacao_a",
-            "schema": "edgv"
-        },
-        {
             "table": "elemnat_elemento_fisiografico_p",
             "schema": "edgv"
         },
@@ -134,6 +94,46 @@
         },
         {
             "table": "elemnat_sumidouro_vertedouro_p",
+            "schema": "edgv"
+        },
+        {
+            "table": "constr_edificacao_p",
+            "schema": "edgv"
+        },
+        {
+            "table": "constr_deposito_a",
+            "schema": "edgv"
+        },
+        {
+            "table": "constr_edificacao_a",
+            "schema": "edgv"
+        },
+        {
+            "table": "elemnat_ilha_a",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_limite_legal_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_limite_especial_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "elemnat_toponimo_fisiografico_natural_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_simb_hidrografia_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "infra_elemento_energia_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "llp_limite_especial_a",
             "schema": "edgv"
         },
         {
