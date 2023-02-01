@@ -13,10 +13,6 @@
             "schema": "edgv"
         },
         {
-            "table": "edicao_simb_torre_energia_p",
-            "schema": "edgv"
-        },
-        {
             "table": "edicao_simb_vegetacao_p",
             "schema": "edgv"
         },
@@ -57,10 +53,6 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_elemento_viario_p",
-            "schema": "edgv"
-        },
-        {
             "table": "infra_pista_pouso_p",
             "schema": "edgv"
         },
@@ -78,6 +70,18 @@
         },
         {
             "table": "infra_elemento_infraestrutura_p",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_simb_torre_energia_p",
+            "schema": "edgv"
+        },
+        {
+            "table": "infra_elemento_energia_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "infra_elemento_viario_p",
             "schema": "edgv"
         },
         {
@@ -126,10 +130,6 @@
         },
         {
             "table": "edicao_simb_hidrografia_l",
-            "schema": "edgv"
-        },
-        {
-            "table": "infra_elemento_energia_l",
             "schema": "edgv"
         },
         {
