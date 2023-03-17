@@ -5,7 +5,7 @@
    viewBox="0 0 109.71202 3.6000063"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="queda_dagua.svg"
    inkscape:export-filename="queda_dagua.png"
    inkscape:export-xdpi="600"
@@ -38,13 +38,13 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="227.44085"
-     inkscape:cy="-43.014818"
+     inkscape:zoom="5.2603772"
+     inkscape:cx="253.40388"
+     inkscape:cy="-48.665712"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="g8141-1-6"
      showborder="false"
@@ -52,7 +52,16 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.17345,6.9825069"
+       orientation="1,0"
+       id="guide836" />
+    <sodipodi:guide
+       position="54.673281,6.8253275"
+       orientation="1,0"
+       id="guide838" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -127,44 +136,40 @@
     <g
        id="g8141-1-6"
        transform="translate(0.13025171,33.378798)">
-      <g
-         id="g9275"
-         transform="matrix(1.0088607,0,0,1.0088607,0.20543417,1.8033277)">
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
-           x="-28.525793"
-           y="125.26958"
-           id="text7935-6-0-7-11-1"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600"><tspan
-             sodipodi:role="line"
-             id="tspan7933-5-2-6-8-6"
-             x="-28.525793"
-             y="125.26958"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Queda d'água ou corredeira</tspan></text>
-        <path
-           inkscape:original-d="m -1.6057238,125.32983 c 6.7907974,-0.001 13.5806768,-0.001 20.3695778,0"
-           inkscape:path-effect="#path-effect8895"
-           inkscape:connector-curvature="0"
-           id="path2156-8-0-9-1-5-4"
-           d="m -1.6057238,125.32983 c 6.7907974,0 13.5806768,0 20.3695778,0"
-           style="fill:none;stroke:#000000;stroke-width:0.147569;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600" />
-      </g>
       <text
          xml:space="preserve"
-         x="22.012043"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.49132px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26693"
+         x="-28.573118"
+         y="128.18288"
+         id="text7935-6-0-7-11-1"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600"><tspan
+           sodipodi:role="line"
+           id="tspan7933-5-2-6-8-6"
+           x="-28.573118"
+           y="128.18288"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.49132px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26693">Queda d'água ou corredeira</tspan></text>
+      <path
+         inkscape:original-d="m -1.4145175,128.24367 c 8.9899489,-0.001 17.9786825,-0.001 26.9661205,0"
+         inkscape:path-effect="#path-effect8895"
+         inkscape:connector-curvature="0"
+         id="path2156-8-0-9-1-5-4"
+         d="m -1.4145175,128.24367 c 8.9899489,0 17.9786825,0 26.9661205,0"
+         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600" />
+      <text
+         xml:space="preserve"
+         x="26.119629"
          y="128.03836"
          id="text27908-25-3-7-1-2-7-4"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
            sodipodi:role="line"
            id="tspan27906-8-4-6-2-6-4-8"
-           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00a0df;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-           x="22.012043"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00adf0;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+           x="26.119629"
            y="128.03836">Corredeira</tspan></text>
     </g>
   </g>

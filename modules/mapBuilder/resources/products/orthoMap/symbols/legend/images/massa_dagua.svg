@@ -5,7 +5,7 @@
    viewBox="0 0 109.71775 3.905762"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="massa_dagua.svg"
    inkscape:export-filename="massa_dagua.png"
    inkscape:export-xdpi="600"
@@ -38,13 +38,13 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="190.34057"
-     inkscape:cy="-20.432039"
+     inkscape:zoom="119.02875"
+     inkscape:cx="292.25713"
+     inkscape:cy="8.7541876"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="g8141-1-6"
      showborder="false"
@@ -52,7 +52,36 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.166464,19.35014"
+       orientation="1,0"
+       id="guide841" />
+    <sodipodi:guide
+       position="54.668829,19.35014"
+       orientation="1,0"
+       id="guide843" />
+    <sodipodi:guide
+       position="74.718957,12.637126"
+       orientation="1,0"
+       id="guide845" />
+    <sodipodi:guide
+       position="77.715362,12.966108"
+       orientation="1,0"
+       id="guide847" />
+    <sodipodi:guide
+       position="97.716587,12.8194"
+       orientation="1,0"
+       id="guide849" />
+    <sodipodi:guide
+       position="87.727088,13.223959"
+       orientation="1,0"
+       id="guide851" />
+    <sodipodi:guide
+       position="64.729459,-4.8922875"
+       orientation="1,0"
+       id="guide853" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -127,67 +156,57 @@
     <g
        id="g8141-1-6"
        transform="translate(0.13025171,33.378798)">
-      <g
-         id="g9280"
-         transform="matrix(1.0066262,0,0,0.99514168,0.2463631,3.5011837)">
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
-           x="-28.525791"
-           y="121.8288"
-           id="text7935-6-0-7-11"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600"><tspan
-             sodipodi:role="line"
-             id="tspan7933-5-2-6-8"
-             x="-28.525791"
-             y="121.8288"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Trecho de drenagem; Massa d'água</tspan></text>
-        <path
-           inkscape:original-d="m 5.4568756,121.88903 c 4.4357724,-0.001 8.8709454,-0.001 13.3054774,0"
-           inkscape:path-effect="#path-effect8870"
-           inkscape:connector-curvature="0"
-           id="path2156-8-0-9-1-5"
-           d="m 5.4568756,121.88903 c 4.4357724,0 8.8709454,0 13.3054774,0"
-           style="fill:none;stroke:#000000;stroke-width:0.146318;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600" />
-      </g>
-      <g
-         id="g10103"
-         transform="translate(-6.7165177,2.4485659)">
-        <g
-           id="g10093">
-          <path
-             style="fill:none;stroke:#00a0df;stroke-width:0.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="M 26.767672,122.35292 H 40.23544"
-             id="path145535" />
-          <text
-             xml:space="preserve"
-             x="32.320026"
-             y="121.90959"
-             id="text27908-25-3-7-1-2"
-             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
-               sodipodi:role="line"
-               id="tspan27906-8-4-6-2-6"
-               style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00a0df;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-               x="32.320026"
-               y="121.90959">Rio</tspan></text>
-        </g>
-        <text
-           xml:space="preserve"
-           x="45.639706"
-           y="121.94155"
-           id="text27908-25-3-7-1-2-7"
-           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
-             sodipodi:role="line"
-             id="tspan27906-8-4-6-2-6-4"
-             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00a0df;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-             x="45.639706"
-             y="121.94155">LAGO</tspan></text>
-      </g>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.47158px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264816"
+         x="-28.305582"
+         y="125.45581"
+         id="text7935-6-0-7-11"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600"
+         transform="scale(1.0057537,0.99427917)"><tspan
+           sodipodi:role="line"
+           id="tspan7933-5-2-6-8"
+           x="-28.305582"
+           y="125.45581"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.47158px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264816">Trecho de drenagem; Massa d'água</tspan></text>
+      <path
+         inkscape:original-d="m 5.739397,124.79804 c 6.595576,-0.001 13.19026,-0.001 19.783991,0"
+         inkscape:path-effect="#path-effect8870"
+         inkscape:connector-curvature="0"
+         id="path2156-8-0-9-1-5"
+         d="m 5.739397,124.79804 c 6.595576,0 13.19026,0 19.783991,0"
+         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600" />
+      <path
+         style="fill:none;stroke:#00adf0;stroke-width:0.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 26.025753,124.80149 H 46.075882"
+         id="path145535" />
+      <text
+         xml:space="preserve"
+         x="34.714977"
+         y="124.35815"
+         id="text27908-25-3-7-1-2"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
+           sodipodi:role="line"
+           id="tspan27906-8-4-6-2-6"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00adf0;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+           x="34.714977"
+           y="124.35815">Rio</tspan></text>
+      <text
+         xml:space="preserve"
+         x="49.259808"
+         y="124.39011"
+         id="text27908-25-3-7-1-2-7"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
+           sodipodi:role="line"
+           id="tspan27906-8-4-6-2-6-4"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00adf0;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+           x="49.259808"
+           y="124.39011">LAGO</tspan></text>
     </g>
   </g>
 </svg>

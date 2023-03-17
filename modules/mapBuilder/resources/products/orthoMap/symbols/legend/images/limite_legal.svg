@@ -5,7 +5,7 @@
    viewBox="0 0 109.71202 3.6999972"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="limite_legal.svg"
    inkscape:export-filename="limite_legal.png"
    inkscape:export-xdpi="600"
@@ -38,21 +38,42 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="186.03909"
-     inkscape:cy="27.959632"
+     inkscape:zoom="10.520755"
+     inkscape:cx="205.11837"
+     inkscape:cy="13.02188"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8141-1-6"
+     inkscape:current-layer="g9325"
      showborder="false"
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.170306,4.4670326"
+       orientation="1,0"
+       id="guide841" />
+    <sodipodi:guide
+       position="54.673281,4.1746789"
+       orientation="1,0"
+       id="guide843" />
+    <sodipodi:guide
+       position="77.719808,3.5933002"
+       orientation="1,0"
+       id="guide845" />
+    <sodipodi:guide
+       position="74.723403,3.8511511"
+       orientation="1,0"
+       id="guide847" />
+    <sodipodi:guide
+       position="97.743262,3.326558"
+       orientation="1,0"
+       id="guide849" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -155,28 +176,28 @@
       <path
          inkscape:connector-curvature="0"
          id="path7905"
-         d="M 20.731488,96.724763 H 39.030821"
-         style="fill:none;stroke:#b47f8c;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         d="m 26.236659,96.724763 h 20.04717"
+         style="fill:none;stroke:#c98573;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
-         d="m 20.7315,96.724833 h 8.823895 m 5.457307,0 h 3.333 m -7.668422,0.0126 h 3.333001"
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 26.236671,96.724833 h 10.042693 m 6.211095,0 h 3.79337 m -8.72762,0.0126 h 3.79337"
          id="path7907"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cccccc" />
       <path
-         style="fill:none;stroke:#c297a5;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="M 42.906197,96.848603 H 60.715982"
+         style="fill:none;stroke:#d19e8c;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 49.278338,96.848603 h 20.02535"
          id="path7909"
          inkscape:connector-curvature="0" />
       <path
          inkscape:connector-curvature="0"
          id="path7911"
-         d="m 42.9062,96.848833 h 3.995009 m 3.029346,0.0158 h 3.712398 m 3.221686,0 3.851343,-0.016"
+         d="m 49.278341,96.848833 h 3.995009 m 3.029346,0.0158 h 3.712398 m 3.221686,0 3.851343,-0.016"
          style="fill:none;stroke:#000000;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
          sodipodi:nodetypes="cccccc" />
       <ellipse
          cy="96.848602"
-         cx="48.471695"
+         cx="54.909584"
          id="path7913"
          style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.679;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:9.50599, 1.358, 2.716, 1.358, 2.716, 1.358;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          rx="0.25953487"
@@ -184,17 +205,24 @@
       <ellipse
          style="vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.478522;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6.6993, 0.957043, 1.91409, 0.957043, 1.91409, 0.957043;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="circle7915"
-         cx="55.150364"
+         cx="61.714005"
          cy="96.848602"
+         rx="0.2483661"
+         ry="0.24999999" />
+      <ellipse
+         style="vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.478522;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6.6993, 0.957043, 1.91409, 0.957043, 1.91409, 0.957043;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="circle7915-2"
+         cx="68.592461"
+         cy="96.854813"
          rx="0.2483661"
          ry="0.24999999" />
       <path
          style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -6.3357578,98.024183 c 8.6366542,0 17.2721038,0 25.9063818,0"
+         d="m -6.3357578,98.024183 c 10.6903072,0 21.3791238,0 32.0664898,0"
          id="path7923"
          inkscape:connector-curvature="0"
          inkscape:path-effect="#path-effect7925"
-         inkscape:original-d="m -6.3357578,98.024183 c 8.6366542,0.001 17.2721038,0.001 25.9063818,0"
+         inkscape:original-d="m -6.3357578,98.024183 c 10.6903072,0.001 21.3791238,0.001 32.0664898,0"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />

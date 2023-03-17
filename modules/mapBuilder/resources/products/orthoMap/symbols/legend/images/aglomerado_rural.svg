@@ -5,9 +5,9 @@
    viewBox="0 0 109.72279 4.5110016"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="aglomerado_rural.svg"
-   inkscape:export-filename="C:\Users\diniz\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_edicao\modules\mapBuilder\resources\products\topoMap\symbols\legend\legend.png"
+   inkscape:export-filename="aglomerado_rural.png"
    inkscape:export-xdpi="600"
    inkscape:export-ydpi="600"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -38,13 +38,13 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="159.15483"
-     inkscape:cy="94.094915"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="216.02112"
+     inkscape:cy="-13.081475"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      showborder="false"
@@ -52,7 +52,16 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.173861,2.0613093"
+       orientation="1,0"
+       id="guide840" />
+    <sodipodi:guide
+       position="54.670816,2.4004074"
+       orientation="1,0"
+       id="guide851" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -146,48 +155,40 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(28.508569,-38.882526)">
-    <g
-       id="g10034"
-       transform="translate(60.105927,0.93489129)">
-      <text
-         xml:space="preserve"
-         x="-40.298801"
-         y="40.312622"
-         id="text27908-25"
-         style="font-size:12px;stroke-width:1"><tspan
-           sodipodi:role="line"
-           id="tspan27906-8"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82223px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-           x="-40.298801"
-           y="40.312622">Povoado</tspan></text>
-      <g
-         id="g9624"
-         transform="translate(-60.105926,0.10669688)">
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
-           x="-28.308945"
-           y="40.241241"
-           id="text7935-6-0-5"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600"><tspan
-             sodipodi:role="line"
-             id="tspan7933-5-2-9"
-             x="-28.308945"
-             y="40.241241"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Aglomerado rural</tspan></text>
-        <path
-           inkscape:original-d="m -11.190683,40.301475 c 10.28405785,-0.001 20.5667228,-0.001 30.847904,0"
-           inkscape:path-effect="#path-effect8345"
-           inkscape:connector-curvature="0"
-           id="path2156-8-0-9-5"
-           d="m -11.190683,40.301475 c 10.28405785,0 20.5667228,0 30.847904,0"
-           style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600" />
-      </g>
-    </g>
+    <text
+       xml:space="preserve"
+       x="26.136972"
+       y="41.247513"
+       id="text27908-25"
+       style="font-size:12px;stroke-width:1"><tspan
+         sodipodi:role="line"
+         id="tspan27906-8"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.82223px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+         x="26.136972"
+         y="41.247513">Povoado</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       x="-28.308943"
+       y="41.282829"
+       id="text7935-6-0-5"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         sodipodi:role="line"
+         id="tspan7933-5-2-9"
+         x="-28.308943"
+         y="41.282829"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Aglomerado rural</tspan></text>
+    <path
+       inkscape:original-d="m -11.190682,41.343063 c 12.2870256,-10e-4 24.572387,-10e-4 36.855976,0"
+       inkscape:path-effect="#path-effect8345"
+       inkscape:connector-curvature="0"
+       id="path2156-8-0-9-5"
+       d="m -11.190682,41.343063 c 12.2870256,0 24.572387,0 36.855976,0"
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
   </g>
 </svg>

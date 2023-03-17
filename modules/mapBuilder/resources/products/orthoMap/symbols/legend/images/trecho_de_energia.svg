@@ -5,7 +5,7 @@
    viewBox="0 0 109.71471 4.9000015"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="trecho_de_energia.svg"
    inkscape:export-filename="trecho_de_energia.png"
    inkscape:export-xdpi="600"
@@ -39,20 +39,29 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.8598242"
-     inkscape:cx="162.91862"
-     inkscape:cy="4.8391671"
+     inkscape:cx="180.39339"
+     inkscape:cy="47.3163"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8141-1-6"
+     inkscape:current-layer="layer1"
      showborder="false"
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.166466,11.39073"
+       orientation="1,0"
+       id="guide848" />
+    <sodipodi:guide
+       position="54.673276,11.45297"
+       orientation="1,0"
+       id="guide850" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -135,64 +144,71 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(28.508965,-133.70743)">
-    <g
-       id="g10182"
-       transform="translate(0.06886968,-5.670327)">
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
-         x="-28.575369"
-         y="142.85553"
-         id="text2940-0"
-         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-         inkscape:export-xdpi="600"
-         inkscape:export-ydpi="600"><tspan
-           sodipodi:role="line"
-           id="tspan2938-6"
-           x="-28.575369"
-           y="142.85553"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Linha de energia elevada</tspan><tspan
-           sodipodi:role="line"
-           x="-28.575369"
-           y="145.94234"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586"
-           id="tspan29558-8" /></text>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -4.2758423,142.92741 c 7.828308,0 15.6555273,0 23.4817223,0"
-         id="path2954-3"
-         inkscape:connector-curvature="0"
-         inkscape:path-effect="#path-effect9940"
-         inkscape:original-d="m -4.2758423,142.92741 c 7.828308,-4.9e-4 15.6555273,-4.9e-4 23.4817223,0"
-         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-         inkscape:export-xdpi="600"
-         inkscape:export-ydpi="600" />
-      <g
-         transform="translate(-64.535505,-38.950187)"
-         id="g3053-7"
-         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-         inkscape:export-xdpi="600"
-         inkscape:export-ydpi="600">
-        <path
-           sodipodi:nodetypes="cccccccccccccccc"
-           inkscape:connector-curvature="0"
-           id="path4844-5"
-           d="m 87.550328,178.39723 -0.25199,0.528 h 0.15599 l 0.096,-0.18033 h 0.239988 l -0.456254,3.25212 h 0.28835 l 0.311928,-0.45579 0.311916,0.45579 h 0.288348 l -0.456252,-3.25212 h 0.239976 l 0.096,0.18033 0.155988,-3.2e-4 -0.252024,-0.528 z"
-           style="fill:#39379e;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        <path
-           inkscape:connector-curvature="0"
-           style="fill:none;stroke:#39379e;stroke-width:0.438178;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           d="M 85.000004,180.19697 H 105"
-           id="path6955-8-7"
-           sodipodi:nodetypes="cc" />
-        <path
-           style="fill:#39379e;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           d="m 101.91942,178.39723 -0.25199,0.528 h 0.15599 l 0.096,-0.18033 h 0.23998 l -0.45625,3.25212 h 0.28835 l 0.31193,-0.45579 0.31191,0.45579 h 0.28835 l -0.45625,-3.25212 h 0.23998 l 0.096,0.18033 0.15598,-3.2e-4 -0.25202,-0.528 z"
-           id="path7862-2"
-           inkscape:connector-curvature="0"
-           sodipodi:nodetypes="cccccccccccccccc" />
-      </g>
-    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       x="-28.506498"
+       y="137.1852"
+       id="text2940-0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         sodipodi:role="line"
+         id="tspan2938-6"
+         x="-28.506498"
+         y="137.1852"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Linha de energia elevada</tspan><tspan
+         sodipodi:role="line"
+         x="-28.506498"
+         y="140.272"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586"
+         id="tspan29558-8" /></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -4.2069726,137.25708 c 9.9561821,0 19.9109796,0 29.8644746,0"
+       id="path2954-3"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect9940"
+       inkscape:original-d="m -4.2069726,137.25708 c 9.9561821,-4.9e-4 19.9109796,-4.9e-4 29.8644746,0"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
+    <path
+       sodipodi:nodetypes="cccccccccccccccc"
+       inkscape:connector-curvature="0"
+       id="path4844-5"
+       d="m 28.661341,134.65771 -0.209985,0.43999 h 0.129987 l 0.08,-0.15027 h 0.199984 l -0.3802,2.71002 h 0.240284 l 0.259932,-0.37981 0.259922,0.37981 h 0.240283 l -0.380198,-2.71002 h 0.199971 l 0.08,0.15027 0.129986,-2.6e-4 -0.210014,-0.43999 z"
+       style="fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:#e0e0e0;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#e0e0e0;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 26.153022,136.15743 H 46.153018"
+       id="path6955-8-7"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#e0e0e0;fill-opacity:1;fill-rule:evenodd;stroke:#e0e0e0;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 43.092688,134.65771 -0.20998,0.43999 h 0.12999 l 0.08,-0.15027 h 0.19998 l -0.3802,2.71002 h 0.24029 l 0.25993,-0.37981 0.25992,0.37981 h 0.24028 l -0.38019,-2.71002 h 0.19997 l 0.08,0.15027 0.12998,-2.6e-4 -0.21,-0.43999 z"
+       id="path7862-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccccc" />
+    <path
+       sodipodi:nodetypes="cccccccccccccccc"
+       inkscape:connector-curvature="0"
+       id="path4844-5-7"
+       d="m 28.661341,134.6577 -0.209985,0.43998 h 0.129988 l 0.08,-0.15027 h 0.199984 l -0.3802,2.71002 h 0.240284 l 0.259932,-0.37981 0.259923,0.37981 h 0.240282 l -0.380201,-2.71002 h 0.199974 l 0.08,0.15027 0.129986,-2.6e-4 -0.210013,-0.43999 z"
+       style="fill:#595ea8;fill-opacity:1;fill-rule:evenodd;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#595ea8;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.153022,136.15743 h 20.00001"
+       id="path6955-8-7-8"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#595ea8;fill-opacity:1;fill-rule:evenodd;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 43.092702,134.6577 -0.20999,0.43998 h 0.12999 l 0.08,-0.15027 h 0.19997 l -0.38019,2.71002 h 0.24028 l 0.25993,-0.37981 0.25992,0.37981 h 0.24029 l -0.3802,-2.71002 h 0.19998 l 0.08,0.15027 0.12998,-2.6e-4 -0.21001,-0.43999 z"
+       id="path7862-2-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccccc" />
     <g
        id="g8141-1-6"
        transform="translate(0.13025171,33.378798)" />

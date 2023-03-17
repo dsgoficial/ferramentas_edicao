@@ -5,9 +5,9 @@
    viewBox="0 0 109.73125 5.5034418"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="cidade.svg"
-   inkscape:export-filename="C:\Users\diniz\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_edicao\modules\mapBuilder\resources\products\topoMap\symbols\legend\legend.png"
+   inkscape:export-filename="cidade.png"
    inkscape:export-xdpi="600"
    inkscape:export-ydpi="600"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -39,20 +39,29 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="2.6301886"
-     inkscape:cx="177.55381"
-     inkscape:cy="1.5208035"
+     inkscape:cx="172.231"
+     inkscape:cy="-97.331423"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8141-1-6"
+     inkscape:current-layer="layer1"
      showborder="false"
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.168738,2.8062434"
+       orientation="1,0"
+       id="guide841" />
+    <sodipodi:guide
+       position="54.671712,2.7040768"
+       orientation="1,0"
+       id="guide843" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -137,7 +146,7 @@
      transform="translate(28.52379,-29.074854)">
     <g
        id="g9946"
-       transform="translate(-14.586247,6.8383533)"
+       transform="translate(-21.870104,6.8383533)"
        inkscape:export-filename="legenda_00.svg"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600">
@@ -190,11 +199,11 @@
          y="33.148926"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Cidade: &gt; 500 mil hab.; &gt; 100 mil hab.; &lt; 100 mil hab.</tspan></text>
     <path
-       inkscape:original-d="m 22.222538,33.209161 c 3.83442,-0.001 7.66832,-0.001 11.501671,0"
+       inkscape:original-d="m 22.222538,33.209161 c 1.14096,-0.001 2.281766,-0.001 3.422408,0"
        inkscape:path-effect="#path-effect8347"
        inkscape:connector-curvature="0"
        id="path2156-8-5"
-       d="m 22.222538,33.209161 c 3.83442,0 7.66832,0 11.501671,0"
+       d="m 22.222538,33.209161 c 1.14096,0 2.281766,0 3.422408,0"
        style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"

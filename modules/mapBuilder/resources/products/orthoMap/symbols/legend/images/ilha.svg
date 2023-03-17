@@ -5,7 +5,7 @@
    viewBox="0 0 109.71202 3.9000094"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="ilha.svg"
    inkscape:export-filename="ilha.png"
    inkscape:export-xdpi="600"
@@ -38,13 +38,13 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="250.02363"
-     inkscape:cy="12.36676"
+     inkscape:zoom="32"
+     inkscape:cx="192.78125"
+     inkscape:cy="3.625"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="g8141-1-6"
      showborder="false"
@@ -52,7 +52,16 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.165168,4.8518892"
+       orientation="1,0"
+       id="guide836" />
+    <sodipodi:guide
+       position="54.66643,4.7867769"
+       orientation="1,0"
+       id="guide838" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -127,44 +136,40 @@
     <g
        id="g8141-1-6"
        transform="translate(0.13025171,33.378798)">
-      <g
-         id="g9285"
-         transform="matrix(1.0079761,0,0,1.0079761,0.20428344,2.1878569)">
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
-           x="-28.525793"
-           y="128.82428"
-           id="text7935-6-0-7-11-1-0"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600"><tspan
-             sodipodi:role="line"
-             id="tspan7933-5-2-6-8-6-7"
-             x="-28.525793"
-             y="128.82428"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Ilha</tspan></text>
-        <path
-           inkscape:original-d="m -24.61763,128.88453 c 14.462295,-0.001 28.9226371,-0.001 43.38089,0"
-           inkscape:path-effect="#path-effect8920"
-           inkscape:connector-curvature="0"
-           id="path2156-8-0-9-1-5-4-6"
-           d="m -24.61763,128.88453 c 14.462295,0 28.9226371,0 43.38089,0"
-           style="fill:none;stroke:#000000;stroke-width:0.148843;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-           inkscape:export-xdpi="600"
-           inkscape:export-ydpi="600" />
-      </g>
       <text
          xml:space="preserve"
-         x="25.011587"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.48914px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.266696"
+         x="-28.549034"
+         y="132.03966"
+         id="text7935-6-0-7-11-1-0"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600"><tspan
+           sodipodi:role="line"
+           id="tspan7933-5-2-6-8-6-7"
+           x="-28.549034"
+           y="132.03966"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.48914px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.266696">Ilha</tspan></text>
+      <path
+         inkscape:original-d="m -24.609699,132.10038 c 16.7138661,-0.001 33.4254767,-0.001 50.134672,0"
+         inkscape:path-effect="#path-effect8920"
+         inkscape:connector-curvature="0"
+         id="path2156-8-0-9-1-5-4-6"
+         d="m -24.609699,132.10038 c 16.7138661,0 33.4254767,0 50.134672,0"
+         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-xdpi="600"
+         inkscape:export-ydpi="600" />
+      <text
+         xml:space="preserve"
+         x="26.350531"
          y="131.72989"
          id="text27908-25-3-7-1-1"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
            sodipodi:role="line"
            id="tspan27906-8-4-6-2-1"
            style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-           x="25.011587"
+           x="26.350531"
            y="131.72989">Ilha</tspan></text>
     </g>
   </g>

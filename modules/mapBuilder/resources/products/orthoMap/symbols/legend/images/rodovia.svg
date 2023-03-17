@@ -5,7 +5,7 @@
    viewBox="0 0 109.712 26.509485"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="rodovia.svg"
    inkscape:export-filename="rodovia.png"
    inkscape:export-xdpi="600"
@@ -38,21 +38,78 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="183.35066"
-     inkscape:cy="94.094915"
+     inkscape:zoom="21.041509"
+     inkscape:cx="259.43957"
+     inkscape:cy="85.21252"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8141-1-6"
+     inkscape:current-layer="layer1"
      showborder="false"
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="74.720558,7.9097674"
+       orientation="1,0"
+       id="guide909" />
+    <sodipodi:guide
+       position="77.720567,7.5597673"
+       orientation="1,0"
+       id="guide911" />
+    <sodipodi:guide
+       position="54.70089,10.8515"
+       orientation="1,0"
+       id="guide913" />
+    <sodipodi:guide
+       position="54.186248,6.5752403"
+       orientation="1,0"
+       id="guide915" />
+    <sodipodi:guide
+       position="97.737302,15.063865"
+       orientation="1,0"
+       id="guide919" />
+    <sodipodi:guide
+       position="76.217164,30.457271"
+       orientation="1,0"
+       id="guide2489" />
+    <sodipodi:guide
+       position="76.217165,23.615768"
+       orientation="0,-1"
+       id="guide4148" />
+    <sodipodi:guide
+       position="75.446113,25.402942"
+       orientation="1,0"
+       id="guide8954" />
+    <sodipodi:guide
+       position="75.961661,25.157742"
+       orientation="1,0"
+       id="guide9625" />
+    <sodipodi:guide
+       position="74.720559,10.8515"
+       orientation="0,-1"
+       id="guide10116" />
+    <sodipodi:guide
+       position="0.20118963,25.654429"
+       orientation="1,0"
+       id="guide10380" />
+    <sodipodi:guide
+       position="92.899313,0.0027517748"
+       orientation="0,-1"
+       id="guide10382" />
+    <sodipodi:guide
+       position="-2.3136808,8.4024188"
+       orientation="0,-1"
+       id="guide10384" />
+    <sodipodi:guide
+       position="53.114063,4.1271392"
+       orientation="0,-1"
+       id="guide10386" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -383,17 +440,18 @@
     <path
        inkscape:connector-curvature="0"
        id="path936-8"
-       d="m 22.677131,52.985635 26.28143,-0.0079"
-       style="fill:none;stroke:#000000;stroke-width:1.65;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.167234,52.985635 21.540174,-0.09592"
+       style="fill:none;stroke:#000000;stroke-width:1.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
-       inkscape:export-ydpi="600" />
+       inkscape:export-ydpi="600"
+       sodipodi:nodetypes="cc" />
     <path
        inkscape:connector-curvature="0"
        id="path7097"
-       d="m 48.840191,52.602189 5.69117,-2.018842 16.03333,-0.0039"
+       d="m 46.936357,52.889716 7.874079,-2.306368 8.456944,-0.0023 5.960165,-0.0016"
        style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       sodipodi:nodetypes="ccc"
+       sodipodi:nodetypes="cccc"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
@@ -414,7 +472,7 @@
     <path
        sodipodi:nodetypes="ccc"
        style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 48.840191,53.306424 5.69117,2.018842 16.03333,0.0039"
+       d="m 46.936357,52.889716 7.874079,2.43555 14.417109,0.0039"
        id="path7099"
        inkscape:connector-curvature="0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
@@ -423,16 +481,16 @@
     <path
        inkscape:connector-curvature="0"
        id="path7108"
-       d="m 22.677381,52.606089 24.59875,-0.0039 -24.59875,0.0039 26.16281,-0.0039 5.69117,-2.018842 16.03333,-0.0039"
-       style="fill:none;stroke:#955058;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       sodipodi:nodetypes="cc"
+       d="m 46.936357,52.889716 7.874079,-2.306368 14.417109,-0.0039"
+       style="fill:none;stroke:#a62b33;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="ccc"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       sodipodi:nodetypes="cc"
-       style="fill:none;stroke:#955058;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 22.677381,53.302524 24.59875,0.0039 -24.59875,-0.0039 26.16281,0.0039 5.69117,2.018842 16.03333,0.0039"
+       sodipodi:nodetypes="ccc"
+       style="fill:none;stroke:#a62b33;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 46.936357,52.889716 7.874079,2.43555 14.417109,0.0039"
        id="path7118"
        inkscape:connector-curvature="0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
@@ -441,19 +499,21 @@
     <path
        inkscape:connector-curvature="0"
        id="path940-0"
-       d="m 22.677131,52.985635 26.28143,-0.0079"
-       style="fill:none;stroke:#000000;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.167234,52.985635 21.540174,-0.09592"
+       style="fill:none;stroke:#a62b33;stroke-width:0.95;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
-       inkscape:export-ydpi="600" />
+       inkscape:export-ydpi="600"
+       sodipodi:nodetypes="cc" />
     <path
        inkscape:connector-curvature="0"
        id="path940-0-0"
-       d="m 22.677131,52.985635 26.28143,-0.0079"
-       style="fill:none;stroke:#ffffff;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.167234,52.985635 21.284671,-0.09592"
+       style="fill:none;stroke:#ffffff;stroke-width:0.142239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
-       inkscape:export-ydpi="600" />
+       inkscape:export-ydpi="600"
+       sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
@@ -483,108 +543,108 @@
          id="tspan7132"
          sodipodi:role="line">Jurisdição estadual</tspan></text>
     <path
-       inkscape:original-d="m 14.794102,61.420647 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 26.191133,61.420647 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
        inkscape:path-effect="#path-effect7154"
        inkscape:connector-curvature="0"
        id="path7152"
-       d="m 14.794102,61.420647 c 6.666909,0 13.333579,0 20.000019,0"
-       style="fill:none;stroke:#000000;stroke-width:1.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.191133,61.420647 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       style="fill:none;stroke:#955058;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 14.794102,61.420647 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#a62b33;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.191133,61.420647 c 6.666909,0 13.333579,0 20.000019,0"
        id="path7164"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect7166"
-       inkscape:original-d="m 14.794102,61.420647 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 26.191133,61.420647 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 14.794102,65.653983 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#000000;stroke-width:0.900442;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.191133,65.653983 c 6.673459,0 13.346679,0 20.019669,0"
        id="path7192"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect7194"
-       inkscape:original-d="m 14.794102,65.653983 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 26.191133,65.653983 c 6.673459,-2.27e-4 13.346679,-2.27e-4 20.019669,0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       style="fill:none;stroke:#b47f8c;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 14.794102,65.653983 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#c98573;stroke-width:0.600295;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 26.191133,65.653983 c 6.673459,0 13.346679,0 20.019669,0"
        id="path7216"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect7218"
-       inkscape:original-d="m 14.794102,65.653983 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 26.191133,65.653983 c 6.673459,-2.27e-4 13.346679,-2.27e-4 20.019669,0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 39.702519,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 49.227525,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
        id="path7220"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect7222"
-       inkscape:original-d="m 39.702519,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 49.227525,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       style="fill:none;stroke:#ffffff;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 39.702519,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#ffffff;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 49.227525,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
        id="path7294"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect7296"
-       inkscape:original-d="m 39.702519,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 49.227525,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       inkscape:original-d="m 39.702519,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 49.227525,61.441618 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
        inkscape:path-effect="#path-effect7234"
        inkscape:connector-curvature="0"
        id="path7232"
-       d="m 39.702519,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
-       style="fill:none;stroke:#955058;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.5, 1.5;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 49.227525,61.441618 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#a62b33;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.5, 1.5;stroke-dashoffset:0;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       inkscape:original-d="m 39.768665,65.75193 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 49.211923,65.654126 c 6.69453,-2.27e-4 13.38882,-2.27e-4 20.082879,0"
        inkscape:path-effect="#path-effect7246"
        inkscape:connector-curvature="0"
        id="path7244"
-       d="m 39.768665,65.75193 c 6.666909,0 13.333579,0 20.000019,0"
-       style="fill:none;stroke:#000000;stroke-width:1.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 49.211923,65.654126 c 6.69453,0 13.38882,0 20.082879,0"
+       style="fill:none;stroke:#000000;stroke-width:0.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       inkscape:original-d="m 39.768665,65.75193 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 49.211923,65.654126 c 6.69453,-2.27e-4 13.38882,-2.27e-4 20.082879,0"
        inkscape:path-effect="#path-effect7266"
        inkscape:connector-curvature="0"
        id="path7264"
-       d="m 39.768665,65.75193 c 6.666909,0 13.333579,0 20.000019,0"
-       style="fill:none;stroke:#ffffff;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 49.211923,65.654126 c 6.69453,0 13.38882,0 20.082879,0"
+       style="fill:none;stroke:#ffffff;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       style="fill:none;stroke:#b47f8c;stroke-width:0.8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.5, 1.5;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 39.768665,65.75193 c 6.666909,0 13.333579,0 20.000019,0"
+       style="fill:none;stroke:#c98573;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3.50724, 1.5031;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 49.211923,65.654126 c 6.69453,0 13.38882,0 20.082879,0"
        id="path7306"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect7308"
-       inkscape:original-d="m 39.768665,65.75193 c 6.666909,-2.27e-4 13.333579,-2.27e-4 20.000019,0"
+       inkscape:original-d="m 49.211923,65.654126 c 6.69453,-2.27e-4 13.38882,-2.27e-4 20.082879,0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <text
        id="text7407"
-       y="69.942383"
+       y="74.051231"
        x="-28.308756"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
        xml:space="preserve"
@@ -592,12 +652,12 @@
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600"><tspan
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586"
-         y="69.942383"
+         y="74.051231"
          x="-28.308756"
          id="tspan7405"
-         sodipodi:role="line">Via não operacional: com/sem canteiro divisório</tspan></text>
+         sodipodi:role="line">Via não operacional</tspan></text>
     <g
-       transform="translate(-31.78919,-10.83762)"
+       transform="translate(-54.821053,-6.7287657)"
        id="g7473"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
@@ -624,39 +684,11 @@
          inkscape:path-effect="#path-effect7439"
          inkscape:original-d="m 81,79.783336 c 6.66689,-2.27e-4 13.33356,-2.27e-4 20,0" />
     </g>
-    <g
-       transform="translate(-77.789188,-11.18762)"
-       id="g7468"
-       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-       inkscape:export-xdpi="600"
-       inkscape:export-ydpi="600">
-      <path
-         style="fill:none;stroke:#000000;stroke-width:1.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.5, 0.5;stroke-dashoffset:0;stroke-opacity:1"
-         d="m 104,79.783336 c 6.66689,0 13.33355,0 19.99999,0"
-         id="path7445"
-         inkscape:connector-curvature="0"
-         inkscape:path-effect="#path-effect7447"
-         inkscape:original-d="m 104,79.783336 c 6.66689,-2.03e-4 13.33355,-2.03e-4 19.99999,0" />
-      <path
-         inkscape:original-d="m 104,79.783336 c 6.66689,-2.03e-4 13.33355,-2.03e-4 19.99999,0"
-         inkscape:path-effect="#path-effect7451"
-         inkscape:connector-curvature="0"
-         id="path7449"
-         d="m 104,79.783336 c 6.66689,0 13.33355,0 19.99999,0"
-         style="fill:none;stroke:#ffffff;stroke-width:1.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <path
-         inkscape:original-d="m 104,79.783336 c 6.66689,-2.03e-4 13.33355,-2.03e-4 19.99999,0"
-         inkscape:path-effect="#path-effect7455"
-         inkscape:connector-curvature="0"
-         id="path7453"
-         d="m 104,79.783336 c 6.66689,0 13.33355,0 19.99999,0"
-         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.5, 0.5;stroke-dashoffset:0;stroke-opacity:1" />
-    </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
        x="-28.46398"
-       y="74.547897"
+       y="69.785393"
        id="text7481"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
@@ -664,154 +696,143 @@
          sodipodi:role="line"
          id="tspan7479"
          x="-28.46398"
-         y="74.547897"
+         y="69.785393"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Prefixo de rodovia: federal, estadual</tspan></text>
     <path
-       inkscape:original-d="m 6.2677333,74.625871 c 10.6741557,-7.6e-4 21.3467417,-7.6e-4 32.0179277,0"
+       inkscape:original-d="m 6.2677333,69.863368 c 6.4705037,-7.6e-4 12.9400557,-7.6e-4 19.4087587,0"
        inkscape:path-effect="#path-effect252341"
        inkscape:connector-curvature="0"
        id="path1346-1"
-       d="m 6.2677333,74.625871 c 10.6741557,0 21.3467417,0 32.0179277,0"
+       d="m 6.2677333,69.863368 c 6.4705037,0 12.9400557,0 19.4087587,0"
        style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       inkscape:original-d="m 17.839151,69.930243 c 2.61282,-7.6e-4 5.22525,-7.6e-4 7.83734,0"
+       inkscape:original-d="m -8.4915416,74.039098 c 11.3909724,-7.6e-4 22.7802426,-7.6e-4 34.1680326,0"
        inkscape:path-effect="#path-effect258388"
        inkscape:connector-curvature="0"
        id="path1346-1-9"
-       d="m 17.839151,69.930243 c 2.61282,0 5.22525,0 7.83734,0"
+       d="m -8.4915416,74.039098 c 11.3909724,0 22.7802426,0 34.1680326,0"
        style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       inkscape:original-d="m 1.8263674,53.867285 c 6.6467688,-7.6e-4 13.2925596,-7.6e-4 19.9374436,0"
+       inkscape:original-d="m 1.8263674,53.867285 c 7.9511831,-7.6e-4 15.9011966,-7.6e-4 23.8501246,0"
        inkscape:path-effect="#path-effect252564"
        inkscape:connector-curvature="0"
        id="path1346-1-3-3"
-       d="m 1.8263674,53.867285 c 6.6467688,0 13.2925596,0 19.9374436,0"
+       d="m 1.8263674,53.867285 c 7.9511831,0 15.9011966,0 23.8501246,0"
        style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       inkscape:original-d="m 3.766333,61.961895 c 3.43908,-7.6e-4 6.877657,-7.6e-4 10.315762,0"
+       inkscape:original-d="m 3.766333,61.927592 c 7.304433,-7.6e-4 14.607797,-7.6e-4 21.910159,0"
        inkscape:path-effect="#path-effect252593"
        inkscape:connector-curvature="0"
        id="path1346-1-3-3-4"
-       d="m 3.766333,61.961895 c 3.43908,0 6.877657,0 10.315762,0"
+       d="m 3.766333,61.927592 c 7.304433,0 14.607797,0 21.910159,0"
        style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <path
-       inkscape:original-d="m 1.898836,65.870609 c 4.025471,-7.6e-4 8.050352,-7.6e-4 12.074683,0"
+       inkscape:original-d="m -8.0595425,65.488822 c 11.2469561,-7.6e-4 22.4922635,-7.6e-4 33.7360345,0"
        inkscape:path-effect="#path-effect252622"
        inkscape:connector-curvature="0"
        id="path1346-1-3-3-4-6"
-       d="m 1.898836,65.870609 c 4.025471,0 8.050352,0 12.074683,0"
+       d="m -8.0595425,65.488822 c 11.2469561,0 22.4922635,0 33.7360345,0"
        style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <rect
-       style="fill:#000000;stroke-width:0.192454"
-       y="74.117126"
-       x="39.081749"
-       height="0.69999999"
-       width="10.700521"
+       style="fill:#000000;stroke-width:0.9"
+       y="69.354622"
+       x="26.191133"
+       height="0.89999998"
+       width="20.020077"
        id="rect817-6" />
     <rect
        id="rect10-3"
-       width="10.535156"
-       height="0.5"
-       x="39.180992"
-       y="74.217133"
-       style="fill:#955058;fill-opacity:1;stroke-width:0.161391" />
+       width="20.019669"
+       height="0.60000002"
+       x="26.191135"
+       y="69.490196"
+       style="fill:#a62b33;fill-opacity:1;stroke-width:0.6" />
     <rect
        id="rect903-1"
        width="4.1270394"
        height="2.0270393"
-       x="42.434662"
-       y="73.453613"
+       x="33.769947"
+       y="68.779129"
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.0729608;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        ry="0.50614578" />
     <text
        id="text7499-8-4"
-       y="75.202599"
-       x="43.067299"
+       y="70.528114"
+       x="34.402584"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
        xml:space="preserve"><tspan
-         y="75.202599"
-         x="43.067299"
+         y="70.528114"
+         x="34.402584"
          id="tspan7497-0-1"
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">101</tspan></text>
     <rect
-       style="fill:#000000;stroke-width:0.187522"
-       y="74.118492"
-       x="50.61599"
-       height="0.69999999"
-       width="10.159111"
+       style="fill:#000000;stroke-width:0.263222"
+       y="69.355988"
+       x="49.210812"
+       height="0.89999998"
+       width="20.016735"
        id="rect817" />
     <rect
        id="rect10"
-       width="10.040054"
-       height="0.5"
-       x="50.657219"
-       y="74.218498"
-       style="fill:#b47f8c;fill-opacity:1;stroke-width:0.157553" />
+       width="20.016733"
+       height="0.60000002"
+       x="49.210812"
+       y="69.518867"
+       style="fill:#c98573;fill-opacity:1;stroke-width:0.222461" />
     <circle
        id="path871"
-       cx="55.525055"
-       cy="74.468498"
+       cx="59.373848"
+       cy="69.756287"
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        r="1.6996659" />
     <text
        id="text7499-8-4-0"
-       y="75.27092"
-       x="54.098335"
+       y="70.558708"
+       x="57.947128"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
        xml:space="preserve"><tspan
-         y="75.27092"
-         x="54.098335"
+         y="70.558708"
+         x="57.947128"
          id="tspan7497-0-1-4"
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.11667px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">101</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0"
-       d="m 22.70371,52.977735 c 8.751927,0 17.50354,0 26.254851,0"
+       d="m 26.191134,52.977735 c 7.869699,0 15.739116,0 23.608262,0"
        id="path7164-7"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect7166-3"
-       inkscape:original-d="m 22.70371,52.977735 c 8.751927,-2.27e-4 17.50354,-2.27e-4 26.254851,0"
+       inkscape:original-d="m 26.191134,52.977735 c 7.869699,-2.27e-4 15.739116,-2.27e-4 23.608262,0"
        inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <text
        xml:space="preserve"
-       x="28.268847"
-       y="71.887398"
-       id="text27908-25-3"
-       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none"><tspan
-         sodipodi:role="line"
-         id="tspan27906-8-4"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-         x="28.268847"
-         y="71.887398">(EM CONSTRUÇÃO)</tspan></text>
-    <text
-       xml:space="preserve"
-       x="54.586739"
-       y="71.880363"
+       x="30.649513"
+       y="75.989212"
        id="text27908-25-3-7"
        style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none"><tspan
          sodipodi:role="line"
          id="tspan27906-8-4-6"
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.176389;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
-         x="54.586739"
-         y="71.880363">(DESTRUÍDA)</tspan></text>
+         x="30.649513"
+         y="75.989212">(DESTRUÍDA)</tspan></text>
     <g
        id="g8141-1-6"
        transform="translate(0.13025171,33.378798)" />
