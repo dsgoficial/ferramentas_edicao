@@ -49,7 +49,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
 
         # Inserting counties table
-        html_tabledata = self.customcreateHtmlTableData(orderedFeaturesByDateAndSensor)
+        html_tabledata = self.customCreateHtmlTableData(orderedFeaturesByDateAndSensor)
         self.setImageArticulationTableContents(composition, html_tabledata)
                 
         if showLayers:
@@ -156,19 +156,23 @@ class ImageArticulation(ComponentUtils,IComponent):
         else:
             return False
 
-    def customcreateHtmlTableData(self, sortedFeatures: List[QgsFeature]):
+    def customCreateHtmlTableData(self, sortedFeatures: List[QgsFeature]):
         noneFeats = list(filter(lambda x: x['nome_sensor'] is None and x['data'] is None, sortedFeatures))
         sortedFeatures = list(
             filter(lambda x: x['nome_sensor'] is not None and x['data'] is not None, sortedFeatures),
         )
+        fontSize = '0.6'
+        with open(self.htmlTablePath, "r") as f:
+            baseHtml = f.read()
         if len(noneFeats) > 0:
+            if len(sortedFeatures) == 0: # apenas o enquadramento sem imagem
+                tableContent = '<td class = "mid" >1 - Data e hora da coleta das imagens indisponíveis.</td>\n'
+                edited = baseHtml.format(font_size=fontSize, table_data=tableContent)
+                return edited
             sortedFeatures.append(noneFeats[0])
         nImages = len(sortedFeatures)
         nColumns = math.ceil(nImages/self.n_maxlines)
         nColumns = 1 if nColumns == 0 else nColumns
-        with open(self.htmlTablePath, "r") as f:
-            baseHtml = f.read()
-        fontSize = '0.6'
 
         nColumns, nColumn1, nColumn2, nColumn3 = self.getNumberOfColumns(nImages)
 
@@ -233,6 +237,12 @@ class ImageArticulation(ComponentUtils,IComponent):
         )
         imageArticulationLayer.triggerRepaint()
         rulesRoot = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
+        if len(orderedFeaturesByDateAndSensor) == 0:
+            rule = self.createRule(
+                    f"'{n+1}'",
+                    f""" "nome_sensor" is NULL AND "data" is NULL """
+                )
+            rulesRoot.appendChild(rule)
         for n, feat in enumerate(orderedFeaturesByDateAndSensor):
             if feat["nome_sensor"] is None and feat["data"] is None:
                 rule = self.createRule(

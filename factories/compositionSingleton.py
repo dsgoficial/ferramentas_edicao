@@ -42,13 +42,17 @@ class CompositionSingleton:
     def createComposition(self, productType: str, jsonData: Dict) -> QgsPrintLayout:
         productType = jsonData.get('productType')
         scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
-        compositionRootPath = self.resourcesPath / productType
+        compositionRootPath = self.resourcesPath / productType \
+            if productType != 'militaryOrthoMap' else self.resourcesPath / 'orthoMap'
         if productType == 'omMap':
-            compositionPath = compositionRootPath / f'{productType}{scale}.qpt'
-        elif scale == 250:
-            compositionPath = compositionRootPath / f'{productType}_250.qpt'
+            qptNameText = f'{productType}{scale}'
+        elif productType == 'militaryOrthoMap':
+            qptNameText = 'orthoMap'
         else:
-            compositionPath = compositionRootPath / f'{productType}.qpt'
+            qptNameText = f'{productType}'
+        if scale == 250:
+            qptNameText += '_250'
+        compositionPath = compositionRootPath / f'{qptNameText}.qpt'
         printLayout = self.createPrintLayoutFromPath(compositionPath)
         self.updatePrintLayoutFromConfig(printLayout, jsonData)
         return printLayout
@@ -83,9 +87,11 @@ class CompositionSingleton:
         headerQptPath = self.setupPath(jsonData.get('cabecalho')) or \
             productParams.get('qpt', {}).get(scale, {}).get('headerPath', None) or \
             self.config.header
-        projectQptPath = self.setupPath(jsonData.get('projeto')) or \
-            productParams.get('qpt', {}).get(scale, {}).get('projectPath', None) or \
-            self.config.project
+        projectQptPath = productParams.get('projectPath', None) \
+            if productType == 'militaryOrthoMap' \
+            else self.setupPath(jsonData.get('projeto')) or \
+                productParams.get('qpt', {}).get(scale, {}).get('projectPath', None) or \
+                self.config.project
         repRightsQptPath = self.setupPath(jsonData.get('direitos_reproducao')) or \
             productParams.get('qpt', {}).get(scale, {}).get('reproductionRightsPath', None) or \
             self.config.reproductionRights

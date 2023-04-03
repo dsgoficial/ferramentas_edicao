@@ -384,3 +384,158 @@ class ConfigDefaults:
         }
     }
     })
+
+    militaryOrthoMap: dict = field(default_factory=lambda: {
+        'name': 'Carta Ortoimagem Militar',
+        'projectPath': Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'common' / 'creditsCartaMilitar.qpt',
+        'qpt': {
+            25: {
+                'project': {
+                    'x_0': 7,
+                    'y_0': 487,
+                    'width': 110,
+                    'height': 70,
+                },
+                'header': {
+                    'x_0': 7,
+                    'y_0': 7,
+                    'width': 110,
+                    'height': 22,
+                },
+                'classified': {
+                    'x_0': 7,
+                    'y_0': 180,
+                    'width': 120,
+                    'height': 20
+                },
+                'bdgexAcessInfo':{
+                    'x_0': 727,
+                    'y_0': 450,
+                    'width': 105,
+                    'height': 100,
+                },
+                'reproductionRights': {
+                    'x_0': 7,
+                    'y_0': 555,
+                    'width': 110,
+                    'height': 20
+                }
+            },
+            50: {
+                'project': {
+                    'x_0': 7,
+                    'y_0': 487,
+                    'width': 110,
+                    'height': 70,
+                },
+                'header': {
+                    'x_0': 7,
+                    'y_0': 7,
+                    'width': 110,
+                    'height': 22,
+                },
+                'classified': {
+                    'x_0': 7,
+                    'y_0': 180,
+                    'width': 120,
+                    'height': 20
+                },
+                'bdgexAcessInfo':{
+                    'x_0': 727,
+                    'y_0': 450,
+                    'width': 105,
+                    'height': 100,
+                },
+                'reproductionRights': {
+                    'x_0': 7,
+                    'y_0': 555,
+                    'width': 110,
+                    'height': 20
+                }
+            },
+            100: {
+                'project': {
+                    'x_0': 7,
+                    'y_0': 487,
+                    'width': 110,
+                    'height': 70,
+                },
+                'header': {
+                    'x_0': 7,
+                    'y_0': 7,
+                    'width': 110,
+                    'height': 22,
+                },
+                'classified': {
+                    'x_0': 7,
+                    'y_0': 180,
+                    'width': 120,
+                    'height': 20
+                },
+                'bdgexAcessInfo':{
+                    'x_0': 727,
+                    'y_0': 450,
+                    'width': 105,
+                    'height': 100,
+                },
+                'reproductionRights': {
+                    'x_0': 7,
+                    'y_0': 555,
+                    'width': 110,
+                    'height': 20
+                }
+            },
+            250: {
+                'header': {
+                    'x_0': 7,
+                    'y_0': 7,
+                    'width': 110,
+                    'height': 22,
+                },
+                'classified': {
+                    'x_0': 7,
+                    'y_0': 180,
+                    'width': 120,
+                    'height': 20
+                },
+                'bdgexAcessInfo':{
+                    'x_0': 852,
+                    'y_0': 380,
+                    'width': 105,
+                    'height': 100,
+                },
+                'project': {
+                    'x_0': 721,
+                    'y_0': 482,
+                    'width': 110,
+                    'height': 70,
+                },
+                'reproductionRights': {
+                    'x_0': 721,
+                    'y_0': 561,
+                    'width': 110,
+                    'height': 20
+                }
+            }
+        },
+        'grid': {
+            'crossX': 4,
+            'crossY': 4,
+            'fontSize': 1.9,
+            'font': QFont('Noto Sans'),
+            'fontLL': QFont('Noto Sans'),
+            'llcolor': QColor('black'),
+            'linwidth_geo': 0.3,
+            'linwidth_utm': 0.2,
+            'linwidth_buffer_geo': 0.1,
+            'linwidth_buffer_utm': 0.1,
+            'geo_grid_color': QColor(211,211,211),
+            'utm_grid_color': QColor(211,211,211),
+            'geo_grid_buffer_color': QColor('black'),
+            'utm_grid_buffer_color': QColor('black'),
+            'masks_check': True
+        },
+        'html': {
+            'info_tecnica': '',
+        }
+    })

@@ -134,7 +134,7 @@ class MapBuilderUtils:
         Returns:
             Path instance containing the style path
         '''
-        if productType == 'orthoMap':
+        if productType in ('orthoMap', 'militaryOrthoMap'):
             basedOnScale = defaults.scaleBasedStyleOrtho
         elif productType == 'topoMap':
             basedOnScale = defaults.scaleBasedStyleTopo

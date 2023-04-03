@@ -56,7 +56,7 @@ class Division(ComponentUtils,IComponent):
         self.setStyles(layerCountyArea, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea)
 
         # Inserting counties table
-        html_tabledata = self.customcreateHtmlTableData(orderedCountiesNamesByArea)
+        html_tabledata = self.customCreateHtmlTableData(orderedCountiesNamesByArea)
         self.setMunicipiosTable(composition,  html_tabledata)
 
         if not isInternational:
@@ -250,7 +250,7 @@ class Division(ComponentUtils,IComponent):
         else:
             return False
 
-    def customcreateHtmlTableData(self, sortedCounties):
+    def customCreateHtmlTableData(self, sortedCounties):
         nCounties = len(sortedCounties)
         nColumns = math.ceil(nCounties/self.n_maxlines)
         nColumns = 1 if nColumns == 0 else nColumns

@@ -40,6 +40,11 @@
          <string>Carta Ortoimagem OM</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Carta Ortoimagem Militar</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

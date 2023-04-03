@@ -1,27 +1,28 @@
 import json
+import os
 from argparse import Namespace
 from collections import namedtuple
 from pathlib import Path
 from typing import Any, NamedTuple, Tuple, Union
 
-from qgis.core import QgsFeature, QgsVectorLayer, QgsSymbolLayerUtils, QgsApplication, QgsUserColorScheme
+from PyQt5.QtCore import QFile, QFileInfo
+from qgis.core import (QgsApplication, QgsFeature, QgsSymbolLayerUtils,
+                       QgsUserColorScheme, QgsVectorLayer)
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
-import os
-from PyQt5.QtCore import QFileInfo, QFile
-
+from ..config import jsonStructure
 from ..config.configDefaults import ConfigDefaults
 from ..factories.compositionSingleton import CompositionSingleton
 from ..factories.connectionSingleton import ConnectionSingleton
 from ..factories.exporterSingleton import ExporterSingleton
+from ..factories.militaryOrthoMapBuilder import MilitaryOrthoMapBuilder
 from ..factories.omMapbuilder import OmMapBuilder
 from ..factories.orthoMapBuilder import OrthoMapBuilder
 from ..factories.topoMapBuilder import TopoMapBuilder
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 from .mapBuilderControllerUtils import MapBuildControllerUtils
-from ..config import jsonStructure
 
 
 class MapBuildController(MapBuildControllerUtils):
@@ -200,6 +201,8 @@ class MapBuildController(MapBuildControllerUtils):
             return 'omMap', 'Carta Especial'
         if productType == 'Carta Ortoimagem OM':
             return 'omMap', 'Carta Especial'
+        if productType == 'Carta Ortoimagem Militar':
+            return 'militaryOrthoMap', 'Carta Ortoimagem Militar'
 
     def unload(self):
         ''' Unloads the Controller. It's called when the plugin is uninstalled or reloaded
@@ -223,6 +226,8 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update({productType: TopoMapBuilder(ComponentFactory())})
         elif productType == 'omMap' and productType not in self.builders:
             self.builders.update({productType: OmMapBuilder(ComponentFactory())})
+        elif productType == 'militaryOrthoMap' and productType not in self.builders:
+            self.builders.update({productType: MilitaryOrthoMapBuilder(ComponentFactory())})
         return self.builders.get(productType)
 
     def getExporter(self, dlg: NamedTuple, data: dict, debugMode: bool) -> ExporterSingleton:
