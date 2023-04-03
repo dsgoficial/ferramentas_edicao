@@ -21,6 +21,7 @@
  ***************************************************************************/
 """
 
+from uuid import uuid4
 import numpy as np
 import json
 import processing
@@ -118,7 +119,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             parameters, self.WATER_BODIES_POLYGONS, context)
         outputRaster = self.parameterAsOutputLayer(parameters, self.OUTPUT_RASTER, context)
         outputJsonPath = self.parameterAsFileOutput(parameters, self.OUTPUT_JSON, context)
-        multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(6, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
 
@@ -147,12 +148,21 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
+        geographicBounds = self.makeValidGeometries(
+            inputLyr=geographicBounds,
+            context=context,
+            feedback=multiStepFeedback
+        )
+        currentStep += 1
+
+        multiStepFeedback.setCurrentStep(currentStep)
         clippedRaster = self.runClipRasterLayer(
             inputRaster,
             mask=geographicBounds,
             context=context,
             feedback=multiStepFeedback,
-            noData=-9999
+            noData=-9999,
+            outputRaster=QgsProcessingUtils.generateTempFilename(f'clip_{str(uuid4())}.tif')
         )
         currentStep += 1
 
@@ -369,6 +379,18 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                 'OUTPUT': outputRaster
             },
             # context=context,
+            feedback=feedback
+        )
+        return output['OUTPUT']
+
+    def makeValidGeometries(self, inputLyr, context, feedback=None):
+        output = processing.run(
+            "native:fixgeometries",
+            {
+            'INPUT': inputLyr,
+            'OUTPUT':'memory:'
+            },
+            context=context,
             feedback=feedback
         )
         return output['OUTPUT']
