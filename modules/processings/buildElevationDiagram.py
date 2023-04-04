@@ -191,6 +191,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         band.WriteArray(npRaster)
         band.FlushCache()
         band.ComputeStatistics(False)
+        out_ds = None
 
     def findSlicingThresholdDict(self, inputRaster, threshold):
         ds = gdal.Open(inputRaster)
@@ -312,26 +313,8 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             context=context,
             feedback=feedback
         )
-        return output['output']
-    
-    def runSieve(self, inputRaster, threshold, context, eightConectedness=False, feedback=None, outputRaster=None):
-        outputRaster = 'TEMPORARY_OUTPUT' if outputRaster is None else outputRaster
-        output = processing.run(
-            "gdal:sieve",
-            {
-                'INPUT': inputRaster,
-                'THRESHOLD': threshold,
-                'EIGHT_CONNECTEDNESS': eightConectedness,
-                'NO_MASK': False,
-                'MASK_LAYER': None,
-                'EXTRA': '',
-                'OUTPUT': outputRaster
-            },
-            context=context,
-            feedback=feedback
-        )
-        return output['OUTPUT']
-    
+        return output['output']    
+ 
     def runGrassMapCalcSimple(self, inputA, expression, context, feedback=None, inputB=None, inputC=None, inputD=None, inputE=None, inputF=None, outputRaster=None):
         outputRaster = 'TEMPORARY_OUTPUT' if outputRaster is None else outputRaster
         output = processing.run(
