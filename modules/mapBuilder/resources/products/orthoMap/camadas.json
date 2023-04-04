@@ -93,6 +93,10 @@
             "schema": "edgv"
         },
         {
+            "table": "infra_elemento_energia_a",
+            "schema": "edgv"
+        },
+        {
             "table": "infra_elemento_infraestrutura_p",
             "schema": "edgv"
         },
@@ -126,10 +130,6 @@
         },
         {
             "table": "constr_extracao_mineral_a",
-            "schema": "edgv"
-        },
-        {
-            "table": "infra_elemento_energia_a",
             "schema": "edgv"
         },
         {
