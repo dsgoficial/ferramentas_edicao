@@ -110,7 +110,7 @@ class ElevationDiagram(ComponentUtils,IComponent):
             raster_mde.setCrs(epsgId)
         raster_mde = self.getRasterMDE(raster_mde, epsg, epsgId)
         elevationSlicingRasterLyr = self.createTerrainLayer()
-        slicingParams = data.get('param_diagrama_elevacao', {})
+        slicingParams = tag_mde_elevacao.get('param_diagrama_elevacao', {})
         processingOutput, classThresholdDict, nClasses = self.getTerrainSlicingFromProcessing(
             geographicBoundsLyr, areaWithoutDataLyr, waterBodiesLyr, raster_mde, slicingParams
         )
