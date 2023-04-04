@@ -9,6 +9,7 @@ from qgis.core import (QgsDataSourceUri, QgsPrintLayout, QgsProject, QgsFeature,
                        QgsCoordinateTransformContext, QgsExpressionContextUtils)
 
 from ..config.configDefaults import ConfigDefaults
+from qgis.utils import iface
 
 
 class MapBuilderUtils:
@@ -232,12 +233,13 @@ class MapBuilderUtils:
         Args:
             debugMode: Boolean value holding the debugMode status
         '''
-        if not debugMode and hasattr(self, 'layersIdsToBeRemoved') and hasattr(self, 'groupsToBeRemoved'):
-            self.instance.removeMapLayers(self.layersIdsToBeRemoved)
-            root = self.instance.layerTreeRoot()
-            for group in self.groupsToBeRemoved:
-                groupTree = root.findGroup(group)
-                root.removeChildNode(groupTree)
+        iface.newProject(promptToSaveFlag=False)
+        # if not debugMode and hasattr(self, 'layersIdsToBeRemoved') and hasattr(self, 'groupsToBeRemoved'):
+        #     self.instance.removeMapLayers(self.layersIdsToBeRemoved)
+        #     root = self.instance.layerTreeRoot()
+        #     for group in self.groupsToBeRemoved:
+        #         groupTree = root.findGroup(group)
+        #         root.removeChildNode(groupTree)
 
     def transformGeometryIfNecessary(self, geom: QgsGeometry, srcSrc: str, dstSrc: str):
         if srcSrc != dstSrc:
