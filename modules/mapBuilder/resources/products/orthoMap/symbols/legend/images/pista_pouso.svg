@@ -5,7 +5,7 @@
    viewBox="0 0 109.71201 4.211319"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    sodipodi:docname="pista_pouso.svg"
    inkscape:export-filename="pista_pouso.png"
    inkscape:export-xdpi="600"
@@ -38,13 +38,13 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="145.31044"
-     inkscape:cy="-77.074639"
+     inkscape:zoom="4"
+     inkscape:cx="163.125"
+     inkscape:cy="-51.5"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-x="892"
+     inkscape:window-y="185"
      inkscape:window-maximized="1"
      inkscape:current-layer="g9270"
      showborder="false"
@@ -57,11 +57,18 @@
     <sodipodi:guide
        position="54.166203,12.607706"
        orientation="1,0"
-       id="guide851" />
+       id="guide851"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="54.671597,12.725528"
        orientation="1,0"
-       id="guide853" />
+       id="guide853"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="66.402428,2.2292593"
+       orientation="1,0"
+       id="guide2682"
+       inkscape:locked="false" />
   </sodipodi:namedview>
   <defs
      id="defs2">
@@ -161,20 +168,20 @@
            sodipodi:role="line"
            x="-28.646622"
            y="144.717"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">Pista de pouso:  op, não op; Heliponto</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">Pista de pouso; Heliponto</tspan></text>
       <path
-         inkscape:original-d="m 7.5998421,144.74742 c 5.9688259,-5.3e-4 11.9368049,-5.3e-4 17.9039909,0"
+         inkscape:original-d="m -3.9512238,144.74742 c 9.8197159,-5.3e-4 19.6380378,-5.3e-4 29.4550568,0"
          inkscape:path-effect="#path-effect3120"
          inkscape:connector-curvature="0"
          id="path3118"
-         d="m 7.5998421,144.74742 c 5.9688259,0 11.9368049,0 17.9039909,0"
-         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m -3.9512238,144.74742 c 9.8197159,0 19.6380378,0 29.4550568,0"
+         style="fill:none;stroke:#000000;stroke-width:0.192396;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />
       <g
          id="g67667"
-         transform="translate(-94.406555,72.487526)"
+         transform="translate(-103.22926,72.427187)"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600">
@@ -205,62 +212,22 @@
         </g>
       </g>
       <g
-         id="g8685"
-         transform="translate(-194.52138,22.713844)"
-         inkscape:export-xdpi="600"
-         inkscape:export-ydpi="600">
+         id="g2811"
+         transform="rotate(45,-76.294239,-3.0291282)">
+        <ellipse
+           cy="26.639999"
+           cx="101.64"
+           id="path905"
+           style="opacity:1;fill:#38469d;fill-opacity:1;stroke:#38469d;stroke-width:0.252665;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+           rx="1.3736675"
+           ry="1.3736676"
+           inkscape:export-filename="pista_pouso_nova.png"
+           inkscape:export-xdpi="105.83334"
+           inkscape:export-ydpi="105.83334" />
         <path
-           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           d="m -88.683114,167.9782 v 0.87527"
-           id="path915"
-           inkscape:connector-curvature="0"
-           transform="translate(311.74953,-49.44422)" />
-        <path
-           inkscape:connector-curvature="0"
-           id="path917"
-           d="m -88.683114,172.14668 v 0.87526"
-           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           transform="translate(311.74953,-49.44422)" />
-        <path
-           inkscape:connector-curvature="0"
-           id="path919"
-           d="m -86.146329,170.499 h -0.875267"
-           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           transform="translate(311.74953,-49.44422)" />
-        <path
-           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           d="m -90.350385,170.499 h -0.875266"
-           id="path921"
-           inkscape:connector-curvature="0"
-           transform="translate(311.74953,-49.44422)" />
-        <circle
-           style="fill:none;fill-opacity:1;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-           id="circle1016-4-3"
-           cx="223.06641"
-           cy="121.05478"
-           r="1.65" />
-      </g>
-      <g
-         id="g9307"
-         transform="translate(-174.30815,22.668333)">
-        <path
-           inkscape:connector-curvature="0"
-           id="path968"
-           d="m -100.60584,169.63324 1.800502,1.8005"
-           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           transform="translate(311.74953,-49.44422)" />
-        <path
-           style="fill:#000000;fill-opacity:0;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           d="m -98.805337,169.63324 -1.800503,1.8005"
-           id="path972"
-           inkscape:connector-curvature="0"
-           transform="translate(311.74953,-49.44422)" />
-        <circle
-           style="fill:none;fill-opacity:1;stroke:#39489e;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-           id="circle1016-4-3-8"
-           cx="212.04393"
-           cy="121.08927"
-           r="1.65" />
+           style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.295048;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
+           d="m 101.642,27.892241 -0.004,-2.504482"
+           id="path1689" />
       </g>
     </g>
     <g
