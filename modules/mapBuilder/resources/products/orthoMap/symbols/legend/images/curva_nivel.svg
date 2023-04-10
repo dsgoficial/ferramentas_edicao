@@ -5,7 +5,7 @@
    viewBox="0 0 109.65658 5.5999908"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
    sodipodi:docname="curva_nivel.svg"
    inkscape:export-filename="curva_nivel.png"
    inkscape:export-xdpi="600"
@@ -38,21 +38,36 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.8598242"
-     inkscape:cx="179.04918"
-     inkscape:cy="17.205927"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="292.0351"
+     inkscape:cy="46.315494"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="892"
-     inkscape:window-y="185"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8141-1-6"
+     inkscape:current-layer="layer1"
      showborder="false"
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1">
+    <sodipodi:guide
+       position="54.17,34.906076"
+       orientation="-1,0"
+       id="guide846"
+       inkscape:label=""
+       inkscape:locked="false"
+       inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="54.67,38.320378"
+       orientation="-1,0"
+       id="guide848"
+       inkscape:label=""
+       inkscape:locked="false"
+       inkscape:color="rgb(0,0,255)" />
+  </sodipodi:namedview>
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -179,78 +194,78 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(28.509946,-170.55934)">
+    <text
+       id="text5254"
+       y="174.90532"
+       x="-28.439825"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
+       xml:space="preserve"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600"><tspan
+         id="tspan5256"
+         sodipodi:role="line"
+         x="-28.439825"
+         y="174.90532"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">Curva de nível: mestra, normal, aux., depressão</tspan></text>
+    <path
+       inkscape:original-d="m 17.118005,175.02719 c 2.84774,-3e-5 5.695086,-3e-5 8.542049,0"
+       inkscape:path-effect="#path-effect5311"
+       inkscape:connector-curvature="0"
+       id="path5309"
+       d="m 17.118005,175.02719 c 2.84774,0 5.695086,0 8.542049,0"
+       style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600" />
     <g
-       id="g9297"
-       transform="translate(7.388649e-7,2.1477799)">
+       id="g876"
+       transform="translate(-0.80108638)">
       <rect
          style="fill:#b2b2b2;fill-opacity:1;stroke:none;stroke-width:0.296461;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:11.8299;stroke-opacity:1"
          id="rect4485"
          width="54.05476"
          height="4.618289"
          x="26.961027"
-         y="168.47128"
-         inkscape:export-xdpi="600"
-         inkscape:export-ydpi="600" />
-      <text
-         id="text5254"
-         y="172.75754"
-         x="-28.439825"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264586"
-         xml:space="preserve"
-         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
-         inkscape:export-xdpi="600"
-         inkscape:export-ydpi="600"><tspan
-           id="tspan5256"
-           sodipodi:role="line"
-           x="-28.439825"
-           y="172.75754"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264586">Curva de nível: mestra, normal, aux., depressão</tspan></text>
-      <path
-         inkscape:original-d="m 17.118004,172.87941 c 3.207177,-3e-5 6.41391,-3e-5 9.620212,0"
-         inkscape:path-effect="#path-effect5311"
-         inkscape:connector-curvature="0"
-         id="path5309"
-         d="m 17.118004,172.87941 c 3.207177,0 6.41391,0 9.620212,0"
-         style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         y="170.61906"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />
       <path
          sodipodi:nodetypes="cccc"
-         inkscape:original-d="m 40.159264,172.47222 c -1.26273,-2.7e-4 -2.5252,-2.7e-4 -3.78739,0 -1.80868,-1.2336 -3.61708,-2.46693 -5.42521,-3.7 -1.26274,-2.7e-4 -2.5252,-2.7e-4 -3.7874,0"
+         inkscape:original-d="m 40.159265,174.62 c -1.26273,-2.7e-4 -2.5252,-2.7e-4 -3.78739,0 -1.80868,-1.2336 -3.61708,-2.46693 -5.42521,-3.7 -1.26274,-2.7e-4 -2.5252,-2.7e-4 -3.7874,0"
          inkscape:path-effect="#path-effect5340"
          inkscape:connector-curvature="0"
          id="path5338"
-         d="m 40.159264,172.47222 c -1.26273,0 -2.5252,0 -4.060653,-0.61677 -1.535453,-0.61678 -3.343853,-1.85011 -4.87927,-2.46667 -1.535417,-0.61656 -2.797877,-0.61656 -4.060077,-0.61656"
+         d="m 40.159265,174.62 c -1.26273,0 -2.5252,0 -4.060653,-0.61677 -1.535453,-0.61678 -3.343853,-1.85011 -4.87927,-2.46667 C 29.683925,170.92 28.421465,170.92 27.159265,170.92"
          style="fill:none;stroke:#ffffff;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />
       <path
          style="fill:none;stroke:#ffffff;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 53.488094,172.39698 c -1.26273,0 -2.5252,0 -4.060654,-0.61677 -1.535453,-0.61678 -3.343854,-1.8501 -4.87927,-2.46667 -1.535416,-0.61656 -2.797876,-0.61656 -4.060076,-0.61656"
+         d="m 53.488095,174.54476 c -1.26273,0 -2.5252,0 -4.060654,-0.61677 -1.535453,-0.61678 -3.343854,-1.8501 -4.87927,-2.46667 -1.535416,-0.61656 -2.797876,-0.61656 -4.060076,-0.61656"
          id="path5359"
          inkscape:connector-curvature="0"
          inkscape:path-effect="#path-effect5361"
-         inkscape:original-d="m 53.488094,172.39698 c -1.26273,-2.7e-4 -2.5252,-2.7e-4 -3.78739,0 -1.80868,-1.2336 -3.61708,-2.46693 -5.42522,-3.7 -1.26273,-2.7e-4 -2.52519,-2.7e-4 -3.78739,0"
+         inkscape:original-d="m 53.488095,174.54476 c -1.26273,-2.7e-4 -2.5252,-2.7e-4 -3.78739,0 -1.80868,-1.2336 -3.61708,-2.46693 -5.42522,-3.7 -1.26273,-2.7e-4 -2.52519,-2.7e-4 -3.78739,0"
          sodipodi:nodetypes="cccc"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />
       <path
          sodipodi:nodetypes="cccc"
-         inkscape:original-d="m 66.988094,172.39636 c -1.26273,-2.7e-4 -2.52519,-2.7e-4 -3.78739,0 -1.80868,-1.2336 -3.61708,-2.46693 -5.42522,-3.7 -1.26273,-2.7e-4 -2.52519,-2.7e-4 -3.78739,0"
+         inkscape:original-d="m 66.988095,174.54414 c -1.26273,-2.7e-4 -2.52519,-2.7e-4 -3.78739,0 -1.80868,-1.2336 -3.61708,-2.46693 -5.42522,-3.7 -1.26273,-2.7e-4 -2.52519,-2.7e-4 -3.78739,0"
          inkscape:path-effect="#path-effect5365"
          inkscape:connector-curvature="0"
          id="path5363"
-         d="m 66.988094,172.39636 c -1.26273,0 -2.52519,0 -4.060649,-0.61677 -1.535458,-0.61678 -3.343859,-1.8501 -4.879275,-2.46667 -1.535416,-0.61656 -2.797876,-0.61656 -4.060076,-0.61656"
-         style="opacity:1;fill:none;stroke:#ffffff;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 66.988095,174.54414 c -1.26273,0 -2.52519,0 -4.060649,-0.61677 -1.535458,-0.61678 -3.343859,-1.8501 -4.879275,-2.46667 -1.535416,-0.61656 -2.797876,-0.61656 -4.060076,-0.61656"
+         style="fill:none;stroke:#ffffff;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3, 0.5;stroke-dashoffset:0;stroke-opacity:1"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />
       <g
          id="g72484"
-         transform="matrix(-1,0,0,1,196.78775,-77.299421)"
+         transform="matrix(-1,0,0,1,196.78775,-75.151641)"
          inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600"
