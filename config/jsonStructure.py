@@ -4,6 +4,7 @@ data_structure = {
     "Carta Ortoimagem": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
         {"key": "inom", "type": str, "children": None, "required": True},
+        {"key": "edicao_produto", "type": str, "children": None, "required": False},
         {"key": "escala", "type": str, "children": None, "required": False},
         {"key": "mde_diagrama_elevacao", "type": dict, "children": [
             {"key": "caminho_mde", "type": str, "children": None, "required": True},
@@ -65,6 +66,7 @@ data_structure = {
     "Carta Topográfica": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
         {"key": "inom", "type": str, "children": None, "required": True},
+        {"key": "edicao_produto", "type": str, "children": None, "required": False},
         {"key": "escala", "type": str, "children": None, "required": False},
         {"key": "mde_diagrama_elevacao", "type": dict, "children": [
             {"key": "caminho_mde", "type": str, "children": None, "required": True},
@@ -148,6 +150,7 @@ data_structure = {
     "Carta Ortoimagem Militar": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
         {"key": "inom", "type": str, "children": None, "required": True},
+        {"key": "edicao_produto", "type": str, "children": None, "required": False},
         {"key": "escala", "type": str, "children": None, "required": False},
         {"key": "mde_diagrama_elevacao", "type": dict, "children": [
             {"key": "caminho_mde", "type": str, "children": None, "required": True},

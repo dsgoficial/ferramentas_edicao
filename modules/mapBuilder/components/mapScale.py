@@ -15,7 +15,9 @@ class MapScale:
 			composition_label_label_direita.setText(text_label_direita)
 		#label_escala
 		id_label_escala = "label_escala"
-		text_label_escala = "ESCALA 1:" + '{:.3f}'.format((int(scale)/1000))
+		edicao = data.get('edicao_produto', '1-DSG')
+		mi_str = f"MI {data.get('mi', None)}" if data.get('mi', None) is not None else f"INOM {data.get('inom', None)}"
+		text_label_escala = f"ESCALA 1:{(int(scale)/1000):.3f}  ―  {mi_str}  ―  EDIÇÃO {edicao}"
 		composition_label_label_escala = composition.itemById(id_label_escala)
 		if composition_label_label_escala is not None:
 			composition_label_label_escala.setText(text_label_escala)
