@@ -246,7 +246,6 @@ class MapBuildController(MapBuildControllerUtils):
         # TODO: run in a different thread
         # TODO: better layers / composition cleanup
         '''Runs the specified MapBuilder according to dlg / json preferences'''
-        self.setColorPalette()
         dlgCfg = self.setupDlgCfg(self.dlg)
         productType, productName = self.getProductType(dlgCfg.productType)
         builder = None
@@ -267,6 +266,7 @@ class MapBuildController(MapBuildControllerUtils):
         if self.dlg.productType.currentText() == 'Carta Ortoimagem OM':
             self.qptDlg()
         for jsonPath in dlgCfg.jsonFilePaths:
+            self.setColorPalette()
             jsonData = self.readJson(jsonPath)
             if 'tipo_produto' not in jsonData:
                 QMessageBox.warning(
