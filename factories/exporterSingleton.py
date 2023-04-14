@@ -7,6 +7,14 @@ from qgis.core import QgsLayoutExporter, QgsPrintLayout, QgsRasterLayer
 
 class ExporterSingleton:
 
+    exportNameDict = {
+        'orthoMap': 'Carta_Ortoimagem',
+        'topoMap': 'Carta_Topografica',
+        'omMap': 'Carta_Especial',
+        'omMap': 'Carta_Especial',
+        'militaryOrthoMap': 'Carta_Ortoimagem_Militar',
+    }
+
     def setParams(self, dlg: NamedTuple, data: Dict, debugMode: bool):
         '''Sets parameters for each export process
         Args:
@@ -18,7 +26,7 @@ class ExporterSingleton:
             self.basename = data.get('nome')
         else:
             self.basename = data.get('mi') or data.get('inom')
-        self.basename = f"{data.get('productType')}_{self.basename}"
+        self.basename = f"{self.exportNameDict.get(data.get('productType'))}_{self.basename}"
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
