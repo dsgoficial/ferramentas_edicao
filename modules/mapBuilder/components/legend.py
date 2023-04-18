@@ -42,7 +42,7 @@ class Legend():
         },
         'relevo': {
             'order': 7,
-            'order_classes': ['curva_nivel',  'ponto_cotado', 'elemento_fisiografico']
+            'order_classes': ['elemento_fisiografico', 'curva_nivel',  'ponto_cotado']
         }
     }
 
