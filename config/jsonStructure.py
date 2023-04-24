@@ -27,7 +27,7 @@ data_structure = {
         {"key": "classes_complementares", "type": list, "children": None, "required": False},
         {"key": "imagens", "type": list, "children": [
             {"key": "caminho_imagem", "type": str, "children": None, "required": True},
-            {"key": "caminho_estilo", "type": str, "children": None, "required": True},
+            {"key": "caminho_estilo", "type": str, "children": None, "required": False},
             {"key": "epsg", "type": str, "children": None, "required": True},
         ], "required": True},
         {"key": "dpi", "type": int, "children": None, "required": False},
@@ -128,7 +128,7 @@ data_structure = {
         ], "required": True},
         {"key": "imagens", "type": list, "children": [
             {"key": "caminho_imagem", "type": str, "children": None, "required": True},
-            {"key": "caminho_estilo", "type": str, "children": None, "required": True},
+            {"key": "caminho_estilo", "type": str, "children": None, "required": False},
             {"key": "epsg", "type": str, "children": None, "required": True},
         ], "required": True},
         {"key": "info_tecnica", "type": dict, "children": [
@@ -174,7 +174,7 @@ data_structure = {
         {"key": "classes_complementares", "type": list, "children": None, "required": False},
         {"key": "imagens", "type": list, "children": [
             {"key": "caminho_imagem", "type": str, "children": None, "required": True},
-            {"key": "caminho_estilo", "type": str, "children": None, "required": True},
+            {"key": "caminho_estilo", "type": str, "children": None, "required": False},
             {"key": "epsg", "type": str, "children": None, "required": True},
         ], "required": True},
         {"key": "dpi", "type": int, "children": None, "required": False},
@@ -242,6 +242,8 @@ def find_missing_required_keys(input_dict: dict, reference_schema=None, parent_k
                     parent_key=key
                 )
                 missing_key_set.update(missing_children_set)
+    if "center" in input_dict and "inom" in missing_key_set:
+        missing_key_set.remove("inom")
     return missing_key_set
 
 def validate_keys(input_dict: dict, required=True, reference_schema=None) -> bool:
