@@ -935,7 +935,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return 'prepareortho'
 
     def displayName(self):
-        return self.tr('Prepara carta ortoimagem')
+        return self.tr('Prepara Carta Ortoimagem')
 
     def group(self):
         return self.tr('Preparo de Edição')

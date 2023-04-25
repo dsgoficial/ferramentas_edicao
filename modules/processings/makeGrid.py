@@ -198,10 +198,10 @@ class MakeGrid(QgsProcessingAlgorithm):
         return self.tr('Gera Vetor de Grade')
 
     def group(self):
-        return self.tr('Edição')
+        return self.tr('Preparo de Edição')
 
     def groupId(self):
-        return 'edicao'
+        return 'preparo_edicao'
 
     def shortHelpString(self):
         return self.tr("O algoritmo gera o vetor de grade em UTM no fuso correto baseado na moldura e reprojeta para o epsg de interesse")

@@ -29,7 +29,7 @@ from .placePointSymbolInsideArea import PlacePointSymbolInsideArea
 from .placePowerPlantSymbol import PlacePowerPlantSymbol
 from .placeSymbolsOnTopOfAreaBuildings import PlaceSymbolsOnTopOfAreaBuildings
 from .prepareOrtho import PrepareOrtho
-from .prepareTopo import PrepareTopo
+# from .prepareTopo import PrepareTopo
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
@@ -45,7 +45,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MergeHighway())
         self.addAlgorithm(MergeRivers())
         self.addAlgorithm(PrepareOrtho())
-        self.addAlgorithm(PrepareTopo())
+        # self.addAlgorithm(PrepareTopo())
         self.addAlgorithm(InsertEnergyTower())
         self.addAlgorithm(InsertRoadMarker())
         self.addAlgorithm(HighestSpotOnTheFrame())
