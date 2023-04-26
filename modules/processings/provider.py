@@ -33,7 +33,7 @@ from .prepareOrtho import PrepareOrtho
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
-
+from .setSobreposition import SetSobreposition
 
 class Provider(QgsProcessingProvider):
 
@@ -69,6 +69,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PlaceMineralExtractionSymbol())
         self.addAlgorithm(PlaceAllAreaPointSymbols())
         self.addAlgorithm(BuildElevationDiagram())
+        self.addAlgorithm(SetSobreposition())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
