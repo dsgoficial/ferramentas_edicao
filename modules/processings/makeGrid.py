@@ -8,7 +8,10 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeatureSink,
                        QgsProcessingFeatureSourceDefinition,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterFeatureSource)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingMultiStepFeedback,
+                       QgsProcessingException,
+                       QgsWkbTypes)
 from qgis.PyQt.QtCore import QCoreApplication
 
 
@@ -47,7 +50,9 @@ class MakeGrid(QgsProcessingAlgorithm):
         inputFrameLayer = self.parameterAsSource( parameters,self.INPUT_FRAME, context )
         boolVar = self.parameterAsBool( parameters,self.INPUT_FRAME, context )
         gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
-        frameLayer2 = self.runAddCount(inputFrameLayer, boolVar)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(10, feedback)
+        multiStepFeedback.setCurrentStep(0)
+        frameLayer2 = self.runAddCount(inputFrameLayer, boolVar, context, feedback)
 
         if (gridScaleParam==0):
             gridScale = 25000
@@ -57,28 +62,34 @@ class MakeGrid(QgsProcessingAlgorithm):
             gridScale = 100000
         elif (gridScaleParam==3):
             gridScale = 250000
-
-        self.runCreateSpatialIndex(frameLayer2)
+        multiStepFeedback.setCurrentStep(1)
+        self.runCreateSpatialIndex(frameLayer2, context, multiStepFeedback)
         # Converter moldura para lat long
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        frameLayer = self.reprojectLayer(frameLayer2, crs)
+        multiStepFeedback.setCurrentStep(2)
+        frameLayer = self.reprojectLayer(frameLayer2, crs, context, multiStepFeedback)
         # Pegar centro da moldura  (se tiver mais de um polígono na camada de moldura pegar o centro dos centros)
-        if frameLayer.featureCount()>1:
-            xs=[]
-            ys=[]
-            for poly in frameLayer.getFeatures():
-                centroid=QgsPointXY(poly.geometry().centroid().constGet())
-                xs.append(centroid.x())
-                ys.append(centroid.y())
-            centroid= QgsPointXY(sum(xs)/len(xs), sum(ys)/len(ys))
-        else:
-            for poly in frameLayer.getFeatures():
-                centroid=QgsPointXY(poly.geometry().centroid().constGet())
-        # Descobrir o utm
-        utmString = getSirgasAuthIdByPointLatLong(centroid.y(), centroid.x())
-        utm = QgsCoordinateReferenceSystem(utmString)
-        frameLayerReprojected = self.reprojectLayer(frameLayer, utm)
+        multiStepFeedback.setCurrentStep(3)
+        utm = self.getUtmRefSys(frameLayer)
+        if utm is None:
+            raise QgsProcessingException("Camada de moldura vazia")
+        multiStepFeedback.setCurrentStep(4)
+        frameLayerReprojected = self.reprojectLayer(frameLayer, utm, context, multiStepFeedback)
         # Criar a grade com 4cm (baseado na escala) de distancia entre as linhas no fuso
+        multiStepFeedback.setCurrentStep(5)
+        gridSize, xmin, xmax, ymin, ymax = self.getGridParameters(gridScale, frameLayerReprojected)
+        multiStepFeedback.setCurrentStep(6)
+        grid = self.makeGrid(gridSize, utm, xmin, xmax, ymin, ymax, parameters, context, multiStepFeedback)
+        # Reprojetar para CRS de destino (moldura)
+        multiStepFeedback.setCurrentStep(7)
+        reprojectGrid = self.reprojectLayer(grid,inputFrameLayer.sourceCrs(), context, multiStepFeedback)
+        multiStepFeedback.setCurrentStep(8)
+        lineLayer = self.convertPolygonToLines(reprojectGrid, context, multiStepFeedback)
+        multiStepFeedback.setCurrentStep(9)
+        newLayer = self.outLayer(parameters, context, lineLayer, QgsWkbTypes.LineString, multiStepFeedback)
+        return {self.OUTPUT: newLayer}
+
+    def getGridParameters(self, gridScale, frameLayerReprojected):
         gridSize = 4*gridScale/100
         ptLyrExt = frameLayerReprojected.extent()
         xmin = ptLyrExt.xMinimum()
@@ -86,14 +97,29 @@ class MakeGrid(QgsProcessingAlgorithm):
         ymin = ptLyrExt.yMinimum()
         ymax = ptLyrExt.yMaximum()
         xmin, xmax, ymin, ymax = self.processExtent(xmin, xmax, ymin, ymax, gridSize)
-        grid = self.makeGrid(gridSize, utm, xmin, xmax, ymin, ymax, parameters, context, feedback)
-        # Reprojetar para CRS de destino (moldura)
-        reprojectGrid = self.reprojectLayer(grid,inputFrameLayer.sourceCrs())
-        lineLayer = self.convertPolygonToLines(reprojectGrid)
-        newLayer = self.outLayer(parameters, context, lineLayer, 2)
-        return {self.OUTPUT: newLayer}
+        return gridSize,xmin,xmax,ymin,ymax
 
-    def runAddCount(self, inputLyr, boolVar):
+    def getUtmRefSys(self, frameLayer):
+        centroidList = []
+        for poly in frameLayer.getFeatures():
+            geom = poly.geometry()
+            centroid = geom.centroid()
+            centroidList.append(QgsPointXY(centroid.constGet()))
+
+        nCentroids = len(centroidList)
+        if nCentroids == 0:
+            return None
+        centroid = centroidList[0] if nCentroids == 1 \
+            else QgsPointXY(
+                sum(centroid.x() for centroid in centroidList)/nCentroids,
+                sum(centroid.y() for centroid in centroidList)/nCentroids,
+            )
+        # Descobrir o utm
+        utmString = getSirgasAuthIdByPointLatLong(centroid.y(), centroid.x())
+        utm = QgsCoordinateReferenceSystem(utmString)
+        return utm
+
+    def runAddCount(self, inputLyr, boolVar, context, feedback):
         output = processing.run(
             "native:addautoincrementalfield",
             {
@@ -104,37 +130,45 @@ class MakeGrid(QgsProcessingAlgorithm):
                 'SORT_EXPRESSION':'',
                 'SORT_ASCENDING':False,
                 'SORT_NULLS_FIRST':False,
-                'OUTPUT':'TEMPORARY_OUTPUT'
-            }
+                'OUTPUT':'memory:',
+            },
+            context=context,
+            feedback=feedback,
         )
         return output['OUTPUT']
     
-    def runCreateSpatialIndex(self, inputLyr):
+    def runCreateSpatialIndex(self, inputLyr, context, feedback):
         processing.run(
             "native:createspatialindex",
-            {'INPUT':inputLyr}
+            {'INPUT':inputLyr},
+            context=context,
+            feedback=feedback,
         )
 
         return False
     
-    def convertPolygonToLines(self, inputLayer):
+    def convertPolygonToLines(self, inputLayer, context, feedback):
         output = processing.run(
             "native:polygonstolines",
             {
                 'INPUT': inputLayer,
                 'OUTPUT': 'memory:'
-            }
+            },
+            context=context,
+            feedback=feedback,
         )
         return output['OUTPUT']
 
-    def reprojectLayer(self, layer, crs):
+    def reprojectLayer(self, layer, crs, context, feedback):
         output = processing.run(
             "native:reprojectlayer",
             {
                 'INPUT':layer,
                 'TARGET_CRS':crs,
-                'OUTPUT':'TEMPORARY_OUTPUT'
-            }
+                'OUTPUT':'memory:'
+            },
+            context=context,
+            feedback=feedback,
         )
         return output['OUTPUT']
 
@@ -156,21 +190,25 @@ class MakeGrid(QgsProcessingAlgorithm):
                 'VOVERLAY':0,
                 'CRS':CRS,
                 'OUTPUT': parameters['OUTPUT']
-            }
+            },
+            context=context,
+            feedback=feedback,
         )
         return output['OUTPUT']
     
-    def convertPolygonToLines(self, inputLayer):
+    def convertPolygonToLines(self, inputLayer, context, feedback):
         output = processing.run(
             "native:polygonstolines",
             {
                 'INPUT': inputLayer,
                 'OUTPUT': 'memory:'
-            }
+            },
+            context=context,
+            feedback=feedback,
         )
         return output['OUTPUT']
     
-    def outLayer(self, parameters, context, layer, type):
+    def outLayer(self, parameters, context, layer, type, feedback):
 
         (sink, newLayer) = self.parameterAsSink(
             parameters,
@@ -180,8 +218,15 @@ class MakeGrid(QgsProcessingAlgorithm):
             type, #1point 2line 3polygon 4multipoint 5 multiline
             layer.sourceCrs()
         )
-        for feature in layer.getFeatures():
+        nFeats = layer.featureCount()
+        if nFeats == 0:
+            return newLayer
+        stepSize = 100/nFeats
+        for current, feature in enumerate(layer.getFeatures()):
+            if feedback.isCanceled():
+                break
             sink.addFeature(feature, QgsFeatureSink.FastInsert)
+            feedback.setProgress(current * stepSize)
         
         return newLayer
 
