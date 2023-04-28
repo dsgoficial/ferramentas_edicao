@@ -187,5 +187,3 @@ class ProcessingUtils:
                 idsToRemove.append( featureBId )
         layer.deleteFeatures( idsToRemove )
         layer.commitChanges()
-    
-        
