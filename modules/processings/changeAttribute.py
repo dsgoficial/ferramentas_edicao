@@ -1,9 +1,9 @@
 from qgis.core import (QgsProcessing, QgsProcessingParameterMultipleLayers,
-                       QgsProcessingAlgorithm, QgsProcessingParameterEnum, NULL)
+                       QgsProcessingAlgorithm, QgsProcessingParameterEnum, NULL, QgsProcessingMultiStepFeedback)
 from qgis.PyQt.QtCore import QCoreApplication
 from .processingUtils import ProcessingUtils
 import concurrent.futures
-
+import os
 
 class ChangeAttribute(QgsProcessingAlgorithm):
 
@@ -59,10 +59,8 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         return {self.OUTPUT: ''}
 
     def process_layer(self, layer):
-        layer.startEditing()
-        layer.beginEditCommand("Atualizando atributos")
+
         table_name = layer.dataProvider().uri().table()
-        lyrCrs = layer.dataProvider().crs()
 
         if table_name in ['constr_extracao_mineral_p', 'constr_extracao_mineral_a']:
             processing_function = self.defaultExtMineral
@@ -102,6 +100,12 @@ class ChangeAttribute(QgsProcessingAlgorithm):
             processing_function = self.defaultAreaSemDados
         elif table_name in ['elemnat_trecho_drenagem_l']:
             processing_function = self.defaultTrechoDrenagem
+        else:
+            return
+
+        layer.startEditing()
+        layer.beginEditCommand("Atualizando atributos")
+        lyrCrs = layer.dataProvider().crs()
 
         for feature in layer.getFeatures():
             updated_feature = processing_function(feature, lyrCrs)
@@ -252,7 +256,7 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         if feature['revestimento'] != 3:
             texto_edicao.append('Revestimento desconhecido')
         if feature['altitude'] != NULL:
-            texto_edicao.append(feature['altitude'])
+            texto_edicao.append(round(feature['altitude']))
         new_att[feature.fieldNameIndex('texto_edicao')] = '|'.join(
             map(str, texto_edicao))
         return {feature.id(): new_att}
