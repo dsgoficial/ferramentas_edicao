@@ -65,6 +65,32 @@ class MergeRivers(QgsProcessingAlgorithm):
             feedback=feedback
         )
 
+    def convertPolygonToLines(self, inputLayer, context, feedback):
+        output = processing.run(
+            "native:polygonstolines",
+            {
+                'INPUT': inputLayer,
+                'OUTPUT': 'TEMPORARY_OUTPUT'
+            },
+            context=context,
+            feedback=feedback
+        )
+        return output['OUTPUT']
+
+    def clipLines(self, inputLayer, segmentLayer, context, feedback):
+        output = processing.run(
+            "native:splitwithlines",
+            {
+                'INPUT': inputLayer,
+                'LINES': segmentLayer,
+                'OUTPUT': 'TEMPORARY_OUTPUT'
+            },
+            context=context,
+            feedback=feedback
+        )
+        return output['OUTPUT']
+        
+
     def processAlgorithm(self, parameters, context, feedback):
         drainageLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_LAYER_L, context)
@@ -79,9 +105,8 @@ class MergeRivers(QgsProcessingAlgorithm):
             QgsWkbTypes.MultiLineString,
             drainageLayer.sourceCrs()
         )
-        steps = 5
-        if frameLayer is not None:
-            steps = 6
+        steps = 8
+
         multiStepFeedback = QgsProcessingMultiStepFeedback(
             steps, feedback) if feedback is not None else None
         if multiStepFeedback is not None:
@@ -97,25 +122,52 @@ class MergeRivers(QgsProcessingAlgorithm):
         self.runCreateSpatialIndex(
             drainageLayer, context, feedback=multiStepFeedback)
 
-        if frameLayer is not None:
-            if multiStepFeedback is not None:
-                multiStepFeedback.setCurrentStep(2)
-                multiStepFeedback.pushInfo(self.tr('Clipping on frame layer.'))
-            drainageLayer = self.clipLayer(
-                drainageLayer, frameLayer, context, feedback=multiStepFeedback)
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(2)
+            multiStepFeedback.pushInfo(self.tr('Dissolving frame layer'))
+
+        dissolvedGeographicBoundaryLyr = processing.run(
+            "native:dissolve",
+            {
+                "INPUT": frameLayer,
+                "FIELD": [],
+                "OUTPUT": "TEMPORARY_OUTPUT"
+            },
+            context=context,
+            feedback=multiStepFeedback,
+        )["OUTPUT"]
 
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(steps-2)
+            multiStepFeedback.setCurrentStep(3)
+            multiStepFeedback.pushInfo(self.tr('Clipping on frame layer.'))
+
+        drainageLayer = self.clipLayer(
+            drainageLayer, dissolvedGeographicBoundaryLyr, context, feedback=multiStepFeedback)
+
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(4)
             multiStepFeedback.pushInfo(self.tr('Merging lines.'))
-        newLayer = self.mergeLinesFeatures(
+        drainageLayer = self.mergeLinesFeatures(
             drainageLayer, feedback=multiStepFeedback)
 
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(steps-1)
+            multiStepFeedback.setCurrentStep(5)
+            multiStepFeedback.pushInfo(self.tr('Converting frame to lines'))
+
+        frameLinesLayer = self.convertPolygonToLines(frameLayer, context, feedback=multiStepFeedback)
+
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(6)
+            multiStepFeedback.pushInfo(self.tr('Clipping lines for each frame.'))
+        drainageLayer = self.clipLines(
+            drainageLayer, frameLinesLayer, context, feedback=multiStepFeedback)
+
+        if multiStepFeedback is not None:
+            multiStepFeedback.setCurrentStep(7)
             multiStepFeedback.pushInfo(
                 self.tr('Adding features to output layer.'))
 
-        for feature in newLayer.getFeatures():
+        for feature in drainageLayer.getFeatures():
             self.addSink(feature, sink_l)
 
         return {self.OUTPUT_LAYER_L: sinkId_l}
@@ -159,7 +211,7 @@ class MergeRivers(QgsProcessingAlgorithm):
         return newLayer
 
     def condition(self, feat1, feat2):
-        return (feat1['tipo'] == feat2['tipo'] and feat1['nome'] == feat2['nome'] and feat1['situacao_poligono'] == feat2['situacao_poligono'])
+        return (feat1['tipo'] == feat2['tipo'] and feat1['nome'] == feat2['nome'] and feat1['situacao_em_poligono'] == feat2['situacao_em_poligono'])
 
     def clipLayer(self, layer, frame, context, feedback):
         r = processing.run(
