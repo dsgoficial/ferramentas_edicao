@@ -74,8 +74,10 @@ class ChangeAttribute(QgsProcessingAlgorithm):
             processing_function = self.defaultIlhaA
         elif table_name in ['elemnat_ponto_cotado_p']:
             processing_function = self.defaultPtoCotado
-        elif table_name in ['elemnat_toponimo_fisiografico_natural_p', 'elemnat_toponimo_fisiografico_natural_l']:
-            processing_function = self.defaultElemnatTopoFisioPL
+        elif table_name in ['elemnat_toponimo_fisiografico_natural_p']:
+            processing_function = self.defaultElemnatTopoFisioP
+        elif table_name in ['elemnat_toponimo_fisiografico_natural_l']:
+            processing_function = self.defaultElemnatTopoFisioL
         elif table_name in ['elemnat_toponimo_fisiografico_natural_a']:
             processing_function = self.defaultElemnatTopoFisioA
         elif table_name in ['infra_elemento_energia_p', 'infra_elemento_energia_a']:
@@ -182,13 +184,17 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex('ancora_horizontal')] = 1
         return {feature.id(): new_att}
 
-    def defaultElemnatTopoFisioPL(self, feature, lyrCrs, layer):
+    def defaultElemnatTopoFisioP(self, feature, lyrCrs):
         new_att = {}
         new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
-        if layer.dataProvider().uri().table() in ['elemnat_toponimo_fisiografico_natural_p']:
-            new_att[feature.fieldNameIndex('justificativa_txt')] = 1
+        new_att[feature.fieldNameIndex('justificativa_txt')] = 1
         return {feature.id(): new_att}
-    
+
+    def defaultElemnatTopoFisioL(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
+        return {feature.id(): new_att}
+
     def defaultElemnatTopoFisioA(self, feature, lyrCrs):
         new_att = {}
         new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
