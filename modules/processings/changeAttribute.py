@@ -75,7 +75,9 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         elif table_name in ['elemnat_ponto_cotado_p']:
             processing_function = self.defaultPtoCotado
         elif table_name in ['elemnat_toponimo_fisiografico_natural_p', 'elemnat_toponimo_fisiografico_natural_l']:
-            processing_function = self.defaultElemnatTopoFisio
+            processing_function = self.defaultElemnatTopoFisioPL
+        elif table_name in ['elemnat_toponimo_fisiografico_natural_a']:
+            processing_function = self.defaultElemnatTopoFisioA
         elif table_name in ['infra_elemento_energia_p', 'infra_elemento_energia_a']:
             processing_function = self.defaultInfraElemEnergPA
         elif table_name in ['infra_elemento_energia_l']:
@@ -100,6 +102,8 @@ class ChangeAttribute(QgsProcessingAlgorithm):
             processing_function = self.defaultAreaSemDados
         elif table_name in ['elemnat_trecho_drenagem_l']:
             processing_function = self.defaultTrechoDrenagem
+        elif table_name in ['llp_aglomerado_rural_p', 'llp_localidade_p', 'llp_nome_local_p']:
+            processing_function = self.defaultllpLocalidade
         else:
             return
 
@@ -178,11 +182,20 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex('ancora_horizontal')] = 1
         return {feature.id(): new_att}
 
-    def defaultElemnatTopoFisio(self, feature, lyrCrs):
+    def defaultElemnatTopoFisioPL(self, feature, lyrCrs, layer):
         new_att = {}
         new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
         if layer.dataProvider().uri().table() in ['elemnat_toponimo_fisiografico_natural_p']:
             new_att[feature.fieldNameIndex('justificativa_txt')] = 1
+        return {feature.id(): new_att}
+    
+    def defaultElemnatTopoFisioA(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
+        size = ProcessingUtils.getEditPolyLabelFontSize(
+            feature, self.scale, lyrCrs)
+        new_att[feature.fieldNameIndex(
+            'tamanho_txt')] = size if size > 6 else 7
         return {feature.id(): new_att}
 
     def defaultInfraElemEnergPA(self, feature, lyrCrs):
@@ -265,7 +278,7 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         new_att = {}
         new_att[feature.fieldNameIndex('justificativa_txt')] = 2
         new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
-        size = ProcessingUtils.getWaterPolyLabelFontSize(
+        size = ProcessingUtils.getEditPolyLabelFontSize(
             feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex(
             'tamanho_txt')] = size if size > 6 else 7
@@ -275,7 +288,7 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         new_att = {}
         new_att[feature.fieldNameIndex('justificativa_txt')] = 2
         new_att[feature.fieldNameIndex('texto_edicao')] = 'DADOS INCOMPLETOS'
-        size = ProcessingUtils.getWaterPolyLabelFontSize(
+        size = ProcessingUtils.getEditPolyLabelFontSize(
             feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex(
             'tamanho_txt')] = size if size > 6 else 7
@@ -290,6 +303,17 @@ class ChangeAttribute(QgsProcessingAlgorithm):
             new_att[feature.fieldNameIndex('posicao_rotulo')] = 1
         elif feature['situacao_em_poligono'] in [1]:
             new_att[feature.fieldNameIndex('posicao_rotulo')] = 2
+        size = ProcessingUtils.getRiverOutPolyLabelFontSize(
+            feature, self.scale, lyrCrs)
+        new_att[feature.fieldNameIndex(
+            'tamanho_txt')] = size if size > 6 else 7
+        return {feature.id(): new_att}
+
+    def defaultllpLocalidade(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex('justificativa_txt')] = 2
+        new_att[feature.fieldNameIndex('visivel')] = 1
+        new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
         return {feature.id(): new_att}
 
     def tr(self, string):
@@ -312,3 +336,4 @@ class ChangeAttribute(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr("")
+    

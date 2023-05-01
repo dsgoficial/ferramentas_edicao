@@ -143,6 +143,35 @@ class ProcessingUtils:
             return 14
         else:
             return 16
+        
+    def getEditPolyLabelFontSize(feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem) -> int:
+        '''return label font size based on feature area according to MTM '''
+        if lyrCrs.isGeographic():
+            convertArea = QgsDistanceArea()
+            convertArea.setEllipsoid(lyrCrs.authid())
+            measure = convertArea.measureArea(feat.geometry())
+            area = convertArea.convertAreaMeasurement(measure, QgsUnitTypes.AreaSquareMeters)
+        else:
+            area = feat.geometry().area()
+        scaleComparator = (scale/1000)**2
+        if area < 770*scaleComparator:
+            return 6
+        elif area < 2300*scaleComparator:
+            return 7
+        elif area < 3600*scaleComparator:
+            return 8
+        elif area < 5200*scaleComparator:
+            return 9
+        elif area < 9800*scaleComparator:
+            return 10
+        elif area < 16500*scaleComparator:
+            return 12
+        elif area < 25000*scaleComparator:
+            return 14
+        elif area >= 25000*scaleComparator:
+            return 16
+        else:
+            return 18
 
     def runAddCount(self, inputLyr):
         output = processing.run(
