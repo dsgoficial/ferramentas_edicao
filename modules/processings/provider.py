@@ -35,6 +35,7 @@ from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
 from .setSobreposition import SetSobreposition
 from .changeAttribute import ChangeAttribute
+from .sizeTextRiverLine import SizeTextRiverLine
 
 class Provider(QgsProcessingProvider):
 
@@ -72,6 +73,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(BuildElevationDiagram())
         self.addAlgorithm(SetSobreposition())
         self.addAlgorithm(ChangeAttribute())
+        self.addAlgorithm(SizeTextRiverLine())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()

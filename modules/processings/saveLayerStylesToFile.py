@@ -83,7 +83,7 @@ class SaveLayerStylesToFile(QgsProcessingAlgorithm):
         return 'auxiliar'
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("O algoritmo exporta os estilos (.qml) de um grupo para uma pasta.")
 
 
 class GroupsWidgetWrapper(WidgetWrapper):

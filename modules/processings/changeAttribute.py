@@ -309,10 +309,6 @@ class ChangeAttribute(QgsProcessingAlgorithm):
             new_att[feature.fieldNameIndex('posicao_rotulo')] = 1
         elif feature['situacao_em_poligono'] in [1]:
             new_att[feature.fieldNameIndex('posicao_rotulo')] = 2
-        size = ProcessingUtils.getRiverOutPolyLabelFontSize(
-            feature, self.scale, lyrCrs)
-        new_att[feature.fieldNameIndex(
-            'tamanho_txt')] = size if size > 6 else 7
         return {feature.id(): new_att}
 
     def defaultllpLocalidade(self, feature, lyrCrs):
@@ -341,5 +337,5 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         return 'edicao'
 
     def shortHelpString(self):
-        return self.tr("")
+        return self.tr("O algoritmo configura os atributos default de Carta Ortoimagem.")
     
