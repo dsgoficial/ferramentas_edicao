@@ -38,9 +38,12 @@ class SetSobreposition(QgsProcessingAlgorithm):
         atributo = self.parameterAsString(parameters, self.ATRIBUTO, context)
         updated = False
 
+
         for layer_sobreposition in layer_sobreposition_list:
             provider = layer_sobreposition.dataProvider()
             layer_sobreposition.startEditing()
+            layer_sobreposition.beginEditCommand("Atualizando atributo sobreposição")
+
             for feature in layer_sobreposition.getFeatures():
                 request = QgsFeatureRequest().setFilterRect(feature.geometry().boundingBox())
                 geomEngine = QgsGeometry().createGeometryEngine(feature.geometry().constGet())
@@ -50,13 +53,19 @@ class SetSobreposition(QgsProcessingAlgorithm):
                         intersection = geomEngine.intersection(feat2.geometry().constGet())
                         if intersection.geometryType() in ('LineString','MultiLineString'):
                             updated = True
-                            layer_sobreposition.changeAttributeValue(feature.id(), provider.fieldNameIndex(atributo), 1)
+                            new_att = {}
+                            new_att[feature.fieldNameIndex(atributo)] = 1
+                            layer_sobreposition.dataProvider().changeAttributeValues({feature.id(): new_att})
                             break    
                     if updated is True:
                         break
                 if updated is False:
-                    layer_sobreposition.changeAttributeValue(feature.id(), provider.fieldNameIndex(atributo), 2)
+                    new_att = {}
+                    new_att[feature.fieldNameIndex(atributo)] = 2
+                    layer_sobreposition.dataProvider().changeAttributeValues({feature.id(): new_att})
                 updated = False  
+        
+            layer_sobreposition.endEditCommand()
 
         return {self.OUTPUT: ''}
    
