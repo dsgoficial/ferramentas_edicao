@@ -47,8 +47,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_FRAME,
                 self.tr('Selecionar camada de moldura'),
-                [QgsProcessing.TypeVectorPolygon],
-                optional = True
+                [QgsProcessing.TypeVectorPolygon]
             )
         )
 
@@ -79,14 +78,20 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             scaleMini = 2217000
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-        if frameLayer:
-            frameLinesLayer = self.convertPolygonToLines(frameLayer)
-            
+        frameLayer = self.runAddCount(frameLayer, feedback=feedback)
+        self.runCreateSpatialIndex(frameLayer, feedback=feedback)
+
+        frameLinesLayer = self.convertPolygonToLines(frameLayer)
+        self.runCreateSpatialIndex(frameLinesLayer, feedback=feedback)
+
+        layer_road = self.runAddCount(layer_road, feedback=feedback)
+        self.runCreateSpatialIndex(layer_road, feedback=feedback)
+
         highwayLyrBeforeClip = self.mergeHighways(layer_road)
-        if frameLayer:
-            highwayLyr = self.clipLayer(highwayLyrBeforeClip, frameLayer)
-        else:
-            highwayLyr = highwayLyrBeforeClip
+        self.runCreateSpatialIndex(highwayLyrBeforeClip, feedback=feedback)
+        highwayLyr = self.clipLayer(highwayLyrBeforeClip, frameLayer)
+        self.runCreateSpatialIndex(highwayLyr, feedback=feedback)
+
         distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
         pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao'])
         self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAngles1, 1, 0)
@@ -100,12 +105,11 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             chopDistance = self.getChopDistance(highwayLyrSubstring, scale*0.2)
             pointsAndAnglesN = self.chopLineLayer(highwayLyrSubstring, chopDistance, ['sigla', 'jurisdicao'])
             self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAnglesN, 1, n+1)
-        if frameLayer:
             distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
             self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
 
 
-        return {self.OUTPUT: 'concluído'}
+        return {self.OUTPUT: ''}
 
     
     def getLineSubstring(self, layer, startDistance, endDistance):
@@ -190,12 +194,15 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 if len(name)>n:
                     n=len(name)
         return n
+    
     @staticmethod
     def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, isMiniMap, n):
         '''Populates the layer edicao_identificador_trecho_rod_p
         '''
         fields = layer.fields()
         layer.startEditing()
+        layer.beginEditCommand("Criando pontos")
+        feats = []
         for point, angle, mapping in pointsAndAngles:
             feat = QgsFeature(fields)
             geom = QgsGeometry.fromWkt(point.asWkt())
@@ -218,9 +225,9 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 feat.setAttribute('jurisdicao', jurisdicao)
             # if jurisdicao:=mapping.get('jurisdicao'):
             #     feat.setAttribute('jurisdicao', jurisdicao)
-            layer.addFeature(feat)
-        # layer.commitChanges()
-
+            feats.append(feat)
+        layer.dataProvider().addFeatures(feats)
+        layer.endEditCommand()
     
     def clipLayer(self, layer, frame):
         r = processing.run(
@@ -245,13 +252,39 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
 
     def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance):
         toBeRemoved = []
+        pointsLayer.startEditing()
+        pointsLayer.beginEditCommand("Removendo próximo a moldura")
         for point in pointsLayer.getFeatures():
             for frameLine in frameLinesLayer.getFeatures():
                 dist = QgsGeometry.distance(point.geometry(), frameLine.geometry())
                 if dist<distance:
                     toBeRemoved.append(point.id())
-        pointsLayer.deleteFeatures(toBeRemoved)
+        pointsLayer.dataProvider().deleteFeatures(toBeRemoved)
+        pointsLayer.endEditCommand()
 
+    def runAddCount(self, inputLyr, feedback):
+        output = processing.run(
+            "native:addautoincrementalfield",
+            {
+                'INPUT':inputLyr,
+                'FIELD_NAME':'AUTO',
+                'START':0,
+                'GROUP_FIELDS':[],
+                'SORT_EXPRESSION':'',
+                'SORT_ASCENDING':False,
+                'SORT_NULLS_FIRST':False,
+                'OUTPUT':'TEMPORARY_OUTPUT'
+            },
+            feedback=feedback
+        )
+        return output['OUTPUT']
+
+    def runCreateSpatialIndex(self, inputLyr, feedback):
+        processing.run(
+            "native:createspatialindex",
+            {'INPUT':inputLyr},
+            feedback=feedback
+        )
 
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)

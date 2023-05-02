@@ -53,12 +53,9 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_FRAME,
                 self.tr('Selecionar camada de moldura'),
-                [QgsProcessing.TypeVectorPolygon],
-                optional = True
+                [QgsProcessing.TypeVectorPolygon]
             )
         )
-
-
 
     def processAlgorithm(self, parameters, context, feedback):      
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
@@ -75,27 +72,32 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             scale = 250000
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-        if frameLayer:
-            frameLinesLayer = self.convertPolygonToLines(frameLayer)
+        frameLayer = self.runAddCount(frameLayer, feedback=feedback)
+        self.runCreateSpatialIndex(frameLayer, feedback=feedback)
+
+        frameLinesLayer = self.convertPolygonToLines(frameLayer)
+        self.runCreateSpatialIndex(frameLinesLayer, feedback=feedback)
+
+        lyr = self.runAddCount(lyr, feedback=feedback)
+        self.runCreateSpatialIndex(lyr, feedback=feedback)
 
         layerToCreateSpacedSymbolsCase1 = {
             'infra_elemento_energia_l':'edicao_simb_torre_energia_p'
         }
 
         energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5)
-        if frameLayer:
-            energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer)
-        else:
-            energyLyr = energyLyrBeforeClip
+        self.runCreateSpatialIndex(energyLyrBeforeClip, feedback=feedback)
+        energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer)
+        self.runCreateSpatialIndex(energyLyr, feedback=feedback)
+
         distance = self.getChopDistance(energyLyr, scale * 0.02)
         pointsAndAngles = self.chopLineLayer(energyLyr, distance)
         self.populateEnergyTowerSymbolLayer(tower,pointsAndAngles)
-        if frameLayer:
-            distanceNextToFrame = self.getChopDistance(energyLyr, scale * 0.006)
-            self.removePointsNextToFrame(frameLinesLayer, tower, distanceNextToFrame)
+        distanceNextToFrame = self.getChopDistance(energyLyr, scale * 0.006)
+        self.removePointsNextToFrame(frameLinesLayer, tower, distanceNextToFrame)
         distanceToRemoveEnergySymbol = self.getChopDistance(tower, scale * 0.003)
 
-        return {self.OUTPUT: 'concluído'}
+        return {self.OUTPUT: ''}
 
 
     def mergeEnergyLines(self, lyr, limit):
@@ -169,13 +171,17 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         '''
         fields = layer.fields()
         layer.startEditing()
+        layer.beginEditCommand("Criando pontos")
+        feats = []
         for point, angle, _ in pointsAndAngles:
             feat = QgsFeature(fields)
             geom = QgsGeometry.fromWkt(point.asWkt())
             feat.setGeometry(geom)
             feat.setAttribute('simb_rot', angle)
-            layer.addFeature(feat)
-        # layer.commitChanges()
+            feats.append(feat)
+        
+        layer.dataProvider().addFeatures(feats)
+        layer.endEditCommand()
     
 
     def clipLayer(self, layer, frame):
@@ -201,12 +207,39 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
     def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance):
         toBeRemoved = []
+        pointsLayer.startEditing()
+        pointsLayer.beginEditCommand("Removendo próximo a moldura")
         for point in pointsLayer.getFeatures():
             for frameLine in frameLinesLayer.getFeatures():
                 dist = QgsGeometry.distance(point.geometry(), frameLine.geometry())
                 if dist<distance:
                     toBeRemoved.append(point.id())
-        pointsLayer.deleteFeatures(toBeRemoved)
+        pointsLayer.dataProvider().deleteFeatures(toBeRemoved)
+        pointsLayer.endEditCommand()
+
+    def runAddCount(self, inputLyr, feedback):
+        output = processing.run(
+            "native:addautoincrementalfield",
+            {
+                'INPUT':inputLyr,
+                'FIELD_NAME':'AUTO',
+                'START':0,
+                'GROUP_FIELDS':[],
+                'SORT_EXPRESSION':'',
+                'SORT_ASCENDING':False,
+                'SORT_NULLS_FIRST':False,
+                'OUTPUT':'TEMPORARY_OUTPUT'
+            },
+            feedback=feedback
+        )
+        return output['OUTPUT']
+
+    def runCreateSpatialIndex(self, inputLyr, feedback):
+        processing.run(
+            "native:createspatialindex",
+            {'INPUT':inputLyr},
+            feedback=feedback
+        )
 
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
