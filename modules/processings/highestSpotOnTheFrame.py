@@ -55,6 +55,9 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         higuestSpotField = self.parameterAsFields(parameters, self.INPUT_HIGHEST_SPOT_FIELD, context)[0]
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
 
+        spotLayer.startEditing()
+        spotLayer.beginEditCommand("Atualizando atributo cota mais alta")
+
         for frameFeature in frameLayer.getFeatures():
             frameGeometry = frameFeature.geometry()
             request = QgsFeatureRequest().setFilterRect( frameGeometry.boundingBox() ) 
@@ -70,16 +73,14 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
                 if maxSpotFeature:
                     maxSpotFeature[ higuestSpotField ] = 2
                     self.updateLayerFeature( spotLayer, maxSpotFeature)
-                maxSpotFeature = spotFeature
-                maxSpotFeature[ higuestSpotField ] = 1
-                self.updateLayerFeature( spotLayer, maxSpotFeature)
+                new_att = {}
+                new_att[spotFeature.fieldNameIndex(higuestSpotField)] = 1
+                spotLayer.dataProvider().changeAttributeValues({spotFeature.id(): new_att})
                 
-        
+        spotLayer.endEditCommand()
+      
         return {self.OUTPUT: ''}
 
-    def updateLayerFeature(self, layer, feature):
-        layer.startEditing()
-        layer.updateFeature(feature)
    
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
