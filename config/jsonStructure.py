@@ -250,9 +250,7 @@ def validate_keys(input_dict: dict, required=True, reference_schema=None) -> boo
     reference_schema = data_structure if reference_schema is None else reference_schema
     for item in filter(lambda x: x.get("required", None) is required, reference_schema):
         key = item["key"]
-        if key == "inom" and "center" not in input_dict:
-            return False
-        elif key == "inom" and "center" in input_dict:
+        if key == "inom" and "center" in input_dict:
             continue
         if key not in input_dict:
             return False
