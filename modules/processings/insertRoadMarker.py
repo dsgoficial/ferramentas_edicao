@@ -103,7 +103,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             distanceFromSymbol = self.getChopDistance(highwayLyr, scale * (n+1)* 0.008)
             highwayLyrSubstring = self.getLineSubstring(highwayLyr, distanceFromSymbol, QgsProperty.fromExpression('length( $geometry)'))
             chopDistance = self.getChopDistance(highwayLyrSubstring, scale*0.2)
-            pointsAndAnglesN = self.chopLineLayer(highwayLyrSubstring, chopDistance, ['sigla', 'jurisdicao'])
+            pointsAndAnglesN = self.chopLineLayer(highwayLyrSubstring, chopDistance, ['sigla', 'jurisdicao', 'tipo'])
             self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAnglesN, 1, n+1)
             distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
             self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
@@ -223,6 +223,8 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 elif mapping.get('jurisdicao'):
                     jurisdicao = mapping.get('jurisdicao')
                 feat.setAttribute('jurisdicao', jurisdicao)
+                tipo = mapping.get('tipo')
+                feat.setAttribute('tipo', tipo)
             # if jurisdicao:=mapping.get('jurisdicao'):
             #     feat.setAttribute('jurisdicao', jurisdicao)
             feats.append(feat)
