@@ -87,13 +87,11 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         layer_road = self.runAddCount(layer_road, feedback=feedback)
         self.runCreateSpatialIndex(layer_road, feedback=feedback)
 
-        highwayLyrBeforeClip = self.mergeHighways(layer_road)
-        self.runCreateSpatialIndex(highwayLyrBeforeClip, feedback=feedback)
-        highwayLyr = self.clipLayer(highwayLyrBeforeClip, frameLayer)
+        highwayLyr = self.mergeHighways(layer_road, frameLayer)
         self.runCreateSpatialIndex(highwayLyr, feedback=feedback)
 
         distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
-        pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao'])
+        pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao', 'tipo'])
         self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAngles1, 1, 0)
 
         maxRoadIndentificationNumber = self.findMaxRoadIndentificationNumber(pointsAndAngles1)
@@ -177,10 +175,11 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 pointsAndAngles.append((point, angle, attributeMapping))
         return pointsAndAngles
 
-    def mergeHighways(self, lyr):
+    def mergeHighways(self, lyr, frame):
         r = processing.run(
             'ferramentasedicao:mergehighway',
             {   'INPUT_LAYER_L' : lyr,
+                'INPUT_FRAME_A' : frame,
                 'OUTPUT_LAYER_L' : 'TEMPORARY_OUTPUT'
             }
         )
