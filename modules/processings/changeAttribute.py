@@ -86,7 +86,7 @@ class ChangeAttribute(QgsProcessingAlgorithm):
             processing_function = self.defaultInfraElemEnergL
         elif table_name in ['infra_elemento_infraestrutura_p', 'infra_elemento_infraestrutura_l', 'infra_elemento_infraestrutura_a']:
             processing_function = self.defaultInfraElemInfra
-        elif table_name in ['edicao_area_pub_militar_l', 'edicao_limite_legal_l', 'edicao_terra_indigena_l', 'edicao_unidade_conservacao_l']:
+        elif table_name in ['edicao_limite_legal_l']:
             processing_function = self.defaultEdicao
         elif table_name in ['elemnat_curva_nivel_l']:
             processing_function = self.defaultCurvaNivel
@@ -266,18 +266,21 @@ class ChangeAttribute(QgsProcessingAlgorithm):
     def defaultPistaPouso(self, feature, lyrCrs):
         new_att = {}
         new_att[feature.fieldNameIndex('justificativa_txt')] = 2
-        new_att[feature.fieldNameIndex('visivel')] = 1
-        texto_edicao = []
-        if feature['nome'] != NULL:
-            texto_edicao.append(feature['nome'])
-        if feature['situacao_fisica'] != 3:
-            texto_edicao.append('(' + feature['situacao_fisica'].lower() + ')')
-        if feature['revestimento'] != 3:
-            texto_edicao.append('Revestimento desconhecido')
-        if feature['altitude'] != NULL:
-            texto_edicao.append(round(feature['altitude']))
-        new_att[feature.fieldNameIndex('texto_edicao')] = '|'.join(
-            map(str, texto_edicao))
+        if feature['tipo'] != 10:
+            new_att[feature.fieldNameIndex('visivel')] = 1
+            texto_edicao = []
+            if feature['nome'] != NULL:
+                texto_edicao.append(feature['nome'])
+            if feature['situacao_fisica'] != 3:
+                texto_edicao.append('(' + feature['situacao_fisica'].lower() + ')')
+            if feature['revestimento'] != 3:
+                texto_edicao.append('Revestimento desconhecido')
+            if feature['altitude'] != NULL:
+                texto_edicao.append(round(feature['altitude']))
+            new_att[feature.fieldNameIndex('texto_edicao')] = '|'.join(
+                map(str, texto_edicao))
+        else:
+            new_att[feature.fieldNameIndex('visivel')] = 2
         return {feature.id(): new_att}
 
     def defaultllp(self, feature, lyrCrs):
