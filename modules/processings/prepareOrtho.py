@@ -104,7 +104,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
 
     def attrDefault(self, layers, scale):
         processing.run(
-            'ferramentasedicao:changeattribute',
+            'ferramentasedicao:changeattributeortho',
             {
                 'INPUT_LAYER': layers,
                 'SCALE': scale

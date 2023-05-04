@@ -5,7 +5,7 @@ from .processingUtils import ProcessingUtils
 import concurrent.futures
 import os
 
-class ChangeAttribute(QgsProcessingAlgorithm):
+class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     INPUT_LAYER_LIST = 'INPUT_LAYER'
     OUTPUT = 'OUTPUT'
@@ -308,7 +308,8 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex('visivel')] = 1
         if feature['situacao_em_poligono'] != 4:
             new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
-        elif feature['situacao_em_poligono'] in [2, 3]:
+        
+        if feature['situacao_em_poligono'] in [2, 3]:
             new_att[feature.fieldNameIndex('posicao_rotulo')] = 1
         elif feature['situacao_em_poligono'] in [1]:
             new_att[feature.fieldNameIndex('posicao_rotulo')] = 2
@@ -325,10 +326,10 @@ class ChangeAttribute(QgsProcessingAlgorithm):
         return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
-        return ChangeAttribute()
+        return ChangeAttributeOrtho()
 
     def name(self):
-        return 'changeattribute'
+        return 'changeattributeortho'
 
     def displayName(self):
         return self.tr('Configura os Atributos de Edição de Carta Ortoimagem')
