@@ -1,9 +1,9 @@
 from qgis import processing
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsProcessing,
                        QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback,
-                       QgsFeatureRequest, QgsVectorLayer, QgsField,
+                       QgsFeatureRequest, QgsVectorLayer, QgsField, NULL,
                        QgsProcessingParameterFeatureSink, QgsGeometry,
-                       QgsProcessingParameterVectorLayer, QgsWkbTypes)
+                       QgsProcessingParameterVectorLayer, QgsWkbTypes, QgsFeatureSink)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.utils import iface
 from .processingUtils import ProcessingUtils
@@ -176,7 +176,7 @@ class MergeRivers(QgsProcessingAlgorithm):
         newFeature = QgsFeature(feature.fields())
         newFeature.setAttributes(feature.attributes())
         newFeature.setGeometry(feature.geometry())
-        sink.addFeature(newFeature)
+        sink.addFeature(newFeature, QgsFeatureSink.FastInsert)
 
     def mergeLinesFeatures(self, layer, feedback=None):
         '''creates a new layer, with the same fields as the input, to add lines, 
@@ -186,14 +186,19 @@ class MergeRivers(QgsProcessingAlgorithm):
         for field in layer.fields():
             newLayer.addAttribute(field)
         newLayer.updateFields()
+        newLayer.beginEditCommand("Editando")
         features = list(layer.getFeatures())
         for current, currentFeature in enumerate(features):
             if feedback is not None and feedback.isCanceled():
                 break
             newGeom = currentFeature.geometry()
+            if currentFeature['nome'] == NULL:
+                continue
             featuresRequest = list(newLayer.getFeatures(
                 QgsFeatureRequest().setFilterRect(newGeom.boundingBox())))
             for idx, currentFeature2 in enumerate(featuresRequest):
+                if currentFeature2['nome'] == NULL:
+                    continue
                 if newGeom.intersects(currentFeature2.geometry()) and self.condition(currentFeature, currentFeature2):
                     newGeom = newGeom.combine(
                         currentFeature2.geometry()).mergeLines()
@@ -207,7 +212,7 @@ class MergeRivers(QgsProcessingAlgorithm):
             newLayer.addFeatures([feat])
             if feedback is not None:
                 feedback.setProgress(current * 100/len(features))
-
+        newLayer.endEditCommand()
         return newLayer
 
     def condition(self, feat1, feat2):

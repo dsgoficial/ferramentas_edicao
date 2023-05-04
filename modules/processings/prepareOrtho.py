@@ -44,7 +44,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 self.INPUT_FRAME,
                 self.tr('Selecionar camada de moldura'),
                 [QgsProcessing.TypeVectorPolygon],
-                optional = True
+                optional = False
             )
         )
 
@@ -60,17 +60,11 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
 
-        self.attrDefault(layers, gridScaleParam)
-
         ptoCotado = [x for x in layers if x.dataProvider().uri().table() == 'elemnat_ponto_cotado_p'][0]
         self.highestSpot(ptoCotado ,frameLayer)
 
-        drenagem = [x for x in layers if x.dataProvider().uri().table() == 'elemnat_trecho_drenagem_l'][0]
-        self.sizeRiverLabel(drenagem, frameLayer, gridScaleParam)
-
         layersNameToCalculateSobreposition = [
             'edicao_area_pub_militar_l',
-            'edicao_limite_legal_l',
             'edicao_terra_indigena_l',
             'edicao_unidade_conservacao_l'
         ]
@@ -79,11 +73,22 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             'infra_via_deslocamento_l',
             'infra_ferrovia_l'
         ]
+        polygonToLine = [
+            'llp_area_pub_militar_a',
+            'llp_terra_indigena_a',
+            'llp_unidade_conservacao_a'
+        ]
 
         layersToCalculateSobreposition = [x for x in layers if x.dataProvider().uri().table() in layersNameToCalculateSobreposition]
         layersToCheckSobreposition = [x for x in layers if x.dataProvider().uri().table() in layersNameToCheckSobreposition]
+        layersToConvertLine = [x for x in layers if x.dataProvider().uri().table() in polygonToLine]
 
-        self.setSobreposition(layersToCalculateSobreposition, layersToCheckSobreposition)
+        self.setSobreposition(layersToCalculateSobreposition, layersToCheckSobreposition, layersToConvertLine)
+
+        self.attrDefault(layers, gridScaleParam)
+
+        drenagem = [x for x in layers if x.dataProvider().uri().table() == 'elemnat_trecho_drenagem_l'][0]
+        self.sizeRiverLabel(drenagem, frameLayer, gridScaleParam)
 
         energia = [x for x in layers if x.dataProvider().uri().table() == 'infra_elemento_energia_l'][0]
         energiaSymbol = [x for x in layers if x.dataProvider().uri().table() == 'edicao_simb_torre_energia_p'][0]
@@ -99,11 +104,10 @@ class PrepareOrtho(QgsProcessingAlgorithm):
 
     def attrDefault(self, layers, scale):
         processing.run(
-            'ferramentasedicao:changeattribute',
+            'ferramentasedicao:changeattributeortho',
             {
                 'INPUT_LAYER': layers,
-                'SCALE': scale,
-                'OUTPUT': 'OUTPUT',
+                'SCALE': scale
             }
         )
 
@@ -114,8 +118,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'ROAD' : road,
                 'MARKER' : simbol,
                 'INPUT_FRAME' : frame,
-                'SCALE' : scale,
-                'OUTPUT' : 'OUTPUT',
+                'SCALE' : scale
             }
         )
 
@@ -126,18 +129,17 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 'INPUT_ENERGY' : energy,
                 'INPUT_TOWER' : simbol,
                 'INPUT_FRAME' : frame,
-                'SCALE' : scale,
-                'OUTPUT' : 'OUTPUT',
+                'SCALE' : scale
             }
         )
         
-    def setSobreposition(self, layers, check):
+    def setSobreposition(self, layers, check, polygons):
         processing.run(
             'ferramentasedicao:setsobreposition',
             {
                 'INPUT_LAYER_SOBREPOSITION': layers,
-                'INPUT_LAYER_TO_CALCULATE': check,
-                'ATRIBUTO': 'sobreposto'
+                'INPUT_LAYER_TO_CHECK': check,
+                'INPUT_POLYGONS': polygons
             }
         )
 

@@ -34,7 +34,7 @@ from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
 from .setSobreposition import SetSobreposition
-from .changeAttribute import ChangeAttribute
+from .changeAttributeOrtho import ChangeAttributeOrtho
 from .sizeTextRiverLine import SizeTextRiverLine
 
 class Provider(QgsProcessingProvider):
@@ -72,7 +72,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PlaceAllAreaPointSymbols())
         self.addAlgorithm(BuildElevationDiagram())
         self.addAlgorithm(SetSobreposition())
-        self.addAlgorithm(ChangeAttribute())
+        self.addAlgorithm(ChangeAttributeOrtho())
         self.addAlgorithm(SizeTextRiverLine())
 
     def load(self):
