@@ -10,6 +10,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
     INPUT_FRAME_A = 'INPUT_FRAME_A'
     OUTPUT = 'OUTPUT'
     SCALE = 'SCALE'
+    PRODUCT = 'PRODUCT'
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -34,11 +35,19 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                     '1:100.000'), self.tr('1:250.000')]
             )
         )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.PRODUCT,
+                self.tr('Selecione o tipo de produto'),
+                options=[self.tr('Carta Ortoimagem'), self.tr('Carta Topográfica')]
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         drainageLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME_A, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
+        productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
 
         if gridScaleParam == 0:
             self.scale = 25000
@@ -93,7 +102,9 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         for feature in layer.getFeatures():
             new_att = {}
             size = ProcessingUtils.getRiverOutPolyLabelFontSize(feature, self.scale, lyrCrs)
-            new_att[feature.fieldNameIndex('tamanho_txt')] = size if size > 6 else 7
+            if productParam == 0: #Para carta ortoimagem o tamanho mínimo é 7
+                size = size if size > 6 else 7
+            new_att[feature.fieldNameIndex('tamanho_txt')] = size
             layer.dataProvider().changeAttributeValues({feature.id(): new_att})
         layer.endEditCommand()
 

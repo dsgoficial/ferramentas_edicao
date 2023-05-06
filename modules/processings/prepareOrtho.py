@@ -48,13 +48,6 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             )
         )
 
-        self.addParameter(
-            QgsProcessingParameterFeatureSink(
-                self.OUTPUT,
-                self.tr('Flag Preparar Ortoimagem')
-            )
-        ) 
-
     def processAlgorithm(self, parameters, context, feedback):      
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
@@ -88,7 +81,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         self.attrDefault(layers, gridScaleParam)
 
         drenagem = [x for x in layers if x.dataProvider().uri().table() == 'elemnat_trecho_drenagem_l'][0]
-        self.sizeRiverLabel(drenagem, frameLayer, gridScaleParam)
+        self.sizeRiverLabel(drenagem, frameLayer, gridScaleParam, 0)
 
         energia = [x for x in layers if x.dataProvider().uri().table() == 'infra_elemento_energia_l'][0]
         energiaSymbol = [x for x in layers if x.dataProvider().uri().table() == 'edicao_simb_torre_energia_p'][0]
@@ -149,7 +142,8 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             {
                 'INPUT_LAYER_L': layers,
                 'INPUT_FRAME_A': frame,
-                'SCALE': scale
+                'SCALE': scale,
+                'PRODUCT': productType
             }
         )
 

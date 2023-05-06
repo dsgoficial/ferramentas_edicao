@@ -29,12 +29,13 @@ from .placePointSymbolInsideArea import PlacePointSymbolInsideArea
 from .placePowerPlantSymbol import PlacePowerPlantSymbol
 from .placeSymbolsOnTopOfAreaBuildings import PlaceSymbolsOnTopOfAreaBuildings
 from .prepareOrtho import PrepareOrtho
-# from .prepareTopo import PrepareTopo
+from .prepareTopo import PrepareTopo
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
 from .setSobreposition import SetSobreposition
 from .changeAttributeOrtho import ChangeAttributeOrtho
+from .changeAttributeTopo import ChangeAttributeTopo
 from .sizeTextRiverLine import SizeTextRiverLine
 
 class Provider(QgsProcessingProvider):
@@ -47,7 +48,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MergeHighway())
         self.addAlgorithm(MergeRivers())
         self.addAlgorithm(PrepareOrtho())
-        # self.addAlgorithm(PrepareTopo())
+        self.addAlgorithm(PrepareTopo())
         self.addAlgorithm(InsertEnergyTower())
         self.addAlgorithm(InsertRoadMarker())
         self.addAlgorithm(HighestSpotOnTheFrame())
@@ -73,6 +74,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(BuildElevationDiagram())
         self.addAlgorithm(SetSobreposition())
         self.addAlgorithm(ChangeAttributeOrtho())
+        self.addAlgorithm(ChangeAttributeTopo())
         self.addAlgorithm(SizeTextRiverLine())
 
     def load(self):

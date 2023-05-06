@@ -5,7 +5,7 @@ from .processingUtils import ProcessingUtils
 import concurrent.futures
 import os
 
-class ChangeAttributeOrtho(QgsProcessingAlgorithm):
+class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
     INPUT_LAYER_LIST = 'INPUT_LAYER'
     OUTPUT = 'OUTPUT'
@@ -68,12 +68,18 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             processing_function = self.defaultElemnatElemHidPL
         elif table_name in ['elemnat_elemento_hidrografico_a']:
             processing_function = self.defaultElemnatElemHidA
+        elif table_name in ['constr_area_uso_especifico_a']:
+            processing_function = self.defaultAreaUsoEspecifico            
         elif table_name in ['elemnat_ilha_p']:
             processing_function = self.defaultIlhaP
         elif table_name in ['elemnat_ilha_a']:
             processing_function = self.defaultIlhaA
         elif table_name in ['elemnat_ponto_cotado_p']:
             processing_function = self.defaultPtoCotado
+        elif table_name in ['infra_vala_l']:
+            processing_function = self.defaultVala
+        elif table_name in ['infra_trecho_duto_l']:
+            processing_function = self.defaultDuto
         elif table_name in ['elemnat_toponimo_fisiografico_natural_p']:
             processing_function = self.defaultElemnatTopoFisioP
         elif table_name in ['elemnat_toponimo_fisiografico_natural_l']:
@@ -98,13 +104,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             processing_function = self.defaultMassaDagua
         elif table_name in ['infra_pista_pouso_p', 'infra_pista_pouso_l', 'infra_pista_pouso_a']:
             processing_function = self.defaultPistaPouso
-        elif table_name in ['llp_area_pub_militar_a', 'llp_terra_indigena_a', 'llp_unidade_conservacao_a']:
+        elif table_name in ['llp_limite_especial_a']:
             processing_function = self.defaultllp
         elif table_name in ['edicao_area_sem_dados_a']:
             processing_function = self.defaultAreaSemDados
         elif table_name in ['elemnat_trecho_drenagem_l']:
             processing_function = self.defaultTrechoDrenagem
-        elif table_name in ['llp_aglomerado_rural_p', 'llp_localidade_p', 'llp_nome_local_p']:
+        elif table_name in ['llp_localidade_p']:
             processing_function = self.defaultllpLocalidade
         else:
             return
@@ -174,7 +180,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         size = ProcessingUtils.getWaterPolyLabelFontSize(
             feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex(
-            'tamanho_txt')] = size if size > 6 else 7
+            'tamanho_txt')] = size
         return {feature.id(): new_att}
 
     def defaultPtoCotado(self, feature, lyrCrs):
@@ -201,7 +207,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         size = ProcessingUtils.getEditPolyLabelFontSize(
             feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex(
-            'tamanho_txt')] = size if size > 6 else 7
+            'tamanho_txt')] = size
         return {feature.id(): new_att}
 
     def defaultInfraElemEnergPA(self, feature, lyrCrs):
@@ -244,9 +250,37 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex('visivel')] = 1
         return {feature.id(): new_att}
 
+    def defaultTravessiaHidroviaria(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex('visivel')] = 1
+        new_att[feature.fieldNameIndex('justificativa_txt')] = 1
+        if feature['tipo'] == 1:
+            new_att[feature.fieldNameIndex('texto_edicao')] = 'Balsa'
+        elif feature['tipo'] == 2:
+            new_att[feature.fieldNameIndex('texto_edicao')] = 'Bote transportador'
+
+        return {feature.id(): new_att}
+
+    def defaultDuto(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex('visivel')] = 1
+        return {feature.id(): new_att}
+
+    def defaultVala(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex('visivel')] = 1
+        return {feature.id(): new_att}
+
     def defaultViaDesloc(self, feature, lyrCrs):
         new_att = {}
         new_att[feature.fieldNameIndex('visivel')] = 1
+        return {feature.id(): new_att}
+
+    def defaultAreaUsoEspecifico(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex('visivel')] = 1
+        new_att[feature.fieldNameIndex('texto_edicao')] = feature['nome']
+        new_att[feature.fieldNameIndex('justificativa_txt')] = 1
         return {feature.id(): new_att}
 
     def defaultMassaDagua(self, feature, lyrCrs):
@@ -258,7 +292,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         size = ProcessingUtils.getWaterPolyLabelFontSize(
             feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex(
-            'tamanho_txt')] = size if size > 6 else 7
+            'tamanho_txt')] = size
         return {feature.id(): new_att}
 
     def defaultPistaPouso(self, feature, lyrCrs):
@@ -288,7 +322,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         size = ProcessingUtils.getEditPolyLabelFontSize(
             feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex(
-            'tamanho_txt')] = size if size > 6 else 7
+            'tamanho_txt')] = size
         return {feature.id(): new_att}
 
     def defaultAreaSemDados(self, feature, lyrCrs):
@@ -298,7 +332,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         size = ProcessingUtils.getEditPolyLabelFontSize(
             feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex(
-            'tamanho_txt')] = size if size > 6 else 7
+            'tamanho_txt')] = size
         return {feature.id(): new_att}
 
     def defaultTrechoDrenagem(self, feature, lyrCrs):
@@ -324,13 +358,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
-        return ChangeAttributeOrtho()
+        return ChangeAttributeTopo()
 
     def name(self):
-        return 'changeattributeortho'
+        return 'changeattributetopo'
 
     def displayName(self):
-        return self.tr('Configura os Atributos de Edição de Carta Ortoimagem')
+        return self.tr('Configura os Atributos de Edição de Carta Topográfica')
 
     def group(self):
         return self.tr('Edição')
@@ -339,5 +373,5 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         return 'edicao'
 
     def shortHelpString(self):
-        return self.tr("O algoritmo configura os atributos default de Carta Ortoimagem.")
+        return self.tr("O algoritmo configura os atributos default de Carta Topográfica.")
     
