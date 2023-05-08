@@ -23,7 +23,6 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     STYLENAME = 'STYLENAME'
     INPUT_SCALE = 'INPUT_SCALE'
     GROUP = 'GROUP'
-    MODE = 'MODE'
     EQUIDISTANCIA = 'EQUIDISTANCIA'
     OUTPUT = 'OUTPUT'
     EXIBIR_AUXILIAR = 'EXIBIR_AUXILIAR'
@@ -43,20 +42,6 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 self.MAP_TYPE,
                 self.tr('Tipo da carta'),
                 options=self.map,
-            )
-        )
-
-        self.modes = [
-            self.tr('Carta Principal'),
-            self.tr('Carta Mini'),
-        ]
-
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.MODE,
-                self.tr('Modo'),
-                options=self.modes,
-                defaultValue=0
             )
         )
 
@@ -136,7 +121,6 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         self.setColorPalette()
         mapType = self.parameterAsEnum(parameters, self.MAP_TYPE, context)
         gridScaleParam = self.parameterAsEnum(parameters, self.INPUT_SCALE, context)
-        mode = self.parameterAsEnum(parameters,self.MODE,context)
         groupInput = self.parameterAsGroup(parameters, self.GROUP, context)
         equidistanciaCustom = self.parameterAsInt(parameters, self.EQUIDISTANCIA, context)
         exibirAuxiliar = self.parameterAsEnum(parameters,self.EXIBIR_AUXILIAR,context)
@@ -190,15 +174,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 'camadas.json'
             ))
         
-        if mode==0:
-            styleOption = 'mapEdition'
-            groupName = 'map'
-        elif mode==1:
-            styleOption = 'miniMapEdition'
-            groupName = 'miniMap'
-        else:
-            return {self.OUTPUT: 'Valor para modo inválido'}
-        
+        styleOption = 'mapEdition'
+        groupName = 'map'
+
         stylePath =os.path.join(
                 os.path.abspath(os.path.join(
                     os.path.dirname(os.path.dirname(__file__))
