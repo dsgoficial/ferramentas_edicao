@@ -13,6 +13,7 @@ class ExporterSingleton:
         'omMap': 'Carta_Especial',
         'omMap': 'Carta_Especial',
         'militaryOrthoMap': 'Carta_Ortoimagem_Militar',
+        'militaryTopoMap': 'Carta_Topografica_Militar',
     }
 
     def setParams(self, dlg: NamedTuple, data: Dict, debugMode: bool):

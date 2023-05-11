@@ -17,6 +17,7 @@ from ..factories.compositionSingleton import CompositionSingleton
 from ..factories.connectionSingleton import ConnectionSingleton
 from ..factories.exporterSingleton import ExporterSingleton
 from ..factories.militaryOrthoMapBuilder import MilitaryOrthoMapBuilder
+from ..factories.militaryTopoMapBuilder import MilitaryTopoMapBuilder
 from ..factories.omMapbuilder import OmMapBuilder
 from ..factories.orthoMapBuilder import OrthoMapBuilder
 from ..factories.topoMapBuilder import TopoMapBuilder
@@ -203,6 +204,8 @@ class MapBuildController(MapBuildControllerUtils):
             return 'omMap', 'Carta Especial'
         if productType == 'Carta Ortoimagem Militar':
             return 'militaryOrthoMap', 'Carta Ortoimagem Militar'
+        if productType == 'Carta Topográfica Militar':
+            return 'militaryTopoMap', 'Carta Topográfica Militar'
 
     def unload(self):
         ''' Unloads the Controller. It's called when the plugin is uninstalled or reloaded
@@ -228,6 +231,8 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update({productType: OmMapBuilder(ComponentFactory())})
         elif productType == 'militaryOrthoMap' and productType not in self.builders:
             self.builders.update({productType: MilitaryOrthoMapBuilder(ComponentFactory())})
+        elif productType == 'militaryTopoMap' and productType not in self.builders:
+            self.builders.update({productType: MilitaryTopoMapBuilder(ComponentFactory())})
         return self.builders.get(productType)
 
     def getExporter(self, dlg: NamedTuple, data: dict, debugMode: bool) -> ExporterSingleton:

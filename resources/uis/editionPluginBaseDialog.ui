@@ -45,6 +45,11 @@
          <string>Carta Ortoimagem Militar</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Carta Topográfica Militar</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

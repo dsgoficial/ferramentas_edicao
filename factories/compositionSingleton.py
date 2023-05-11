@@ -42,12 +42,15 @@ class CompositionSingleton:
     def createComposition(self, productType: str, jsonData: Dict) -> QgsPrintLayout:
         productType = jsonData.get('productType')
         scale = jsonData.get('scale') if productType != 'omMap' else jsonData.get('omTemplateType')
-        compositionRootPath = self.resourcesPath / productType \
-            if productType != 'militaryOrthoMap' else self.resourcesPath / 'orthoMap'
+        compositionRootPath = self.resourcesPath / productType
         if productType == 'omMap':
             qptNameText = f'{productType}{scale}'
         elif productType == 'militaryOrthoMap':
             qptNameText = 'orthoMap'
+            compositionPath = self.resourcesPath / 'orthoMap'
+        elif productType == 'militaryTopoMap':
+            qptNameText = 'topoMap'
+            compositionPath = self.resourcesPath / 'topoMap'
         else:
             qptNameText = f'{productType}'
         if scale == 250:
@@ -88,7 +91,7 @@ class CompositionSingleton:
             productParams.get('qpt', {}).get(scale, {}).get('headerPath', None) or \
             self.config.header
         projectQptPath = productParams.get('projectPath', None) \
-            if productType == 'militaryOrthoMap' \
+            if productType in ('militaryOrthoMap', 'militaryTopoMap') \
             else self.setupPath(jsonData.get('projeto')) or \
                 productParams.get('qpt', {}).get(scale, {}).get('projectPath', None) or \
                 self.config.project
