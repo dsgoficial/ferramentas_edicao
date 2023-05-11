@@ -47,10 +47,10 @@ class CompositionSingleton:
             qptNameText = f'{productType}{scale}'
         elif productType == 'militaryOrthoMap':
             qptNameText = 'orthoMap'
-            compositionPath = self.resourcesPath / 'orthoMap'
+            compositionRootPath = self.resourcesPath / 'orthoMap'
         elif productType == 'militaryTopoMap':
             qptNameText = 'topoMap'
-            compositionPath = self.resourcesPath / 'topoMap'
+            compositionRootPath = self.resourcesPath / 'topoMap'
         else:
             qptNameText = f'{productType}'
         if scale == 250:
