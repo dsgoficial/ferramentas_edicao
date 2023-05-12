@@ -38,9 +38,9 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="5.2603772"
-     inkscape:cx="253.40388"
-     inkscape:cy="-48.665712"
+     inkscape:zoom="10.520754"
+     inkscape:cx="148.56349"
+     inkscape:cy="-15.303085"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
@@ -61,6 +61,17 @@
        position="54.673281,6.8253275"
        orientation="1,0"
        id="guide838" />
+    <sodipodi:guide
+       position="66.402429,15.671384"
+       orientation="-1,0"
+       id="guide3004"
+       inkscape:label=""
+       inkscape:locked="false"
+       inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="54.17345,0.93784833"
+       orientation="0,-1"
+       id="guide3482" />
   </sodipodi:namedview>
   <defs
      id="defs2">
@@ -149,15 +160,15 @@
            id="tspan7933-5-2-6-8-6"
            x="-28.573118"
            y="128.18288"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.49132px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26693">Queda d'água ou corredeira</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.49132px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26693">Queda d'água ou corredeira; Foz marítima</tspan></text>
       <path
-         inkscape:original-d="m -1.4145175,128.24367 c 8.9899489,-0.001 17.9786825,-0.001 26.9661205,0"
+         inkscape:original-d="m 12.701773,128.24367 c 4.283869,-0.001 8.567158,-0.001 12.84983,0"
          inkscape:path-effect="#path-effect8895"
          inkscape:connector-curvature="0"
          id="path2156-8-0-9-1-5-4"
-         d="m -1.4145175,128.24367 c 8.9899489,0 17.9786825,0 26.9661205,0"
+         d="m 12.701773,128.24367 c 4.283869,0 8.567158,0 12.84983,0"
          style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+         inkscape:export-filename="queda_dagua.png"
          inkscape:export-xdpi="600"
          inkscape:export-ydpi="600" />
       <text
@@ -171,6 +182,17 @@
            style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00adf0;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
            x="26.119629"
            y="128.03836">Corredeira</tspan></text>
+      <text
+         xml:space="preserve"
+         x="38.015141"
+         y="128.04475"
+         id="text27908-25-3-7-1-2-7-4-2"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
+           sodipodi:role="line"
+           id="tspan27906-8-4-6-2-6-4-8-6"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#00adf0;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+           x="38.015141"
+           y="128.04475">Foz marítima</tspan></text>
     </g>
   </g>
 </svg>

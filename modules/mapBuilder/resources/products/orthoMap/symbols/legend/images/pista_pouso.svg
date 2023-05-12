@@ -65,10 +65,12 @@
        id="guide853"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="66.402428,2.2292593"
-       orientation="1,0"
+       position="66.40243,2.2292593"
+       orientation="-1,0"
        id="guide2682"
-       inkscape:locked="false" />
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,0,255)" />
   </sodipodi:namedview>
   <defs
      id="defs2">

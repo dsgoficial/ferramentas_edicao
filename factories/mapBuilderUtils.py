@@ -113,6 +113,19 @@ class MapBuilderUtils:
                 item.setVisibility(False)
             if item:=composition.itemById('label_classified'):
                 item.setVisibility(True)
+            if item:=composition.itemById('label_militar'):
+                item.setVisibility(False)
+        elif data.get('tipo_produto') in ('Carta Topográfica Militar', 'Carta Ortoimagem Militar'):
+            if item:=composition.itemById('label_bdgexQR'):
+                item.setVisibility(False)
+            if item:=composition.itemById('label_bdgexWeb'):
+                item.setVisibility(False)
+            if item:=composition.itemById('symbol_QRCODE'):
+                item.setVisibility(False)
+            if item:=composition.itemById('label_classified'):
+                item.setVisibility(False)
+            if item:=composition.itemById('label_militar'):
+                item.setVisibility(True)
         else:
             if item:=composition.itemById('label_bdgexQR'):
                 item.setVisibility(True)
@@ -121,6 +134,8 @@ class MapBuilderUtils:
             if item:=composition.itemById('symbol_QRCODE'):
                 item.setVisibility(True)
             if item:=composition.itemById('label_classified'):
+                item.setVisibility(False)
+            if item:=composition.itemById('label_militar'):
                 item.setVisibility(False)
 
     def getStylePath(self, layerName: str, defaults: ConfigDefaults, productType: str, stylesFolder: Path, scale: int) -> Path:
@@ -137,7 +152,7 @@ class MapBuilderUtils:
         '''
         if productType in ('orthoMap', 'militaryOrthoMap'):
             basedOnScale = defaults.scaleBasedStyleOrtho
-        elif productType == 'topoMap':
+        elif productType in ('topoMap', 'militaryTopoMap'):
             basedOnScale = defaults.scaleBasedStyleTopo
         elif productType == 'omMap':
             basedOnScale = set()
@@ -233,6 +248,8 @@ class MapBuilderUtils:
         Args:
             debugMode: Boolean value holding the debugMode status
         '''
+        if self.debugMode:
+            return
         iface.newProject(promptToSaveFlag=False)
         # if not debugMode and hasattr(self, 'layersIdsToBeRemoved') and hasattr(self, 'groupsToBeRemoved'):
         #     self.instance.removeMapLayers(self.layersIdsToBeRemoved)

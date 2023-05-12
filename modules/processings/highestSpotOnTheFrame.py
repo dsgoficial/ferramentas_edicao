@@ -55,6 +55,9 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         higuestSpotField = self.parameterAsFields(parameters, self.INPUT_HIGHEST_SPOT_FIELD, context)[0]
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
 
+        spotLayer.startEditing()
+        spotLayer.beginEditCommand("Atualizando atributo cota mais alta")
+
         for frameFeature in frameLayer.getFeatures():
             frameGeometry = frameFeature.geometry()
             request = QgsFeatureRequest().setFilterRect( frameGeometry.boundingBox() ) 
@@ -63,23 +66,24 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
             for spotFeature in features:
                 if not( frameGeometry.intersects( spotFeature.geometry() ) ):
                     continue
-                if maxSpotFeature and maxSpotFeature[ spotField ] > spotFeature[ spotField ]:
-                    spotFeature[ higuestSpotField ] = 2
-                    self.updateLayerFeature( spotLayer, spotFeature)
+                if maxSpotFeature and maxSpotFeature[ spotField ] >= spotFeature[ spotField ]:
+                    new_att = {}
+                    new_att[spotFeature.fieldNameIndex(higuestSpotField)] = 2
+                    spotLayer.dataProvider().changeAttributeValues({spotFeature.id(): new_att})
                     continue
                 if maxSpotFeature:
-                    maxSpotFeature[ higuestSpotField ] = 2
-                    self.updateLayerFeature( spotLayer, maxSpotFeature)
+                    new_att = {}
+                    new_att[spotFeature.fieldNameIndex(higuestSpotField)] = 2
+                    spotLayer.dataProvider().changeAttributeValues({maxSpotFeature.id(): new_att})
                 maxSpotFeature = spotFeature
-                maxSpotFeature[ higuestSpotField ] = 1
-                self.updateLayerFeature( spotLayer, maxSpotFeature)
+                new_att = {}
+                new_att[spotFeature.fieldNameIndex(higuestSpotField)] = 1
+                spotLayer.dataProvider().changeAttributeValues({maxSpotFeature.id(): new_att})
                 
-        
+        spotLayer.endEditCommand()
+      
         return {self.OUTPUT: ''}
 
-    def updateLayerFeature(self, layer, feature):
-        layer.startEditing()
-        layer.updateFeature(feature)
    
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)

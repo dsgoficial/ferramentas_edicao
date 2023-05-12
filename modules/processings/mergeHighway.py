@@ -2,8 +2,8 @@ from qgis import processing
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureSourceDefinition,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorLayer, QgsWkbTypes)
+                       QgsProcessingParameterFeatureSink, NULL,
+                       QgsProcessingParameterVectorLayer, QgsWkbTypes, QgsFeatureSink)
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
@@ -27,8 +27,7 @@ class MergeHighway(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_FRAME_A,
                 self.tr('Selecionar camada de moldura'),
-                [QgsProcessing.TypeVectorPolygon],
-                optional = True
+                [QgsProcessing.TypeVectorPolygon]
             )
         )
 
@@ -50,23 +49,25 @@ class MergeHighway(QgsProcessingAlgorithm):
             context,
             highwayLayerInput.fields(),
             QgsWkbTypes.MultiLineString,
-            QgsCoordinateReferenceSystem( iface.mapCanvas().mapSettings().destinationCrs().authid() )
+            highwayLayerInput.sourceCrs()
         )
 
         highwayLayer = self.runAddCount(highwayLayerInput)
         self.runCreateSpatialIndex(highwayLayer)
 
-
         merge = {}
-        for highwayFeature in highwayLayer.getFeatures():
-            if not highwayFeature['sigla']:
-                continue
-            mergeKey = '{0}'.format( highwayFeature['sigla'].lower() )
+        for highwayFeature in list(highwayLayer.getFeatures()):
+            if highwayFeature['sigla'] == NULL:
+                mergeKey = 'NULL'
+            else:
+                mergeKey = '{0}'.format( highwayFeature['sigla'].lower() )
             if not( mergeKey in merge):
                 merge[ mergeKey ] = []
             merge[ mergeKey ].append( highwayFeature )
         numberOfFeatures =  {-1: highwayLayer.featureCount()}
         limit = 10
+        highwayLayer.startEditing()
+        highwayLayer.beginEditCommand("Editando")
         for i in range(limit):
             for mergeKey in merge:
                 self.mergeLineFeatures( merge[ mergeKey ], highwayLayer )
@@ -74,11 +75,9 @@ class MergeHighway(QgsProcessingAlgorithm):
             numberOfFeatures[i]=newNumberOfFeatures
             if numberOfFeatures[i]==numberOfFeatures[i-1]:
                 break
-        
-        if frameLayer is not None:
-            highwayLayer = self.clipLayer( highwayLayer, frameLayer)
-
-        for feature in highwayLayer.getFeatures():
+        highwayLayer.endEditCommand()
+        highwayLayerClipped = self.clipLayer( highwayLayer, frameLayer)
+        for feature in highwayLayerClipped.getFeatures():
             self.addSink( feature, sink_l)
 
         return {self.OUTPUT_LAYER_L: sinkId_l}
@@ -109,20 +108,28 @@ class MergeHighway(QgsProcessingAlgorithm):
         newFeature = QgsFeature( feature.fields() )
         newFeature.setAttributes( feature.attributes() )
         newFeature.setGeometry( feature.geometry() )
-        sink.addFeature( newFeature )
+        sink.addFeature( newFeature , QgsFeatureSink.FastInsert)
 
     def mergeLineFeatures(self, features, layer):
-        layer.startEditing()
         idsToRemove = []
         featureIds = [ f.id() for f in features ]
+        idToFeature = {}
+        for f in features:
+            idToFeature[f.id()] = f
         for featureAId in featureIds:
+            if idToFeature[featureAId]['sigla'] == NULL:
+                idsToRemove.append(featureAId)
+                continue
             if featureAId in idsToRemove:
                 continue
             for featureBId in featureIds:
+                if idToFeature[featureBId]['sigla'] == NULL:
+                    idsToRemove.append(featureAId)
+                    continue
                 if featureAId == featureBId or featureBId in idsToRemove:
                     continue
-                featureA = layer.getFeature( featureAId )
-                featureB = layer.getFeature( featureBId )
+                featureA = idToFeature[featureAId]
+                featureB = idToFeature[featureBId]
                 if not featureA.geometry().touches( featureB.geometry() ):
                     continue
                 newGeometry = featureA.geometry().combine( featureB.geometry() ).mergeLines()
@@ -135,9 +142,7 @@ class MergeHighway(QgsProcessingAlgorithm):
         r = processing.run(
             'native:clip',
             {   'FIELD' : [], 
-                'INPUT' : QgsProcessingFeatureSourceDefinition(
-                    layer.source()
-                ), 
+                'INPUT' : layer, 
                 'OVERLAY' : frame,
                 'OUTPUT' : 'TEMPORARY_OUTPUT'
             }

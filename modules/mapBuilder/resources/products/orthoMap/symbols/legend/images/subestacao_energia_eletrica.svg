@@ -38,9 +38,9 @@
      inkscape:pagecheckerboard="true"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="14.878594"
-     inkscape:cx="214.26756"
-     inkscape:cy="1.545845"
+     inkscape:zoom="3.7196485"
+     inkscape:cx="38.17565"
+     inkscape:cy="-30.9169"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
@@ -61,6 +61,17 @@
        position="54.673277,0.72993049"
        orientation="1,0"
        id="guide842" />
+    <sodipodi:guide
+       position="54.166468,1.3763115"
+       orientation="0,-1"
+       id="guide841" />
+    <sodipodi:guide
+       position="66.402429,13.22236"
+       orientation="-1,0"
+       id="guide843"
+       inkscape:label=""
+       inkscape:locked="false"
+       inkscape:color="rgb(0,0,255)" />
   </sodipodi:namedview>
   <defs
      id="defs2">
@@ -145,13 +156,13 @@
      id="layer1"
      transform="translate(28.509944,-124.1122)">
     <path
-       inkscape:original-d="m -6.5477769,127.63589 c 10.7363133,-4.1e-4 21.4710779,-4.1e-4 32.2043009,0"
+       inkscape:original-d="m 11.306173,127.63589 c 4.784139,-4.1e-4 9.567589,-4.1e-4 14.350351,0"
        inkscape:path-effect="#path-effect2277"
        inkscape:connector-curvature="0"
        id="path2275"
-       d="m -6.5477769,127.63589 c 10.7363133,0 21.4710779,0 32.2043009,0"
+       d="m 11.306173,127.63589 c 4.784139,0 9.567589,0 14.350351,0"
        style="fill:none;stroke:#000000;stroke-width:0.15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       inkscape:export-filename="E:\rdg_2021_2022\legenda_00.png"
+       inkscape:export-filename="subestacao_energia_eletrica.png"
        inkscape:export-xdpi="600"
        inkscape:export-ydpi="600" />
     <text
@@ -167,7 +178,7 @@
          id="tspan1358"
          x="-28.416393"
          y="127.65122"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Subestação de energia</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.264586">Subestação; Estação geradora de energia</tspan></text>
     <g
        id="g10730"
        transform="translate(-18.763173,-15.25601)">
@@ -202,5 +213,16 @@
     <g
        id="g8141-1-6"
        transform="translate(0.13025171,33.378798)" />
+    <text
+       xml:space="preserve"
+       x="32.333183"
+       y="127.45668"
+       id="text27908-25-3-7-1"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Italic Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke markers fill"><tspan
+         sodipodi:role="line"
+         id="tspan27906-8-4-6-2"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:2.46944px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans, Condensed';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.352777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+         x="32.333183"
+         y="127.45668">Hidrelétrica</tspan></text>
   </g>
 </svg>
