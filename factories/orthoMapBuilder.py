@@ -89,6 +89,7 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
         Args:
             debugMode: Boolean value holding the debugMode status
         '''
+        self.debugMode = debugMode
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
         getLayersFromDbLambda = lambda x: self.getLayersFromDB(
