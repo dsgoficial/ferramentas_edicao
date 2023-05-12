@@ -145,7 +145,7 @@ class GridAndLabelCreator(QObject):
         grid_symb.appendSymbolLayer(symb)
         return grid_symb
 
-    def grid_labeler(self, coord_base_x, coord_base_y, px, py, u, t, dx, dy, desc, fSize, fontType, expression_str, trLLUTM, llcolor, layer_bound, trUTMLL):
+    def grid_labeler(self, coord_base_x, coord_base_y, px, py, u, t, dx, dy, desc, fSize, fontType, expression_str, trLLUTM, llcolor, layer_bound, trUTMLL, discourage_placement=False):
         pgrid = QgsPoint(coord_base_x + px*u, coord_base_y + py*t)
         pgrid.transform(trLLUTM)
         pgrid = QgsPoint(pgrid.x()+ dx, pgrid.y()+ dy)
@@ -168,8 +168,9 @@ class GridAndLabelCreator(QObject):
         settings.geometryGeneratorEnabled = True
         settings.geometryGenerator = ("make_point({}, {})".format(pgrid.x(), pgrid.y()))
         datadefined = QgsPropertyCollection()
-        datadefined.property(20).setExpressionString('True')
-        datadefined.property(20).setActive(True)
+        if not discourage_placement:
+            datadefined.property(20).setExpressionString('True')
+            datadefined.property(20).setActive(True)
         datadefined.property(15).setExpressionString('True')
         datadefined.property(15).setActive(True)
         datadefined.property(77).setExpressionString('2')
@@ -183,7 +184,7 @@ class GridAndLabelCreator(QObject):
 
         return rule
 
-    def utm_grid_labeler(self, root_rule, x_UTM, y_UTM, x_geo, y_geo, x_min, y_min, px, py, trUTMLL, trLLUTM, u, isVertical, dx, dy, dyO, dy1, desc, fSize, fontType, grid_spacing, scale, rangetest, geo_bb_or, layer_bound):
+    def utm_grid_labeler(self, root_rule, x_UTM, y_UTM, x_geo, y_geo, x_min, y_min, px, py, trUTMLL, trLLUTM, u, isVertical, dx, dy, dyO, dy1, desc, fSize, fontType, grid_spacing, scale, rangetest, geo_bb_or, layer_bound, discourage_placement=False):
         # x_colec = [float(geo_bb_or.split()[2*i]) for i in range(1,5)]
         # x_colec.sort()
         # y_colec = [float(geo_bb_or.split()[2*i+1]) for i in range(1,5)]
@@ -251,7 +252,7 @@ class GridAndLabelCreator(QObject):
             y =ancY.y()
             full_label = str((floor(x_UTM/grid_spacing)+u)*grid_spacing)
             if test_plac.x() < (x_min_test) or test_plac.x() > (x_max_test):
-                rule_fake = self.grid_labeler(x, y, 0, 0, 0, 0, 0, 0, desc, fSize, fontType, 'fail', trLLUTM, QColor('black'), layer_bound, trUTMLL)
+                rule_fake = self.grid_labeler(x, y, 0, 0, 0, 0, 0, 0, desc, fSize, fontType, 'fail', trLLUTM, QColor('black'), layer_bound, trUTMLL, discourage_placement=discourage_placement)
                 root_rule.appendChild(rule_fake)
                 return root_rule
 
@@ -284,7 +285,7 @@ class GridAndLabelCreator(QObject):
             y = ancY.y()
             full_label = str((floor(y_UTM/grid_spacing)+u)*grid_spacing)
             if test_plac.y() < (y_min_test) or test_plac.y() > (y_max_test):
-                rule_fake = self.grid_labeler(x, y, 0, 0, 0, 0, 0, 0, desc, fSize, fontType, 'fail', trLLUTM, QColor('black'), layer_bound, trUTMLL)
+                rule_fake = self.grid_labeler(x, y, 0, 0, 0, 0, 0, 0, desc, fSize, fontType, 'fail', trLLUTM, QColor('black'), layer_bound, trUTMLL, discourage_placement=discourage_placement)
                 root_rule.appendChild(rule_fake)
                 return root_rule
 
@@ -316,9 +317,9 @@ class GridAndLabelCreator(QObject):
             plac_hem = QgsPoint(plac.x()+dxH, plac.y())
             plac_hem.transform(trUTMLL)
 
-            ruleUTM2 = self.grid_labeler(plac_new.x(), plac_new.y(), 0, 0, 0, 0, 0, 0, desc+'m', fSize*4/5, fontType, str('\'m\''), trLLUTM, QColor('black'), layer_bound, trUTMLL)
+            ruleUTM2 = self.grid_labeler(plac_new.x(), plac_new.y(), 0, 0, 0, 0, 0, 0, desc+'m', fSize*4/5, fontType, str('\'m\''), trLLUTM, QColor('black'), layer_bound, trUTMLL, discourage_placement=discourage_placement)
             root_rule.appendChild(ruleUTM2)
-            ruleUTM3 = self.grid_labeler(plac_hem.x(), plac_hem.y(), 0, 0, 0, 0, 0, 0, desc+' '+extra_label, fSizeAlt, fontType, '\''+extra_label+'\'', trLLUTM, QColor('black'), layer_bound, trUTMLL)
+            ruleUTM3 = self.grid_labeler(plac_hem.x(), plac_hem.y(), 0, 0, 0, 0, 0, 0, desc+' '+extra_label, fSizeAlt, fontType, '\''+extra_label+'\'', trLLUTM, QColor('black'), layer_bound, trUTMLL, discourage_placement=discourage_placement)
             root_rule.appendChild(ruleUTM3)
 
         dxS = 0
@@ -334,7 +335,7 @@ class GridAndLabelCreator(QObject):
 
         plac_size = QgsPoint(plac.x()+dxS, plac.y())
         plac_size.transform(trUTMLL)
-        ruleUTM = self.grid_labeler(plac_size.x(), plac_size.y(), 0, 0, 0, 0, 0, 0, desc, fSizeAlt, fontType, expression_str, trLLUTM, QColor('black'), layer_bound, trUTMLL)
+        ruleUTM = self.grid_labeler(plac_size.x(), plac_size.y(), 0, 0, 0, 0, 0, 0, desc, fSizeAlt, fontType, expression_str, trLLUTM, QColor('black'), layer_bound, trUTMLL, discourage_placement=discourage_placement)
         root_rule.appendChild(ruleUTM)
         return root_rule
 
@@ -429,12 +430,14 @@ class GridAndLabelCreator(QObject):
                 rangeLat = range(2, UTM_num_y+1)
             else:
                 rangeLat = range(1, UTM_num_y+1)
+            minRange, maxRange = min(rangeLat), max(rangeLat)
             for u in rangeLat:
                 if u==min(rangeLat): 
                     extra_dist = -3.2*scale*fSize/1.5
                 else:
                     extra_dist = 0
-                root_rule = self.utm_grid_labeler(root_rule, extentsUTM[0], extentsUTM[1], extentsGeo[0], 0, extentsGeo[0], extentsGeo[1], px, py, trUTMLL, trLLUTM, u, False, dx[2]+extra_dist, dy[3], dy0[3], dy1[1], 'UTMLeft'+str(u), fSize, fontType, grid_spacing, scale, rangeLat, geo_bb_or, layer_bound)
+                discorage_placement = u in (minRange, maxRange)
+                root_rule = self.utm_grid_labeler(root_rule, extentsUTM[0], extentsUTM[1], extentsGeo[0], 0, extentsGeo[0], extentsGeo[1], px, py, trUTMLL, trLLUTM, u, False, dx[2]+extra_dist, dy[3], dy0[3], dy1[1], 'UTMLeft'+str(u), fSize, fontType, grid_spacing, scale, rangeLat, geo_bb_or, layer_bound, discourage_placement=discorage_placement)
             
             # Right
             rangeLat = range(1, UTM_num_y+1)

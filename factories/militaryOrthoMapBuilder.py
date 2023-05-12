@@ -17,4 +17,5 @@ class MilitaryOrthoMapBuilder(OrthoMapBuilder):
         super(MilitaryOrthoMapBuilder, self).__init__(componentFactory)
     
     def run(self, debugMode: bool = False):
+        self.debugMode = debugMode
         super().run(debugMode=debugMode)
