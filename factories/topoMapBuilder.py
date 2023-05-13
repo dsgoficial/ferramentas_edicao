@@ -34,7 +34,6 @@ class TopoMapBuilder(IMapBuilder,MapBuilderUtils):
         Args:
             debugMode: Boolean value holding the debugMode status
         '''
-        self.debugMode = debugMode
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
         mapLayers, mapLayersIds = self.getLayersFromDB(self.conn, self.data, self.defaults, self.productPath, 'map', lambda x: x, self.mapAreaFeature)

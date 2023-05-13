@@ -17,5 +17,4 @@ class MilitaryTopoMapBuilder(TopoMapBuilder):
         super(MilitaryTopoMapBuilder, self).__init__(componentFactory)
     
     def run(self, debugMode: bool = False):
-        self.debugMode = debugMode
         super().run(debugMode=debugMode)

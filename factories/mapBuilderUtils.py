@@ -248,7 +248,7 @@ class MapBuilderUtils:
         Args:
             debugMode: Boolean value holding the debugMode status
         '''
-        if self.debugMode:
+        if debugMode:
             return
         iface.newProject(promptToSaveFlag=False)
         # if not debugMode and hasattr(self, 'layersIdsToBeRemoved') and hasattr(self, 'groupsToBeRemoved'):
