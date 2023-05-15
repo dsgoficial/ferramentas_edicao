@@ -25,7 +25,7 @@ from qgis.utils import iface
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsCoordinateTransformContext, QgsDistanceArea,
                        QgsFeature, QgsFeatureRequest, QgsGeometry, QgsProject,
-                       QgsSpatialIndex, QgsUnitTypes)
+                       QgsSpatialIndex, QgsUnitTypes, QgsCoordinateTransform)
 
 from .baseTools import BaseTools
 
@@ -308,6 +308,15 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         toInsert = QgsFeature(self.dstLyr.fields())
         toInsert.setAttribute('simb_rot', rot)
         toInsertGeom = QgsGeometry.fromPointXY(point)
+        canvasCrs = self.iface.mapCanvas().mapSettings().destinationCrs()
+        referenceCrs = self.dstLyr.crs()
+        if canvasCrs != referenceCrs:
+            coordinateTransform = QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem(canvasCrs),
+                QgsCoordinateReferenceSystem(referenceCrs),
+                QgsProject.instance(),
+            )
+            toInsertGeom.transform(coordinateTransform)
         toInsert.setGeometry(toInsertGeom)
 
         self.dstLyr.startEditing()
