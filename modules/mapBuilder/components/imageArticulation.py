@@ -33,19 +33,53 @@ class ImageArticulation(ComponentUtils,IComponent):
         if not isinstance(layers, list):
             layers = [layers]
         imageArticulationLayerIdx, imageArticulationLayer = next(filter(lambda x: x[1].name() == 'edicao_articulacao_imagem_a', enumerate(layers)), (None, None))
+        geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
+        totalArea = mapAreaFeature.geometry().area()
         if imageArticulationLayer is None:
             return []
-        imageArticulationLayer = processing.run(
+        singleParts = processing.run(
             "native:multiparttosingleparts",
             {
                 'INPUT': imageArticulationLayer,
                 'OUTPUT': 'memory:'
-            }
+            },
         )['OUTPUT']
+        outputLyr = processing.run(
+            "qgis:advancedpythonfieldcalculator",
+            {
+                'INPUT': singleParts,
+                'FIELD_NAME': 'featid',
+                'FIELD_TYPE': 0,
+                'FIELD_LENGTH': 1000,
+                'FIELD_PRECISION': 3,
+                'GLOBAL': '',
+                'FORMULA': 'value = $id',
+                'OUTPUT': 'memory:'
+            },
+        )['OUTPUT']
+        clipped = processing.run(
+            "native:clip",
+            {
+                'INPUT': outputLyr,
+                'OVERLAY': geographicBoundsLyr,
+                'OUTPUT': 'memory:',
+            },
+        )['OUTPUT']
+        selectedIdsString = f"{tuple(feat['featid'] for feat in clipped.getFeatures() if feat.geometry().area()/totalArea > 0.1)}".replace(',)',')')
+        imageArticulationLayer = processing.run(
+            "native:extractbyexpression",
+            {
+                'INPUT': clipped,
+                'EXPRESSION': f'featid in {selectedIdsString}',
+                'OUTPUT': 'memory:'
+            },
+        )['OUTPUT']
+
+
         QgsProject.instance().addMapLayer(imageArticulationLayer, False)
         layers[imageArticulationLayerIdx] = imageArticulationLayer
 
-        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer, mapAreaFeature)
+        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
         self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
 
         # Inserting counties table
@@ -64,8 +98,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         mapIDsToBeDisplayed = [imageArticulationLayer.id()]
         return mapIDsToBeDisplayed
     
-    def getOrderedFeatures(self, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature):
-        geographicBoundsLyr = self.createVectorLayerFromIter('geographicBounds', [mapAreaFeature])
+    def getOrderedFeatures(self, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
         featureList = self.getAreasWithoutImageCoverage(imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
         imageArticulationLayer.startEditing()
         imageArticulationLayer.beginEditCommand('')
@@ -104,9 +137,12 @@ class ImageArticulation(ComponentUtils,IComponent):
             }
         )['OUTPUT']
         boundsGeom = mapAreaFeature.geometry()
+        boundsArea = boundsGeom.area()
         outputFeaturesList = []
         for feat in outputPolygonLyr.getFeatures():
             if not feat.geometry().pointOnSurface().intersects(boundsGeom):
+                continue
+            if feat.geometry().area() / boundsArea < 0.1:
                 continue
             feat['id'] = str(uuid4())
             outputFeaturesList.append(feat)
