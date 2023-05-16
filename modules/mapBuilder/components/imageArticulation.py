@@ -73,7 +73,7 @@ class ImageArticulation(ComponentUtils,IComponent):
                 'EXPRESSION': f'featid in {selectedIdsString}',
                 'OUTPUT': 'memory:'
             },
-        )['OUTPUT']
+        )['OUTPUT'] if selectedIdsString != '()' else clipped
 
 
         QgsProject.instance().addMapLayer(imageArticulationLayer, False)

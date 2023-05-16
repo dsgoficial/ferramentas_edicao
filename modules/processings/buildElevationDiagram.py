@@ -25,7 +25,7 @@ from uuid import uuid4
 import numpy as np
 import json
 import processing
-from osgeo import gdal
+from osgeo import gdal, ogr
 from PyQt5.QtCore import QCoreApplication, QVariant
 from qgis.core import (QgsFeature, QgsFeatureSink, QgsField, QgsFields,
                        QgsGeometry, QgsProcessing, QgsProcessingAlgorithm,
@@ -35,7 +35,8 @@ from qgis.core import (QgsFeature, QgsFeatureSink, QgsField, QgsFields,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterRasterLayer, QgsProcessingUtils,
-                       QgsProject, QgsVectorLayer, QgsWkbTypes, QgsProcessingParameterFileDestination)
+                       QgsProject, QgsVectorLayer, QgsWkbTypes, QgsProcessingParameterFileDestination,
+                       QgsVectorFileWriter)
 
 
 class BuildElevationDiagram(QgsProcessingAlgorithm):
@@ -113,9 +114,9 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             parameters, self.CONTOUR_INTERVAL, context)
         geoBoundsSource = self.parameterAsSource(
             parameters, self.GEOGRAPHIC_BOUNDARY, context)
-        areaWithoutInformationSource = self.parameterAsSource(
+        areaWithoutInformationLyr = self.parameterAsVectorLayer(
             parameters, self.AREA_WITHOUT_INFORMATION_POLYGONS, context)
-        waterBodiesSource = self.parameterAsSource(
+        waterBodiesLyr = self.parameterAsVectorLayer(
             parameters, self.WATER_BODIES_POLYGONS, context)
         outputRaster = self.parameterAsOutputLayer(parameters, self.OUTPUT_RASTER, context)
         outputJsonPath = self.parameterAsFileOutput(parameters, self.OUTPUT_JSON, context)
@@ -123,51 +124,35 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
 
-        geographicBounds = self.overlayPolygonLayer(
-            inputLyr=parameters[self.GEOGRAPHIC_BOUNDARY],
-            polygonLyr=parameters[self.AREA_WITHOUT_INFORMATION_POLYGONS],
-            crs=inputRaster.crs() if inputRaster is not None else QgsProject.instance().crs(),
-            context=context,
-            feedback=multiStepFeedback,
-            operator=2
-        ) if areaWithoutInformationSource is not None and \
-            areaWithoutInformationSource.featureCount() > 0 else parameters[self.GEOGRAPHIC_BOUNDARY]
-        
-        currentStep += 1
-
-        multiStepFeedback.setCurrentStep(currentStep)
-        geographicBounds = self.overlayPolygonLayer(
-            inputLyr=geographicBounds,
-            polygonLyr=parameters[self.WATER_BODIES_POLYGONS],
-            crs=inputRaster.crs() if inputRaster is not None else QgsProject.instance().crs(),
-            context=context,
-            feedback=multiStepFeedback,
-            operator=2
-        ) if waterBodiesSource is not None and \
-            waterBodiesSource.featureCount() > 0 else geographicBounds
-        currentStep += 1
-
-        multiStepFeedback.setCurrentStep(currentStep)
-        geographicBounds = self.makeValidGeometries(
-            inputLyr=geographicBounds,
-            context=context,
-            feedback=multiStepFeedback
-        )
-        currentStep += 1
-
-        multiStepFeedback.setCurrentStep(currentStep)
         clippedRaster = self.runClipRasterLayer(
             inputRaster,
-            mask=geographicBounds,
+            mask=parameters[self.GEOGRAPHIC_BOUNDARY],
             context=context,
             feedback=multiStepFeedback,
             noData=-9999,
-            outputRaster=QgsProcessingUtils.generateTempFilename(f'clip_{str(uuid4())}.tif')
+            outputRaster=QgsProcessingUtils.generateTempFilename(f'clip_{str(uuid4().hex)}.tif')
+        )
+        currentStep += 1
+
+        clippedRasterLyr = QgsProcessingUtils.mapLayerFromString(clippedRaster, context)   
+
+        multiStepFeedback.setCurrentStep(currentStep)
+        areaWithoutInformationNpArray = self.buildNumpyNodataMask(
+            rasterLyr=clippedRasterLyr,
+            vectorLyr=areaWithoutInformationLyr
         )
         currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
-        slicingThresholdDict, npRaster, ds = self.findSlicingThresholdDict(clippedRaster, threshold)
+        waterBodyNpArray = self.buildNumpyNodataMask(
+            rasterLyr=clippedRasterLyr,
+            vectorLyr=waterBodiesLyr
+        )
+        currentStep += 1
+
+        multiStepFeedback.setCurrentStep(currentStep)
+        slicingThresholdDict, npRaster, ds = self.findSlicingThresholdDict(
+            clippedRaster, areaWithoutInformationNpArray, waterBodyNpArray, threshold)
 
         self.writeOutputRaster(outputRaster, npRaster, ds)
         
@@ -193,10 +178,11 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         band.ComputeStatistics(False)
         out_ds = None
 
-    def findSlicingThresholdDict(self, inputRaster, threshold):
+    def findSlicingThresholdDict(self, inputRaster, areaWithoutInformationNpArray, waterBodyNpArray, threshold):
         ds = gdal.Open(inputRaster)
         npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
         npRaster[npRaster < 0] = np.nan
+        npRaster = npRaster + areaWithoutInformationNpArray + waterBodyNpArray #performs clipping in raster
         npRaster_without_nodata = npRaster[~np.isnan(npRaster)] # removes nodata values
         npRaster_without_nodata = threshold * np.floor(npRaster_without_nodata / threshold).astype(int)
         nodataRasterPixelCount = np.count_nonzero(np.isnan(npRaster))
@@ -268,76 +254,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         else:
             return 4
 
-    def overlayPolygonLayer(self, inputLyr, polygonLyr, crs, context, feedback, operator=0):
-        parameters = {
-            'ainput': inputLyr,
-            'atype': 0,
-            'binput': polygonLyr,
-            'btype': 0,
-            'operator': operator,
-            'snap': 0,
-            '-t': False,
-            'output': 'TEMPORARY_OUTPUT',
-            'GRASS_REGION_PARAMETER': None,
-            'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
-            'GRASS_MIN_AREA_PARAMETER': 1e-15,
-            'GRASS_OUTPUT_TYPE_PARAMETER': 3,
-            'GRASS_VECTOR_DSCO': '',
-            'GRASS_VECTOR_LCO': '',
-            'GRASS_VECTOR_EXPORT_NOCAT': False
-            }
-        x = processing.run(
-            'grass7:v.overlay',
-            parameters,
-            context=context,
-            feedback=feedback
-        )
-        lyr = QgsProcessingUtils.mapLayerFromString(x['output'], context)
-        lyr.setCrs(crs)
-        return lyr
 
-    def runGrassReclass(self, inputRaster, expression, context, feedback=None, outputRaster=None):
-        outputRaster = 'TEMPORARY_OUTPUT' if outputRaster is None else outputRaster
-        output = processing.run(
-            "grass7:r.reclass",
-            {
-                'input': inputRaster,
-                'rules': '',
-                'txtrules': expression,
-                'output': outputRaster,
-                'GRASS_REGION_PARAMETER': None,
-                'GRASS_REGION_CELLSIZE_PARAMETER': 0,
-                'GRASS_RASTER_FORMAT_OPT': '',
-                'GRASS_RASTER_FORMAT_META': ''
-            },
-            context=context,
-            feedback=feedback
-        )
-        return output['output']    
- 
-    def runGrassMapCalcSimple(self, inputA, expression, context, feedback=None, inputB=None, inputC=None, inputD=None, inputE=None, inputF=None, outputRaster=None):
-        outputRaster = 'TEMPORARY_OUTPUT' if outputRaster is None else outputRaster
-        output = processing.run(
-            "grass7:r.mapcalc.simple",
-            {
-                'a': inputA,
-                'b': inputB,
-                'c': inputC,
-                'd': inputD,
-                'e': inputE,
-                'f': inputF,
-                'expression': expression,
-                'output': outputRaster,
-                'GRASS_REGION_PARAMETER': None,
-                'GRASS_REGION_CELLSIZE_PARAMETER': 0,
-                'GRASS_RASTER_FORMAT_OPT': '',
-                'GRASS_RASTER_FORMAT_META': ''
-            },
-            context=context,
-            feedback=feedback
-        )
-        return output['output']
-    
     def runClipRasterLayer(self, inputRaster, mask, context, feedback=None, outputRaster=None, noData=None):
         outputRaster = 'TEMPORARY_OUTPUT' if outputRaster is None else outputRaster
         output = processing.run(
@@ -365,18 +282,56 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             feedback=feedback
         )
         return output['OUTPUT']
+    
+    def buildNumpyNodataMask(self, rasterLyr, vectorLyr):
+        _out = QgsProcessingUtils.generateTempFilename(f'clip_{str(uuid4().hex)}.tif')
+        _temp_in = QgsProcessingUtils.generateTempFilename(f'feats_{str(uuid4().hex)}.shp')
 
-    def makeValidGeometries(self, inputLyr, context, feedback=None):
-        output = processing.run(
-            "native:fixgeometries",
-            {
-            'INPUT': inputLyr,
-            'OUTPUT':'memory:'
-            },
-            context=context,
-            feedback=feedback
+        NoData_value = -9999
+        x_res = rasterLyr.rasterUnitsPerPixelX()
+        y_res = rasterLyr.rasterUnitsPerPixelY()
+        x_min, y_min, x_max, y_max = rasterLyr.extent().toRectF().getCoords()
+
+        # 4. Create Target - TIFF
+        cols = int( (x_max - x_min) / x_res )
+        rows = int( (y_max - y_min) / y_res )
+
+        _raster = gdal.GetDriverByName('GTiff').Create(_out, cols, rows, 1, gdal.GDT_Byte)
+        _raster.SetGeoTransform((x_min, x_res, 0, y_max, 0, -y_res))
+        _band = _raster.GetRasterBand(1)
+        _band.SetNoDataValue(NoData_value)
+
+        if vectorLyr is None or vectorLyr.featureCount() == 0:
+            _raster = None
+            ds = gdal.Open(_out)
+            npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
+            ds = None
+            return npRaster
+        
+        save_options = QgsVectorFileWriter.SaveVectorOptions()
+        save_options.driverName = "ESRI Shapefile"
+        save_options.fileEncoding = "UTF-8"
+        transform_context = QgsProject.instance().transformContext()
+        error = QgsVectorFileWriter.writeAsVectorFormatV3(
+            vectorLyr,
+            _temp_in,
+            transform_context,
+            save_options
         )
-        return output['OUTPUT']
+
+        # 3. Open Shapefile
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+        source_ds = driver.Open(_temp_in, 0)
+        source_layer = source_ds.GetLayer()
+
+        gdal.RasterizeLayer(_raster, [1], source_layer, burn_values=[255.])
+        _raster = None
+        ds = gdal.Open(_out)
+        npRaster = np.array(ds.GetRasterBand(1).ReadAsArray(), dtype=float)
+        ds = None
+        npRaster[npRaster == 255.] = np.nan
+        return npRaster
+
 
     def tr(self, string):
         return QCoreApplication.translate('BuildElevationDiagram', string)
