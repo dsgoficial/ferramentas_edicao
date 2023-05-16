@@ -182,6 +182,8 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         ds = gdal.Open(inputRaster)
         npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
         npRaster[npRaster < 0] = np.nan
+        areaWithoutInformationNpArray.resize(npRaster.shape, refcheck=False)
+        waterBodyNpArray.resize(npRaster.shape, refcheck=False)
         npRaster = npRaster + areaWithoutInformationNpArray + waterBodyNpArray #performs clipping in raster
         npRaster_without_nodata = npRaster[~np.isnan(npRaster)] # removes nodata values
         npRaster_without_nodata = threshold * np.floor(npRaster_without_nodata / threshold).astype(int)
