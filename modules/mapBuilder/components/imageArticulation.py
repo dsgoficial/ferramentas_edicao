@@ -65,7 +65,7 @@ class ImageArticulation(ComponentUtils,IComponent):
                 'OUTPUT': 'memory:',
             },
         )['OUTPUT']
-        selectedIdsString = f"{tuple(feat['featid'] for feat in clipped.getFeatures() if feat.geometry().area()/totalArea > 0.1)}".replace(',)',')')
+        selectedIdsString = f"{tuple(feat['featid'] for feat in clipped.getFeatures() if feat.geometry().area()/totalArea > 0.01)}".replace(',)',')')
         imageArticulationLayer = processing.run(
             "native:extractbyexpression",
             {
@@ -142,7 +142,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         for feat in outputPolygonLyr.getFeatures():
             if not feat.geometry().pointOnSurface().intersects(boundsGeom):
                 continue
-            if feat.geometry().area() / boundsArea < 0.1:
+            if feat.geometry().area() / boundsArea < 0.01:
                 continue
             feat['id'] = str(uuid4())
             outputFeaturesList.append(feat)
