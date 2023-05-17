@@ -248,6 +248,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         settings = QgsPalLayerSettings()
         settings.fieldName = label
         settings.Placement = QgsPalLayerSettings.OverPoint
+        settings.labelPerPart = True
         settings.centroidInside = True
         settings.isExpression = True
         textFormat = QgsTextFormat()
