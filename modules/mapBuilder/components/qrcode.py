@@ -6,12 +6,15 @@ from qgis.core import QgsFeature, QgsPrintLayout
 from ...qrcode.main import make
 
 bdgexLayersIdMap = {
-    "localidades":"963",
-    "mosaico_topograficas":"953",
-    "carta_topografica_25":"899",
-    "carta_topografica_50":"898",
-    "carta_topografica_100":"897",
-    "carta_topografica_250":"870"
+    "localidades": "963",
+    "mosaico_topograficas": "953",
+    "carta_topografica_25": "899",
+    "carta_topografica_50": "898",
+    "carta_topografica_100": "897",
+    "carta_topografica_250": "870",
+    "carta_ortoimagem_250": "997",
+    "carta_ortoimagem_50": "876",
+    "carta_ortoimagem_25": "912",
 }
 
 zoomLevelsIdMap = {
@@ -47,8 +50,12 @@ class Qrcode:
             data (dict): Python dictionary holding the map info
             mapAreaFeature (QgsFeature): feature (in geographic coords) holding the map area
         '''
-        bdgexLayersToAdd = ["localidades", "mosaico_topograficas"]
         scale = data.get('scale')
+        bdgexLayersToAdd = ["localidades"]
+        if data.get("tipo_produto") == 'Carta Ortoimagem' and str(scale) != '100':
+            bdgexLayersToAdd.append(f"carta_ortoimagem_{str(scale)}")
+        else:
+            bdgexLayersToAdd.append("mosaico_topograficas")
         centroid = mapAreaFeature.geometry().centroid().asPoint()
         latitude, longitude = centroid.y(), centroid.x()
         destPath = tempfile.NamedTemporaryFile(suffix='.png')
