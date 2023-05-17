@@ -16,6 +16,7 @@ from .buttons.createLakeLabel import CreateLakeLabel
 from .buttons.createRiverLabel import CreateRiverLabel
 from .buttons.drawFlowDirection import DrawFlowDirection
 from .buttons.createBorderLabel import CreateBorderLabel
+from .buttons.addNewLineCharToAttribute import AddNewLineCharToAttribute
 
 class SetupButtons:
 
@@ -45,6 +46,8 @@ class SetupButtons:
         cycleLabelPositionButton.setupUi()
         alternateTextVisibilityButton = AlternateTextVisibility(self.toolBar, self.iface)
         alternateTextVisibilityButton.setupUi()
+        addNewLineButton = AddNewLineCharToAttribute(self.toolBar, self.iface)
+        addNewLineButton.setupUi()
         createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         createVegetationSymbol.setupUi()
         if not productTypeSelector.currentIndex() == 1:
@@ -65,7 +68,7 @@ class SetupButtons:
             createLakeLabel,
             createRiverLabel,
             drawFlowDirection,
-            createBorderLabel
+            createBorderLabel,
         ])
         self.mapToolsActions.extend([
             createVegetationSymbol._action,
@@ -73,7 +76,7 @@ class SetupButtons:
             createLakeLabel._action,
             createRiverLabel._action,
             drawFlowDirection._action,
-            createBorderLabel._action
+            createBorderLabel._action,
         ])
         self.tools.extend([
             productTypeSelector,
@@ -89,7 +92,8 @@ class SetupButtons:
             createLakeLabel,
             createRiverLabel,
             drawFlowDirection,
-            createBorderLabel
+            createBorderLabel,
+            addNewLineButton,
         ])
         self.actionGroup = self.setupActionGroup(*self.mapTools)
         productTypeSelector.currentIndexChanged.connect(lambda idx, compareIdx=[1], btn=createVegetationSymbol._action: self.disableAction(idx, compareIdx, btn))
