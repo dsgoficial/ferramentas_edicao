@@ -66,7 +66,18 @@ class ImageArticulation(ComponentUtils,IComponent):
                 'OUTPUT': 'memory:',
             },
         )['OUTPUT']
-        selectedIdsString = f"{tuple(feat['featid'] for feat in clipped.getFeatures() if feat.geometry().area()/totalArea > 0.01)}".replace(',)',')')
+        clipped = processing.run(
+            "native:multiparttosingleparts",
+            {
+                'INPUT': clipped,
+                'OUTPUT': 'memory:'
+            }
+        )['OUTPUT']
+        selectedIds = [
+            feat['featid'] for feat in clipped.getFeatures() \
+                if self.checkRadiusPoleForLabel(feat, mapAreaFeature.geometry(), data) > 500
+        ]
+        selectedIdsString = f"{tuple(selectedIds)}".replace(',)',')')
         imageArticulationLayer = processing.run(
             "native:extractbyexpression",
             {
@@ -80,7 +91,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         QgsProject.instance().addMapLayer(imageArticulationLayer, False)
         layers[imageArticulationLayerIdx] = imageArticulationLayer
 
-        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
+        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(data, imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
         self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
 
         # Inserting counties table
@@ -99,8 +110,20 @@ class ImageArticulation(ComponentUtils,IComponent):
         mapIDsToBeDisplayed = [imageArticulationLayer.id()]
         return mapIDsToBeDisplayed
     
-    def getOrderedFeatures(self, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
-        featureList = self.getAreasWithoutImageCoverage(imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
+    def checkRadiusPoleForLabel(self, feat, outerExtentsGeometry, data):
+        epsg = data.get('epsg')
+        outerExtentsArea = math.sqrt(outerExtentsGeometry.area())
+        intersectionGeometry = feat.geometry().intersection(outerExtentsGeometry)
+        crsSrc = QgsCoordinateReferenceSystem('EPSG:4326')  # WGS 84
+        crsExtents = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
+        transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
+        intersectionGeometry.transform(transform)
+        _, radius = intersectionGeometry.poleOfInaccessibility(10)
+        radiusPerMapArea = radius/(outerExtentsArea + 1e-8)
+        return radiusPerMapArea
+    
+    def getOrderedFeatures(self, data, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
+        featureList = self.getAreasWithoutImageCoverage(data, imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
         imageArticulationLayer.startEditing()
         imageArticulationLayer.beginEditCommand('')
         imageArticulationLayer.addFeatures(featureList)
@@ -135,8 +158,7 @@ class ImageArticulation(ComponentUtils,IComponent):
             outputFeaturesList.append(feat1)
         return outputFeaturesList
     
-    @staticmethod
-    def getAreasWithoutImageCoverage(imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
+    def getAreasWithoutImageCoverage(self, data, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
         symDiffOutputLyr = processing.run(
             "native:symmetricaldifference",
             {
@@ -159,7 +181,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         for feat in outputPolygonLyr.getFeatures():
             if not feat.geometry().pointOnSurface().intersects(boundsGeom):
                 continue
-            if feat.geometry().area() / boundsArea < 0.01:
+            if self.checkRadiusPoleForLabel(feat, boundsGeom, data) < 500:
                 continue
             feat['id'] = str(uuid4())
             outputFeaturesList.append(feat)
@@ -268,6 +290,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         settings.labelPerPart = True
         settings.centroidInside = True
         settings.isExpression = True
+        settings.fitInPolygonOnly = True
         textFormat = QgsTextFormat()
         textFormat.setColor(QColor(0, 0, 0, 255))
         textFormat.setSize(6)
