@@ -1,3 +1,4 @@
+from collections import defaultdict
 import math
 import os
 from uuid import uuid4
@@ -106,6 +107,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         imageArticulationLayer.endEditCommand()
         imageArticulationLayer.commitChanges()
         featList = list(imageArticulationLayer.getFeatures())
+        featList = self.aggregateFeats(featList)
         return list(
             chain(
                 sorted(
@@ -117,6 +119,21 @@ class ImageArticulation(ComponentUtils,IComponent):
                 filter(lambda x: x['data'] is None, featList)
             )
         )
+    
+    def aggregateFeats(self, featureList):
+        featDict = defaultdict(list)
+        outputFeaturesList = []
+        for feat in featureList:
+            featDict[f"{feat['nome_sensor']},{feat['data']}"].append(feat) # para agregar por nome_sensor e data
+        for featList in featDict.values():
+            feat1, *otherFeats = featList
+            geom = feat1.geometry()
+            for feat in otherFeats:
+                otherGeom = feat.geometry()
+                geom = geom.combine(otherGeom)
+            feat1.setGeometry(geom)
+            outputFeaturesList.append(feat1)
+        return outputFeaturesList
     
     @staticmethod
     def getAreasWithoutImageCoverage(imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
