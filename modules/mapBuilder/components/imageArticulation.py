@@ -75,7 +75,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         )['OUTPUT']
         selectedIds = [
             feat['featid'] for feat in clipped.getFeatures() \
-                if self.checkRadiusPoleForLabel(feat, mapAreaFeature.geometry(), data) > 500
+                if self.checkRadiusPoleForLabel(feat, mapAreaFeature.geometry(), data) > 400
         ]
         selectedIdsString = f"{tuple(selectedIds)}".replace(',)',')')
         imageArticulationLayer = processing.run(
@@ -181,7 +181,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         for feat in outputPolygonLyr.getFeatures():
             if not feat.geometry().pointOnSurface().intersects(boundsGeom):
                 continue
-            if self.checkRadiusPoleForLabel(feat, boundsGeom, data) < 500:
+            if self.checkRadiusPoleForLabel(feat, boundsGeom, data) < 400:
                 continue
             feat['id'] = str(uuid4())
             outputFeaturesList.append(feat)
@@ -290,7 +290,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         settings.labelPerPart = True
         settings.centroidInside = True
         settings.isExpression = True
-        settings.fitInPolygonOnly = True
+        # settings.fitInPolygonOnly = True
         textFormat = QgsTextFormat()
         textFormat.setColor(QColor(0, 0, 0, 255))
         textFormat.setSize(6)
