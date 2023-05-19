@@ -7,10 +7,9 @@ from .baseTools import BaseTools
 
 class CopyToGenericLabel(BaseTools):
 
-    def __init__(self, toolBar, iface, mapTypeSelector) -> None:
+    def __init__(self, toolBar, iface,) -> None:
         self.toolBar = toolBar
         self.iface = iface
-        self.mapTypeSelector = mapTypeSelector
 
     def setupUi(self):
         buttonImg = Path(__file__).parent / 'icons' / 'Copiar_texto_generico.png'
@@ -33,7 +32,6 @@ class CopyToGenericLabel(BaseTools):
         destFeat.setAttribute('justificativa_txt', 2)
         destFeat.setAttribute('espacamento', 0)
         destFeat.setAttribute('cor', '#241F21')
-        #destFeat.setAttribute('carta_simbolizacao', self.mapTypeSelector.options.get(self.mapTypeSelector.currentText()))
         destFeat.setGeometry(originFeat.geometry())
 
     def setLineFeatValues(self, originFeat, destFeat):
@@ -42,7 +40,6 @@ class CopyToGenericLabel(BaseTools):
         destFeat.setAttribute('tamanho_txt', 6)
         destFeat.setAttribute('espacamento', 0)
         destFeat.setAttribute('cor', '#241F21')
-        #destFeat.setAttribute('carta_simbolizacao', self.mapTypeSelector.options.get(self.mapTypeSelector.currentText()))
         destFeat.setGeometry(originFeat.geometry())
 
     def run(self):
