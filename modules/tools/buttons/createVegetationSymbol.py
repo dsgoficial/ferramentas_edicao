@@ -19,10 +19,10 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Simbolo_vegatacao.png'
         self._action = self.createAction(
             'Símbolo Vegetação',
-            None,
+            buttonImg,
             lambda _: None,
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas nos valores de "cobter_vegetacao_a"'),
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas nos valores de "cobter_vegetacao_a"'),

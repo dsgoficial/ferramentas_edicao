@@ -72,10 +72,10 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         self.controlPressed = False
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Sentido_corrente.png'
         self._action = self.createAction(
             'Sentido Corrente',
-            None,
+            buttonImg,
             lambda _: None,
             self.tr('Cria feições em "edicao_simb_direcao_corrente_p" baseadas no input do usuario'),
             self.tr('Cria feições em "edicao_simb_direcao_corrente_p" baseadas no input do usuario'),

@@ -25,10 +25,10 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Rotulo_lago.png'
         self._action = self.createAction(
             'Rótulo Lago',
-            None,
+            buttonImg,
             lambda _: None,
             self.tr('Cria feições em "edicao_texto_generico_p" baseadas na interseção com "cobter_massa_dagua_a"'),
             self.tr('Cria feições em "edicao_texto_generico_p" baseadas na interseção com "cobter_massa_dagua_a"'),

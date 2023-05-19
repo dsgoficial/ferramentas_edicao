@@ -74,10 +74,10 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         self.controlPressed = False
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Rotulo_fronteira.png'
         self._action = self.createAction(
             'Rótulo Fronteira',
-            None,
+            buttonImg,
             lambda _: None,
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "edicao_limite_legal_l"'),
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "edicao_limite_legal_l"'),

@@ -8,10 +8,10 @@ class AlternateTextVisibility(BaseTools):
         self.iface = iface
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbolA.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Alternar_visibilidade_do_texto.png'
         self._action = self.createAction(
             'Alternar visibilidade do texto',
-            None,
+            buttonImg,
             self.run,
             self.tr('Adiciona ou remove texto_edicao baseado no atributo nome'),
             self.tr('Adiciona ou remove texto_edicao baseado no atributo nome'),

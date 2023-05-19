@@ -29,10 +29,10 @@ class CycleLabelPosition(BaseTools):
         self.currentFeats = set()
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Alternar_rotulo.png'
         self._action = self.createAction(
             'Alternar rótulo',
-            None,
+            buttonImg,
             self.run,
             self.tr('Alterna os atributos "label_x" e "label_y"'),
             self.tr('Alterna os atributos "label_x" e "label_y"'),

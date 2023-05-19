@@ -10,10 +10,10 @@ class AddNewLineCharToAttribute(BaseTools):
         self.iface = iface
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbolA.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Quebra_linha.png'
         self._action = self.createAction(
             'Quebra Linha',
-            None,
+            buttonImg,
             self.run,
             self.tr('Quebra em múltiplas linhas o atributo texto_edicao'),
             self.tr('Quebra em múltiplas linhas o atributo texto_edicao'),

@@ -22,10 +22,10 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Simbolo_idt_tr_rod.png'
         self._action = self.createAction(
             'Símbolo Idt.Tr.Rod.',
-            None,
+            buttonImg,
             lambda _: None,
             self.tr('Cria feições em "edicao_identificador_trecho_rod_p" baseadas nos valores de "infra_via_deslocamento_l"'),
             self.tr('Cria feições em "edicao_identificador_trecho_rod_p" baseadas nos valores de "infra_via_deslocamento_l"'),

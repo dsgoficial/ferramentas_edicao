@@ -8,10 +8,10 @@ class CycleVisibility(BaseTools):
         self.iface = iface
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbolA.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Alternar_visibilidade.png'
         self._action = self.createAction(
             'Alternar visibilidade',
-            None,
+            buttonImg,
             self.run,
             self.tr('Alterna o atributo "visivel" 1 -> 2 -> 1 nas feições selecionadas'),
             self.tr('Alterna o atributo "visivel" 1 -> 2 -> 1 nas feições selecionadas'),
