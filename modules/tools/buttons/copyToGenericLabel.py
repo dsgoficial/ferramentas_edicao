@@ -13,10 +13,10 @@ class CopyToGenericLabel(BaseTools):
         self.mapTypeSelector = mapTypeSelector
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbolA.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Copiar_texto_generico.png'
         self._action = self.createAction(
             'Copiar Texto Genérico',
-            None,
+            buttonImg,
             self.run,
             self.tr('Copia feições selecionadas para "edicao_texto_generico_p" ou "edicao_texto_generico_l"'),
             self.tr('Copia feições selecionadas para "edicao_texto_generico_p" ou "edicao_texto_generico_l"'),

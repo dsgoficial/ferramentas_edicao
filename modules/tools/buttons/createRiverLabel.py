@@ -29,10 +29,10 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / 'icons' / 'genericSymbol.png'
+        buttonImg = Path(__file__).parent / 'icons' / 'Rotulo_rio.png'
         self._action = self.createAction(
             'Rótulo Rio',
-            None,
+            buttonImg,
             lambda _: None,
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "elemnat_trecho_drenagem_l"'),
             self.tr('Cria feições em "edicao_texto_generico_l" baseadas na proximidade com "elemnat_trecho_drenagem_l"'),

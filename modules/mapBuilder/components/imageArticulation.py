@@ -1,3 +1,4 @@
+from collections import defaultdict
 import math
 import os
 from uuid import uuid4
@@ -65,7 +66,18 @@ class ImageArticulation(ComponentUtils,IComponent):
                 'OUTPUT': 'memory:',
             },
         )['OUTPUT']
-        selectedIdsString = f"{tuple(feat['featid'] for feat in clipped.getFeatures() if feat.geometry().area()/totalArea > 0.1)}".replace(',)',')')
+        clipped = processing.run(
+            "native:multiparttosingleparts",
+            {
+                'INPUT': clipped,
+                'OUTPUT': 'memory:'
+            }
+        )['OUTPUT']
+        selectedIds = [
+            feat['featid'] for feat in clipped.getFeatures() \
+                if self.checkRadiusPoleForLabel(feat, mapAreaFeature.geometry(), data) > 400
+        ]
+        selectedIdsString = f"{tuple(selectedIds)}".replace(',)',')')
         imageArticulationLayer = processing.run(
             "native:extractbyexpression",
             {
@@ -73,13 +85,13 @@ class ImageArticulation(ComponentUtils,IComponent):
                 'EXPRESSION': f'featid in {selectedIdsString}',
                 'OUTPUT': 'memory:'
             },
-        )['OUTPUT']
+        )['OUTPUT'] if selectedIdsString != '()' else clipped
 
 
         QgsProject.instance().addMapLayer(imageArticulationLayer, False)
         layers[imageArticulationLayerIdx] = imageArticulationLayer
 
-        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
+        orderedFeaturesByDateAndSensor = self.getOrderedFeatures(data, imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
         self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
 
         # Inserting counties table
@@ -98,14 +110,27 @@ class ImageArticulation(ComponentUtils,IComponent):
         mapIDsToBeDisplayed = [imageArticulationLayer.id()]
         return mapIDsToBeDisplayed
     
-    def getOrderedFeatures(self, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
-        featureList = self.getAreasWithoutImageCoverage(imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
+    def checkRadiusPoleForLabel(self, feat, outerExtentsGeometry, data):
+        epsg = data.get('epsg')
+        outerExtentsArea = math.sqrt(outerExtentsGeometry.area())
+        intersectionGeometry = feat.geometry().intersection(outerExtentsGeometry)
+        crsSrc = QgsCoordinateReferenceSystem('EPSG:4326')  # WGS 84
+        crsExtents = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
+        transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
+        intersectionGeometry.transform(transform)
+        _, radius = intersectionGeometry.poleOfInaccessibility(10)
+        radiusPerMapArea = radius/(outerExtentsArea + 1e-8)
+        return radiusPerMapArea
+    
+    def getOrderedFeatures(self, data, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
+        featureList = self.getAreasWithoutImageCoverage(data, imageArticulationLayer, mapAreaFeature, geographicBoundsLyr)
         imageArticulationLayer.startEditing()
         imageArticulationLayer.beginEditCommand('')
         imageArticulationLayer.addFeatures(featureList)
         imageArticulationLayer.endEditCommand()
         imageArticulationLayer.commitChanges()
         featList = list(imageArticulationLayer.getFeatures())
+        featList = self.aggregateFeats(featList)
         return list(
             chain(
                 sorted(
@@ -118,8 +143,22 @@ class ImageArticulation(ComponentUtils,IComponent):
             )
         )
     
-    @staticmethod
-    def getAreasWithoutImageCoverage(imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
+    def aggregateFeats(self, featureList):
+        featDict = defaultdict(list)
+        outputFeaturesList = []
+        for feat in featureList:
+            featDict[f"{feat['nome_sensor']},{feat['data']}"].append(feat) # para agregar por nome_sensor e data
+        for featList in featDict.values():
+            feat1, *otherFeats = featList
+            geom = feat1.geometry()
+            for feat in otherFeats:
+                otherGeom = feat.geometry()
+                geom = geom.combine(otherGeom)
+            feat1.setGeometry(geom)
+            outputFeaturesList.append(feat1)
+        return outputFeaturesList
+    
+    def getAreasWithoutImageCoverage(self, data, imageArticulationLayer: QgsVectorLayer, mapAreaFeature: QgsFeature, geographicBoundsLyr: QgsVectorLayer):
         symDiffOutputLyr = processing.run(
             "native:symmetricaldifference",
             {
@@ -142,7 +181,7 @@ class ImageArticulation(ComponentUtils,IComponent):
         for feat in outputPolygonLyr.getFeatures():
             if not feat.geometry().pointOnSurface().intersects(boundsGeom):
                 continue
-            if feat.geometry().area() / boundsArea < 0.1:
+            if self.checkRadiusPoleForLabel(feat, boundsGeom, data) < 400:
                 continue
             feat['id'] = str(uuid4())
             outputFeaturesList.append(feat)
@@ -248,8 +287,10 @@ class ImageArticulation(ComponentUtils,IComponent):
         settings = QgsPalLayerSettings()
         settings.fieldName = label
         settings.Placement = QgsPalLayerSettings.OverPoint
+        settings.labelPerPart = True
         settings.centroidInside = True
         settings.isExpression = True
+        # settings.fitInPolygonOnly = True
         textFormat = QgsTextFormat()
         textFormat.setColor(QColor(0, 0, 0, 255))
         textFormat.setSize(6)
