@@ -16,12 +16,11 @@ from .utils.comboBox import ComboBox
 
 class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
-    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector, productTypeSelector):
+    def __init__(self, iface, toolBar, scaleSelector, productTypeSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
         self.dstLyr = None
-        self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.productTypeSelector = productTypeSelector
         self.mapCanvas = iface.mapCanvas()

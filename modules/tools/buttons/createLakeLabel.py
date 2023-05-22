@@ -12,11 +12,10 @@ from .utils.comboBox import ComboBox
 
 class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
 
-    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector, productTypeSelector):
+    def __init__(self, iface, toolBar, scaleSelector, productTypeSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
-        self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.productTypeSelector = productTypeSelector
         self.mapCanvas = iface.mapCanvas()
@@ -76,7 +75,6 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         else:
             toInsert.setAttribute('cor', '#00a0df')
             self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
-        #toInsert.setAttribute('carta_simbolizacao', self.getMapType())
         toInsert.setAttribute('tamanho_txt', self.getLabelSize(feat))
         if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
             toInsert.setAttribute('tamanho_buffer', 1)
@@ -86,12 +84,6 @@ class CreateLakeLabel(QgsMapToolEmitPoint,BaseTools):
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
         self.mapCanvas.refresh()
-
-    def getMapType(self):
-        mapType = self.mapTypeSelector.currentText()
-        if mapType == 'Carta':
-            return 1
-        return 2
 
     def getLabelSize(self, feat):
         scale = self.getScale()

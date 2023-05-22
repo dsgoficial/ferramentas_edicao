@@ -3,7 +3,6 @@ from pathlib import Path
 from PyQt5.QtWidgets import QButtonGroup, QActionGroup
 
 from .buttons.productTypeSelector import ProductTypeSelector
-from .buttons.mapTypeSelector import MapTypeSelector
 from .buttons.scaleSelector import ScaleSelector
 from .buttons.cycleVisibility import CycleVisibility
 from .buttons.cycleTextJustification import CycleTextJustification
@@ -32,15 +31,13 @@ class SetupButtons:
         productTypeSelector = ProductTypeSelector(self.iface, self.toolBar)
         productTypeSelector.setupUi()
         
-        mapTypeSelector = MapTypeSelector(self.iface, self.toolBar)
-        mapTypeSelector.setupUi()
         scaleSelector = ScaleSelector(self.iface, self.toolBar)
         scaleSelector.setupUi()
         cycleVisibilityButton = CycleVisibility(self.toolBar, self.iface)
         cycleVisibilityButton.setupUi()
         cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
         cycleTextJustificationButton.setupUi()
-        copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface, mapTypeSelector)
+        copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
         copyToGenericLabelButton.setupUi()
         cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
@@ -52,15 +49,15 @@ class SetupButtons:
         createVegetationSymbol.setupUi()
         if not productTypeSelector.currentIndex() == 1:
             createVegetationSymbol._action.setEnabled(False)
-        createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
+        createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, scaleSelector)
         createRoadIdentifierSymbol.setupUi()
-        createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
+        createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         createLakeLabel.setupUi()
-        createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
+        createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         createRiverLabel.setupUi()
-        drawFlowDirection = DrawFlowDirection(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
+        drawFlowDirection = DrawFlowDirection(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         drawFlowDirection.setupUi()
-        createBorderLabel = CreateBorderLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector, productTypeSelector)
+        createBorderLabel = CreateBorderLabel(self.iface, self.toolBar, scaleSelector, productTypeSelector)
         createBorderLabel.setupUi()
         self.mapTools.extend([
             createVegetationSymbol,
@@ -80,7 +77,6 @@ class SetupButtons:
         ])
         self.tools.extend([
             productTypeSelector,
-            mapTypeSelector,
             scaleSelector,
             cycleTextJustificationButton,
             copyToGenericLabelButton,

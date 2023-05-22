@@ -12,11 +12,10 @@ from PyQt5.QtGui import QCursor
 
 class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
 
-    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector):
+    def __init__(self, iface, toolBar, scaleSelector):
         super().__init__(iface.mapCanvas())
         self.iface = iface
         self.toolBar = toolBar
-        self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.mapCanvas = iface.mapCanvas()
         self.canvasClicked.connect(self.mouseClick)
@@ -76,7 +75,6 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint,BaseTools):
         toInsert.setAttribute('jurisdicao', jurisd)
         toInsert.setAttribute('sigla', abbrv)
         toInsert.setAttribute('tipo', roadType)
-        #toInsert.setAttribute('carta_simbolizacao', self.getMapType()S)
         toInsert.setGeometry(self.currPos)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
