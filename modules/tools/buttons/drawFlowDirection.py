@@ -35,11 +35,10 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
     acquisitionFinished = QtCore.pyqtSignal(QgsGeometry)
     reshapeLineCreated = QtCore.pyqtSignal(QgsGeometry)
 
-    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector, productTypeSelector):
+    def __init__(self, iface, toolBar, scaleSelector, productTypeSelector):
         #construtor
         self.iface = iface
         self.toolBar = toolBar
-        self.mapTypeSelector = mapTypeSelector
         self.scaleSelector = scaleSelector
         self.productTypeSelector = productTypeSelector
         self.canvas = iface.mapCanvas()
