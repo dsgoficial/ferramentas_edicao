@@ -47,7 +47,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         drainageLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME_A, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
-        productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
+        self.productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
 
         if gridScaleParam == 0:
             self.scale = 25000
@@ -102,7 +102,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         for feature in layer.getFeatures():
             new_att = {}
             size = ProcessingUtils.getRiverOutPolyLabelFontSize(feature, self.scale, lyrCrs)
-            if productParam == 0: #Para carta ortoimagem o tamanho mínimo é 7
+            if self.productParam == 0: #Para carta ortoimagem o tamanho mínimo é 7
                 size = size if size > 6 else 7
             new_att[feature.fieldNameIndex('tamanho_txt')] = size
             layer.dataProvider().changeAttributeValues({feature.id(): new_att})
