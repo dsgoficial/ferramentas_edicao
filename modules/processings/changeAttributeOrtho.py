@@ -271,10 +271,17 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
                 texto_edicao.append(feature['nome'])
             if feature['situacao_fisica'] != 3:
                 texto_edicao.append('(' + feature['situacao_fisica'].lower() + ')')
-            if feature['revestimento'] != 3:
+            
+            if feature['revestimento'] == 1:
+                texto_edicao.append('Revestimento natural')
+            elif feature['revestimento'] == 2:
+                texto_edicao.append('Revestimento primário')
+            elif feature['revestimento'] in [0, 9999]:
                 texto_edicao.append('Revestimento desconhecido')
+
             if feature['altitude'] != NULL:
                 texto_edicao.append(round(feature['altitude']))
+            
             new_att[feature.fieldNameIndex('texto_edicao')] = '|'.join(
                 map(str, texto_edicao))
         else:

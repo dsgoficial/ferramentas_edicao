@@ -298,21 +298,25 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultPistaPouso(self, feature, lyrCrs):
         new_att = {}
         new_att[feature.fieldNameIndex('justificativa_txt')] = 2
+        new_att[feature.fieldNameIndex('visivel')] = 1
         if feature['tipo'] != 10:
-            new_att[feature.fieldNameIndex('visivel')] = 1
             texto_edicao = []
             if feature['nome'] != NULL:
                 texto_edicao.append(feature['nome'])
             if feature['situacao_fisica'] != 3:
                 texto_edicao.append('(' + feature['situacao_fisica'].lower() + ')')
-            if feature['revestimento'] != 3:
+            
+            if feature['revestimento'] == 1:
+                texto_edicao.append('Revestimento natural')
+            elif feature['revestimento'] == 2:
+                texto_edicao.append('Revestimento primário')
+            elif feature['revestimento'] in [0, 9999]:
                 texto_edicao.append('Revestimento desconhecido')
+            
             if feature['altitude'] != NULL:
                 texto_edicao.append(round(feature['altitude']))
             new_att[feature.fieldNameIndex('texto_edicao')] = '|'.join(
                 map(str, texto_edicao))
-        else:
-            new_att[feature.fieldNameIndex('visivel')] = 2
         return {feature.id(): new_att}
 
     def defaultllp(self, feature, lyrCrs):
