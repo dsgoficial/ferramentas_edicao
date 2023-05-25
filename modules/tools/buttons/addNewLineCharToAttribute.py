@@ -56,10 +56,9 @@ class AddNewLineCharToAttribute(BaseTools):
         for feature in Features:
             atributo = feature.attributes()
             indice = feature.fields().indexOf("texto_edicao")
-            if len(atributo[indice]) > 20:
-                novo_valor =  inserir_simbolo(atributo[indice])
-                feature.setAttribute('texto_edicao', novo_valor)                
-                layer.updateFeature(feature)
+            novo_valor =  inserir_simbolo(atributo[indice])
+            feature.setAttribute('texto_edicao', novo_valor)                
+            layer.updateFeature(feature)
         layer.endEditCommand()
         layer.triggerRepaint()
         self.iface.mapCanvas().refresh()
