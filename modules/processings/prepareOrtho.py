@@ -136,7 +136,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             }
         )
 
-    def sizeRiverLabel(self, layers, frame, scale):
+    def sizeRiverLabel(self, layers, frame, scale, productType):
         processing.run(
             'ferramentasedicao:sizetextriverline',
             {
