@@ -33,7 +33,8 @@ from .prepareTopo import PrepareTopo
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
-from .setSobreposition import SetSobreposition
+from .setSobrepositionOrtho import SetSobrepositionOrtho
+from .setSobrepositionTopo import SetSobrepositionTopo
 from .changeAttributeOrtho import ChangeAttributeOrtho
 from .changeAttributeTopo import ChangeAttributeTopo
 from .sizeTextRiverLine import SizeTextRiverLine
@@ -73,7 +74,8 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PlaceMineralExtractionSymbol())
         self.addAlgorithm(PlaceAllAreaPointSymbols())
         self.addAlgorithm(BuildElevationDiagram())
-        self.addAlgorithm(SetSobreposition())
+        self.addAlgorithm(SetSobrepositionOrtho())
+        self.addAlgorithm(SetSobrepositionTopo())
         self.addAlgorithm(ChangeAttributeOrtho())
         self.addAlgorithm(ChangeAttributeTopo())
         self.addAlgorithm(SizeTextRiverLine())
