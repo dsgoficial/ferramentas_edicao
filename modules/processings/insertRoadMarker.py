@@ -30,7 +30,8 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 self.ROAD,
                 self.tr('Selecionar camada de via de deslocamento'),
                 [QgsProcessing.TypeVectorLine],
-                optional = False
+                optional = False,
+                defaultValue='infra_via_deslocamento_l'
             )
         )
 
@@ -39,7 +40,8 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 self.MARKER,
                 self.tr('Selecionar camada de identificador trecho rodoviário'),
                 [QgsProcessing.TypeVectorPoint],
-                optional = False
+                optional = False,
+                defaultValue='edicao_identificador_trecho_rod_p'
             )
         )
 
@@ -47,7 +49,8 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_FRAME,
                 self.tr('Selecionar camada de moldura'),
-                [QgsProcessing.TypeVectorPolygon]
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue='aux_moldura_a'
             )
         )
 
@@ -66,16 +69,12 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
 
         if (gridScaleParam==0):
             scale = 25000
-            scaleMini = 185000
         elif (gridScaleParam==1):
             scale = 50000
-            scaleMini = 370000
         if (gridScaleParam==2):
             scale = 100000
-            scaleMini = 740000
         elif (gridScaleParam==3):
             scale = 250000
-            scaleMini = 2217000
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
         frameLayer = self.runAddCount(frameLayer, feedback=feedback)
@@ -92,19 +91,19 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
 
         distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
         pointsAndAngles1 = self.chopLineLayer(highwayLyr, distance1, ['sigla', 'jurisdicao', 'tipo'])
-        self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAngles1, 1, 0)
+        self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAngles1, 0)
 
         maxRoadIndentificationNumber = self.findMaxRoadIndentificationNumber(pointsAndAngles1)
-        for n in range(maxRoadIndentificationNumber):
-            if n == maxRoadIndentificationNumber:
-                break
-            distanceFromSymbol = self.getChopDistance(highwayLyr, scale * (n+1)* 0.008)
-            highwayLyrSubstring = self.getLineSubstring(highwayLyr, distanceFromSymbol, QgsProperty.fromExpression('length( $geometry)'))
-            chopDistance = self.getChopDistance(highwayLyrSubstring, scale*0.2)
-            pointsAndAnglesN = self.chopLineLayer(highwayLyrSubstring, chopDistance, ['sigla', 'jurisdicao', 'tipo'])
-            self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAnglesN, 1, n+1)
-            distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
-            self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
+        if maxRoadIndentificationNumber > 1:
+            for n in range(maxRoadIndentificationNumber-1):
+                distanceFromSymbol = self.getChopDistance(highwayLyr, scale * (n+1)* 0.008)
+                highwayLyrSubstring = self.getLineSubstring(highwayLyr, distanceFromSymbol, QgsProperty.fromExpression('length( $geometry)'))
+                chopDistance = self.getChopDistance(highwayLyrSubstring, scale*0.2)
+                pointsAndAnglesN = self.chopLineLayer(highwayLyrSubstring, chopDistance, ['sigla', 'jurisdicao', 'tipo'])
+                self.populateRoadIndentificationSymbolLayer(layer_marker,pointsAndAnglesN, n+1)
+                distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
+
+        self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
 
 
         return {self.OUTPUT: ''}
@@ -146,6 +145,14 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 'LENGTH': cutDistance,
                 'OUTPUT' : 'TEMPORARY_OUTPUT'
             })['OUTPUT']
+
+        output = processing.run(
+            'native:extractspecificvertices', {
+                'INPUT': output,
+                'VERTICES': 0,
+                'OUTPUT' : 'TEMPORARY_OUTPUT'
+            })['OUTPUT']
+        
         bounds = processing.run(
             'native:boundary', {
                 'INPUT': layer,
@@ -161,18 +168,17 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             geomEngine = QgsGeometry.createGeometryEngine(feat.geometry().constGet())
             geomEngine.prepareGeometry()
             for featBound in bounds.getFeatures(request):
-                if geomEngine.touches(featBound.geometry().constGet()):
+                if geomEngine.intersects(featBound.geometry().constGet()):
                     isBoundVertex = True
                     break
             if not isBoundVertex:
                 geom = feat.geometry()
-                point = geom.vertexAt(0)
                 angle = (geom.angleAtVertex(0) + (math.pi/2))*180/math.pi
                 if angle>360:
                     angle=angle-360
                 if angle>90 and angle<270:
                     angle = angle - 180
-                pointsAndAngles.append((point, angle, attributeMapping))
+                pointsAndAngles.append((geom, angle, attributeMapping))
         return pointsAndAngles
 
     def mergeHighways(self, lyr, frame):
@@ -195,7 +201,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         return n
     
     @staticmethod
-    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, isMiniMap, n):
+    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, n):
         '''Populates the layer edicao_identificador_trecho_rod_p
         '''
         fields = layer.fields()
