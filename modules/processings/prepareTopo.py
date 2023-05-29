@@ -128,7 +128,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
         
     def setSobreposition(self, layers, check, polygons):
         processing.run(
-            'ferramentasedicao:setsobreposition',
+            'ferramentasedicao:setsobrepositiontopo',
             {
                 'INPUT_LAYER_SOBREPOSITION': layers,
                 'INPUT_LAYER_TO_CHECK': check,

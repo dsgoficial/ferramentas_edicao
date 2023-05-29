@@ -4,7 +4,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis import processing
 
 
-class SetSobreposition(QgsProcessingAlgorithm): 
+class SetSobrepositionOrtho(QgsProcessingAlgorithm): 
 
     INPUT_LAYER_SOBREPOSITION = 'INPUT_LAYER_SOBREPOSITION'
     INPUT_POLYGONS = 'INPUT_POLYGONS'
@@ -61,6 +61,7 @@ class SetSobreposition(QgsProcessingAlgorithm):
                 feat['sobreposto'] = 1
                 feat.setGeometry(feature.geometry())
                 feat['geometria_aproximada'] = feature['geometria_aproximada']
+                feat['tipo'] = feature['tipo']
                 feat['nome'] = feature['nome']
                 feat['exibir_rotulo_aproximado'] = 1
                 layer.addFeature(feat)
@@ -70,6 +71,7 @@ class SetSobreposition(QgsProcessingAlgorithm):
                 feat['sobreposto'] = 2
                 feat.setGeometry(feature.geometry())
                 feat['geometria_aproximada'] = feature['geometria_aproximada']
+                feat['tipo'] = feature['tipo']
                 feat['nome'] = feature['nome']
                 feat['exibir_rotulo_aproximado'] = 1
                 layer.addFeature(feat)
@@ -135,13 +137,13 @@ class SetSobreposition(QgsProcessingAlgorithm):
         return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
-        return SetSobreposition()
+        return SetSobrepositionOrtho()
 
     def name(self):
-        return 'setsobreposition'
+        return 'setsobrepositionortho'
 
     def displayName(self):
-        return self.tr('Configura Sobreposição de Linhas')
+        return self.tr('Configura Sobreposição de Linhas Carta Orto')
 
     def group(self):
         return self.tr('Edição')
