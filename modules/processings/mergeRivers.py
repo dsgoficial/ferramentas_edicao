@@ -45,7 +45,7 @@ class MergeRivers(QgsProcessingAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(
-                self.OUTPUT_LAYER_L, self.tr("drenagem_mesclada")
+                self.OUTPUT_LAYER_L, self.tr("elemnat_trecho_drenagem_l_merged")
             )
         )
 
