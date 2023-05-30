@@ -74,7 +74,7 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
     @staticmethod
     def getVegetationMapping(feat):
-        mapping = {1296: "Ref", 801: "Caat", 501: "Campnr", 701: "Cerr", 401: "Rest"}
+        mapping = {1296: "Ref", 801: "Caat", 501: "Campnr", 701: "Cerr", 401: "Rest", 1003: "Rochoso"}
         return mapping.get(feat.attribute("tipo"), "")
 
     def setTolerance(self):
