@@ -17,11 +17,11 @@ from .buttons.drawFlowDirection import DrawFlowDirection
 from .buttons.createBorderLabel import CreateBorderLabel
 from .buttons.addNewLineCharToAttribute import AddNewLineCharToAttribute
 
-class SetupButtons:
 
+class SetupButtons:
     def __init__(self, iface=None) -> None:
         self.iface = iface
-        self.toolBar = iface.addToolBar('ferramentas_edicao')
+        self.toolBar = iface.addToolBar("ferramentas_edicao")
         self.mapCanvas = iface.mapCanvas()
         self.tools = list()
         self.mapTools = list()
@@ -30,7 +30,7 @@ class SetupButtons:
     def initToolBar(self):
         productTypeSelector = ProductTypeSelector(self.iface, self.toolBar)
         productTypeSelector.setupUi()
-        
+
         scaleSelector = ScaleSelector(self.iface, self.toolBar)
         scaleSelector.setupUi()
         cycleVisibilityButton = CycleVisibility(self.toolBar, self.iface)
@@ -39,60 +39,88 @@ class SetupButtons:
         cycleTextJustificationButton.setupUi()
         copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
         copyToGenericLabelButton.setupUi()
-        cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
+        cycleLabelPositionButton = CycleLabelPosition(
+            self.toolBar, self.iface, scaleSelector
+        )
         cycleLabelPositionButton.setupUi()
-        alternateTextVisibilityButton = AlternateTextVisibility(self.toolBar, self.iface)
+        alternateTextVisibilityButton = AlternateTextVisibility(
+            self.toolBar, self.iface
+        )
         alternateTextVisibilityButton.setupUi()
         addNewLineButton = AddNewLineCharToAttribute(self.toolBar, self.iface)
         addNewLineButton.setupUi()
-        createVegetationSymbol = CreateVegetationSymbol(self.iface, self.toolBar, scaleSelector, productTypeSelector)
+        createVegetationSymbol = CreateVegetationSymbol(
+            self.iface, self.toolBar, scaleSelector, productTypeSelector
+        )
         createVegetationSymbol.setupUi()
         if not productTypeSelector.currentIndex() == 1:
             createVegetationSymbol._action.setEnabled(False)
-        createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(self.iface, self.toolBar, scaleSelector)
+        createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(
+            self.iface, self.toolBar, scaleSelector
+        )
         createRoadIdentifierSymbol.setupUi()
-        createLakeLabel = CreateLakeLabel(self.iface, self.toolBar, scaleSelector, productTypeSelector)
+        createLakeLabel = CreateLakeLabel(
+            self.iface, self.toolBar, scaleSelector, productTypeSelector
+        )
         createLakeLabel.setupUi()
-        createRiverLabel = CreateRiverLabel(self.iface, self.toolBar, scaleSelector, productTypeSelector)
+        createRiverLabel = CreateRiverLabel(
+            self.iface, self.toolBar, scaleSelector, productTypeSelector
+        )
         createRiverLabel.setupUi()
-        drawFlowDirection = DrawFlowDirection(self.iface, self.toolBar, scaleSelector, productTypeSelector)
+        drawFlowDirection = DrawFlowDirection(
+            self.iface, self.toolBar, scaleSelector, productTypeSelector
+        )
         drawFlowDirection.setupUi()
-        createBorderLabel = CreateBorderLabel(self.iface, self.toolBar, scaleSelector, productTypeSelector)
+        createBorderLabel = CreateBorderLabel(
+            self.iface, self.toolBar, scaleSelector, productTypeSelector
+        )
         createBorderLabel.setupUi()
-        self.mapTools.extend([
-            createVegetationSymbol,
-            createRoadIdentifierSymbol,
-            createLakeLabel,
-            createRiverLabel,
-            drawFlowDirection,
-            createBorderLabel,
-        ])
-        self.mapToolsActions.extend([
-            createVegetationSymbol._action,
-            createRoadIdentifierSymbol._action,
-            createLakeLabel._action,
-            createRiverLabel._action,
-            drawFlowDirection._action,
-            createBorderLabel._action,
-        ])
-        self.tools.extend([
-            productTypeSelector,
-            scaleSelector,
-            cycleTextJustificationButton,
-            copyToGenericLabelButton,
-            cycleLabelPositionButton,
-            alternateTextVisibilityButton,
-            cycleVisibilityButton,
-            createVegetationSymbol,
-            createRoadIdentifierSymbol,
-            createLakeLabel,
-            createRiverLabel,
-            drawFlowDirection,
-            createBorderLabel,
-            addNewLineButton,
-        ])
+        self.mapTools.extend(
+            [
+                createVegetationSymbol,
+                createRoadIdentifierSymbol,
+                createLakeLabel,
+                createRiverLabel,
+                drawFlowDirection,
+                createBorderLabel,
+            ]
+        )
+        self.mapToolsActions.extend(
+            [
+                createVegetationSymbol._action,
+                createRoadIdentifierSymbol._action,
+                createLakeLabel._action,
+                createRiverLabel._action,
+                drawFlowDirection._action,
+                createBorderLabel._action,
+            ]
+        )
+        self.tools.extend(
+            [
+                productTypeSelector,
+                scaleSelector,
+                cycleTextJustificationButton,
+                copyToGenericLabelButton,
+                cycleLabelPositionButton,
+                alternateTextVisibilityButton,
+                cycleVisibilityButton,
+                createVegetationSymbol,
+                createRoadIdentifierSymbol,
+                createLakeLabel,
+                createRiverLabel,
+                drawFlowDirection,
+                createBorderLabel,
+                addNewLineButton,
+            ]
+        )
         self.actionGroup = self.setupActionGroup(*self.mapTools)
-        productTypeSelector.currentIndexChanged.connect(lambda idx, compareIdx=[1], btn=createVegetationSymbol._action: self.disableAction(idx, compareIdx, btn))
+        productTypeSelector.currentIndexChanged.connect(
+            lambda idx, compareIdx=[
+                1
+            ], btn=createVegetationSymbol._action: self.disableAction(
+                idx, compareIdx, btn
+            )
+        )
 
     def setupActionGroup(self, *tools):
         actionGroup = QActionGroup(self.iface.mainWindow())
@@ -138,7 +166,7 @@ class SetupButtons:
         button = self.buttonGroup.button(idx)
         button.setChecked(False)
         self.buttonGroup.setExclusive(True)
-    
+
     def disableAction(self, idx, compareIdx, btn):
         if not idx in compareIdx:
             btn.setEnabled(False)

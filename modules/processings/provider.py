@@ -9,8 +9,7 @@ from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .buildElevationDiagram import BuildElevationDiagram
 from .damWidth import DamWidth
 from .definePointSymbolRotation import DefinePointSymbolRotation
-from .elevationDiagramPointGeneralization import \
-    ElevationDiagramPointGeneralization
+from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
 from .generalizeBuildings import GeneralizeBuildings
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
@@ -40,8 +39,8 @@ from .changeAttributeTopo import ChangeAttributeTopo
 from .sizeTextRiverLine import SizeTextRiverLine
 from .setCurveOrientation import SetCurveOrientation
 
-class Provider(QgsProcessingProvider):
 
+class Provider(QgsProcessingProvider):
     def __init__(self):
         super(Provider, self).__init__()
 
@@ -84,30 +83,29 @@ class Provider(QgsProcessingProvider):
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(
+            Setting(self.name(), "ACTIVATE_ferramentasedicao", "Activate", True)
+        )
+        ProcessingConfig.addSetting(
             Setting(
-                self.name(),
-                'ACTIVATE_ferramentasedicao',
-                'Activate',
-                True
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.RESULTS_GROUP_NAME,
+                ProcessingConfig.tr("Results group name"),
+                "results",
+                valuetype=Setting.STRING,
+                placeholder=ProcessingConfig.tr(
+                    "Leave blank to avoid loading results in a predetermined group"
+                ),
             )
         )
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.RESULTS_GROUP_NAME,
-            ProcessingConfig.tr("Results group name"),
-            "results",
-            valuetype=Setting.STRING,
-            placeholder=ProcessingConfig.tr("Leave blank to avoid loading results in a predetermined group")
-        ))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
 
     def id(self, *args, **kwargs):
-        return 'ferramentasedicao'
+        return "ferramentasedicao"
 
     def name(self, *args, **kwargs):
-        return self.tr('Ferramentas de Edição')
+        return self.tr("Ferramentas de Edição")
 
     def icon(self):
-        return QIcon(str(Path(__file__).parent.parent.parent / 'icon.png'))
+        return QIcon(str(Path(__file__).parent.parent.parent / "icon.png"))

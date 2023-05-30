@@ -4,17 +4,19 @@ import enum
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QPushButton, QComboBox
 from PyQt5.QtCore import Qt
-from qgis.core import (Qgis, QgsFeature, QgsFeatureRequest, QgsGeometry,
-                       QgsProject, QgsSpatialIndex)
-
+from qgis.core import (
+    Qgis,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProject,
+    QgsSpatialIndex,
+)
 
 
 class MapTypeSelector(QComboBox):
 
-    options = {
-        'Carta': 1,
-        'Carta Mini': 2
-    }
+    options = {"Carta": 1, "Carta Mini": 2}
 
     def __init__(self, iface, toolBar):
         super().__init__(iface.mainWindow())

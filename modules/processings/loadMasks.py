@@ -1,46 +1,52 @@
 import json
 
-from qgis.core import (QgsProcessing, QgsProcessingAlgorithm,
-                       QgsProcessingParameterFile,
-                       QgsProcessingParameterMultipleLayers, QgsSymbolLayerId,
-                       QgsSymbolLayerReference)
+from qgis.core import (
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterMultipleLayers,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+)
 from qgis.PyQt.QtCore import QCoreApplication
 
 
-class LoadMasks(QgsProcessingAlgorithm): 
+class LoadMasks(QgsProcessingAlgorithm):
 
-    JSON_FILE = 'JSON_FILE'
-    INPUT_LAYERS = 'INPUT_LAYERS'
-    OUTPUT = 'OUTPUT'
+    JSON_FILE = "JSON_FILE"
+    INPUT_LAYERS = "INPUT_LAYERS"
+    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterFile(
                 self.JSON_FILE,
-                self.tr('Selecionar o arquivo de máscaras:'),
-                extension='json'
+                self.tr("Selecionar o arquivo de máscaras:"),
+                extension="json",
             )
         )
 
         self.addParameter(
             QgsProcessingParameterMultipleLayers(
                 self.INPUT_LAYERS,
-                self.tr('Input Layers'),
-                QgsProcessing.TypeVectorAnyGeometry
+                self.tr("Input Layers"),
+                QgsProcessing.TypeVectorAnyGeometry,
             )
         )
 
-    def processAlgorithm(self, parameters, context, feedback): 
+    def processAlgorithm(self, parameters, context, feedback):
         jsonFilePath = self.parameterAsFile(parameters, self.JSON_FILE, context)
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
-        mask_dict = json.load( open( jsonFilePath ) )
+        mask_dict = json.load(open(jsonFilePath))
 
-        mapId = {layer.dataProvider().uri().table() : layer.id() for layer in layers if layer}
-        '''
-        if layer porque quando roda pelo orderEditLayersAndAddStyle (configurar para o preparo de edição), 
-        a camada pode vir como NoneType, aparentemente, tal fato deve-se à exclusão da camada no order do 
+        mapId = {
+            layer.dataProvider().uri().table(): layer.id() for layer in layers if layer
+        }
+        """
+        if layer porque quando roda pelo orderEditLayersAndAddStyle (configurar para o preparo de edição),
+        a camada pode vir como NoneType, aparentemente, tal fato deve-se à exclusão da camada no order do
         orderEditLayersAndAddStyle
-        '''
+        """
         for layer in layers:
             if not layer:
                 continue
@@ -51,11 +57,14 @@ class LoadMasks(QgsProcessingAlgorithm):
             if not labels:
                 continue
             for provider in mask_dict[layerName]:
-                if provider == '--SINGLE--RULE--':
-                    label_settings=labels.settings()
+                if provider == "--SINGLE--RULE--":
+                    label_settings = labels.settings()
                 else:
-                    providerInverseMap = {x.description(): x.ruleKey() for x in labels.rootRule().children()}
-                    label_settings=labels.settings(providerInverseMap[provider])
+                    providerInverseMap = {
+                        x.description(): x.ruleKey()
+                        for x in labels.rootRule().children()
+                    }
+                    label_settings = labels.settings(providerInverseMap[provider])
                 label_format = label_settings.format()
                 masks = label_format.mask()
                 new_symbol_mask = []
@@ -66,31 +75,31 @@ class LoadMasks(QgsProcessingAlgorithm):
                         new_symbol_mask.append(reference)
                 masks.setMaskedSymbolLayers(new_symbol_mask)
                 label_settings.setFormat(label_format)
-                if provider == '--SINGLE--RULE--':
+                if provider == "--SINGLE--RULE--":
                     labels.setSettings(label_settings)
                 else:
                     labels.setSettings(label_settings, providerInverseMap[provider])
             layer.setLabeling(labels)
 
-        return {self.OUTPUT: ''}
+        return {self.OUTPUT: ""}
 
     def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
+        return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
         return LoadMasks()
 
     def name(self):
-        return 'loadmasks'
+        return "loadmasks"
 
     def displayName(self):
-        return self.tr('Carregar máscaras')
+        return self.tr("Carregar máscaras")
 
     def group(self):
-        return self.tr('Auxiliar')
+        return self.tr("Auxiliar")
 
     def groupId(self):
-        return 'auxiliar'
+        return "auxiliar"
 
     def shortHelpString(self):
         return self.tr("O algoritmo carrega as máscaras de acordo com o json.")

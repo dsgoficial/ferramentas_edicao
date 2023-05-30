@@ -1,29 +1,50 @@
 import re
 from pathlib import Path
 
-from numpy import ndarray, array, asarray, dot, cov, array, finfo, min as npmin, max as npmax
+from numpy import (
+    ndarray,
+    array,
+    asarray,
+    dot,
+    cov,
+    array,
+    finfo,
+    min as npmin,
+    max as npmax,
+)
 from numpy.linalg import eigh, norm
 
 from PyQt5.QtCore import QPointF, QSettings
 from PyQt5.QtXml import QDomDocument
-from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry,
-                       QgsLayout, QgsLayoutItem, QgsLayoutPoint,QgsCoordinateTransform,
-                       QgsPrintLayout, QgsProject, QgsRasterLayer, QgsRectangle, QgsCoordinateTransformContext,
-                       QgsReadWriteContext, QgsVectorLayer)
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsGeometry,
+    QgsLayout,
+    QgsLayoutItem,
+    QgsLayoutPoint,
+    QgsCoordinateTransform,
+    QgsPrintLayout,
+    QgsProject,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsCoordinateTransformContext,
+    QgsReadWriteContext,
+    QgsVectorLayer,
+)
 
 from ..factories.gridFactory.gridFactory import GridFactory
 
 
 class ComponentUtils:
-
     def __init__(self, *args, **kwargs):
         pass
 
     def getPrintLayoutFromQptPath(self, path, newValue):
-        '''
+        """
         Returns a QgsPrintLayout from a template indicated by path.
         Also sets the composition variable 'variableNames' to newvalue
-        '''
+        """
         # Load template from file
         layout = QgsPrintLayout(QgsProject.instance())
         # self.updateQptVariables(layout, newValue)
@@ -34,19 +55,20 @@ class ComponentUtils:
         doc.setContent(templateContent)
 
         # adding to existing items
-        #items, ok = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        # items, ok = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
         layout.loadFromTemplate(doc, QgsReadWriteContext())
         self.updateQptVariables(layout, str(newValue))
         return layout
 
-    def updateQptVariables(self, composition, newValue, defaultKey='productFolder'):
-        '''Sets composition variables
-        '''
-        commonFolderPropertyKey = 'commonFolder'
-        commonFolderPropertyValue = str(Path(__file__).parent.parent / 'produtos' / 'common')
-        if 'variableNames' in composition.customProperties():
-            keys = composition.customProperty('variableNames')
-            values = composition.customProperty('variableValues')
+    def updateQptVariables(self, composition, newValue, defaultKey="productFolder"):
+        """Sets composition variables"""
+        commonFolderPropertyKey = "commonFolder"
+        commonFolderPropertyValue = str(
+            Path(__file__).parent.parent / "produtos" / "common"
+        )
+        if "variableNames" in composition.customProperties():
+            keys = composition.customProperty("variableNames")
+            values = composition.customProperty("variableValues")
             keyIndex = -1
             if defaultKey in keys:
                 keyIndex = keys.index(defaultKey)
@@ -54,25 +76,31 @@ class ComponentUtils:
                     values = newValue
                 else:
                     values[keyIndex] = newValue
-                composition.setCustomProperty('variableValues', values)
+                composition.setCustomProperty("variableValues", values)
             else:
                 keys.append(defaultKey)
                 values.append(newValue)
-                composition.setCustomProperty('variableNames', keys)
-                composition.setCustomProperty('variableValues', values)
+                composition.setCustomProperty("variableNames", keys)
+                composition.setCustomProperty("variableValues", values)
         else:
-            composition.setCustomProperty('variableNames', [defaultKey, commonFolderPropertyKey])
-            composition.setCustomProperty('variableValues', [newValue, commonFolderPropertyValue])
+            composition.setCustomProperty(
+                "variableNames", [defaultKey, commonFolderPropertyKey]
+            )
+            composition.setCustomProperty(
+                "variableValues", [newValue, commonFolderPropertyValue]
+            )
 
-    def loadShapeLayer(self, pathShp: Path, pathStyle: Path, lyrName: str) -> QgsVectorLayer:
+    def loadShapeLayer(
+        self, pathShp: Path, pathStyle: Path, lyrName: str
+    ) -> QgsVectorLayer:
         if pathShp.is_file():
-            layer = QgsVectorLayer(str(pathShp), lyrName, 'ogr')
+            layer = QgsVectorLayer(str(pathShp), lyrName, "ogr")
             if layer.isValid():
                 if pathStyle and isinstance(pathStyle, Path) and pathStyle.is_file():
                     layer.loadNamedStyle(str(pathStyle))
                     layer.triggerRepaint()
-                layer.setProviderEncoding(u'UTF-8')
-                layer.dataProvider().setEncoding(u'UTF-8')
+                layer.setProviderEncoding("UTF-8")
+                layer.dataProvider().setEncoding("UTF-8")
             return layer
         else:
             return None
@@ -81,12 +109,12 @@ class ComponentUtils:
         imageLayers = []
         imageLayersIDs = []
         for dictImage in listDictImages:
-            rasterPath = dictImage.get('caminho_imagem')
-            stylePath = dictImage.get('caminho_estilo')
-            epsg = dictImage.get('epsg')
-            if rasterLayer:= self.createLayerRaster(rasterPath, stylePath):
+            rasterPath = dictImage.get("caminho_imagem")
+            stylePath = dictImage.get("caminho_estilo")
+            epsg = dictImage.get("epsg")
+            if rasterLayer := self.createLayerRaster(rasterPath, stylePath):
                 if epsg:
-                    epsgId = QgsCoordinateReferenceSystem(f'EPSG:{epsg}')
+                    epsgId = QgsCoordinateReferenceSystem(f"EPSG:{epsg}")
                     rasterLayer.setCrs(epsgId)
                 imageLayers.insert(0, (rasterLayer))
                 imageLayersIDs.insert(0, (rasterLayer.id()))
@@ -108,13 +136,15 @@ class ComponentUtils:
             root.removeChildNode(root.findGroup(groupToDelete))
 
     def getRasterLayerByType(self, rasterUri):
-        if 'type=xyz' in rasterUri:
-            expression = re.compile(r'type=xyz&url=https?:\/\/(.+?)&zmax=\d{1,2}&zmin=\d{1,2}')
+        if "type=xyz" in rasterUri:
+            expression = re.compile(
+                r"type=xyz&url=https?:\/\/(.+?)&zmax=\d{1,2}&zmin=\d{1,2}"
+            )
             if found := expression.findall(rasterUri):
-                return QgsRasterLayer(rasterUri, found[0], 'wms')
+                return QgsRasterLayer(rasterUri, found[0], "wms")
         else:
             rasterPath = Path(rasterUri)
-            return QgsRasterLayer(str(rasterPath), rasterPath.stem) 
+            return QgsRasterLayer(str(rasterPath), rasterPath.stem)
 
     def loadStyleToLayer(self, layer, stylePath):
         if layer.isValid():
@@ -123,7 +153,9 @@ class ComponentUtils:
 
     def setProjectProjection(self, projection="useProject"):
         settings = QSettings()
-        oldProjValue = settings.value("/Projections/defaultBehavior", "prompt", type=str)
+        oldProjValue = settings.value(
+            "/Projections/defaultBehavior", "prompt", type=str
+        )
         settings.setValue("/Projections/defaultBehavior", projection)
         return oldProjValue
 
@@ -133,14 +165,14 @@ class ComponentUtils:
         return gridLayer
 
     def createVectorLayerFromIter(self, layerName, iterable):
-        '''
+        """
         Creates a vector layer from an Iterable[QgsGeometry,QgsFeature].
         Uses EPSG:4674, and has Polygon type.
-        '''
-        layer = QgsVectorLayer('Polygon?crs=EPSG:4674', layerName, 'memory')
+        """
+        layer = QgsVectorLayer("Polygon?crs=EPSG:4674", layerName, "memory")
         layerProvider = layer.dataProvider()
         featsToAdd = list()
-        if not hasattr(iterable, '__iter__'):
+        if not hasattr(iterable, "__iter__"):
             return layer
         for item in iterable:
             if isinstance(item, QgsFeature):
@@ -152,13 +184,17 @@ class ComponentUtils:
                 featsToAdd.append(feat)
         layerProvider.addFeatures(featsToAdd)
         return layer
-    
+
     @staticmethod
     def cloneVectorLayer(layer, layerName, customDataProviderUri=None):
-        dataProviderUri = layer.dataProvider().dataSourceUri() if customDataProviderUri is None else customDataProviderUri
-        copyLayer = QgsVectorLayer(dataProviderUri, layerName, 'memory')
+        dataProviderUri = (
+            layer.dataProvider().dataSourceUri()
+            if customDataProviderUri is None
+            else customDataProviderUri
+        )
+        copyLayer = QgsVectorLayer(dataProviderUri, layerName, "memory")
         copyLayerDataProvider = copyLayer.dataProvider()
-        renameDict = {x:layer.attributeDisplayName(x) for x in layer.attributeList()}
+        renameDict = {x: layer.attributeDisplayName(x) for x in layer.attributeList()}
         copyLayerDataProvider.renameAttributes(renameDict)
         copyLayer.updateFields()
         copyLayerDataProvider.addFeatures(layer.getFeatures())
@@ -167,10 +203,12 @@ class ComponentUtils:
     @staticmethod
     def cloneVectorLayerReproject(layer, layerName, crsDest):
         dataProviderUri = layer.dataProvider().dataSourceUri()
-        dataProviderUri = dataProviderUri.replace(layer.crs().authid(), crsDest.authid())
-        copyLayer = QgsVectorLayer(dataProviderUri, layerName, 'memory')
+        dataProviderUri = dataProviderUri.replace(
+            layer.crs().authid(), crsDest.authid()
+        )
+        copyLayer = QgsVectorLayer(dataProviderUri, layerName, "memory")
         copyLayerDataProvider = copyLayer.dataProvider()
-        renameDict = {x:layer.attributeDisplayName(x) for x in layer.attributeList()}
+        renameDict = {x: layer.attributeDisplayName(x) for x in layer.attributeList()}
         copyLayerDataProvider.renameAttributes(renameDict)
         copyLayer.updateFields()
         transform = QgsCoordinateTransform(layer.crs(), crsDest, QgsProject.instance())
@@ -184,21 +222,23 @@ class ComponentUtils:
         return copyLayer
 
     def transformGeometry(self, geom: QgsGeometry, src: str, dest: str):
-        '''Apply a QgsCoordinateTransform to a QgsGeometry. The transformation is made inplace.
+        """Apply a QgsCoordinateTransform to a QgsGeometry. The transformation is made inplace.
         src and dst are (str) epsg definitions in the format EPSG:4326, for example.
         Args:
             geom (QgsGeometry): geometry to be (inplace) transformed
             src (str): Source Coordinate Reference System definition (Example: 'EPSG:4674', 'EPSG:31982')
             dest (str): Dest Coordinate Reference System definition (Example: 'EPSG:4674', 'EPSG:31982')
-        '''
-        if 'EPSG:' not in src or 'EPSG:' not in dest:
+        """
+        if "EPSG:" not in src or "EPSG:" not in dest:
             return geom
         transformer = QgsCoordinateTransform(
             QgsCoordinateReferenceSystem(src),
             QgsCoordinateReferenceSystem(dest),
-            QgsCoordinateTransformContext())
+            QgsCoordinateTransformContext(),
+        )
         geom.transform(transformer)
         return geom
+
 
 def cloneItem(item, composition_dest, x_0, y_0):
     ref_point = item.referencePoint()
@@ -209,8 +249,8 @@ def cloneItem(item, composition_dest, x_0, y_0):
     final_y = original_y + y_0
 
     # Create doc xml
-    doc = QDomDocument('Clipboard')
-    element = doc.createElement('Copied items')
+    doc = QDomDocument("Clipboard")
+    element = doc.createElement("Copied items")
     context = QgsReadWriteContext()
     item.writeXml(element, doc, context)
 
@@ -220,10 +260,11 @@ def cloneItem(item, composition_dest, x_0, y_0):
     composition_dest.itemById(item.id()).refresh()
     item.setReferencePoint(ref_point)
 
+
 def copyQptToCompositor(composition_dest, qptDict):
     project = QgsProject()
     layout = QgsLayout(project)
-    with open(qptDict['caminho'], 'rt') as myTemplateFile:
+    with open(qptDict["caminho"], "rt") as myTemplateFile:
         myTemplateContent = myTemplateFile.read()
     doc = QDomDocument()
     doc.setContent(myTemplateContent)
@@ -231,12 +272,14 @@ def copyQptToCompositor(composition_dest, qptDict):
     items, sucess = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
     if sucess:
         for item in items:
-            cloneItem(item, composition_dest, qptDict['x_0'], qptDict['y_0'])
+            cloneItem(item, composition_dest, qptDict["x_0"], qptDict["y_0"])
+
 
 class OBB:
-    '''
+    """
     From https://github.com/pboechat/pyobb/blob/master/pyobb/obb.py
-    '''
+    """
+
     def __init__(self):
         self.rotation = None
         self.min = None
@@ -257,12 +300,7 @@ class OBB:
     def rectangle(self):
         pMin = self.transform((self.min[0], self.min[1]))
         pMax = self.transform((self.max[0], self.max[1]))
-        return QgsRectangle(
-            pMin[0],
-            pMin[1],
-            pMax[0],
-            pMax[1]
-        )
+        return QgsRectangle(pMin[0], pMin[1], pMax[0], pMax[1])
 
     @classmethod
     def build_from_covariance_matrix(cls, covariance_matrix, points):
@@ -294,14 +332,31 @@ class OBB:
     def build_from_points(cls, points):
         if not isinstance(points, ndarray):
             points = array(points, dtype=float)
-        return OBB.build_from_covariance_matrix(cov(points, y=None, rowvar=0, bias=1), points)
+        return OBB.build_from_covariance_matrix(
+            cov(points, y=None, rowvar=0, bias=1), points
+        )
 
     @classmethod
     def build_from_geom(cls, geom: QgsGeometry):
         geomWkt = geom.asWkt()
         if geom.isMultipart():
-            coordsTxt = geomWkt.replace('MultiPolygon ', '').replace(')', '').replace('(', '').split(',')
+            coordsTxt = (
+                geomWkt.replace("MultiPolygon ", "")
+                .replace(")", "")
+                .replace("(", "")
+                .split(",")
+            )
         else:
-            coordsTxt = geomWkt.replace('Polygon ', '').replace(')', '').replace('(', '').split(',')
-        npCoords = [[float(x.strip().split(' ')[0]),float(x.strip().split(' ')[1])] for x in coordsTxt]
-        return OBB.build_from_covariance_matrix(cov(npCoords, y=None, rowvar=0, bias=1), npCoords)
+            coordsTxt = (
+                geomWkt.replace("Polygon ", "")
+                .replace(")", "")
+                .replace("(", "")
+                .split(",")
+            )
+        npCoords = [
+            [float(x.strip().split(" ")[0]), float(x.strip().split(" ")[1])]
+            for x in coordsTxt
+        ]
+        return OBB.build_from_covariance_matrix(
+            cov(npCoords, y=None, rowvar=0, bias=1), npCoords
+        )

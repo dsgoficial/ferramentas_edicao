@@ -12,6 +12,7 @@ class PymagingImage(BaseImage):
     """
     pymaging image builder, default format is PNG.
     """
+
     kind = "PNG"
     allowed_kinds = ("PNG",)
 
@@ -46,4 +47,5 @@ class PymagingImage(BaseImage):
         if transform is None:
             transform = lambda x: x.lower()
         return super(PymagingImage, self).check_kind(
-            kind, transform=transform, **kwargs)
+            kind, transform=transform, **kwargs
+        )

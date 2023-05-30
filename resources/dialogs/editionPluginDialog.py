@@ -2,7 +2,9 @@ from pathlib import Path
 
 from qgis.PyQt import QtWidgets, uic
 
-FORM_CLASS, _ = uic.loadUiType(Path(__file__).parent.parent / 'uis' / 'editionPluginBaseDialog.ui')
+FORM_CLASS, _ = uic.loadUiType(
+    Path(__file__).parent.parent / "uis" / "editionPluginBaseDialog.ui"
+)
 
 
 class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):

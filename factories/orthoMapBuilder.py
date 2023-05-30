@@ -1,8 +1,14 @@
 from functools import partial
 from pathlib import Path
 from typing import Dict, List
-from qgis.core import (QgsDataSourceUri, QgsFeature, QgsPrintLayout,
-                       QgsVectorLayer, QgsMapLayer, QgsProject)
+from qgis.core import (
+    QgsDataSourceUri,
+    QgsFeature,
+    QgsPrintLayout,
+    QgsVectorLayer,
+    QgsMapLayer,
+    QgsProject,
+)
 
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
@@ -10,85 +16,126 @@ from ..interfaces.iMapBuilder import IMapBuilder
 from ..modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
-class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
 
+class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
     def __init__(self, componentFactory: ComponentFactory) -> None:
         super().__init__()
         self.componentFactory = componentFactory
-        self.productPath = Path(__file__).parent.parent / 'modules' / 'mapBuilder' / 'resources' / 'products' / 'orthoMap'
+        self.productPath = (
+            Path(__file__).parent.parent
+            / "modules"
+            / "mapBuilder"
+            / "resources"
+            / "products"
+            / "orthoMap"
+        )
         self.components = dict()
-        self.components.update({'map':self.componentFactory.getComponent('Map', 'orthoMap')})
-        self.components.update({'elevationDiagram':self.componentFactory.getComponent('ElevationDiagram')})
-        self.components.update({'imageArticulation':self.componentFactory.getComponent('ImageArticulation')})
-        self.components.update({'localization':self.componentFactory.getComponent('Localization', 'orthoMap')})
-        self.components.update({'articulation':self.componentFactory.getComponent('Articulation', 'orthoMap')})
-        self.components.update({'division':self.componentFactory.getComponent('Division')})
-        self.components.update({'subtitle':self.componentFactory.getComponent('Subtitle')})
-        self.components.update({'legend':self.componentFactory.getComponent('Legend')})
-        self.components.update({'anglesHandler':self.componentFactory.getComponent('AnglesHandler')})
-        self.components.update({'mapScale':self.componentFactory.getComponent('MapScale')})
-        self.components.update({'table':self.componentFactory.getComponent('Table')})
+        self.components.update(
+            {"map": self.componentFactory.getComponent("Map", "orthoMap")}
+        )
+        self.components.update(
+            {"elevationDiagram": self.componentFactory.getComponent("ElevationDiagram")}
+        )
+        self.components.update(
+            {
+                "imageArticulation": self.componentFactory.getComponent(
+                    "ImageArticulation"
+                )
+            }
+        )
+        self.components.update(
+            {
+                "localization": self.componentFactory.getComponent(
+                    "Localization", "orthoMap"
+                )
+            }
+        )
+        self.components.update(
+            {
+                "articulation": self.componentFactory.getComponent(
+                    "Articulation", "orthoMap"
+                )
+            }
+        )
+        self.components.update(
+            {"division": self.componentFactory.getComponent("Division")}
+        )
+        self.components.update(
+            {"subtitle": self.componentFactory.getComponent("Subtitle")}
+        )
+        self.components.update({"legend": self.componentFactory.getComponent("Legend")})
+        self.components.update(
+            {"anglesHandler": self.componentFactory.getComponent("AnglesHandler")}
+        )
+        self.components.update(
+            {"mapScale": self.componentFactory.getComponent("MapScale")}
+        )
+        self.components.update({"table": self.componentFactory.getComponent("Table")})
         # self.components.update({'miniMapCoords':self.componentFactory.getComponent('MiniMapCoords')})
-        self.components.update({'qrcode':self.componentFactory.getComponent('Qrcode')})
+        self.components.update({"qrcode": self.componentFactory.getComponent("Qrcode")})
         self.grid = GridAndLabelCreator()
 
-    def filterLayers(self, mapType: str, jsonData: Dict, defaults: ConfigDefaults, mapLayers:List[Dict]):
-        '''Filters displayed classes by merging mandatory layers from ConfigDefaults and desired classes from json file.
+    def filterLayers(
+        self,
+        mapType: str,
+        jsonData: Dict,
+        defaults: ConfigDefaults,
+        mapLayers: List[Dict],
+    ):
+        """Filters displayed classes by merging mandatory layers from ConfigDefaults and desired classes from json file.
         Args:
             mapType: map or miniMap
             jsonData: dict with json data + other parameters
             defaults: instance of configuration defaults
             mapLayers: Dict with available layers
-        '''
-        if mapType == 'imageArticulation':
-            return [x for x in mapLayers if x.get('table') == 'edicao_articulacao_imagem_a']
-        _complementarClasses = set(jsonData.get('classes_complementares', list()))
-        _toDisplay = defaults.orthoMandatoryClasses.union(defaults.orthoOptionalClasses.intersection(_complementarClasses))
-        layersToDisplay = [x for x in mapLayers if x.get('table') in _toDisplay]
-        if mapType == 'map':
-            if 'infra_elemento_energia_l' in _toDisplay:
-                layersToDisplay.insert(0, {
-                    "table": "edicao_simb_torre_energia_p",
-                    "schema": "edgv"
-            })
+        """
+        if mapType == "imageArticulation":
+            return [
+                x for x in mapLayers if x.get("table") == "edicao_articulacao_imagem_a"
+            ]
+        _complementarClasses = set(jsonData.get("classes_complementares", list()))
+        _toDisplay = defaults.orthoMandatoryClasses.union(
+            defaults.orthoOptionalClasses.intersection(_complementarClasses)
+        )
+        layersToDisplay = [x for x in mapLayers if x.get("table") in _toDisplay]
+        if mapType == "map":
+            if "infra_elemento_energia_l" in _toDisplay:
+                layersToDisplay.insert(
+                    0, {"table": "edicao_simb_torre_energia_p", "schema": "edgv"}
+                )
 
-            if 'elemnat_curva_nivel_l' in _toDisplay:
-                layersToDisplay.insert(0, {
-                    "table": "edicao_simb_cota_mestra_l",
-                    "schema": "edgv"
-            })
+            if "elemnat_curva_nivel_l" in _toDisplay:
+                layersToDisplay.insert(
+                    0, {"table": "edicao_simb_cota_mestra_l", "schema": "edgv"}
+                )
 
-            if 'llp_unidade_federacao_a' in _toDisplay:
-                layersToDisplay.insert(0, {
-                    "table": "edicao_limite_legal_l",
-                    "schema": "edgv"
-            })
+            if "llp_unidade_federacao_a" in _toDisplay:
+                layersToDisplay.insert(
+                    0, {"table": "edicao_limite_legal_l", "schema": "edgv"}
+                )
 
-            if 'llp_area_pub_militar_a' in _toDisplay:
-                layersToDisplay.insert(0, {
-                    "table": "edicao_area_pub_militar_l",
-                    "schema": "edgv"
-            })
+            if "llp_area_pub_militar_a" in _toDisplay:
+                layersToDisplay.insert(
+                    0, {"table": "edicao_area_pub_militar_l", "schema": "edgv"}
+                )
 
-            if 'llp_terra_indigena_a' in _toDisplay:
-                layersToDisplay.insert(0, {
-                    "table": "edicao_terra_indigena_l",
-                    "schema": "edgv"
-            })
+            if "llp_terra_indigena_a" in _toDisplay:
+                layersToDisplay.insert(
+                    0, {"table": "edicao_terra_indigena_l", "schema": "edgv"}
+                )
 
-            if 'llp_unidade_conservacao_a' in _toDisplay:
-                layersToDisplay.insert(0, {
-                    "table": "edicao_unidade_conservacao_l",
-                    "schema": "edgv"
-            })
-            
+            if "llp_unidade_conservacao_a" in _toDisplay:
+                layersToDisplay.insert(
+                    0, {"table": "edicao_unidade_conservacao_l", "schema": "edgv"}
+                )
+
         return layersToDisplay
 
     def run(self, debugMode: bool = False):
-        ''' Creates the necessary components for the OrthoMap product and populates the composition.
+        """Creates the necessary components for the OrthoMap product and populates the composition.
         Args:
             debugMode: Boolean value holding the debugMode status
-        '''
+        """
         self.layersIdsToBeRemoved = []
         self.groupsToBeRemoved = []
         getLayersFromDbLambda = lambda x: self.getLayersFromDB(
@@ -98,57 +145,108 @@ class OrthoMapBuilder(IMapBuilder,MapBuilderUtils):
             productPath=self.productPath,
             group=x,
             filterF=partial(self.filterLayers, x, self.data, self.defaults),
-            mapAreaFeature=self.mapAreaFeature
+            mapAreaFeature=self.mapAreaFeature,
         )
-        mapLayers, mapLayersIds = getLayersFromDbLambda('map')
-        elevationDiagramLayers, elevationDiagramLayersIds = getLayersFromDbLambda('elevationDiagram')
-        imageArticulationLayers, imageArticulationIds = getLayersFromDbLambda('imageArticulation')
-        imgLayers, imgLayersIds = self.createRasterLayers(self.data.get('imagens', tuple()))
+        mapLayers, mapLayersIds = getLayersFromDbLambda("map")
+        elevationDiagramLayers, elevationDiagramLayersIds = getLayersFromDbLambda(
+            "elevationDiagram"
+        )
+        imageArticulationLayers, imageArticulationIds = getLayersFromDbLambda(
+            "imageArticulation"
+        )
+        imgLayers, imgLayersIds = self.createRasterLayers(
+            self.data.get("imagens", tuple())
+        )
         mapLayers = [*mapLayers, *imgLayers]
         mapLayersIds = [*mapLayersIds, *imgLayersIds]
         self.instance.addMapLayer(self.mapAreaLayer, False)
         if debugMode:
             manager = self.instance.layoutManager()
             manager.addLayout(self.composition)
-            self.composition.setName(self.data.get('productName'))
+            self.composition.setName(self.data.get("productName"))
         # self.instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
         for key, component in self.components.items():
             self.deleteLayerTreeNode(key)
             # TODO: Parallelize
-            if key == 'map':
+            if key == "map":
                 mapLayersIds = component.build(
-                    self.composition, self.data, self.defaults, self.mapAreaFeature, self.mapAreaLayer, mapLayers, self.grid, debugMode)
-            elif key == 'elevationDiagram':
+                    self.composition,
+                    self.data,
+                    self.defaults,
+                    self.mapAreaFeature,
+                    self.mapAreaLayer,
+                    mapLayers,
+                    self.grid,
+                    debugMode,
+                )
+            elif key == "elevationDiagram":
                 elevationDiagramLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, elevationDiagramLayers, debugMode)
-            elif key == 'imageArticulation':
+                    self.composition,
+                    self.data,
+                    self.mapAreaFeature,
+                    elevationDiagramLayers,
+                    debugMode,
+                )
+            elif key == "imageArticulation":
                 imageArticulationIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, imageArticulationLayers, debugMode)
-            elif key == 'localization':
+                    self.composition,
+                    self.data,
+                    self.mapAreaFeature,
+                    imageArticulationLayers,
+                    debugMode,
+                )
+            elif key == "localization":
                 localizationLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode)
-            elif key == 'articulation':
+                    self.composition, self.data, self.mapAreaFeature, debugMode
+                )
+            elif key == "articulation":
                 articulationLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaLayer, debugMode)
-            elif key == 'division':
+                    self.composition, self.data, self.mapAreaLayer, debugMode
+                )
+            elif key == "division":
                 divisionLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode)
-            elif key == 'subtitle':
+                    self.composition, self.data, self.mapAreaFeature, debugMode
+                )
+            elif key == "subtitle":
                 component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == 'legend':
+            elif key == "legend":
                 component.build(self.composition, self.data, self.defaults)
-            elif key == 'mapScale':
+            elif key == "mapScale":
                 component.build(self.composition, self.data)
-            elif key == 'table':
+            elif key == "table":
                 component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == 'anglesHandler':
+            elif key == "anglesHandler":
                 component.build(self.composition, self.mapAreaFeature)
-            elif key == 'qrcode':
+            elif key == "qrcode":
                 component.build(self.composition, self.data, self.mapAreaFeature)
 
-        auxLayerIds = [lyr.id() for lyr in QgsProject.instance().mapLayers().values() if lyr.name() in ("convexhull", "auxiliar_moldura_outside")]
+        auxLayerIds = [
+            lyr.id()
+            for lyr in QgsProject.instance().mapLayers().values()
+            if lyr.name() in ("convexhull", "auxiliar_moldura_outside")
+        ]
 
-        self.layersIdsToBeRemoved.extend((self.mapAreaLayer.id(), *mapLayersIds, *elevationDiagramLayersIds, *imageArticulationIds, *localizationLayersIds, *articulationLayersIds, *divisionLayersIds, *auxLayerIds))
-        self.groupsToBeRemoved.extend(['map', 'elevationDiagram', 'imageArticulation', 'localization', 'articulation', 'division'])
+        self.layersIdsToBeRemoved.extend(
+            (
+                self.mapAreaLayer.id(),
+                *mapLayersIds,
+                *elevationDiagramLayersIds,
+                *imageArticulationIds,
+                *localizationLayersIds,
+                *articulationLayersIds,
+                *divisionLayersIds,
+                *auxLayerIds,
+            )
+        )
+        self.groupsToBeRemoved.extend(
+            [
+                "map",
+                "elevationDiagram",
+                "imageArticulation",
+                "localization",
+                "articulation",
+                "division",
+            ]
+        )
         self.classifiedMapHandler(self.composition, self.data)
         self.setupMasks(self.productPath, mapLayers)

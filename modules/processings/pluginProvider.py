@@ -1,8 +1,8 @@
 from qgis.core import QgsApplication
 from .provider import Provider
 
-class ProcessingProvider(object):
 
+class ProcessingProvider(object):
     def __init__(self):
         self.provider = None
 

@@ -17,6 +17,7 @@ from . import geomag
 
 __singleton__ = geomag.GeoMag()
 
+
 def declination(*args, **kargs):
     """Calculate magnetic declination in degrees
     dlat = latitude in degrees
@@ -26,6 +27,7 @@ def declination(*args, **kargs):
     """
     mag = __singleton__.GeoMag(*args, **kargs)
     return mag.dec
+
 
 def mag_heading(hdg, *args, **kargs):
     """Calculates the magnetic heading from a true heading.

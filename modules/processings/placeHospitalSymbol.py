@@ -3,57 +3,72 @@
 import processing
 
 from qgis import core
-from qgis.core import (QgsFeatureRequest, QgsProcessing,
-                       QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback,
-                       QgsProcessingParameterVectorLayer, QgsProcessingParameterBoolean, QgsProcessingParameterEnum,
-                       QgsDistanceArea, QgsCoordinateReferenceSystem, QgsProcessingFeatureSourceDefinition,
-                       QgsVectorLayerUtils)
+from qgis.core import (
+    QgsFeatureRequest,
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterEnum,
+    QgsDistanceArea,
+    QgsCoordinateReferenceSystem,
+    QgsProcessingFeatureSourceDefinition,
+    QgsVectorLayerUtils,
+)
 from qgis.PyQt.QtCore import QCoreApplication
 
 
-class PlaceHospitalSymbol(QgsProcessingAlgorithm): 
+class PlaceHospitalSymbol(QgsProcessingAlgorithm):
 
-    INPUT = 'INPUT'
-    ONLY_SELECTED = 'ONLY_SELECTED'
-    INPUT_SYMBOL_LAYER = 'INPUT_SYMBOL_LAYER'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    ONLY_SELECTED = "ONLY_SELECTED"
+    INPUT_SYMBOL_LAYER = "INPUT_SYMBOL_LAYER"
+    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT,
-                self.tr('Selecionar camada de hospital (edificação área)'),
+                self.tr("Selecionar camada de hospital (edificação área)"),
                 [QgsProcessing.TypeVectorPolygon],
-                defaultValue='constr_edificacao_a'
+                defaultValue="constr_edificacao_a",
             )
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                self.ONLY_SELECTED,
-                self.tr('Executar somente nas feições selecionadas')
+                self.ONLY_SELECTED, self.tr("Executar somente nas feições selecionadas")
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_SYMBOL_LAYER,
-                self.tr('Selecionar camada de camada de edição'),
+                self.tr("Selecionar camada de camada de edição"),
                 [QgsProcessing.TypeVectorPoint],
-                defaultValue='edicao_simb_area_p'
+                defaultValue="edicao_simb_area_p",
             )
         )
 
-    def processAlgorithm(self, parameters, context, feedback):      
+    def processAlgorithm(self, parameters, context, feedback):
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
-        simbAreaLayer = self.parameterAsVectorLayer(parameters, self.INPUT_SYMBOL_LAYER, context)
-        request = QgsFeatureRequest().setFilterExpression('("tipo" - "tipo"%100)/100 in (20)')
+        simbAreaLayer = self.parameterAsVectorLayer(
+            parameters, self.INPUT_SYMBOL_LAYER, context
+        )
+        request = QgsFeatureRequest().setFilterExpression(
+            '("tipo" - "tipo"%100)/100 in (20)'
+        )
         if onlySelected:
             request.setFilterFids([feat.id() for feat in inputLyr.selectedFeatures()])
-        iterator = inputLyr.getFeatures(request) if not onlySelected else list(inputLyr.getFeatures(request))
+        iterator = (
+            inputLyr.getFeatures(request)
+            if not onlySelected
+            else list(inputLyr.getFeatures(request))
+        )
         nFeats = inputLyr.featureCount() if not onlySelected else len(iterator)
         if nFeats == 0:
-            return {self.OUTPUT: ''}
-        stepSize = 100/nFeats
+            return {self.OUTPUT: ""}
+        stepSize = 100 / nFeats
         simbAreaLayer.startEditing()
         simbAreaLayer.beginEditCommand("Posicionando símbolos de hospital")
         newFeatList = []
@@ -65,31 +80,30 @@ class PlaceHospitalSymbol(QgsProcessingAlgorithm):
             if not innerPoint.within(geom):
                 innerPoint = geom.pointOnSurface()
             newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
-            newFeat['tipo'] = 15
+            newFeat["tipo"] = 15
             newFeatList.append(newFeat)
             feedback.setProgress(current * stepSize)
         simbAreaLayer.addFeatures(newFeatList)
         simbAreaLayer.endEditCommand()
-        return {self.OUTPUT: ''}
+        return {self.OUTPUT: ""}
 
     def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
+        return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
         return PlaceHospitalSymbol()
 
     def name(self):
-        return 'placehospitalsymbol'
+        return "placehospitalsymbol"
 
     def displayName(self):
-        return self.tr('Insere símbolo de hospital área')
+        return self.tr("Insere símbolo de hospital área")
 
     def group(self):
-        return self.tr('Edição')
+        return self.tr("Edição")
 
     def groupId(self):
-        return 'edicao'
+        return "edicao"
 
     def shortHelpString(self):
         return self.tr("O algoritmo ...")
-    

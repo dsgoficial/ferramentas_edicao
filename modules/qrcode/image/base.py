@@ -2,6 +2,7 @@ class BaseImage(object):
     """
     Base QRCode image output class.
     """
+
     kind = None
     allowed_kinds = None
 
@@ -9,7 +10,7 @@ class BaseImage(object):
         self.border = border
         self.width = width
         self.box_size = box_size
-        self.pixel_size = (self.width + self.border*2) * self.box_size
+        self.pixel_size = (self.width + self.border * 2) * self.box_size
         self._img = self.new_image(**kwargs)
 
     def drawrect(self, row, col):
@@ -57,6 +58,5 @@ class BaseImage(object):
             if not allowed:
                 allowed = kind in self.allowed_kinds
         if not allowed:
-            raise ValueError(
-                "Cannot set %s type to %s" % (type(self).__name__, kind))
+            raise ValueError("Cannot set %s type to %s" % (type(self).__name__, kind))
         return kind

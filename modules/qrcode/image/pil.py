@@ -8,12 +8,14 @@ except ImportError:  # pragma: no cover
     import Image
     import ImageDraw
 
-from ..image.base import BaseImage 
+from ..image.base import BaseImage
+
 
 class PilImage(BaseImage):
     """
     PIL image builder, default format is PNG.
     """
+
     kind = "PNG"
 
     def new_image(self, **kwargs):
@@ -29,8 +31,10 @@ class PilImage(BaseImage):
         else:
             mode = "1"
             # L mode (1 mode) color = (r*299 + g*587 + b*114)//1000
-            if fill_color.lower() == "black": fill_color = 0
-            if back_color.lower() == "white": back_color = 255
+            if fill_color.lower() == "black":
+                fill_color = 0
+            if back_color.lower() == "white":
+                back_color = 255
 
         img = Image.new(mode, (self.pixel_size, self.pixel_size), back_color)
         self.fill_color = fill_color

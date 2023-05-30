@@ -5,4 +5,5 @@ def classFactory(iface):
     :type iface: QgsInterface
     """
     from .editionPlugin import EditionPlugin
+
     return EditionPlugin(iface)

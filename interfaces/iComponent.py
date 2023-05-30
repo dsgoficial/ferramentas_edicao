@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-class IComponent(ABC):
 
+class IComponent(ABC):
     @abstractmethod
     def build(self, *args, **kwargs):
         pass

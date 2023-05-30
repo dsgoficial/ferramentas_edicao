@@ -15,6 +15,7 @@ from .modules.tools.setupButtons import SetupButtons
 from .resources.dialogs.editionPluginDialog import EditionPluginDialog
 from .modules.expressionFunctions import loadExpressionFunctions
 
+
 class EditionPlugin:
     """QGIS Plugin Implementation."""
 
@@ -28,15 +29,14 @@ class EditionPlugin:
         """
         # Save reference to the QGIS interface
         self.iface = iface
-        self.debugMode = (Path(__file__).parent / '.env').exists()
+        self.debugMode = (Path(__file__).parent / ".env").exists()
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = QSettings().value("locale/userLocale")[0:2]
         locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'EditionPlugin_{}.qm'.format(locale))
+            self.plugin_dir, "i18n", "EditionPlugin_{}.qm".format(locale)
+        )
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -45,7 +45,7 @@ class EditionPlugin:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Ferramentas de Edição')
+        self.menu = self.tr("&Ferramentas de Edição")
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -64,8 +64,7 @@ class EditionPlugin:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate(u'FerramentasEdicao', message)
-
+        return QCoreApplication.translate("FerramentasEdicao", message)
 
     def add_action(
         self,
@@ -77,7 +76,8 @@ class EditionPlugin:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None,
+    ):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -133,9 +133,7 @@ class EditionPlugin:
             self.iface.addToolBarIcon(action)
 
         if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
+            self.iface.addPluginToMenu(self.menu, action)
 
         self.actions.append(action)
 
@@ -144,12 +142,13 @@ class EditionPlugin:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = Path(__file__).parent / 'icon.png'
+        icon_path = Path(__file__).parent / "icon.png"
         self.add_action(
             str(icon_path),
-            text=self.tr(u'Ferramentas de Edição'),
+            text=self.tr("Ferramentas de Edição"),
             callback=self.run,
-            parent=self.iface.mainWindow())
+            parent=self.iface.mainWindow(),
+        )
         self.firstStart = True
         self.tools = SetupButtons(self.iface)
         self.tools.initToolBar()
@@ -160,55 +159,52 @@ class EditionPlugin:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         # QgsApplication.processingRegistry().removeProvider(self.provider)
-        if hasattr(self, 'tools'):
+        if hasattr(self, "tools"):
             self.tools.unload()
-        if hasattr(self, 'controller'):
+        if hasattr(self, "controller"):
             self.controller.unload()
-        if hasattr(self, 'processingProvider'):
+        if hasattr(self, "processingProvider"):
             self.processingProvider.unload()
-        if hasattr(self, 'dlg'):
+        if hasattr(self, "dlg"):
             self.dlg.close()
         for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&Ferramentas de Edição'),
-                action)
+            self.iface.removePluginMenu(self.tr("&Ferramentas de Edição"), action)
             self.iface.removeToolBarIcon(action)
 
     def initialize(self):
-        ''' Starts main plugin dialog and the main controller '''
-        locale = QSettings().value('locale/userLocale')[0:2]
-        if 'en' not in locale:
+        """Starts main plugin dialog and the main controller"""
+        locale = QSettings().value("locale/userLocale")[0:2]
+        if "en" not in locale:
             QMessageBox.warning(
-                    self.iface.mainWindow(),
-                    "Erro",
-                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
-                    "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente."
-                )
+                self.iface.mainWindow(),
+                "Erro",
+                f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
+                "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente.",
+            )
             return
         fontsInstalled, errorMsg = self.fontsAreInstalled()
         if not fontsInstalled:
             QMessageBox.warning(
-                    self.iface.mainWindow(),
-                    "Erro",
-                    f"Erro na instalação das fontes: {errorMsg}.\n"
-                    "Feche o QGIS, corrija a instalação, reinicie o QGIS e tente novamente."
-                )
+                self.iface.mainWindow(),
+                "Erro",
+                f"Erro na instalação das fontes: {errorMsg}.\n"
+                "Feche o QGIS, corrija a instalação, reinicie o QGIS e tente novamente.",
+            )
             return
         if "grassprovider" not in active_plugins:
             QMessageBox.warning(
-                    self.iface.mainWindow(),
-                    "Erro",
-                    f"Erro no grass plugin. Ative o plugin e tente novamente."
-                )
+                self.iface.mainWindow(),
+                "Erro",
+                f"Erro no grass plugin. Ative o plugin e tente novamente.",
+            )
             return
         if "DsgTools" not in active_plugins:
             QMessageBox.warning(
-                    self.iface.mainWindow(),
-                    "Erro",
-                    f"Erro no DsgTools. Ative o plugin e tente novamente."
-                )
+                self.iface.mainWindow(),
+                "Erro",
+                f"Erro no DsgTools. Ative o plugin e tente novamente.",
+            )
             return
-
 
         if self.firstStart:
             self.firstStart = False
@@ -216,29 +212,49 @@ class EditionPlugin:
             self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
             self.dlg.pushButton.clicked.connect(self.controller.run)
             if self.debugMode:
-                self.dlg.jsonConfigs.setFilePath('C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json')
-                self.dlg.exportFolder.setFilePath('D:\\export')
+                self.dlg.jsonConfigs.setFilePath(
+                    "C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json"
+                )
+                self.dlg.exportFolder.setFilePath("D:\\export")
                 self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-    
+
     def fontsAreInstalled(self):
         fontUtils = QgsFontUtils()
         if not fontUtils.fontFamilyOnSystem("Noto Sans"):
             return False, "A fonte Noto Sans não está instalada no sistema."
-        fontStyles = ["Regular", "Bold", "Bold Italic", "Italic", "Condensed", "Condensed Bold", "Condensed Bold Italic", "Condensed Italic", "Light", "Light Italic", "Condensed Light Italic", "Condensed Light"]
+        fontStyles = [
+            "Regular",
+            "Bold",
+            "Bold Italic",
+            "Italic",
+            "Condensed",
+            "Condensed Bold",
+            "Condensed Bold Italic",
+            "Condensed Italic",
+            "Light",
+            "Light Italic",
+            "Condensed Light Italic",
+            "Condensed Light",
+        ]
         return all(
             fontUtils.fontFamilyHasStyle("Noto Sans", style) for style in fontStyles
-        ), ",".join(filter(lambda x: fontUtils.fontFamilyHasStyle("Noto Sans", x) is False, fontStyles))
+        ), ",".join(
+            filter(
+                lambda x: fontUtils.fontFamilyHasStyle("Noto Sans", x) is False,
+                fontStyles,
+            )
+        )
 
     def run(self):
         """Run method that performs all the real work"""
-        locale = QSettings().value('locale/userLocale')[0:2]
-        if 'en' not in locale:
+        locale = QSettings().value("locale/userLocale")[0:2]
+        if "en" not in locale:
             QMessageBox.warning(
-                    self.iface.mainWindow(),
-                    "Erro",
-                    f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
-                    "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente."
-                )
+                self.iface.mainWindow(),
+                "Erro",
+                f"O idioma do QGIS deve estar em inglês para que as fontes sejam atribuídas corretamente. "
+                "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente.",
+            )
             return
         self.initialize()
         if not hasattr(self, "dlg"):
