@@ -43,79 +43,90 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         self.iface.registerMainWindowAction(self._action, '')
 
     def mouseClick(self, pos, btn):
-        if self.isActive() and self.dstLyr:
-            closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=2*self.tolerance)
-            # Option 1 (actual): Use a QgsFeatureRequest
-            # Option 2: Use a dict lookup
-            request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-            closestFeat = self.srcLyr.getFeatures(request)
-            if closestSpatialID:
-                feat = next(closestFeat)
-                if self.checkFeature(feat):
-                    if feat.attribute('situacao_em_poligono') == 1:
-                        self.createFeatureA(feat, pos)
-                    elif feat.attribute('situacao_em_poligono') in (2,3):
-                        self.createFeatureB(feat, pos)
-                    else:
-                        self.displayErrorMessage(self.tr(
-                        'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
-                        ))
-                else:
-                    self.displayErrorMessage(self.tr(
-                        'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
-                    ))
-            else:
-                    self.displayErrorMessage('Não foram encontradas feições em "elemnat_trecho_drenagem_l_merged"')
+        if not (self.isActive() and self.dstLyr):
+            return
+        closestSpatialID = self.spatialIndex.nearestNeighbor(pos, maxDistance=2*self.tolerance)
+        # Option 1 (actual): Use a QgsFeatureRequest
+        # Option 2: Use a dict lookup
+        request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+        closestFeat = self.srcLyr.getFeatures(request)
+        if not closestSpatialID:
+            self.displayErrorMessage('Não foram encontradas feições em "elemnat_trecho_drenagem_l_merged"')
+            return
+        feat = next(closestFeat)
+        attr = feat.attribute('situacao_em_poligono')
+        if not self.checkFeature(feat) or attr not in (1, 2, 3):
+            self.displayErrorMessage(self.tr(
+                'Feição inválida. Verifique os atributos na camada "elemnat_trecho_drenagem_l"'
+            ))
+            return
+        self.createFeature(feat, pos, outsidePolygon = attr == 1)
+    
+    def createFeature(self, feat, pos, outsidePolygon=False):
+        toInsert = QgsFeature(self.dstLyr.fields())
+        labelSize = self.setAttributes(feat, toInsert, outsidePolygon=outsidePolygon)
+        toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
+        toInsert.setGeometry(toInsertGeom)
+        self.dstLyr.startEditing()
+        self.dstLyr.addFeature(toInsert)
+        self.dstLyr.triggerRepaint()
+    
+    def setAttributes(self, feat, toInsert, outsidePolygon=False):
+        toInsert = QgsFeature(self.dstLyr.fields())
+        texto_edicao = feat.attribute('nome') if outsidePolygon else feat.attribute('nome').upper()
+        toInsert.setAttribute('texto_edicao', texto_edicao)
+        toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
+        toInsert.setAttribute('espacamento', 0)
+        color = '#ffffff' if self.productTypeSelector.currentIndex() == 0 else '#00a0df'
+        toInsert.setAttribute('cor', color)
+        labelSize = self.getLabelFontSize(feat, outsidePolygon=outsidePolygon)
+        toInsert.setAttribute('tamanho_txt', labelSize)
+        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
+            toInsert.setAttribute('tamanho_buffer', 1)
+            toInsert.setAttribute('cor_buffer', '#00a0df')
+        return labelSize
+
+    def getLabelFontSize(self, feat, outsidePolygon=False):
+        scale = self.getScale()
+        scaleComparator = scale/1000
+        if self.lyrCrs.isGeographic():
+            convertLength = QgsDistanceArea()
+            convertLength.setEllipsoid(self.lyrCrs.authid())
+            measure = convertLength.measureLength(feat.geometry())
+            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
+        else:
+            length = feat.geometry().length()
+        return self.getLabelFontSizeA(scaleComparator, length) if outsidePolygon else self.getLabelFontSizeB(scaleComparator, length)
+    
+    def getLabelFontSizeA(self, scaleComparator, length):
+        if length < 80*scaleComparator:
+            return 6
+        elif length < 120*scaleComparator:
+            return 7
+        elif length < 160*scaleComparator:
+            return 8
+        else:
+            return 9
+
+    def getLabelFontSizeB(self, scaleComparator, length):
+        if length < 65*scaleComparator:
+            return 7
+        elif length < 80*scaleComparator:
+            return 8
+        elif length < 100*scaleComparator:
+            return 9
+        elif length < 120*scaleComparator:
+            return 10
+        elif length < 160*scaleComparator:
+            return 12
+        elif length < 200*scaleComparator:
+            return 14
+        else:
+            return 16
 
     @staticmethod
     def checkFeature(feat):
         return not not feat.attribute('nome')
-
-    def createFeatureA(self, feat, pos):
-        toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert.setAttribute('texto_edicao', feat.attribute('nome'))
-        toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
-        toInsert.setAttribute('espacamento', 0)
-        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
-            toInsert.setAttribute('cor', '#ffffff')
-        elif self.productTypeSelector.currentIndex() == 1: #Topografica
-            toInsert.setAttribute('cor', '#00a0df')
-        else:
-            toInsert.setAttribute('cor', '#00a0df')
-            self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
-        labelSize = self.getLabelFontSizeA(feat)
-        toInsert.setAttribute('tamanho_txt', labelSize)
-        toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
-        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
-            toInsert.setAttribute('tamanho_buffer', 1)
-            toInsert.setAttribute('cor_buffer', '#00a0df')
-        toInsert.setGeometry(toInsertGeom)
-        self.dstLyr.startEditing()
-        self.dstLyr.addFeature(toInsert)
-        self.dstLyr.triggerRepaint()
-
-    def createFeatureB(self, feat, pos):
-        toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert.setAttribute('texto_edicao', feat.attribute('nome').upper())
-        toInsert.setAttribute('estilo_fonte', 'Condensed Italic')
-        toInsert.setAttribute('espacamento', 0)
-        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
-            toInsert.setAttribute('cor', '#ffffff')
-        elif self.productTypeSelector.currentIndex() == 1: #Topografica
-            toInsert.setAttribute('cor', '#00a0df')
-        else:
-            toInsert.setAttribute('cor', '#00a0df')
-            self.displayErrorMessage('Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica')
-        labelSize = self.getLabelFontSizeB(feat)
-        toInsert.setAttribute('tamanho_txt', labelSize)
-        toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
-        if self.productTypeSelector.currentIndex() == 0: #Ortoimagem
-            toInsert.setAttribute('tamanho_buffer', 1)
-            toInsert.setAttribute('cor_buffer', '#00a0df')
-        toInsert.setGeometry(toInsertGeom)
-        self.dstLyr.startEditing()
-        self.dstLyr.addFeature(toInsert)
-        self.dstLyr.triggerRepaint()
 
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
@@ -147,20 +158,21 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         return toInsertGeom
 
     def adjustGeomLength(self, geom, start, end):
-        if geom.interpolate(start) and geom.interpolate(end):
+        if not (geom.interpolate(start) and geom.interpolate(end)):
+            return start, end
+        firstV = geom.interpolate(start).asPoint()
+        lastV = geom.interpolate(end).asPoint()
+        realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
+        observedLength = end - start
+        maxCount = 0
+        while(observedLength / realLength) > 1.2 and maxCount < 10:
+            start, end = start - self.tolerance, end + self.tolerance
+            start = max(start, 0)
+            end = min(end, geom.length())
             firstV = geom.interpolate(start).asPoint()
             lastV = geom.interpolate(end).asPoint()
             realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
-            observedLength = end - start
-            maxCount = 0
-            while(observedLength / realLength) > 1.2 and maxCount < 10:
-                start, end = start - self.tolerance, end + self.tolerance
-                start = max(start, 0)
-                end = min(end, geom.length())
-                firstV = geom.interpolate(start).asPoint()
-                lastV = geom.interpolate(end).asPoint()
-                realLength = ((firstV.x() - lastV.x())**2 + (firstV.y() - lastV.y())**2)**0.5
-                maxCount+=1
+            maxCount+=1
         return start, end
 
     def polynomialFit(self, geom):
@@ -185,80 +197,28 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         return scaleFactor*x, scaleFactor*y
 
     def buildLineFromGeomDist(self, start, end, geom):
-        xCoords = []
-        yCoords = []
-        if geom.isMultipart():
-            for point in geom.asMultiPolyline()[0]:
-                xCoords.append(point.x())
-                yCoords.append(point.y())
-        else:
-            for point in geom.asPolyline():
-                xCoords.append(point.x())
-                yCoords.append(point.y())
+        xCoords, yCoords = [], []
+        iterator = geom.asMultiPolyline()[0] if geom.isMultipart() else geom.asPolyline()
+        for point in iterator:
+            xCoords.append(point.x())
+            yCoords.append(point.y())
         return QgsLineString(xCoords,yCoords).curveSubstring(start,end)
-
-
-    def getLabelFontSizeA(self, feat):
-        scale = self.getScale()
-        scaleComparator = scale/1000
-        if self.lyrCrs.isGeographic():
-            convertLength = QgsDistanceArea()
-            convertLength.setEllipsoid(self.lyrCrs.authid())
-            measure = convertLength.measureLength(feat.geometry())
-            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
-        else:
-            length = feat.geometry().length()
-        if length < 80*scaleComparator:
-            return 6
-        elif length < 120*scaleComparator:
-            return 7
-        elif length < 160*scaleComparator:
-            return 8
-        else:
-            return 9
-
-    def getLabelFontSizeB(self, feat):
-        scale = self.getScale()
-        scaleComparator = scale/1000
-        if self.lyrCrs.isGeographic():
-            convertLength = QgsDistanceArea()
-            convertLength.setEllipsoid(self.lyrCrs.authid())
-            measure = convertLength.measureLength(feat.geometry())
-            length = convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
-        else:
-            length = feat.geometry().length()
-        if length < 65*scaleComparator:
-            return 7
-        elif length < 80*scaleComparator:
-            return 8
-        elif length < 100*scaleComparator:
-            return 9
-        elif length < 120*scaleComparator:
-            return 10
-        elif length < 160*scaleComparator:
-            return 12
-        elif length < 200*scaleComparator:
-            return 14
-        else:
-            return 16
 
     def getLayers(self):
         srcLyr = QgsProject.instance().mapLayersByName('elemnat_trecho_drenagem_l_merged')
         dstLyr = QgsProject.instance().mapLayersByName('edicao_texto_generico_l')
-        if len(srcLyr) == 1:
-            self.srcLyr = srcLyr[0]
-        else:
+        if not len(srcLyr) == 1:
             self.displayErrorMessage(self.tr(
                 'Camada "elemnat_trecho_drenagem_l_merged" não encontrada'
             ))
             return None
-        if len(dstLyr) == 1:
-            self.dstLyr = dstLyr[0]
-        else:
+        if not len(dstLyr) == 1:
             self.displayErrorMessage(self.tr(
                 'Camada "edicao_texto_generico_l" não encontrada'
             ))
             return None
+        self.srcLyr = srcLyr[0]
+        self.dstLyr = dstLyr[0]
         self.lyrCrs = self.srcLyr.dataProvider().crs()
         if self.lyrCrs.isGeographic():
             d = QgsDistanceArea()
