@@ -1,18 +1,14 @@
-from lib2to3.pytree import convert
 from pathlib import Path
 import numpy as np
-from numpy.core.fromnumeric import sort
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsGeometryUtils,
     QgsCoordinateTransformContext,
     QgsDistanceArea,
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
     QgsLineString,
-    QgsPointXY,
     QgsProject,
     QgsSpatialIndex,
     QgsUnitTypes,
