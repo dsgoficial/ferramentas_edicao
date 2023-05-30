@@ -8,123 +8,201 @@ from qgis.core import (
     QgsProcessingParameterString,
     QgsProject,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterVectorLayer
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis import processing
 
-
 class SetSobrepositionOrtho(QgsProcessingAlgorithm):
-
-    INPUT_LAYER_SOBREPOSITION = "INPUT_LAYER_SOBREPOSITION"
-    INPUT_POLYGONS = "INPUT_POLYGONS"
-    INPUT_LAYER_TO_CHECK = "INPUT_LAYER_TO_CHECK"
-    OUTPUT = "OUTPUT"
+    INPUT_MOLDURA = 'INPUT_MOLDURA'
+    INPUT_LAYER_SOBREPOSITION_MIL = 'INPUT_LAYER_SOBREPOSITION_MIL'
+    INPUT_LAYER_SOBREPOSITION_IND = 'INPUT_LAYER_SOBREPOSITION_IND'
+    INPUT_LAYER_SOBREPOSITION_CON = 'INPUT_LAYER_SOBREPOSITION_CON'
+    INPUT_POLYGON_MIL = 'INPUT_POLYGONS'
+    INPUT_POLYGON_IND = 'INPUT_POLYGON_IND'
+    INPUT_POLYGON_CON = 'INPUT_POLYGON_CON'
+    INPUT_LAYER_TO_CHECK_DRE = 'INPUT_LAYER_TO_CHECK_DRE'
+    INPUT_LAYER_TO_CHECK_VIA = 'INPUT_LAYER_TO_CHECK_VIA'
+    INPUT_LAYER_TO_CHECK_FER = 'INPUT_LAYER_TO_CHECK_FER'
+    OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            QgsProcessingParameterMultipleLayers(
-                self.INPUT_LAYER_SOBREPOSITION,
-                self.tr("Selecione as camadas a serem alteradas."),
-                QgsProcessing.TypeVectorLine,
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_MOLDURA,
+                self.tr('Selecionar camada de edição de área pública militar linha'),
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue='aux_moldura_a'
             )
         )
         self.addParameter(
-            QgsProcessingParameterMultipleLayers(
-                self.INPUT_LAYER_TO_CHECK,
-                self.tr("Selecione as camadas de conferência."),
-                QgsProcessing.TypeVectorLine,
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_LAYER_SOBREPOSITION_MIL,
+                self.tr('Selecionar camada de edição de área pública militar linha'),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='edicao_area_pub_militar_l'
             )
         )
         self.addParameter(
-            QgsProcessingParameterMultipleLayers(
-                self.INPUT_POLYGONS,
-                self.tr("Selecione os polígonos de conferência."),
-                QgsProcessing.TypeVectorPolygon,
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_LAYER_SOBREPOSITION_IND,
+                self.tr('Selecionar camada de edição terra indígena linha'),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='edicao_terra_indigena_l'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_LAYER_SOBREPOSITION_CON,
+                self.tr('Selecionar camada de edição de unidade de conservação linha'),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='edicao_unidade_conservacao_l'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_POLYGON_MIL,
+                self.tr('Selecionar camada de area publica militar área'),
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue='llp_area_pub_militar_a'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_POLYGON_IND,
+                self.tr('Selecionar camada de terra indigena área'),
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue='llp_terra_indigena_a'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_POLYGON_CON,
+                self.tr('Selecionar camada de unidade de conservacao área'),
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue='llp_unidade_conservacao_a'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_LAYER_TO_CHECK_DRE,
+                self.tr('Selecione as camadas de conferência.'),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='elemnat_trecho_drenagem_l'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_LAYER_TO_CHECK_VIA,
+                self.tr('Selecione as camadas de conferência.'),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='infra_via_deslocamento_l'
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_LAYER_TO_CHECK_FER,
+                self.tr('Selecione as camadas de conferência.'),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue='infra_ferrovia_l'
             )
         )
 
-    def processAlgorithm(self, parameters, context, feedback):
-        layers_sobreposition_list = self.parameterAsLayerList(
-            parameters, self.INPUT_LAYER_SOBREPOSITION, context
-        )
-        layers_to_check = self.parameterAsLayerList(
-            parameters, self.INPUT_LAYER_TO_CHECK, context
-        )
-        polygons_layers = self.parameterAsLayerList(
-            parameters, self.INPUT_POLYGONS, context
-        )
+    def processAlgorithm(self, parameters, context, feedback): 
+        # Camadas de entrada
+        layer_moldura = self.parameterAsVectorLayer(parameters, self.INPUT_MOLDURA, context)
+        layer_mil = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_SOBREPOSITION_MIL, context)
+        layer_ind = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_SOBREPOSITION_IND, context)
+        layer_con = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_SOBREPOSITION_CON, context)
+        layers_sobreposition_list = [layer_mil, layer_ind, layer_con]
+        layer_pol_mil = self.parameterAsVectorLayer(parameters, self.INPUT_POLYGON_MIL, context)
+        layer_pol_ind = self.parameterAsVectorLayer(parameters, self.INPUT_POLYGON_IND, context)
+        layer_pol_con = self.parameterAsVectorLayer(parameters, self.INPUT_POLYGON_CON, context)
+        polygons_layers = [layer_pol_mil, layer_pol_ind, layer_pol_con]
+        layer_dre = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_TO_CHECK_DRE, context)
+        layer_via = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_TO_CHECK_VIA, context)
+        layer_fer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_TO_CHECK_FER, context)
 
-        merged = self.mergelayer(
-            [
-                x
-                for x in layers_to_check
-                if x.dataProvider().uri().table()
-                in [
-                    "elemnat_trecho_drenagem_l",
-                    "infra_via_deslocamento_l",
-                    "infra_ferrovia_l",
-                ]
-            ]
-        )
+        # Filtrar visivel e situacao em poligono para mergear
+        drenagem_filtrada = self.runExtractByExpression(layer_dre, expression=''' "visivel" = 1 AND "situacao_em_poligono" = 1''')
+        via_deslocamento_filtrada = self.runExtractByExpression(layer_via, expression=''' "visivel" = 1 ''')
+        ferrovia_filtrada = self.runExtractByExpression(layer_fer, expression=''' "visivel" = 1 ''')
+        merged = self.runMergeLayer([drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada])
 
+        # Criar índice espacial
+        self.runCreateSpatialIndex(merged)
+
+        # Criar dicionário de mapeamento
+        layer_map_dict = {
+            "llp_area_pub_militar_a": "edicao_area_pub_militar_l",
+            "llp_terra_indigena_a": "edicao_terra_indigena_l",
+            "llp_unidade_conservacao_a": "edicao_unidade_conservacao_l",
+        }
+        edit_layer_dict = {
+            lyr.name(): lyr for lyr in layers_sobreposition_list
+        }
+
+        # Dissolver moldura e converter em linha
+        moldura_linha = self.runPolyToLine(self.runDissolve(layer_moldura))
+
+        # Percorrer as camadas de poligono e alterar o atributo "sobreposto" das camadas de edicao
         for polygon_layer in polygons_layers:
-            if polygon_layer.dataProvider().uri().table() == "llp_area_pub_militar_a":
-                nome = "edicao_area_pub_militar_l"
-            elif polygon_layer.dataProvider().uri().table() == "llp_terra_indigena_a":
-                nome = "edicao_terra_indigena_l"
-            elif (
-                polygon_layer.dataProvider().uri().table()
-                == "llp_unidade_conservacao_a"
-            ):
-                nome = "edicao_unidade_conservacao_l"
-            else:
-                continue
-            layer = [
-                x
-                for x in layers_sobreposition_list
-                if x.dataProvider().uri().table() == nome
-            ][0]
-            polygon_layer = self.dissolve(polygon_layer)
-            line_layer = self.polytoline(polygon_layer)
-            layer.startEditing()
-            layer.beginEditCommand("Iniciando edição.")
-            intersect = self.intersect(line_layer, merged)
-            for feature in intersect.getFeatures():
-                feat = QgsFeature(layer.fields())
-                feat["sobreposto"] = 1
-                feat.setGeometry(feature.geometry())
-                feat["geometria_aproximada"] = feature["geometria_aproximada"]
-                feat["tipo"] = feature["tipo"]
-                feat["nome"] = feature["nome"]
-                feat["exibir_rotulo_aproximado"] = 1
-                layer.addFeature(feat)
-            difference = self.difference(line_layer, merged)
-            for feature in difference.getFeatures():
-                feat = QgsFeature(layer.fields())
-                feat["sobreposto"] = 2
-                feat.setGeometry(feature.geometry())
-                feat["geometria_aproximada"] = feature["geometria_aproximada"]
-                feat["tipo"] = feature["tipo"]
-                feat["nome"] = feature["nome"]
-                feat["exibir_rotulo_aproximado"] = 1
-                layer.addFeature(feat)
+            dissolved_polygon_layer = self.runDissolve(polygon_layer)
+            line_layer = self.runPolyToLine(dissolved_polygon_layer)
+            # Remover a moldura linha
+            line_layer_diff = self.runDifference(line_layer, moldura_linha)
+            polygon_boundary_layer = edit_layer_dict[layer_map_dict[polygon_layer.name()]]
+            polygon_boundary_layer.startEditing()
+            polygon_boundary_layer.beginEditCommand('Iniciando edição.')
+            intersect = self.runIntersect(line_layer_diff, merged)
+            self.createNewFeaturesFromLayer(polygon_boundary_layer, intersect, polygon_layer.name(), sobreposto=1)
+            difference = self.runDifference(line_layer_diff, merged)
+            self.createNewFeaturesFromLayer(polygon_boundary_layer, difference, polygon_layer.name(), sobreposto=2)
+            
+            polygon_boundary_layer.endEditCommand()
 
-            layer.endEditCommand()
+        return {self.OUTPUT: ''}
 
-        return {self.OUTPUT: ""}
+    def createNewFeaturesFromLayer(self, polygon_boundary_layer, layer, layer_name, sobreposto):
+        featList = [
+            self.createNewFeat(polygon_boundary_layer, feature, layer_name, sobreposto=sobreposto) for feature in layer.getFeatures()
+        ]
+        polygon_boundary_layer.addFeatures(featList)
+
+    def createNewFeat(self, polygon_boundary_layer, feature, layer_name, sobreposto=1):
+        feat = QgsFeature(polygon_boundary_layer.fields())
+        feat['sobreposto'] = sobreposto
+        feat.setGeometry(feature.geometry())
+        feat['geometria_aproximada'] = feature['geometria_aproximada']
+        feat['nome'] = feature['nome']
+        feat['exibir_rotulo_aproximado'] = 1
+        if layer_name == 'llp_unidade_conservacao_a':
+            feat["tipo"] = feature["tipo"]
+        return feat
 
     def mergelayer(self, layers):
         m = processing.run(
             "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "TEMPORARY_OUTPUT"}
         )
-        return m["OUTPUT"]
+        return m['OUTPUT']
+
+    def runExtractByExpression(self, layer, expression):
+        extractbyexpression = processing.run(
+            'native:extractbyexpression',
+            {
+                'INPUT': layer,
+                'EXPRESSION': expression,
+                'OUTPUT': 'TEMPORARY_OUTPUT'
+            }
+        )
+        return extractbyexpression['OUTPUT']
 
     def dissolve(self, layer):
         dissolve = processing.run(
             "native:dissolve",
             {"INPUT": layer, "FIELD": ["nome"], "OUTPUT": "TEMPORARY_OUTPUT"},
         )
-        return dissolve["OUTPUT"]
+        return dissolve['OUTPUT']
 
     def polytoline(self, layer):
         line = processing.run(
@@ -132,19 +210,27 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         )
         return line["OUTPUT"]
 
-    def intersect(self, layer, overlaylayer):
+    def runIntersect(self, layer, overlaylayer):
         intersect = processing.run(
             "native:intersection",
             {"INPUT": layer, "OVERLAY": overlaylayer, "OUTPUT": "TEMPORARY_OUTPUT"},
         )
         return intersect["OUTPUT"]
 
-    def difference(self, layer, overlaylayer):
+    def runDifference(self, layer, overlaylayer):
         diff = processing.run(
             "native:difference",
             {"INPUT": layer, "OVERLAY": overlaylayer, "OUTPUT": "TEMPORARY_OUTPUT"},
         )
-        return diff["OUTPUT"]
+        return diff['OUTPUT']
+
+    def runCreateSpatialIndex(self, layer):
+        output = processing.run(
+            "native:createspatialindex",
+            {'INPUT': layer},
+            is_child_algorithm=True,
+        )
+        return layer
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
@@ -168,5 +254,5 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         return self.tr(
             """A rotina altera o atributo 'sobreposto' das camadas de entrada caso essas camadas tenham interseção com uma camada a ser sobreposta.
 
-                       As entradas são do tipo linha e o atributo a ser alterado é do tipo texto e deve ser exatamente conforme o nome do atributo a ser alterado da camada de entrada."""
+                        As entradas são do tipo linha e o atributo a ser alterado é do tipo texto e deve ser exatamente conforme o nome do atributo a ser alterado da camada de entrada."""
         )
