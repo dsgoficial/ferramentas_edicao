@@ -346,12 +346,14 @@ class MakeGrid(QgsProcessingAlgorithm):
                     [QgsPoint(x - halfDistance, y), QgsPoint(x + halfDistance, y)]
                 )
             )
+            hLine.transform(coordinateTransform, QgsCoordinateTransform.ReverseTransform)
             lineList.append(hLine)
             vLine = QgsGeometry(
                 QgsLineString(
                     [QgsPoint(x, y - halfDistance), QgsPoint(x, y + halfDistance)]
                 )
             )
+            vLine.transform(coordinateTransform, QgsCoordinateTransform.ReverseTransform)
             lineList.append(vLine)
 
         return lineList
