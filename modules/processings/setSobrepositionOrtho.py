@@ -1,16 +1,10 @@
 from qgis.core import (
-    QgsFeatureRequest,
     QgsProcessing,
-    QgsProcessingParameterMultipleLayers,
     QgsFeature,
     QgsProcessingAlgorithm,
-    QgsGeometry,
-    QgsProcessingParameterString,
-    QgsProject,
-    QgsProcessingParameterEnum,
     QgsProcessingParameterVectorLayer
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
 
 class SetSobrepositionOrtho(QgsProcessingAlgorithm):
@@ -18,7 +12,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
     INPUT_LAYER_SOBREPOSITION_MIL = 'INPUT_LAYER_SOBREPOSITION_MIL'
     INPUT_LAYER_SOBREPOSITION_IND = 'INPUT_LAYER_SOBREPOSITION_IND'
     INPUT_LAYER_SOBREPOSITION_CON = 'INPUT_LAYER_SOBREPOSITION_CON'
-    INPUT_POLYGON_MIL = 'INPUT_POLYGONS'
+    INPUT_POLYGON_MIL = 'INPUT_POLYGON_MIL'
     INPUT_POLYGON_IND = 'INPUT_POLYGON_IND'
     INPUT_POLYGON_CON = 'INPUT_POLYGON_CON'
     INPUT_LAYER_TO_CHECK_DRE = 'INPUT_LAYER_TO_CHECK_DRE'
@@ -143,7 +137,8 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         }
 
         # Dissolver moldura e converter em linha
-        moldura_linha = self.runPolyToLine(self.runDissolve(layer_moldura))
+        moldura_dissolved = self.runDissolve(layer_moldura)
+        moldura_linha = self.runPolyToLine(moldura_dissolved)
 
         # Percorrer as camadas de poligono e alterar o atributo "sobreposto" das camadas de edicao
         for polygon_layer in polygons_layers:
@@ -180,7 +175,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
             feat["tipo"] = feature["tipo"]
         return feat
 
-    def mergelayer(self, layers):
+    def runMergeLayer(self, layers):
         m = processing.run(
             "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "TEMPORARY_OUTPUT"}
         )
@@ -197,14 +192,14 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         )
         return extractbyexpression['OUTPUT']
 
-    def dissolve(self, layer):
+    def runDissolve(self, layer):
         dissolve = processing.run(
             "native:dissolve",
             {"INPUT": layer, "FIELD": ["nome"], "OUTPUT": "TEMPORARY_OUTPUT"},
         )
         return dissolve['OUTPUT']
 
-    def polytoline(self, layer):
+    def runPolyToLine(self, layer):
         line = processing.run(
             "native:polygonstolines", {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"}
         )

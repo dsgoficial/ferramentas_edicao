@@ -76,50 +76,25 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             if x.dataProvider().uri().table() == "elemnat_ponto_cotado_p"
         ][0]
         self.highestSpot(ptoCotado, frameLayer)
-
-        layersNameToCalculateSobreposition = [
-            "edicao_area_pub_militar_l",
-            "edicao_terra_indigena_l",
-            "edicao_unidade_conservacao_l",
-        ]
-        layersNameToCheckSobreposition = [
-            "elemnat_trecho_drenagem_l",
-            "infra_via_deslocamento_l",
-            "infra_ferrovia_l",
-        ]
-        polygonToLine = [
-            "llp_area_pub_militar_a",
-            "llp_terra_indigena_a",
-            "llp_unidade_conservacao_a",
-        ]
-
-        layersToCalculateSobreposition = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() in layersNameToCalculateSobreposition
-        ]
-        layersToCheckSobreposition = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() in layersNameToCheckSobreposition
-        ]
-        layersToConvertLine = [
-            x for x in layers if x.dataProvider().uri().table() in polygonToLine
-        ]
-
-        self.setSobreposition(
-            layersToCalculateSobreposition,
-            layersToCheckSobreposition,
-            layersToConvertLine,
-        )
-
+        
         self.attrDefault(layers, gridScaleParam)
+        
+        lyrDict = {
+            layer.dataProvider().uri().table(): layer for layer in layers
+        }
 
-        drenagem = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "elemnat_trecho_drenagem_l"
-        ][0]
+        drenagem = lyrDict["elemnat_trecho_drenagem_l"]
+        edicao_mil = lyrDict["edicao_area_pub_militar_l"]
+        edicao_ind = lyrDict["edicao_terra_indigena_l"]
+        edicao_con = lyrDict["edicao_unidade_conservacao_l"]
+        pol_mil = lyrDict["llp_area_pub_militar_a"]
+        pol_ind = lyrDict["llp_terra_indigena_a"]
+        pol_con = lyrDict["llp_unidade_conservacao_a"]
+        via_deslocamento = lyrDict["infra_via_deslocamento_l"]
+        ferrovia = lyrDict["infra_ferrovia_l"]
+
+        self.setSobreposition(frameLayer, edicao_mil, edicao_ind, edicao_con, pol_mil, pol_ind, pol_con, drenagem, via_deslocamento, ferrovia)
+
         self.sizeRiverLabel(drenagem, frameLayer, gridScaleParam, 0)
 
         energia = [
@@ -173,13 +148,20 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
         )
 
-    def setSobreposition(self, layers, check, polygons):
+    def setSobreposition(self, moldura, edicao_mil, edicao_ind, edicao_con, pol_mil, pol_ind, pol_con, drenagem, via_deslocamento, ferrovia):
         processing.run(
             "ferramentasedicao:setsobrepositionortho",
             {
-                "INPUT_LAYER_SOBREPOSITION": layers,
-                "INPUT_LAYER_TO_CHECK": check,
-                "INPUT_POLYGONS": polygons,
+                "INPUT_MOLDURA": moldura,
+                "INPUT_LAYER_SOBREPOSITION_MIL": edicao_mil,
+                "INPUT_LAYER_SOBREPOSITION_IND": edicao_ind,
+                "INPUT_LAYER_SOBREPOSITION_CON": edicao_con,
+                "INPUT_POLYGON_MIL": pol_mil,
+                "INPUT_POLYGON_IND": pol_ind,
+                "INPUT_POLYGON_CON": pol_con,
+                "INPUT_LAYER_TO_CHECK_DRE": drenagem,
+                "INPUT_LAYER_TO_CHECK_VIA": via_deslocamento,
+                "INPUT_LAYER_TO_CHECK_FER": ferrovia,
             },
         )
 
@@ -224,4 +206,10 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return "preparo_edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo prepara os atributos para carta ortoimagem")
+        return self.tr("""O algoritmo prepara os atributos para Carta Ortoimagem:
+        1. Define cota mais alta
+        2. Configura atributos padrão
+        3. Configura sobreposição de feições
+        4. Define tamanho do texto de rio
+        5. Insere identificador de elemento de energia
+        6. Insere identificador de trecho rodoviário""")
