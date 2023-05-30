@@ -105,19 +105,23 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
     def getLabelFontSize(self, feat, outsidePolygon=False):
         scale = self.getScale()
         scaleComparator = scale / 1000
-        if self.lyrCrs.isGeographic():
-            convertLength = QgsDistanceArea()
-            convertLength.setEllipsoid(self.lyrCrs.authid())
-            measure = convertLength.measureLength(feat.geometry())
-            length = convertLength.convertLengthMeasurement(
-                measure, QgsUnitTypes.DistanceMeters
-            )
-        else:
-            length = feat.geometry().length()
+        length = (
+            feat.geometry().length()
+            if not self.lyrCrs.isGeographic()
+            else self.convertLength(feat)
+        )
         return (
             self.getLabelFontSizeA(scaleComparator, length)
             if outsidePolygon
             else self.getLabelFontSizeB(scaleComparator, length)
+        )
+
+    def convertLength(self, feat):
+        convertLength = QgsDistanceArea()
+        convertLength.setEllipsoid(self.lyrCrs.authid())
+        measure = convertLength.measureLength(feat.geometry())
+        return convertLength.convertLengthMeasurement(
+            measure, QgsUnitTypes.DistanceMeters
         )
 
     def getLabelFontSizeA(self, scaleComparator, length):
