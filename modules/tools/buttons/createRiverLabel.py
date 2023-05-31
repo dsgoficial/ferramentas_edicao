@@ -191,14 +191,10 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         closestV = geom.interpolate(posClosestV)
         start, end = self.adjustGeomLength(geom, start, end)
         toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
-        orientedGeom, area, angle, w, h = toInsertGeom.orientedMinimumBoundingBox()
-        z = min(h, w) * e ** (math.radians(angle + 90) * 1j)
         toInsertGeom = self.polynomialFit(toInsertGeom)
         toInsertGeom.translate(
-            *self.getTransformParams(toInsertGeom, closestV, clickPos, z)
+            *self.getTransformParams(toInsertGeom, closestV, clickPos)
         )
-        # toInsertGeom = toInsertGeom.simplify(self.tolerance/3)
-
         return toInsertGeom
 
     def adjustGeomLength(self, geom, start, end):
@@ -224,7 +220,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         return start, end
 
     def polynomialFit(self, geom):
-        # geom = geom.simplify(self.tolerance/10)
         orientedGeom, area, angle, w, h = geom.orientedMinimumBoundingBox()
         firstPoint = QgsPointXY(geom.vertexAt(0))
         geom.rotate(90 - angle, firstPoint)
@@ -238,13 +233,11 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         rotatedParabola = rotatedParabola.simplify(self.tolerance / 10)
         return rotatedParabola
 
-    def getTransformParams(self, toInsertGeom, ref, clickPos, z):
+    def getTransformParams(self, toInsertGeom, ref, clickPos):
         ref = ref.asPoint()
         centroid = toInsertGeom.centroid().asPoint()
         dx = clickPos.x() - centroid.x()
         dy = clickPos.y() - centroid.y()
-        # dx = clickPos.x()-centroid.x() + z.real
-        # dy = clickPos.y()-centroid.y() + z.imag
         xRefTranslate = clickPos.x() - ref.x()
         yRefTranslate = clickPos.y() - ref.y()
         xRefTranslate, yRefTranslate = self.scaleTransform(xRefTranslate, yRefTranslate)
