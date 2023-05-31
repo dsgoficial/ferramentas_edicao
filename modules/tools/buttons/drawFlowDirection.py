@@ -59,6 +59,7 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         self.active = False
         self.contadorVert = 0
         self.stopState = False
+        self.currentFeature = None
         self.cur = QtGui.QCursor(
             QtGui.QPixmap(
                 [
@@ -216,6 +217,7 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         self.setActiveState(False)
         self.contadorVert = 0
         self.getCanvas().refresh()
+        self.currentFeature = None
 
     def canvasReleaseEvent(self, event):
         # Método para receber os eventos release do canvas do Qgis
@@ -248,6 +250,7 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         rubberBand.setWidth(1)
         rubberBand.addPoint(pointMap)
         self.setRubberBand(rubberBand)
+        self.currentFeature = self.addArrow(pointMap, 0)
 
     def canvasMoveEvent(self, event):
         # Método para receber os eventos canvas move do Qgis
@@ -264,6 +267,10 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
             self.getRubberBand().removeLastPoint()
 
         self.getRubberBand().addPoint(mapPoint)
+        if self.currentFeature is None:
+            return
+        point_from, symbolRot = self.compute_rotation(event)
+        self.updateFeature(self.currentFeature, symbolRot)
 
     def updateRubberBandToStopState(self, point):
         # Método para atualizar o rubberband do pause da ferramenta
@@ -287,22 +294,24 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
 
     def finishEdition(self, event):
         # Método para finalizar a aquisição
+        point_from, symbolRot = self.compute_rotation(event)
+        if point_from is None:
+            return
+        self.cancelEdition()
+
+    def compute_rotation(self, event):
         rb = self.getRubberBand()
         if not rb:
-            return
+            return None, None
 
         pointCount = rb.numberOfVertices()
         if pointCount < 2:
-            return
-
+            return None, None
         point_from = rb.getPoint(0)
         point_to = event.mapPoint()
 
         azimuth = point_from.azimuth(point_to)
-        symbolRot = azimuth - 90.0
-
-        self.addArrow(point_from, symbolRot)
-        self.cancelEdition()
+        return point_from, azimuth
 
     def activate(self):
         # Método chamado ao ativar a ferramenta
@@ -344,3 +353,11 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
         self.canvas.refresh()
+        return toInsert
+
+    def updateFeature(self, feature, rotation):
+        self.dstLyr.startEditing()
+        feature.setAttribute("simb_rot", rotation)
+        self.dstLyr.updateFeature(feature)
+        self.canvas.refresh()
+        return feature
