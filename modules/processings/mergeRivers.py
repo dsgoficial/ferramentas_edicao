@@ -32,6 +32,7 @@ class MergeRivers(QgsProcessingAlgorithm):
                 self.INPUT_LAYER_L,
                 self.tr("Selecionar camada de drenagem"),
                 [QgsProcessing.TypeVectorLine],
+                defaultValue="elemnat_trecho_drenagem_l",
             )
         )
 
@@ -40,6 +41,7 @@ class MergeRivers(QgsProcessingAlgorithm):
                 self.INPUT_FRAME_A,
                 self.tr("Selecionar camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
+                defaultValue="aux_moldura_a",
             )
         )
 
