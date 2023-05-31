@@ -1,3 +1,5 @@
+from math import e, pi
+import math
 from pathlib import Path
 import numpy as np
 
@@ -12,6 +14,7 @@ from qgis.core import (
     QgsProject,
     QgsSpatialIndex,
     QgsUnitTypes,
+    QgsPointXY,
 )
 from qgis.gui import QgsMapToolEmitPoint
 
@@ -81,6 +84,8 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert, labelSize = self.setAttributes(
             feat, toInsert, outsidePolygon=outsidePolygon
         )
+        if toInsert is None:
+            return
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
@@ -100,6 +105,13 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         labelSize = self.getLabelFontSize(feat, outsidePolygon=outsidePolygon)
         toInsert.setAttribute("tamanho_txt", labelSize)
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+            if "tamanho_buffer" not in toInsert.attributeMap():
+                self.displayErrorMessage(
+                    self.tr(
+                        "O campo tamanho_buffer não existe na modelagem em questão. Verifique a modelagem e o tipo de produto selecionado e tente novamente."
+                    )
+                )
+                return None, None
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
         return toInsert, labelSize
@@ -159,7 +171,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
         name = feat.attribute("nome")
-        interpolateSize = labelSize * len(str(name)) * self.tolerance / 15
+        interpolateSize = labelSize * len(str(name)) * self.tolerance / 20
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
         start = posClosestV - interpolateSize / 2
@@ -179,8 +191,12 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         closestV = geom.interpolate(posClosestV)
         start, end = self.adjustGeomLength(geom, start, end)
         toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
+        orientedGeom, area, angle, w, h = toInsertGeom.orientedMinimumBoundingBox()
+        z = min(h, w) * e ** (math.radians(angle + 90) * 1j)
         toInsertGeom = self.polynomialFit(toInsertGeom)
-        toInsertGeom.translate(*self.getTransformParams(closestV, clickPos))
+        toInsertGeom.translate(
+            *self.getTransformParams(toInsertGeom, closestV, clickPos, z)
+        )
         # toInsertGeom = toInsertGeom.simplify(self.tolerance/3)
 
         return toInsertGeom
@@ -209,22 +225,37 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
     def polynomialFit(self, geom):
         # geom = geom.simplify(self.tolerance/10)
+        orientedGeom, area, angle, w, h = geom.orientedMinimumBoundingBox()
+        firstPoint = QgsPointXY(geom.vertexAt(0))
+        geom.rotate(90 - angle, firstPoint)
         xVert = [p.x() for p in geom.vertices()]
         yVert = [p.y() for p in geom.vertices()]
         f = np.poly1d(np.polyfit(xVert, yVert, 2))
         xVert = sorted(xVert)
         newYVert = f(xVert)
-        return QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
+        rotatedParabola = QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
+        rotatedParabola.rotate(270 + angle, firstPoint)
+        rotatedParabola = rotatedParabola.simplify(self.tolerance / 10)
+        return rotatedParabola
 
-    def getTransformParams(self, ref, clickPos):
+    def getTransformParams(self, toInsertGeom, ref, clickPos, z):
         ref = ref.asPoint()
-        xTranslate = clickPos.x() - ref.x()
-        yTranslate = clickPos.y() - ref.y()
-        xTranslate, yTranslate = self.scaleTransform(xTranslate, yTranslate)
-        return xTranslate, yTranslate
+        centroid = toInsertGeom.centroid().asPoint()
+        dx = clickPos.x() - centroid.x()
+        dy = clickPos.y() - centroid.y()
+        # dx = clickPos.x()-centroid.x() + z.real
+        # dy = clickPos.y()-centroid.y() + z.imag
+        xRefTranslate = clickPos.x() - ref.x()
+        yRefTranslate = clickPos.y() - ref.y()
+        xRefTranslate, yRefTranslate = self.scaleTransform(xRefTranslate, yRefTranslate)
+        xCentroidTranslate, yCentroidTranslate = self.scaleTransform(dx, dy)
+        return (xRefTranslate + xCentroidTranslate) / 2, (
+            yRefTranslate + yCentroidTranslate
+        ) / 2
 
     def scaleTransform(self, x, y):
         d = self.tolerance
+        # scaleFactor = 1
         scaleFactor = (d**2 / ((x**2 + y**2))) ** 0.5
         return scaleFactor * x, scaleFactor * y
 
