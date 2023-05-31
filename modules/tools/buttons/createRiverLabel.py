@@ -78,7 +78,9 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
     def createFeature(self, feat, pos, outsidePolygon=False):
         toInsert = QgsFeature(self.dstLyr.fields())
-        labelSize = self.setAttributes(feat, toInsert, outsidePolygon=outsidePolygon)
+        toInsert, labelSize = self.setAttributes(
+            feat, toInsert, outsidePolygon=outsidePolygon
+        )
         toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
@@ -100,7 +102,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
-        return labelSize
+        return toInsert, labelSize
 
     def getLabelFontSize(self, feat, outsidePolygon=False):
         scale = self.getScale()
