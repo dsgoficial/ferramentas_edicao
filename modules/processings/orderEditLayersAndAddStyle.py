@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import json
 import os
 from PyQt5.QtCore import QFileInfo, QFile
@@ -331,9 +332,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             if layer in invisibleLayers:
                 continue
             dictOrderedLayers[layer] = layerNames.index(layerName)
-            orderedDictOrderedLayers = dict(
-                sorted(dictOrderedLayers.items(), key=lambda item: item[1])
-            )
+        orderedDictOrderedLayers = OrderedDict(
+            sorted(dictOrderedLayers.items(), key=lambda item: item[1])
+        )
         for step2, layer in enumerate(orderedDictOrderedLayers):
             if feedback.isCanceled():
                 return
