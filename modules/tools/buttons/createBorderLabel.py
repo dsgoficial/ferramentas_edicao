@@ -22,7 +22,6 @@ import numpy as np
 
 from qgis.PyQt import QtCore, QtGui, QtWidgets
 from qgis import core, gui
-from qgis.utils import iface
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsVectorLayer,
@@ -36,6 +35,7 @@ from qgis.core import (
     QgsPoint,
     QgsSpatialIndex,
     QgsUnitTypes,
+    QgsPointXY,
 )
 
 from .baseTools import BaseTools
@@ -309,6 +309,7 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         # 1. Get the intersection point
 
         borderFeat, intersectionPoint = self.getIntersection(line_from_to)
+        borderType = borderFeat["tipo"]
 
         if borderFeat == None:
             self.displayErrorMessage(
@@ -335,8 +336,12 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
 
         # 4. Add a border label for each point-text pair
 
-        self.addBorderLabel(labelTexts[0], offsetted_a, borderFeat.geometry())
-        self.addBorderLabel(labelTexts[1], offsetted_b, borderFeat.geometry())
+        self.addBorderLabel(
+            labelTexts[0], offsetted_a, borderFeat.geometry(), borderType
+        )
+        self.addBorderLabel(
+            labelTexts[1], offsetted_b, borderFeat.geometry(), borderType
+        )
 
     def activate(self):
         # Método chamado ao ativar a ferramenta
@@ -391,7 +396,11 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         return None, None
 
     def addBorderLabel(
-        self, labelText: str, point: core.QgsPointXY, border: core.QgsGeometry
+        self,
+        labelText: str,
+        point: core.QgsPointXY,
+        border: core.QgsGeometry,
+        borderType: int,
     ):
         """Adiciona o rótulo de fronteira"""
 
@@ -408,7 +417,7 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
             self.displayErrorMessage(
                 "Tipo de produto inválido, cor = #241F21, mesma da carta topográfica"
             )
-        fontSize = 10
+        fontSize = 10 if borderType == 1 else 8
         toInsert.setAttribute("tamanho_txt", fontSize)
         toInsertGeom = self.getLabelGeometry(border, point, fontSize * len(labelText))
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
@@ -444,8 +453,6 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
         toInsertGeom = self.polynomialFit(toInsertGeom)
         toInsertGeom.translate(*self.getTransformParams(closestV, clickPos))
-        # toInsertGeom = toInsertGeom.simplify(self.tolerance/3)
-
         return toInsertGeom
 
     def adjustGeomLength(
@@ -472,13 +479,18 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         return start, end
 
     def polynomialFit(self, geom):
-        # geom = geom.simplify(self.tolerance/10)
+        orientedGeom, area, angle, w, h = geom.orientedMinimumBoundingBox()
+        firstPoint = QgsPointXY(geom.vertexAt(0))
+        geom.rotate(90 - angle, firstPoint)
         xVert = [p.x() for p in geom.vertices()]
         yVert = [p.y() for p in geom.vertices()]
         f = np.poly1d(np.polyfit(xVert, yVert, 2))
         xVert = sorted(xVert)
         newYVert = f(xVert)
-        return QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
+        rotatedParabola = QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
+        rotatedParabola.rotate(270 + angle, firstPoint)
+        rotatedParabola = rotatedParabola.simplify(self.tolerance / 10)
+        return rotatedParabola
 
     def getTransformParams(self, ref, clickPos):
         ref = ref.asPoint()
