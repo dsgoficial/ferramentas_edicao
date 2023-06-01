@@ -38,7 +38,7 @@ class SetupButtons:
         cycleVisibilityButton.setupUi()
         cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
         cycleTextJustificationButton.setupUi()
-        copySugestedLabelButton = CopySugestedLabel(self.iface, self.toolBar, mapTypeSelector, scaleSelector)
+        copySugestedLabelButton = CopySugestedLabel(self.iface, self.toolBar, productTypeSelector, scaleSelector)
         copySugestedLabelButton.setupUi()
         copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
         copyToGenericLabelButton.setupUi()
