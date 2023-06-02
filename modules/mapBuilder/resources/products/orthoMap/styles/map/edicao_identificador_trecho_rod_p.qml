@@ -191,8 +191,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{ea6b578a-9f49-4b5a-bf9b-4d8f3790c697}">
-      <rule filter="&quot;carta_simbolizacao&quot; = 1" description="Sigla carta" key="{dcdf4cef-4939-4887-b641-b9efc936b33b}">
+    <rules key="{5be1d6d7-8e38-4de5-8e27-2b4e6017e984}">
+      <rule description="Sigla carta" key="{14bfe7c9-7c25-4a3c-9461-bb24c6bd8865}">
         <settings calloutType="simple">
           <text-style fontUnderline="0" previewBkgrdColor="255,255,255,255" textOpacity="1" fieldName="sigla" fontSizeUnit="Point" allowHtml="0" textColor="0,0,0,255" useSubstitutions="0" fontSize="6" fontLetterSpacing="0" multilineHeight="1" isExpression="0" fontKerning="1" fontWordSpacing="0" namedStyle="Condensed" textOrientation="horizontal" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontFamily="Noto Sans" capitalization="0" legendString="Aa" fontItalic="0" fontWeight="50" blendMode="0" fontStrikeout="0">
             <families/>
