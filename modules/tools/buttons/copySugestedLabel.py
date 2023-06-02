@@ -153,7 +153,9 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
 
         word_geometry = QgsGeometry.fromPolylineXY([p.asPoint() for p in words_points])
         oldLen = word_geometry.length()
-        word_geometry = word_geometry.extendLine(oldLen * 0.5, oldLen * 0.5)
+        nLetters = len(words_points)
+        lenPerLetter = oldLen / nLetters
+        word_geometry = word_geometry.extendLine(lenPerLetter, lenPerLetter)
         word_text = letters_data[0][1]
         return word_geometry, word_text
 
