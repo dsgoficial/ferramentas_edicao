@@ -8,7 +8,7 @@ from .bridgeAndManholeRotation import BridgeAndManholeRotation
 from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .buildElevationDiagram import BuildElevationDiagram
 from .damWidth import DamWidth
-from .definePointSymbolRotation import DefinePointSymbolRotation
+from .defineBuildingRotation import DefineBuildingRotation
 from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
 from .generalizeBuildings import GeneralizeBuildings
@@ -63,7 +63,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(BridgeAndManholeWidth())
         self.addAlgorithm(BridgeAndManholeRotation())
         self.addAlgorithm(DamWidth())
-        self.addAlgorithm(DefinePointSymbolRotation())
+        self.addAlgorithm(DefineBuildingRotation())
         self.addAlgorithm(GeneralizeBuildings())
         self.addAlgorithm(RapidsAndWaterfallRotation())
         self.addAlgorithm(PlacePointSymbolInsideArea())
