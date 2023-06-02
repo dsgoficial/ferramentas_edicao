@@ -682,10 +682,10 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         return self.tr("Generalização de pontos cotados")
 
     def group(self):
-        return self.tr("Edição")
+        return self.tr("Auxiliar")
 
     def groupId(self):
-        return "edicao"
+        return "auxiliar"
 
     def shortHelpString(self):
         return self.tr("O algoritmo generaliza os pontos cotados baseados na escala")

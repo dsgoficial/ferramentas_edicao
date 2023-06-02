@@ -329,7 +329,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         return "bridgeandmanholewidth"
 
     def displayName(self):
-        return self.tr("Definir largura ponte e bueiro")
+        return self.tr("Definir largura de elemento viário")
 
     def group(self):
         return self.tr("Edição")

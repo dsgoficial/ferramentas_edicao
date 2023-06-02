@@ -154,10 +154,10 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
         return PlaceMineralExtractionSymbol()
 
     def name(self):
-        return "placehospitalsymbol"
+        return "placemineralextractionsymbol"
 
     def displayName(self):
-        return self.tr("Insere símbolo de extração mineral área")
+        return self.tr("Insere símbolo de extração mineral")
 
     def group(self):
         return self.tr("Edição")
