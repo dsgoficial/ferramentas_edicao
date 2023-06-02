@@ -23,7 +23,6 @@ class PlaceVegetationSymbol(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
     ONLY_SELECTED = "ONLY_SELECTED"
-    HIDE_FEATS = "HIDE_FEATS"
     SCALE = "SCALE"
     INPUT_SYMBOL_LAYER = "INPUT_SYMBOL_LAYER"
     OUTPUT = "OUTPUT"
