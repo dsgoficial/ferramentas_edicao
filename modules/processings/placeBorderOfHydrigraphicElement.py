@@ -59,6 +59,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
                 defaultValue="edicao_borda_elemento_hidrografico_l",
             )
         )
+        self.mappingDict = {8: 1}  # rocha em agua
 
     def processAlgorithm(self, parameters, context, feedback):
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
@@ -165,6 +166,8 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
         for current, feat in enumerate(selectedElements.getFeatures()):
             if multiStepFeedback.isCanceled():
                 break
+            if feat["tipo"] not in self.mappingDict:
+                continue
             featDict[feat["featid"]].append(feat)
             multiStepFeedback.setProgress(current * stepSize)
         currentStep += 1
@@ -197,7 +200,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
             )
             for newGeom in newGeomList:
                 newFeat = QgsVectorLayerUtils.createFeature(simbLineLayer, newGeom)
-                newFeat["tipo"] = feat["tipo"]
+                newFeat["tipo"] = self.mappingDict[feat["tipo"]]
                 newFeatList.append(newFeat)
             feedback.setProgress(current * stepSize)
         simbLineLayer.addFeatures(newFeatList)
