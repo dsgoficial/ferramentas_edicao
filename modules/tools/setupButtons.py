@@ -71,6 +71,8 @@ class SetupButtons:
             self.iface, self.toolBar, scaleSelector, productTypeSelector
         )
         drawFlowDirection.setupUi()
+        if not productTypeSelector.currentIndex() == 1:
+            drawFlowDirection._action.setEnabled(False)
         createBorderLabel = CreateBorderLabel(
             self.iface, self.toolBar, scaleSelector, productTypeSelector
         )
@@ -118,6 +120,13 @@ class SetupButtons:
             lambda idx, compareIdx=[
                 1
             ], btn=createVegetationSymbol._action: self.disableAction(
+                idx, compareIdx, btn
+            )
+        )
+        productTypeSelector.currentIndexChanged.connect(
+            lambda idx, compareIdx=[
+                1
+            ], btn=drawFlowDirection._action: self.disableAction(
                 idx, compareIdx, btn
             )
         )
