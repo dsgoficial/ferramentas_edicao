@@ -22,7 +22,7 @@ import concurrent.futures
 class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
-    ONLY_SELECTED = "ONLU_SELECTED"
+    ONLY_SELECTED = "ONLY_SELECTED"
     INPUT_FIELD = "INPUT_FIELD"
     INPUT_DRAINAGES = "INPUT_DRAINAGES"
     OUTPUT = "OUTPUT"
@@ -100,7 +100,7 @@ class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
             angle = vertexList[-1].azimuth(vertexList[-2])
             if feat is None or feat[rotationField] == angle:
                 continue
-            feat[rotationField] = feat
+            feat[rotationField] = angle - 90
             inputLyr.updateFeature(feat)
             feedback.setProgress(current * stepSize)
 
