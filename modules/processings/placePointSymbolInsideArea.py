@@ -177,7 +177,7 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         return "placepointsymbolinsidearea"
 
     def displayName(self):
-        return self.tr("Insere símbolo dentro de ocupação do solo área")
+        return self.tr("Insere símbolo de ocupação do solo")
 
     def group(self):
         return self.tr("Edição")

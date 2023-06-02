@@ -164,7 +164,7 @@ class PlacePowerPlantSymbol(QgsProcessingAlgorithm):
         return "placepowerplantsymbol"
 
     def displayName(self):
-        return self.tr("Insere símbolo de subestação de energia")
+        return self.tr("Insere símbolo de elemento de energia")
 
     def group(self):
         return self.tr("Edição")
