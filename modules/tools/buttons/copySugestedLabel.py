@@ -153,10 +153,10 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
 
         word_geometry = QgsGeometry.fromPolylineXY([p.asPoint() for p in words_points])
         oldLen = word_geometry.length()
-        nLetters = len(words_points)
-        lenPerLetter = oldLen / nLetters
-        word_geometry = word_geometry.extendLine(lenPerLetter, lenPerLetter)
         word_text = letters_data[0][1]
+        nLetters = len(word_text)
+        lenPerLetter = oldLen / nLetters
+        word_geometry = word_geometry.extendLine(lenPerLetter, lenPerLetter)        
         return word_geometry, word_text
 
     def mouseClick(self, pos, btn):
