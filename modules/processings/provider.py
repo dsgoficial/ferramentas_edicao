@@ -10,6 +10,7 @@ from .buildElevationDiagram import BuildElevationDiagram
 from .damWidth import DamWidth
 from .defineBuildingRotation import DefineBuildingRotation
 from .defineSpillWaySinkRotation import DefineSpillWaySinkRotation
+from .placeVegetationSymbol import PlaceVegetationSymbol
 from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
 from .generalizeBuildings import GeneralizeBuildings
@@ -81,6 +82,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(SizeTextRiverLine())
         self.addAlgorithm(SetCurveOrientation())
         self.addAlgorithm(DefineSpillWaySinkRotation())
+        self.addAlgorithm(PlaceVegetationSymbol())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()

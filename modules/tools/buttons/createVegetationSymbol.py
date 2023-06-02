@@ -57,16 +57,18 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
                 )
                 flag = True
             for feat in feats:
-                if feat.geometry().intersects(posGeom):
-                    toInsert = QgsFeature(self.dstLyr.fields())
-                    if vegName := self.getVegetationMapping(feat):
-                        toInsert.setAttribute("texto_edicao", vegName)
-                        toInsert.setGeometry(posGeom)
-                        self.dstLyr.startEditing()
-                        self.dstLyr.addFeature(toInsert)
-                        self.dstLyr.triggerRepaint()
-                        flag = True
-                    break
+                if not feat.geometry().intersects(posGeom):
+                    continue
+                toInsert = QgsFeature(self.dstLyr.fields())
+                vegName = self.getVegetationMapping(feat)
+                if vegName is None:
+                    continue
+                toInsert.setAttribute("texto_edicao", vegName)
+                toInsert.setGeometry(posGeom)
+                self.dstLyr.startEditing()
+                self.dstLyr.addFeature(toInsert)
+                self.dstLyr.triggerRepaint()
+                flag = True
             if not flag:
                 self.displayErrorMessage("Vegetação inválida")
             self.dstLyr.triggerRepaint()
@@ -74,8 +76,15 @@ class CreateVegetationSymbol(QgsMapToolEmitPoint, BaseTools):
 
     @staticmethod
     def getVegetationMapping(feat):
-        mapping = {1296: "Ref", 801: "Caat", 501: "Campnr", 701: "Cerr", 401: "Rest", 1003: "Rochoso"}
-        return mapping.get(feat.attribute("tipo"), "")
+        mapping = {
+            1296: "Ref",
+            801: "Caat",
+            501: "Campnr",
+            701: "Cerr",
+            401: "Rest",
+            1003: "Rochoso",
+        }
+        return mapping.get(int(feat.attribute("tipo")), None)
 
     def setTolerance(self):
         self.tol = self.mapCanvas.mapSettings().mapUnitsPerPixel()
