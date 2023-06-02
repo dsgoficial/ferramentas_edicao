@@ -249,7 +249,7 @@ class DamWidth(QgsProcessingAlgorithm):
         return "damWidth"
 
     def displayName(self):
-        return self.tr("Definir largura simbolo barragem")
+        return self.tr("Definir largura de barragem")
 
     def group(self):
         return self.tr("Edição")
