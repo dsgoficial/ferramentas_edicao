@@ -9,6 +9,7 @@ from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .buildElevationDiagram import BuildElevationDiagram
 from .damWidth import DamWidth
 from .defineBuildingRotation import DefineBuildingRotation
+from .defineSpillWaySinkRotation import DefineSpillWaySinkRotation
 from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
 from .generalizeBuildings import GeneralizeBuildings
@@ -79,6 +80,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ChangeAttributeTopo())
         self.addAlgorithm(SizeTextRiverLine())
         self.addAlgorithm(SetCurveOrientation())
+        self.addAlgorithm(DefineSpillWaySinkRotation())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
