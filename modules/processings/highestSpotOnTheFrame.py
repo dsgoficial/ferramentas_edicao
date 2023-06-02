@@ -116,10 +116,10 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         return self.tr("Definir cota mais alta por moldura")
 
     def group(self):
-        return self.tr("Edição")
+        return self.tr("Auxiliar")
 
     def groupId(self):
-        return "edicao"
+        return "auxiliar"
 
     def shortHelpString(self):
         return self.tr("")
