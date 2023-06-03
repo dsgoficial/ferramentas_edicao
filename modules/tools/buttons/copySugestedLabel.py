@@ -10,6 +10,7 @@ from qgis.core import (
     QgsGeometry,
     QgsDistanceArea,
     QgsPoint,
+    QgsPointXY,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextScope,
@@ -62,7 +63,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
     def mid(self, pt1, pt2):
         x = (pt1.x() + pt2.x()) / 2
         y = (pt1.y() + pt2.y()) / 2
-        return QgsPoint(x, y)
+        return QgsPointXY(x, y)
 
     def getAcceptedRule(self, baseLabelRule, context, configs):
         if isinstance(baseLabelRule, list):
@@ -144,14 +145,14 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
             words_points.append(first_point)
             last_point = self.mid(letter_points[1], letter_points[2])
             words_points.append(last_point)
-            middle_point = QgsPoint(letter_geometry.centroid().asPoint())
+            middle_point = letter_geometry.centroid().asPoint()
             words_points.append(middle_point)
         else:
             for idx, letter_data in enumerate(letters_data):
                 letter_geometry = letter_data[0]
                 words_points.append(letter_geometry.centroid())
 
-        word_geometry = QgsGeometry.fromPolylineXY([p.asPoint() for p in words_points])
+        word_geometry = QgsGeometry.fromPolylineXY([p.asPoint() if not isinstance(p, QgsPointXY) else p for p in words_points])
         oldLen = word_geometry.length()
         word_text = letters_data[0][1]
         nLetters = len(word_text)
@@ -160,6 +161,31 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         return word_geometry, word_text
 
     def mouseClick(self, pos, btn):
+        self.srcLyr = self.iface.activeLayer()
+        if not self.srcLyr:
+            self.displayErrorMessage(self.tr("Não há camada selecionada"))
+            return
+        if self.srcLyr.sourceName() == "edicao_texto_generico_l":
+            self.displayErrorMessage(self.tr("Camada selecionada edicao_texto_generico_l, selecione outra."))
+            return
+        fieldIdx = self.srcLyr.dataProvider().fieldNameIndex("texto_edicao")
+        if fieldIdx == -1:
+            self.displayErrorMessage(
+                self.tr('O atributo "texto_edicao" não existe na camada selecionada')
+            )
+            return
+
+        if self.srcLyr.dataProvider().crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(
+                QgsCoordinateReferenceSystem("EPSG:3857"),
+                QgsCoordinateTransformContext(),
+            )
+            self.tolerance = d.convertLengthMeasurement(
+                self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees
+            )
+        else:
+            self.tolerance = self.getScale() * 0.01
         # Get letter features
         self.letter_label_features = []
         for label in self.iface.mapCanvas().labelingResults().allLabels():
@@ -249,18 +275,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         self.mapCanvas.setScaleLocked(False)
 
     def getLayers(self):
-        lyr = self.iface.activeLayer()
-        if not lyr:
-            self.displayErrorMessage(self.tr("Não há camada selecionada"))
-            return
-        fieldIdx = lyr.dataProvider().fieldNameIndex("texto_edicao")
-        if fieldIdx == -1:
-            self.displayErrorMessage(
-                self.tr('O atributo "texto_edicao" não existe na camada selecionada')
-            )
-            return
         instance = QgsProject.instance()
-        self.srcLyr = lyr
         # geomType = lyr.geometryType()
         destLayerName = "edicao_texto_generico_l"
         destLayer = instance.mapLayersByName(destLayerName)
@@ -269,18 +284,9 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
             self.displayErrorMessage(self.tr(f'A camada "{destLayerName}" não existe'))
             return
         self.dstLyr = destLayer[0]
+        lastExtent = self.mapCanvas.extent()
         self.mapCanvas.zoomScale(self.getScale())
-        self.mapCanvas.setMagnificationFactor(1.0)
         self.mapCanvas.setScaleLocked(True)
-        if self.srcLyr.dataProvider().crs().isGeographic():
-            d = QgsDistanceArea()
-            d.setSourceCrs(
-                QgsCoordinateReferenceSystem("EPSG:3857"),
-                QgsCoordinateTransformContext(),
-            )
-            self.tolerance = d.convertLengthMeasurement(
-                self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees
-            )
-        else:
-            self.tolerance = self.getScale() * 0.01
+        self.mapCanvas.setExtent(lastExtent,True)
+        # self.mapCanvas.setMagnificationFactor(1.0)
         return True
