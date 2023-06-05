@@ -23,11 +23,10 @@ from .mergeHighway import MergeHighway
 from .mergeLinesByAngle import MergeLinesByAngle
 from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
-from .placeHospitalSymbol import PlaceHospitalSymbol
+from .placeBuildingSymbol import PlaceBuildingSymbol
 from .placeMineralExtractionSymbol import PlaceMineralExtractionSymbol
 from .placePointSymbolInsideArea import PlacePointSymbolInsideArea
 from .placePowerPlantSymbol import PlacePowerPlantSymbol
-from .placeSymbolsOnTopOfAreaBuildings import PlaceSymbolsOnTopOfAreaBuildings
 from .prepareOrtho import PrepareOrtho
 from .prepareTopo import PrepareTopo
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
@@ -67,8 +66,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(DefineBuildingRotation())
         self.addAlgorithm(RapidsAndWaterfallRotation())
         self.addAlgorithm(PlacePointSymbolInsideArea())
-        self.addAlgorithm(PlaceSymbolsOnTopOfAreaBuildings())
-        self.addAlgorithm(PlaceHospitalSymbol())
+        self.addAlgorithm(PlaceBuildingSymbol())
         self.addAlgorithm(PlacePowerPlantSymbol())
         self.addAlgorithm(PlaceMineralExtractionSymbol())
         self.addAlgorithm(BuildElevationDiagram())

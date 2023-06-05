@@ -1,22 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import math
-from itertools import chain, tee
+from itertools import chain, pairwise
+import processing
 
 from qgis import core
 from qgis.core import (
-    QgsGeometry,
-    QgsGeometryUtils,
+    QgsFeatureRequest,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterBoolean,
+    QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterEnum,
+    QgsDistanceArea,
+    QgsCoordinateReferenceSystem,
+    QgsProcessingFeatureSourceDefinition,
     QgsVectorLayerUtils,
+    QgsGeometry,
+    QgsGeometryUtils,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
 
-class PlaceSymbolsOnTopOfAreaBuildings(QgsProcessingAlgorithm):
+class PlaceBuildingSymbol(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
     ONLY_SELECTED = "ONLY_SELECTED"
@@ -28,7 +34,7 @@ class PlaceSymbolsOnTopOfAreaBuildings(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT,
-                self.tr("Selecionar camada de entrada"),
+                self.tr("Selecionar camada de edificação área"),
                 [QgsProcessing.TypeVectorPolygon],
                 defaultValue="constr_edificacao_a",
             )
@@ -38,7 +44,6 @@ class PlaceSymbolsOnTopOfAreaBuildings(QgsProcessingAlgorithm):
                 self.ONLY_SELECTED, self.tr("Executar somente nas feições selecionadas")
             )
         )
-
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_SYMBOL_LAYER,
@@ -84,6 +89,59 @@ class PlaceSymbolsOnTopOfAreaBuildings(QgsProcessingAlgorithm):
         rotationField = self.parameterAsFields(
             parameters, self.INPUT_SYMBOL_LAYER_ROTATION_FIELD, context
         )[0]
+        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
+        multiStepFeedback.setCurrentStep(0)
+        self.placeHospitalSymbol(
+            inputLyr=inputLyr,
+            simbAreaLayer=simbAreaLayer,
+            onlySelected=onlySelected,
+            feedback=multiStepFeedback,
+        )
+        multiStepFeedback.setCurrentStep(1)
+        self.placeSymbolsOnTopOfBuildings(
+            inputLyr=inputLyr,
+            onlySelected=onlySelected,
+            simbAreaLayer=simbAreaLayer,
+            rotationField=rotationField,
+            feedback=multiStepFeedback,
+        )
+        return {self.OUTPUT: ""}
+
+    def placeHospitalSymbol(self, inputLyr, simbAreaLayer, onlySelected, feedback):
+        request = QgsFeatureRequest().setFilterExpression(
+            '("tipo" - "tipo"%100)/100 in (20)'
+        )
+        if onlySelected:
+            request.setFilterFids([feat.id() for feat in inputLyr.selectedFeatures()])
+        iterator = (
+            inputLyr.getFeatures(request)
+            if not onlySelected
+            else list(inputLyr.getFeatures(request))
+        )
+        nFeats = inputLyr.featureCount() if not onlySelected else len(iterator)
+        if nFeats == 0:
+            return {self.OUTPUT: ""}
+        stepSize = 100 / nFeats
+        simbAreaLayer.startEditing()
+        simbAreaLayer.beginEditCommand("Posicionando símbolos de hospital")
+        newFeatList = []
+        for current, feat in enumerate(iterator):
+            if feedback.isCanceled():
+                break
+            geom = feat.geometry()
+            innerPoint = geom.centroid()
+            if not innerPoint.within(geom):
+                innerPoint = geom.pointOnSurface()
+            newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
+            newFeat["tipo"] = 15
+            newFeatList.append(newFeat)
+            feedback.setProgress(current * stepSize)
+        simbAreaLayer.addFeatures(newFeatList)
+        simbAreaLayer.endEditCommand()
+
+    def placeSymbolsOnTopOfBuildings(
+        self, inputLyr, onlySelected, simbAreaLayer, rotationField, feedback
+    ):
         iterator = (
             inputLyr.getFeatures()
             if not onlySelected
@@ -143,21 +201,18 @@ class PlaceSymbolsOnTopOfAreaBuildings(QgsProcessingAlgorithm):
             feedback.setProgress(current * stepSize)
         simbAreaLayer.addFeatures(newFeatList)
         simbAreaLayer.endEditCommand()
-        return {self.OUTPUT: ""}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
-        return PlaceSymbolsOnTopOfAreaBuildings()
+        return PlaceBuildingSymbol()
 
     def name(self):
-        return "placesymbolsontopofareabuildings"
+        return "placebuildingsymbol"
 
     def displayName(self):
-        return self.tr(
-            "Insere símbolo de edificações área no ponto médio do segmento mais ao norte"
-        )
+        return self.tr("Insere símbolo de edificação")
 
     def group(self):
         return self.tr("Edição")
@@ -166,13 +221,4 @@ class PlaceSymbolsOnTopOfAreaBuildings(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo insere edificação com símbolo no ponto médio do segmento mais ao norte"
-        )
-
-
-def pairwise(iterable):
-    # pairwise('ABCDEFG') --> AB BC CD DE EF FG
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
+        return self.tr("O algoritmo ...")
