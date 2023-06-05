@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from itertools import chain, pairwise
+from itertools import chain, tee
+from typing import Iterable
 
 from qgis import core
 from qgis.core import (
@@ -217,3 +218,10 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr("O algoritmo ...")
+
+
+def pairwise(iterable: Iterable) -> Iterable:
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
