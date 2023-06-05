@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from itertools import chain, pairwise
-import processing
 
 from qgis import core
 from qgis.core import (
@@ -11,10 +10,6 @@ from qgis.core import (
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterBoolean,
-    QgsProcessingParameterEnum,
-    QgsDistanceArea,
-    QgsCoordinateReferenceSystem,
-    QgsProcessingFeatureSourceDefinition,
     QgsVectorLayerUtils,
     QgsGeometry,
     QgsGeometryUtils,
