@@ -42,10 +42,10 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / "icons" / "genericSymbolA.png"
+        buttonImg = Path(__file__).parent / "icons" / "copiar_texto_sugerido.png"
         self._action = self.createAction(
-            "Copia Texto Sugerido",
-            None,
+            "Copiar Texto Sugerido",
+            buttonImg,
             lambda _: None,
             self.tr(
                 'Copia rótulos sugeridos pelo QGIS na camada ativa para "edicao_texto_generico_l"'
