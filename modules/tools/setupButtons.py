@@ -16,6 +16,7 @@ from .buttons.createRiverLabel import CreateRiverLabel
 from .buttons.drawFlowDirection import DrawFlowDirection
 from .buttons.createBorderLabel import CreateBorderLabel
 from .buttons.addNewLineCharToAttribute import AddNewLineCharToAttribute
+from .buttons.createMasterElevationTextValue import CreateMasterElevationTextValue
 
 
 class SetupButtons:
@@ -43,6 +44,13 @@ class SetupButtons:
             self.toolBar, self.iface, scaleSelector
         )
         cycleLabelPositionButton.setupUi()
+        createMasterElevationTextValueTool = CreateMasterElevationTextValue(
+            iface=self.iface,
+            toolBar=self.toolBar,
+            scaleSelector=scaleSelector,
+            productTypeSelector=productTypeSelector,
+        )
+        createMasterElevationTextValueTool.setupUi()
         alternateTextVisibilityButton = AlternateTextVisibility(
             self.toolBar, self.iface
         )
@@ -85,6 +93,7 @@ class SetupButtons:
                 createRiverLabel,
                 drawFlowDirection,
                 createBorderLabel,
+                createMasterElevationTextValueTool,
             ]
         )
         self.mapToolsActions.extend(
@@ -95,6 +104,7 @@ class SetupButtons:
                 createRiverLabel._action,
                 drawFlowDirection._action,
                 createBorderLabel._action,
+                createMasterElevationTextValueTool._action,
             ]
         )
         self.tools.extend(
@@ -126,9 +136,7 @@ class SetupButtons:
         productTypeSelector.currentIndexChanged.connect(
             lambda idx, compareIdx=[
                 1
-            ], btn=drawFlowDirection._action: self.disableAction(
-                idx, compareIdx, btn
-            )
+            ], btn=drawFlowDirection._action: self.disableAction(idx, compareIdx, btn)
         )
 
     def setupActionGroup(self, *tools):
