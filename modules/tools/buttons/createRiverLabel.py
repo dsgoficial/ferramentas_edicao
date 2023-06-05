@@ -102,6 +102,8 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         color = "#ffffff" if self.productTypeSelector.currentIndex() == 0 else "#00a0df"
         toInsert.setAttribute("cor", color)
         labelSize = self.getLabelFontSize(feat, outsidePolygon=outsidePolygon)
+        if self.productTypeSelector.currentIndex() == 0:
+            labelSize = labelSize if labelSize > 6 else 7
         toInsert.setAttribute("tamanho_txt", labelSize)
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
