@@ -12,28 +12,33 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
     QgsProcessingMultiStepFeedback,
+    QgsProcessingParameterFeatureSource,
 )
 from qgis import core
 import math
 import concurrent.futures
 
 
-class DefinePointSymbolRotation(QgsProcessingAlgorithm):
+class DefineBuildingRotation(QgsProcessingAlgorithm):
 
-    INPUT_POINT = "INPUT_POINT"
-    ONLY_SELECTED = "ONLY_SELECTED"
+    INPUT = "INPUT"
+    ONLY_SELECTED = "ONLU_SELECTED"
     INPUT_MIN_DIST = "INPUT_MIN_DIST"
-    INPUT_LINES = "INPUT_LINES"
-    INPUT_AREAS = "INPUT_AREAS"
     INPUT_FIELD = "INPUT_FIELD"
+    INPUT_ROADS = "INPUT_ROADS"
+    INPUT_RAILWAYS = "INPUT_RAILWAYS"
+    INPUT_DRAINAGES = "INPUT_DRAINAGES"
+    INPUT_WATER_BODIES = "INPUT_WATER_BODIES"
+    INPUT_BUILT_UP_AREAS = "INPUT_BUILT_UP_AREAS"
     OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
-                self.INPUT_POINT,
-                self.tr("Camada ponto"),
+                self.INPUT,
+                self.tr("Edificações"),
                 [QgsProcessing.TypeVectorPoint],
+                defaultValue="constr_edificacao_p",
             )
         )
         self.addParameter(
@@ -41,12 +46,13 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
                 self.ONLY_SELECTED, self.tr("Executar somente nas feições selecionadas")
             )
         )
+
         self.addParameter(
             core.QgsProcessingParameterField(
                 self.INPUT_FIELD,
                 self.tr("Selecionar o atributo de rotação da camada"),
                 type=core.QgsProcessingParameterField.Any,
-                parentLayerParameterName=self.INPUT_POINT,
+                parentLayerParameterName=self.INPUT,
                 allowMultiple=False,
                 defaultValue="simb_rot",
             )
@@ -59,41 +65,81 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
                 minValue=0,
             )
         )
-
         self.addParameter(
-            QgsProcessingParameterMultipleLayers(
-                self.INPUT_LINES,
-                self.tr("Selecionar linhas"),
-                QgsProcessing.TypeVectorLine,
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_ROADS,
+                self.tr("Rodovias"),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue="infra_via_deslocamento_l",
             )
         )
 
         self.addParameter(
-            QgsProcessingParameterMultipleLayers(
-                self.INPUT_AREAS,
-                self.tr("Selecionar áreas"),
-                QgsProcessing.TypeVectorPolygon,
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_RAILWAYS,
+                self.tr("Ferrovias"),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue="infra_ferrovia_l",
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_DRAINAGES,
+                self.tr("Drenagens"),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue="elemnat_trecho_drenagem_l",
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_WATER_BODIES,
+                self.tr("Massas D'água"),
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue="cobter_massa_dagua_a",
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_BUILT_UP_AREAS,
+                self.tr("Áreas Edificadas"),
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue="cobter_area_construida_a",
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_POINT, context)
+        buildingsLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
         rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD, context)[0]
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
-        lineList = self.parameterAsLayerList(parameters, self.INPUT_LINES, context)
-        areaList = self.parameterAsLayerList(parameters, self.INPUT_AREAS, context)
+        self.roadsLyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT_ROADS, context
+        )
+        self.railwaysLyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT_RAILWAYS, context
+        )
+        self.drainagesLyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT_DRAINAGES, context
+        )
+        self.waterBodiesLyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT_WATER_BODIES, context
+        )
+        self.builtUpAreasLyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT_BUILT_UP_AREAS, context
+        )
 
-        featuresToUpdateList = []
         iterator = (
-            pointLayer.getFeatures()
+            buildingsLyr.getFeatures()
             if not onlySelected
-            else pointLayer.getSelectedFeatures()
+            else buildingsLyr.getSelectedFeatures()
         )
         nFeats = (
-            pointLayer.featureCount()
+            buildingsLyr.featureCount()
             if not onlySelected
-            else pointLayer.selectedFeatureCount()
+            else buildingsLyr.selectedFeatureCount()
         )
         if nFeats == 0:
             return {self.OUTPUT: ""}
@@ -109,10 +155,7 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
                 return None, None
             pointGeometry = pointFeature.geometry()
             point = pointGeometry.asMultiPoint()[0]
-            request = self.getFeatureRequestByPoint(pointGeometry, distance)
-            nearestGeometry = self.getNearestGeometry(
-                distance, lineList, areaList, pointGeometry, request
-            )
+            nearestGeometry = self.getNearestGeometry(distance, pointGeometry)
             if not nearestGeometry:
                 return None, None
             projectedPoint = core.QgsGeometryUtils.closestPoint(
@@ -129,8 +172,8 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
 
         multiStepFeedback.setCurrentStep(1)
         multiStepFeedback.setProgressText("Rotacionando símbolos")
-        pointLayer.startEditing()
-        pointLayer.beginEditCommand("Rotacionando simbolos")
+        buildingsLyr.startEditing()
+        buildingsLyr.beginEditCommand("Rotacionando simbolos")
         for current, future in enumerate(concurrent.futures.as_completed(futures)):
             if multiStepFeedback.isCanceled():
                 break
@@ -138,44 +181,53 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
             if pointFeature is None or pointFeature[rotationField] == angle:
                 continue
             pointFeature[rotationField] = angle
-            pointLayer.updateFeature(pointFeature)
+            buildingsLyr.updateFeature(pointFeature)
             multiStepFeedback.setProgress(current * stepSize)
 
-        pointLayer.endEditCommand()
+        buildingsLyr.endEditCommand()
 
         return {self.OUTPUT: ""}
 
-    def getNearestGeometry(self, distance, lineList, areaList, pointGeometry, request):
+    def getNearestGeometry(self, distance, pointGeometry):
         nearestGeometry = None
         shortestDistance = None
+        buffer = pointGeometry.buffer(distance, -1)
+        bbox = buffer.boundingBox()
 
-        for layer in itertools.chain.from_iterable([lineList, areaList]):
-            for feature in layer.getFeatures(request):
-                geometry = feature.geometry()
-                distanceFound = pointGeometry.distance(geometry)
+        for layer in itertools.chain(
+            [
+                self.roadsLyr,
+                self.railwaysLyr,
+                self.drainagesLyr,
+                self.waterBodiesLyr,
+                self.builtUpAreasLyr,
+            ]
+        ):
+            for feature in layer.getFeatures(bbox):
+                geom = feature.geometry()
+                if not geom.intersects(buffer):
+                    continue
+                distanceFound = pointGeometry.distance(geom)
                 if distanceFound > distance:
                     continue
                 elif shortestDistance is None or distanceFound < shortestDistance:
-                    nearestGeometry = geometry
+                    nearestGeometry = geom
                     shortestDistance = distanceFound
+            if shortestDistance is not None:
+                break
         return nearestGeometry
-
-    def getFeatureRequestByPoint(self, geometry, distance, segment=5):
-        return QgsFeatureRequest().setFilterRect(
-            geometry.buffer(distance, segment).boundingBox()
-        )
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
-        return DefinePointSymbolRotation()
+        return DefineBuildingRotation()
 
     def name(self):
-        return "definepointsymbolrotation"
+        return "definebuildingrotation"
 
     def displayName(self):
-        return self.tr("Definir rotação de símbolo")
+        return self.tr("Definir rotação de edificações")
 
     def group(self):
         return self.tr("Edição")
@@ -184,4 +236,6 @@ class DefinePointSymbolRotation(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr(
+            "O algoritmo define a rotação das edificações de acordo com feições da vizinhança, seguindo a seguinte prioridade: rodovias, ferrovias, drenagens, massas dagua e área construída."
+        )

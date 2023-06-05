@@ -36,11 +36,11 @@ class CycleLabelPosition(BaseTools):
     def setupUi(self):
         buttonImg = Path(__file__).parent / "icons" / "Alternar_rotulo.png"
         self._action = self.createAction(
-            "Alternar rótulo",
+            "Alternar rótulo de Ponto Cotado",
             buttonImg,
             self.run,
-            self.tr('Alterna os atributos "label_x" e "label_y"'),
-            self.tr('Alterna os atributos "label_x" e "label_y"'),
+            self.tr('Alterna as âncoras verticais e horizontais da camada "elemnat_ponto_cotado_p"'),
+            self.tr('Alterna as âncoras verticais e horizontais da camada "elemnat_ponto_cotado_p"'),
             self.iface,
         )
         self.toolBar.addAction(self._action)

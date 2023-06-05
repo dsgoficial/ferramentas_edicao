@@ -331,7 +331,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultTrechoDrenagem(self, feature, lyrCrs):
         new_att = {}
         new_att[feature.fieldNameIndex("visivel")] = 1
-        if feature["situacao_em_poligono"] != 4:
+        if feature["situacao_em_poligono"] != 4 or feature["situacao_em_poligono"] != 3:
             new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
 
         if feature["situacao_em_poligono"] in [2, 3]:

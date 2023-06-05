@@ -8,10 +8,12 @@ from .bridgeAndManholeRotation import BridgeAndManholeRotation
 from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .buildElevationDiagram import BuildElevationDiagram
 from .damWidth import DamWidth
-from .definePointSymbolRotation import DefinePointSymbolRotation
+from .defineBuildingRotation import DefineBuildingRotation
+from .defineSpillWaySinkRotation import DefineSpillWaySinkRotation
+from .placeVegetationSymbol import PlaceVegetationSymbol
+from .placeBorderOfHydrigraphicElement import PlaceBorderOfHydrographicElement
 from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
-from .generalizeBuildings import GeneralizeBuildings
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
 from .insertEnergyTower import InsertEnergyTower
 from .insertRoadMarker import InsertRoadMarker
@@ -21,7 +23,6 @@ from .mergeHighway import MergeHighway
 from .mergeLinesByAngle import MergeLinesByAngle
 from .mergeRivers import MergeRivers
 from .orderEditLayersAndAddStyle import OrderEditLayersAndAddStyle
-from .placeAllAreaPointSymbols import PlaceAllAreaPointSymbols
 from .placeHospitalSymbol import PlaceHospitalSymbol
 from .placeMineralExtractionSymbol import PlaceMineralExtractionSymbol
 from .placePointSymbolInsideArea import PlacePointSymbolInsideArea
@@ -63,15 +64,13 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(BridgeAndManholeWidth())
         self.addAlgorithm(BridgeAndManholeRotation())
         self.addAlgorithm(DamWidth())
-        self.addAlgorithm(DefinePointSymbolRotation())
-        self.addAlgorithm(GeneralizeBuildings())
+        self.addAlgorithm(DefineBuildingRotation())
         self.addAlgorithm(RapidsAndWaterfallRotation())
         self.addAlgorithm(PlacePointSymbolInsideArea())
         self.addAlgorithm(PlaceSymbolsOnTopOfAreaBuildings())
         self.addAlgorithm(PlaceHospitalSymbol())
         self.addAlgorithm(PlacePowerPlantSymbol())
         self.addAlgorithm(PlaceMineralExtractionSymbol())
-        self.addAlgorithm(PlaceAllAreaPointSymbols())
         self.addAlgorithm(BuildElevationDiagram())
         self.addAlgorithm(SetSobrepositionOrtho())
         self.addAlgorithm(SetSobrepositionTopo())
@@ -79,6 +78,9 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ChangeAttributeTopo())
         self.addAlgorithm(SizeTextRiverLine())
         self.addAlgorithm(SetCurveOrientation())
+        self.addAlgorithm(DefineSpillWaySinkRotation())
+        self.addAlgorithm(PlaceVegetationSymbol())
+        self.addAlgorithm(PlaceBorderOfHydrographicElement())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
