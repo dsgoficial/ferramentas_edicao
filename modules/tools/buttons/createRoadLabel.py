@@ -33,6 +33,20 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         self.mapCanvas = iface.mapCanvas()
         self.box = ComboBox(self.iface.mainWindow())
         self.canvasClicked.connect(self.mouseClick)
+        self.tipoDict = {
+            2: "Estrada/Rodovia (2)",
+            3: "Caminho carroçável (3)",
+            4: "Auto-estrada (4)",
+            5: "Arruamento (5)",
+            6: "Trilha ou Picada (6)"
+        }
+        self.sitFisicaDict = {
+            1: "Abandonada",
+            3: "Construída",
+            0: "Desconhecida",
+            2: "Destruída",
+            4: "Em construção"
+        }
 
     # User interface, botão e descrição
     def setupUi(self):
@@ -81,8 +95,8 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         if not self.checkFeature(feat) or attr_tipo in (3, 5, 6):
             self.displayErrorMessage(
                 self.tr(
-                    'Feição inválida. {} não recebe "nr_faixas"'
-                .format(attr_tipo))
+                    f'Feição inválida. {self.tipoDict[attr_tipo]} não recebe "nr_faixas"'
+                )
             )
             return
         self.createFeature(feat, pos)
@@ -105,7 +119,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         if feat.attribute("tipo") in (3, 5, 6) :
             return None
         if feat.attribute("situacao_fisica") not in (0, 3):
-            texto_edicao = ('(' + feat.attribute("situacao_fisica") + ')')
+            texto_edicao = (f'(' + self.sitFisicaDict[int(feat.attribute("situacao_fisica"))] + ')')
         else:
             texto_edicao = (feat.attribute("nr_faixas") + ' FAIXAS')
         toInsert.setAttribute("texto_edicao", texto_edicao)
@@ -124,7 +138,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
                         "O campo tamanho_buffer não existe na modelagem em questão. Verifique a modelagem e o tipo de produto selecionado e tente novamente."
                     )
                 )
-                return None, None
+                return None
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
         return toInsert
@@ -180,7 +194,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         ) ** 0.5
         observedLength = end - start
         maxCount = 0
-        while (observedLength / realLength) > 1.2 and maxCount < 10:
+        while (observedLength / realLength) > 0.6 and maxCount < 10:
             start, end = start - self.tolerance, end + self.tolerance
             start = max(start, 0)
             end = min(end, geom.length())
@@ -198,7 +212,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         geom.rotate(90 - angle, firstPoint)
         xVert = [p.x() for p in geom.vertices()]
         yVert = [p.y() for p in geom.vertices()]
-        f = np.poly1d(np.polyfit(xVert, yVert, 2))
+        f = np.poly1d(np.polyfit(xVert, yVert, 1))
         xVert = sorted(xVert)
         newYVert = f(xVert)
         rotatedParabola = QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
@@ -261,10 +275,10 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
                 QgsCoordinateTransformContext(),
             )
             self.tolerance = d.convertLengthMeasurement(
-                self.getScale() * 0.005, QgsUnitTypes.DistanceDegrees
+                self.getScale() * 0.003, QgsUnitTypes.DistanceDegrees
             )
         else:
-            self.tolerance = self.getScale() * 0.005
+            self.tolerance = self.getScale() * 0.003
         self.spatialIndex = QgsSpatialIndex(
             srcLyr[0].getFeatures(), flags = QgsSpatialIndex.FlagStoreFeatureGeometries
         )
