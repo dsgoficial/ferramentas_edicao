@@ -112,7 +112,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         Reimplementation to add a point to the rubber band or reset it
         """
         if self.isEmittingPoint:
-            point = self.snapPoint(e.pos())
+            point = self.toMapCoordinates(e.pos())
             self.rubberBand.addPoint(point, True)
         else:
             self.reset()
@@ -123,7 +123,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         """
         Reimplementation to add a vertex to the rubber band or to finish the rubber band according to the button used
         """
-        point = self.snapPoint(e.pos())
+        point = self.toMapCoordinates(e.pos())
         if e.button() == Qt.RightButton:
             geom = self.rubberBand.asGeometry()
             self.reset()
@@ -140,7 +140,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         if not self.isEmittingPoint:
             return
 
-        point = self.snapPoint(e.pos())
+        point = self.toMapCoordinates(e.pos())
         self.rubberBand.movePoint(point)
 
     def keyPressEvent(self, event):
@@ -151,16 +151,11 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         self.cancelEdition()
         event.ignore()
 
-    def snapPoint(self, p):
+    def toMapCoordinates(self, p):
         """
         Reimplementation to make use of the snap
         """
-        m = self.canvas.snappingUtils().snapToMap(p)
-        return (
-            m.point()
-            if m.isValid()
-            else self.canvas.getCoordinateTransform().toMapCoordinates(p)
-        )
+        return self.canvas.getCoordinateTransform().toMapCoordinates(p)
 
     @pyqtSlot(QgsGeometry)
     def updateLayer(self, geom):
