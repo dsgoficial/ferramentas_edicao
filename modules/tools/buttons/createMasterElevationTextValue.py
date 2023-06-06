@@ -61,7 +61,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         self.rubberBand = None
         self.reset()
         self.lineCreated.connect(self.updateLayer)
-        self.avgLetterSizeInDegrees = 0.0004
+        self.avgLetterSizeInDegrees = 0.0006
 
     def setupUi(self):
         buttonImg = Path(__file__).parent / "icons" / "texto_de_cota_mestra.png"
@@ -69,8 +69,8 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
             "Fixa texto de cota mestra",
             buttonImg,
             lambda _: None,
-            self.tr('Cria feições em "edicao_texto_generico_l" de cotas mestras'),
-            self.tr('Cria feições em "edicao_texto_generico_l" de cotas mestras'),
+            self.tr('Cria feições em "edicao_simb_cota_mestra_l" de cotas mestras'),
+            self.tr('Cria feições em "edicao_simb_cota_mestra_l" de cotas mestras'),
             self.iface,
         )
         self._action.setCheckable(True)
@@ -203,13 +203,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         genericTextLyr.startEditing()
         contourLyr.beginEditCommand("Atualizando campo texto_edicao de curvas de nivel")
         genericTextLyr.beginEditCommand("Criando novas feições")
-        layerConfig = None
         for contourFeat, intersectionPoint in tupleList:
-            layerConfig = (
-                self.getLabelConfigFromLyr(contourFeat)
-                if layerConfig is None
-                else layerConfig
-            )
             contourGeom = contourFeat.geometry()
             if isinstance(intersectionPoint, QgsPoint):
                 self.createGenericFeatAndUpdateContourFeat(
@@ -218,7 +212,6 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
                         QgsPointXY(intersectionPoint)
                     ),
                     contourGeom=contourGeom,
-                    layerConfig=layerConfig,
                 )
                 continue
             for part in intersectionPoint.parts():
@@ -226,21 +219,20 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
                     contourFeat=contourFeat,
                     intersectionPoint=QgsGeometry.fromPointXY(QgsPointXY(part)),
                     contourGeom=contourGeom,
-                    layerConfig=layerConfig,
                 )
 
         contourLyr.endEditCommand()
         genericTextLyr.endEditCommand()
 
     def createGenericFeatAndUpdateContourFeat(
-        self, contourFeat, intersectionPoint, contourGeom, layerConfig
+        self, contourFeat, intersectionPoint, contourGeom
     ):
         contourText = str(contourFeat["cota"])
         bufferSize = self.getBufferSize(contourText, self.contourLyr)
         buffer = intersectionPoint.buffer(bufferSize, -1)
         intersectionFromBuffer = contourGeom.intersection(buffer)
         newFeat = self.createGenericTextFeature(
-            geom=intersectionFromBuffer, text=contourText, layerConfig=layerConfig
+            geom=intersectionFromBuffer, text=contourText
         )
         self.genericTextLyr.addFeature(newFeat)
         contourFeat["texto_edicao"] = None
@@ -255,81 +247,11 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         )
         return len(contourText) * avgLetterSizeInMeters
 
-    def createGenericTextFeature(self, geom, text, layerConfig):
+    def createGenericTextFeature(self, geom, text):
         newFeat = QgsFeature(self.genericTextLyr.fields())
-        newFeat.setAttribute("texto_edicao", text)
-        newFeat.setAttribute("estilo_fonte", layerConfig["estilo_fonte"])
-        newFeat.setAttribute("tamanho_txt", layerConfig["tamanho_txt"])
-        newFeat.setAttribute("cor", layerConfig["cor"])
+        newFeat["texto_edicao"] = text
         newFeat.setGeometry(geom)
         return newFeat
-
-    def getAcceptedRule(self, baseLabelRule, context, configs):
-        if isinstance(baseLabelRule, list):
-            for childLabelRule in baseLabelRule:
-                rule_expresion = QgsExpression(childLabelRule.filterExpression())
-                if not rule_expresion.evaluate(context):
-                    continue
-                self.getAcceptedRule(childLabelRule, context, configs)
-        else:
-            n_children = len(baseLabelRule.children())
-            if n_children != 0:
-                for childLabelRule in baseLabelRule.children():
-                    rule_expresion = QgsExpression(childLabelRule.filterExpression())
-                    if not (
-                        rule_expresion.evaluate(context)
-                        or rule_expresion.expression() == ""
-                    ):
-                        continue
-                    self.getAcceptedRule(childLabelRule, context, configs)
-                return
-            rule_expresion = QgsExpression(baseLabelRule.filterExpression())
-            if not (
-                rule_expresion.evaluate(context) or rule_expresion.expression() == ""
-            ):
-                return
-            rule_settings = baseLabelRule.settings()
-            if rule_settings is None:
-                return
-            config = {}
-            config["found"] = True
-            textFormat = rule_settings.format()
-            textFont = textFormat.font()
-
-            # Obtendo os parâmetros
-            config["estilo_fonte"] = textFormat.namedStyle()
-            config["tamanho_txt"] = textFormat.size()
-            config["cor"] = textFormat.color().name()
-            config["cor_buffer"] = textFormat.buffer().color().name()
-            config["tamanho_buffer"] = textFormat.buffer().size()
-            config["letterSpacing"] = textFont.letterSpacing()
-            config["wordSpacing"] = textFont.wordSpacing()
-
-            # Get custom values
-            checkExpressionProperties = {"tamanho_txt": QgsPalLayerSettings.Size}
-            for attr, prop in checkExpressionProperties.items():
-                if prop not in rule_settings.dataDefinedProperties().propertyKeys():
-                    continue
-                if not rule_settings.dataDefinedProperties().property(prop).isActive():
-                    continue
-                prop_expression = QgsExpression(
-                    rule_settings.dataDefinedProperties().property(prop).asExpression()
-                )
-                prop_value = prop_expression.evaluate(context)
-                if prop_value is None:
-                    continue
-                config[attr] = prop_expression.evaluate(context)
-            configs.append(config)
-
-    def getLabelConfigFromLyr(self, feat):
-        context = QgsExpressionContext()
-        scope = QgsExpressionContextScope()
-        context.appendScope(scope)
-        scope.setFeature(feat)
-        labeling = self.contourLyr.labeling()
-        configs = []
-        self.getAcceptedRule(labeling.rootRule(), context, configs)
-        return {"found": False} if len(configs) != 1 else configs[0]
 
     def convertLength(self, lyr, measure):
         convertLength = QgsDistanceArea()
@@ -345,10 +267,10 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
                 self.tr('Camada "elemnat_curva_nivel_l" não encontrada')
             )
             return None
-        genericTextLyr = self.getLyrByName("edicao_texto_generico_l")
+        genericTextLyr = self.getLyrByName("edicao_simb_cota_mestra_l")
         if genericTextLyr is None:
             self.displayErrorMessage(
-                self.tr('Camada "edicao_texto_generico_l" não encontrada')
+                self.tr('Camada "edicao_simb_cota_mestra_l" não encontrada')
             )
             return None
         self.contourLyr = contourLyr
