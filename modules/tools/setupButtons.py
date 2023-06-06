@@ -17,6 +17,7 @@ from .buttons.drawFlowDirection import DrawFlowDirection
 from .buttons.createBorderLabel import CreateBorderLabel
 from .buttons.addNewLineCharToAttribute import AddNewLineCharToAttribute
 from .buttons.createMasterElevationTextValue import CreateMasterElevationTextValue
+from .buttons.createRoadLabel import CreateRoadLabel
 
 
 class SetupButtons:
@@ -85,6 +86,10 @@ class SetupButtons:
             self.iface, self.toolBar, scaleSelector, productTypeSelector
         )
         createBorderLabel.setupUi()
+        createRoadLabel = CreateRoadLabel(
+            self.iface, self.toolBar, scaleSelector, productTypeSelector
+        )
+        createRoadLabel.setupUi()
         self.mapTools.extend(
             [
                 createVegetationSymbol,
@@ -94,6 +99,7 @@ class SetupButtons:
                 drawFlowDirection,
                 createBorderLabel,
                 createMasterElevationTextValueTool,
+                createRoadLabel,
             ]
         )
         self.mapToolsActions.extend(
@@ -105,6 +111,7 @@ class SetupButtons:
                 drawFlowDirection._action,
                 createBorderLabel._action,
                 createMasterElevationTextValueTool._action,
+                createRoadLabel._action,
             ]
         )
         self.tools.extend(
@@ -123,6 +130,7 @@ class SetupButtons:
                 drawFlowDirection,
                 createBorderLabel,
                 addNewLineButton,
+                createRoadLabel,
             ]
         )
         self.actionGroup = self.setupActionGroup(*self.mapTools)
