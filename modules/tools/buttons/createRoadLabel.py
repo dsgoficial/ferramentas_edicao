@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from math import sqrt
 from pathlib import Path
 import numpy as np
 
@@ -13,7 +14,6 @@ from qgis.core import (
     QgsProject,
     QgsSpatialIndex,
     QgsUnitTypes,
-    QgsPointXY,
 )
 from qgis.gui import QgsMapToolEmitPoint
 
@@ -47,6 +47,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
             2: "Destruída",
             4: "Em construção"
         }
+        self.avgLetterSizeInDegrees = 0.0006
 
     # User interface, botão e descrição
     def setupUi(self):
@@ -150,6 +151,13 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         return convertLength.convertLengthMeasurement(
             measure, QgsUnitTypes.DistanceMeters
         )
+    
+    def convertLengthToDegrees(self, d):
+        convertLength = QgsDistanceArea()
+        convertLength.setEllipsoid(self.lyrCrs.authid())
+        return convertLength.convertLengthMeasurement(
+            d, QgsUnitTypes.DistanceDegrees
+        )
 
     @staticmethod
     def checkFeature(feat):
@@ -158,86 +166,32 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
         texto = str(feat.attribute("nr_faixas")) + ' FAIXAS'
-        interpolateSize = labelSize * len(texto) * self.tolerance / 20
-        clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
-        posClosestV = geom.lineLocatePoint(clickPosGeom)
-        start = posClosestV - interpolateSize / 2
-        end = posClosestV + interpolateSize / 2
-        if interpolateSize > geom.length():
-            toExtend = interpolateSize - geom.length()
-            geom = geom.extendLine(toExtend / 2, toExtend / 2)
-        elif posClosestV + interpolateSize / 2 > geom.length():
-            diff = (posClosestV + interpolateSize / 2) - geom.length()
-            geom = geom.extendLine(0, diff)
-            end = geom.length()
-        elif posClosestV - interpolateSize / 2 < 0:
-            diff = interpolateSize / 2 - posClosestV
-            geom = geom.extendLine(diff, 0)
-            start = 0
-            end += diff
-        closestV = geom.interpolate(posClosestV)
-        start, end = self.adjustGeomLength(geom, start, end)
-        toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
-        toInsertGeom = self.polynomialFit(toInsertGeom)
-        toInsertGeom.translate(
-            *self.getTransformParams(toInsertGeom, closestV, clickPos)
-        )
+        bufferSize = self.getBufferSize(texto)
+        clickedPositionGeom = QgsGeometry.fromWkt(clickPos.asWkt())
+        locatedDistance = geom.lineLocatePoint(clickedPositionGeom)
+        projectedPointOnLineGeom = geom.interpolate(locatedDistance) 
+        buffer = projectedPointOnLineGeom.buffer(bufferSize, -1)
+        toInsertGeom = geom.intersection(buffer)
+        d = self.getRoadLabelDisplacement(feat)
+        dx, dy = self.getTranslate(d, clickedPositionGeom, projectedPointOnLineGeom)
+        toInsertGeom.translate(dx, dy)
         return toInsertGeom
+    
+    def getBufferSize(self, text):
+        crs = self.srcLyr.crs()
+        if crs.isGeographic():
+            return len(text) * self.avgLetterSizeInDegrees
+        avgLetterSizeInMeters = self.convertLength(
+            self.srcLyr, self.avgLetterSizeInDegrees
+        )
+        return len(text) * avgLetterSizeInMeters
 
-    def adjustGeomLength(self, geom, start, end):
-        if not (geom.interpolate(start) and geom.interpolate(end)):
-            return start, end
-        firstV = geom.interpolate(start).asPoint()
-        lastV = geom.interpolate(end).asPoint()
-        realLength = (
-            (firstV.x() - lastV.x()) ** 2 + (firstV.y() - lastV.y()) ** 2
-        ) ** 0.5
-        observedLength = end - start
-        maxCount = 0
-        while (observedLength / realLength) > 0.6 and maxCount < 10:
-            start, end = start - self.tolerance, end + self.tolerance
-            start = max(start, 0)
-            end = min(end, geom.length())
-            firstV = geom.interpolate(start).asPoint()
-            lastV = geom.interpolate(end).asPoint()
-            realLength = (
-                (firstV.x() - lastV.x()) ** 2 + (firstV.y() - lastV.y()) ** 2
-            ) ** 0.5
-            maxCount += 1
-        return start, end
-
-    def polynomialFit(self, geom):
-        orientedGeom, area, angle, w, h = geom.orientedMinimumBoundingBox()
-        firstPoint = QgsPointXY(geom.vertexAt(0))
-        geom.rotate(90 - angle, firstPoint)
-        xVert = [p.x() for p in geom.vertices()]
-        yVert = [p.y() for p in geom.vertices()]
-        f = np.poly1d(np.polyfit(xVert, yVert, 1))
-        xVert = sorted(xVert)
-        newYVert = f(xVert)
-        rotatedParabola = QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
-        rotatedParabola.rotate(270 + angle, firstPoint)
-        rotatedParabola = rotatedParabola.simplify(self.tolerance / 10)
-        return rotatedParabola
-
-    def getTransformParams(self, toInsertGeom, ref, clickPos):
-        ref = ref.asPoint()
-        centroid = toInsertGeom.centroid().asPoint()
-        dx = clickPos.x() - centroid.x()
-        dy = clickPos.y() - centroid.y()
-        xRefTranslate = clickPos.x() - ref.x()
-        yRefTranslate = clickPos.y() - ref.y()
-        xRefTranslate, yRefTranslate = self.scaleTransform(xRefTranslate, yRefTranslate)
-        xCentroidTranslate, yCentroidTranslate = self.scaleTransform(dx, dy)
-        return (xRefTranslate + xCentroidTranslate) / 2, (
-            yRefTranslate + yCentroidTranslate
-        ) / 2
-
-    def scaleTransform(self, x, y):
-        d = self.tolerance
-        # scaleFactor = 1
-        scaleFactor = (d**2 / ((x**2 + y**2))) ** 0.5
-        return scaleFactor * x, scaleFactor * y
+    
+    def getTranslate(self, d, clickedPositionGeom, projectedPointOnLineGeom):
+        xp, yp = projectedPointOnLineGeom.asPoint()
+        xc, yc = clickedPositionGeom.asPoint()
+        norm = sqrt((xp-xc)**2 + (yp-yc)**2)
+        return d*(xc-xp)/norm, d*(yc-yp)/norm
 
     def buildLineFromGeomDist(self, start, end, geom):
         xCoords, yCoords = [], []
@@ -283,3 +237,15 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
             srcLyr[0].getFeatures(), flags = QgsSpatialIndex.FlagStoreFeatureGeometries
         )
         return True
+
+    def getRoadLabelDisplacement(self, feat):
+        d_in_meters = 0.5e-3
+        if feat["visivel"] == 1 and feat["tipo"] in (2,4) and feat["situacao_fisica"] in (0,3) and feat["canteiro_divisorio"] ==  1 and feat["jurisdicao"] not in (2,0):
+            d_in_meters += 1.25e-3
+        # if "visivel" == 1 and "tipo" in (2,4) and "situacao_fisica" in (0,3) and "revestimento" != 3 and "trafego" == 1 and "jurisdicao" in (1) and ( "nr_faixas" in (2,3) or "nr_faixas" is None):
+        if feat["visivel"] == 1 and feat["tipo"] in (2,4) and feat["situacao_fisica"] in (0,3) and feat["revestimento"] != 3 and feat["trafego"] == 1 and feat["jurisdicao"] in (1,) and feat["nr_faixas"] >= 4:
+            d_in_meters += 1.25e-3
+        return d_in_meters if not self.srcLyr.crs().isGeographic() \
+            else self.convertLengthToDegrees(
+                d_in_meters
+            )
