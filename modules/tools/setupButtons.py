@@ -12,6 +12,7 @@ from .buttons.alternateTextVisibility import AlternateTextVisibility
 from .buttons.createVegetationSymbol import CreateVegetationSymbol
 from .buttons.createRoadIdentifierSymbol import CreateRoadIdentifierSymbol
 from .buttons.createLakeLabel import CreateLakeLabel
+from .buttons.copySugestedLabel import CopySugestedLabel
 from .buttons.createRiverLabel import CreateRiverLabel
 from .buttons.drawFlowDirection import DrawFlowDirection
 from .buttons.createBorderLabel import CreateBorderLabel
@@ -39,6 +40,8 @@ class SetupButtons:
         cycleVisibilityButton.setupUi()
         cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
         cycleTextJustificationButton.setupUi()
+        copySugestedLabelButton = CopySugestedLabel(self.iface, self.toolBar, productTypeSelector, scaleSelector)
+        copySugestedLabelButton.setupUi()
         copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
         copyToGenericLabelButton.setupUi()
         cycleLabelPositionButton = CycleLabelPosition(
@@ -95,6 +98,7 @@ class SetupButtons:
                 createVegetationSymbol,
                 createRoadIdentifierSymbol,
                 createLakeLabel,
+                copySugestedLabelButton,
                 createRiverLabel,
                 drawFlowDirection,
                 createBorderLabel,
@@ -107,6 +111,7 @@ class SetupButtons:
                 createVegetationSymbol._action,
                 createRoadIdentifierSymbol._action,
                 createLakeLabel._action,
+                copySugestedLabelButton._action,
                 createRiverLabel._action,
                 drawFlowDirection._action,
                 createBorderLabel._action,
@@ -126,6 +131,7 @@ class SetupButtons:
                 createVegetationSymbol,
                 createRoadIdentifierSymbol,
                 createLakeLabel,
+                copySugestedLabelButton,
                 createRiverLabel,
                 drawFlowDirection,
                 createBorderLabel,

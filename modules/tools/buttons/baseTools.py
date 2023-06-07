@@ -54,3 +54,6 @@ class BaseTools:
     @staticmethod
     def tr(message):
         return QCoreApplication.translate("FerramentasEdicao", message)
+    
+    def unsetTool(self):
+        return None

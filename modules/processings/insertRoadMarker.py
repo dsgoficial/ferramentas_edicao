@@ -133,8 +133,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                     layer_marker, pointsAndAnglesN, n + 1
                 )
                 distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
-
-        self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
+                self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
 
         return {self.OUTPUT: ""}
 
