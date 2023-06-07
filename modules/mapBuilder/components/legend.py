@@ -141,7 +141,7 @@ class Legend:
     @staticmethod
     def getAnchor(scale):
         if str(scale) == "250":
-            return 6, 266
+            return 6, 283
         return 723, 14
 
     def build(

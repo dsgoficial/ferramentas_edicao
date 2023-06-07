@@ -186,13 +186,13 @@ class ConfigDefaults:
                     "classified": {"x_0": 7, "y_0": 180, "width": 120, "height": 20},
                     "project": {
                         "x_0": 721,
-                        "y_0": 482,
+                        "y_0": 478.56,
                         "width": 110,
                         "height": 70,
                     },
                     "reproductionRights": {
                         "x_0": 721,
-                        "y_0": 561,
+                        "y_0": 552,
                         "width": 110,
                         "height": 20,
                     },
@@ -302,13 +302,13 @@ class ConfigDefaults:
                     },
                     "project": {
                         "x_0": 721,
-                        "y_0": 482,
+                        "y_0": 478.56,
                         "width": 110,
                         "height": 70,
                     },
                     "reproductionRights": {
                         "x_0": 721,
-                        "y_0": 561,
+                        "y_0": 552,
                         "width": 110,
                         "height": 20,
                     },
