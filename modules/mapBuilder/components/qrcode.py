@@ -13,6 +13,7 @@ bdgexLayersIdMap = {
     "carta_topografica_100": "897",
     "carta_topografica_250": "870",
     "carta_ortoimagem_250": "997",
+    "carta_ortoimagem_100": "998",
     "carta_ortoimagem_50": "876",
     "carta_ortoimagem_25": "912",
 }
