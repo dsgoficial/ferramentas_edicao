@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 from math import sqrt
 from pathlib import Path
-import numpy as np
-
+from .baseTools import BaseTools
+from .utils.comboBox import ComboBox
+from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
@@ -15,11 +15,6 @@ from qgis.core import (
     QgsSpatialIndex,
     QgsUnitTypes,
 )
-from qgis.gui import QgsMapToolEmitPoint
-
-from .baseTools import BaseTools
-from .utils.comboBox import ComboBox
-
 
 class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
     # Construtor da classe
@@ -88,7 +83,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         if not self.checkFeature(feat) or int(attr) <= 2:
             self.displayErrorMessage(
                 self.tr(
-                    'Feição inválida. Verifique o "nr_faixas" na camada "elemnat_trecho_drenagem_l"'
+                    'Feição inválida. Verifique o "nr_faixas" na camada "elemnat_via_deslocamento_l"'
                 )
             )
             return
@@ -143,10 +138,12 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
         return toInsert
+    
 
+    # Converter distâncias, graus para metros e metros para grau
     def convertLength(self, feat):
         convertLength = QgsDistanceArea()
-        convertLength.setEllipsoid(self.lyrCrs.authid())
+        convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         measure = convertLength.measureLength(feat.geometry())
         return convertLength.convertLengthMeasurement(
             measure, QgsUnitTypes.DistanceMeters
@@ -154,15 +151,18 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
     
     def convertLengthToDegrees(self, d):
         convertLength = QgsDistanceArea()
-        convertLength.setEllipsoid(self.lyrCrs.authid())
+        convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         return convertLength.convertLengthMeasurement(
             d, QgsUnitTypes.DistanceDegrees
         )
 
+    # Verificar se existe o atributo "nr_faixas"
     @staticmethod
     def checkFeature(feat):
         return not not feat.attribute("nr_faixas")
+    
 
+    # Posicionar o texto em edicao_texto_generico_l
     def getLabelGeometry(self, feat, clickPos, labelSize):
         geom = feat.geometry()
         texto = str(feat.attribute("nr_faixas")) + ' FAIXAS'
@@ -177,6 +177,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         toInsertGeom.translate(dx, dy)
         return toInsertGeom
     
+    # Tamanho do buffer para recorte da feição
     def getBufferSize(self, text):
         crs = self.srcLyr.crs()
         if crs.isGeographic():
@@ -185,7 +186,6 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
             self.srcLyr, self.avgLetterSizeInDegrees
         )
         return len(text) * avgLetterSizeInMeters
-
     
     def getTranslate(self, d, clickedPositionGeom, projectedPointOnLineGeom):
         xp, yp = projectedPointOnLineGeom.asPoint()
@@ -239,13 +239,40 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         return True
 
     def getRoadLabelDisplacement(self, feat):
-        d_in_meters = 0.5e-3
-        if feat["visivel"] == 1 and feat["tipo"] in (2,4) and feat["situacao_fisica"] in (0,3) and feat["canteiro_divisorio"] ==  1 and feat["jurisdicao"] not in (2,0):
-            d_in_meters += 1.25e-3
-        # if "visivel" == 1 and "tipo" in (2,4) and "situacao_fisica" in (0,3) and "revestimento" != 3 and "trafego" == 1 and "jurisdicao" in (1) and ( "nr_faixas" in (2,3) or "nr_faixas" is None):
-        if feat["visivel"] == 1 and feat["tipo"] in (2,4) and feat["situacao_fisica"] in (0,3) and feat["revestimento"] != 3 and feat["trafego"] == 1 and feat["jurisdicao"] in (1,) and feat["nr_faixas"] >= 4:
-            d_in_meters += 1.25e-3
-        return d_in_meters if not self.srcLyr.crs().isGeographic() \
+        d_in_meters = 1.0e-3
+        # Todos os casos de rodovias previstos na simbologia da MTM (Obs: nr_faixas = 3 vai ser rotulado)
+        if feat["visivel"] == 1 and feat["tipo"] in (2, 4) and feat["situacao_fisica"] in (0, 3) and feat["canteiro_divisorio"] == 1:
+            if feat["jurisdicao"] not in (2, 0):
+                d_in_meters += 1.25e-3 # L11302A
+            if feat["revestimento"] == 3 and feat["jurisdicao"] in (2, 0):
+                d_in_meters += 1.25e-3 # L11302_Est_Pav_Cant_Div
+        if feat["visivel"] == 1 and feat["tipo"] in (2, 4) and feat["situacao_fisica"] in (0, 3) and feat["canteiro_divisorio"] == 2 and feat["revestimento"] == 3:
+            if feat["jurisdicao"] == 1 and int(feat["nr_faixas"]) >= 3:
+                d_in_meters += 0.9e-3 # L11302B
+            if feat["jurisdicao"] == 1 and (feat["nr_faixas"] in (2, 3) or feat["nr_faixas"] is None):
+                d_in_meters += 0.7e-3 # L11302C
+            if feat["jurisdicao"] in (0, 2) and int(feat["nr_faixas"]) >= 3:
+                d_in_meters += 0.9e-3 # L11302E
+            if feat["jurisdicao"] in (0, 2) and (feat["nr_faixas"] in (2, 3) or feat["nr_faixas"] is None):
+                d_in_meters += 0.7e-3 # L11302F
+        if feat["visivel"] == 1 and feat["tipo"] in (2, 4) and feat["situacao_fisica"] in (0, 3) and feat["revestimento"] != 3 and feat["trafego"] == 1:
+            if feat["jurisdicao"] == 1 and int(feat["nr_faixas"]) >= 4:
+                d_in_meters += 0.9e-3 # L11302H
+            if feat["jurisdicao"] == 1 and (feat["nr_faixas"] in (2, 3) or feat["nr_faixas"] is None):
+                d_in_meters += 0.7e-3 # L11302I
+            if feat["jurisdicao"] in (0, 2) and int(feat["nr_faixas"]) >= 4:
+                d_in_meters += 0.9e-3 # L11302K
+            if feat["jurisdicao"] in (0, 2) and (feat["nr_faixas"] in (2, 3) or feat["nr_faixas"] is None):
+                d_in_meters += 0.7e-3 # L11302L
+        if feat["visivel"] == 1 and feat["tipo"] in (2, 4) and feat["situacao_fisica"] in (0, 3) and feat["revestimento"] != 3 and feat["trafego"] != 1:
+            d_in_meters += 0.5e-3 # L11302N
+        if feat["visivel"] == 1 and feat["tipo"] in (2, 4) and feat["situacao_fisica"] not in (0, 3):
+            if feat["canteiro_divisorio"] == 1:
+                d_in_meters += 1.1e-3 #L11302O
+            if feat["canteiro_divisorio"] == 2:
+                d_in_meters += 0.7e-3 #L11302P
+        d_scale = d_in_meters*self.getScale()
+        return d_scale if not self.srcLyr.crs().isGeographic() \
             else self.convertLengthToDegrees(
-                d_in_meters
+                d_scale
             )
