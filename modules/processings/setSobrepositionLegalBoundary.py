@@ -83,7 +83,11 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
         line_layer_diff = self.runDifference(layer_lim, moldura_linha)
         layer_lim.startEditing()
         layer_lim.beginEditCommand("Iniciando edição.")
+        # Realiza o Intersect e o Difference
         intersect = self.runIntersect(line_layer_diff, merged)
+        difference = self.runDifference(line_layer_diff, merged)
+        # Deleta as feições iniciais para substituição pelas intersect.
+        layer_lim.deleteFeatures([feat.id() for feat in layer_lim.getFeatures()])
         for feature in intersect.getFeatures():
             feat = QgsFeature(layer_lim.fields())
             feat["sobreposto"] = 1
@@ -93,7 +97,6 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
             feat["nome"] = feature["nome"]
             feat["exibir_rotulo_aproximado"] = 1
             layer_lim.addFeature(feat)
-        difference = self.runDifference(line_layer_diff, merged)
         for feature in difference.getFeatures():
             feat = QgsFeature(layer_lim.fields())
             feat["sobreposto"] = 2
