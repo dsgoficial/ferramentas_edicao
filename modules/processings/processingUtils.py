@@ -87,7 +87,7 @@ class ProcessingUtils:
         """return label font size based on feature area according to MTM"""
         if lyrCrs.isGeographic():
             convertArea = QgsDistanceArea()
-            convertArea.setEllipsoid(lyrCrs.authid())
+            convertArea.setEllipsoid(lyrCrs.ellipsoidAcronym())
             measure = convertArea.measureArea(feat.geometry())
             area = convertArea.convertAreaMeasurement(
                 measure, QgsUnitTypes.AreaSquareMeters
@@ -120,7 +120,7 @@ class ProcessingUtils:
         """return label font size based on feature length and type (outside water polygon, 'situacao_em_poligono' == 1) according to MTM"""
         if lyrCrs.isGeographic():
             convertLength = QgsDistanceArea()
-            convertLength.setEllipsoid(lyrCrs.authid())
+            convertLength.setEllipsoid(lyrCrs.ellipsoidAcronym())
             measure = convertLength.measureLength(feat.geometry())
             length = convertLength.convertLengthMeasurement(
                 measure, QgsUnitTypes.DistanceMeters
@@ -143,7 +143,7 @@ class ProcessingUtils:
         """return label font size based on feature length and type (inside water polygon, 'situacao_em_poligono' == 2,3) according to MTM"""
         if lyrCrs.isGeographic():
             convertLength = QgsDistanceArea()
-            convertLength.setEllipsoid(lyrCrs.authid())
+            convertLength.setEllipsoid(lyrCrs.ellipsoidAcronym())
             measure = convertLength.measureLength(feat.geometry())
             length = convertLength.convertLengthMeasurement(
                 measure, QgsUnitTypes.DistanceMeters
@@ -172,7 +172,7 @@ class ProcessingUtils:
         """return label font size based on feature area according to MTM"""
         if lyrCrs.isGeographic():
             convertArea = QgsDistanceArea()
-            convertArea.setEllipsoid(lyrCrs.authid())
+            convertArea.setEllipsoid(lyrCrs.ellipsoidAcronym())
             measure = convertArea.measureArea(feat.geometry())
             area = convertArea.convertAreaMeasurement(
                 measure, QgsUnitTypes.AreaSquareMeters

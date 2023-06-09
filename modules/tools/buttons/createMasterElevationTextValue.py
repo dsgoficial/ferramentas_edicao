@@ -250,7 +250,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
 
     def convertLength(self, lyr, measure):
         convertLength = QgsDistanceArea()
-        convertLength.setEllipsoid(lyr.authid())
+        convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         return convertLength.convertLengthMeasurement(
             measure, QgsUnitTypes.DistanceMeters
         )

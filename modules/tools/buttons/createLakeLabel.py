@@ -109,7 +109,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
         scaleComparator = (scale / 1000) ** 2
         if self.lyrCrs.isGeographic():
             convertArea = QgsDistanceArea()
-            convertArea.setEllipsoid(self.lyrCrs.authid())
+            convertArea.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
             measure = convertArea.measureArea(feat.geometry())
             area = convertArea.convertAreaMeasurement(
                 measure, QgsUnitTypes.AreaSquareMeters

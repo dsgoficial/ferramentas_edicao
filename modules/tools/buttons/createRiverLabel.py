@@ -133,7 +133,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
 
     def convertLength(self, feat):
         convertLength = QgsDistanceArea()
-        convertLength.setEllipsoid(self.lyrCrs.authid())
+        convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         measure = convertLength.measureLength(feat.geometry())
         return convertLength.convertLengthMeasurement(
             measure, QgsUnitTypes.DistanceMeters
