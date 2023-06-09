@@ -256,6 +256,8 @@ class MapBuilderUtils:
             )
             if found := expression.findall(rasterUri):
                 return QgsRasterLayer(rasterUri, found[0], "wms")
+        elif "GetCapabilities" in rasterUri:
+            return QgsRasterLayer(rasterUri, "servico_wms", "wms")
         else:
             rasterPath = Path(rasterUri)
             return QgsRasterLayer(str(rasterPath), rasterPath.stem)
