@@ -141,6 +141,12 @@ data_structure = {
             "type": dict,
             "children": [
                 {
+                    "key": "data_criacao",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+                {
                     "key": "pec_planimetrico",
                     "type": str,
                     "children": None,
@@ -294,6 +300,12 @@ data_structure = {
             "type": dict,
             "children": [
                 {
+                    "key": "data_criacao",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+                {
                     "key": "pec_planimetrico",
                     "type": str,
                     "children": None,
@@ -395,6 +407,12 @@ data_structure = {
             "key": "info_tecnica",
             "type": dict,
             "children": [
+                {
+                    "key": "data_criacao",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
                 {
                     "key": "pec_planimetrico",
                     "type": str,
@@ -588,6 +606,12 @@ data_structure = {
             "type": dict,
             "children": [
                 {
+                    "key": "data_criacao",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+                {
                     "key": "pec_planimetrico",
                     "type": str,
                     "children": None,
@@ -740,6 +764,12 @@ data_structure = {
             "key": "info_tecnica",
             "type": dict,
             "children": [
+                {
+                    "key": "data_criacao",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
                 {
                     "key": "pec_planimetrico",
                     "type": str,

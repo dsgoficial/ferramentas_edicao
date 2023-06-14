@@ -90,34 +90,6 @@ class Table(IComponent, ComponentUtils):
             str_etapas = "\n".join(rows)
 
             # Dados ultima edicao
-            now = datetime.datetime.now()
-            dia = str(now.day)
-            meses_pt = {
-                1: "janeiro",
-                2: "fevereiro",
-                3: "março",
-                4: "abril",
-                5: "maio",
-                6: "junho",
-                7: "julho",
-                8: "agosto",
-                9: "setembro",
-                10: "outubro",
-                11: "novembro",
-                12: "dezembro",
-            }
-            mes = meses_pt[now.month]
-            ano = str(now.year)
-
-            dados_data = {
-                "{dia}": dia,
-                "{mes}": mes,
-                "{ano}": ano,
-                "{etapas}": str_etapas,
-            }
-
-            edited = self.replaceStr(base_html, dados_data)
-            label_tabela_etapas.setText(edited)
 
     def customSensores(self, composition: QgsPrintLayout, sensors: dict):
         if layoutItem := composition.itemById("label_tabela_info_ortoimagem"):
@@ -247,21 +219,19 @@ class Table(IComponent, ComponentUtils):
                     {"class": "left", "rowspan": nContourInTable},
                     "Equidistância das curvas de nível",
                 )
+                texto_equidistancia = f"Mestra: {curveData[2]} m; Normal: {curveData[1]} m"
                 if displayAuxContour == 1:
-                    _ = self.generateElement(
-                        _tmp,
-                        "td",
-                        {"class": "right"},
-                        f"Auxiliar: {curveData[0]} metros",
-                    )
-                    _tmp = self.generateElement(firstTable, "tr")
+                    texto_equidistancia += f"; Auxiliar:  {curveData[0]} m"
                 _ = self.generateElement(
-                    _tmp, "td", {"class": "right"}, f"Normal: {curveData[1]} metros"
+                    _tmp, "td", {"class": "right"}, texto_equidistancia
                 )
                 _tmp = self.generateElement(firstTable, "tr")
-                _ = self.generateElement(
-                    _tmp, "td", {"class": "right"}, f"Mestra: {curveData[2]} metros"
-                )
+            _tmp = self.generateElement(firstTable, "tr")
+            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Criação")
+            _ = self.generateElement(_tmp, "td", {"class": "right"}, tecnicalInfo.get("data_criacao"))
+            _tmp = self.generateElement(firstTable, "tr")
+            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Edição")
+            _ = self.generateElement(_tmp, "td", {"class": "right"}, self.getDataEdicao())
             _tmp = self.generateElement(firstTable, "tr")
             _ = self.generateElement(_tmp, "td", {"class": "left"}, "Erro gráfico")
             _ = self.generateElement(_tmp, "td", {"class": "right"}, "0,2 mm na escala")
@@ -381,6 +351,10 @@ class Table(IComponent, ComponentUtils):
             )
 
             label.setText(et.tostring(root, encoding="unicode", method="html"))
+    
+    def getDataEdicao(self):
+        now = datetime.datetime.now()
+        return f"{now.day}/{now.month}/{now.year}"
 
     def omInfoTable(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
