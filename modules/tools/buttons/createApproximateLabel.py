@@ -30,7 +30,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         self.canvasClicked.connect(self.mouseClick)
 
     def setupUi(self):
-        buttonImg = Path(__file__).parent / "icons" / "Rotulo_rio.png"
+        buttonImg = Path(__file__).parent / "icons" / "aproximado.png"
         self._action = self.createAction(
             "Rótulo Aproximado",
             buttonImg,
