@@ -88,8 +88,11 @@ class Table(IComponent, ComponentUtils):
                 rows.append("\n\t".join(row))
 
             str_etapas = "\n".join(rows)
-
-            # Dados ultima edicao
+            dados_data = {
+                "{etapas}": str_etapas,
+            }
+            edited = self.replaceStr(base_html, dados_data)
+            label_tabela_etapas.setText(edited)
 
     def customSensores(self, composition: QgsPrintLayout, sensors: dict):
         if layoutItem := composition.itemById("label_tabela_info_ortoimagem"):
