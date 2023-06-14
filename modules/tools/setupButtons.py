@@ -19,6 +19,7 @@ from .buttons.createBorderLabel import CreateBorderLabel
 from .buttons.addNewLineCharToAttribute import AddNewLineCharToAttribute
 from .buttons.createMasterElevationTextValue import CreateMasterElevationTextValue
 from .buttons.createRoadLabel import CreateRoadLabel
+from .buttons.createApproximateLabel import CreateAproximateLabel
 
 
 class SetupButtons:
@@ -93,6 +94,10 @@ class SetupButtons:
             self.iface, self.toolBar, scaleSelector, productTypeSelector
         )
         createRoadLabel.setupUi()
+        createAproximateLabel = CreateAproximateLabel(
+            self.iface, self.toolBar, scaleSelector, productTypeSelector
+        )
+        createAproximateLabel.setupUi()
         self.mapTools.extend(
             [
                 createVegetationSymbol,
@@ -104,6 +109,7 @@ class SetupButtons:
                 createBorderLabel,
                 createMasterElevationTextValueTool,
                 createRoadLabel,
+                createAproximateLabel,
             ]
         )
         self.mapToolsActions.extend(
@@ -117,6 +123,7 @@ class SetupButtons:
                 createBorderLabel._action,
                 createMasterElevationTextValueTool._action,
                 createRoadLabel._action,
+                createAproximateLabel._action,
             ]
         )
         self.tools.extend(
@@ -137,6 +144,7 @@ class SetupButtons:
                 createBorderLabel,
                 addNewLineButton,
                 createRoadLabel,
+                createAproximateLabel,
             ]
         )
         self.actionGroup = self.setupActionGroup(*self.mapTools)
