@@ -16,8 +16,9 @@ class MapScale:
         # label_escala
         id_label_escala = "label_escala"
         edicao = data.get("edicao_produto", "1-DSG")
+        mi_mir_base_str = "MI" if scale != 250000 else "MIR"
         mi_str = (
-            f"MI {data.get('mi', None)}"
+            f"{mi_mir_base_str} {data.get('mi', None)}"
             if data.get("mi", None) is not None
             else f"INOM {data.get('inom', None)}"
         )
