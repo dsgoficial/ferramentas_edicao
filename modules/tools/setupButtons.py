@@ -20,6 +20,7 @@ from .buttons.addNewLineCharToAttribute import AddNewLineCharToAttribute
 from .buttons.createMasterElevationTextValue import CreateMasterElevationTextValue
 from .buttons.createRoadLabel import CreateRoadLabel
 from .buttons.createApproximateLabel import CreateAproximateLabel
+from .buttons.alternateBuildingFlag import AlternateBuildingFlag
 
 
 class SetupButtons:
@@ -41,7 +42,9 @@ class SetupButtons:
         cycleVisibilityButton.setupUi()
         cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
         cycleTextJustificationButton.setupUi()
-        copySugestedLabelButton = CopySugestedLabel(self.iface, self.toolBar, productTypeSelector, scaleSelector)
+        copySugestedLabelButton = CopySugestedLabel(
+            self.iface, self.toolBar, productTypeSelector, scaleSelector
+        )
         copySugestedLabelButton.setupUi()
         copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
         copyToGenericLabelButton.setupUi()
@@ -98,6 +101,8 @@ class SetupButtons:
             self.iface, self.toolBar, scaleSelector, productTypeSelector
         )
         createAproximateLabel.setupUi()
+        alternateBuildingFlag = AlternateBuildingFlag(self.iface, self.toolBar)
+        alternateBuildingFlag.setupUi()
         self.mapTools.extend(
             [
                 createVegetationSymbol,
@@ -145,6 +150,7 @@ class SetupButtons:
                 addNewLineButton,
                 createRoadLabel,
                 createAproximateLabel,
+                alternateBuildingFlag,
             ]
         )
         self.actionGroup = self.setupActionGroup(*self.mapTools)
@@ -152,6 +158,13 @@ class SetupButtons:
             lambda idx, compareIdx=[
                 1
             ], btn=createVegetationSymbol._action: self.disableAction(
+                idx, compareIdx, btn
+            )
+        )
+        productTypeSelector.currentIndexChanged.connect(
+            lambda idx, compareIdx=[
+                1
+            ], btn=alternateBuildingFlag._action: self.disableAction(
                 idx, compareIdx, btn
             )
         )
