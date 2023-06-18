@@ -89,10 +89,10 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             geomWkb = geom.asWkb()
             boundaryDict[geomWkb].add(feat)
         featsToAdd = []
-        for geomWkb, featSetId in boundaryDict.items():
-            if len(featSetId) != 2:
+        for geomWkb, featSet in boundaryDict.items():
+            if len(featSet) != 2:
                 continue
-            a, b = featSetId
+            a, b = featSet
             if a[symbolTypeFieldName] != b[symbolTypeFieldName]:
                 continue
             if a[lanesNumberFieldName] == b[lanesNumberFieldName]:
@@ -111,6 +111,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             featToAdd.setAttribute("simb_rot", angle)
             featToAdd.setAttribute("visivel", 1)  # 1 = Sim, 2 = Não
             featsToAdd.append(featToAdd)
+
 
         simbPointLayer.startEditing()
         simbPointLayer.beginEditCommand("Criando pontos")
@@ -561,6 +562,15 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             adjptvertex = adjpoints[0]
         adjpt = feat.geometry().vertexAt(adjptvertex)
         return QgsPointXY(adjpt)
+
+    def insertRoadLabel(self,feat:QgsFeature, featPoint):
+        geom = feat.geometry()
+        neighbourPoint = self.adjacentPointAtEndVertex(feat, feat["vertex_index"])
+        pt = QgsPointXY(geom.vertexAt(feat["vertex_index"]))
+        middlePoint = QgsPointXY()
+        middlePoint.setX((pt.x()+neighbourPoint.x())/2)
+        # y um pouco para cima para o simbolo ser colocado no norte
+        middlePoint.setY((pt.y()+neighbourPoint.y())/2 + 0.0000005)
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

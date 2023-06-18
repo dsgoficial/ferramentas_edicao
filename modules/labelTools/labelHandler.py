@@ -1,18 +1,10 @@
 from typing_extensions import Literal
 from qgis.PyQt.QtCore import QCoreApplication
+from math import sqrt
 from qgis.core import (
-    QgsField,
-    QgsProcessing,
-    QgsProcessingAlgorithm,
-    QgsProcessingMultiStepFeedback,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterBoolean,
-    QgsVectorLayerUtils,
     QgsGeometry,
-    QgsGeometryUtils,
     QgsSpatialIndex,
     QgsFeature,
-    QgsPointXY,
     QgsCoordinateReferenceSystem,
     QgsVectorLayer,
     QgsFeatureRequest,
@@ -21,59 +13,10 @@ from qgis.core import (
     QgsDistanceArea,
     QgsCoordinateTransformContext,
     QgsUnitTypes,
-    NULL,
 )
 
-
-def __init__(self, iface, toolBar, scaleSelector, productTypeSelector):
-    super().__init__(iface.mapCanvas())
-    self.iface = iface
-    self.toolBar = toolBar
-    self.dstLyr1 = None
-    self.scaleSelector = scaleSelector
-    self.productTypeSelector = productTypeSelector
-    self.mapCanvas = iface.mapCanvas()
-    self.box = ComboBox(self.iface.mainWindow())
-    self.canvasClicked.connect(self.mouseClick)
-    self.tipoDict = {
-        2: "Estrada/Rodovia (2)",
-        3: "Caminho carroçável (3)",
-        4: "Auto-estrada (4)",
-        5: "Arruamento (5)",
-        6: "Trilha ou Picada (6)",
-    }
-    self.sitFisicaDict = {
-        1: "Abandonada",
-        3: "Construída",
-        0: "Desconhecida",
-        2: "Destruída",
-        4: "Em construção",
-    }
-    self.avgLetterSizeInDegrees = 0.0006
-
-
-# User interface, botão e descrição
-def setupUi(self):
-    buttonImg = Path(__file__).parent / "icons" / "Rotulo_faixa.png"
-    self._action = self.createAction(
-        "Número de Faixas",
-        buttonImg,
-        lambda _: None,
-        self.tr(
-            'Cria o texto de número de faixas em "edicao_texto_generico_l" baseadas na proximidade com o atributo de "nr faixas"'
-        ),
-        self.tr(
-            'Cria o texto de número de faixas em "edicao_texto_generico_l" baseadas na proximidade com o atributo de "nr faixas"'
-        ),
-        self.iface,
-    )
-    self._action.setCheckable(True)
-    self.setAction(self._action)
-    self.toolBar.addAction(self._action)
-    self.iface.registerMainWindowAction(self._action, "")
-
-
-# Capturar a feição infra_via_deslocamento_l mais próxima do clique do cursor e criar a feição em edicao_texto_generico_l
+# Captura a feição da camada de entrada mais próxima da posicao e cria a feição na camada de destino, 
+# as camadas ja predefinidas dependem da funcao chamada
 def createLabelFromLayerAToLayerB(
     pos,
     scale: int,
@@ -87,10 +30,8 @@ def createLabelFromLayerAToLayerB(
         raise AttributeError(f"productTypeName '{productTypeName}' não encontrado")
     productTypeDict = {"orto": 0, "topo": 1}
     productType = productTypeDict[productTypeName]
-
     if functionName == "createroadlabel":
         createRoadLabel(pos, scale, productType, crsString)
-
 
 def createRoadLabel(pos, scale, productType, crsString):
     srcLyrName = "infra_via_deslocamento_l"
@@ -126,12 +67,15 @@ def createRoadLabel(pos, scale, productType, crsString):
     toInsert = setRoadAttributes(feat, toInsert, productType)
     if toInsert is None:
         return
-    toInsertGeom = self.getLabelGeometry(feat, pos, 6)
+    avgLetterSizeInDegrees = 0.0006
+    crs = srcLyr.crs()
+    displacement = getRoadLabelDisplacement(feat, scale, crs)
+    texto = str(feat.attribute("nr_faixas")) + " FAIXAS"
+    toInsertGeom = getLabelGeometry(feat, texto, pos, crs, displacement, avgLetterSizeInDegrees=avgLetterSizeInDegrees)
     toInsert.setGeometry(toInsertGeom)
     dstLyr.startEditing()
     dstLyr.addFeature(toInsert)
     dstLyr.triggerRepaint()
-
 
 def getNearestFeat(pos, lyr: QgsVectorLayer, tolerance) -> QgsFeature:
     spatialIndex = QgsSpatialIndex(
@@ -145,7 +89,6 @@ def getNearestFeat(pos, lyr: QgsVectorLayer, tolerance) -> QgsFeature:
         raise NameError(f"Não foram encontradas feições em '{lyr.name()}'")
     feat = next(closestFeat)
     return feat
-
 
 def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857"):
     lyrCrs = lyr.dataProvider().crs()
@@ -162,7 +105,6 @@ def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857"):
         tolerance = scale * 0.003
 
     return tolerance
-
 
 # Definir os atributos a serem preenchidos
 def setRoadAttributes(feat: QgsFeature, toInsert: QgsFeature, productType):
@@ -201,79 +143,53 @@ def setRoadAttributes(feat: QgsFeature, toInsert: QgsFeature, productType):
         toInsert.setAttribute("cor_buffer", "#00a0df")
     return toInsert
 
-
 # Converter distâncias, graus para metros e metros para grau
-def convertLength(self, feat):
-    convertLength = QgsDistanceArea()
-    convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
-    measure = convertLength.measureLength(feat.geometry())
-    return convertLength.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
+def convertLengthToMeters(feat:QgsFeature, crs:QgsCoordinateReferenceSystem):
+    distanceArea = QgsDistanceArea()
+    distanceArea.setEllipsoid(crs.ellipsoidAcronym())
+    measure = distanceArea.measureLength(feat.geometry())
+    return distanceArea.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
 
-
-def convertLengthToDegrees(self, d):
+def convertLengthToDegrees(d,crs):
     convertLength = QgsDistanceArea()
-    convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
+    convertLength.setEllipsoid(crs.ellipsoidAcronym())
     return convertLength.convertLengthMeasurement(d, QgsUnitTypes.DistanceDegrees)
 
-
-# Verificar se existe o atributo "nr_faixas"
-@staticmethod
-def checkFeature(feat):
-    return not not feat.attribute("nr_faixas")
-
-
 # Posicionar o texto em edicao_texto_generico_l
-def getLabelGeometry(feat, clickPos, labelSize):
+def getLabelGeometry(feat: QgsFeature,texto,  posGeom: QgsGeometry, crs:QgsCoordinateReferenceSystem, displacement, avgLetterSizeInDegrees = 0.0006):
     geom = feat.geometry()
-    texto = str(feat.attribute("nr_faixas")) + " FAIXAS"
-    bufferSize = self.getBufferSize(texto)
-    clickedPositionGeom = QgsGeometry.fromWkt(clickPos.asWkt())
-    locatedDistance = geom.lineLocatePoint(clickedPositionGeom)
+    bufferSize = getBufferSize(texto, crs, feat, avgLetterSizeInDegrees)
+    locatedDistance = geom.lineLocatePoint(posGeom)
     projectedPointOnLineGeom = geom.interpolate(locatedDistance)
     buffer = projectedPointOnLineGeom.buffer(bufferSize, -1)
     toInsertGeom = geom.intersection(buffer)
-    d = self.getRoadLabelDisplacement(feat)
-    dx, dy = self.getTranslate(d, clickedPositionGeom, projectedPointOnLineGeom)
+    dx, dy = getLabelDistance(displacement, posGeom, projectedPointOnLineGeom)
     toInsertGeom.translate(dx, dy)
     return toInsertGeom
 
-
 # Tamanho do buffer para recorte da feição
-def getBufferSize(self, text):
-    crs = self.srcLyr.crs()
+def getBufferSize(text, crs: QgsCoordinateReferenceSystem, feat, avgLetterSizeInDegrees = 0.0006):
     if crs.isGeographic():
-        return len(text) * self.avgLetterSizeInDegrees
-    avgLetterSizeInMeters = self.convertLength(self.srcLyr, self.avgLetterSizeInDegrees)
+        return len(text) * avgLetterSizeInDegrees
+    avgLetterSizeInMeters = convertLengthToMeters(feat, crs)
     return len(text) * avgLetterSizeInMeters
 
-
-def getTranslate(self, d, clickedPositionGeom, projectedPointOnLineGeom):
+def getLabelDistance(d, positionGeom:QgsGeometry, projectedPointOnLineGeom:QgsGeometry):
     xp, yp = projectedPointOnLineGeom.asPoint()
-    xc, yc = clickedPositionGeom.asPoint()
+    xc, yc = positionGeom.asPoint()
     norm = sqrt((xp - xc) ** 2 + (yp - yc) ** 2)
     return d * (xc - xp) / norm, d * (yc - yp) / norm
 
-
-def buildLineFromGeomDist(self, start, end, geom):
-    xCoords, yCoords = [], []
-    iterator = geom.asMultiPolyline()[0] if geom.isMultipart() else geom.asPolyline()
-    for point in iterator:
-        xCoords.append(point.x())
-        yCoords.append(point.y())
-    return QgsLineString(xCoords, yCoords).curveSubstring(start, end)
-
-
-# Verificar a existência das camadas de infra_via_deslocamento_l e edicao_texto_generico_l
-def getLayerByName(self, name) -> QgsMapLayer:
+# Verificar a existência da camadas
+def getLayerByName(name) -> QgsMapLayer:
     lyr = QgsProject.instance().mapLayersByName(name)
     if not len(lyr) == 1:
         if len(lyr) > 1:
-            raise NameError(self.tr(f"Mais de uma camada '{name}' encontrada"))
-        raise NameError(self.tr(f"Camada '{name}' não encontrada"))
+            raise NameError(tr(f"Mais de uma camada '{name}' encontrada"))
+        raise NameError(tr(f"Camada '{name}' não encontrada"))
     return lyr[0]
 
-
-def getRoadLabelDisplacement(self, feat):
+def getRoadLabelDisplacement(feat, scale, crs:QgsCoordinateReferenceSystem):
     d_in_meters = 1.0e-3
     # Todos os casos de rodovias previstos na simbologia da MTM (Obs: nr_faixas = 3 vai ser rotulado)
     if (
@@ -341,13 +257,12 @@ def getRoadLabelDisplacement(self, feat):
             d_in_meters += 1.1e-3  # L11302O
         if feat["canteiro_divisorio"] == 2:
             d_in_meters += 0.7e-3  # L11302P
-    d_scale = d_in_meters * self.getScale()
+    d_scale = d_in_meters * scale()
     return (
         d_scale
-        if not self.srcLyr.crs().isGeographic()
-        else self.convertLengthToDegrees(d_scale)
+        if not crs.isGeographic()
+        else convertLengthToDegrees(d_scale, crs)
     )
-
 
 def tr(message):
     return QCoreApplication.translate("FerramentasEdicao", message)
