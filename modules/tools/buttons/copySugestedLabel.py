@@ -98,6 +98,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
             textFont = textFormat.font()
 
             # Obtendo os parâmetros
+            config["placement"] = rule_settings.placement
             config["estilo_fonte"] = textFormat.namedStyle()
             config["tamanho_txt"] = textFormat.size()
             config["cor"] = textFormat.color().name()
@@ -135,11 +136,13 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
 
     def getSugestedLabelGeometry(self, letters_data, custom=None):
         words_points = []
+        centroidGeom = None
         if custom == "elemnat_curva_nivel_l":
             pass
         if len(letters_data) == 1:
             letter_data = letters_data[0]
             letter_geometry = letter_data[0]
+            centroidGeom = letter_geometry.centroid()
             letter_points = letter_geometry.asPolygon()[0]
             first_point = self.mid(letter_points[3], letter_points[4])
             words_points.append(first_point)
@@ -159,7 +162,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         lenPerLetter = oldLen / nLetters
         increaseFactor = 1.05
         word_geometry = word_geometry.extendLine(increaseFactor * lenPerLetter, increaseFactor * lenPerLetter)        
-        return word_geometry, word_text
+        return word_geometry, word_text, centroidGeom
 
     def mouseClick(self, pos, btn):
         self.srcLyr = self.iface.activeLayer()
@@ -210,7 +213,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
             self.labelSpatialIndex.addFeature(letter_label_feat)
 
         # Get closest label
-        if not (self.isActive() and self.dstLyr):
+        if not (self.isActive() and self.dstLyrP and self.dstLyrL):
             return
         labelClosestSpatialID = self.labelSpatialIndex.nearestNeighbor(
             pos, maxDistance=2 * self.tolerance
@@ -232,7 +235,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
             )
             return
         nome = feat.attribute("texto_edicao")
-        sugestedLabelGeometry, word_text = self.getSugestedLabelGeometry(
+        sugestedLabelGeometry, word_text, centroidGeom = self.getSugestedLabelGeometry(
             [
                 (label_feature.geometry(), label_feature["labelText"])
                 for label_feature in self.letter_label_features
@@ -242,7 +245,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         sugestedLabelConfig = self.getSugestedLabelConfig(feat)
         if sugestedLabelConfig["found"]:
             self.createSugestedLabelFeature(
-                feat, word_text, sugestedLabelGeometry, sugestedLabelConfig
+                feat, word_text, sugestedLabelGeometry, centroidGeom, sugestedLabelConfig
             )
         else:
             self.displayErrorMessage(
@@ -254,17 +257,21 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         return not not feat.attribute("texto_edicao")
 
     def createSugestedLabelFeature(
-        self, originFeat, word_text, sugestedLabelGeometry, sugestedLabelConfig
+        self, originFeat, word_text, sugestedLabelGeometry, centroidGeom, sugestedLabelConfig
     ):
-        toInsert = QgsFeature(self.dstLyr.fields())
+        destLayer = self.dstLyrL
+        if sugestedLabelConfig["placement"] in (QgsPalLayerSettings.Horizontal, QgsPalLayerSettings.OverPoint, QgsPalLayerSettings.AroundPoint, QgsPalLayerSettings.OrderedPositionsAroundPoint):
+            destLayer = self.dstLyrP
+            sugestedLabelGeometry = centroidGeom
+        toInsert = QgsFeature(destLayer.fields())
         toInsert.setAttribute("texto_edicao", word_text)
         toInsert.setAttribute("estilo_fonte", sugestedLabelConfig["estilo_fonte"])
         toInsert.setAttribute("tamanho_txt", sugestedLabelConfig["tamanho_txt"])
         toInsert.setAttribute("cor", sugestedLabelConfig["cor"])
         toInsert.setGeometry(sugestedLabelGeometry)
-        self.dstLyr.startEditing()
-        self.dstLyr.addFeature(toInsert)
-        self.dstLyr.triggerRepaint()
+        destLayer.startEditing()
+        destLayer.addFeature(toInsert)
+        destLayer.triggerRepaint()
         # toInsert.setAttribute('cor_buffer',sugestedLabelConfig['cor_buffer'])
         # toInsert.setAttribute('tamanho_buffer',sugestedLabelConfig['tamanho_buffer'])
         # toInsert.setAttribute('carta_simbolizacao', 1 if self.mapTypeSelector.currentText() == 'Carta' else 2)
@@ -278,13 +285,19 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
     def getLayers(self):
         instance = QgsProject.instance()
         # geomType = lyr.geometryType()
-        destLayerName = "edicao_texto_generico_l"
-        destLayer = instance.mapLayersByName(destLayerName)
+        destLayerNameL = "edicao_texto_generico_l"
+        destLayerL = instance.mapLayersByName(destLayerNameL)
+        destLayerNameP = "edicao_texto_generico_p"
+        destLayerP = instance.mapLayersByName(destLayerNameP)
 
-        if len(destLayer) != 1:
-            self.displayErrorMessage(self.tr(f'A camada "{destLayerName}" não existe'))
+        if len(destLayerL) != 1:
+            self.displayErrorMessage(self.tr(f'A camada "{destLayerNameL}" não existe'))
             return
-        self.dstLyr = destLayer[0]
+        if len(destLayerP) != 1:
+            self.displayErrorMessage(self.tr(f'A camada "{destLayerNameP}" não existe'))
+            return
+        self.dstLyrL = destLayerL[0]
+        self.dstLyrP = destLayerP[0]
         lastExtent = self.mapCanvas.extent()
         self.mapCanvas.zoomScale(self.getScale())
         self.mapCanvas.setScaleLocked(True)
