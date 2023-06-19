@@ -173,6 +173,10 @@
             "schema": "edgv"
         },
         {
+            "table": "edicao_ponto_mudanca_p",
+            "schema": "edgv"
+        },
+        {
             "table": "infra_via_deslocamento_l",
             "schema": "edgv"
         },

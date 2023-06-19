@@ -1,4 +1,4 @@
-from typing_extensions import Literal
+from typing import Literal
 from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 from qgis.core import (
@@ -15,10 +15,10 @@ from qgis.core import (
     QgsUnitTypes,
 )
 
-# Captura a feição da camada de entrada mais próxima da posicao e cria a feição na camada de destino, 
+# Captura a feição da camada de entrada mais próxima da posicao e cria a feição na camada de destino,
 # as camadas ja predefinidas dependem da funcao chamada
 def createLabelFromLayerAToLayerB(
-    pos,
+    pos: QgsGeometry,
     scale: int,
     functionName: Literal["createroadlabel"],
     productTypeName: Literal["orto", "topo"],
@@ -33,7 +33,8 @@ def createLabelFromLayerAToLayerB(
     if functionName == "createroadlabel":
         createRoadLabel(pos, scale, productType, crsString)
 
-def createRoadLabel(pos, scale, productType, crsString):
+
+def createRoadLabel(pos: QgsGeometry, scale, productType, crsString):
     srcLyrName = "infra_via_deslocamento_l"
     srcLyr = getLayerByName(srcLyrName)
     dstLyrName = "edicao_texto_generico_l"
@@ -45,7 +46,7 @@ def createRoadLabel(pos, scale, productType, crsString):
     if int(attr) <= 2:
         raise NameError(
             tr(
-                f"Feição inválida. Verifique o atributo {attrNameLane} na camada '{srcLyrName}'"
+                f"Feição inválida. Verifique o atributo '{attrNameLane}' na camada '{srcLyrName}'"
             )
         )
     attrNameType = "tipo"
@@ -71,13 +72,21 @@ def createRoadLabel(pos, scale, productType, crsString):
     crs = srcLyr.crs()
     displacement = getRoadLabelDisplacement(feat, scale, crs)
     texto = str(feat.attribute("nr_faixas")) + " FAIXAS"
-    toInsertGeom = getLabelGeometry(feat, texto, pos, crs, displacement, avgLetterSizeInDegrees=avgLetterSizeInDegrees)
+    toInsertGeom = getLabelGeometry(
+        feat,
+        texto,
+        pos,
+        crs,
+        displacement,
+        avgLetterSizeInDegrees=avgLetterSizeInDegrees,
+    )
     toInsert.setGeometry(toInsertGeom)
     dstLyr.startEditing()
     dstLyr.addFeature(toInsert)
     dstLyr.triggerRepaint()
 
-def getNearestFeat(pos, lyr: QgsVectorLayer, tolerance) -> QgsFeature:
+
+def getNearestFeat(pos: QgsGeometry, lyr: QgsVectorLayer, tolerance) -> QgsFeature:
     spatialIndex = QgsSpatialIndex(
         lyr.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
     )
@@ -89,6 +98,7 @@ def getNearestFeat(pos, lyr: QgsVectorLayer, tolerance) -> QgsFeature:
         raise NameError(f"Não foram encontradas feições em '{lyr.name()}'")
     feat = next(closestFeat)
     return feat
+
 
 def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857"):
     lyrCrs = lyr.dataProvider().crs()
@@ -105,6 +115,7 @@ def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857"):
         tolerance = scale * 0.003
 
     return tolerance
+
 
 # Definir os atributos a serem preenchidos
 def setRoadAttributes(feat: QgsFeature, toInsert: QgsFeature, productType):
@@ -143,20 +154,30 @@ def setRoadAttributes(feat: QgsFeature, toInsert: QgsFeature, productType):
         toInsert.setAttribute("cor_buffer", "#00a0df")
     return toInsert
 
+
 # Converter distâncias, graus para metros e metros para grau
-def convertLengthToMeters(feat:QgsFeature, crs:QgsCoordinateReferenceSystem):
+def convertLengthToMeters(feat: QgsFeature, crs: QgsCoordinateReferenceSystem):
     distanceArea = QgsDistanceArea()
     distanceArea.setEllipsoid(crs.ellipsoidAcronym())
     measure = distanceArea.measureLength(feat.geometry())
     return distanceArea.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
 
-def convertLengthToDegrees(d,crs):
+
+def convertLengthToDegrees(d, crs):
     convertLength = QgsDistanceArea()
     convertLength.setEllipsoid(crs.ellipsoidAcronym())
     return convertLength.convertLengthMeasurement(d, QgsUnitTypes.DistanceDegrees)
 
-# Posicionar o texto em edicao_texto_generico_l
-def getLabelGeometry(feat: QgsFeature,texto,  posGeom: QgsGeometry, crs:QgsCoordinateReferenceSystem, displacement, avgLetterSizeInDegrees = 0.0006):
+
+# Posicionar o texto
+def getLabelGeometry(
+    feat: QgsFeature,
+    texto,
+    posGeom: QgsGeometry,
+    crs: QgsCoordinateReferenceSystem,
+    displacement,
+    avgLetterSizeInDegrees=0.0006,
+):
     geom = feat.geometry()
     bufferSize = getBufferSize(texto, crs, feat, avgLetterSizeInDegrees)
     locatedDistance = geom.lineLocatePoint(posGeom)
@@ -167,18 +188,25 @@ def getLabelGeometry(feat: QgsFeature,texto,  posGeom: QgsGeometry, crs:QgsCoord
     toInsertGeom.translate(dx, dy)
     return toInsertGeom
 
+
 # Tamanho do buffer para recorte da feição
-def getBufferSize(text, crs: QgsCoordinateReferenceSystem, feat, avgLetterSizeInDegrees = 0.0006):
+def getBufferSize(
+    text, crs: QgsCoordinateReferenceSystem, feat, avgLetterSizeInDegrees=0.0006
+):
     if crs.isGeographic():
         return len(text) * avgLetterSizeInDegrees
     avgLetterSizeInMeters = convertLengthToMeters(feat, crs)
     return len(text) * avgLetterSizeInMeters
 
-def getLabelDistance(d, positionGeom:QgsGeometry, projectedPointOnLineGeom:QgsGeometry):
+
+def getLabelDistance(
+    d, positionGeom: QgsGeometry, projectedPointOnLineGeom: QgsGeometry
+):
     xp, yp = projectedPointOnLineGeom.asPoint()
     xc, yc = positionGeom.asPoint()
     norm = sqrt((xp - xc) ** 2 + (yp - yc) ** 2)
     return d * (xc - xp) / norm, d * (yc - yp) / norm
+
 
 # Verificar a existência da camadas
 def getLayerByName(name) -> QgsMapLayer:
@@ -189,7 +217,8 @@ def getLayerByName(name) -> QgsMapLayer:
         raise NameError(tr(f"Camada '{name}' não encontrada"))
     return lyr[0]
 
-def getRoadLabelDisplacement(feat, scale, crs:QgsCoordinateReferenceSystem):
+
+def getRoadLabelDisplacement(feat, scale, crs: QgsCoordinateReferenceSystem):
     d_in_meters = 1.0e-3
     # Todos os casos de rodovias previstos na simbologia da MTM (Obs: nr_faixas = 3 vai ser rotulado)
     if (
@@ -257,12 +286,9 @@ def getRoadLabelDisplacement(feat, scale, crs:QgsCoordinateReferenceSystem):
             d_in_meters += 1.1e-3  # L11302O
         if feat["canteiro_divisorio"] == 2:
             d_in_meters += 0.7e-3  # L11302P
-    d_scale = d_in_meters * scale()
-    return (
-        d_scale
-        if not crs.isGeographic()
-        else convertLengthToDegrees(d_scale, crs)
-    )
+    d_scale = d_in_meters * scale
+    return d_scale if not crs.isGeographic() else convertLengthToDegrees(d_scale, crs)
+
 
 def tr(message):
     return QCoreApplication.translate("FerramentasEdicao", message)
