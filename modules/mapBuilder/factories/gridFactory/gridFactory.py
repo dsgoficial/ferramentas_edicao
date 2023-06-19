@@ -752,7 +752,6 @@ class GridFactory(QObject):
 
     def get_neighbors_inom(self, inom):
         layer, fields = self.createGridLayer("articulation", "Multipolygon", "4326")
-        exceptions = self.getMIexceptions()
         inomenList = self.getNeighbors(inom)
         feats = [
             self.getNewGridFeat(
