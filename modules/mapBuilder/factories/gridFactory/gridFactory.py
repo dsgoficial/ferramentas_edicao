@@ -705,10 +705,10 @@ class GridFactory(QObject):
                 )
             )[::multiplier]
 
-    def getNewGridFeat(self, index, geom, fields, hasMI=True):
+    def getNewGridFeat(self, index, geom, fields):
         feat = QgsFeature(fields)
         feat["inom"] = index
-        feat["mi"] = self.get_MI_MIR_from_inom(index) if hasMI else None
+        feat["mi"] = self.get_MI_MIR_from_inom(index)
         feat.setGeometry(geom)
         return feat
 
@@ -753,11 +753,10 @@ class GridFactory(QObject):
     def get_neighbors_inom(self, inom):
         layer, fields = self.createGridLayer("articulation", "Multipolygon", "4326")
         exceptions = self.getMIexceptions()
-        noMi = (inom in exceptions) or self.checkContainedUpperLevel(inom, exceptions)
         inomenList = self.getNeighbors(inom)
         feats = [
             self.getNewGridFeat(
-                map_index, self.getQgsPolygonFrame(map_index), fields, not noMi
+                map_index, self.getQgsPolygonFrame(map_index), fields
             )
             for map_index in inomenList
         ]
