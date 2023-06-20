@@ -77,6 +77,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         # Obtendo os parâmetros
         scope = context.scopes()[0]
         feat = scope.feature()
+        config["justificativa_txt"] = 1
         if "justificativa_txt" in feat.fields().names():
             config["justificativa_txt"] = 1 if feat["justificativa_txt"] in (None, 9999) else feat["justificativa_txt"] 
         config["placement"] = labelSettings.placement
