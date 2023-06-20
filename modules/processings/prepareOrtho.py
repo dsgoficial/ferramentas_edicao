@@ -1,30 +1,19 @@
-import math
-import os
-
 from qgis import processing
 from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsField,
-    QgsCoordinateTransformContext,
-    QgsDistanceArea,
     QgsFeature,
-    QgsFeatureRequest,
-    QgsGeometry,
+    QgsField,
+    QgsFields,
+    QgsVectorLayer,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProperty,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterVectorLayer,
-    NULL,
-    QgsUnitTypes,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterFeatureSink,
     QgsFeatureSink,
-    QgsVectorLayer,
+    QgsProcessingParameterFeatureSink,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-
-from .processingUtils import ProcessingUtils
 
 
 class PrepareOrtho(QgsProcessingAlgorithm):
@@ -32,7 +21,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
     INPUT_LAYERS = "INPUT_LAYERS"
     INPUT_FRAME = "INPUT_FRAME"
     SCALE = "SCALE"
-    OUTPUT = "OUTPUT"
+    OUTPUT_LINES = "OUTPUT_LINES"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -65,23 +54,37 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT_LINES, self.tr("Flags Prepara Orto")
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-
+        fields = QgsFields()
+        fields.append(QgsField("id", QVariant.String))
+        fields.append(QgsField("descricao", QVariant.String))
+        (feats_sink_l, feats_sink_l_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT_LINES,
+            context,
+            fields,
+            QgsWkbTypes.MultiLineString,
+            layers[0].crs(),
+        )
         ptoCotado = [
             x
             for x in layers
             if x.dataProvider().uri().table() == "elemnat_ponto_cotado_p"
         ][0]
         self.highestSpot(ptoCotado, frameLayer)
-        
+
         self.attrDefault(layers, gridScaleParam)
-        
-        lyrDict = {
-            layer.dataProvider().uri().table(): layer for layer in layers
-        }
+
+        lyrDict = {layer.dataProvider().uri().table(): layer for layer in layers}
 
         drenagem = lyrDict["elemnat_trecho_drenagem_l"]
         edicao_mil = lyrDict["edicao_area_pub_militar_l"]
@@ -93,7 +96,18 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         via_deslocamento = lyrDict["infra_via_deslocamento_l"]
         ferrovia = lyrDict["infra_ferrovia_l"]
 
-        self.setSobreposition(frameLayer, edicao_mil, edicao_ind, edicao_con, pol_mil, pol_ind, pol_con, drenagem, via_deslocamento, ferrovia)
+        self.setSobreposition(
+            frameLayer,
+            edicao_mil,
+            edicao_ind,
+            edicao_con,
+            pol_mil,
+            pol_ind,
+            pol_con,
+            drenagem,
+            via_deslocamento,
+            ferrovia,
+        )
 
         self.sizeRiverLabel(drenagem, frameLayer, gridScaleParam, 0)
 
@@ -120,10 +134,38 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             for x in layers
             if x.dataProvider().uri().table() == "edicao_identificador_trecho_rod_p"
         ][0]
+        pointOfChangeSymbol = [
+            x
+            for x in layers
+            if x.dataProvider().uri().table() == "edicao_ponto_mudanca_p"
+        ][0]
 
         self.idtRodSymbol(rodovia, rodoviaSymbol, frameLayer, gridScaleParam)
+        pointOfChange = self.pointOfChange(
+            rodovia,
+            gridScaleParam,
+            pointOfChangeSymbol,
+            frameLayer=frameLayer,
+            tolerance=6,
+        )
+        featsToAddSet = set()
+        for feat in pointOfChange.getFeatures():
+            featToAdd = QgsFeature()
+            featToAdd.setFields(fields)
+            featToAdd[
+                "descricao"
+            ] = "Feicao de edicao_texto_generico_l fora ou muito proxima à moldura"
+            featToAdd["id"] = feat["id"]
+            featToAdd.setGeometry(feat.geometry())
+            featsToAddSet.add(featToAdd)
+        list(
+            map(
+                lambda x: feats_sink_l.addFeature(x, QgsFeatureSink.FastInsert),
+                featsToAddSet,
+            )
+        )
 
-        return {self.OUTPUT: ""}
+        return {self.OUTPUT_LINES: feats_sink_l_id}
 
     def attrDefault(self, layers, scale):
         processing.run(
@@ -137,6 +179,24 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             {"ROAD": road, "MARKER": simbol, "INPUT_FRAME": frame, "SCALE": scale},
         )
 
+    def pointOfChange(
+        self, road, scale, pointOfChange, frameLayer=None, tolerance=6, output=None
+    ) -> QgsVectorLayer:
+        output = "memory:" if output is None else output
+        p = processing.run(
+            "ferramentasedicao:placepointofchange",
+            {
+                "INPUT": road,
+                "FRAME_LAYER": frameLayer,
+                "SYMBOL_LAYER": pointOfChange,
+                "SCALE": scale,
+                "TOLERANCE": tolerance,
+                "OUTPUT": output,
+                "PRODUCT_TYPE": 1,
+            },
+        )
+        return p["OUTPUT"]
+
     def energySymbol(self, energy, simbol, frame, scale):
         processing.run(
             "ferramentasedicao:insertEnergyTower",
@@ -148,7 +208,19 @@ class PrepareOrtho(QgsProcessingAlgorithm):
             },
         )
 
-    def setSobreposition(self, moldura, edicao_mil, edicao_ind, edicao_con, pol_mil, pol_ind, pol_con, drenagem, via_deslocamento, ferrovia):
+    def setSobreposition(
+        self,
+        moldura,
+        edicao_mil,
+        edicao_ind,
+        edicao_con,
+        pol_mil,
+        pol_ind,
+        pol_con,
+        drenagem,
+        via_deslocamento,
+        ferrovia,
+    ):
         processing.run(
             "ferramentasedicao:setsobrepositionortho",
             {
@@ -206,10 +278,12 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return "preparo_edicao"
 
     def shortHelpString(self):
-        return self.tr("""O algoritmo prepara os atributos para Carta Ortoimagem:
+        return self.tr(
+            """O algoritmo prepara os atributos para Carta Ortoimagem:
         1. Define cota mais alta
         2. Configura atributos padrão
         3. Configura sobreposição de feições
         4. Define tamanho do texto de rio
         5. Insere identificador de elemento de energia
-        6. Insere identificador de trecho rodoviário""")
+        6. Insere identificador de trecho rodoviário"""
+        )

@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Union
 from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 from qgis.core import (
@@ -23,7 +23,8 @@ def createLabelFromLayerAToLayerB(
     functionName: Literal["createroadlabel"],
     productTypeName: Literal["orto", "topo"],
     crsString="EPSG:3857",
-):
+) -> QgsFeature:
+    label = QgsFeature()
     if functionName not in ["createroadlabel"]:
         raise AttributeError(f"functionName '{functionName}' não encontrado")
     if productTypeName not in ["orto", "topo"]:
@@ -31,10 +32,12 @@ def createLabelFromLayerAToLayerB(
     productTypeDict = {"orto": 0, "topo": 1}
     productType = productTypeDict[productTypeName]
     if functionName == "createroadlabel":
-        createRoadLabel(pos, scale, productType, crsString)
+        label = createRoadLabel(pos, scale, productType, crsString)
+
+    return label
 
 
-def createRoadLabel(pos: QgsGeometry, scale, productType, crsString):
+def createRoadLabel(pos: QgsGeometry, scale, productType, crsString) -> QgsFeature:
     srcLyrName = "infra_via_deslocamento_l"
     srcLyr = getLayerByName(srcLyrName)
     dstLyrName = "edicao_texto_generico_l"
@@ -84,6 +87,7 @@ def createRoadLabel(pos: QgsGeometry, scale, productType, crsString):
     dstLyr.startEditing()
     dstLyr.addFeature(toInsert)
     dstLyr.triggerRepaint()
+    return toInsert
 
 
 def getNearestFeat(pos: QgsGeometry, lyr: QgsVectorLayer, tolerance) -> QgsFeature:
@@ -100,7 +104,7 @@ def getNearestFeat(pos: QgsGeometry, lyr: QgsVectorLayer, tolerance) -> QgsFeatu
     return feat
 
 
-def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857"):
+def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857", distance=0.003):
     lyrCrs = lyr.dataProvider().crs()
     if lyrCrs.isGeographic():
         d = QgsDistanceArea()
@@ -109,10 +113,10 @@ def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857"):
             QgsCoordinateTransformContext(),
         )
         tolerance = d.convertLengthMeasurement(
-            scale * 0.003, QgsUnitTypes.DistanceDegrees
+            scale * distance, QgsUnitTypes.DistanceDegrees
         )
     else:
-        tolerance = scale * 0.003
+        tolerance = scale * distance
 
     return tolerance
 
@@ -209,7 +213,7 @@ def getLabelDistance(
 
 
 # Verificar a existência da camadas
-def getLayerByName(name) -> QgsMapLayer:
+def getLayerByName(name) -> Union[QgsMapLayer, QgsVectorLayer]:
     lyr = QgsProject.instance().mapLayersByName(name)
     if not len(lyr) == 1:
         if len(lyr) > 1:

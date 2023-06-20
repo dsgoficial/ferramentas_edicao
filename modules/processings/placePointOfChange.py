@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
-from typing import Literal
-from ..labelTools.labelHandler import createLabelFromLayerAToLayerB
+from typing import Literal, Set
+from ..labelTools.labelHandler import (
+    createLabelFromLayerAToLayerB,
+    getLayerByName,
+    getToleranceForLyr,
+)
 
 from qgis.core import (
     QgsField,
@@ -14,19 +18,25 @@ from qgis.core import (
     QgsFeature,
     QgsPointXY,
     QgsVectorLayer,
+    QgsFeatureSink,
     QgsProcessingParameterEnum,
     QgsFields,
+    QgsSpatialIndex,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterFeatureSink,
     NULL,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis import processing
 
 
 class PlacePointOfChange(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
+    FRAME_LAYER = "FRAME_LAYER"
+    TOLERANCE = "TOLERANCE"
     SCALE = "SCALE"
+    SYMBOL_LAYER = "SYMBOL_LAYER"
     OUTPUT = "OUTPUT"
     PRODUCT_TYPE = "PRODUCT_TYPE"
 
@@ -37,6 +47,14 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
                 self.tr("Selecionar camada de linha de entrada (rodovia)"),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue="infra_via_deslocamento_l",
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.FRAME_LAYER,
+                self.tr("Selecionar camada de MOLDURA"),
+                [QgsProcessing.TypeVectorPolygon],
+                optional=True,
             )
         )
         self.scales = [
@@ -67,16 +85,32 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
-                self.OUTPUT,
+                self.SYMBOL_LAYER,
                 self.tr("Selecionar camada de camada de edição"),
                 [QgsProcessing.TypeVectorPoint],
                 defaultValue="edicao_ponto_mudanca_p",
             )
         )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.TOLERANCE,
+                self.tr(
+                    "Selecionar tolerância em mm para flags (proximidade da borda)"
+                ),
+                defaultValue=0.003,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT, self.tr("Flags Ponto de Mudanca")
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         inputLyrPre = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        frameLyrPre = self.parameterAsVectorLayer(parameters, self.FRAME_LAYER, context)
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
+        distance = self.parameterAsDouble(parameters, self.TOLERANCE, context) / 1000
         scaleDict = {
             "1:25.000": 25000,
             "1:50.000": 50000,
@@ -87,7 +121,20 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         productTypeDict = {"Ortoimagem": "orto", "Topográfica": "topo"}
         productTypeIdx = self.parameterAsEnum(parameters, self.PRODUCT_TYPE, context)
         productTypeName = productTypeDict[self.productType[productTypeIdx]]
-        simbPointLayer = self.parameterAsVectorLayer(parameters, self.OUTPUT, context)
+        simbPointLayer = self.parameterAsVectorLayer(
+            parameters, self.SYMBOL_LAYER, context
+        )
+        labelLyrName = "edicao_texto_generico_l"
+        labelLyr = getLayerByName(labelLyrName)
+        (feats_sink, feats_sink_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            labelLyr.fields(),
+            labelLyr.wkbType(),
+            labelLyr.crs(),
+        )
+        crsString = "EPSG:3857"
         fields = simbPointLayer.fields()
         multiStepFeedback = QgsProcessingMultiStepFeedback(7, feedback)
         multiStepFeedback.setCurrentStep(0)
@@ -101,6 +148,19 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             feedback=multiStepFeedback,
             context=context,
             is_child_algorithm=False,
+        )
+        frameLyr = (
+            algRunner.runCreateFieldWithExpression(
+                inputLyr=frameLyrPre,
+                expression="$id",
+                fieldType=1,
+                fieldName="inputid",
+                feedback=multiStepFeedback,
+                context=context,
+                is_child_algorithm=False,
+            )
+            if frameLyrPre
+            else None
         )
         multiStepFeedback.setCurrentStep(1)
         multiStepFeedback.pushInfo(self.tr("Criando índice espacial."))
@@ -121,7 +181,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             geom = feat.geometry()
             geomWkb = geom.asWkb()
             boundaryDict[geomWkb].add(feat)
-        featsToAdd = self.getPointOfChangeAndMakeLabel(
+        featsToAdd, labels = self.getPointOfChangeAndMakeLabel(
             scale,
             productTypeName,
             fields,
@@ -129,16 +189,30 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             symbolTypeFieldName,
             lanesNumberFieldName,
             boundaryDict,
-            crsString="EPSG:3857",
+            crsString=crsString,
             feedback=multiStepFeedback,
         )
+        if frameLyr and distance > 0:
+            algRunner.runCreateSpatialIndex(
+                frameLyr, context, feedback=multiStepFeedback
+            )
+            tolerance = getToleranceForLyr(frameLyr, scale, crsString, distance)
+            featsNearFrameSet = self.identifyFeatsNearFrame(
+                labels, frameLyr, tolerance, algRunner, context, feedback
+            )
+            list(
+                map(
+                    lambda x: feats_sink.addFeature(x, QgsFeatureSink.FastInsert),
+                    featsNearFrameSet,
+                )
+            )
 
         multiStepFeedback.setCurrentStep(6)
         simbPointLayer.startEditing()
         simbPointLayer.beginEditCommand("Criando pontos")
         simbPointLayer.dataProvider().addFeatures(featsToAdd)
         simbPointLayer.endEditCommand()
-        return {self.OUTPUT: simbPointLayer}
+        return {self.SYMBOL_LAYER: simbPointLayer, self.OUTPUT: feats_sink_id}
 
     def getPointOfChangeAndMakeLabel(
         self,
@@ -153,6 +227,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         feedback=None,
     ):
         featsToAdd = []
+        labels = set()
         if feedback is not None:
             progressStep = 100 / len(boundaryDict.items())
         for currentStep, (geomWkb, featSet) in enumerate(boundaryDict.items()):
@@ -208,11 +283,17 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             )
             featToAdd.setAttribute("visivel", 1)  # 1 = Sim, 2 = Não
             featsToAdd.append(featToAdd)
-            self.insertRoadLabel(a, featA, scale, productTypeName, crsString=crsString)
-            self.insertRoadLabel(b, featB, scale, productTypeName, crsString=crsString)
+            labelA = self.insertRoadLabel(
+                a, featA, scale, productTypeName, crsString=crsString
+            )
+            labels.add(labelA)
+            labelB = self.insertRoadLabel(
+                b, featB, scale, productTypeName, crsString=crsString
+            )
+            labels.add(labelB)
             if feedback is not None:
                 feedback.setProgress(progressStep * currentStep)
-        return featsToAdd
+        return featsToAdd, labels
 
     def addSymbolType(
         self, inputLyr: QgsVectorLayer, fieldToAdd, feedback=None
@@ -495,7 +576,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         scale,
         productTypeName: Literal["orto", "topo"],
         crsString="EPSG:3857",
-    ):
+    ) -> QgsFeature:
         geom = feat.geometry()
         neighbourPoint = self.adjacentPointAtEndVertex(feat, point["vertex_index"])
         pt = QgsPointXY(geom.vertexAt(point["vertex_index"]))
@@ -505,9 +586,42 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         middlePoint.setY((pt.y() + neighbourPoint.y()) / 2 + 1e-5)
         posGeom = QgsGeometry()
         posGeom = posGeom.fromPointXY(middlePoint)
-        createLabelFromLayerAToLayerB(
+        label = createLabelFromLayerAToLayerB(
             posGeom, scale, "createroadlabel", productTypeName, crsString="EPSG:3857"
         )
+        return label
+
+    def identifyFeatsNearFrame(
+        self,
+        feats: Set[QgsFeature],
+        frame: QgsVectorLayer,
+        tolerance,
+        algRunner: AlgRunner,
+        context,
+        feedback,
+    ) -> Set:
+        featsNearFrame = set()
+        frameLines = algRunner.runPolygonsToLines(frame, context, feedback)
+        frameLinesBuffered = algRunner.runBuffer(
+            frameLines, tolerance, context, dissolve=True, feedback=feedback
+        )
+        frameDissolved = algRunner.runDissolve(frame, context, feedback)
+        index = QgsSpatialIndex(
+            frameLinesBuffered.getFeatures(),
+            flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
+        )
+        for feat in feats:
+            geom = feat.geometry()
+            for fid in index.intersects(geom.boundingBox()):
+                fgeom = index.geometry(fid)
+                if fgeom.intersects(geom):
+                    featsNearFrame.add(feat)
+                    break
+            if feat not in featsNearFrame:
+                for frame in frameDissolved.getFeatures():
+                    if not geom.within(frame.geometry()):
+                        featsNearFrame.add(feat)
+        return featsNearFrame
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
