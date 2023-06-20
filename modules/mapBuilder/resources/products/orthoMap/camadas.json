@@ -1,6 +1,14 @@
 {
     "map": [
         {
+            "table": "aux_moldura_a",
+            "schema": "edgv"
+        },
+        {
+            "table": "aux_grid_revisao_a",
+            "schema": "edgv"
+        },
+        {
             "table": "edicao_simb_cota_mestra_l",
             "schema": "edgv"
         },

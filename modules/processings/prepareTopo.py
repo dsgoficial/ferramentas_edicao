@@ -1,38 +1,26 @@
-import math
-import os
-
 from qgis import processing
 from qgis.core import (
-    QgsCoordinateReferenceSystem,
     QgsField,
-    QgsCoordinateTransformContext,
-    QgsDistanceArea,
-    QgsFeature,
-    QgsFeatureRequest,
-    QgsGeometry,
+    QgsFields,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProperty,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterVectorLayer,
-    NULL,
-    QgsUnitTypes,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterFeatureSink,
+    QgsWkbTypes,
+    QgsFeature,
     QgsFeatureSink,
     QgsVectorLayer,
-    QgsProcessingMultiStepFeedback,
+    QgsProcessingParameterFeatureSink,
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-
-from .processingUtils import ProcessingUtils
 
 
 class PrepareTopo(QgsProcessingAlgorithm):
     INPUT_LAYERS = "INPUT_LAYERS"
     INPUT_FRAME = "INPUT_FRAME"
     SCALE = "SCALE"
-    OUTPUT = "OUTPUT"
+    OUTPUT_LINES = "OUTPUT_LINES"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -65,10 +53,27 @@ class PrepareTopo(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT_LINES, self.tr("Flags Prepara Topo")
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
+        fields = QgsFields()
+        fields.append(QgsField("id", QVariant.String))
+        fields.append(QgsField("descricao", QVariant.String))
+        (feats_sink_l, feats_sink_l_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT_LINES,
+            context,
+            fields,
+            QgsWkbTypes.MultiLineString,
+            layers[0].crs(),
+        )
 
         ptoCotado = [
             x
@@ -107,10 +112,20 @@ class PrepareTopo(QgsProcessingAlgorithm):
             x for x in layers if x.dataProvider().uri().table() in polygonToLine
         ]
 
+        lyrDict = {layer.dataProvider().uri().table(): layer for layer in layers}
+
+        drenagem = lyrDict["elemnat_trecho_drenagem_l"]
+        edicao_limite_esp = lyrDict["edicao_limite_especial_l"]
+        llp_limite_esp = lyrDict["llp_limite_especial_a"]
+        via_deslocamento = lyrDict["infra_via_deslocamento_l"]
+        ferrovia = lyrDict["infra_ferrovia_l"]
         self.setSobreposition(
-            layersToCalculateSobreposition,
-            layersToCheckSobreposition,
-            layersToConvertLine,
+            frameLayer,
+            edicao_limite_esp,
+            llp_limite_esp,
+            drenagem,
+            via_deslocamento,
+            ferrovia,
         )
 
         self.attrDefault(layers, gridScaleParam)
@@ -145,10 +160,38 @@ class PrepareTopo(QgsProcessingAlgorithm):
             for x in layers
             if x.dataProvider().uri().table() == "edicao_identificador_trecho_rod_p"
         ][0]
+        pointOfChangeSymbol = [
+            x
+            for x in layers
+            if x.dataProvider().uri().table() == "edicao_ponto_mudanca_p"
+        ][0]
 
         self.idtRodSymbol(rodovia, rodoviaSymbol, frameLayer, gridScaleParam)
+        pointOfChange = self.pointOfChange(
+            rodovia,
+            gridScaleParam,
+            pointOfChangeSymbol,
+            frameLayer=frameLayer,
+            tolerance=6,
+        )
+        featsToAddSet = set()
+        for feat in pointOfChange.getFeatures():
+            featToAdd = QgsFeature()
+            featToAdd.setFields(fields)
+            featToAdd[
+                "descricao"
+            ] = "Feicao de edicao_texto_generico_l fora ou muito proxima à moldura"
+            featToAdd["id"] = feat["id"]
+            featToAdd.setGeometry(feat.geometry())
+            featsToAddSet.add(featToAdd)
+        list(
+            map(
+                lambda x: feats_sink_l.addFeature(x, QgsFeatureSink.FastInsert),
+                featsToAddSet,
+            )
+        )
 
-        return {self.OUTPUT: ""}
+        return {self.OUTPUT_LINES: feats_sink_l_id}
 
     def attrDefault(self, layers, scale):
         processing.run(
@@ -162,6 +205,24 @@ class PrepareTopo(QgsProcessingAlgorithm):
             {"ROAD": road, "MARKER": simbol, "INPUT_FRAME": frame, "SCALE": scale},
         )
 
+    def pointOfChange(
+        self, road, scale, pointOfChange, frameLayer=None, tolerance=6, output=None
+    ) -> QgsVectorLayer:
+        output = "memory:" if output is None else output
+        p = processing.run(
+            "ferramentasedicao:placepointofchange",
+            {
+                "INPUT": road,
+                "FRAME_LAYER": frameLayer,
+                "SYMBOL_LAYER": pointOfChange,
+                "SCALE": scale,
+                "TOLERANCE": tolerance,
+                "OUTPUT": output,
+                "PRODUCT_TYPE": 1,
+            },
+        )
+        return p["OUTPUT"]
+
     def energySymbol(self, energy, simbol, frame, scale):
         processing.run(
             "ferramentasedicao:insertEnergyTower",
@@ -173,13 +234,24 @@ class PrepareTopo(QgsProcessingAlgorithm):
             },
         )
 
-    def setSobreposition(self, layers, check, polygons):
+    def setSobreposition(
+        self,
+        moldura,
+        edicao_limite_esp,
+        llp_limite_esp,
+        drenagem,
+        via_deslocamento,
+        ferrovia,
+    ):
         processing.run(
             "ferramentasedicao:setsobrepositiontopo",
             {
-                "INPUT_LAYER_SOBREPOSITION": layers,
-                "INPUT_LAYER_TO_CHECK": check,
-                "INPUT_POLYGONS": polygons,
+                "INPUT_MOLDURA": moldura,
+                "INPUT_LAYER_SOBREPOSITION": edicao_limite_esp,
+                "INPUT_POLYGONS": llp_limite_esp,
+                "INPUT_LAYER_TO_CHECK_DRE": drenagem,
+                "INPUT_LAYER_TO_CHECK_VIA": via_deslocamento,
+                "INPUT_LAYER_TO_CHECK_FER": ferrovia,
             },
         )
 

@@ -39,6 +39,7 @@ from .changeAttributeTopo import ChangeAttributeTopo
 from .sizeTextRiverLine import SizeTextRiverLine
 from .setCurveOrientation import SetCurveOrientation
 from .setSobrepositionLegalBoundary import SetSobrepositionLegalBoundary
+from .placePointOfChange import PlacePointOfChange
 
 
 class Provider(QgsProcessingProvider):
@@ -81,6 +82,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PlaceVegetationSymbol())
         self.addAlgorithm(PlaceBorderOfHydrographicElement())
         self.addAlgorithm(SetSobrepositionLegalBoundary())
+        self.addAlgorithm(PlacePointOfChange())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
