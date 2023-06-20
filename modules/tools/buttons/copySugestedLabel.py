@@ -106,7 +106,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
 
     def getAcceptedRule(self, baseLabeling, context, configs):
         if isinstance(baseLabeling, QgsVectorLayerSimpleLabeling):
-            config = self.getConfigFromLabelSettings(baseLabeling, context)
+            config = self.getConfigFromLabelSettings(baseLabeling.settings(), context)
             configs.append(config)  
             return
             
@@ -147,8 +147,9 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         scope.setFeature(feat)
         config = {"found": False}
         labeling = self.srcLyr.labeling()
+        baseLabeling = labeling if isinstance(labeling, QgsVectorLayerSimpleLabeling) else labeling.rootRule()        
         configs = []
-        self.getAcceptedRule(labeling.rootRule(), context, configs)
+        self.getAcceptedRule(baseLabeling, context, configs)
         return {"found": False} if len(configs) != 1 else configs[0]
 
     def getSugestedLabelGeometry(self, letters_data, custom=None):
