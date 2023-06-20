@@ -15,6 +15,7 @@ from qgis.core import (
     QgsExpressionContext,
     QgsExpressionContextScope,
     QgsPalLayerSettings,
+    QgsVectorLayerSimpleLabeling,
     QgsFields,
     QgsField,
     QgsCoordinateReferenceSystem,
@@ -65,17 +66,61 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         y = (pt1.y() + pt2.y()) / 2
         return QgsPointXY(x, y)
 
-    def getAcceptedRule(self, baseLabelRule, context, configs):
-        if isinstance(baseLabelRule, list):
-            for childLabelRule in baseLabelRule:
+    def getConfigFromLabelSettings(self, labelSettings, context):
+        if labelSettings is None:
+            return
+        config = {}
+        config["found"] = True
+        textFormat = labelSettings.format()
+        textFont = textFormat.font()
+
+        # Obtendo os parâmetros
+        scope = context.scopes()[0]
+        feat = scope.feature()
+        if "justificativa_txt" in feat.fields().names():
+            config["justificativa_txt"] = 1 if feat["justificativa_txt"] in (None, 9999) else feat["justificativa_txt"] 
+        config["placement"] = labelSettings.placement
+        config["estilo_fonte"] = textFormat.namedStyle()
+        config["tamanho_txt"] = textFormat.size()
+        config["cor"] = textFormat.color().name()
+        config["cor_buffer"] = textFormat.buffer().color().name()
+        config["tamanho_buffer"] = textFormat.buffer().size()
+        config["letterSpacing"] = textFont.letterSpacing()
+        config["wordSpacing"] = textFont.wordSpacing()
+
+        # Get custom values
+        checkExpressionProperties = {"tamanho_txt": QgsPalLayerSettings.Size}
+        for attr, prop in checkExpressionProperties.items():
+            if prop not in labelSettings.dataDefinedProperties().propertyKeys():
+                continue
+            if not labelSettings.dataDefinedProperties().property(prop).isActive():
+                continue
+            prop_expression = QgsExpression(
+                labelSettings.dataDefinedProperties().property(prop).asExpression()
+            )
+            prop_value = prop_expression.evaluate(context)
+            if prop_value is None:
+                continue
+            config[attr] = prop_expression.evaluate(context)
+        return config
+
+    def getAcceptedRule(self, baseLabeling, context, configs):
+        if isinstance(baseLabeling, QgsVectorLayerSimpleLabeling):
+            config = self.getConfigFromLabelSettings(baseLabeling, context)
+            configs.append(config)  
+            return
+            
+            
+        if isinstance(baseLabeling, list):
+            for childLabelRule in baseLabeling:
                 rule_expresion = QgsExpression(childLabelRule.filterExpression())
                 if not rule_expresion.evaluate(context):
                     continue
                 self.getAcceptedRule(childLabelRule, context, configs)
         else:
-            n_children = len(baseLabelRule.children())
+            n_children = len(baseLabeling.children())
             if n_children != 0:
-                for childLabelRule in baseLabelRule.children():
+                for childLabelRule in baseLabeling.children():
                     rule_expresion = QgsExpression(childLabelRule.filterExpression())
                     if not (
                         rule_expresion.evaluate(context)
@@ -84,43 +129,15 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
                         continue
                     self.getAcceptedRule(childLabelRule, context, configs)
                 return
-            rule_expresion = QgsExpression(baseLabelRule.filterExpression())
+            rule_expresion = QgsExpression(baseLabeling.filterExpression())
             if not (
                 rule_expresion.evaluate(context) or rule_expresion.expression() == ""
             ):
                 return
-            rule_settings = baseLabelRule.settings()
-            if rule_settings is None:
+            ruleLabelSettings = baseLabeling.settings()
+            if ruleLabelSettings is None:
                 return
-            config = {}
-            config["found"] = True
-            textFormat = rule_settings.format()
-            textFont = textFormat.font()
-
-            # Obtendo os parâmetros
-            config["placement"] = rule_settings.placement
-            config["estilo_fonte"] = textFormat.namedStyle()
-            config["tamanho_txt"] = textFormat.size()
-            config["cor"] = textFormat.color().name()
-            config["cor_buffer"] = textFormat.buffer().color().name()
-            config["tamanho_buffer"] = textFormat.buffer().size()
-            config["letterSpacing"] = textFont.letterSpacing()
-            config["wordSpacing"] = textFont.wordSpacing()
-
-            # Get custom values
-            checkExpressionProperties = {"tamanho_txt": QgsPalLayerSettings.Size}
-            for attr, prop in checkExpressionProperties.items():
-                if prop not in rule_settings.dataDefinedProperties().propertyKeys():
-                    continue
-                if not rule_settings.dataDefinedProperties().property(prop).isActive():
-                    continue
-                prop_expression = QgsExpression(
-                    rule_settings.dataDefinedProperties().property(prop).asExpression()
-                )
-                prop_value = prop_expression.evaluate(context)
-                if prop_value is None:
-                    continue
-                config[attr] = prop_expression.evaluate(context)
+            config = self.getConfigFromLabelSettings(ruleLabelSettings, context)
             configs.append(config)
 
     def getSugestedLabelConfig(self, feat):
@@ -263,11 +280,12 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         if sugestedLabelConfig["placement"] in (QgsPalLayerSettings.Horizontal, QgsPalLayerSettings.OverPoint, QgsPalLayerSettings.AroundPoint, QgsPalLayerSettings.OrderedPositionsAroundPoint):
             destLayer = self.dstLyrP
             sugestedLabelGeometry = centroidGeom
+
         toInsert = QgsFeature(destLayer.fields())
         toInsert.setAttribute("texto_edicao", word_text)
-        toInsert.setAttribute("estilo_fonte", sugestedLabelConfig["estilo_fonte"])
-        toInsert.setAttribute("tamanho_txt", sugestedLabelConfig["tamanho_txt"])
-        toInsert.setAttribute("cor", sugestedLabelConfig["cor"])
+        for attrToAdd in ["justificativa_txt","estilo_fonte", "tamanho_txt", "cor"]:
+            if attrToAdd in destLayer.fields().names() and  attrToAdd in list(sugestedLabelConfig.keys()):
+                toInsert.setAttribute(attrToAdd, sugestedLabelConfig[attrToAdd])
         toInsert.setGeometry(sugestedLabelGeometry)
         destLayer.startEditing()
         destLayer.addFeature(toInsert)
