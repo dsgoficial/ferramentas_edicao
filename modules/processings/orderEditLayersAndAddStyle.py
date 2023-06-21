@@ -252,10 +252,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if multiStepFeedback.isCanceled():
             return {self.OUTPUT: "Cancelado"}
 
-        # feedback.setProgressText('Configurando escala de renderização...')
-        # self.renderizar( layers, gridScale)
-        # if feedback.isCanceled():
-        #    return {self.OUTPUT: 'Cancelado'}
+        feedback.setProgressText('Configurando escala de renderização...')
+        self.renderizar( layers, gridScale*1000)
+        if feedback.isCanceled():
+            return {self.OUTPUT: 'Cancelado'}
 
         # feedback.setProgressText('Carregando as máscaras...')
         # self.loadMasks(carta, layers)
@@ -403,11 +403,11 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             "native:setlayerstyle", {"INPUT": lyr, "STYLE": styleQmlPath}
         )
 
-    # def renderizar(self, layers, scale):
-    #     for layer in layers:
-    #         qgs_feature_renderer = layer.renderer()
-    #         qgs_feature_renderer.setReferenceScale(scale)
-    #         layer.reload()
+    def renderizar(self, layers, scale):
+        for layer in layers:
+            qgs_feature_renderer = layer.renderer()
+            qgs_feature_renderer.setReferenceScale(scale)
+            layer.reload()
 
     # def loadMasks(self, carta, layers):
     #     jsonPathMask = os.path.join(
