@@ -17,6 +17,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsMapToolEmitPoint
 from qgis import processing
+
 class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
     def __init__(self, iface, toolBar, scaleSelector, productTypeSelector):
         super().__init__(iface.mapCanvas())
@@ -36,10 +37,10 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             buttonImg,
             lambda _: None,
             self.tr(
-                'Cria feições com o texto "APROXIMADO" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l"'
+                'Cria feições com o texto "APROXIMADO" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l"'
             ),
             self.tr(
-                'Cria feições com o texto "APROXIMADO" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l"'
+                'Cria feições com o texto "APROXIMADO" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l"'
             ),
             self.iface,
         )
@@ -51,27 +52,32 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
     def mouseClick(self, pos, btn):
         if not (self.isActive() and self.dstLyr):
             return
-        layer = ['edicao_limite_legal_l']
-        if layer in self.layerlist:
-            self.spatialIndex = QgsSpatialIndex(
-            layer.getFeatures(), flags = QgsSpatialIndex.FlagStoreFeatureGeometries
+        closestSpatialID = self.spatialIndex.nearestNeighbor(
+            pos, maxDistance = 2 * self.tolerance
         )
-            closestSpatialID = self.spatialIndex.nearestNeighbor(
-                pos, maxDistance=2 * self.tolerance
+        request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+        closestFeat = self.srcLyr.getFeatures(request)
+        if not closestSpatialID:
+            self.displayErrorMessage(
+                'Não foram encontradas feições em "edicao_limite_legal_l" ou "edicao_limite_especial_l"'
             )
-            request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-            closestFeat = layer.getFeatures(request)
-            feat = next(closestFeat)
-            self.createFeature(feat, pos)
+            return
+        feat = next(closestFeat)
+        if not self.checkFeature(feat):
+            self.displayErrorMessage(
+                self.tr(
+                    'Feição inválida. Verifique os atributos na camada "edicao_limite_legal_l" ou "edicao_limite_especial_l"'
+                )
+            )
+            return
+        self.createFeature(feat, pos)
 
     def createFeature(self, feat, pos):
         toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert, labelSize = self.setAttributes(
-            feat, toInsert
-        )
+        toInsert = self.setAttributes(feat, toInsert)
         if toInsert is None:
             return
-        toInsertGeom = self.getLabelGeometry(feat, pos, labelSize)
+        toInsertGeom = self.getLabelGeometry(feat, pos)
         toInsert.setGeometry(toInsertGeom)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
@@ -79,13 +85,13 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
 
     def setAttributes(self, feat, toInsert):
         toInsert = QgsFeature(self.dstLyr.fields())
-        toInsert.setAttribute("texto_edicao", "APROXIMADO")
+        toInsert.setAttribute("texto_edicao", "(APROXIMADO)")
         toInsert.setAttribute("estilo_fonte", "Condensed Bold")
         toInsert.setAttribute("espacamento", 0)
-        color = "#ffffff" if self.productTypeSelector.currentIndex() == 0 else "#241f21"
+        color = "#ffffff" if self.productTypeSelector.currentIndex() == 0 else "#232323"
         toInsert.setAttribute("cor", color)
-        toInsert.setAttribute("tamanho_txt", 6)
-        # Verificar com Cap Diniz
+        labelSize = 6
+        toInsert.setAttribute("tamanho_txt", labelSize)
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
                 self.displayErrorMessage(
@@ -93,14 +99,26 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
                         "O campo tamanho_buffer não existe na modelagem em questão. Verifique a modelagem e o tipo de produto selecionado e tente novamente."
                     )
                 )
-                return None
+                return None, None
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
-        return toInsert, 6
+        return toInsert
 
-    def getLabelGeometry(self, feat, clickPos, labelSize):
+    def convertLength(self, feat):
+        convertLength = QgsDistanceArea()
+        convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
+        measure = convertLength.measureLength(feat.geometry())
+        return convertLength.convertLengthMeasurement(
+            measure, QgsUnitTypes.DistanceMeters
+        )
+
+    @staticmethod
+    def checkFeature(feat):
+        return not not feat.attribute("nome")
+
+    def getLabelGeometry(self, feat, clickPos):
         geom = feat.geometry()
-        interpolateSize = labelSize * 20 * self.tolerance / 20
+        interpolateSize = 100 * self.tolerance / 20
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
         start = posClosestV - interpolateSize / 2
@@ -171,13 +189,12 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         yRefTranslate = clickPos.y() - ref.y()
         xRefTranslate, yRefTranslate = self.scaleTransform(xRefTranslate, yRefTranslate)
         xCentroidTranslate, yCentroidTranslate = self.scaleTransform(dx, dy)
-        return (xRefTranslate + xCentroidTranslate) / 2, (
+        return (xRefTranslate + xCentroidTranslate) / 4, (
             yRefTranslate + yCentroidTranslate
-        ) / 2
+        ) / 4
 
     def scaleTransform(self, x, y):
         d = self.tolerance
-        # scaleFactor = 1
         scaleFactor = (d**2 / ((x**2 + y**2))) ** 0.5
         return scaleFactor * x, scaleFactor * y
 
@@ -192,18 +209,18 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         return QgsLineString(xCoords, yCoords).curveSubstring(start, end)
 
     def getLayers(self):
-        srcLyr = QgsProject.instance().mapLayersByName(
+        srcLyr_legal = QgsProject.instance().mapLayersByName(
             "edicao_limite_legal_l"
         )
-        srcLyrAdd = QgsProject.instance().mapLayersByName(
+        srcLyr_especial = QgsProject.instance().mapLayersByName(
             "edicao_limite_especial_l"
         )
-        srcLyr.append(srcLyrAdd[0])
-        self.layerlist = srcLyr
+        merge = self.runMergeLayer([srcLyr_legal[0], srcLyr_especial[0]])
+        srcLyr = merge
         dstLyr = QgsProject.instance().mapLayersByName("edicao_texto_generico_l")
-        if not len(srcLyr) >= 1:
+        if not len(srcLyr) >= 0:
             self.displayErrorMessage(
-                self.tr('Camada "edicao_limite_legal_l" não encontrada')
+                self.tr('Camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" não encontrada')
             )
             return None
         if not len(dstLyr) == 1:
@@ -211,8 +228,9 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
                 self.tr('Camada "edicao_texto_generico_l" não encontrada')
             )
             return None
+        self.srcLyr = srcLyr
         self.dstLyr = dstLyr[0]
-        self.lyrCrs = self.dstLyr.dataProvider().crs()
+        self.lyrCrs = self.srcLyr.dataProvider().crs()
         if self.lyrCrs.isGeographic():
             d = QgsDistanceArea()
             d.setSourceCrs(
@@ -224,5 +242,13 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             )
         else:
             self.tolerance = self.getScale() * 0.005
-
+        self.spatialIndex = QgsSpatialIndex(
+            srcLyr.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
+        )
         return True
+
+    def runMergeLayer(self, layers):
+        m = processing.run(
+            "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "memory:"}
+        )
+        return m['OUTPUT']
