@@ -213,7 +213,7 @@ def getLabelDistance(
 
 
 # Verificar a existência da camadas
-def getLayerByName(name) -> Union[QgsMapLayer, QgsVectorLayer]:
+def getLayerByName(name: str) -> Union[QgsMapLayer, QgsVectorLayer]:
     lyr = QgsProject.instance().mapLayersByName(name)
     if not len(lyr) == 1:
         if len(lyr) > 1:

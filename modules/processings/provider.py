@@ -40,6 +40,7 @@ from .sizeTextRiverLine import SizeTextRiverLine
 from .setCurveOrientation import SetCurveOrientation
 from .setSobrepositionLegalBoundary import SetSobrepositionLegalBoundary
 from .placePointOfChange import PlacePointOfChange
+from .verifySymbolOverlap import VerifySymbolOverlap
 
 
 class Provider(QgsProcessingProvider):
@@ -83,6 +84,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PlaceBorderOfHydrographicElement())
         self.addAlgorithm(SetSobrepositionLegalBoundary())
         self.addAlgorithm(PlacePointOfChange())
+        self.addAlgorithm(VerifySymbolOverlap())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
