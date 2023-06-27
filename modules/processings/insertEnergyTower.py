@@ -92,7 +92,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         self.runCreateSpatialIndex(frameLayer, feedback=feedback)
 
         frameLinesLayer = self.convertPolygonToLines(frameLayer)
-        self.runCreateSpatialIndex(frameLinesLayer, feedback=feedback)
+        self.runCreateSpatialIndex(frameLinesLayer, feedback=feedback, is_child_algorithm=True)
 
         lyr = self.runAddCount(lyr, feedback=feedback)
         self.runCreateSpatialIndex(lyr, feedback=feedback)
@@ -241,9 +241,9 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         )
         return output["OUTPUT"]
 
-    def runCreateSpatialIndex(self, inputLyr, feedback):
+    def runCreateSpatialIndex(self, inputLyr, feedback, is_child_algorithm=False):
         processing.run(
-            "native:createspatialindex", {"INPUT": inputLyr}, feedback=feedback
+            "native:createspatialindex", {"INPUT": inputLyr}, feedback=feedback, is_child_algorithm=is_child_algorithm
         )
 
     def tr(self, string):
