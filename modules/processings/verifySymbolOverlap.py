@@ -28,6 +28,7 @@ from qgis.core import (
     QgsProperty,
     QgsSimpleMarkerSymbolLayer,
     QgsWkbTypes,
+    QgsProcessingException,
     NULL,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
@@ -102,12 +103,21 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         cobter_massa_dagua_a = getLayerByName("cobter_massa_dagua_a")
         algRunner = AlgRunner()
         crs = infra_via_deslocamento_l.crs()
+        if crs.isGeographic():
+            raise QgsProcessingException(
+                "Verificar sobreposição não pode ser feito em lat/long"
+            )
         verifyList = [
             (infra_via_deslocamento_l, infra_via_deslocamento_l),
-            (constr_edificacao_p, constr_edificacao_p),
-            (infra_via_deslocamento_l, constr_edificacao_p),
-            (cobter_massa_dagua_a, constr_edificacao_p),
         ]
+        if constr_edificacao_p is not None:
+            verifyList.append(
+                (constr_edificacao_p, constr_edificacao_p),
+                (infra_via_deslocamento_l, constr_edificacao_p),
+            )
+            if cobter_massa_dagua_a is not None:
+                verifyList.append((cobter_massa_dagua_a, constr_edificacao_p))
+
         frameLyr = (
             algRunner.runDissolve(
                 inputLyr=frameLyrPre,

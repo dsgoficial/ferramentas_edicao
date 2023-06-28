@@ -228,6 +228,8 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
     ):
         featsToAdd = []
         labels = set()
+        if len(boundaryDict.items()) == 0:
+            return featsToAdd, labels
         if feedback is not None:
             progressStep = 100 / len(boundaryDict.items())
         for currentStep, (geomWkb, featSet) in enumerate(boundaryDict.items()):
@@ -298,8 +300,11 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
     def addSymbolType(
         self, inputLyr: QgsVectorLayer, fieldToAdd, feedback=None
     ) -> None:
+
+        nFeat = inputLyr.featureCount()
+        if nFeat == 0:
+            return
         if feedback is not None:
-            nFeat = inputLyr.featureCount()
             progressStep = 100 / nFeat
         data = {}
         inputLyr.startEditing()

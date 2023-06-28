@@ -218,7 +218,7 @@ def getLayerByName(name: str) -> Union[QgsMapLayer, QgsVectorLayer]:
     if not len(lyr) == 1:
         if len(lyr) > 1:
             raise NameError(tr(f"Mais de uma camada '{name}' encontrada"))
-        raise NameError(tr(f"Camada '{name}' não encontrada"))
+        return None
     return lyr[0]
 
 

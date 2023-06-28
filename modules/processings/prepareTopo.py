@@ -10,6 +10,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFeature,
     QgsFeatureSink,
+    QgsProcessingMultiStepFeedback,
     QgsVectorLayer,
     QgsProcessingParameterFeatureSink,
 )
@@ -75,50 +76,23 @@ class PrepareTopo(QgsProcessingAlgorithm):
             layers[0].crs(),
         )
 
-        ptoCotado = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "elemnat_ponto_cotado_p"
-        ][0]
-        self.highestSpot(ptoCotado, frameLayer)
-
-        layersNameToCalculateSobreposition = [
-            "edicao_area_pub_militar_l",
-            "edicao_terra_indigena_l",
-            "edicao_unidade_conservacao_l",
-        ]
-        layersNameToCheckSobreposition = [
-            "elemnat_trecho_drenagem_l",
-            "infra_via_deslocamento_l",
-            "infra_ferrovia_l",
-        ]
-        polygonToLine = [
-            "llp_area_pub_militar_a",
-            "llp_terra_indigena_a",
-            "llp_unidade_conservacao_a",
-        ]
-
-        layersToCalculateSobreposition = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() in layersNameToCalculateSobreposition
-        ]
-        layersToCheckSobreposition = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() in layersNameToCheckSobreposition
-        ]
-        layersToConvertLine = [
-            x for x in layers if x.dataProvider().uri().table() in polygonToLine
-        ]
-
         lyrDict = {layer.dataProvider().uri().table(): layer for layer in layers}
+
+        ptoCotado = lyrDict["elemnat_ponto_cotado_p"]
+
+        multiStepFeedback = QgsProcessingMultiStepFeedback(7, feedback)
+        multiStepFeedback.setCurrentStep(0)
+
+        self.highestSpot(ptoCotado, frameLayer)
+        multiStepFeedback.setCurrentStep(1)
+        self.attrDefault(layers, gridScaleParam)
 
         drenagem = lyrDict["elemnat_trecho_drenagem_l"]
         edicao_limite_esp = lyrDict["edicao_limite_especial_l"]
         llp_limite_esp = lyrDict["llp_limite_especial_a"]
         via_deslocamento = lyrDict["infra_via_deslocamento_l"]
         ferrovia = lyrDict["infra_ferrovia_l"]
+        multiStepFeedback.setCurrentStep(2)
         self.setSobreposition(
             frameLayer,
             edicao_limite_esp,
@@ -127,67 +101,29 @@ class PrepareTopo(QgsProcessingAlgorithm):
             via_deslocamento,
             ferrovia,
         )
-
-        self.attrDefault(layers, gridScaleParam)
-
-        drenagem = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "elemnat_trecho_drenagem_l"
-        ][0]
+        multiStepFeedback.setCurrentStep(3)
         self.sizeRiverLabel(drenagem, frameLayer, gridScaleParam, 1)
 
-        energia = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "infra_elemento_energia_l"
-        ][0]
-        energiaSymbol = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "edicao_simb_torre_energia_p"
-        ][0]
-
+        energia = lyrDict["infra_elemento_energia_l"]
+        energiaSymbol = lyrDict["edicao_simb_torre_energia_p"]
+        multiStepFeedback.setCurrentStep(4)
         self.energySymbol(energia, energiaSymbol, frameLayer, gridScaleParam)
 
-        rodovia = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "infra_via_deslocamento_l"
-        ][0]
-        rodoviaSymbol = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "edicao_identificador_trecho_rod_p"
-        ][0]
-        pointOfChangeSymbol = [
-            x
-            for x in layers
-            if x.dataProvider().uri().table() == "edicao_ponto_mudanca_p"
-        ][0]
-
+        rodovia = lyrDict["infra_via_deslocamento_l"]
+        rodoviaSymbol = lyrDict["edicao_identificador_trecho_rod_p"]
+        multiStepFeedback.setCurrentStep(5)
         self.idtRodSymbol(rodovia, rodoviaSymbol, frameLayer, gridScaleParam)
-        pointOfChange = self.pointOfChange(
-            rodovia,
-            gridScaleParam,
-            pointOfChangeSymbol,
-            frameLayer=frameLayer,
-            tolerance=6,
+
+        pointOfChangeLayer = lyrDict["edicao_ponto_mudanca_p"]
+        multiStepFeedback.setCurrentStep(6)
+        flagsToAddSet = self.pointOfChangeSymbol(
+            gridScaleParam, frameLayer, fields, rodovia, pointOfChangeLayer
         )
-        featsToAddSet = set()
-        for feat in pointOfChange.getFeatures():
-            featToAdd = QgsFeature()
-            featToAdd.setFields(fields)
-            featToAdd[
-                "descricao"
-            ] = "Feicao de edicao_texto_generico_l fora ou muito proxima à moldura"
-            featToAdd["id"] = feat["id"]
-            featToAdd.setGeometry(feat.geometry())
-            featsToAddSet.add(featToAdd)
+
         list(
             map(
                 lambda x: feats_sink_l.addFeature(x, QgsFeatureSink.FastInsert),
-                featsToAddSet,
+                flagsToAddSet,
             )
         )
 
@@ -277,6 +213,29 @@ class PrepareTopo(QgsProcessingAlgorithm):
             },
         )
 
+    def pointOfChangeSymbol(
+        self, gridScaleParam, frameLayer, fields, rodovia, pointOfChangeLayer
+    ):
+        pointOfChange = self.pointOfChange(
+            rodovia,
+            gridScaleParam,
+            pointOfChangeLayer,
+            frameLayer=frameLayer,
+            tolerance=6,
+        )
+        featsToAddSet = set()
+
+        for feat in pointOfChange.getFeatures():
+            featToAdd = QgsFeature()
+            featToAdd.setFields(fields)
+            featToAdd[
+                "descricao"
+            ] = "Feicao de edicao_texto_generico_l fora ou muito proxima à moldura"
+            featToAdd["id"] = feat["id"]
+            featToAdd.setGeometry(feat.geometry())
+            featsToAddSet.add(featToAdd)
+        return featsToAddSet
+
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
 
@@ -287,7 +246,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
         return "preparetopo"
 
     def displayName(self):
-        return self.tr("Prepara carta topográfica")
+        return self.tr("Prepara Carta Topográfica")
 
     def group(self):
         return self.tr("Preparo de Edição")
