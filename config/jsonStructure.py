@@ -864,15 +864,15 @@ def find_missing_required_keys(
 
 def validate_keys(input_dict: dict, required=True, reference_schema=None) -> bool:
     reference_schema = data_structure if reference_schema is None else reference_schema
-    for item in filter(lambda x: x.get("required", None) is required, reference_schema):
+    for item in filter(lambda x: isinstance(x, dict) and x.get("required", None) is required, reference_schema):
         key = item["key"]
         if key == "inom" and "center" in input_dict:
             continue
         if key not in input_dict:
             return False
-        if key not in (dict, list):
+        if item["type"] not in (dict, list):
             continue
-        dict_item = next(filter(lambda x: x["key"] == key, input_dict), None)
+        dict_item = next(filter(lambda x: x[0] == key, input_dict.items()), None)
         if dict_item is None:
             return False
         if item["type"] == dict:

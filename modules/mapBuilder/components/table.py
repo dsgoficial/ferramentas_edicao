@@ -357,7 +357,7 @@ class Table(IComponent, ComponentUtils):
     
     def getDataEdicao(self):
         now = datetime.datetime.now()
-        return f"{now.day}/{now.month:02d}/{now.year}"
+        return f"{now.day:02d}/{now.month:02d}/{now.year}"
 
     def omInfoTable(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
