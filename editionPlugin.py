@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 
@@ -212,12 +213,24 @@ class EditionPlugin:
             self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
             self.dlg.pushButton.clicked.connect(self.controller.run)
             if self.debugMode:
+                env_dict = self.loadEnv()
                 self.dlg.jsonConfigs.setFilePath(
-                    "C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json"
+                    env_dict.get("jsonConfigs", "C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json")
                 )
-                self.dlg.exportFolder.setFilePath("D:\\export")
+                self.dlg.exportFolder.setFilePath(env_dict.get("exportFolder", "D:\\export"))
                 self.dlg.jsonConfigs.setFilter("JSON (*.json)")
+                username = env_dict.get("username", None)
+                if username is not None:
+                    self.dlg.username.setText(username)
+                password = env_dict.get("password", None)
+                if password is not None:
+                    self.dlg.password.setText(password)
 
+    def loadEnv(self):
+        with open(Path(__file__).parent / ".env") as f:
+            file_data = f.read()
+        return json.loads(file_data)
+    
     def fontsAreInstalled(self):
         fontUtils = QgsFontUtils()
         if not fontUtils.fontFamilyOnSystem("Noto Sans"):
