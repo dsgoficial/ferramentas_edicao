@@ -420,9 +420,8 @@ class GridAndLabelCreator(QObject):
         settings.geometryGeneratorEnabled = True
         settings.geometryGenerator = "make_point({}, {})".format(pgrid.x(), pgrid.y())
         datadefined = QgsPropertyCollection()
-        if not discourage_placement:
-            datadefined.property(20).setExpressionString("True")
-            datadefined.property(20).setActive(True)
+        datadefined.property(20).setExpressionString("True")
+        datadefined.property(20).setActive(True)
         datadefined.property(15).setExpressionString("True")
         datadefined.property(15).setActive(True)
         datadefined.property(77).setExpressionString("2")

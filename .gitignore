@@ -1,6 +1,7 @@
 .vscode/
 __pycache__
 .env
+*.env
 *.cpg
 *.pyc
 pylintrc
