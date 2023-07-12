@@ -217,8 +217,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         multiStepFeedback.setCurrentStep(1)
         multiStepFeedback.setProgressText("Mudando visibilidade das camadas...")
+        layerNames = [i["table"] for i in jsonConfigData[groupName]]
+        layerNames[:0] = ["aux_moldura_a", "edicao_grid_edicao_l"]
         visibleLayers, invisibleLayers = self.changeVisibility(
-            layerNames=[i["table"] for i in jsonConfigData[groupName]],
+            layerNames=layerNames,
             layers=layers,
             qmlDict=qmlDict,
             feedback=multiStepFeedback,
@@ -229,7 +231,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         multiStepFeedback.setCurrentStep(2)
         multiStepFeedback.setProgressText("Ordenando as camadas...")
         self.order(
-            layerNames=[i["table"] for i in jsonConfigData[groupName]],
+            layerNames=layerNames,
             layers=layers,
             invisibleLayers=invisibleLayers,
             feedback=multiStepFeedback,
@@ -252,10 +254,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if multiStepFeedback.isCanceled():
             return {self.OUTPUT: "Cancelado"}
 
-        feedback.setProgressText('Configurando escala de renderização...')
-        self.renderizar( layers, gridScale*1000)
+        feedback.setProgressText("Configurando escala de renderização...")
+        self.renderizar(layers, gridScale * 1000)
         if feedback.isCanceled():
-            return {self.OUTPUT: 'Cancelado'}
+            return {self.OUTPUT: "Cancelado"}
 
         # feedback.setProgressText('Carregando as máscaras...')
         # self.loadMasks(carta, layers)
