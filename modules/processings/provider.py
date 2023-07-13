@@ -14,6 +14,7 @@ from .placeVegetationSymbol import PlaceVegetationSymbol
 from .placeBorderOfHydrigraphicElement import PlaceBorderOfHydrographicElement
 from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
+from .fixLabelPositionOnLayers import FixLabelPostionOnLayers
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
 from .insertEnergyTower import InsertEnergyTower
 from .insertRoadMarker import InsertRoadMarker
@@ -85,6 +86,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(SetSobrepositionLegalBoundary())
         self.addAlgorithm(PlacePointOfChange())
         self.addAlgorithm(VerifySymbolOverlap())
+        self.addAlgorithm(FixLabelPostionOnLayers())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
