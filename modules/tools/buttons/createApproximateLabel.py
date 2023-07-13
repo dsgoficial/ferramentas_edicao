@@ -37,10 +37,10 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             buttonImg,
             lambda _: None,
             self.tr(
-                'Cria feições com o texto "APROXIMADO" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l"'
+                'Cria feições com o texto "(APROXIMADO)" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" (e correspondentes para Carta Ortoimagem)'
             ),
             self.tr(
-                'Cria feições com o texto "APROXIMADO" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l"'
+                'Cria feições com o texto "(APROXIMADO)" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" (e correspondentes para Carta Ortoimagem)'
             ),
             self.iface,
         )
@@ -52,25 +52,57 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
     def mouseClick(self, pos, btn):
         if not (self.isActive() and self.dstLyr):
             return
-        closestSpatialID = self.spatialIndex.nearestNeighbor(
-            pos, maxDistance = 2 * self.tolerance
-        )
-        request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-        closestFeat = self.srcLyr.getFeatures(request)
-        if not closestSpatialID:
-            self.displayErrorMessage(
-                'Não foram encontradas feições em "edicao_limite_legal_l" ou "edicao_limite_especial_l"'
+        if self.productTypeSelector.currentIndex() == 1:
+            closestSpatialID = self.spatialIndexLegal.nearestNeighbor(
+                pos, maxDistance = 2 * self.tolerance
             )
-            return
-        feat = next(closestFeat)
-        if not self.checkFeature(feat):
-            self.displayErrorMessage(
-                self.tr(
-                    'Feição inválida. Verifique os atributos na camada "edicao_limite_legal_l" ou "edicao_limite_especial_l"'
+            request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+            closestFeat = self.srcLyrLegal.getFeatures(request)
+            if len(closestSpatialID) == 0:
+                closestSpatialID = self.spatialIndexEspecial.nearestNeighbor(
+                pos, maxDistance = 2 * self.tolerance
                 )
+                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                closestFeat = self.srcLyrEspecial.getFeatures(request)
+            if not closestSpatialID:
+                self.displayErrorMessage(
+                    'Não foram encontradas feições nas camadas de edição.'
+                )
+                return
+            feat = next(closestFeat)
+            self.createFeature(feat, pos)
+        
+        if self.productTypeSelector.currentIndex() == 0:
+            closestSpatialID = self.spatialIndexLegal.nearestNeighbor(
+                pos, maxDistance = 2 * self.tolerance
             )
-            return
-        self.createFeature(feat, pos)
+            request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+            closestFeat = self.srcLyrLegal.getFeatures(request)
+            if len(closestSpatialID) == 0:
+                closestSpatialID = self.spatialIndexAreaPubMil.nearestNeighbor(
+                pos, maxDistance = 2 * self.tolerance
+                )
+                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                closestFeat = self.srcLyrAreaPubMil.getFeatures(request)
+            if len(closestSpatialID) == 0:
+                closestSpatialID = self.spatialIndexTerraInd.nearestNeighbor(
+                pos, maxDistance = 2 * self.tolerance
+                )
+                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                closestFeat = self.srcLyrTerraInd.getFeatures(request)
+            if len(closestSpatialID) == 0:
+                closestSpatialID = self.spatialIndexUnidConserv.nearestNeighbor(
+                pos, maxDistance = 2 * self.tolerance
+                )
+                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                closestFeat = self.srcLyrUnidConserv.getFeatures(request)
+            if not closestSpatialID:
+                self.displayErrorMessage(
+                    'Não foram encontradas feições nas camadas de edição.'
+                )
+                return
+            feat = next(closestFeat)
+            self.createFeature(feat, pos)
 
     def createFeature(self, feat, pos):
         toInsert = QgsFeature(self.dstLyr.fields())
@@ -86,7 +118,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
     def setAttributes(self, feat, toInsert):
         toInsert = QgsFeature(self.dstLyr.fields())
         toInsert.setAttribute("texto_edicao", "(APROXIMADO)")
-        toInsert.setAttribute("estilo_fonte", "Condensed Bold")
+        toInsert.setAttribute("estilo_fonte", "Condensed")
         toInsert.setAttribute("espacamento", 0)
         color = "#ffffff" if self.productTypeSelector.currentIndex() == 0 else "#232323"
         toInsert.setAttribute("cor", color)
@@ -101,7 +133,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
                 )
                 return None, None
             toInsert.setAttribute("tamanho_buffer", 1)
-            toInsert.setAttribute("cor_buffer", "#00a0df")
+            toInsert.setAttribute("cor_buffer", "#000000")
         return toInsert
 
     def convertLength(self, feat):
@@ -118,7 +150,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
 
     def getLabelGeometry(self, feat, clickPos):
         geom = feat.geometry()
-        interpolateSize = 100 * self.tolerance / 20
+        interpolateSize = 150 * self.tolerance / 20
         clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
         posClosestV = geom.lineLocatePoint(clickPosGeom)
         start = posClosestV - interpolateSize / 2
@@ -172,7 +204,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         geom.rotate(90 - angle, firstPoint)
         xVert = [p.x() for p in geom.vertices()]
         yVert = [p.y() for p in geom.vertices()]
-        f = np.poly1d(np.polyfit(xVert, yVert, 2))
+        f = np.poly1d(np.polyfit(xVert, yVert, 5))
         xVert = sorted(xVert)
         newYVert = f(xVert)
         rotatedParabola = QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
@@ -194,7 +226,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         ) / 4
 
     def scaleTransform(self, x, y):
-        d = self.tolerance
+        d = self.tolerance + 0.001
         scaleFactor = (d**2 / ((x**2 + y**2))) ** 0.5
         return scaleFactor * x, scaleFactor * y
 
@@ -209,28 +241,14 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         return QgsLineString(xCoords, yCoords).curveSubstring(start, end)
 
     def getLayers(self):
-        srcLyr_legal = QgsProject.instance().mapLayersByName(
-            "edicao_limite_legal_l"
-        )
-        srcLyr_especial = QgsProject.instance().mapLayersByName(
-            "edicao_limite_especial_l"
-        )
-        merge = self.runMergeLayer([srcLyr_legal[0], srcLyr_especial[0]])
-        srcLyr = merge
         dstLyr = QgsProject.instance().mapLayersByName("edicao_texto_generico_l")
-        if not len(srcLyr) >= 0:
-            self.displayErrorMessage(
-                self.tr('Camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" não encontrada')
-            )
-            return None
-        if not len(dstLyr) == 1:
+        self.dstLyr = dstLyr[0]
+        if not len(dstLyr) >= 1:
             self.displayErrorMessage(
                 self.tr('Camada "edicao_texto_generico_l" não encontrada')
             )
             return None
-        self.srcLyr = srcLyr
-        self.dstLyr = dstLyr[0]
-        self.lyrCrs = self.srcLyr.dataProvider().crs()
+        self.lyrCrs = self.dstLyr.dataProvider().crs()
         if self.lyrCrs.isGeographic():
             d = QgsDistanceArea()
             d.setSourceCrs(
@@ -242,13 +260,62 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             )
         else:
             self.tolerance = self.getScale() * 0.005
-        self.spatialIndex = QgsSpatialIndex(
-            srcLyr.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
-        )
-        return True
+        srcLyr_legal = QgsProject.instance().mapLayersByName(
+                "edicao_limite_legal_l"
+            )
+        srcLyrLegal = srcLyr_legal[0]
+        if self.productTypeSelector.currentIndex() == 1:
+            srcLyr_especial = QgsProject.instance().mapLayersByName(
+                "edicao_limite_especial_l"
+            )
+            srcLyrEspecial = srcLyr_especial[0]
+            if len(srcLyrLegal) == 0 and len(srcLyrEspecial) == 0:
+                self.displayErrorMessage(
+                    self.tr('Camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" não encontrada.')
+                )
+                return None
+            
+            self.srcLyrLegal = srcLyrLegal
+            self.srcLyrEspecial = srcLyrEspecial
 
-    def runMergeLayer(self, layers):
-        m = processing.run(
-            "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "memory:"}
-        )
-        return m['OUTPUT']
+            self.spatialIndexLegal = QgsSpatialIndex(
+                srcLyrLegal.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
+            )
+            self.spatialIndexEspecial = QgsSpatialIndex(
+                srcLyrEspecial.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
+            )
+        if self.productTypeSelector.currentIndex() == 0:
+            srcLyr_area_pub_militar = QgsProject.instance().mapLayersByName(
+                "edicao_area_pub_militar_l"
+            )
+            srcLyrAreaPubMil = srcLyr_area_pub_militar[0]
+
+            srcLyr_terra_indigena = QgsProject.instance().mapLayersByName(
+                "edicao_terra_indigena_l"
+            )
+            srcLyrTerraInd = srcLyr_terra_indigena[0]
+
+            srcLyr_unid_conservacao = QgsProject.instance().mapLayersByName(
+                "edicao_unidade_conservacao_l"
+            )
+            srcLyrUnidConserv = srcLyr_unid_conservacao[0]
+
+            self.srcLyrLegal = srcLyrLegal
+            self.srcLyrAreaPubMil = srcLyrAreaPubMil
+            self.srcLyrTerraInd = srcLyrTerraInd
+            self.srcLyrUnidConserv = srcLyrUnidConserv
+
+            self.spatialIndexLegal = QgsSpatialIndex(
+                srcLyrLegal.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
+            )
+            self.spatialIndexAreaPubMil = QgsSpatialIndex(
+                srcLyrAreaPubMil.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
+            )
+            self.spatialIndexTerraInd = QgsSpatialIndex(
+                srcLyrTerraInd.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
+            )
+            self.spatialIndexUnidConserv = QgsSpatialIndex(
+                srcLyrUnidConserv.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
+            )
+            
+        return True
