@@ -913,7 +913,7 @@ def validate_file_paths(input_dict: dict) -> str:
     if "mde_diagrama_elevacao" not in input_dict:
         return ""
     if not file_exists(input_dict["mde_diagrama_elevacao"]["caminho_mde"]):
-        return f'O arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]} não foi encontrado. Corrija o json ou coloque o arquivo em um caminho acessível (verifique a localização do arquivo ou sua conexão de rede) e tente novamente.'
+        return f'O arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]} não foi encontrado. \nCorrija o json ou coloque o arquivo em um caminho acessível (verifique a localização do arquivo ou sua conexão de rede) e tente novamente.'
     if " " in input_dict["mde_diagrama_elevacao"]["caminho_mde"]:
-        return f'Há espaços no caminho do arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}. Informe outro caminho sem espaços e tente novamente.'
+        return f'Há espaços no caminho do arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}. \nInforme outro caminho sem espaços e tente novamente.'
     return ""
