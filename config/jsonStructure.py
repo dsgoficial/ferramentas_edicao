@@ -867,7 +867,10 @@ def find_missing_required_keys(
 
 def validate_keys(input_dict: dict, required=True, reference_schema=None) -> bool:
     reference_schema = data_structure if reference_schema is None else reference_schema
-    for item in filter(lambda x: isinstance(x, dict) and x.get("required", None) is required, reference_schema):
+    for item in filter(
+        lambda x: isinstance(x, dict) and x.get("required", None) is required,
+        reference_schema,
+    ):
         key = item["key"]
         if key == "inom" and "center" in input_dict:
             continue
@@ -891,6 +894,7 @@ def validate_keys(input_dict: dict, required=True, reference_schema=None) -> boo
                 return False
     return True
 
+
 def file_exists(path: str, timeout=5) -> bool:
     start = time.time()
     f_exists = os.path.exists(path)
@@ -904,9 +908,12 @@ def file_exists(path: str, timeout=5) -> bool:
             break
     return f_exists
 
+
 def validate_file_paths(input_dict: dict) -> str:
     if "mde_diagrama_elevacao" not in input_dict:
         return ""
     if not file_exists(input_dict["mde_diagrama_elevacao"]["caminho_mde"]):
-        return f'O arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]} não foi encontrado. '
+        return f'O arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]} não foi encontrado. Corrija o json ou coloque o arquivo em um caminho acessível (verifique a localização do arquivo ou sua conexão de rede) e tente novamente.'
+    if " " in input_dict["mde_diagrama_elevacao"]["caminho_mde"]:
+        return f'Há espaços no caminho do arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}. Informe outro caminho sem espaços e tente novamente.'
     return ""
