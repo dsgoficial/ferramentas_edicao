@@ -324,6 +324,15 @@ class MapBuildController(MapBuildControllerUtils):
                     "Corrija o json e tente novamente.",
                 )
                 continue
+            filePathError = jsonStructure.validate_file_paths(jsonData)
+            if filePathError != "":
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Erro: {filePathError}"
+                    "Corrija o json ou coloque o arquivo em um caminho acessível (verifique a localização do arquivo ou sua conexão de rede) e tente novamente.",
+                )
+                continue
             if dlgCfg.productType != jsonData["tipo_produto"]:
                 QMessageBox.warning(
                     self.dlg,

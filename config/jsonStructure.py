@@ -1,4 +1,7 @@
-from typing import List, Dict
+import os
+import time
+from typing import List, Dict, Tuple
+from qgis.core import QgsFileUtils
 
 data_structure = {
     "Carta Ortoimagem": [
@@ -887,3 +890,23 @@ def validate_keys(input_dict: dict, required=True, reference_schema=None) -> boo
             if not all(validate_keys(v) for v in input_dict[key]):
                 return False
     return True
+
+def file_exists(path: str, timeout=5) -> bool:
+    start = time.time()
+    f_exists = os.path.exists(path)
+    while not f_exists:
+        time.sleep(1)
+        f_exists = os.path.exists(path)
+        if f_exists:
+            return True
+        elapsed = time.time() - start
+        if elapsed >= timeout:
+            break
+    return f_exists
+
+def validate_file_paths(input_dict: dict) -> str:
+    if "mde_diagrama_elevacao" not in input_dict:
+        return ""
+    if not file_exists(input_dict["mde_diagrama_elevacao"]["caminho_mde"]):
+        return f'O arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]} não foi encontrado. '
+    return ""
