@@ -31,6 +31,7 @@ from qgis.core import (
     QgsProcessingParameterMultipleLayers,
     NULL,
     QgsWkbTypes,
+    QgsRectangle,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
@@ -116,7 +117,7 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         selectedLabelLyrList = []
         for feat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
-                return {self.OUTPUT: ""}
+                return {self.OUTPUT: sink_id}
             geom = feat.geometry()
             extent = geom.boundingBox()
             multiStepFeedback.setCurrentStep(currentStep)
@@ -152,16 +153,107 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             selectedLabelLyrList.append(selectedLabelsLyr)
         
         if selectedLabelLyrList == [] or multiStepFeedback.isCanceled():
-            return {self.OUTPUT: ""}
+            return {self.OUTPUT: sink_id}
         
-        mergedLyr = algRunner.runMergeVectorLayers(layerList, context, feedback=multiStepFeedback)
+        mergedLyr = algRunner.runMergeVectorLayers(selectedLabelLyrList, context, feedback=multiStepFeedback)
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        mergedWithFieldId = algRunner.runCreateFieldWithExpression(
+            inputLyr=mergedLyr,
+            expression="$id",
+            fieldType=1,
+            fieldName="featid",
+            feedback=multiStepFeedback,
+            context=context,
+            is_child_algorithm=False,
+        )
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        if mergedWithFieldId.featureCount() == 0:
+            return {self.OUTPUT: sink_id}
+        labelPolygonsLayer = self.getLabelPolygons(mergedWithFieldId, multiStepFeedback)
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        algRunner.runCreateSpatialIndex(labelPolygonsLayer, context, feedback=multiStepFeedback, is_child_algorithm=True)
+        currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.setProgressText(self.tr("Calculando overlaps"))
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        intersectedLyr = algRunner.runIntersection(
+            labelPolygonsLayer,
+            context,
+            inputFields=["featid"],
+            overlayFields=["featid"],
+            overlayLyr=labelPolygonsLayer,
+            feedback=multiStepFeedback,
+        )
+        nProblems = intersectedLyr.featureCount()
+        if nProblems == 0:
+            return {self.OUTPUT: sink_id}
+        stepSize = 100/nProblems
+        flagId = 0
+        featDict = {feat["featid"]:feat for feat in mergedWithFieldId.getFeatures()}
+        for current, feat in enumerate(intersectedLyr.getFeatures()):
+            if multiStepFeedback.isCanceled():
+                break
+            if feat["featid"] == feat["featid_2"]:
+                continue
+            flagFeat = QgsFeature(fields)
+            flagFeat["id"] = flagId
+            flagFeat["texto_1"] = featDict[feat["featid"]]["LabelText"]
+            flagFeat["texto_2"] = featDict[feat["featid_2"]]["LabelText"]
+            flagFeat.setGeometry(feat.geometry())
+            sink.addFeature(flagFeat)
+            multiStepFeedback.setProgress(current * stepSize)
+            flagId += 1
         
-        
-        return {self.OUTPUT: ""}
+        return {self.OUTPUT: sink_id}
 
-        
+    def getLabelPolygons(self, lyr, feedback):
+        fields = lyr.fields()
+        temp = QgsVectorLayer(
+            f"Polygon?crs={lyr.crs().authid()}",
+            "temp_label_lyr",
+            "memory",
+        )
+
+        temp.startEditing()
+
+        temp_data = temp.dataProvider()
+        temp_data.addAttributes(fields.toList())
+        temp.updateFields()
+
+        temp.beginEditCommand("Populating temp lyr")
+
+        #tol = 25000 * 1.5
+        nSteps = lyr.featureCount()
+        if nSteps == 0:
+            return temp
+        stepSize = 100/nSteps
+        for current, feat in enumerate(lyr.getFeatures()):
+            if feedback.isCanceled():
+                break
+            pointGeom = feat.geometry()
+            pointXY = pointGeom.asPoint()
+            # labelSize = feat["Size"]
+            height = feat["LabelHeight"]
+            width = feat["LabelWidth"] * 1.22
+        #    width = (feat["LabelWidth"] / max([len(i) for i in feat["LabelText"].split('\n')])) * tol
+            geom = QgsGeometry.fromRect(QgsRectangle.fromCenterAndSize(
+                QgsPointXY(pointXY.x() + width/2, pointXY.y() + height/2), width, height
+            ))
+            newFeat = QgsFeature(fields)
+            for attr, value in feat.attributeMap().items():
+                newFeat[attr] = value
+            newFeat["LabelHeight"] = height
+            newFeat["LabelWidth"] = width
+            newFeat.setGeometry(geom)
+            temp.addFeature(newFeat)
+            feedback.setProgress(current * stepSize)
+
+        temp.endEditCommand()
+        return temp
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

@@ -16,6 +16,7 @@ from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneraliza
 from .elevationPointGeneralization import ElevationPointsGeneralization
 from .fixLabelPositionOnLayers import FixLabelPostionOnLayers
 from .highestSpotOnTheFrame import HighestSpotOnTheFrame
+from .identifyLabelOverlap import IdentifyLabelOverlap
 from .insertEnergyTower import InsertEnergyTower
 from .insertRoadMarker import InsertRoadMarker
 from .loadMasks import LoadMasks
@@ -87,6 +88,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(PlacePointOfChange())
         self.addAlgorithm(VerifySymbolOverlap())
         self.addAlgorithm(FixLabelPostionOnLayers())
+        self.addAlgorithm(IdentifyLabelOverlap())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
