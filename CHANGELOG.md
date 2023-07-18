@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.0.42 - dev
+## 1.1.42 - dev
 
 Melhorias
 
