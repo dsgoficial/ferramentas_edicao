@@ -348,7 +348,7 @@ class MapBuildController(MapBuildControllerUtils):
             composition = self.compositions.getComposition(jsonData).clone()
             connection = self.conn.getConnection(
                 jsonData.get("banco"), dlgCfg.username, dlgCfg.password
-            )
+            ) if jsonData["tipo_produto"] != "Carta Ortoimagem OM" else None
             # Build components
             builder.setParams(
                 jsonData,
