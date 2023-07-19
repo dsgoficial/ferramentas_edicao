@@ -183,6 +183,9 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         bounds = processing.run(
             "native:boundary", {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"}
         )["OUTPUT"]
+        bounds = processing.run(
+            "native:multiparttosingleparts", {"INPUT": bounds,"OUTPUT": "memory:"}
+        )["OUTPUT"]
         for feat in output.getFeatures():
             if (
                 requiredAttrs
@@ -209,15 +212,32 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         return pointsAndAngles
 
     def mergeHighways(self, lyr, frame):
-        r = processing.run(
-            "ferramentasedicao:mergehighway",
+        notNullIdentificationNumber = processing.run(
+            "native:extractbyattribute",
             {
-                "INPUT_LAYER_L": lyr,
-                "INPUT_FRAME_A": frame,
-                "OUTPUT_LAYER_L": "TEMPORARY_OUTPUT",
+                "INPUT": lyr,
+                "FIELD": "sigla",
+                "OPERATOR": 9,
+                "VALUE": "",
+                "OUTPUT": "memory:"
+            }
+        )["OUTPUT"]
+        collected = processing.run(
+            "native:dissolve",
+            {
+                "INPUT": notNullIdentificationNumber,
+                "FIELD": ["sigla", "jurisdicao", "tipo"],
+                "OUTPUT": "memory:",
             },
-        )
-        return r["OUTPUT_LAYER_L"]
+        )["OUTPUT"]
+        return processing.run(
+            "native:clip",
+            {
+                "INPUT": collected,
+                "OVERLAY": frame,
+                "OUTPUT": "memory:",
+            }
+        )["OUTPUT"]
 
     def findMaxRoadIndentificationNumber(self, pointsAndAngles):
         n = 0
