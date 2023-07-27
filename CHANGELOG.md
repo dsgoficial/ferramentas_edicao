@@ -1,10 +1,11 @@
 # CHANGELOG
 
-## 1.1.43 - dev
+## 1.1.44 - dev
 
 Melhorias:
 
 - Alterado o quadro de informações do produto da Carta Ortoimagem OM;
+- O plugin agora guarda no projeto o estado dos combo boxes de tipo de produto e escala quando o projeto é salvo;
 
 Correção de bug:
 

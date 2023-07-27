@@ -1,6 +1,8 @@
+import json
 from pathlib import Path
 
 from PyQt5.QtWidgets import QButtonGroup, QActionGroup
+from qgis.core import QgsExpressionContextUtils, QgsProject
 
 from .buttons.productTypeSelector import ProductTypeSelector
 from .buttons.scaleSelector import ScaleSelector
@@ -31,6 +33,8 @@ class SetupButtons:
         self.tools = list()
         self.mapTools = list()
         self.mapToolsActions = list()
+        QgsProject.instance().projectSaved.connect(self.saveStateOnProject)
+        self.iface.projectRead.connect(self.loadStateFromProject)
 
     def initToolBar(self):
         productTypeSelector = ProductTypeSelector(self.iface, self.toolBar)
@@ -227,5 +231,36 @@ class SetupButtons:
 
     def unload(self):
         # TODO: unregisterMapToolHandler for MapTools
+        QgsProject.instance().projectSaved.disconnect(self.saveStateOnProject)
+        self.iface.projectRead.disconnect(self.loadStateFromProject)
         self.toolBar.clear()
         self.iface.mainWindow().removeToolBar(self.toolBar)
+
+    def saveStateOnProject(self):
+        comboBoxesStateDict = {
+            i.__class__.__name__: i.currentIndex()
+            for i in self.toolBar.children()
+            if i.__class__.__name__ in ["ScaleSelector", "ProductTypeSelector"]
+        }
+        QgsExpressionContextUtils.setProjectVariable(
+            QgsProject.instance(),
+            "ferramentas_edicao_state",
+            json.dumps(comboBoxesStateDict),
+        )
+
+    def loadStateFromProject(self):
+        state = json.loads(
+            QgsExpressionContextUtils.projectScope(QgsProject.instance()).variable(
+                "ferramentas_edicao_state"
+            )
+            or "{}"
+        )
+        if state == {}:
+            return
+        comboBoxesDict = {
+            i.__class__.__name__: i
+            for i in self.toolBar.children()
+            if i.__class__.__name__ in ["ScaleSelector", "ProductTypeSelector"]
+        }
+        for comboBoxName, idx in state.items():
+            comboBoxesDict[comboBoxName].setCurrentIndex(idx)
