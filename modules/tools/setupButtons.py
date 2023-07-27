@@ -247,6 +247,9 @@ class SetupButtons:
             "ferramentas_edicao_state",
             json.dumps(comboBoxesStateDict),
         )
+        QgsProject.instance().projectSaved.disconnect(self.saveStateOnProject)
+        QgsProject.instance().write()
+        QgsProject.instance().projectSaved.connect(self.saveStateOnProject)
 
     def loadStateFromProject(self):
         state = json.loads(
