@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.44 - dev
+## 1.1.45 - dev
 
 Novas Funcionalidades
 
@@ -18,3 +18,4 @@ Melhorias:
 Correção de bug:
 
 - Corrigido bug no Inserir identificador trecho rodoviário (casos complexos como rodovias com rotatórias);
+- Correção de bug no diagrama de elevação (colocado um filtro de mediana para retirar ruídos do MDS e corrigido um erro de lógica na regra de mais de 50% da MTM);

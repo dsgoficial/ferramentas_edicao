@@ -48,7 +48,7 @@ from qgis.core import (
     QgsProcessingParameterFileDestination,
     QgsVectorFileWriter,
 )
-
+from scipy import signal
 
 class BuildElevationDiagram(QgsProcessingAlgorithm):
 
@@ -200,6 +200,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
     ):
         ds = gdal.Open(inputRaster)
         npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
+        npRaster = signal.medfilt2d(npRaster, kernel_size=15)
         npRaster[npRaster < 0] = np.nan
         areaWithoutInformationNpArray.resize(npRaster.shape, refcheck=False)
         waterBodyNpArray.resize(npRaster.shape, refcheck=False)
@@ -243,7 +244,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             else:
                 classDict = {
                     0: (int(uniqueValues[0]), int(uniqueValues[idx])),
-                    1: (int(uniqueValues[idx]), int(uniqueValues[idx + 1])),
+                    1: (int(uniqueValues[idx]), int(uniqueValues[-1])),
                 }
 
         else:
@@ -268,7 +269,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             if int(i) == 0:
                 outputRaster[np.where((minB <= npRaster) & (npRaster <= maxB))] = int(i)
             else:
-                outputRaster[np.where((minB < npRaster) & (npRaster <= maxB))] = int(i)
+                outputRaster[np.where((minB < npRaster) & (npRaster <= maxB + threshold))] = int(i)
 
         return classDict, outputRaster, ds
 
