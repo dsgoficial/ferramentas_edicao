@@ -245,7 +245,13 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         if minValue == 0 and maxValue > 2:
             minValue = 1
         maxValue = np.amax(npRaster_without_nodata)  // 1
-        numberOfElevationBands = self.getNumberOfElevationBands(maxValue - minValue)
+        classDict, outputRaster = self.compute_slicing(npRaster, npRaster_without_nodata, minValue, maxValue, threshold)
+
+        return classDict, outputRaster, ds
+
+    def compute_slicing(self, npRaster, npRaster_without_nodata, minValue, maxValue, threshold, numberOfElevationBands=None):
+        numberOfElevationBands = self.getNumberOfElevationBands(maxValue - minValue) if numberOfElevationBands is None else numberOfElevationBands
+        threshold = 10 if numberOfElevationBands > 2 else 1
         threshold, classDict = self.computeClassDict(threshold, npRaster, npRaster_without_nodata, minValue, numberOfElevationBands)
         if any(abs(b-a) < 10 for _, (a, b) in classDict.items()):
             currentNumberOfElevationBands = numberOfElevationBands - 1
@@ -259,8 +265,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                 outputRaster[np.where((minB <= npRaster) & (npRaster <= maxB))] = int(i)
             else:
                 outputRaster[np.where((minB < npRaster) & (npRaster <= maxB + threshold))] = int(i)
-
-        return classDict, outputRaster, ds
+        return classDict, outputRaster
 
     def computeClassDict(self, threshold, npRaster, npRaster_without_nodata, minValue, numberOfElevationBands):
         npRaster_without_nodata = threshold * np.floor(
@@ -302,7 +307,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                 areaPercentageValues = uniqueCount / (
                     npRaster.shape[0] * npRaster.shape[1] - nodataRasterPixelCount
                 )
-            idx = np.argmax(areaPercentageValues >= 0.5)
+            idx = np.argmax(cumulativePercentage >= 0.5)
             if idx == 0:
                 classDict = {
                     0: (int(uniqueValues[0]), int(uniqueValues[1])),

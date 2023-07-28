@@ -239,7 +239,7 @@ class ElevationDiagram(ComponentUtils, IComponent):
             "ferramentasedicao:buildelevationdiagram",
             {
                 "INPUT": raster_mde,
-                "CONTOUR_INTERVAL": slicingParams.get("contour_interval", 1),
+                "CONTOUR_INTERVAL": slicingParams.get("contour_interval", 10),
                 "GEOGRAPHIC_BOUNDARY": geographicBoundsLyr,
                 "AREA_WITHOUT_INFORMATION_POLYGONS": areaWithoutDataLyr,
                 "WATER_BODIES_POLYGONS": waterBodiesLyr,
