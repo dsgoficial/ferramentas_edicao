@@ -21,11 +21,13 @@
  ***************************************************************************/
 """
 
+import math
 from uuid import uuid4
 import numpy as np
 import json
 import processing
 from osgeo import gdal, ogr
+from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from PyQt5.QtCore import QCoreApplication, QVariant
 from qgis.core import (
     QgsFeature,
@@ -134,12 +136,44 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         outputJsonPath = self.parameterAsFileOutput(
             parameters, self.OUTPUT_JSON, context
         )
-        multiStepFeedback = QgsProcessingMultiStepFeedback(6, feedback)
+        algRunner = AlgRunner()
+        multiStepFeedback = QgsProcessingMultiStepFeedback(9, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
 
-        clippedRaster = self.runClipRasterLayer(
+        bufferedBounds = algRunner.runBuffer(
+            inputLayer=parameters[self.GEOGRAPHIC_BOUNDARY],
+            distance=1e-2 if geoBoundsSource.sourceCrs().isGeographic() else 1110,
+            context=context,
+            feedback=multiStepFeedback,
+            is_child_algorithm=False,
+        )
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        clippedRasterWithBufferedBounds = self.runClipRasterLayer(
             inputRaster,
+            mask=bufferedBounds,
+            context=context,
+            feedback=multiStepFeedback,
+            noData=-9999,
+            outputRaster=QgsProcessingUtils.generateTempFilename(
+                f"clipped_with_bounds_{str(uuid4().hex)}.tif"
+            ),
+        )
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        rasterAfterMedianFilter = QgsProcessingUtils.generateTempFilename(
+            f"median_raster_{str(uuid4().hex)}.tif"
+        )
+        self.buildRasterWithMedianFilter(
+            inputRaster=clippedRasterWithBufferedBounds,
+            outputRaster=rasterAfterMedianFilter,
+        )
+
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        clippedRaster = self.runClipRasterLayer(
+            rasterAfterMedianFilter,
             mask=parameters[self.GEOGRAPHIC_BOUNDARY],
             context=context,
             feedback=multiStepFeedback,
@@ -181,10 +215,10 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             "OUTPUT_JSON": outputJsonPath,
         }
 
-    def writeOutputRaster(self, outputRaster, npRaster, ds):
+    def writeOutputRaster(self, outputRaster, npRaster, ds, outputType=gdal.GDT_Int32):
         driver = gdal.GetDriverByName("GTiff")
         out_ds = driver.Create(
-            outputRaster, npRaster.shape[1], npRaster.shape[0], 1, gdal.GDT_Int32
+            outputRaster, npRaster.shape[1], npRaster.shape[0], 1, outputType
         )
         out_ds.SetProjection(ds.GetProjection())
         out_ds.SetGeoTransform(ds.GetGeoTransform())
@@ -200,7 +234,6 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
     ):
         ds = gdal.Open(inputRaster)
         npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
-        npRaster = signal.medfilt2d(npRaster, kernel_size=15)
         npRaster[npRaster < 0] = np.nan
         areaWithoutInformationNpArray.resize(npRaster.shape, refcheck=False)
         waterBodyNpArray.resize(npRaster.shape, refcheck=False)
@@ -208,13 +241,37 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             npRaster + areaWithoutInformationNpArray + waterBodyNpArray
         )  # performs clipping in raster
         npRaster_without_nodata = npRaster[~np.isnan(npRaster)]  # removes nodata values
+        minValue = np.amin(npRaster_without_nodata) // 1
+        if minValue == 0 and maxValue > 2:
+            minValue = 1
+        maxValue = np.amax(npRaster_without_nodata)  // 1
+        numberOfElevationBands = self.getNumberOfElevationBands(maxValue - minValue)
+        threshold, classDict = self.computeClassDict(threshold, npRaster, npRaster_without_nodata, minValue, numberOfElevationBands)
+        if any(abs(b-a) < 10 for _, (a, b) in classDict.items()):
+            currentNumberOfElevationBands = numberOfElevationBands - 1
+            while currentNumberOfElevationBands >= 2 and len(classDict) > 2 and any(abs(b-a) < 10 for _, (a, b) in classDict.items()):
+                threshold, classDict = self.computeClassDict(threshold, npRaster, npRaster_without_nodata, minValue, currentNumberOfElevationBands)
+
+        outputRaster = np.zeros_like(npRaster, dtype=np.int)
+        outputRaster[np.isnan(npRaster)] = -9999
+        for i, (minB, maxB) in classDict.items():
+            if int(i) == 0:
+                outputRaster[np.where((minB <= npRaster) & (npRaster <= maxB))] = int(i)
+            else:
+                outputRaster[np.where((minB < npRaster) & (npRaster <= maxB + threshold))] = int(i)
+
+        return classDict, outputRaster, ds
+
+    def computeClassDict(self, threshold, npRaster, npRaster_without_nodata, minValue, numberOfElevationBands):
         npRaster_without_nodata = threshold * np.floor(
             npRaster_without_nodata / threshold
         ).astype(int)
         nodataRasterPixelCount = np.count_nonzero(np.isnan(npRaster))
-        minValue = np.amin(npRaster_without_nodata)
-        maxValue = np.amax(npRaster_without_nodata)
-        numberOfElevationBands = self.getNumberOfElevationBands(maxValue - minValue)
+        if numberOfElevationBands == 2 and threshold != 1:
+            threshold = 1
+            npRaster_without_nodata = threshold * np.floor(
+                npRaster[~np.isnan(npRaster)] / threshold
+            ).astype(int)
         areaRatioList = self.getAreaRatioList(numberOfElevationBands)
         uniqueValues, uniqueCount = np.unique(
             npRaster_without_nodata, return_counts=True
@@ -225,11 +282,26 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         areaPercentageValues = uniqueCount / (
             npRaster.shape[0] * npRaster.shape[1] - nodataRasterPixelCount
         )
-        if any(areaPercentageValues >= 0.48) and numberOfElevationBands > 2:
+        if any(areaPercentageValues >= 0.48):
             """
             The MTM spec states that if there is an elevation slice that covers more than
             50% of the map, there must only be 2 elevation bands.
             """
+            if numberOfElevationBands > 2:
+                threshold = 1
+                npRaster_without_nodata = threshold * np.floor(
+                    npRaster[~np.isnan(npRaster)] / threshold
+                ).astype(int)
+                areaRatioList = self.getAreaRatioList(numberOfElevationBands)
+                uniqueValues, uniqueCount = np.unique(
+                    npRaster_without_nodata, return_counts=True
+                )
+                cumulativePercentage = np.cumsum(uniqueCount) / (
+                    npRaster.shape[0] * npRaster.shape[1] - nodataRasterPixelCount
+                )
+                areaPercentageValues = uniqueCount / (
+                    npRaster.shape[0] * npRaster.shape[1] - nodataRasterPixelCount
+                )
             idx = np.argmax(areaPercentageValues >= 0.5)
             if idx == 0:
                 classDict = {
@@ -263,15 +335,8 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                 i: (int(a), int(b))
                 for i, (a, b) in enumerate(zip(lowerBounds, classThresholds))
             }
-        outputRaster = np.zeros_like(npRaster, dtype=np.int)
-        outputRaster[np.isnan(npRaster)] = -9999
-        for i, (minB, maxB) in classDict.items():
-            if int(i) == 0:
-                outputRaster[np.where((minB <= npRaster) & (npRaster <= maxB))] = int(i)
-            else:
-                outputRaster[np.where((minB < npRaster) & (npRaster <= maxB + threshold))] = int(i)
-
-        return classDict, outputRaster, ds
+            
+        return threshold, classDict
 
     def getAreaRatioList(self, numberOfElevationBands):
         bandDict = {
@@ -318,6 +383,12 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             feedback=feedback,
         )
         return output["OUTPUT"]
+    
+    def buildRasterWithMedianFilter(self, inputRaster, outputRaster):
+        ds = gdal.Open(inputRaster)
+        npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())
+        npRaster = signal.medfilt2d(npRaster, kernel_size=15)
+        self.writeOutputRaster(outputRaster, npRaster, ds, outputType=gdal.GDT_Float32)
 
     def buildNumpyNodataMask(self, rasterLyr, vectorLyr):
         _out = QgsProcessingUtils.generateTempFilename(f"clip_{str(uuid4().hex)}.tif")
