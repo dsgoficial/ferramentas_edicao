@@ -438,7 +438,7 @@ data_structure = {
                     "key": "origem_dados_altimetricos",
                     "type": str,
                     "children": None,
-                    "required": True,
+                    "required": False,
                 },
                 {
                     "key": "dados_terceiros",

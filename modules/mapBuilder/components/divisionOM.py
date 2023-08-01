@@ -138,7 +138,8 @@ class DivisionOM(ComponentUtils, IComponent):
         # Creating a QgsRuleBasedRenderer for the county which contains the mapAreaFeature
         renderer = QgsRuleBasedRenderer(symbol)
         rootRule = renderer.rootRule()
-        countyRule = self.createCountyRenderingRule(rootRule, county.attribute("NOME"))
+        nome = county.attribute("NOME").replace('\'', "\\'")
+        countyRule = self.createCountyRenderingRule(rootRule, nome)
         rootRule.appendChild(countyRule)
         rootRule.removeChildAt(0)
         countyLayer.setRenderer(renderer)
