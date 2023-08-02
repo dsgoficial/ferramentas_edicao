@@ -242,9 +242,9 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         )  # performs clipping in raster
         npRaster_without_nodata = npRaster[~np.isnan(npRaster)]  # removes nodata values
         minValue = np.amin(npRaster_without_nodata) // 1
+        maxValue = np.amax(npRaster_without_nodata)  // 1
         if minValue == 0 and maxValue > 2:
             minValue = 1
-        maxValue = np.amax(npRaster_without_nodata)  // 1
         classDict, outputRaster = self.compute_slicing(npRaster, npRaster_without_nodata, minValue, maxValue, threshold)
 
         return classDict, outputRaster, ds

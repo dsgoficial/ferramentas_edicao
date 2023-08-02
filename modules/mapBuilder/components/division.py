@@ -410,9 +410,10 @@ class Division(ComponentUtils, IComponent):
     ):
         rulesRoot = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
         for n in range(len(orderedCountiesNamesByArea)):
+            value = orderedCountiesByCentroidDistance[n][self.nameAttribute].replace("'","\\'")
             rule = self.createRules(
                 f"'{n+1}'",
-                f"\"{self.nameAttribute}\" = '{orderedCountiesByCentroidDistance[n][self.nameAttribute]}'",
+                f"\"{self.nameAttribute}\" = \'{value}\'",
             )
             rulesRoot.appendChild(rule)
         rules = QgsRuleBasedLabeling(rulesRoot)
