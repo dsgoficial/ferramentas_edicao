@@ -624,7 +624,9 @@ class GridAndLabelCreator(QObject):
             x = ancX.x() + dx0
             y = ancY.y()
             full_label = str((floor(y_UTM / grid_spacing) + u) * grid_spacing)
-            if test_plac.y() < (y_min_test) or test_plac.y() > (y_max_test):
+            utmLabelPoint = QgsPoint(ancY.x(), ancY.y())
+            utmLabelPoint.transform(trLLUTM)
+            if test_plac.y() < (y_min_test) or test_plac.y() > (y_max_test) or abs(utmLabelPoint.y()-float(full_label)) < 40:
                 rule_fake = self.grid_labeler(
                     x,
                     y,

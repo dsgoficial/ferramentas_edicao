@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.47 - dev
+## 1.1.48 - dev
 
 Novas Funcionalidades
 
@@ -21,3 +21,4 @@ Correção de bug:
 - Correção de bug no diagrama de elevação (colocado um filtro de mediana para retirar ruídos do MDS e corrigido um erro de lógica na regra de mais de 50% da MTM);
 - Correção de bug no diagrama de elevação (a geração agora é feita de metro em metro no caso de 2 classes, ao invés de degraus de 10 metros. Também foi alterada a lógica de quando as classes tem menos de 10 metros de intervalo);
 - Correção de bug na Divisão Político-Administrativa quando o nome do município possui aspa simples, como Sant'Ana do Livramento;
+- Correção de bug do grid (sobreposição nas coordenadas utm da parte superior esquerda do grid);
