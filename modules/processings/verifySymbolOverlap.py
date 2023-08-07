@@ -111,10 +111,8 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             (infra_via_deslocamento_l, infra_via_deslocamento_l),
         ]
         if constr_edificacao_p is not None:
-            verifyList.append(
-                (constr_edificacao_p, constr_edificacao_p),
-                (infra_via_deslocamento_l, constr_edificacao_p),
-            )
+            verifyList.append((constr_edificacao_p, constr_edificacao_p))
+            verifyList.append((infra_via_deslocamento_l, constr_edificacao_p))
             if cobter_massa_dagua_a is not None:
                 verifyList.append((cobter_massa_dagua_a, constr_edificacao_p))
 
@@ -476,7 +474,8 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         )
         if feedback is not None:
             multiStepFeedback.setCurrentStep(5)
-            progressStep = 100 / interLayer.featureCount()
+            nSteps = interLayer.featureCount()
+            progressStep = 100 / nSteps if nSteps != 0 else 0
         alreadyVerify = []
         for step, feat in enumerate(interLayer.getFeatures()):
             if feedback is not None and feedback.isCanceled():
