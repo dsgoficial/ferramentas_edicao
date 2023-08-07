@@ -1,12 +1,13 @@
 # CHANGELOG
 
-## 1.1.50 - dev
+## 1.1.51 - dev
 
 Novas Funcionalidades
 
 - Novo processo de inserir ponto de mudança (Point of change AP030);
 - Novo processo de fixar a posição dos labels horizontais com a posição calculada pelo QGIS;
 - Novo processo de verificação de overlap de labels horizontais;
+- Novo processo de corrigir CRS dos campos label_x e label_y quando editados em sistema de coordenadas incorreto;
 
 Melhorias:
 
