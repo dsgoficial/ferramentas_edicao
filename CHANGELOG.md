@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.48 - dev
+## 1.1.49 - dev
 
 Novas Funcionalidades
 
@@ -14,6 +14,7 @@ Melhorias:
 - Melhoria nas rotinas de Prepara Orto e Prepara Topo;
 - Alterado o quadro de informações do produto da Carta Ortoimagem OM;
 - O plugin agora guarda no projeto o estado dos combo boxes de tipo de produto e escala quando o projeto é salvo;
+- Adicionado camada de aux_grid_revisao_a no configura estilos para edição;
 
 Correção de bug:
 
