@@ -218,7 +218,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         multiStepFeedback.setCurrentStep(1)
         multiStepFeedback.setProgressText("Mudando visibilidade das camadas...")
         layerNames = [i["table"] for i in jsonConfigData[groupName]]
-        layerNames[:0] = ["aux_moldura_a", "edicao_grid_edicao_l"]
+        layerNames[:0] = ["aux_moldura_a", "edicao_grid_edicao_l", "aux_grid_revisao_a"]
         visibleLayers, invisibleLayers = self.changeVisibility(
             layerNames=layerNames,
             layers=layers,
