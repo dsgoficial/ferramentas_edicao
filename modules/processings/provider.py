@@ -43,6 +43,7 @@ from .setSobrepositionLegalBoundary import SetSobrepositionLegalBoundary
 from .placePointOfChange import PlacePointOfChange
 from .verifySymbolOverlap import VerifySymbolOverlap
 from .fixLabelPositionCRS import FixLabelPositionCRS
+from .sizeLabelLarge import SizeLabelLarge
 
 
 class Provider(QgsProcessingProvider):
@@ -89,6 +90,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(FixLabelPostionOnLayers())
         self.addAlgorithm(IdentifyLabelOverlap())
         self.addAlgorithm(FixLabelPositionCRS())
+        self.addAlgorithm(SizeLabelLarge())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
