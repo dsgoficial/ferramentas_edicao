@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.51 - dev
+## 1.1.52 - dev
 
 Novas Funcionalidades
 
@@ -8,6 +8,7 @@ Novas Funcionalidades
 - Novo processo de fixar a posição dos labels horizontais com a posição calculada pelo QGIS;
 - Novo processo de verificação de overlap de labels horizontais;
 - Novo processo de corrigir CRS dos campos label_x e label_y quando editados em sistema de coordenadas incorreto;
+- Novo processo de calcular o tamanho do texto de acordo com a área e a largura do polígono;
 
 Melhorias:
 
