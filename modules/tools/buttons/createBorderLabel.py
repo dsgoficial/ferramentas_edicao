@@ -320,7 +320,7 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         # 2. Get 2 little-offseted points
 
         versor_x, versor_y = self.versorFromLineGeometry(line_from_to)
-        EPS = 1e-10
+        EPS = 1e-10 if self.lyrCrs.isGeographic() else 1e-1
         offsetted_a = QgsPoint(
             intersectionPoint.x() - versor_x * EPS,
             intersectionPoint.y() - versor_y * EPS,

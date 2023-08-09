@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.54 - dev
+## 1.1.55 - dev
 
 Novas Funcionalidades
 
@@ -28,3 +28,4 @@ Correção de bug:
 - Correção de bug do grid (sobreposição nas coordenadas utm da parte superior esquerda do grid);
 - Correção de bug em Verifica sobreposição de simbologia (estava sendo passado 2 parametros no append);
 - Correção de bug na ferramenta de inserir número de faixas quando utilizado em camada com sistema de referência em metros (Ex: SIRGAS 2000 UTM 21S - EPSG 31981);
+- Correção de bug na ferramenta de inserir rótulo de fronteira quando utilizado em camada com sistema de referência em metros (Ex: SIRGAS 2000 UTM 21S - EPSG 31981);
