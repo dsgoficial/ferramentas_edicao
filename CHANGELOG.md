@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.52 - dev
+## 1.1.53 - dev
 
 Novas Funcionalidades
 
@@ -17,6 +17,7 @@ Melhorias:
 - Alterado o quadro de informações do produto da Carta Ortoimagem OM;
 - O plugin agora guarda no projeto o estado dos combo boxes de tipo de produto e escala quando o projeto é salvo;
 - Adicionado camada de aux_grid_revisao_a no configura estilos para edição;
+- Adicionado mais camadas para verificação no Verifica Sobreposição de Simbologia
 
 Correção de bug:
 

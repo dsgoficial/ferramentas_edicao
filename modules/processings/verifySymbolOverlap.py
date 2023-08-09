@@ -28,6 +28,8 @@ from qgis.core import (
     QgsProperty,
     QgsSimpleMarkerSymbolLayer,
     QgsWkbTypes,
+    QgsFontMarkerSymbolLayer,
+    QgsUnitTypes,
     QgsProcessingException,
     NULL,
 )
@@ -73,7 +75,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                     "Área mínima (interseções menores que isso não serão consideradas)"
                 ),
                 type=QgsProcessingParameterNumber.Double,
-                defaultValue=10,
+                defaultValue=40,
             )
         )
         self.addParameter(
@@ -98,24 +100,98 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
         multiStepFeedback.pushInfo(self.tr("Verificando as camadas."))
         multiStepFeedback.setCurrentStep(0)
+        allLayers = []
         infra_via_deslocamento_l = getLayerByName("infra_via_deslocamento_l")
+        if infra_via_deslocamento_l is not None:
+            allLayers.append(infra_via_deslocamento_l)
         constr_edificacao_p = getLayerByName("constr_edificacao_p")
+        if constr_edificacao_p is not None:
+            allLayers.append(constr_edificacao_p)
         cobter_massa_dagua_a = getLayerByName("cobter_massa_dagua_a")
+        if cobter_massa_dagua_a is not None:
+            allLayers.append(cobter_massa_dagua_a)
+        constr_deposito_p = getLayerByName("constr_deposito_p")
+        if constr_deposito_p is not None:
+            allLayers.append(constr_deposito_p)
+        constr_extracao_mineral_p = getLayerByName("constr_extracao_mineral_p")
+        if constr_extracao_mineral_p is not None:
+            allLayers.append(constr_extracao_mineral_p)
+        constr_ocupacao_solo_p = getLayerByName("constr_ocupacao_solo_p")
+        if constr_ocupacao_solo_p is not None:
+            allLayers.append(constr_ocupacao_solo_p)
+        edicao_identificador_trecho_rod_p = getLayerByName(
+            "edicao_identificador_trecho_rod_p"
+        )
+        if edicao_identificador_trecho_rod_p is not None:
+            allLayers.append(edicao_identificador_trecho_rod_p)
+        edicao_simb_torre_energia_p = getLayerByName("edicao_simb_torre_energia_p")
+        if edicao_simb_torre_energia_p is not None:
+            allLayers.append(edicao_simb_torre_energia_p)
+        edicao_simb_direcao_corrente_p = getLayerByName(
+            "edicao_simb_direcao_corrente_p"
+        )
+        if edicao_simb_direcao_corrente_p is not None:
+            allLayers.append(edicao_simb_direcao_corrente_p)
+        elemnat_ponto_cotado_p = getLayerByName("elemnat_ponto_cotado_p")
+        if elemnat_ponto_cotado_p is not None:
+            allLayers.append(elemnat_ponto_cotado_p)
+        infra_elemento_energia_p = getLayerByName("infra_elemento_energia_p")
+        if infra_elemento_energia_p is not None:
+            allLayers.append(infra_elemento_energia_p)
+        infra_elemento_infraestrutura_p = getLayerByName(
+            "infra_elemento_infraestrutura_p"
+        )
+        if infra_elemento_infraestrutura_p is not None:
+            allLayers.append(infra_elemento_infraestrutura_p)
+        infra_pista_pouso_p = getLayerByName("infra_pista_pouso_p")
+        if infra_pista_pouso_p is not None:
+            allLayers.append(infra_pista_pouso_p)
+        constr_ocupacao_solo_l = getLayerByName("constr_ocupacao_solo_l")
+        if constr_ocupacao_solo_l is not None:
+            allLayers.append(constr_ocupacao_solo_l)
+        infra_pista_pouso_l = getLayerByName("infra_pista_pouso_l")
+        if infra_pista_pouso_l is not None:
+            allLayers.append(infra_pista_pouso_l)
+        constr_deposito_a = getLayerByName("constr_deposito_a")
+        if constr_deposito_a is not None:
+            allLayers.append(constr_deposito_a)
+        constr_edificacao_a = getLayerByName("constr_edificacao_a")
+        if constr_edificacao_a is not None:
+            allLayers.append(constr_edificacao_a)
+        constr_extracao_mineral_a = getLayerByName("constr_extracao_mineral_a")
+        if constr_extracao_mineral_a is not None:
+            allLayers.append(constr_extracao_mineral_a)
+        constr_ocupacao_solo_a = getLayerByName("constr_ocupacao_solo_a")
+        if constr_ocupacao_solo_a is not None:
+            allLayers.append(constr_ocupacao_solo_a)
+        infra_elemento_energia_a = getLayerByName("infra_elemento_energia_a")
+        if infra_elemento_energia_a is not None:
+            allLayers.append(infra_elemento_energia_a)
+        infra_elemento_infraestrutura_a = getLayerByName(
+            "infra_elemento_infraestrutura_a"
+        )
+        if infra_elemento_infraestrutura_a is not None:
+            allLayers.append(infra_elemento_infraestrutura_a)
+        infra_pista_pouso_a = getLayerByName("infra_pista_pouso_a")
+        if infra_pista_pouso_a is not None:
+            allLayers.append(infra_pista_pouso_a)
+        exceptions = [
+            {infra_via_deslocamento_l, cobter_massa_dagua_a},
+            {infra_via_deslocamento_l, infra_via_deslocamento_l},
+            {infra_via_deslocamento_l, edicao_identificador_trecho_rod_p},
+            {infra_via_deslocamento_l, edicao_simb_torre_energia_p},
+            {edicao_simb_direcao_corrente_p, cobter_massa_dagua_a},
+        ]
+        layersSet = self.generateLayerSet(allLayers)
+        verifyList = [layerSet for layerSet in layersSet if layerSet not in exceptions]
+        if len(allLayers) == 0:
+            return
         algRunner = AlgRunner()
-        crs = infra_via_deslocamento_l.crs()
+        crs = allLayers[0].crs()
         if crs.isGeographic():
             raise QgsProcessingException(
                 "Verificar sobreposição não pode ser feito em lat/long"
             )
-        verifyList = [
-            (infra_via_deslocamento_l, infra_via_deslocamento_l),
-        ]
-        if constr_edificacao_p is not None:
-            verifyList.append((constr_edificacao_p, constr_edificacao_p))
-            verifyList.append((infra_via_deslocamento_l, constr_edificacao_p))
-            if cobter_massa_dagua_a is not None:
-                verifyList.append((cobter_massa_dagua_a, constr_edificacao_p))
-
         frameLyr = (
             algRunner.runDissolve(
                 inputLyr=frameLyrPre,
@@ -157,16 +233,28 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
 
         return {self.OUTPUT: feats_sink_id}
 
-    def calculateIntersections(self, layerList, scale, fields, context, feedback=None):
+    def generateLayerSet(self, lst):
+        setList = []
+        for i in range(len(lst)):
+            for j in range(i, len(lst)):
+                setList.append({lst[i], lst[j]})
+        return setList
+
+    def calculateIntersections(self, layersList, scale, fields, context, feedback=None):
         featSet = set()
         if feedback is not None:
             multiStepFeedback = QgsProcessingMultiStepFeedback(
-                5 * len(layerList), feedback
+                5 * len(layersList), feedback
             )
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-        for step, (a, b) in enumerate(layerList):
+        for step, layerSet in enumerate(layersList):
+            layerList = list(layerSet)
+            if len(layerList) == 1:
+                a = b = layerList[0]
+            else:
+                a, b = layerList
             if feedback is not None and feedback.isCanceled():
                 return
             if feedback is not None:
@@ -330,9 +418,13 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-        if feedback is not None:
+        if feedback is not None and layer.featureCount() != 0:
             progressStep = 100 / layer.featureCount()
+        toDelete = set()
         for step, feat in enumerate(layer.getFeatures()):
+            # exceção caixa d'água (constr_deposito_p, tipo = 202), removendo para não verificar
+            if layer_orig.name() == "constr_deposito_p" and feat["tipo"] == 202:
+                toDelete.add(feat.id())
             if feedback is not None and feedback.isCanceled():
                 return
             if multiStepFeedback is not None:
@@ -350,19 +442,39 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                 continue
             symbolFeat = symbolsFeat[0]
             if isinstance(symbolFeat, QgsMarkerSymbol):
-                symbolLyr = symbolFeat.symbolLayer(0)
-                width_mm = symbolFeat.size()
-                if isinstance(symbolLyr, QgsSimpleMarkerSymbolLayer):
-                    width_mm += symbolLyr.strokeWidth()
-                height_mm = width_mm
-                if isinstance(symbolLyr, QgsSvgMarkerSymbolLayer):
-                    ratio = symbolLyr.defaultAspectRatio()
-                    height_mm = width_mm * ratio
-                offset_geom = QgsGeometry()
-                offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
-                offset = offset_geom.asPoint()
-                offset_x_mm = offset.x()
-                offset_y_mm = offset.y()
+                height_mm = width_mm = symbolFeat.size(QgsRenderContext())
+                for symbolLyr in symbolFeat.symbolLayers():
+                    if isinstance(symbolLyr, QgsFontMarkerSymbolLayer):
+                        continue
+                    if (
+                        isinstance(symbolLyr, QgsSimpleMarkerSymbolLayer)
+                        and symbolLyr.size() >= width_mm
+                    ):
+                        height_mm = width_mm = (
+                            symbolLyr.size() + symbolLyr.strokeWidth()
+                        )
+                        offset_geom = QgsGeometry()
+                        offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
+                        offset = offset_geom.asPoint()
+                        offset_x_mm = offset.x()
+                        offset_y_mm = offset.y()
+                    elif (
+                        isinstance(symbolLyr, QgsSvgMarkerSymbolLayer)
+                        and symbolLyr.size() >= width_mm
+                    ):
+                        ratio = symbolLyr.defaultAspectRatio()
+                        height_mm = width_mm * ratio
+                        offset_geom = QgsGeometry()
+                        offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
+                        offset = offset_geom.asPoint()
+                        offset_x_mm = offset.x()
+                        offset_y_mm = offset.y()
+                    elif symbolLyr.size() >= width_mm:
+                        offset_geom = QgsGeometry()
+                        offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
+                        offset = offset_geom.asPoint()
+                        offset_x_mm = offset.x()
+                        offset_y_mm = offset.y()
                 # acuidade visual de 0.2 entre feições
                 newAttributes = {
                     feat.fieldNameIndex("width"): scale * ((width_mm + 0.2) / 1000),
@@ -391,6 +503,8 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         renderer.stopRender(QgsRenderContext())
         dp = layer.dataProvider()
         dp.changeAttributeValues(updateFeats)
+        if len(toDelete) != 0:
+            dp.deleteFeatures(list(toDelete))
         layer.commitChanges()
         layer_buffered = algRunner.runBuffer(
             inputLayer=layer,
@@ -470,7 +584,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         if feedback is not None:
             multiStepFeedback.setCurrentStep(4)
         interLayer = algRunner.runJoinAttributesByLocation(
-            inputLyr=layer1, joinLyr=layer2, context=context, feedback=multiStepFeedback
+            inputLyr=layer1, joinLyr=layer2, context=context
         )
         if feedback is not None:
             multiStepFeedback.setCurrentStep(5)
@@ -550,10 +664,12 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         return self.tr("Verifica Sobreposição de Símbolos")
 
     def group(self):
-        return self.tr("Auxiliar")
+        return self.tr("Edicao")
 
     def groupId(self):
-        return "auxiliar"
+        return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr(
+            "O algoritmo verifica se alguma simbologia sobrepõe outra dentre as camadas pre-definidas"
+        )
