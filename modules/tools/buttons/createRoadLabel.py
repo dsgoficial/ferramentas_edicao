@@ -174,8 +174,12 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         projectedPointOnLineGeom = geom.interpolate(locatedDistance) 
         buffer = projectedPointOnLineGeom.buffer(bufferSize, -1)
         toInsertGeom = geom.intersection(buffer)
-        extendDistance = len(texto) * self.avgLetterSizeInDegrees if self.srcLyr.crs().isGeographic() else len(texto) * self.avgLetterSizeInMeters
-        toInsertGeom = toInsertGeom.extendLine(extendDistance/2, extendDistance/2)
+        if self.srcLyr.crs().isGeographic() and toInsertGeom.length() < len(texto) * self.avgLetterSizeInDegrees:
+            extendDistance = len(texto) * self.avgLetterSizeInDegrees
+            toInsertGeom = toInsertGeom.extendLine(extendDistance/2, extendDistance/2)
+        elif toInsertGeom.length() < len(texto) * self.avgLetterSizeInMeters:
+            extendDistance = len(texto) * self.avgLetterSizeInMeters
+            toInsertGeom = toInsertGeom.extendLine(extendDistance/2, extendDistance/2)
         d = self.getRoadLabelDisplacement(feat)
         dx, dy = self.getTranslate(d, clickedPositionGeom, projectedPointOnLineGeom)
         toInsertGeom.translate(dx, dy)
@@ -185,8 +189,8 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
     def getBufferSize(self, text):
         crs = self.srcLyr.crs()
         if crs.isGeographic():
-            return self.avgLetterSizeInDegrees
-        return self.avgLetterSizeInMeters
+            return len(text) * self.avgLetterSizeInDegrees
+        return len(text) * self.avgLetterSizeInMeters
     
     def getTranslate(self, d, clickedPositionGeom, projectedPointOnLineGeom):
         xp, yp = projectedPointOnLineGeom.asPoint()
