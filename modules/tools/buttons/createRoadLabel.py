@@ -1,4 +1,5 @@
 from math import sqrt
+import math
 from pathlib import Path
 from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
@@ -43,6 +44,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
             4: "Em construção"
         }
         self.avgLetterSizeInDegrees = 0.0006
+        self.avgLetterSizeInMeters = 25
 
     # User interface, botão e descrição
     def setupUi(self):
@@ -172,6 +174,8 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         projectedPointOnLineGeom = geom.interpolate(locatedDistance) 
         buffer = projectedPointOnLineGeom.buffer(bufferSize, -1)
         toInsertGeom = geom.intersection(buffer)
+        extendDistance = len(texto) * self.avgLetterSizeInDegrees if self.srcLyr.crs().isGeographic() else len(texto) * self.avgLetterSizeInMeters
+        toInsertGeom = toInsertGeom.extendLine(extendDistance/2, extendDistance/2)
         d = self.getRoadLabelDisplacement(feat)
         dx, dy = self.getTranslate(d, clickedPositionGeom, projectedPointOnLineGeom)
         toInsertGeom.translate(dx, dy)
@@ -181,11 +185,8 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
     def getBufferSize(self, text):
         crs = self.srcLyr.crs()
         if crs.isGeographic():
-            return len(text) * self.avgLetterSizeInDegrees
-        avgLetterSizeInMeters = self.convertLength(
-            self.srcLyr, self.avgLetterSizeInDegrees
-        )
-        return len(text) * avgLetterSizeInMeters
+            return self.avgLetterSizeInDegrees
+        return self.avgLetterSizeInMeters
     
     def getTranslate(self, d, clickedPositionGeom, projectedPointOnLineGeom):
         xp, yp = projectedPointOnLineGeom.asPoint()

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.53 - dev
+## 1.1.54 - dev
 
 Novas Funcionalidades
 
@@ -26,4 +26,5 @@ Correção de bug:
 - Correção de bug no diagrama de elevação (a geração agora é feita de metro em metro no caso de 2 classes, ao invés de degraus de 10 metros. Também foi alterada a lógica de quando as classes tem menos de 10 metros de intervalo);
 - Correção de bug na Divisão Político-Administrativa quando o nome do município possui aspa simples, como Sant'Ana do Livramento;
 - Correção de bug do grid (sobreposição nas coordenadas utm da parte superior esquerda do grid);
-- Correção de bug em Verifica sobreposição de simbologia (estava sendo passado 2 parametros no append)
+- Correção de bug em Verifica sobreposição de simbologia (estava sendo passado 2 parametros no append);
+- Correção de bug na ferramenta de inserir número de faixas quando utilizado em camada com sistema de referência em metros (Ex: SIRGAS 2000 UTM 21S - EPSG 31981);
