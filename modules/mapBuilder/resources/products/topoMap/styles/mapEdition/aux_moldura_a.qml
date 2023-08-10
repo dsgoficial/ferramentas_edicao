@@ -1,8 +1,8 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis styleCategories="Symbology" version="3.24.3-Tisler">
-  <renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" enableorderby="0" referencescale="-1">
+<qgis version="3.24.3-Tisler" styleCategories="Symbology">
+  <renderer-v2 enableorderby="0" type="singleSymbol" symbollevels="0" referencescale="-1" forceraster="0">
     <symbols>
-      <symbol force_rhr="0" alpha="1" name="0" type="fill" clip_to_extent="1">
+      <symbol name="0" type="fill" force_rhr="0" clip_to_extent="1" alpha="1">
         <data_defined_properties>
           <Option type="Map">
             <Option value="" name="name" type="QString"/>
@@ -10,7 +10,7 @@
             <Option value="collection" name="type" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer pass="0" class="SimpleLine" enabled="1" locked="0">
+        <layer locked="0" class="SimpleLine" pass="0" enabled="1">
           <Option type="Map">
             <Option value="0" name="align_dash_pattern" type="QString"/>
             <Option value="square" name="capstyle" type="QString"/>
@@ -24,7 +24,7 @@
             <Option value="bevel" name="joinstyle" type="QString"/>
             <Option value="228,26,28,255" name="line_color" type="QString"/>
             <Option value="solid" name="line_style" type="QString"/>
-            <Option value="0.05" name="line_width" type="QString"/>
+            <Option value="0.2" name="line_width" type="QString"/>
             <Option value="MM" name="line_width_unit" type="QString"/>
             <Option value="0" name="offset" type="QString"/>
             <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
@@ -52,7 +52,7 @@
           <prop k="joinstyle" v="bevel"/>
           <prop k="line_color" v="228,26,28,255"/>
           <prop k="line_style" v="solid"/>
-          <prop k="line_width" v="0.05"/>
+          <prop k="line_width" v="0.2"/>
           <prop k="line_width_unit" v="MM"/>
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
