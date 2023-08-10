@@ -29,7 +29,7 @@ from qgis.core import (
     QgsSimpleMarkerSymbolLayer,
     QgsWkbTypes,
     QgsFontMarkerSymbolLayer,
-    QgsUnitTypes,
+    QgsMarkerLineSymbolLayer,
     QgsProcessingException,
     NULL,
 )
@@ -107,6 +107,9 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         constr_edificacao_p = getLayerByName("constr_edificacao_p")
         if constr_edificacao_p is not None:
             allLayers.append(constr_edificacao_p)
+        edicao_simb_area_p = getLayerByName("edicao_simb_area_p")
+        if edicao_simb_area_p is not None:
+            allLayers.append(edicao_simb_area_p)
         cobter_massa_dagua_a = getLayerByName("cobter_massa_dagua_a")
         if cobter_massa_dagua_a is not None:
             allLayers.append(cobter_massa_dagua_a)
@@ -175,12 +178,40 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         infra_pista_pouso_a = getLayerByName("infra_pista_pouso_a")
         if infra_pista_pouso_a is not None:
             allLayers.append(infra_pista_pouso_a)
+        infra_elemento_viario_l = getLayerByName("infra_elemento_viario_l")
+        if infra_elemento_viario_l is not None:
+            allLayers.append(infra_elemento_viario_l)
+        infra_elemento_viario_p = getLayerByName("infra_elemento_viario_p")
+        if infra_elemento_viario_p is not None:
+            allLayers.append(infra_elemento_viario_p)
+        elemnat_trecho_drenagem_l = getLayerByName("elemnat_trecho_drenagem_l")
+        if elemnat_trecho_drenagem_l is not None:
+            allLayers.append(elemnat_trecho_drenagem_l)
+        infra_ferrovia_l = getLayerByName("infra_ferrovia_l")
+        if infra_ferrovia_l is not None:
+            allLayers.append(infra_ferrovia_l)
         exceptions = [
             {infra_via_deslocamento_l, cobter_massa_dagua_a},
             {infra_via_deslocamento_l, infra_via_deslocamento_l},
             {infra_via_deslocamento_l, edicao_identificador_trecho_rod_p},
             {infra_via_deslocamento_l, edicao_simb_torre_energia_p},
-            {edicao_simb_direcao_corrente_p, cobter_massa_dagua_a},
+            {infra_elemento_viario_l, infra_via_deslocamento_l},
+            {infra_elemento_viario_l, cobter_massa_dagua_a},
+            {infra_elemento_viario_l, infra_ferrovia_l},
+            {infra_elemento_viario_l, elemnat_trecho_drenagem_l},
+            {infra_elemento_viario_p, infra_via_deslocamento_l},
+            {infra_elemento_viario_p, cobter_massa_dagua_a},
+            {infra_elemento_viario_p, infra_ferrovia_l},
+            {infra_elemento_viario_p, elemnat_trecho_drenagem_l},
+            {elemnat_trecho_drenagem_l, infra_via_deslocamento_l},
+            {elemnat_trecho_drenagem_l, cobter_massa_dagua_a},
+            {elemnat_trecho_drenagem_l, infra_ferrovia_l},
+            {elemnat_trecho_drenagem_l, edicao_simb_torre_energia_p},
+            {elemnat_trecho_drenagem_l, elemnat_trecho_drenagem_l},
+            {infra_ferrovia_l, infra_via_deslocamento_l},
+            {infra_ferrovia_l, cobter_massa_dagua_a},
+            {infra_ferrovia_l, edicao_simb_torre_energia_p},
+            {infra_ferrovia_l, infra_ferrovia_l},
         ]
         layersSet = self.generateLayerSet(allLayers)
         verifyList = [layerSet for layerSet in layersSet if layerSet not in exceptions]
@@ -475,27 +506,26 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                         offset = offset_geom.asPoint()
                         offset_x_mm = offset.x()
                         offset_y_mm = offset.y()
-                # acuidade visual de 0.2 entre feições
                 newAttributes = {
-                    feat.fieldNameIndex("width"): scale * ((width_mm + 0.2) / 1000),
-                    feat.fieldNameIndex("height"): scale * ((height_mm + 0.2) / 1000),
+                    feat.fieldNameIndex("width"): scale * ((width_mm) / 1000),
+                    feat.fieldNameIndex("height"): scale * ((height_mm) / 1000),
                     feat.fieldNameIndex("offset_x"): scale * (offset_x_mm / 1000),
                     feat.fieldNameIndex("offset_y"): scale * (offset_y_mm / 1000),
                 }
                 updateFeats[feat.id()] = newAttributes
             elif isinstance(symbolFeat, QgsLineSymbol):
                 endCap = 1  # Flat
-                width_mm = symbolFeat.width()
-                for i in range(symbolFeat.symbolLayerCount()):
+                for symbolLyr in symbolFeat.symbolLayers():
                     if feedback is not None and feedback.isCanceled():
                         return
-                    symbolLyr = symbolFeat.symbolLayer(i)
+                    if isinstance(symbolLyr, QgsMarkerLineSymbolLayer):
+                        continue
                     offset = symbolLyr.offset()
                     strokeWidth = symbolLyr.width()
                     newWidth = abs(offset) + strokeWidth / 2
                     width_mm = 2 * newWidth if 2 * newWidth > width_mm else width_mm
                 newAttributes = {
-                    feat.fieldNameIndex("width"): scale * ((width_mm + 0.2) / 1000)
+                    feat.fieldNameIndex("width"): scale * ((width_mm) / 1000)
                 }
                 updateFeats[feat.id()] = newAttributes
         if feedback is not None:
