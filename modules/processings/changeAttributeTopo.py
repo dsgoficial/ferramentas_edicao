@@ -80,6 +80,11 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             "elemnat_elemento_hidrografico_l",
         ]:
             processing_function = self.defaultElemnatElemHidPL
+        elif table_name in [
+            "infra_elemento_viario_p",
+            "infra_elemento_viario_l",
+        ]:
+            processing_function = self.defaultElementoViario
         elif table_name in ["elemnat_elemento_hidrografico_a"]:
             processing_function = self.defaultElemnatElemHidA
         elif table_name in ["constr_area_uso_especifico_a"]:
@@ -88,6 +93,10 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             processing_function = self.defaultIlhaP
         elif table_name in ["elemnat_ilha_a"]:
             processing_function = self.defaultIlhaA
+        elif table_name in ["constr_deposito_p", "constr_deposito_a"]:
+            processing_function = self.defaultDeposito
+        elif table_name in ["constr_edificacao_p", "constr_edificacao_a"]:
+            processing_function = self.defaultEdificacao
         elif table_name in ["elemnat_ponto_cotado_p"]:
             processing_function = self.defaultPtoCotado
         elif table_name in ["infra_vala_l"]:
@@ -193,6 +202,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
         new_att[feature.fieldNameIndex("tamanho_txt")] = 7
         new_att[feature.fieldNameIndex("justificativa_txt")] = 2
+        new_att[feature.fieldNameIndex("visivel")] = 1
         return {feature.id(): new_att}
 
     def defaultIlhaA(self, feature, lyrCrs):
@@ -201,6 +211,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("justificativa_txt")] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
         new_att[feature.fieldNameIndex("tamanho_txt")] = size
+        new_att[feature.fieldNameIndex("visivel")] = 1
         return {feature.id(): new_att}
 
     def defaultPtoCotado(self, feature, lyrCrs):
@@ -208,6 +219,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("ancora_vertical")] = 1
         new_att[feature.fieldNameIndex("ancora_horizontal")] = 1
+        new_att[feature.fieldNameIndex("suprimir_simbologia")] = 1
         return {feature.id(): new_att}
 
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
@@ -361,6 +373,9 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             new_att[feature.fieldNameIndex("posicao_rotulo")] = 1
         elif feature["situacao_em_poligono"] in [1]:
             new_att[feature.fieldNameIndex("posicao_rotulo")] = 2
+        else:
+            new_att[feature.fieldNameIndex("posicao_rotulo")] = 1
+
         return {feature.id(): new_att}
 
     def defaultllpLocalidade(self, feature, lyrCrs):
@@ -368,6 +383,40 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("justificativa_txt")] = 2
         new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+        return {feature.id(): new_att}
+
+    def defaultDeposito(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
+        new_att[feature.fieldNameIndex("visivel")] = 1
+        new_att[feature.fieldNameIndex("exibir_linha_rotulo")] = 2
+        if feature["tipo"] in [109]:
+            new_att[feature.fieldNameIndex("texto_edicao")] = 'Silo'
+        if feature["nome"] != NULL:
+            new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+        
+        return {feature.id(): new_att}
+
+    def defaultEdificacao(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
+        new_att[feature.fieldNameIndex("visivel")] = 1
+        new_att[feature.fieldNameIndex("exibir_linha_rotulo")] = 2
+        new_att[feature.fieldNameIndex("suprimir_bandeira")] = 2
+        if feature["nome"] != NULL:
+            new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+        
+        return {feature.id(): new_att}
+
+    def defaultElementoViario(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
+        new_att[feature.fieldNameIndex("visivel")] = 1
+        new_att[feature.fieldNameIndex("exibir_lado_simbologia")] = 1
+        new_att[feature.fieldNameIndex("exibir_ponta_simbologia")] = 1
+        if feature["nome"] != NULL:
+            new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+        
         return {feature.id(): new_att}
 
     def tr(self, string):
