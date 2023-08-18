@@ -135,7 +135,7 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
             buffer = innerPoint.buffer(bufferSize, -1)
             if buffer.within(geom):
                 newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
-                newFeat["tipo"] = 2 if feat["operacional"] == 1 else 3
+                newFeat["tipo"] = 2 if feat["situacao_fisica"] == 3 else 3
                 newFeatList.append(newFeat)
             elif hideFeats:
                 feat[inputLyrVisibleField] = 2
