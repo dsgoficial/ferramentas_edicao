@@ -4,6 +4,8 @@ from qgis.core import (
     QgsDistanceArea,
     QgsVectorLayer,
     QgsSpatialIndex,
+    QgsGeometry,
+    QgsCoordinateTransformContext,
     QgsCoordinateReferenceSystem,
 )
 from qgis import processing
@@ -85,34 +87,47 @@ class ProcessingUtils:
         feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem
     ) -> int:
         """return label font size based on feature area according to MTM"""
+        geom = feat.geometry()
+        radiusCircle = geom.poleOfInaccessibility(0.0001)[1]
+        diamCircle = 2 * radiusCircle
+        areaPolygon = geom.area()
         if lyrCrs.isGeographic():
-            convertArea = QgsDistanceArea()
-            convertArea.setEllipsoid(lyrCrs.ellipsoidAcronym())
-            measure = convertArea.measureArea(feat.geometry())
-            area = convertArea.convertAreaMeasurement(
-                measure, QgsUnitTypes.AreaSquareMeters
+            convertForMili = QgsDistanceArea()
+            convertForMili.setSourceCrs(lyrCrs, QgsCoordinateTransformContext())
+            areaPolygon = (
+                1e6
+                * convertForMili.convertAreaMeasurement(
+                    areaPolygon, QgsUnitTypes.AreaSquareMeters
+                )
+                / (scale**2)
             )
-        else:
-            area = feat.geometry().area()
-        scaleComparator = (scale / 1000) ** 2
-        if area < 770 * scaleComparator:
+            diamCircle = (
+                1e3
+                * convertForMili.convertLengthMeasurement(
+                    diamCircle, QgsUnitTypes.DistanceMeters
+                )
+                / (scale)
+            )
+        if areaPolygon < 770 or diamCircle <= 14:
             return 6
-        elif area < 2300 * scaleComparator:
+        elif areaPolygon < 2300 or diamCircle <= 28:
             return 7
-        elif area < 3600 * scaleComparator:
+        elif areaPolygon < 3600 or diamCircle <= 36:
             return 8
-        elif area < 5200 * scaleComparator:
+        elif areaPolygon < 5200 or diamCircle <= 44:
             return 9
-        elif area < 9800 * scaleComparator:
+        elif areaPolygon < 9800 or diamCircle <= 62:
             return 10
-        elif area < 16500 * scaleComparator:
+        elif areaPolygon < 16500 or diamCircle <= 84:
             return 12
-        elif area < 25000 * scaleComparator:
+        elif areaPolygon < 25000 or diamCircle <= 105:
             return 14
-        elif area < 36000 * scaleComparator:
+        elif areaPolygon < 36000 or diamCircle <= 125:
             return 16
-        else:
+        elif areaPolygon > 36000 or diamCircle > 125:
             return 18
+        else:
+            return 8
 
     def getRiverOutPolyLabelFontSize(
         feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem

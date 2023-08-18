@@ -15,6 +15,7 @@ from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
+from ...processings.processingUtils import ProcessingUtils
 
 
 class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
@@ -94,7 +95,11 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
             self.displayErrorMessage(
                 "Tipo de produto inválido, cor = #00a0df, mesma da carta topográfica"
             )
-        toInsert.setAttribute("tamanho_txt", self.getLabelSize(feat))
+        scale = self.getScale()
+        toInsert.setAttribute(
+            "tamanho_txt",
+            ProcessingUtils.getWaterPolyLabelFontSize(feat, scale, self.lyrCrs),
+        )
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
@@ -103,37 +108,6 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
         self.mapCanvas.refresh()
-
-    def getLabelSize(self, feat):
-        scale = self.getScale()
-        scaleComparator = (scale / 1000) ** 2
-        if self.lyrCrs.isGeographic():
-            convertArea = QgsDistanceArea()
-            convertArea.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
-            measure = convertArea.measureArea(feat.geometry())
-            area = convertArea.convertAreaMeasurement(
-                measure, QgsUnitTypes.AreaSquareMeters
-            )
-        else:
-            area = feat.geometry().area()
-        if area < 770 * scaleComparator:
-            return 6
-        elif area < 2300 * scaleComparator:
-            return 7
-        elif area < 3600 * scaleComparator:
-            return 8
-        elif area < 5200 * scaleComparator:
-            return 9
-        elif area < 9800 * scaleComparator:
-            return 10
-        elif area < 16500 * scaleComparator:
-            return 12
-        elif area < 25000 * scaleComparator:
-            return 14
-        elif area < 36000 * scaleComparator:
-            return 16
-        else:
-            return 18
 
     def getScale(self):
         scale = self.scaleSelector.currentText()
