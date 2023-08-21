@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.57 - dev
+## 1.1.58 - dev
 
 Novas Funcionalidades
 
@@ -9,6 +9,8 @@ Novas Funcionalidades
 - Novo processo de verificação de overlap de labels horizontais;
 - Novo processo de corrigir CRS dos campos label_x e label_y quando editados em sistema de coordenadas incorreto;
 - Novo processo de calcular o tamanho do texto de acordo com a área e a largura do polígono;
+- Novo botão para ciclar entre o lado da simbologia;
+- Novo botão para ciclar entre a ponto da simbologia;
 
 Melhorias:
 

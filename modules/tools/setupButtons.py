@@ -23,6 +23,8 @@ from .buttons.createMasterElevationTextValue import CreateMasterElevationTextVal
 from .buttons.createRoadLabel import CreateRoadLabel
 from .buttons.createApproximateLabel import CreateAproximateLabel
 from .buttons.alternateBuildingFlag import AlternateBuildingFlag
+from .buttons.cycleSideVisibility import CycleSideVisibility
+from .buttons.cycleTipVisibility import CycleTipVisibility
 
 
 class SetupButtons:
@@ -107,6 +109,10 @@ class SetupButtons:
         createAproximateLabel.setupUi()
         alternateBuildingFlag = AlternateBuildingFlag(self.iface, self.toolBar)
         alternateBuildingFlag.setupUi()
+        cycleSideVisibilityButton = CycleSideVisibility(self.toolBar, self.iface)
+        cycleSideVisibilityButton.setupUi()
+        cycleTipVisibilityButton = CycleTipVisibility(self.toolBar, self.iface)
+        cycleTipVisibilityButton.setupUi()
         self.mapTools.extend(
             [
                 createVegetationSymbol,
@@ -155,6 +161,8 @@ class SetupButtons:
                 createRoadLabel,
                 createAproximateLabel,
                 alternateBuildingFlag,
+                cycleSideVisibilityButton,
+                cycleTipVisibilityButton,
             ]
         )
         self.actionGroup = self.setupActionGroup(*self.mapTools)
