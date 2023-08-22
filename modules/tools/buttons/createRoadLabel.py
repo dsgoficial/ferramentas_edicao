@@ -85,7 +85,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         if not self.checkFeature(feat) or int(attr) <= 2:
             self.displayErrorMessage(
                 self.tr(
-                    'Feição inválida. Verifique o "nr_faixas" na camada "elemnat_via_deslocamento_l"'
+                    'O nr_faixas deve ser igual ou superior a 3'
                 )
             )
             return
@@ -93,7 +93,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         if not self.checkFeature(feat) or attr_tipo in (3, 5, 6):
             self.displayErrorMessage(
                 self.tr(
-                    f'Feição inválida. {self.tipoDict[attr_tipo]} não recebe "nr_faixas"'
+                    f'Tipo inválido. {self.tipoDict[attr_tipo]} não recebe rótulo de número de faixas'
                 )
             )
             return
