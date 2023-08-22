@@ -1,6 +1,5 @@
 from pathlib import Path
 from .baseTools import BaseTools
-from qgis.gui import QgsMapCanvas
 from qgis.core import (
     QgsGeometry,
     Qgis,

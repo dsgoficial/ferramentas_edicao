@@ -1,6 +1,13 @@
 from pathlib import Path
 
 from .baseTools import BaseTools
+from qgis.core import (
+    QgsGeometry,
+    Qgis,
+    QgsProcessingException,
+)
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QVariant
 
 
 class AddNewLineCharToAttribute(BaseTools):
@@ -24,6 +31,11 @@ class AddNewLineCharToAttribute(BaseTools):
 
     def run(self):
         def inserir_simbolo(texto):
+            if texto == QVariant(None):
+                self.displayErrorMessage(
+                    'O atributo "texto_edicao" da feição selecionada está vazio'
+                )
+                return
             # Remove espaços em branco no início e no final do texto
             texto = texto.strip()
 
@@ -50,6 +62,20 @@ class AddNewLineCharToAttribute(BaseTools):
 
         layer = self.iface.activeLayer()
         Features = layer.selectedFeatures()
+        selectedFeature = layer.getSelectedFeatures()
+        if layer.selectedFeatureCount() == 0:
+            self.displayErrorMessage(self.tr("Não há feições selecionadas"))
+        featIn = self.featInCanvas(selectedFeature)
+        if not featIn:
+            confirm = self.confirmation()
+            if not confirm:
+                self.iface.messageBar().pushMessage(
+                    "Cancelado",
+                    "ação cancelada pelo usuário",
+                    level=Qgis.Warning,
+                    duration=5,
+                )
+                return
         layer.startEditing()
         layer.beginEditCommand("quebra de linha")
         for feature in Features:
@@ -61,3 +87,26 @@ class AddNewLineCharToAttribute(BaseTools):
         layer.endEditCommand()
         layer.triggerRepaint()
         self.iface.mapCanvas().refresh()
+
+    def featInCanvas(self, selectedFeature):
+        featIn = True
+        for feat in selectedFeature:
+            extentCanvas = self.iface.mapCanvas().extent()
+            geomWktExtentCanvas = QgsGeometry.fromRect(extentCanvas)
+            geomFeat = feat.geometry()
+            if not geomFeat.within(geomWktExtentCanvas):
+                featIn = False
+        return featIn
+
+    def confirmation(self):
+        confirmation = False
+        reply = QMessageBox.question(
+            self.iface.mainWindow(),
+            "Continuar ?",
+            "Há feições selecionadas fora do canvas. Deseja continuar ?",
+            QMessageBox.Yes,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+            confirmation = True
+        return confirmation

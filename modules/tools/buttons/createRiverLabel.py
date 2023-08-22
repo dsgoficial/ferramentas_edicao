@@ -19,6 +19,7 @@ from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
+from PyQt5.QtCore import QVariant
 
 
 class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
@@ -64,7 +65,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         closestFeat = self.srcLyr.getFeatures(request)
         if not closestSpatialID:
             self.displayErrorMessage(
-                'Não foram encontradas feições em "elemnat_trecho_drenagem_l_merged"'
+                'Não foram encontradas feições em "elemnat_trecho_drenagem_l"'
             )
             return
         feat = next(closestFeat)
@@ -101,12 +102,18 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute("espacamento", 0)
         color = "#ffffff" if self.productTypeSelector.currentIndex() == 0 else "#00a0df"
         toInsert.setAttribute("cor", color)
-        labelSize = self.getLabelFontSize(feat, outsidePolygon=outsidePolygon)
+        if feat["tamanho_txt"] == QVariant(None):
+            self.displayErrorMessage(
+                'O atributo "tamanho_txt" do rio selecionado está vazio'
+            )
+            return None, None
+        labelSize = feat["tamanho_txt"]
         if self.productTypeSelector.currentIndex() == 0:
             labelSize = labelSize if labelSize > 6 else 7
         toInsert.setAttribute("tamanho_txt", labelSize)
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
+                attributemap = toInsert.attributeMap()
                 self.displayErrorMessage(
                     self.tr(
                         "O campo tamanho_buffer não existe na modelagem em questão. Verifique a modelagem e o tipo de produto selecionado e tente novamente."
@@ -116,54 +123,6 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
         return toInsert, labelSize
-
-    def getLabelFontSize(self, feat, outsidePolygon=False):
-        scale = self.getScale()
-        scaleComparator = scale / 1000
-        length = (
-            feat.geometry().length()
-            if not self.lyrCrs.isGeographic()
-            else self.convertLength(feat)
-        )
-        return (
-            self.getLabelFontSizeA(scaleComparator, length)
-            if outsidePolygon
-            else self.getLabelFontSizeB(scaleComparator, length)
-        )
-
-    def convertLength(self, feat):
-        convertLength = QgsDistanceArea()
-        convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
-        measure = convertLength.measureLength(feat.geometry())
-        return convertLength.convertLengthMeasurement(
-            measure, QgsUnitTypes.DistanceMeters
-        )
-
-    def getLabelFontSizeA(self, scaleComparator, length):
-        if length < 80 * scaleComparator:
-            return 6
-        elif length < 120 * scaleComparator:
-            return 7
-        elif length < 160 * scaleComparator:
-            return 8
-        else:
-            return 9
-
-    def getLabelFontSizeB(self, scaleComparator, length):
-        if length < 65 * scaleComparator:
-            return 7
-        elif length < 80 * scaleComparator:
-            return 8
-        elif length < 100 * scaleComparator:
-            return 9
-        elif length < 120 * scaleComparator:
-            return 10
-        elif length < 160 * scaleComparator:
-            return 12
-        elif length < 200 * scaleComparator:
-            return 14
-        else:
-            return 16
 
     @staticmethod
     def checkFeature(feat):
@@ -264,13 +223,11 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         return QgsLineString(xCoords, yCoords).curveSubstring(start, end)
 
     def getLayers(self):
-        srcLyr = QgsProject.instance().mapLayersByName(
-            "elemnat_trecho_drenagem_l_merged"
-        )
+        srcLyr = QgsProject.instance().mapLayersByName("elemnat_trecho_drenagem_l")
         dstLyr = QgsProject.instance().mapLayersByName("edicao_texto_generico_l")
         if not len(srcLyr) == 1:
             self.displayErrorMessage(
-                self.tr('Camada "elemnat_trecho_drenagem_l_merged" não encontrada')
+                self.tr('Camada "elemnat_trecho_drenagem_l" não encontrada')
             )
             return None
         if not len(dstLyr) == 1:

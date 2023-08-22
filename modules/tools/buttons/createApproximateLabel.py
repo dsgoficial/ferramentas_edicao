@@ -18,6 +18,7 @@ from qgis.core import (
 from qgis.gui import QgsMapToolEmitPoint
 from qgis import processing
 
+
 class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
     def __init__(self, iface, toolBar, scaleSelector, productTypeSelector):
         super().__init__(iface.mapCanvas())
@@ -54,51 +55,63 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             return
         if self.productTypeSelector.currentIndex() == 1:
             closestSpatialID = self.spatialIndexLegal.nearestNeighbor(
-                pos, maxDistance = 2 * self.tolerance
+                pos, maxDistance=2 * self.tolerance
             )
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyrLegal.getFeatures(request)
             if len(closestSpatialID) == 0:
-                closestSpatialID = self.spatialIndexEspecial.nearestNeighbor(
-                pos, maxDistance = 2 * self.tolerance
-                )
-                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-                closestFeat = self.srcLyrEspecial.getFeatures(request)
+                try:
+                    closestSpatialID = self.spatialIndexEspecial.nearestNeighbor(
+                        pos, maxDistance=2 * self.tolerance
+                    )
+                    request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                    closestFeat = self.srcLyrEspecial.getFeatures(request)
+                except:
+                    pass
             if not closestSpatialID:
                 self.displayErrorMessage(
-                    'Não foram encontradas feições nas camadas de edição.'
+                    "Não foram encontradas feições nas camadas de edição."
                 )
                 return
             feat = next(closestFeat)
             self.createFeature(feat, pos)
-        
+
         if self.productTypeSelector.currentIndex() == 0:
             closestSpatialID = self.spatialIndexLegal.nearestNeighbor(
-                pos, maxDistance = 2 * self.tolerance
+                pos, maxDistance=2 * self.tolerance
             )
             request = QgsFeatureRequest().setFilterFids(closestSpatialID)
             closestFeat = self.srcLyrLegal.getFeatures(request)
             if len(closestSpatialID) == 0:
-                closestSpatialID = self.spatialIndexAreaPubMil.nearestNeighbor(
-                pos, maxDistance = 2 * self.tolerance
-                )
-                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-                closestFeat = self.srcLyrAreaPubMil.getFeatures(request)
+                try:
+                    closestSpatialID = self.spatialIndexAreaPubMil.nearestNeighbor(
+                        pos, maxDistance=2 * self.tolerance
+                    )
+                    request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                    closestFeat = self.srcLyrAreaPubMil.getFeatures(request)
+                except:
+                    pass
             if len(closestSpatialID) == 0:
-                closestSpatialID = self.spatialIndexTerraInd.nearestNeighbor(
-                pos, maxDistance = 2 * self.tolerance
-                )
-                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-                closestFeat = self.srcLyrTerraInd.getFeatures(request)
+                try:
+                    closestSpatialID = self.spatialIndexTerraInd.nearestNeighbor(
+                        pos, maxDistance=2 * self.tolerance
+                    )
+                    request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                    closestFeat = self.srcLyrTerraInd.getFeatures(request)
+                except:
+                    pass
             if len(closestSpatialID) == 0:
-                closestSpatialID = self.spatialIndexUnidConserv.nearestNeighbor(
-                pos, maxDistance = 2 * self.tolerance
-                )
-                request = QgsFeatureRequest().setFilterFids(closestSpatialID)
-                closestFeat = self.srcLyrUnidConserv.getFeatures(request)
+                try:
+                    closestSpatialID = self.spatialIndexUnidConserv.nearestNeighbor(
+                        pos, maxDistance=2 * self.tolerance
+                    )
+                    request = QgsFeatureRequest().setFilterFids(closestSpatialID)
+                    closestFeat = self.srcLyrUnidConserv.getFeatures(request)
+                except:
+                    pass
             if not closestSpatialID:
                 self.displayErrorMessage(
-                    'Não foram encontradas feições nas camadas de edição.'
+                    "Não foram encontradas feições nas camadas de edição."
                 )
                 return
             feat = next(closestFeat)
@@ -260,62 +273,90 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             )
         else:
             self.tolerance = self.getScale() * 0.005
-        srcLyr_legal = QgsProject.instance().mapLayersByName(
-                "edicao_limite_legal_l"
-            )
-        srcLyrLegal = srcLyr_legal[0]
+        srcLyr_legal = QgsProject.instance().mapLayersByName("edicao_limite_legal_l")
+
         if self.productTypeSelector.currentIndex() == 1:
             srcLyr_especial = QgsProject.instance().mapLayersByName(
                 "edicao_limite_especial_l"
             )
-            srcLyrEspecial = srcLyr_especial[0]
-            if len(srcLyrLegal) == 0 and len(srcLyrEspecial) == 0:
+
+            if len(srcLyr_legal) == 0 and len(srcLyr_especial) == 0:
                 self.displayErrorMessage(
-                    self.tr('Camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" não encontrada.')
+                    self.tr(
+                        'Camada "edicao_limite_legal_l" e "edicao_limite_especial_l" não encontrada.'
+                    )
                 )
                 return None
-            
-            self.srcLyrLegal = srcLyrLegal
-            self.srcLyrEspecial = srcLyrEspecial
 
-            self.spatialIndexLegal = QgsSpatialIndex(
-                srcLyrLegal.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
-            )
-            self.spatialIndexEspecial = QgsSpatialIndex(
-                srcLyrEspecial.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
-            )
+            if len(srcLyr_legal) >= 1:
+                srcLyrLegal = srcLyr_legal[0]
+                self.srcLyrLegal = srcLyrLegal
+                self.spatialIndexLegal = QgsSpatialIndex(
+                    srcLyrLegal.getFeatures(),
+                    flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
+                )
+
+            if len(srcLyr_especial) >= 1:
+                srcLyrEspecial = srcLyr_especial[0]
+                self.srcLyrEspecial = srcLyrEspecial
+                self.spatialIndexEspecial = QgsSpatialIndex(
+                    srcLyrEspecial.getFeatures(),
+                    flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
+                )
         if self.productTypeSelector.currentIndex() == 0:
             srcLyr_area_pub_militar = QgsProject.instance().mapLayersByName(
                 "edicao_area_pub_militar_l"
             )
-            srcLyrAreaPubMil = srcLyr_area_pub_militar[0]
 
             srcLyr_terra_indigena = QgsProject.instance().mapLayersByName(
                 "edicao_terra_indigena_l"
             )
-            srcLyrTerraInd = srcLyr_terra_indigena[0]
 
             srcLyr_unid_conservacao = QgsProject.instance().mapLayersByName(
                 "edicao_unidade_conservacao_l"
             )
-            srcLyrUnidConserv = srcLyr_unid_conservacao[0]
 
-            self.srcLyrLegal = srcLyrLegal
-            self.srcLyrAreaPubMil = srcLyrAreaPubMil
-            self.srcLyrTerraInd = srcLyrTerraInd
-            self.srcLyrUnidConserv = srcLyrUnidConserv
+            if (
+                len(srcLyr_terra_indigena) == 0
+                and len(srcLyr_area_pub_militar) == 0
+                and len(srcLyr_unid_conservacao) == 0
+            ):
+                self.displayErrorMessage(
+                    self.tr(
+                        'Camada "edicao_area_pub_militar_l", "edicao_terra_indigena_l" e "edicao_unidade_conservacao_l" não encontrada.'
+                    )
+                )
+                return None
 
-            self.spatialIndexLegal = QgsSpatialIndex(
-                srcLyrLegal.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
-            )
-            self.spatialIndexAreaPubMil = QgsSpatialIndex(
-                srcLyrAreaPubMil.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
-            )
-            self.spatialIndexTerraInd = QgsSpatialIndex(
-                srcLyrTerraInd.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
-            )
-            self.spatialIndexUnidConserv = QgsSpatialIndex(
-                srcLyrUnidConserv.getFeatures(), flags=QgsSpatialIndex.FlagStoreFeatureGeometries
-            )
-            
+            if len(srcLyr_legal) >= 1:
+                self.srcLyrLegal = srcLyrLegal
+                self.spatialIndexLegal = QgsSpatialIndex(
+                    srcLyrLegal.getFeatures(),
+                    flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
+                )
+
+            if len(srcLyr_area_pub_militar) >= 1:
+                srcLyrAreaPubMil = srcLyr_area_pub_militar[0]
+                self.srcLyrAreaPubMil = srcLyrAreaPubMil
+                self.spatialIndexAreaPubMil = QgsSpatialIndex(
+                    srcLyrAreaPubMil.getFeatures(),
+                    flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
+                )
+
+            if len(srcLyr_terra_indigena) >= 1:
+                srcLyrTerraInd = srcLyr_terra_indigena[0]
+                self.srcLyrTerraInd = srcLyrTerraInd
+                self.spatialIndexTerraInd = QgsSpatialIndex(
+                    srcLyrTerraInd.getFeatures(),
+                    flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
+                )
+
+            if len(srcLyr_unid_conservacao) >= 1:
+                srcLyrUnidConserv = srcLyr_unid_conservacao[0]
+                self.srcLyrUnidConserv = srcLyrUnidConserv
+                self.spatialIndexUnidConserv = QgsSpatialIndex(
+                    srcLyrUnidConserv.getFeatures(),
+                    flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
+                )
+
         return True

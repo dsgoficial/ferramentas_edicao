@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.58 - dev
+## 1.1.59 - dev
 
 Novas Funcionalidades
 
@@ -20,6 +20,8 @@ Melhorias:
 - O plugin agora guarda no projeto o estado dos combo boxes de tipo de produto e escala quando o projeto é salvo;
 - Adicionado camada de aux_grid_revisao_a no configura estilos para edição;
 - Adicionado mais camadas para verificação no Verifica Sobreposição de Simbologia
+- Adicionado a ánalise das feições selecionadas se há alguma fora do canvas e informando o usuário caso esteja, para os butões;
+- Simplificação da extração do atributo "tamanho_txt" para o rótulo de rio;
 
 Correção de bug:
 
