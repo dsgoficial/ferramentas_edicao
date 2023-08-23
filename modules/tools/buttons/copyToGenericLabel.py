@@ -83,16 +83,6 @@ class CopyToGenericLabel(BaseTools):
                     )
                 else:
                     lyr = self.iface.activeLayer()
-                    fieldStr = "suprimir_bandeira"
-                    fieldIdx = (
-                        lyr.dataProvider().fieldNameIndex(fieldStr) if lyr else -1
-                    )
-                    if fieldIdx == -1:
-                        return self.displayErrorMessage(
-                            self.tr(
-                                f"O atributo {fieldStr} não existe na camada selecionada"
-                            )
-                        )
                     selectedFeature = lyr.getSelectedFeatures()
                     if lyr.selectedFeatureCount() == 0:
                         self.displayErrorMessage(self.tr("Não há feições selecionadas"))

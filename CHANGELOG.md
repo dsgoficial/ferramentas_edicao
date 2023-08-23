@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.59 - dev
+## 1.1.60 - dev
 
 Novas Funcionalidades
 
@@ -35,3 +35,4 @@ Correção de bug:
 - Correção de bug na ferramenta de inserir rótulo de fronteira quando utilizado em camada com sistema de referência em metros (Ex: SIRGAS 2000 UTM 21S - EPSG 31981);
 - Correção de bug em Verifica sobreposição de simbologia (ignora símbolos que são texto e linhas com marcadores)
 - Correção do cálculo do tamanho do rótulo em massa d'água
+- Correção do erro pelo fato da camada não ter o atributo "suprimir_bandeira" e procurá-lo mesmo assim;
