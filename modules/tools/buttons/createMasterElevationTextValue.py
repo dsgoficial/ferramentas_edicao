@@ -250,7 +250,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
 
     def convertLength(self, lyr, measure):
         convertLength = QgsDistanceArea()
-        convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
+        #convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         return convertLength.convertLengthMeasurement(
             measure, QgsUnitTypes.DistanceMeters
         )
@@ -270,6 +270,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
             return None
         self.contourLyr = contourLyr
         self.genericTextLyr = genericTextLyr
+        self.lyrCrs = self.genericTextLyr.dataProvider().crs()
         return True
 
     def getLyrByName(self, name):
