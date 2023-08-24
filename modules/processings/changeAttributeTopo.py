@@ -254,7 +254,6 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
     def defaultInfraElemInfra(self, feature, lyrCrs):
         new_att = {}
-        new_att[feature.fieldNameIndex("texto_edicao")] = "Atracadouro"
         new_att[feature.fieldNameIndex("justificativa_txt")] = 1
         return {feature.id(): new_att}
 
