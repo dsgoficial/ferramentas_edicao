@@ -71,7 +71,6 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
             {"mapScale": self.componentFactory.getComponent("MapScale")}
         )
         self.components.update({"table": self.componentFactory.getComponent("Table")})
-        # self.components.update({'miniMapCoords':self.componentFactory.getComponent('MiniMapCoords')})
         self.components.update({"qrcode": self.componentFactory.getComponent("Qrcode")})
         self.grid = GridAndLabelCreator()
 
@@ -84,7 +83,7 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
     ):
         """Filters displayed classes by merging mandatory layers from ConfigDefaults and desired classes from json file.
         Args:
-            mapType: map or miniMap
+            mapType: map
             jsonData: dict with json data + other parameters
             defaults: instance of configuration defaults
             mapLayers: Dict with available layers

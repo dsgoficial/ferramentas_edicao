@@ -162,5 +162,5 @@ class OmMapBuilder(IMapBuilder, MapBuilderUtils):
             )
         )
         self.groupsToBeRemoved.extend(
-            ["map", "miniMap", "localization", "articulation", "division"]
+            ["map", "localization", "articulation", "division"]
         )

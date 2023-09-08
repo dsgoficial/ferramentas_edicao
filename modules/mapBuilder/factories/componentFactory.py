@@ -12,8 +12,6 @@ from ..components.map import Map
 from ..components.mapOM import MapOM
 from ..components.mapScale import MapScale
 from ..components.mapScaleOM import MapScaleOM
-from ..components.miniMap import MiniMap
-from ..components.miniMapCoords import MiniMapCoords
 from ..components.qrcode import Qrcode
 from ..components.subtitle import Subtitle
 from ..components.table import Table
@@ -36,11 +34,9 @@ class ComponentFactory:
             "Map": Map,
             "MapOM": MapOM,
             "ElevationDiagram": ElevationDiagram,
-            "MiniMap": MiniMap,
             "Subtitle": Subtitle,
             "Table": Table,
             "Legend": Legend,
-            "MiniMapCoords": MiniMapCoords,
             "Qrcode": Qrcode,
         }
         return components.get(comp)(*args, **kwargs)

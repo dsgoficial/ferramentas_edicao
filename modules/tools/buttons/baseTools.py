@@ -47,10 +47,6 @@ class BaseTools:
             scale = scale.replace(".", "").split(":")[1]
             return int(scale)
 
-    def getMapType(self):
-        if hasattr(self, "mapTypeSelector"):
-            return self.mapTypeSelector.options.get(self.mapTypeSelector.currentText())
-
     @staticmethod
     def tr(message):
         return QCoreApplication.translate("FerramentasEdicao", message)

@@ -72,7 +72,7 @@ class MapBuilderUtils:
             data: Dict holding the map info
             defaults: Dataclass holding default plugin info
             productPath: Path instance pointing to the product path
-            group: map or miniMap
+            group: map
             filterF: filter function that receives available layers and return the filtered ones
             mapAreaFeature (QgsFeature): feature holding the map area
         Returns:

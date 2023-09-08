@@ -32,12 +32,12 @@ from .utils.comboBox import ComboBox
 
 
 class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
-    def __init__(self, iface, toolBar, mapTypeSelector, scaleSelector) -> None:
+    def __init__(self, iface, toolBar, productTypeSelector, scaleSelector) -> None:
         super().__init__(iface.mapCanvas())
         self.toolBar = toolBar
         self.iface = iface
         self.scaleSelector = scaleSelector
-        self.mapTypeSelector = mapTypeSelector
+        self.productTypeSelector = productTypeSelector
         self.mapCanvas = iface.mapCanvas()
         self.box = ComboBox(self.iface.mainWindow())
         self.canvasClicked.connect(self.mouseClick)
