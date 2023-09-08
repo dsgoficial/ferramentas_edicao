@@ -171,6 +171,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         feat['geometria_aproximada'] = feature['geometria_aproximada']
         feat['nome'] = feature['nome']
         feat['exibir_rotulo_aproximado'] = 1
+        feat['visivel'] = 1
         if layer_name == 'llp_unidade_conservacao_a':
             feat["tipo"] = feature["tipo"]
         return feat

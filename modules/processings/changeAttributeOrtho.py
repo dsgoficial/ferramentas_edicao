@@ -104,6 +104,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             "infra_elemento_infraestrutura_a",
         ]:
             processing_function = self.defaultInfraElemInfra
+        elif table_name in ["elemnat_terreno_sujeito_inundacao_a"]:
+            processing_function = self.defaultTSI
         elif table_name in ["edicao_limite_legal_l"]:
             processing_function = self.defaultEdicao
         elif table_name in ["elemnat_curva_nivel_l"]:
@@ -212,14 +214,21 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("ancora_horizontal")] = 1
         return {feature.id(): new_att}
 
+    def defaultTSI(self, feature, lyrCrs):
+        new_att = {}
+        new_att[feature.fieldNameIndex("visivel")] = 1
+        return {feature.id(): new_att}
+
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
         new_att = {}
+        new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
         new_att[feature.fieldNameIndex("justificativa_txt")] = 1
         return {feature.id(): new_att}
 
     def defaultElemnatTopoFisioL(self, feature, lyrCrs):
         new_att = {}
+        new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
         return {feature.id(): new_att}
 
@@ -250,6 +259,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultEdicao(self, feature, lyrCrs):
         new_att = {}
+        new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("exibir_rotulo_aproximado")] = 1
         return {feature.id(): new_att}
 
@@ -276,6 +286,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultMassaDagua(self, feature, lyrCrs):
         new_att = {}
+        new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("justificativa_txt")] = 2
         new_att[feature.fieldNameIndex("apresentar_simbologia")] = 2
         if feature["tipo"] in [3, 4, 5, 6, 7, 11]:
@@ -314,6 +325,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultllp(self, feature, lyrCrs):
         new_att = {}
+        new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("justificativa_txt")] = 2
         new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)

@@ -304,6 +304,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 feat.setAttribute("jurisdicao", jurisdicao)
                 tipo = mapping.get("tipo")
                 feat.setAttribute("tipo", tipo)
+                feat.setAttribute("visivel", 1)
             # if jurisdicao:=mapping.get('jurisdicao'):
             #     feat.setAttribute('jurisdicao', jurisdicao)
             feats.append(feat)
