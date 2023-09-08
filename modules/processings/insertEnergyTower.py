@@ -103,10 +103,6 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         lyr = self.runAddCount(lyr, feedback=feedback)
         self.runCreateSpatialIndex(lyr, feedback=feedback)
 
-        layerToCreateSpacedSymbolsCase1 = {
-            "infra_elemento_energia_l": "edicao_simb_torre_energia_p"
-        }
-
         energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5)
         self.runCreateSpatialIndex(energyLyrBeforeClip, feedback=feedback)
         energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer)
@@ -194,6 +190,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             geom = QgsGeometry.fromWkt(point.asWkt())
             feat.setGeometry(geom)
             feat.setAttribute("simb_rot", angle)
+            feat.setAttribute("visivel", 1)
             feats.append(feat)
 
         layer.dataProvider().addFeatures(feats)
