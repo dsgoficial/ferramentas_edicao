@@ -254,14 +254,12 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if multiStepFeedback.isCanceled():
             return {self.OUTPUT: "Cancelado"}
 
-        feedback.setProgressText("Configurando escala de renderização...")
-        self.renderizar(layers, gridScale * 1000)
-        if feedback.isCanceled():
-            return {self.OUTPUT: "Cancelado"}
+        # feedback.setProgressText("Configurando escala de renderização...")
+        # self.renderizar(layers, gridScale * 1000)
 
         # feedback.setProgressText('Carregando as máscaras...')
         # self.loadMasks(carta, layers)
-        # if feedback.isCanceled():
+        # if multiStepFeedback.isCanceled():
         #    return {self.OUTPUT: 'Cancelado'}
 
         # Adicionar tema após aplicação dos estilos
