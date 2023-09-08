@@ -164,12 +164,13 @@ class ComponentUtils:
         gridLayer, _ = utmGrid.get_neighbors_inom(inom)
         return gridLayer
 
-    def createVectorLayerFromIter(self, layerName, iterable):
+    def createVectorLayerFromIter(self, layerName, iterable, epsg=None):
         """
         Creates a vector layer from an Iterable[QgsGeometry,QgsFeature].
         Uses EPSG:4674, and has Polygon type.
         """
-        layer = QgsVectorLayer("Polygon?crs=EPSG:4674", layerName, "memory")
+        epsg = "EPSG:4674" if epsg is None else epsg
+        layer = QgsVectorLayer(f"Polygon?crs={epsg}", layerName, "memory")
         layerProvider = layer.dataProvider()
         featsToAdd = list()
         if not hasattr(iterable, "__iter__"):

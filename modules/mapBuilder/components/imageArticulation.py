@@ -74,6 +74,14 @@ class ImageArticulation(ComponentUtils, IComponent):
             "native:multiparttosingleparts",
             {"INPUT": imageArticulationLayer, "OUTPUT": "memory:"},
         )["OUTPUT"]
+        singleParts = processing.run(
+            "native:reprojectlayer",
+            {
+                "INPUT": singleParts,
+                "TARGET_CRS": QgsCoordinateReferenceSystem(4674),
+                "OUTPUT": "memory:",
+            }
+        )["OUTPUT"]
         outputLyr = processing.run(
             "qgis:advancedpythonfieldcalculator",
             {
@@ -224,7 +232,8 @@ class ImageArticulation(ComponentUtils, IComponent):
         boundsArea = boundsGeom.area()
         outputFeaturesList = []
         for feat in outputPolygonLyr.getFeatures():
-            if not feat.geometry().pointOnSurface().intersects(boundsGeom):
+            poleGeom, _ = feat.geometry().poleOfInaccessibility(10)
+            if not poleGeom.intersects(boundsGeom):
                 continue
             if self.checkRadiusPoleForLabel(feat, boundsGeom, data) < 400:
                 continue
