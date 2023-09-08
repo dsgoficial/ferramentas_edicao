@@ -1,10 +1,8 @@
 import math
-import os
 
 from qgis import processing
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsField,
     QgsCoordinateTransformContext,
     QgsDistanceArea,
     QgsFeature,
@@ -12,19 +10,13 @@ from qgis.core import (
     QgsGeometry,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProperty,
-    QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterVectorLayer,
-    NULL,
     QgsUnitTypes,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterFeatureSink,
-    QgsFeatureSink,
-    QgsVectorLayer,
+    QgsProcessingParameterDistance,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication
 
-from .processingUtils import ProcessingUtils
 
 
 class InsertEnergyTower(QgsProcessingAlgorithm):
@@ -32,6 +24,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
     INPUT_ENERGY = "INPUT_ENERGY"
     INPUT_TOWER = "INPUT_TOWER"
     INPUT_FRAME = "INPUT_FRAME"
+    MIN_DISTANCE_FROM_FRAME = "MIN_DISTANCE_FROM_FRAME"
     SCALE = "SCALE"
     OUTPUT = "OUTPUT"
 
@@ -41,6 +34,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.INPUT_ENERGY,
                 self.tr("Selecionar camada de linha de energia"),
                 [QgsProcessing.TypeVectorLine],
+                defaultValue='infra_elemento_energia_l',
             )
         )
 
@@ -49,6 +43,16 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.INPUT_TOWER,
                 self.tr("Selecionar camada de edição de torre de energia"),
                 [QgsProcessing.TypeVectorPoint],
+                defaultValue='edicao_simb_torre_energia_p',
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterDistance(
+                self.MIN_DISTANCE_FROM_FRAME,
+                self.tr("Distância mínima (em mm) com relação à moldura"),
+                minValue=0.0,
+                defaultValue=0.003,
             )
         )
 
@@ -70,6 +74,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.INPUT_FRAME,
                 self.tr("Selecionar camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
+                defaultValue='aux_moldura_a',
             )
         )
 
@@ -88,6 +93,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             scale = 250000
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
+        distanceFromFrame = self.parameterAsDouble(parameters, self.MIN_DISTANCE_FROM_FRAME, context)
         frameLayer = self.runAddCount(frameLayer, feedback=feedback)
         self.runCreateSpatialIndex(frameLayer, feedback=feedback)
 
@@ -109,7 +115,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         distance = self.getChopDistance(energyLyr, scale * 0.02)
         pointsAndAngles = self.chopLineLayer(energyLyr, distance)
         self.populateEnergyTowerSymbolLayer(tower, pointsAndAngles)
-        distanceNextToFrame = self.getChopDistance(energyLyr, scale * 0.006)
+        distanceNextToFrame = self.getChopDistance(energyLyr, scale * distanceFromFrame)
         self.removePointsNextToFrame(frameLinesLayer, tower, distanceNextToFrame)
         distanceToRemoveEnergySymbol = self.getChopDistance(tower, scale * 0.003)
 

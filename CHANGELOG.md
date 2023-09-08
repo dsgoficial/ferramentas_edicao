@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.61 - dev
+## 1.1.62 - dev
 
 Novas Funcionalidades
 
@@ -23,6 +23,7 @@ Melhorias:
 - Adicionado a ánalise das feições selecionadas se há alguma fora do canvas e informando o usuário caso esteja, para os butões;
 - Simplificação da extração do atributo "tamanho_txt" para o rótulo de rio;
 - Verificação se a feição selecionada está interseccionando o canvas, ao invés de analisar se está dentro;
+- Adicionada a opção de selecionar a distância mínima de uma torre de energia com relação à moldura no processo de inserir torres de energia;
 
 Correção de bug:
 

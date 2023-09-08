@@ -175,6 +175,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 "INPUT_ENERGY": energy,
                 "INPUT_TOWER": simbol,
                 "INPUT_FRAME": frame,
+                "MIN_DISTANCE_FROM_FRAME": 0.003,
                 "SCALE": scale,
             },
         )
