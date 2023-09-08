@@ -65,7 +65,7 @@ class AlternateTextVisibility(BaseTools):
             extentCanvas = self.iface.mapCanvas().extent()
             geomWktExtentCanvas = QgsGeometry.fromRect(extentCanvas)
             geomFeat = feat.geometry()
-            if not geomFeat.within(geomWktExtentCanvas):
+            if not geomFeat.intersects(geomWktExtentCanvas):
                 featIn = False
         return featIn
 

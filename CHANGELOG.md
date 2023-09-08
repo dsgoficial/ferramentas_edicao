@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.60 - dev
+## 1.1.61 - dev
 
 Novas Funcionalidades
 
@@ -22,6 +22,7 @@ Melhorias:
 - Adicionado mais camadas para verificação no Verifica Sobreposição de Simbologia
 - Adicionado a ánalise das feições selecionadas se há alguma fora do canvas e informando o usuário caso esteja, para os butões;
 - Simplificação da extração do atributo "tamanho_txt" para o rótulo de rio;
+- Verificação se a feição selecionada está interseccionando o canvas, ao invés de analisar se está dentro;
 
 Correção de bug:
 

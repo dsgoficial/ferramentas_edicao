@@ -71,7 +71,7 @@ class CycleTextJustification(BaseTools):
             extentCanvas = self.iface.mapCanvas().extent()
             geomExtentCanvas = QgsGeometry.fromRect(extentCanvas)
             geomFeat = feat.geometry()
-            if not geomFeat.within(geomExtentCanvas):
+            if not geomFeat.intersects(geomExtentCanvas):
                 featIn = False
         return featIn
 
