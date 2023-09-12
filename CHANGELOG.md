@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.64 - dev
+## 1.1.65 - dev
 
 Novas Funcionalidades
 
@@ -11,6 +11,7 @@ Novas Funcionalidades
 - Novo processo de calcular o tamanho do texto de acordo com a área e a largura do polígono;
 - Novo botão para ciclar entre o lado da simbologia;
 - Novo botão para ciclar entre a ponto da simbologia;
+- Novo processo de identificar rótulos fora da moldura;
 
 Melhorias:
 
