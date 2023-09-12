@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.63 - dev
+## 1.1.64 - dev
 
 Novas Funcionalidades
 
@@ -24,6 +24,7 @@ Melhorias:
 - Simplificação da extração do atributo "tamanho_txt" para o rótulo de rio;
 - Verificação se a feição selecionada está interseccionando o canvas, ao invés de analisar se está dentro;
 - Adicionada a opção de selecionar a distância mínima de uma torre de energia com relação à moldura no processo de inserir torres de energia;
+- As flags do processo de identificação de sobreposição de rótulos agora são agregadas por localização;
 
 Correção de bug:
 

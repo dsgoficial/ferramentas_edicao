@@ -95,8 +95,7 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         scale = self.scaleDict[self.scales[scaleIdx]]
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
-        fields.append(QgsField("texto_1", QVariant.String))
-        fields.append(QgsField("texto_2", QVariant.String))
+        fields.append(QgsField("texto", QVariant.String))
         (sink, sink_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,
@@ -106,14 +105,13 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             geographicBoundaryLyr.crs(),
         )
 
-
         lyrNameSet = set(i.name() for i in layerList)
         algRunner = AlgRunner()
         nRegions = geographicBoundaryLyr.featureCount()
-        nSteps = 2 + 2*nRegions
+        nSteps = 4 + 2 * nRegions
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        labelDict = defaultdict(lambda :defaultdict(dict))
+        labelDict = defaultdict(lambda: defaultdict(dict))
         selectedLabelLyrList = []
         for feat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
@@ -121,41 +119,49 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             geom = feat.geometry()
             extent = geom.boundingBox()
             multiStepFeedback.setCurrentStep(currentStep)
-            multiStepFeedback.setProgressText(self.tr(f"Calculando posição dos textos para o extent {extent}"))
+            multiStepFeedback.setProgressText(
+                self.tr(f"Calculando posição dos textos para o extent {extent}")
+            )
             outputLabelLyr = processing.run(
                 "native:extractlabels",
                 {
                     "EXTENT": extent,
                     "SCALE": scale,
-                    "MAP_THEME":None,
-                    "INCLUDE_UNPLACED":False,
-                    "DPI":400,
-                    "OUTPUT":"memory:"
+                    "MAP_THEME": None,
+                    "INCLUDE_UNPLACED": False,
+                    "DPI": 400,
+                    "OUTPUT": "memory:",
                 },
                 context=context,
                 feedback=multiStepFeedback,
             )["OUTPUT"]
             currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
-            multiStepFeedback.setProgressText(self.tr(f"Adicionando dados calculados do extent {extent} às estruturas auxiliares"))
+            multiStepFeedback.setProgressText(
+                self.tr(
+                    f"Adicionando dados calculados do extent {extent} às estruturas auxiliares"
+                )
+            )
             nFeats = outputLabelLyr.featureCount()
             if nFeats == 0:
                 continue
             selectedLabelsLyr = algRunner.runFilterExpression(
                 inputLyr=outputLabelLyr,
                 context=context,
-                expression=f"Layer in {tuple(lyrNameSet)}".replace(",)",")"),
+                expression=f"Layer in {tuple(lyrNameSet)}".replace(",)", ")"),
                 feedback=multiStepFeedback,
             )
             currentStep += 1
             if selectedLabelsLyr.featureCount() == 0:
                 continue
             selectedLabelLyrList.append(selectedLabelsLyr)
-        
+
         if selectedLabelLyrList == [] or multiStepFeedback.isCanceled():
             return {self.OUTPUT: sink_id}
-        
-        mergedLyr = algRunner.runMergeVectorLayers(selectedLabelLyrList, context, feedback=multiStepFeedback)
+
+        mergedLyr = algRunner.runMergeVectorLayers(
+            selectedLabelLyrList, context, feedback=multiStepFeedback
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         mergedWithFieldId = algRunner.runCreateFieldWithExpression(
@@ -174,7 +180,12 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         labelPolygonsLayer = self.getLabelPolygons(mergedWithFieldId, multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(labelPolygonsLayer, context, feedback=multiStepFeedback, is_child_algorithm=True)
+        algRunner.runCreateSpatialIndex(
+            labelPolygonsLayer,
+            context,
+            feedback=multiStepFeedback,
+            is_child_algorithm=True,
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.setProgressText(self.tr("Calculando overlaps"))
@@ -191,23 +202,36 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         nProblems = intersectedLyr.featureCount()
         if nProblems == 0:
             return {self.OUTPUT: sink_id}
-        stepSize = 100/nProblems
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        dissolvedLyr = algRunner.runDissolve(
+            inputLyr=intersectedLyr,
+            context=context,
+            feedback=multiStepFeedback,
+        )
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        algRunner.runDeaggregate(
+            inputLyr=dissolvedLyr,
+            context=context,
+            feedback=multiStepFeedback,
+        )
+        nProblems = dissolvedLyr.featureCount()
+        stepSize = 100 / nProblems
         flagId = 0
-        featDict = {feat["featid"]:feat for feat in mergedWithFieldId.getFeatures()}
-        for current, feat in enumerate(intersectedLyr.getFeatures()):
+        for current, feat in enumerate(dissolvedLyr.getFeatures()):
             if multiStepFeedback.isCanceled():
                 break
             if feat["featid"] == feat["featid_2"]:
                 continue
             flagFeat = QgsFeature(fields)
             flagFeat["id"] = flagId
-            flagFeat["texto_1"] = featDict[feat["featid"]]["LabelText"]
-            flagFeat["texto_2"] = featDict[feat["featid_2"]]["LabelText"]
+            flagFeat["texto"] = "Rótulos sobrepostos"
             flagFeat.setGeometry(feat.geometry())
             sink.addFeature(flagFeat)
             multiStepFeedback.setProgress(current * stepSize)
             flagId += 1
-        
+
         return {self.OUTPUT: sink_id}
 
     def getLabelPolygons(self, lyr, feedback):
@@ -226,11 +250,11 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
 
         temp.beginEditCommand("Populating temp lyr")
 
-        #tol = 25000 * 1.5
+        # tol = 25000 * 1.5
         nSteps = lyr.featureCount()
         if nSteps == 0:
             return temp
-        stepSize = 100/nSteps
+        stepSize = 100 / nSteps
         for current, feat in enumerate(lyr.getFeatures()):
             if feedback.isCanceled():
                 break
@@ -239,10 +263,14 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             # labelSize = feat["Size"]
             height = feat["LabelHeight"]
             width = feat["LabelWidth"] * 1.22
-        #    width = (feat["LabelWidth"] / max([len(i) for i in feat["LabelText"].split('\n')])) * tol
-            geom = QgsGeometry.fromRect(QgsRectangle.fromCenterAndSize(
-                QgsPointXY(pointXY.x() + width/2, pointXY.y() + height/2), width, height
-            ))
+            #    width = (feat["LabelWidth"] / max([len(i) for i in feat["LabelText"].split('\n')])) * tol
+            geom = QgsGeometry.fromRect(
+                QgsRectangle.fromCenterAndSize(
+                    QgsPointXY(pointXY.x() + width / 2, pointXY.y() + height / 2),
+                    width,
+                    height,
+                )
+            )
             newFeat = QgsFeature(fields)
             for attr, value in feat.attributeMap().items():
                 newFeat[attr] = value
