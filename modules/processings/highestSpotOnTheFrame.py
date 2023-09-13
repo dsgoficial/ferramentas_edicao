@@ -80,23 +80,23 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
                     maxSpotFeature
                     and maxSpotFeature[spotField] >= spotFeature[spotField]
                 ):
-                    new_att = {}
-                    new_att[spotFeature.fieldNameIndex(higuestSpotField)] = 2
-                    spotLayer.dataProvider().changeAttributeValues(
-                        {spotFeature.id(): new_att}
+                    attributeMap = {}
+                    attributeMap[spotFeature.fieldNameIndex(higuestSpotField)] = 2
+                    spotLayer.changeAttributeValues(
+                        spotFeature.id(), attributeMap
                     )
                     continue
                 if maxSpotFeature:
-                    new_att = {}
-                    new_att[spotFeature.fieldNameIndex(higuestSpotField)] = 2
-                    spotLayer.dataProvider().changeAttributeValues(
-                        {maxSpotFeature.id(): new_att}
+                    attributeMap = {}
+                    attributeMap[spotFeature.fieldNameIndex(higuestSpotField)] = 2
+                    spotLayer.changeAttributeValues(
+                        spotFeature.id(), attributeMap
                     )
                 maxSpotFeature = spotFeature
-                new_att = {}
-                new_att[spotFeature.fieldNameIndex(higuestSpotField)] = 1
-                spotLayer.dataProvider().changeAttributeValues(
-                    {maxSpotFeature.id(): new_att}
+                attributeMap = {}
+                attributeMap[spotFeature.fieldNameIndex(higuestSpotField)] = 1
+                spotLayer.changeAttributeValues(
+                    spotFeature.id(), attributeMap
                 )
 
         spotLayer.endEditCommand()

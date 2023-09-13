@@ -115,7 +115,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         layer.startEditing()
         layer.beginEditCommand("Atualizando atributos")
         for feature in layer.getFeatures():
-            new_att = {}
+            attributeDict = {}
             if feature['situacao_em_poligono'] == 1:
                 size = ProcessingUtils.getRiverOutPolyLabelFontSize(
                     feature, self.scale, lyrCrs
@@ -126,8 +126,8 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 )
             if self.productParam == 0:  # Para carta ortoimagem o tamanho mínimo é 7
                 size = size if size > 6 else 7
-            new_att[feature.fieldNameIndex("tamanho_txt")] = size
-            layer.dataProvider().changeAttributeValues({feature.id(): new_att})
+            attributeDict[feature.fieldNameIndex("tamanho_txt")] = size
+            layer.changeAttributeValues(feature.id(), attributeDict)
         layer.endEditCommand()
 
     def bufferRiver(self, inputLyr):

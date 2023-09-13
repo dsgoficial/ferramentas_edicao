@@ -148,7 +148,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         for feature in layer.getFeatures():
             updated_feature = processing_function(feature, lyrCrs)
             if updated_feature:
-                layer.dataProvider().changeAttributeValues(updated_feature)
+                layer.updateFeature(updated_feature)
 
         layer.endEditCommand()
 

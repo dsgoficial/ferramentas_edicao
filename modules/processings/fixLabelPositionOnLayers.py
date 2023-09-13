@@ -175,7 +175,8 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
             if result is None:
                 continue
             lyr, attrDict = result
-            lyr.dataProvider().changeAttributeValues(attrDict)
+            for featid, attrMap in attrDict.items():
+                lyr.changeAttributeValues(featid, attrMap)
         
         for lyrName in labelDict.keys():
             if lyrName not in lyrDict:
