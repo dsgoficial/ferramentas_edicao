@@ -28,9 +28,9 @@ from .buttons.cycleTipVisibility import CycleTipVisibility
 
 
 class SetupButtons:
-    def __init__(self, iface=None) -> None:
+    def __init__(self, toolbar, iface=None) -> None:
         self.iface = iface
-        self.toolBar = iface.addToolBar("ferramentas_edicao")
+        self.toolBar = toolbar
         self.mapCanvas = iface.mapCanvas()
         self.tools = list()
         self.mapTools = list()

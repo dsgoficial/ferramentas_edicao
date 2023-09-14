@@ -78,6 +78,7 @@ class EditionPlugin:
         status_tip=None,
         whats_this=None,
         parent=None,
+        parentToolbar=None,
     ):
         """Add a toolbar icon to the toolbar.
 
@@ -135,6 +136,9 @@ class EditionPlugin:
 
         if add_to_menu:
             self.iface.addPluginToMenu(self.menu, action)
+        
+        if parentToolbar:
+            parentToolbar.addAction(action)
 
         self.actions.append(action)
 
@@ -143,15 +147,18 @@ class EditionPlugin:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
+        self.firstStart = True
+        self.toolBar = self.iface.addToolBar("ferramentas_edicao")
+        self.toolBar.setObjectName("ferramentas_edicao")
         icon_path = Path(__file__).parent / "icon.png"
         self.add_action(
             str(icon_path),
-            text=self.tr("Ferramentas de Edição"),
+            text=self.tr("Ferramentas de Edição: Exportar produtos"),
             callback=self.run,
-            parent=self.iface.mainWindow(),
+            parentToolbar=self.toolBar,
+            add_to_toolbar=False,
         )
-        self.firstStart = True
-        self.tools = SetupButtons(self.iface)
+        self.tools = SetupButtons(toolbar=self.toolBar, iface=self.iface)
         self.tools.initToolBar()
         self.processingProvider = ProcessingProvider()
         self.processingProvider.initProcessing()
