@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.66 - dev
+## 1.1.67 - dev
 
 Novas Funcionalidades
 
@@ -26,6 +26,7 @@ Melhorias:
 - Verificação se a feição selecionada está interseccionando o canvas, ao invés de analisar se está dentro;
 - Adicionada a opção de selecionar a distância mínima de uma torre de energia com relação à moldura no processo de inserir torres de energia;
 - As flags do processo de identificação de sobreposição de rótulos agora são agregadas por localização;
+- O pdf exportado agora guarda metadados;
 
 Correção de bug:
 

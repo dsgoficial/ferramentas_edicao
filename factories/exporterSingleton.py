@@ -2,7 +2,8 @@ import subprocess
 from pathlib import Path
 from typing import NamedTuple, Dict
 
-from qgis.core import QgsLayoutExporter, QgsPrintLayout, QgsRasterLayer
+from qgis.core import QgsLayoutExporter, QgsPrintLayout, QgsRasterLayer, QgsProject
+from qgis import utils
 
 
 class ExporterSingleton:
@@ -34,6 +35,15 @@ class ExporterSingleton:
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
         self.dpi = int(data.get("dpi", 400))
+    
+    def setMetadata(self):
+        metadata = QgsProject.instance().metadata()
+        dsgToolsVersion = utils.pluginMetadata("DsgTools", "version")
+        FEVersion = utils.pluginMetadata("ferramentas_edicao", "version")
+        metadata.setAbstract(f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; {self.dpi} dpi")
+        metadata.setAuthor("Diretoria de Serviço Geográfico")
+        metadata.setTitle(f"{self.basename}")
+        QgsProject.instance().setMetadata(metadata)
 
     def export(self, composition: QgsPrintLayout) -> bool:
         """Creates a QgsLayoutExporter per composition to be exported
@@ -45,13 +55,14 @@ class ExporterSingleton:
         exporter = QgsLayoutExporter(composition)
         exportStatus = 0
         errorMessage = ""
+        self.setMetadata()
         if not self.debugMode:
             pdfFilePath = Path(self.exportFolder, f"{self.basename}.pdf")
             pdfExportSettings = QgsLayoutExporter.PdfExportSettings()
             pdfExportSettings.rasterizeWholeImage = True
             pdfExportSettings.simplifyGeometries = False
             pdfExportSettings.appendGeoreference = True
-            pdfExportSettings.exportMetadata = False
+            pdfExportSettings.exportMetadata = True
             pdfExportSettings.dpi = self.dpi
             exportStatus += exporter.exportToPdf(str(pdfFilePath), pdfExportSettings)
             errorMessage += self.getErrorMessage(exportStatus)
