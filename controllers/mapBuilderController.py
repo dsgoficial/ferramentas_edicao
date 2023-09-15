@@ -280,6 +280,7 @@ class MapBuildController(MapBuildControllerUtils):
         # TODO: run in a different thread
         # TODO: better layers / composition cleanup
         """Runs the specified MapBuilder according to dlg / json preferences"""
+        builder.cleanProject(self.debugMode)
         dlgCfg = self.setupDlgCfg(self.dlg)
         productType, productName = self.getProductType(dlgCfg.productType)
         builder = None
@@ -343,12 +344,15 @@ class MapBuildController(MapBuildControllerUtils):
             jsonData.update({"productType": productType, "productName": productName})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             builder = self.getProductBuilder(productType)
-            # builder.cleanProject(False)
             # builder.removeLayers(False)
             composition = self.compositions.getComposition(jsonData).clone()
-            connection = self.conn.getConnection(
-                jsonData.get("banco"), dlgCfg.username, dlgCfg.password
-            ) if jsonData["tipo_produto"] != "Carta Ortoimagem OM" else None
+            connection = (
+                self.conn.getConnection(
+                    jsonData.get("banco"), dlgCfg.username, dlgCfg.password
+                )
+                if jsonData["tipo_produto"] != "Carta Ortoimagem OM"
+                else None
+            )
             # Build components
             builder.setParams(
                 jsonData,
@@ -365,14 +369,16 @@ class MapBuildController(MapBuildControllerUtils):
             builder.removeLayers(self.debugMode)
 
         messageType = "Informação"
-        if builder:
-            builder.cleanProject(self.debugMode)
-            messageType = "Informação" if exportResult == True else "Erro"
-            msg = (
-                "A exportação foi concluída com sucesso."
-                if exportResult == True
-                else f"Ocorreu um erro durante a exportação: {exportMessage}"
+        if not builder:
+            QMessageBox.warning(
+                self.dlg, messageType, "Não há cartas a serem exportadas"
             )
-        else:
-            msg = "Não há cartas a serem exportadas"
+            return
+        builder.cleanProject(self.debugMode)
+        messageType = "Informação" if exportResult == True else "Erro"
+        msg = (
+            "A exportação foi concluída com sucesso."
+            if exportResult == True
+            else f"Ocorreu um erro durante a exportação: {exportMessage}"
+        )
         QMessageBox.warning(self.dlg, messageType, msg)
