@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.67 - dev
+## 1.1.68 - dev
 
 Novas Funcionalidades
 
@@ -12,6 +12,7 @@ Novas Funcionalidades
 - Novo botão para ciclar entre o lado da simbologia;
 - Novo botão para ciclar entre a ponto da simbologia;
 - Novo processo de identificar rótulos fora da moldura;
+- O projeto agora é limpo antes de uma exportação para evitar camadas estranhas que estragam a exportação;
 
 Melhorias:
 
