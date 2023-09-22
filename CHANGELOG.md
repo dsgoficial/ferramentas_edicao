@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.67 - dev
+## 1.1.69 - dev
 
 Novas Funcionalidades
 
@@ -43,3 +43,4 @@ Correção de bug:
 - Correção do erro pelo fato da camada não ter o atributo "suprimir_bandeira" e procurá-lo mesmo assim;
 - Corrigido bug na geração do Articulação das Imagens quando o CRS não é 4674;
 - Corrigido bug nos processos de preparo que não permitiam undo (uso incorreto do dataProvider);
+- Corrige bug no processo de corrigir borda de elemento hidrográfico quando não há feições na camada de entrada;
