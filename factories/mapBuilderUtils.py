@@ -287,8 +287,12 @@ class MapBuilderUtils:
         Args:
             debugMode: Boolean value holding the debugMode status
         """
-        if not debugMode and hasattr(self, "composition"):
-            self.instance.layoutManager().removeLayout(self.composition)
+        if debugMode:
+            return
+        iface.newProject()
+        if not hasattr(self, "composition"):
+            return
+        self.instance.layoutManager().removeLayout(self.composition)
 
     def removeLayers(self, debugMode: bool = False):
         """Removes map layers and layer tree roots. Should be called when not running in debug mode, specially when exporting multiple maps at once.
