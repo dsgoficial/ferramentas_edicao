@@ -23,6 +23,7 @@ from ..factories.connectionSingleton import ConnectionSingleton
 from ..factories.exporterSingleton import ExporterSingleton
 from ..factories.militaryOrthoMapBuilder import MilitaryOrthoMapBuilder
 from ..factories.militaryTopoMapBuilder import MilitaryTopoMapBuilder
+from ..factories.mapBuilderUtils import MapBuilderUtils
 from ..factories.omMapbuilder import OmMapBuilder
 from ..factories.orthoMapBuilder import OrthoMapBuilder
 from ..factories.topoMapBuilder import TopoMapBuilder
@@ -280,8 +281,8 @@ class MapBuildController(MapBuildControllerUtils):
         # TODO: run in a different thread
         # TODO: better layers / composition cleanup
         """Runs the specified MapBuilder according to dlg / json preferences"""
-        builder.cleanProject(self.debugMode)
         dlgCfg = self.setupDlgCfg(self.dlg)
+        MapBuilderUtils().cleanProject(self.debugMode)
         productType, productName = self.getProductType(dlgCfg.productType)
         builder = None
         if self.dlg.jsonConfigs.filePath() == "":
