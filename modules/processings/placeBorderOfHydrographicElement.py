@@ -70,7 +70,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
         simbLineLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_SYMBOL_LAYER, context
         )
-        if inputLyr.featureCount() == 0 and inputLyr.selectedFeatureCount() == 0:
+        if inputLyr.featureCount() == 0 or inputLyr.selectedFeatureCount() == 0:
             selectedText = 'selecionadas ' if onlySelected else ''
             feedback.pushInfo(f"Não há feições {selectedText}na camada de entrada")
             return {self.OUTPUT: ""}
