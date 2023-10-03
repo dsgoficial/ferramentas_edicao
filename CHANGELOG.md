@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.69 - dev
+## 1.1.70 - dev
 
 Novas Funcionalidades
 
@@ -45,3 +45,4 @@ Correção de bug:
 - Corrigido bug na geração do Articulação das Imagens quando o CRS não é 4674;
 - Corrigido bug nos processos de preparo que não permitiam undo (uso incorreto do dataProvider);
 - Corrige bug no processo de corrigir borda de elemento hidrográfico quando não há feições na camada de entrada;
+- Corrige bug no processo de identificação de sobreposição de rótulos;

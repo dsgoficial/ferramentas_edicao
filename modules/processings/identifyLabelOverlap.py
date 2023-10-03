@@ -108,7 +108,7 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         lyrNameSet = set(i.name() for i in layerList)
         algRunner = AlgRunner()
         nRegions = geographicBoundaryLyr.featureCount()
-        nSteps = 4 + 2 * nRegions
+        nSteps = 5 + 2 * nRegions
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
         labelDict = defaultdict(lambda: defaultdict(dict))
@@ -216,7 +216,28 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             context=context,
             feedback=multiStepFeedback,
         )
+        dissolvedLyr = processing.run(
+            "native:joinattributesbylocation",
+            {
+                "INPUT": dissolvedLyr,
+                "PREDICATE": [2],  # equal
+                "JOIN": labelPolygonsLayer,
+                "JOIN_FIELDS": [],
+                "METHOD": 0,
+                "DISCARD_NONMATCHING": False,
+                "PREFIX": "",
+                "NON_MATCHING": "memory:",
+            },
+            context=context,
+            feedback=multiStepFeedback,
+            is_child_algorithm=False,
+        )["NON_MATCHING"]
         nProblems = dissolvedLyr.featureCount()
+        if nProblems == 0:
+            multiStepFeedback.pushInfo(self.tr("Não há rótulos sobrepostos"))
+            return {self.OUTPUT: sink_id}
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
         stepSize = 100 / nProblems
         flagId = 0
         for current, feat in enumerate(dissolvedLyr.getFeatures()):
@@ -241,7 +262,7 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             "temp_label_lyr",
             "memory",
         )
-
+        isGeographic = lyr.crs().isGeographic()
         temp.startEditing()
 
         temp_data = temp.dataProvider()
@@ -262,7 +283,7 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             pointXY = pointGeom.asPoint()
             # labelSize = feat["Size"]
             height = feat["LabelHeight"]
-            width = feat["LabelWidth"] * 1.22
+            width = feat["LabelWidth"] * 1.15
             #    width = (feat["LabelWidth"] / max([len(i) for i in feat["LabelText"].split('\n')])) * tol
             geom = QgsGeometry.fromRect(
                 QgsRectangle.fromCenterAndSize(
