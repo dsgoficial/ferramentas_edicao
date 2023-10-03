@@ -151,7 +151,7 @@ def setRoadAttributes(feat: QgsFeature, toInsert: QgsFeature, productType):
         if "tamanho_buffer" not in toInsert.attributeMap():
             raise NameError(
                 tr(
-                    "O campo tamanho_buffer não existe na modelagem em questão. Verifique a modelagem e o tipo de produto selecionado e tente novamente."
+                    "O campo tamanho_buffer não existe na modelagem em questão (só existe na modelagem de carta ortoimagem). Verifique a modelagem e o tipo de produto selecionado e tente novamente. Se você está editando carta topográfica, selecione carta topográfica na barra de ferramentas."
                 )
             )
         toInsert.setAttribute("tamanho_buffer", 1)

@@ -11,7 +11,7 @@ from .damWidth import DamWidth
 from .defineBuildingRotation import DefineBuildingRotation
 from .defineSpillWaySinkRotation import DefineSpillWaySinkRotation
 from .placeVegetationSymbol import PlaceVegetationSymbol
-from .placeBorderOfHydrigraphicElement import PlaceBorderOfHydrographicElement
+from .placeBorderOfHydrographicElement import PlaceBorderOfHydrographicElement
 from .elevationDiagramPointGeneralization import ElevationDiagramPointGeneralization
 from .elevationPointGeneralization import ElevationPointsGeneralization
 from .fixLabelPositionOnLayers import FixLabelPostionOnLayers
