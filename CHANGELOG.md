@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 1.1.71 - dev
+
+- Corrigido o estilo de limite legal em Carta Topográfica.
 ## 1.1.70 - dev
 
 Novas Funcionalidades
