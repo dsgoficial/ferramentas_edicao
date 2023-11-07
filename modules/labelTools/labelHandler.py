@@ -52,21 +52,6 @@ def createRoadLabel(pos: QgsGeometry, scale, productType, crsString) -> QgsFeatu
                 f"Feição inválida. Verifique o atributo '{attrNameLane}' na camada '{srcLyrName}'"
             )
         )
-    attrNameType = "tipo"
-    attr_tipo = feat.attribute(attrNameType)
-    tipoDict = {
-        2: "Estrada/Rodovia (2)",
-        3: "Caminho carroçável (3)",
-        4: "Auto-estrada (4)",
-        5: "Arruamento (5)",
-        6: "Trilha ou Picada (6)",
-    }
-    if attr_tipo in (3, 5, 6):
-        raise NameError(
-            tr(
-                f"Feição inválida. {tipoDict[attr_tipo]} não recebe o atributo {attrNameLane}"
-            )
-        )
     toInsert = QgsFeature(dstLyr.fields())
     toInsert = setRoadAttributes(feat, toInsert, productType)
     if toInsert is None:

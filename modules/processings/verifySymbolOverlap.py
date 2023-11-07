@@ -4,7 +4,7 @@ from typing import Set
 from ..labelTools.labelHandler import (
     getLayerByName,
 )
-
+import processing
 from qgis.core import (
     QgsField,
     QgsProcessing,
@@ -476,6 +476,8 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                 height_mm = width_mm = symbolFeat.size(QgsRenderContext())
                 for symbolLyr in symbolFeat.symbolLayers():
                     if isinstance(symbolLyr, QgsFontMarkerSymbolLayer):
+                        if symbolFeat.symbolLayerCount() == 1:
+                            toDelete.add(feat.id())
                         continue
                     if (
                         isinstance(symbolLyr, QgsSimpleMarkerSymbolLayer)
@@ -484,35 +486,24 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                         height_mm = width_mm = (
                             symbolLyr.size() + symbolLyr.strokeWidth()
                         )
-                        offset_geom = QgsGeometry()
-                        offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
-                        offset = offset_geom.asPoint()
-                        offset_x_mm = offset.x()
-                        offset_y_mm = offset.y()
+                        offset_x_mm, offset_y_mm = self.calcOffset(symbolLyr)
                     elif (
                         isinstance(symbolLyr, QgsSvgMarkerSymbolLayer)
                         and symbolLyr.size() >= width_mm
                     ):
                         ratio = symbolLyr.defaultAspectRatio()
                         height_mm = width_mm * ratio
-                        offset_geom = QgsGeometry()
-                        offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
-                        offset = offset_geom.asPoint()
-                        offset_x_mm = offset.x()
-                        offset_y_mm = offset.y()
+                        offset_x_mm, offset_y_mm = self.calcOffset(symbolLyr)
                     elif symbolLyr.size() >= width_mm:
-                        offset_geom = QgsGeometry()
-                        offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
-                        offset = offset_geom.asPoint()
-                        offset_x_mm = offset.x()
-                        offset_y_mm = offset.y()
-                newAttributes = {
-                    feat.fieldNameIndex("width"): scale * ((width_mm) / 1000),
-                    feat.fieldNameIndex("height"): scale * ((height_mm) / 1000),
-                    feat.fieldNameIndex("offset_x"): scale * (offset_x_mm / 1000),
-                    feat.fieldNameIndex("offset_y"): scale * (offset_y_mm / 1000),
-                }
-                updateFeats[feat.id()] = newAttributes
+                        offset_x_mm, offset_y_mm = self.calcOffset(symbolLyr)
+                if not feat.id() in toDelete:
+                    newAttributes = {
+                        feat.fieldNameIndex("width"): scale * ((width_mm) / 1000),
+                        feat.fieldNameIndex("height"): scale * ((height_mm) / 1000),
+                        feat.fieldNameIndex("offset_x"): scale * (offset_x_mm / 1000),
+                        feat.fieldNameIndex("offset_y"): scale * (offset_y_mm / 1000),
+                    }
+                    updateFeats[feat.id()] = newAttributes
             elif isinstance(symbolFeat, QgsLineSymbol):
                 endCap = 1  # Flat
                 for symbolLyr in symbolFeat.symbolLayers():
@@ -544,6 +535,14 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             feedback=None,
         )
         return layer_buffered
+
+    def calcOffset(self, symbolLyr):
+        offset_geom = QgsGeometry()
+        offset_geom = offset_geom.fromQPointF(symbolLyr.offset())
+        offset = offset_geom.asPoint()
+        offset_x_mm = offset.x()
+        offset_y_mm = offset.y()
+        return offset_x_mm, offset_y_mm
 
     def updateGeometries(self, layer: QgsVectorLayer, feedback=None):
         simbRotIndex = layer.fields().indexFromName("simb_rot")
@@ -654,6 +653,23 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             if feedback is not None:
                 multiStepFeedback.setProgress(progressStep * step)
         return features
+
+    def removeNullGeometries(
+        self, inputLayer, context, feedback=None, outputLyr=None, removeEmpty=False
+    ):
+        outputLyr = "memory:" if outputLyr is None else outputLyr
+        parameters = {
+            "INPUT": inputLayer,
+            "REMOVE_EMPTY": removeEmpty,
+            "OUTPUT": outputLyr,
+        }
+        output = processing.run(
+            "native:removenullgeometries",
+            parameters,
+            context=context,
+            feedback=feedback,
+        )
+        return output["OUTPUT"]
 
     def geomInLayer(
         self, geom: QgsGeometry, lyr: QgsVectorLayer, feedback=None

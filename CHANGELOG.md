@@ -1,11 +1,8 @@
 # CHANGELOG
 
-
-## 1.1.71 - dev
+## 1.1.72 - dev
 
 - Corrigido o estilo de limite legal em Carta Topográfica.
-## 1.1.70 - dev
-
 Novas Funcionalidades
 
 - Novo processo de inserir ponto de mudança (Point of change AP030);
@@ -50,3 +47,5 @@ Correção de bug:
 - Corrigido bug nos processos de preparo que não permitiam undo (uso incorreto do dataProvider);
 - Corrige bug no processo de corrigir borda de elemento hidrográfico quando não há feições na camada de entrada;
 - Corrige bug no processo de identificação de sobreposição de rótulos;
+- Correção de bug em Verifica sobreposição de simbologia (exclui do calculo feições cujos símbolos que são apenas texto)
+- Remover raise NameError quando passava por Caminho Carroçável, Arruamento e Trilha ou Picada em createRoadLabel para colocar PointOfChange
