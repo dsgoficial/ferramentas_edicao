@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 1.1.74 - dev
+
+- Adicionado os estilos para tipo in (605, 698) em constr_edificacao_p
+- Criado o estilo de Bueiro/Galeria para elem_viario_l
+- Adicionado regra para Passarela (tipo = 608)
+- Adicionado estilo para Piscina (tipo = 501) em constr_ocupacao_solo_a
+- Adicionado os estilos para tipo in (301, 304, 398, 1213, 1214) para constr_edificacao_a
+- Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
+
 ## 1.1.73 - dev
 
 - Adicionado o estilo para Restinga (tipo = 401) em cobter_vegetacao_a
