@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.1.73 - dev
+
+- Adicionado o estilo para Restinga (tipo = 401) em cobter_vegetacao_a
+- Adicionado o estilo para Atracadouro - Cais (tipo = 1938) em infra_elemento_infraestrutura_l
+
 ## 1.1.72 - dev
 
 - Corrigido o estilo de limite legal em Carta Topográfica.
