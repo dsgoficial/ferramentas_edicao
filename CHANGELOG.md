@@ -1,20 +1,6 @@
 # CHANGELOG
 
-## 1.1.74 - dev
-
-- Adicionado os estilos para tipo in (605, 698) em constr_edificacao_p
-- Criado o estilo de Bueiro/Galeria para elem_viario_l
-- Adicionado regra para Passarela (tipo = 608)
-- Adicionado estilo para Piscina (tipo = 501) em constr_ocupacao_solo_a
-- Adicionado os estilos para tipo in (301, 304, 398, 1213, 1214) para constr_edificacao_a
-- Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
-
-## 1.1.73 - dev
-
-- Adicionado o estilo para Restinga (tipo = 401) em cobter_vegetacao_a
-- Adicionado o estilo para Atracadouro - Cais (tipo = 1938) em infra_elemento_infraestrutura_l
-
-## 1.1.72 - dev
+## 1.1.75 - dev
 
 - Corrigido o estilo de limite legal em Carta Topográfica.
 Novas Funcionalidades
@@ -43,6 +29,14 @@ Melhorias:
 - Adicionada a opção de selecionar a distância mínima de uma torre de energia com relação à moldura no processo de inserir torres de energia;
 - As flags do processo de identificação de sobreposição de rótulos agora são agregadas por localização;
 - O pdf exportado agora guarda metadados;
+- Adicionado o estilo para Restinga (tipo = 401) em cobter_vegetacao_a
+- Adicionado o estilo para Atracadouro - Cais (tipo = 1938) em infra_elemento_infraestrutura_l
+- Adicionado os estilos para tipo in (605, 698) em constr_edificacao_p
+- Criado o estilo de Bueiro/Galeria para elem_viario_l
+- Adicionado regra para Passarela (tipo = 608)
+- Adicionado estilo para Piscina (tipo = 501) em constr_ocupacao_solo_a
+- Adicionado os estilos para tipo in (301, 304, 398, 1213, 1214) para constr_edificacao_a
+- Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
 
 Correção de bug:
 
@@ -63,3 +57,4 @@ Correção de bug:
 - Corrige bug no processo de identificação de sobreposição de rótulos;
 - Correção de bug em Verifica sobreposição de simbologia (exclui do calculo feições cujos símbolos que são apenas texto)
 - Remover raise NameError quando passava por Caminho Carroçável, Arruamento e Trilha ou Picada em createRoadLabel para colocar PointOfChange
+- Corrige bug no processo de fixar posição do label;

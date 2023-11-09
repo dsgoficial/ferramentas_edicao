@@ -164,7 +164,8 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                 currentFeat += 1
                 multiStepFeedback.setProgress(currentFeat * stepSize)
         currentStep += 1
-
+        if len(futures) == 0:
+            return {self.OUTPUT: ""}
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.setProgressText(self.tr("Atualizando camadas com resultados"))
         stepSize = 100 / len(futures)
