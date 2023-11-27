@@ -31,7 +31,7 @@ class PlaceVegetationSymbol(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT,
-                self.tr("Selecionar camada de extração mineral"),
+                self.tr("Selecionar camada de vegetação"),
                 [QgsProcessing.TypeVectorPolygon],
                 defaultValue="cobter_vegetacao_a",
             )

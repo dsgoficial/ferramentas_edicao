@@ -1,8 +1,7 @@
 # CHANGELOG
 
-## 1.1.75 - dev
+## 1.1.76 - dev
 
-- Corrigido o estilo de limite legal em Carta Topográfica.
 Novas Funcionalidades
 
 - Novo processo de inserir ponto de mudança (Point of change AP030);
@@ -17,6 +16,9 @@ Novas Funcionalidades
 
 Melhorias:
 
+- Adicionado o estilo para infra_elemento_energia_p (tipo = 405)
+- Corrigido texto de Insere Símbolo de Vegetação.
+- Corrigido o estilo de limite legal em Carta Topográfica.
 - Melhoria no carrega estilos;
 - Melhoria nas rotinas de Prepara Orto e Prepara Topo;
 - Alterado o quadro de informações do produto da Carta Ortoimagem OM;
