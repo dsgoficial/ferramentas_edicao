@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.76 - dev
+## 1.1.77 - dev
 
 Novas Funcionalidades
 
@@ -16,6 +16,7 @@ Novas Funcionalidades
 
 Melhorias:
 
+- Corrigido o estilo de infra_elemento_viario_l (caso ponte/passarela)
 - Adicionado o estilo para infra_elemento_energia_p (tipo = 405)
 - Corrigido texto de Insere Símbolo de Vegetação.
 - Corrigido o estilo de limite legal em Carta Topográfica.
