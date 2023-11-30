@@ -159,11 +159,18 @@ class MakeGrid(QgsProcessingAlgorithm):
                 context=context,
                 feedback=multiStepFeedback,
             )
+            coordinateTransform = QgsCoordinateTransform(
+                QgsCoordinateReferenceSystem("EPSG:4674"),
+                inputFrameLayer.sourceCrs(),
+                QgsProject.instance(),
+            ) if inputFrameLayer.sourceCrs().authid() != "EPSG:4674" else None
+            def createFeat(geom):
+                if coordinateTransform is not None:
+                    geom.transform(coordinateTransform)
+                return QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=geom)
+
             self.sink.addFeatures(
-                (
-                    QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=g)
-                    for g in lineList
-                )
+                list(map(createFeat, lineList))
             )
             currentStep += 1
 
