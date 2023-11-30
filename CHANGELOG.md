@@ -61,3 +61,4 @@ Correção de bug:
 - Correção de bug em Verifica sobreposição de simbologia (exclui do calculo feições cujos símbolos que são apenas texto)
 - Remover raise NameError quando passava por Caminho Carroçável, Arruamento e Trilha ou Picada em createRoadLabel para colocar PointOfChange
 - Corrige bug no processo de fixar posição do label;
+- Corrige geração da localização do pronto quando o estado não estava sendo enquadrado (caso de Tocantins);

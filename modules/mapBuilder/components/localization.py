@@ -147,9 +147,9 @@ class Localization(ComponentUtils, IComponent):
         elif 1 < area < 10:
             bounds.grow(0.3)
         elif 10 < area < 50:
-            bounds.grow(0.5)
+            bounds.grow(2.0)
         else:
-            bounds.grow(0.8)
+            bounds.grow(2.3)
 
     def createGridRectangle(
         self, mapBounds: QgsRectangle, data: dict, layerName: str
