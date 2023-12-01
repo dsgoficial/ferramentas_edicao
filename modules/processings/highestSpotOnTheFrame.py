@@ -60,44 +60,43 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         spotField = self.parameterAsFields(parameters, self.INPUT_SPOT_FIELD, context)[
             0
         ]
-        higuestSpotField = self.parameterAsFields(
+        highestSpotField = self.parameterAsFields(
             parameters, self.INPUT_HIGHEST_SPOT_FIELD, context
         )[0]
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
 
         spotLayer.startEditing()
         spotLayer.beginEditCommand("Atualizando atributo cota mais alta")
+        fieldIdx = [
+            idx
+            for idx, field in enumerate(spotLayer.fields())
+            if field.name() == highestSpotField
+        ][0]
 
-        for frameFeature in frameLayer.getFeatures():
+        def setHighestSpotValueAsFalse(spotFeature):
+            if not (frameGeometry.intersects(spotFeature.geometry())):
+                return
+            spotLayer.changeAttributeValues(spotFeature.id(), {fieldIdx: 2})
+
+        nFeats = frameLayer.featureCount()
+        if nFeats == 0:
+            return {self.OUTPUT: ""}
+        stepSize = 100 / nFeats
+        for current, frameFeature in enumerate(frameLayer.getFeatures()):
+            if feedback.isCanceled():
+                break
             frameGeometry = frameFeature.geometry()
             request = QgsFeatureRequest().setFilterRect(frameGeometry.boundingBox())
-            maxSpotFeature = None
-            features = list(spotLayer.getFeatures(request))
-            for spotFeature in features:
-                if not (frameGeometry.intersects(spotFeature.geometry())):
-                    continue
-                if (
-                    maxSpotFeature
-                    and maxSpotFeature[spotField] >= spotFeature[spotField]
-                ):
-                    attributeMap = {}
-                    attributeMap[spotFeature.fieldNameIndex(higuestSpotField)] = 2
-                    spotLayer.changeAttributeValues(
-                        spotFeature.id(), attributeMap
-                    )
-                    continue
-                if maxSpotFeature:
-                    attributeMap = {}
-                    attributeMap[spotFeature.fieldNameIndex(higuestSpotField)] = 2
-                    spotLayer.changeAttributeValues(
-                        spotFeature.id(), attributeMap
-                    )
-                maxSpotFeature = spotFeature
-                attributeMap = {}
-                attributeMap[spotFeature.fieldNameIndex(higuestSpotField)] = 1
-                spotLayer.changeAttributeValues(
-                    spotFeature.id(), attributeMap
-                )
+            list(map(setHighestSpotValueAsFalse, spotLayer.getFeatures(request)))
+            maxFeat = max(
+                filter(
+                    lambda x: x.geometry().intersects(frameGeometry),
+                    spotLayer.getFeatures(request),
+                ),
+                key=lambda x: x[spotField],
+            )
+            spotLayer.changeAttributeValues(maxFeat.id(), {fieldIdx: 1})
+            feedback.setProgress(current * stepSize)
 
         spotLayer.endEditCommand()
 
