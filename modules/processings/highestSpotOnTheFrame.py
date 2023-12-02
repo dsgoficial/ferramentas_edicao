@@ -95,7 +95,17 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
                 ),
                 key=lambda x: x[spotField],
             )
-            spotLayer.changeAttributeValues(maxFeat.id(), {fieldIdx: 1})
+            request.setFilterExpression(f"{spotField} = {maxFeat[spotField]}")
+            list(
+                map(
+                    lambda x: spotLayer.changeAttributeValues(x.id(), {fieldIdx: 1}),
+                    filter(
+                        lambda x: x.geometry().intersects(frameGeometry),
+                        spotLayer.getFeatures(request),
+                    ),
+                )
+            )
+
             feedback.setProgress(current * stepSize)
 
         spotLayer.endEditCommand()
