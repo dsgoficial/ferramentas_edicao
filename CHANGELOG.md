@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.79 - dev
+## 1.1.80 - dev
 
 Novas Funcionalidades
 
@@ -64,3 +64,4 @@ Correção de bug:
 - Corrige geração da localização do pronto quando o estado não estava sendo enquadrado (caso de Tocantins);
 - Corrige bug no cria vetor de grade quando a camada de entrada não é UTM;
 - Corrige bug no Definir cota mais alta por moldura com várias molduras;
+- Adiciona representação para infra_trecho_duto_l subterrâneo quando tipo não for água;
