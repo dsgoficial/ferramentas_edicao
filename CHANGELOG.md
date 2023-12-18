@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.80 - dev
+## 1.1.81 - dev
 
 Novas Funcionalidades
 
@@ -40,6 +40,7 @@ Melhorias:
 - Adicionado estilo para Piscina (tipo = 501) em constr_ocupacao_solo_a
 - Adicionado os estilos para tipo in (301, 304, 398, 1213, 1214) para constr_edificacao_a
 - Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
+- Adicionado texto_edicao para duto baseado no tipo em Configura os Atributos de Edição de Carta Topográfica;
 
 Correção de bug:
 

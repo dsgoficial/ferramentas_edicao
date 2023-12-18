@@ -292,6 +292,24 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultDuto(self, feature, lyrCrs):
         new_att = {}
         new_att[feature.fieldNameIndex("visivel")] = 1
+        if feature["tipo"] == 302:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Óleo"
+        elif feature["tipo"] == 303:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Gasolina"
+        elif feature["tipo"] == 304:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Álcool"
+        elif feature["tipo"] == 305:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Querosene"
+        elif feature["tipo"] == 306:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Petróleo"
+        elif feature["tipo"] == 307:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Nafta"
+        elif feature["tipo"] == 308:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Gás"
+        elif feature["tipo"] == 309:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Efluentes"
+        elif feature["tipo"] == 310:
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Esgoto"
         return {feature.id(): new_att}
 
     def defaultVala(self, feature, lyrCrs):
@@ -390,10 +408,10 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("visivel")] = 1
         new_att[feature.fieldNameIndex("exibir_linha_rotulo")] = 2
         if feature["tipo"] in [109]:
-            new_att[feature.fieldNameIndex("texto_edicao")] = 'Silo'
+            new_att[feature.fieldNameIndex("texto_edicao")] = "Silo"
         if feature["nome"] != NULL:
             new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        
+
         return {feature.id(): new_att}
 
     def defaultEdificacao(self, feature, lyrCrs):
@@ -404,7 +422,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("suprimir_bandeira")] = 2
         if feature["nome"] != NULL:
             new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        
+
         return {feature.id(): new_att}
 
     def defaultElementoViario(self, feature, lyrCrs):
@@ -415,7 +433,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         new_att[feature.fieldNameIndex("exibir_ponta_simbologia")] = 1
         if feature["nome"] != NULL:
             new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        
+
         return {feature.id(): new_att}
 
     def tr(self, string):
