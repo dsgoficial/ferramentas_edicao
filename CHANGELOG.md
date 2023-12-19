@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.81 - dev
+## 1.1.82 - dev
 
 Novas Funcionalidades
 
@@ -66,3 +66,6 @@ Correção de bug:
 - Corrige bug no cria vetor de grade quando a camada de entrada não é UTM;
 - Corrige bug no Definir cota mais alta por moldura com várias molduras;
 - Adiciona representação para infra_trecho_duto_l subterrâneo quando tipo não for água;
+- Adiciona representação para gruta em elemnat_emento_fisiografico_p;
+- Adiciona representação para viveiro para aquicultura em constr_edificacao_a;
+- Adiciona representação para infra_trecho_duto_l submerso quando tipo não for água;
