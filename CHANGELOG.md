@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.82 - dev
+## 1.1.83 - dev
 
 Novas Funcionalidades
 
@@ -69,3 +69,4 @@ Correção de bug:
 - Adiciona representação para gruta em elemnat_emento_fisiografico_p;
 - Adiciona representação para viveiro para aquicultura em constr_edificacao_a;
 - Adiciona representação para infra_trecho_duto_l submerso quando tipo não for água;
+- Adiciona representação para infra_trecho_duto_l submerso quando tipo for água;
