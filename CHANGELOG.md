@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.83 - dev
+## 1.1.84 - dev
 
 Novas Funcionalidades
 
@@ -70,3 +70,4 @@ Correção de bug:
 - Adiciona representação para viveiro para aquicultura em constr_edificacao_a;
 - Adiciona representação para infra_trecho_duto_l submerso quando tipo não for água;
 - Adiciona representação para infra_trecho_duto_l submerso quando tipo for água;
+- Corrige bug de loop infinito quando há valor nulo no MDT para a geração do diagrama de elevação;

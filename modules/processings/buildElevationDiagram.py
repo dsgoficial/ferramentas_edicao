@@ -256,7 +256,14 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         if any(abs(b-a) < 10 for _, (a, b) in classDict.items()):
             currentNumberOfElevationBands = numberOfElevationBands - 1
             while currentNumberOfElevationBands >= 2 and len(classDict) > 2 and any(abs(b-a) < 10 for _, (a, b) in classDict.items()):
-                threshold, classDict = self.computeClassDict(threshold, npRaster, npRaster_without_nodata, minValue, currentNumberOfElevationBands)
+                newThreshold, newClassDict = self.computeClassDict(threshold, npRaster, npRaster_without_nodata, minValue, currentNumberOfElevationBands)
+                if newClassDict == classDict and newThreshold == threshold:
+                    classDict = newClassDict
+                    threshold = newThreshold
+                    break
+                else:
+                    classDict = newClassDict
+                    threshold = newThreshold
 
         outputRaster = np.zeros_like(npRaster, dtype=np.int)
         outputRaster[np.isnan(npRaster)] = -9999
