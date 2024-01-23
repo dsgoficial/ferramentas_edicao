@@ -289,18 +289,16 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
                 return None
 
             if len(srcLyr_legal) >= 1:
-                srcLyrLegal = srcLyr_legal[0]
-                self.srcLyrLegal = srcLyrLegal
+                self.srcLyrLegal = srcLyr_legal[0]
                 self.spatialIndexLegal = QgsSpatialIndex(
-                    srcLyrLegal.getFeatures(),
+                    self.srcLyrLegal.getFeatures(),
                     flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
                 )
 
             if len(srcLyr_especial) >= 1:
-                srcLyrEspecial = srcLyr_especial[0]
-                self.srcLyrEspecial = srcLyrEspecial
+                self.srcLyrEspecial = srcLyr_especial[0]
                 self.spatialIndexEspecial = QgsSpatialIndex(
-                    srcLyrEspecial.getFeatures(),
+                    self.srcLyrEspecial.getFeatures(),
                     flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
                 )
         if self.productTypeSelector.currentIndex() == 0:
@@ -329,9 +327,9 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
                 return None
 
             if len(srcLyr_legal) >= 1:
-                self.srcLyrLegal = srcLyrLegal
+                self.srcLyrLegal = srcLyr_legal[0]
                 self.spatialIndexLegal = QgsSpatialIndex(
-                    srcLyrLegal.getFeatures(),
+                    self.srcLyrLegal.getFeatures(),
                     flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
                 )
 

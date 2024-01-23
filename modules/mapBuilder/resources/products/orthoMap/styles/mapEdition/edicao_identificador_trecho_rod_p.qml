@@ -4,7 +4,8 @@
     <rules key="{c73726db-cd31-451a-b365-8ed7defe6d7e}">
       <rule key="{d773042e-4ef5-4c40-bb78-7c55bd6b94a9}" symbol="0" label="autoestrada federal" filter="jurisdicao = 1 AND tipo = 4 AND visivel = 1"/>
       <rule key="{2494e37e-74a3-482e-8f6a-056bf0d1ad3f}" symbol="1" label="rodovia federal" filter="jurisdicao = 1 AND tipo = 2 AND visivel = 1"/>
-      <rule key="{a0aa7070-cbf7-4b8b-a8bb-c0920166cd41}" symbol="2" label="rodovia estadual" filter="jurisdicao = 2 AND visivel = 1"/>
+      <rule key="{223486e3-2761-4489-8e4b-acf94bbaaa71}" symbol="2" label="rodovia estadual" filter="jurisdicao = 2 AND visivel = 1"/>
+      <rule key="{a0aa7070-cbf7-4b8b-a8bb-c0920166cd41}" symbol="3" label="Não visível" filter="ELSE"/>
     </rules>
     <symbols>
       <symbol alpha="1" type="marker" name="0" clip_to_extent="1" force_rhr="0">
@@ -188,11 +189,80 @@
           </data_defined_properties>
         </layer>
       </symbol>
+      <symbol alpha="0.4" type="marker" name="3" clip_to_extent="1" force_rhr="0">
+        <data_defined_properties>
+          <Option type="Map">
+            <Option type="QString" value="" name="name"/>
+            <Option name="properties"/>
+            <Option type="QString" value="collection" name="type"/>
+          </Option>
+        </data_defined_properties>
+        <layer pass="0" enabled="1" locked="0" class="SimpleMarker">
+          <Option type="Map">
+            <Option type="QString" value="0" name="angle"/>
+            <Option type="QString" value="square" name="cap_style"/>
+            <Option type="QString" value="254,0,254,255" name="color"/>
+            <Option type="QString" value="1" name="horizontal_anchor_point"/>
+            <Option type="QString" value="bevel" name="joinstyle"/>
+            <Option type="QString" value="circle" name="name"/>
+            <Option type="QString" value="0,0" name="offset"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="offset_map_unit_scale"/>
+            <Option type="QString" value="MM" name="offset_unit"/>
+            <Option type="QString" value="0,0,0,255" name="outline_color"/>
+            <Option type="QString" value="solid" name="outline_style"/>
+            <Option type="QString" value="0.1" name="outline_width"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="outline_width_map_unit_scale"/>
+            <Option type="QString" value="MM" name="outline_width_unit"/>
+            <Option type="QString" value="diameter" name="scale_method"/>
+            <Option type="QString" value="3.8" name="size"/>
+            <Option type="QString" value="3x:0,0,0,0,0,0" name="size_map_unit_scale"/>
+            <Option type="QString" value="MM" name="size_unit"/>
+            <Option type="QString" value="1" name="vertical_anchor_point"/>
+          </Option>
+          <prop v="0" k="angle"/>
+          <prop v="square" k="cap_style"/>
+          <prop v="254,0,254,255" k="color"/>
+          <prop v="1" k="horizontal_anchor_point"/>
+          <prop v="bevel" k="joinstyle"/>
+          <prop v="circle" k="name"/>
+          <prop v="0,0" k="offset"/>
+          <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+          <prop v="MM" k="offset_unit"/>
+          <prop v="0,0,0,255" k="outline_color"/>
+          <prop v="solid" k="outline_style"/>
+          <prop v="0.1" k="outline_width"/>
+          <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+          <prop v="MM" k="outline_width_unit"/>
+          <prop v="diameter" k="scale_method"/>
+          <prop v="3.8" k="size"/>
+          <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+          <prop v="MM" k="size_unit"/>
+          <prop v="1" k="vertical_anchor_point"/>
+          <data_defined_properties>
+            <Option type="Map">
+              <Option type="QString" value="" name="name"/>
+              <Option type="Map" name="properties">
+                <Option type="Map" name="fillColor">
+                  <Option type="bool" value="false" name="active"/>
+                  <Option type="int" value="1" name="type"/>
+                  <Option type="QString" value="" name="val"/>
+                </Option>
+                <Option type="Map" name="outlineColor">
+                  <Option type="bool" value="false" name="active"/>
+                  <Option type="int" value="1" name="type"/>
+                  <Option type="QString" value="" name="val"/>
+                </Option>
+              </Option>
+              <Option type="QString" value="collection" name="type"/>
+            </Option>
+          </data_defined_properties>
+        </layer>
+      </symbol>
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{bf922821-d9ab-4836-a7d7-6ed9c5ce65a4}">
-      <rule key="{0293bce1-b0d2-423b-ab86-eb6835c143b0}" filter="visivel = 1" description="Sigla">
+    <rules key="{99c053a5-388a-45f1-95f8-00c9e8e2a074}">
+      <rule key="{23293c05-e5cb-4f7e-add7-a704a352d950}" filter="visivel = 1" description="Sigla">
         <settings calloutType="simple">
           <text-style textOpacity="1" isExpression="0" textOrientation="horizontal" fontStrikeout="0" capitalization="0" useSubstitutions="0" fontSizeUnit="Point" fontWeight="50" fieldName="sigla" namedStyle="Condensed" legendString="Aa" textColor="0,0,0,255" fontWordSpacing="0" fontUnderline="0" fontItalic="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontLetterSpacing="0" previewBkgrdColor="255,255,255,255" fontKerning="1" allowHtml="0" fontSize="6" fontFamily="Noto Sans" blendMode="0" multilineHeight="1">
             <families/>
