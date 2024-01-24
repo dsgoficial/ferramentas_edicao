@@ -1,8 +1,11 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="3.24.3-Tisler" labelsEnabled="0" styleCategories="Symbology|Labeling">
-  <renderer-v2 enableorderby="0" type="singleSymbol" symbollevels="0" referencescale="25000" forceraster="0">
+<qgis labelsEnabled="0" version="3.24.3-Tisler" styleCategories="Symbology|Labeling">
+  <renderer-v2 type="RuleRenderer" forceraster="0" enableorderby="0" symbollevels="0" referencescale="-1">
+    <rules key="{f0b810a1-c267-43fc-8294-83dd99fb3162}">
+      <rule filter="visivel = 1" key="{9eb283da-07f8-4b45-b876-fa6b1fb66d89}" symbol="0"/>
+    </rules>
     <symbols>
-      <symbol name="0" type="marker" force_rhr="0" clip_to_extent="1" alpha="1">
+      <symbol alpha="1" name="0" force_rhr="0" type="marker" clip_to_extent="1">
         <data_defined_properties>
           <Option type="Map">
             <Option value="" name="name" type="QString"/>
@@ -10,7 +13,7 @@
             <Option value="collection" name="type" type="QString"/>
           </Option>
         </data_defined_properties>
-        <layer locked="0" class="SvgMarker" pass="0" enabled="1">
+        <layer locked="0" enabled="1" pass="0" class="SvgMarker">
           <Option type="Map">
             <Option value="0" name="angle" type="QString"/>
             <Option value="196,60,57,255" name="color" type="QString"/>
@@ -65,8 +68,6 @@
         </layer>
       </symbol>
     </symbols>
-    <rotation/>
-    <sizescale/>
   </renderer-v2>
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
