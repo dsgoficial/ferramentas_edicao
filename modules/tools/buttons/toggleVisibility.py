@@ -1,12 +1,11 @@
 from pathlib import Path
 from .baseTools import BaseTools
 from qgis.core import (
-    QgsGeometry,
+    QgsFeatureRenderer,
     QgsProject,
     QgsRuleBasedRenderer
 )
 from qgis.utils import iface
-from PyQt5.QtWidgets import QMessageBox
 
 
 class ToggleVisibility(BaseTools):
@@ -20,11 +19,11 @@ class ToggleVisibility(BaseTools):
             Path(__file__).parent / "icons" / "Alternar_estilo_nao_visivel.png"
         )
         self._action = self.createAction(
-            "Alternar estilo 'Não Visível'",
+            "Alternar estilo 'Não visível'",
             buttonImg,
             self.run,
-            self.tr("Alterna o estilo 'Não Visível'"),
-            self.tr("Alterna o estilo 'Não Visível'"),
+            self.tr("Alterna o estilo 'Não visível'"),
+            self.tr("Alterna o estilo 'Não visível'"),
             self.iface,
         )
         self.toolBar.addAction(self._action)
@@ -37,7 +36,7 @@ class ToggleVisibility(BaseTools):
         styleLabel = "Não visível" #nome do estilo a ser alterado
         for layer in layers:
             sym_rend = layer.renderer()
-            if not isinstance(sym_rend, QgsRuleBasedRenderer):
+            if not (isinstance(sym_rend, QgsRuleBasedRenderer) or isinstance(sym_rend, QgsFeatureRenderer)):
                 continue
             lgd_syms = sym_rend.legendSymbolItems()
             for lgd_sym in lgd_syms:
@@ -45,5 +44,6 @@ class ToggleVisibility(BaseTools):
                 if lbl == styleLabel:
                     key = lgd_sym.ruleKey()
                     sym_rend.checkLegendSymbolItem(key, self.toggle_visibility_pressed)
+            iface.layerTreeView().refreshLayerSymbology( layer.id() )
         self.toggle_visibility_pressed = not self.toggle_visibility_pressed 
         iface.mapCanvas().refreshAllLayers()
