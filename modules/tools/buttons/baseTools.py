@@ -4,7 +4,7 @@ from qgis.core import Qgis
 from qgis.PyQt.QtCore import QCoreApplication,Qt
 from PyQt5.QtWidgets import QAction, QPushButton
 from PyQt5.QtGui import QIcon, QKeyEvent
-
+from qgis.utils import iface
 
 class BaseTools:
     @staticmethod
@@ -48,11 +48,11 @@ class BaseTools:
             return int(scale)
     
     def keyPressEvent(self, event):
-        activeTool = self.iface.mapCanvas().mapTool()
+        activeTool = iface.mapCanvas().mapTool()
         if event.key() == Qt.Key_Escape:
             if not isinstance(activeTool, BaseTools):
                 return
-            self.iface.mapCanvas().unsetMapTool(activeTool)
+            iface.mapCanvas().unsetMapTool(activeTool)
 
     @staticmethod
     def tr(message):

@@ -143,13 +143,13 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         point = self.toMapCoordinates(e.pos())
         self.rubberBand.movePoint(point)
 
-    def keyPressEvent(self, event):
-        # Método para receber os eventos do teclado
-        # Parâmetro de entrada: event (Evento que chamou o método)
-        if event.key() != QtCore.Qt.Key_Escape:
-            return
-        self.cancelEdition()
-        event.ignore()
+    # def keyPressEvent(self, event):
+    #     # Método para receber os eventos do teclado
+    #     # Parâmetro de entrada: event (Evento que chamou o método)
+    #     if event.key() != QtCore.Qt.Key_Escape:
+    #         return
+    #     self.cancelEdition()
+    #     event.ignore()
 
     def toMapCoordinates(self, p):
         """

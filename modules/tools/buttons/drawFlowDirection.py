@@ -207,6 +207,7 @@ class DrawFlowDirection(gui.QgsMapTool, BaseTools):
         if event.key() == QtCore.Qt.Key_Escape:
             self.cancelEdition()
             event.ignore()
+        BaseTools().keyPressEvent(event)
 
     def cancelEdition(self):
         # Método para cancelar aquisição
