@@ -25,6 +25,7 @@ from .buttons.createApproximateLabel import CreateAproximateLabel
 from .buttons.alternateBuildingFlag import AlternateBuildingFlag
 from .buttons.cycleSideVisibility import CycleSideVisibility
 from .buttons.cycleTipVisibility import CycleTipVisibility
+from .buttons.toggleVisibility import ToggleVisibility
 
 
 class SetupButtons:
@@ -113,6 +114,8 @@ class SetupButtons:
         cycleSideVisibilityButton.setupUi()
         cycleTipVisibilityButton = CycleTipVisibility(self.toolBar, self.iface)
         cycleTipVisibilityButton.setupUi()
+        createToogleVisibility = ToggleVisibility(self.iface, self.toolBar)
+        createToogleVisibility.setupUi()
         self.mapTools.extend(
             [
                 createVegetationSymbol,
@@ -163,6 +166,7 @@ class SetupButtons:
                 alternateBuildingFlag,
                 cycleSideVisibilityButton,
                 cycleTipVisibilityButton,
+                createToogleVisibility
             ]
         )
         self.actionGroup = self.setupActionGroup(*self.mapTools)
