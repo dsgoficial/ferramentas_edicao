@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.85 - dev
+## 1.1.86 - dev
 
 Novas Funcionalidades
 
@@ -27,7 +27,7 @@ Melhorias:
 - O plugin agora guarda no projeto o estado dos combo boxes de tipo de produto e escala quando o projeto é salvo;
 - Adicionado camada de aux_grid_revisao_a no configura estilos para edição;
 - Adicionado mais camadas para verificação no Verifica Sobreposição de Simbologia
-- Adicionado a ánalise das feições selecionadas se há alguma fora do canvas e informando o usuário caso esteja, para os butões;
+- Adicionado a análise das feições selecionadas se há alguma fora do canvas e informando o usuário caso esteja, para os botões;
 - Simplificação da extração do atributo "tamanho_txt" para o rótulo de rio;
 - Verificação se a feição selecionada está interseccionando o canvas, ao invés de analisar se está dentro;
 - Adicionada a opção de selecionar a distância mínima de uma torre de energia com relação à moldura no processo de inserir torres de energia;
@@ -42,6 +42,7 @@ Melhorias:
 - Adicionado os estilos para tipo in (301, 304, 398, 1213, 1214) para constr_edificacao_a
 - Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
 - Adicionado texto_edicao para duto baseado no tipo em Configura os Atributos de Edição de Carta Topográfica;
+- Agora "Esc" desativa a ferramenta ativa
 
 Correção de bug:
 
@@ -50,7 +51,7 @@ Correção de bug:
 - Correção de bug no diagrama de elevação (a geração agora é feita de metro em metro no caso de 2 classes, ao invés de degraus de 10 metros. Também foi alterada a lógica de quando as classes tem menos de 10 metros de intervalo);
 - Correção de bug na Divisão Político-Administrativa quando o nome do município possui aspa simples, como Sant'Ana do Livramento;
 - Correção de bug do grid (sobreposição nas coordenadas utm da parte superior esquerda do grid);
-- Correção de bug em Verifica sobreposição de simbologia (estava sendo passado 2 parametros no append);
+- Correção de bug em Verifica sobreposição de simbologia (estava sendo passado 2 parâmetros no append);
 - Correção de bug na ferramenta de inserir número de faixas quando utilizado em camada com sistema de referência em metros (Ex: SIRGAS 2000 UTM 21S - EPSG 31981);
 - Correção de bug na ferramenta de inserir rótulo de fronteira quando utilizado em camada com sistema de referência em metros (Ex: SIRGAS 2000 UTM 21S - EPSG 31981);
 - Correção de bug em Verifica sobreposição de simbologia (ignora símbolos que são texto e linhas com marcadores)
