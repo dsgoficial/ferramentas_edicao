@@ -22,8 +22,6 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
     ONLY_SELECTED_P = "ONLY_SELECTED_P"
     ONLY_SELECTED_L = "ONLY_SELECTED_L"
 
-    OUTPUT = "OUTPUT"
-
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
@@ -120,7 +118,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             [201, 202, 203, 204, 302],
             feedback=multiStepFeedback,
         )
-        return {self.OUTPUT: ""}
+        return {}
 
     def setWidthFieldOnLayer(
         self, layer, onlySelected, widthField, highwayLayer, filterType, feedback

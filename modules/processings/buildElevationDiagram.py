@@ -21,32 +21,23 @@
  ***************************************************************************/
 """
 
-import math
 from uuid import uuid4
 import numpy as np
 import json
 import processing
 from osgeo import gdal, ogr
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from PyQt5.QtCore import QCoreApplication, QVariant
+from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
-    QgsFeature,
-    QgsFeatureSink,
-    QgsField,
-    QgsFields,
-    QgsGeometry,
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
-    QgsProcessingParameterFeatureSink,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterRasterLayer,
     QgsProcessingUtils,
     QgsProject,
-    QgsVectorLayer,
-    QgsWkbTypes,
     QgsProcessingParameterFileDestination,
     QgsVectorFileWriter,
 )

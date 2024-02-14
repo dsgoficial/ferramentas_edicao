@@ -15,7 +15,6 @@ class LoadMasks(QgsProcessingAlgorithm):
 
     JSON_FILE = "JSON_FILE"
     INPUT_LAYERS = "INPUT_LAYERS"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -81,7 +80,7 @@ class LoadMasks(QgsProcessingAlgorithm):
                     labels.setSettings(label_settings, providerInverseMap[provider])
             layer.setLabeling(labels)
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

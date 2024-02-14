@@ -29,7 +29,6 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
     INPUT_LINE_TEXT = "INPUT_LINE_TEXT"
     SIZE_TEXT = "SIZE_TEXT"
     SCALE = "SCALE"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -122,7 +121,7 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
         multiStep = QgsProcessingMultiStepFeedback(len(inputList), feedback)
         nSteps = sum(lyr.selectedFeatureCount() for lyr in inputList)
         if nSteps == 0:
-            return {self.OUTPUT: ""}
+            return {}
 
         # Dicionário para adicionar o polígono com seu id, para analisar seu contexto espacial.
         polygonFeatDict, polygonSpatialIdx = self.spatialContext(inputPolygonLyr)
@@ -205,7 +204,7 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
                     gridScaleParam,
                 )
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def spatialContext(self, inputPolygonLyr):
         polygonFeatDict = dict()

@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import processing
 
-from qgis import core
 from qgis.core import (
-    QgsFeatureRequest,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterEnum,
     QgsDistanceArea,
     QgsCoordinateReferenceSystem,
-    QgsProcessingFeatureSourceDefinition,
     QgsVectorLayerUtils,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -25,7 +20,6 @@ class PlaceVegetationSymbol(QgsProcessingAlgorithm):
     ONLY_SELECTED = "ONLY_SELECTED"
     SCALE = "SCALE"
     INPUT_SYMBOL_LAYER = "INPUT_SYMBOL_LAYER"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -94,7 +88,7 @@ class PlaceVegetationSymbol(QgsProcessingAlgorithm):
             else inputLyr.selectedFeatureCount()
         )
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         inputLyr.startEditing()
         simbAreaLayer.startEditing()
@@ -119,7 +113,7 @@ class PlaceVegetationSymbol(QgsProcessingAlgorithm):
             feedback.setProgress(current * stepSize)
         simbAreaLayer.addFeatures(newFeatList)
         simbAreaLayer.endEditCommand()
-        return {self.OUTPUT: ""}
+        return {}
 
     @staticmethod
     def getVegetationMapping(feat):

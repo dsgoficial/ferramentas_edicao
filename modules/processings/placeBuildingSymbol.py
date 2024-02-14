@@ -24,7 +24,6 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
     ONLY_SELECTED = "ONLY_SELECTED"
     INPUT_SYMBOL_LAYER = "INPUT_SYMBOL_LAYER"
     INPUT_SYMBOL_LAYER_ROTATION_FIELD = "INPUT_SYMBOL_LAYER_ROTATION_FIELD"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -101,7 +100,7 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
             rotationField=rotationField,
             feedback=multiStepFeedback,
         )
-        return {self.OUTPUT: ""}
+        return {}
 
     def placeHospitalSymbol(self, inputLyr, simbAreaLayer, onlySelected, feedback):
         request = QgsFeatureRequest().setFilterExpression(
@@ -116,7 +115,7 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
         )
         nFeats = inputLyr.featureCount() if not onlySelected else len(iterator)
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         simbAreaLayer.startEditing()
         simbAreaLayer.beginEditCommand("Posicionando símbolos de hospital")
@@ -149,7 +148,7 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
             else inputLyr.selectedFeatureCount()
         )
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         simbAreaLayer.startEditing()
         simbAreaLayer.beginEditCommand(

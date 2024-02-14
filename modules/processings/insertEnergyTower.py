@@ -26,7 +26,6 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
     INPUT_FRAME = "INPUT_FRAME"
     MIN_DISTANCE_FROM_FRAME = "MIN_DISTANCE_FROM_FRAME"
     SCALE = "SCALE"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -115,7 +114,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         self.removePointsNextToFrame(frameLinesLayer, tower, distanceNextToFrame)
         distanceToRemoveEnergySymbol = self.getChopDistance(tower, scale * 0.003)
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def mergeEnergyLines(self, lyr, limit):
         r = processing.run(

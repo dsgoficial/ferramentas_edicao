@@ -18,7 +18,6 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
     INPUT_LAYER_TO_CHECK_DRE = 'INPUT_LAYER_TO_CHECK_DRE'
     INPUT_LAYER_TO_CHECK_VIA = 'INPUT_LAYER_TO_CHECK_VIA'
     INPUT_LAYER_TO_CHECK_FER = 'INPUT_LAYER_TO_CHECK_FER'
-    OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -156,7 +155,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
             
             polygon_boundary_layer.endEditCommand()
 
-        return {self.OUTPUT: ''}
+        return {}
 
     def createNewFeaturesFromLayer(self, polygon_boundary_layer, layer, layer_name, sobreposto):
         featList = [

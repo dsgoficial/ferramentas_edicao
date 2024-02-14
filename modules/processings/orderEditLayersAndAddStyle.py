@@ -20,8 +20,7 @@ from qgis.core import (
     QgsProcessingException,
 )
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
-from qgis.utils import iface
-from qgis import gui, core
+from qgis import core
 
 
 class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
@@ -149,14 +148,15 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             gridScale = 250
             equidistancia = 100
         else:
-            return {self.OUTPUT: "Valor para escala inválido"}
+            feedback.pushWarning("Valor para escala inválido")
+            return {}
 
         if equidistanciaCustom:
             equidistancia = equidistanciaCustom
 
         project = context.project()
 
-        feedback.setProgressText("Iniciando...")
+        feedback.pushInfo("Iniciando...")
         group = project.layerTreeRoot().findGroup(groupInput)
 
         if groupInput:
@@ -210,13 +210,13 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         )
         multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
         multiStepFeedback.setCurrentStep(0)
-        multiStepFeedback.setProgressText("Calculando dicionário QML...")
+        multiStepFeedback.pushInfo("Calculando dicionário QML...")
         qmlDict = self.buildQmlDict(
             stylePath, stylePathPrinting, feedback=multiStepFeedback
         )
 
         multiStepFeedback.setCurrentStep(1)
-        multiStepFeedback.setProgressText("Mudando visibilidade das camadas...")
+        multiStepFeedback.pushInfo("Mudando visibilidade das camadas...")
         layerNames = [i["table"] for i in jsonConfigData[groupName]]
         layerNames[:0] = ["aux_moldura_a", "edicao_grid_edicao_l", "aux_grid_revisao_a"]
         visibleLayers, invisibleLayers = self.changeVisibility(
@@ -226,10 +226,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             feedback=multiStepFeedback,
         )
         if feedback.isCanceled():
-            return {self.OUTPUT: "Cancelado"}
+            return {}
 
         multiStepFeedback.setCurrentStep(2)
-        multiStepFeedback.setProgressText("Ordenando as camadas...")
+        multiStepFeedback.pushInfo("Ordenando as camadas...")
         self.order(
             layerNames=layerNames,
             layers=layers,
@@ -238,26 +238,26 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             project=project,
         )
         if multiStepFeedback.isCanceled():
-            return {self.OUTPUT: "Cancelado"}
+            return {}
 
         multiStepFeedback.setCurrentStep(3)
-        multiStepFeedback.setProgressText("Carregando estilos...")
+        multiStepFeedback.pushInfo("Carregando estilos...")
         self.estilos(visibleLayers, qmlDict, gridScale, multiStepFeedback)
         if multiStepFeedback.isCanceled():
-            return {self.OUTPUT: "Cancelado"}
+            return {}
 
         multiStepFeedback.setCurrentStep(4)
-        multiStepFeedback.setProgressText("Configurando equidistancia...")
+        multiStepFeedback.pushInfo("Configurando equidistancia...")
         self.setEquidistancia(
             visibleLayers, equidistancia, exibirAuxiliar, multiStepFeedback
         )
         if multiStepFeedback.isCanceled():
-            return {self.OUTPUT: "Cancelado"}
+            return {}
 
-        # feedback.setProgressText("Configurando escala de renderização...")
+        # feedback.pushInfo("Configurando escala de renderização...")
         # self.renderizar(layers, gridScale * 1000)
 
-        # feedback.setProgressText('Carregando as máscaras...')
+        # feedback.pushInfo('Carregando as máscaras...')
         # self.loadMasks(carta, layers)
         # if multiStepFeedback.isCanceled():
         #    return {self.OUTPUT: 'Cancelado'}
@@ -275,7 +275,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             core.QgsMapThemeCollection.createThemeFromCurrentState(root, model),
         )
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def setEquidistancia(self, layers, equidistancia, exibirAuxiliar, feedback):
         for layer in layers:

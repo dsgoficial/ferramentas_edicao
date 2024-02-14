@@ -34,7 +34,6 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
     SCALE = "SCALE"
     ROAD = "ROAD"
     MARKER = "MARKER"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -135,7 +134,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
                 self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def getLineSubstring(self, layer, startDistance, endDistance):
         r = processing.run(

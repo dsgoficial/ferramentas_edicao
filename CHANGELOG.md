@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.86 - dev
+## 1.1.87 - dev
 
 Novas Funcionalidades
 
@@ -42,7 +42,7 @@ Melhorias:
 - Adicionado os estilos para tipo in (301, 304, 398, 1213, 1214) para constr_edificacao_a
 - Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
 - Adicionado texto_edicao para duto baseado no tipo em Configura os Atributos de Edição de Carta Topográfica;
-- Agora "Esc" desativa a ferramenta ativa
+- Agora "Esc" desativa a ferramenta ativa;
 
 Correção de bug:
 
@@ -73,3 +73,4 @@ Correção de bug:
 - Adiciona representação para infra_trecho_duto_l submerso quando tipo não for água;
 - Adiciona representação para infra_trecho_duto_l submerso quando tipo for água;
 - Corrige bug de loop infinito quando há valor nulo no MDT para a geração do diagrama de elevação;
+- Corrige saídas dos processings que modificam os dados (modificação feita para evitar problemas ao utilizar em um model);

@@ -18,7 +18,6 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
     INPUT_FIELD_LAYER_P = "INPUT_FIELD_LAYER_P"
     INPUT_DRAINAGE = "INPUT_DRAINAGE"
     INPUT_MIN_DIST = "INPUT_MIN_DIST"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -75,7 +74,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
             pointLayer, rotationField, drainageLayer, distance, [9, 10, 11, 12]
         )
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def setRotationFieldOnLayer(
         self, layer, rotationField, highwayLayer, distance, filterType

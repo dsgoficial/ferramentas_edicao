@@ -13,7 +13,6 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
 
     INPUT_LAYER_L = "INPUT_LAYER_L"
     INPUT_FRAME_A = "INPUT_FRAME_A"
-    OUTPUT = "OUTPUT"
     SCALE = "SCALE"
     PRODUCT = "PRODUCT"
 
@@ -97,7 +96,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
             drainageLayer.dataProvider().changeAttributeValues({feature.id(): new_att})
         drainageLayer.endEditCommand()
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def getMergedRiver(self, layer, frame):
         merged = processing.run(

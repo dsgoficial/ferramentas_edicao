@@ -15,7 +15,6 @@ import os
 class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     INPUT_LAYER_LIST = "INPUT_LAYER"
-    OUTPUT = "OUTPUT"
     SCALE = "SCALE"
 
     def initAlgorithm(self, config=None):
@@ -63,11 +62,11 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
         for current, layer in enumerate(layer_list):
             if multiStepFeedback.isCanceled():
-                return {self.OUTPUT: ""}
+                return {}
             futures.add(pool.submit(self.process_layer, layer))
             multiStepFeedback.setProgress(current * stepSize)
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def process_layer(self, layer):
 

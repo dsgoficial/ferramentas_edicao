@@ -23,7 +23,6 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
     INPUT_RIVER = "INPUT_RIVER"
     INPUT_DITCH = "INPUT_DITCH"
     INPUT_MIN_DIST = "INPUT_MIN_DIST"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -113,7 +112,7 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
             else pointLayer.selectedFeatureCount()
         )
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         featuresToUpdate = []
         if ditchLayer is not None:
@@ -151,13 +150,13 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
                 featuresToUpdate.append(layerFeature)
             feedback.setProgress(current * stepSize)
         if featuresToUpdate == []:
-            return {self.OUTPUT: ""}
+            return {}
         pointLayer.startEditing()
         pointLayer.beginEditCommand("Rotacionando pontes e bueiros do tipo ponto")
         updateLambda = lambda x: pointLayer.updateFeature(x)
         list(map(updateLambda, featuresToUpdate))
         pointLayer.endEditCommand()
-        return {self.OUTPUT: ""}
+        return {}
 
     def evaluateAngle(self, layerFeature, p1, p2):
         if layerFeature["tipo"] == 501:

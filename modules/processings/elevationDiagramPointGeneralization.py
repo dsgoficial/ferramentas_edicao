@@ -1,12 +1,7 @@
-import concurrent.futures
-import math
-import os
 
 from qgis import processing
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsFeature,
-    QgsFeatureRequest,
     QgsFeatureSink,
     QgsGeometry,
     QgsPointXY,
@@ -17,7 +12,6 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterField,
     QgsProcessingParameterVectorLayer,
-    QgsSpatialIndex,
     QgsWkbTypes,
     QgsFields,
     QgsVectorLayerUtils,

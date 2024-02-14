@@ -14,7 +14,6 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
     INPUT_SPOT_FIELD = "INPUT_SPOT_FIELD"
     INPUT_HIGHEST_SPOT_FIELD = "INPUT_HIGHEST_SPOT_FIELD"
     INPUT_FRAME = "INPUT_FRAME"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -80,7 +79,7 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
 
         nFeats = frameLayer.featureCount()
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         for current, frameFeature in enumerate(frameLayer.getFeatures()):
             if feedback.isCanceled():
@@ -110,7 +109,7 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
 
         spotLayer.endEditCommand()
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

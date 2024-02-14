@@ -14,7 +14,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 class SaveMasks(QgsProcessingAlgorithm):
 
     FOLDER_OUTPUT = "FOLDER_OUTPUT"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -69,7 +68,7 @@ class SaveMasks(QgsProcessingAlgorithm):
                         )
         with open("{0}".format(fileOutput), "w") as f:
             json.dump(mask_dict, f)
-        return {self.OUTPUT: ""}
+        return {}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

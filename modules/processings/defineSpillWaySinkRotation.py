@@ -1,22 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import itertools
-import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterVectorLayer,
-    QgsFeatureRequest,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
-    QgsProcessingMultiStepFeedback,
-    QgsProcessingParameterFeatureSource,
 )
 from qgis import core
-import math
-import concurrent.futures
 
 
 class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
@@ -25,7 +16,6 @@ class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
     ONLY_SELECTED = "ONLY_SELECTED"
     INPUT_FIELD = "INPUT_FIELD"
     INPUT_DRAINAGES = "INPUT_DRAINAGES"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -80,7 +70,7 @@ class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
             else inputLyr.selectedFeatureCount()
         )
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         inputLyr.startEditing()
         inputLyr.beginEditCommand("Rotacionando simbolos")
@@ -106,7 +96,7 @@ class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
 
         inputLyr.endEditCommand()
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

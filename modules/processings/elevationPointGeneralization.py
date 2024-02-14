@@ -108,7 +108,8 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         )
         nFeats = originalPointLayer.featureCount()
         if nFeats == 0:
-            return {self.OUTPUT: "Camada sem elementos."}
+            feedback.pushInfo("Camada sem elementos.")
+            return {}
         countourLayerpre = self.parameterAsVectorLayer(
             parameters, "INPUT_COUNTOUR_LINES", context
         )
@@ -237,7 +238,8 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             pointsIdsSelected,
             feedback=multiStepFeedback,
         )
-        return {self.OUTPUT: "Camada modificada"}
+        feedback.pushInfo(f"Camada {countourLayerpre.name()} modificada")
+        return {}
 
     def runAddFeatIdField(self, originalPointLayer, context, feedback):
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)

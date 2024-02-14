@@ -27,7 +27,6 @@ class DamWidth(QgsProcessingAlgorithm):
     INPUT_DAM = "INPUT_DAM"
     INPUT_HIGHWAY = "INPUT_HIGHWAY"
     INPUT_FIELDS = "INPUT_FIELDS"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -75,7 +74,7 @@ class DamWidth(QgsProcessingAlgorithm):
                     continue
                 damFeature[widthField] = self.getSymbolWidth(highwayFeature)
                 self.updateLayerFeature(damLayer, damFeature)
-        return {self.OUTPUT: ""}
+        return {}
 
     def updateLayerFeature(self, layer, feature):
         layer.startEditing()

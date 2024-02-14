@@ -13,7 +13,6 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
     INPUT_LAYER_TO_CHECK_DRE = 'INPUT_LAYER_TO_CHECK_DRE'
     INPUT_LAYER_TO_CHECK_VIA = 'INPUT_LAYER_TO_CHECK_VIA'
     INPUT_LAYER_TO_CHECK_FER = 'INPUT_LAYER_TO_CHECK_FER'
-    OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -109,7 +108,7 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
 
         layer_lim.endEditCommand()
 
-        return {self.OUTPUT: ''}
+        return {}
 
     def runMergeLayer(self, layers):
         m = processing.run(

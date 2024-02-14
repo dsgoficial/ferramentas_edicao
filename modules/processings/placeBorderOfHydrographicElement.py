@@ -23,7 +23,6 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
     ONLY_SELECTED = "ONLY_SELECTED"
     INPUT_WATER_BODIES = "INPUT_WATER_BODIES"
     INPUT_SYMBOL_LAYER = "INPUT_SYMBOL_LAYER"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -73,7 +72,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
         if inputLyr.featureCount() == 0 or inputLyr.selectedFeatureCount() == 0:
             selectedText = 'selecionadas ' if onlySelected else ''
             feedback.pushInfo(f"Não há feições {selectedText}na camada de entrada")
-            return {self.OUTPUT: ""}
+            return {}
         algRunner = AlgRunner()
         multiStepFeedback = QgsProcessingMultiStepFeedback(10, feedback)
         currentStep = 0
@@ -209,7 +208,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
             feedback.setProgress(current * stepSize)
         simbLineLayer.addFeatures(newFeatList)
         simbLineLayer.endEditCommand()
-        return {self.OUTPUT: ""}
+        return {}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

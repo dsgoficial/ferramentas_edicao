@@ -16,7 +16,6 @@ class SaveLayerStylesToFile(QgsProcessingAlgorithm):
 
     GROUP = "GROUP"
     FOLDER_OUTPUT = "FOLDER_OUTPUT"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(ParameterGroup(self.GROUP, description="Grupo"))
@@ -55,7 +54,7 @@ class SaveLayerStylesToFile(QgsProcessingAlgorithm):
             )
             feedback.setProgress(step * progressStep)
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def exportToFile(self, filePath, data):
         with open(filePath, "w") as f:

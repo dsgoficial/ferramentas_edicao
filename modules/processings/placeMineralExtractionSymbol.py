@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import processing
 
 from qgis import core
 from qgis.core import (
-    QgsFeatureRequest,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterEnum,
     QgsDistanceArea,
     QgsCoordinateReferenceSystem,
-    QgsProcessingFeatureSourceDefinition,
     QgsVectorLayerUtils,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -27,7 +23,6 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
     HIDE_FEATS = "HIDE_FEATS"
     SCALE = "SCALE"
     INPUT_SYMBOL_LAYER = "INPUT_SYMBOL_LAYER"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -115,7 +110,7 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
             else inputLyr.selectedFeatureCount()
         )
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         inputLyr.startEditing()
         simbAreaLayer.startEditing()
@@ -145,7 +140,7 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
         if hideFeats:
             inputLyr.endEditCommand()
         simbAreaLayer.endEditCommand()
-        return {self.OUTPUT: ""}
+        return {}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

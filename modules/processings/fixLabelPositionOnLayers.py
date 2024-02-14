@@ -5,34 +5,16 @@ import processing
 import concurrent.futures
 
 from collections import defaultdict
-from typing import Literal, Set
-from ..labelTools.labelHandler import (
-    createLabelFromLayerAToLayerB,
-    getLayerByName,
-    getToleranceForLyr,
-)
 
 from qgis.core import (
-    QgsField,
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
-    QgsGeometry,
-    QgsFeature,
-    QgsPointXY,
-    QgsVectorLayer,
-    QgsFeatureSink,
     QgsProcessingParameterEnum,
-    QgsFields,
-    QgsSpatialIndex,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterFeatureSink,
     QgsProcessingParameterMultipleLayers,
-    NULL,
 )
-from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
@@ -40,7 +22,6 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
     INPUT_LAYERS = "INPUT_LAYERS"
     GEOGRAPHIC_BOUNDARY = "GEOGRAPHIC_BOUNDARY"
     SCALE = "SCALE"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -94,7 +75,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         labelDict = defaultdict(lambda :defaultdict(dict))
         for feat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
-                return {self.OUTPUT: ""}
+                return {}
             geom = feat.geometry()
             extent = geom.boundingBox()
             multiStepFeedback.setCurrentStep(currentStep)
@@ -121,7 +102,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
             stepSize = 100/nFeats
             for current, feat in enumerate(outputLabelLyr.getFeatures()):
                 if multiStepFeedback.isCanceled():
-                    return {self.OUTPUT: ""}
+                    return {}
                 geom = feat.geometry()
                 labelDict[feat["Layer"]][feat["FeatureID"]] = geom.asPoint()
                 multiStepFeedback.setProgress(current * stepSize)
@@ -165,7 +146,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                 multiStepFeedback.setProgress(currentFeat * stepSize)
         currentStep += 1
         if len(futures) == 0:
-            return {self.OUTPUT: ""}
+            return {}
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.setProgressText(self.tr("Atualizando camadas com resultados"))
         stepSize = 100 / len(futures)
@@ -184,7 +165,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                 continue
             lyr.endEditCommand()
         
-        return {self.OUTPUT: ""}
+        return {}
 
         
 

@@ -13,7 +13,6 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
     INPUT_LAYER_SOBREPOSITION = "INPUT_LAYER_SOBREPOSITION"
     INPUT_POLYGON = "INPUT_POLYGONS"
     INPUT_MOLDURA = "INPUT_MOLDURA"
-    OUTPUT = "OUTPUT"
     INPUT_LAYER_TO_CHECK_DRE = "INPUT_LAYER_TO_CHECK_DRE"
     INPUT_LAYER_TO_CHECK_VIA = "INPUT_LAYER_TO_CHECK_VIA"
     INPUT_LAYER_TO_CHECK_FER = "INPUT_LAYER_TO_CHECK_FER"
@@ -146,7 +145,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             layer.addFeature(feat)
 
         layer.endEditCommand()
-        return {self.OUTPUT: ""}
+        return {}
 
     def runClip(self, layer_entrada, clip):
         clipado = processing.run(

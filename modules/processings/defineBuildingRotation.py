@@ -6,16 +6,12 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterVectorLayer,
-    QgsFeatureRequest,
     QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
     QgsProcessingMultiStepFeedback,
-    QgsProcessingParameterFeatureSource,
 )
 from qgis import core
-import math
 import concurrent.futures
 
 
@@ -142,7 +138,7 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
             else buildingsLyr.selectedFeatureCount()
         )
         if nFeats == 0:
-            return {self.OUTPUT: ""}
+            return {}
         stepSize = 100 / nFeats
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
@@ -166,7 +162,7 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
 
         for current, pointFeature in enumerate(iterator):
             if multiStepFeedback.isCanceled():
-                return {self.OUTPUT: ""}
+                return {}
             futures.add(pool.submit(evaluate, pointFeature))
             multiStepFeedback.setProgress(current * stepSize)
 
@@ -186,7 +182,7 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
 
         buildingsLyr.endEditCommand()
 
-        return {self.OUTPUT: ""}
+        return {}
 
     def getNearestGeometry(self, distance, pointGeometry):
         nearestGeometry = None

@@ -32,7 +32,6 @@ class FixLabelPositionCRS(QgsProcessingAlgorithm):
 
     INPUT_LAYERS = "INPUT_LAYERS"
     CRS = "CRS"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -67,7 +66,7 @@ class FixLabelPositionCRS(QgsProcessingAlgorithm):
             list(map(updateLambda, featList))
             lyr.endEditCommand()
 
-        return {self.OUTPUT: ""}
+        return {}
     
     @staticmethod
     def fixAndReprojectGeom(feat, coordinateTransformer):
