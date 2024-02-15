@@ -22,8 +22,18 @@ def setupArgparser():
     parser.add_argument(
         "-t",
         "--tipo",
-        default="carta_ortoimagem",
-        choices=("carta_topografica", "carta_ortoimagem", "carta_om"),
+        default="Carta Topográfica 1.3",
+        choices=(
+            "Carta Topográfica 1.3",
+            "Carta Topográfica 1.4",
+            "Carta Ortoimagem 2.4",
+            "Carta Ortoimagem 2.5",
+            "Carta Ortoimagem OM 1.0",
+            "Carta Ortoimagem Militar 2.4",
+            "Carta Ortoimagem Militar 2.5",
+            "Carta Topográfica Militar 1.3",
+            "Carta Topográfica Militar 1.4",
+        ),
         type=str,
     )
     parser.add_argument("-j", "--json", default=[], nargs="+")
