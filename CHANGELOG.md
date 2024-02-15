@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.87 - dev
+## 1.1.88 - dev
 
 Novas Funcionalidades
 
@@ -43,6 +43,7 @@ Melhorias:
 - Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
 - Adicionado texto_edicao para duto baseado no tipo em Configura os Atributos de Edição de Carta Topográfica;
 - Agora "Esc" desativa a ferramenta ativa;
+- Adicionado o conceito de versionamento de linha de produção;
 
 Correção de bug:
 

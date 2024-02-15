@@ -6,6 +6,7 @@ from qgis.core import QgsFileUtils
 data_structure = {
     "Carta Ortoimagem": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
+        {"key": "versao_produto", "type": str, "children": None, "required": False},
         {"key": "inom", "type": str, "children": None, "required": True},
         {"key": "edicao_produto", "type": str, "children": None, "required": False},
         {"key": "escala", "type": str, "children": None, "required": False},
@@ -209,6 +210,7 @@ data_structure = {
     ],
     "Carta Topográfica": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
+        {"key": "versao_produto", "type": str, "children": None, "required": False},
         {"key": "inom", "type": str, "children": None, "required": True},
         {"key": "edicao_produto", "type": str, "children": None, "required": False},
         {"key": "escala", "type": str, "children": None, "required": False},
@@ -356,6 +358,7 @@ data_structure = {
     ],
     "Carta Ortoimagem OM": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
+        {"key": "versao_produto", "type": str, "children": None, "required": False},
         {"key": "poligono", "type": str, "children": None, "required": True},
         {"key": "nome", "type": str, "children": None, "required": True},
         {"key": "imagemOM", "type": str, "children": None, "required": True},
@@ -470,6 +473,7 @@ data_structure = {
     ],
     "Carta Ortoimagem Militar": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
+        {"key": "versao_produto", "type": str, "children": None, "required": False},
         {"key": "inom", "type": str, "children": None, "required": True},
         {"key": "edicao_produto", "type": str, "children": None, "required": False},
         {"key": "escala", "type": str, "children": None, "required": False},
@@ -674,6 +678,7 @@ data_structure = {
     ],
     "Carta Topográfica Militar": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
+        {"key": "versao_produto", "type": str, "children": None, "required": False},
         {"key": "inom", "type": str, "children": None, "required": True},
         {"key": "edicao_produto", "type": str, "children": None, "required": False},
         {"key": "escala", "type": str, "children": None, "required": False},

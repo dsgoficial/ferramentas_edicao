@@ -16,7 +16,7 @@ from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
 class TopoMapBuilder(IMapBuilder, MapBuilderUtils):
-    def __init__(self, componentFactory: ComponentFactory) -> None:
+    def __init__(self, componentFactory: ComponentFactory, versionFolder) -> None:
         super().__init__()
         self.componentFactory = componentFactory
         self.productPath = (
@@ -26,6 +26,7 @@ class TopoMapBuilder(IMapBuilder, MapBuilderUtils):
             / "resources"
             / "products"
             / "topoMap"
+            / versionFolder
         )
         self.components = dict()
         self.components.update(

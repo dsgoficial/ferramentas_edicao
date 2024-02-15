@@ -15,7 +15,7 @@ from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
 class OmMapBuilder(IMapBuilder, MapBuilderUtils):
-    def __init__(self, componentFactory: ComponentFactory) -> None:
+    def __init__(self, componentFactory: ComponentFactory, versionFolder) -> None:
         super().__init__()
         self.componentFactory = componentFactory
         self.productPath = (
@@ -25,6 +25,7 @@ class OmMapBuilder(IMapBuilder, MapBuilderUtils):
             / "resources"
             / "products"
             / "omMap"
+            / versionFolder
         )
         self.components = dict()
         self.components.update({"map": self.componentFactory.getComponent("MapOM")})

@@ -214,24 +214,26 @@ class EditionPlugin:
             )
             return
 
-        if self.firstStart:
-            self.firstStart = False
-            self.dlg = EditionPluginDialog()
-            self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
-            self.dlg.pushButton.clicked.connect(self.controller.run)
-            if self.debugMode:
-                env_dict = self.loadEnv()
-                self.dlg.jsonConfigs.setFilePath(
-                    env_dict.get("jsonConfigs", "C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json")
-                )
-                self.dlg.exportFolder.setFilePath(env_dict.get("exportFolder", "D:\\export"))
-                self.dlg.jsonConfigs.setFilter("JSON (*.json)")
-                username = env_dict.get("username", None)
-                if username is not None:
-                    self.dlg.username.setText(username)
-                password = env_dict.get("password", None)
-                if password is not None:
-                    self.dlg.password.setText(password)
+        if not self.firstStart:
+            return
+        self.firstStart = False
+        self.dlg = EditionPluginDialog()
+        self.controller = MapBuildController(self.dlg, self.iface, ConfigDefaults())
+        self.dlg.pushButton.clicked.connect(self.controller.run)
+        if not self.debugMode:
+            return
+        env_dict = self.loadEnv()
+        self.dlg.jsonConfigs.setFilePath(
+            env_dict.get("jsonConfigs", "C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json")
+        )
+        self.dlg.exportFolder.setFilePath(env_dict.get("exportFolder", "D:\\export"))
+        self.dlg.jsonConfigs.setFilter("JSON (*.json)")
+        username = env_dict.get("username", None)
+        if username is not None:
+            self.dlg.username.setText(username)
+        password = env_dict.get("password", None)
+        if password is not None:
+            self.dlg.password.setText(password)
 
     def loadEnv(self):
         with open(Path(__file__).parent / ".env") as f:

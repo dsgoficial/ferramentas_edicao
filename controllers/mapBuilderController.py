@@ -206,29 +206,26 @@ class MapBuildController(MapBuildControllerUtils):
             )
         return dlgCfg
 
-    def getProductType(self, productType: str) -> Tuple[str, str]:
+    def getProductType(self, comboBoxDisplayString: str) -> Tuple[str, str, str, str]:
         """Gets the product type and its string representation
         Args:
             productType: The product type in format lower_case or Upper Case
         Returns:
-            A tuple with the product type and product name
+            A tuple with the product type, product name, product version and version folder
         """
-        if productType == "carta_ortoimagem":
-            return "orthoMap", "Carta Ortoimagem"
+        *strList, productVersion = comboBoxDisplayString.split(" ")
+        productType = " ".join(strList)
+        versionFolder = productVersion.replace(".", "_")
         if productType == "Carta Ortoimagem":
-            return "orthoMap", productType
-        if productType == "carta_topografica":
-            return "topoMap", "Carta Topográfica"
+            return "orthoMap", productType, productVersion, versionFolder
         if productType == "Carta Topográfica":
-            return "topoMap", productType
-        if productType == "carta_om":
-            return "omMap", "Carta Especial"
+            return "topoMap", productType, productVersion, versionFolder
         if productType == "Carta Ortoimagem OM":
-            return "omMap", "Carta Especial"
+            return "omMap", "Carta Especial", productVersion, versionFolder
         if productType == "Carta Ortoimagem Militar":
-            return "militaryOrthoMap", "Carta Ortoimagem Militar"
+            return "militaryOrthoMap", "Carta Ortoimagem Militar", productVersion, versionFolder
         if productType == "Carta Topográfica Militar":
-            return "militaryTopoMap", "Carta Topográfica Militar"
+            return "militaryTopoMap", "Carta Topográfica Militar", productVersion, versionFolder
 
     def unload(self):
         """Unloads the Controller. It's called when the plugin is uninstalled or reloaded"""
@@ -239,7 +236,7 @@ class MapBuildController(MapBuildControllerUtils):
         self.builders = dict()
 
     def getProductBuilder(
-        self, productType: str
+        self, productType: str, versionFolder: str
     ) -> Union[OrthoMapBuilder, TopoMapBuilder, OmMapBuilder]:
         """Gets a builder for the desired product and stores it in self.builders;
         Args:
@@ -248,18 +245,49 @@ class MapBuildController(MapBuildControllerUtils):
             A builder for the desired product type
         """
         if productType == "orthoMap" and productType not in self.builders:
-            self.builders.update({productType: OrthoMapBuilder(ComponentFactory())})
+            self.builders.update(
+                {
+                    productType: OrthoMapBuilder(
+                        componentFactory=ComponentFactory(),
+                        versionFolder=versionFolder
+                    )
+                }
+            )
         elif productType == "topoMap" and productType not in self.builders:
-            self.builders.update({productType: TopoMapBuilder(ComponentFactory())})
+            self.builders.update(
+                {
+                    productType: TopoMapBuilder(
+                        componentFactory=ComponentFactory(),
+                        versionFolder=versionFolder,
+                    ),
+                }
+            )
         elif productType == "omMap" and productType not in self.builders:
-            self.builders.update({productType: OmMapBuilder(ComponentFactory())})
+            self.builders.update(
+                {
+                    productType: OmMapBuilder(
+                        componentFactory=ComponentFactory(),
+                        versionFolder=versionFolder
+                    )
+                }
+            )
         elif productType == "militaryOrthoMap" and productType not in self.builders:
             self.builders.update(
-                {productType: MilitaryOrthoMapBuilder(ComponentFactory())}
+                {
+                    productType: MilitaryOrthoMapBuilder(
+                        componentFactory=ComponentFactory(),
+                        versionFolder=versionFolder
+                    )
+                }
             )
         elif productType == "militaryTopoMap" and productType not in self.builders:
             self.builders.update(
-                {productType: MilitaryTopoMapBuilder(ComponentFactory())}
+                {
+                    productType: MilitaryTopoMapBuilder(
+                        componentFactory=ComponentFactory(),
+                        versionFolder=versionFolder
+                    )
+                }
             )
         return self.builders.get(productType)
 
@@ -283,7 +311,7 @@ class MapBuildController(MapBuildControllerUtils):
         """Runs the specified MapBuilder according to dlg / json preferences"""
         dlgCfg = self.setupDlgCfg(self.dlg)
         MapBuilderUtils().cleanProject(self.debugMode)
-        productType, productName = self.getProductType(dlgCfg.productType)
+        productType, productName, productVersion, versionFolder = self.getProductType(dlgCfg.productType)
         builder = None
         if self.dlg.jsonConfigs.filePath() == "":
             QMessageBox.warning(
@@ -299,7 +327,7 @@ class MapBuildController(MapBuildControllerUtils):
                 f"Não foi inserida uma pasta de saída para o produto solicitado.",
             )
             return
-        if self.dlg.productType.currentText() == "Carta Ortoimagem OM":
+        if "Carta Ortoimagem OM" in self.dlg.productType.currentText():
             self.qptDlg()
         for jsonPath in dlgCfg.jsonFilePaths:
             self.setColorPalette()
@@ -334,7 +362,7 @@ class MapBuildController(MapBuildControllerUtils):
                     f"Erro: {filePathError}" "",
                 )
                 continue
-            if dlgCfg.productType != jsonData["tipo_produto"]:
+            if productName != jsonData["tipo_produto"]:
                 QMessageBox.warning(
                     self.dlg,
                     "Erro",
@@ -342,9 +370,17 @@ class MapBuildController(MapBuildControllerUtils):
                     "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
                 )
                 continue
-            jsonData.update({"productType": productType, "productName": productName})
+            if "versao_produto" in jsonData and productVersion != jsonData["versao_produto"]:
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"O tipo de produto escolhido na interface não corresponde à chave versao_produto informada no arquivo json {jsonPath}, ignorando produto. "
+                    "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
+                )
+                continue
+            jsonData.update({"productType": productType, "productName": productName, "productVersion": productVersion, "versionFolder": versionFolder})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
-            builder = self.getProductBuilder(productType)
+            builder = self.getProductBuilder(productType, versionFolder)
             # builder.removeLayers(False)
             composition = self.compositions.getComposition(jsonData).clone()
             connection = (

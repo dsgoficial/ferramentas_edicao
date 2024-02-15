@@ -19,8 +19,8 @@ from .topoMapBuilder import TopoMapBuilder
 
 
 class MilitaryTopoMapBuilder(TopoMapBuilder):
-    def __init__(self, componentFactory: ComponentFactory) -> None:
-        super(MilitaryTopoMapBuilder, self).__init__(componentFactory)
+    def __init__(self, componentFactory: ComponentFactory, versionFolder) -> None:
+        super(MilitaryTopoMapBuilder, self).__init__(componentFactory, versionFolder)
 
     def run(self, debugMode: bool = False):
         super().run(debugMode=debugMode)

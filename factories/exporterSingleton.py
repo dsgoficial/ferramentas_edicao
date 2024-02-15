@@ -28,6 +28,8 @@ class ExporterSingleton:
             self.basename = data.get("nome")
         else:
             self.basename = data.get("mi") or data.get("inom")
+        self.productName = data.get("productName")
+        self.productVersion = data.get("productVersion")
         self.basename = (
             f"{self.exportNameDict.get(data.get('productType'))}_{self.basename}"
         )
@@ -40,7 +42,7 @@ class ExporterSingleton:
         metadata = QgsProject.instance().metadata()
         dsgToolsVersion = utils.pluginMetadata("DsgTools", "version")
         FEVersion = utils.pluginMetadata("ferramentas_edicao", "version")
-        metadata.setAbstract(f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; {self.dpi} dpi")
+        metadata.setAbstract(f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; Produto: {self.productName} {self.productVersion}; {self.dpi} dpi")
         metadata.setAuthor("Diretoria de Serviço Geográfico")
         metadata.setTitle(f"{self.basename}")
         QgsProject.instance().setMetadata(metadata)

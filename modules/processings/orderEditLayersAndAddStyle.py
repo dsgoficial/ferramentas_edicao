@@ -39,9 +39,18 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
 
         self.map = [
-            self.tr("Carta Topográfica"),
-            self.tr("Carta Ortoimagem"),
+            self.tr("Carta Topográfica 1.3"),
+            self.tr("Carta Topográfica 1.4"),
+            self.tr("Carta Ortoimagem 2.4"),
+            self.tr("Carta Ortoimagem 2.5"),
         ]
+
+        self.folderDict = {
+            0: "1_3",
+            1: "1_4",
+            2: "2_4",
+            3: "2_5",
+        }
 
         self.addParameter(
             QgsProcessingParameterEnum(
@@ -166,12 +175,13 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             layers = [layerTree.layer() for layerTree in group.findLayers()]
         else:
             layers = project.instance().mapLayers().values()
-        if mapType == 0:
+        if mapType in [0, 1]:
             carta = "topoMap"
-        elif mapType == 1:
+        elif mapType in [2, 3]:
             carta = "orthoMap"
         else:
-            return {self.OUTPUT: "Valor para tipo de carta inválido"}
+            feedback.pushInfo("Valor para tipo de carta inválido")
+            return {}
 
         jsonConfigData = self.getJSONConfig(
             os.path.join(
@@ -182,6 +192,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 "resources",
                 "products",
                 carta,
+                self.folderDict[mapType],
                 "camadas.json",
             )
         )
@@ -195,6 +206,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             "resources",
             "products",
             carta,
+            self.folderDict[mapType],
             "styles",
             styleOption,
         )
@@ -205,6 +217,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             "resources",
             "products",
             carta,
+            self.folderDict[mapType],
             "styles",
             groupName,
         )

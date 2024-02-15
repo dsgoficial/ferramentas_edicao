@@ -18,7 +18,7 @@ from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
 class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
-    def __init__(self, componentFactory: ComponentFactory) -> None:
+    def __init__(self, componentFactory: ComponentFactory, versionFolder) -> None:
         super().__init__()
         self.componentFactory = componentFactory
         self.productPath = (
@@ -28,6 +28,7 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
             / "resources"
             / "products"
             / "orthoMap"
+            / versionFolder
         )
         self.components = dict()
         self.components.update(
@@ -63,7 +64,7 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
         self.components.update(
             {"subtitle": self.componentFactory.getComponent("Subtitle")}
         )
-        self.components.update({"legend": self.componentFactory.getComponent("Legend")})
+        self.components.update({"legend": self.componentFactory.getComponent("Legend", versionFolder=versionFolder)})
         self.components.update(
             {"anglesHandler": self.componentFactory.getComponent("AnglesHandler")}
         )

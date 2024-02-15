@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Ferramentas de Edição. v 1.1.87</string>
+   <string>Ferramentas de Edição. v 1.1.88</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
@@ -27,27 +27,47 @@
       <widget class="QComboBox" name="productType">
        <item>
         <property name="text">
-         <string>Carta Topográfica</string>
+         <string>Carta Topográfica 1.3</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Carta Ortoimagem</string>
+         <string>Carta Topográfica 1.4</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Carta Ortoimagem OM</string>
+         <string>Carta Ortoimagem 2.4</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Carta Ortoimagem Militar</string>
+         <string>Carta Ortoimagem 2.5</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Carta Topográfica Militar</string>
+         <string>Carta Ortoimagem OM 1.0</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Carta Ortoimagem Militar 2.4</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Carta Ortoimagem Militar 2.5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Carta Topográfica Militar 1.3</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Carta Topográfica Militar 1.4</string>
         </property>
        </item>
       </widget>

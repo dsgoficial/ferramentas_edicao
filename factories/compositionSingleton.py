@@ -67,13 +67,14 @@ class CompositionSingleton:
         )
         compositionRootPath = self.resourcesPath / productType
         if productType == "omMap":
+            compositionRootPath = compositionRootPath / jsonData.get("versionFolder", "1_0")
             qptNameText = f"{productType}{scale}"
-        elif productType == "militaryOrthoMap":
+        elif productType in ("orthoMap", "militaryOrthoMap"):
             qptNameText = "orthoMap"
-            compositionRootPath = self.resourcesPath / "orthoMap"
-        elif productType == "militaryTopoMap":
+            compositionRootPath = self.resourcesPath / "orthoMap" / jsonData.get("versionFolder", "2_4")
+        elif productType in ("topoMap", "militaryTopoMap"):
             qptNameText = "topoMap"
-            compositionRootPath = self.resourcesPath / "topoMap"
+            compositionRootPath = self.resourcesPath / "topoMap" / jsonData.get("versionFolder", "1_3")
         else:
             qptNameText = f"{productType}"
         if scale == 250:
