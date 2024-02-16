@@ -24,13 +24,15 @@
 import os
 import requests
 import json
+import processing
 from time import sleep
 
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterFile,
     QgsProcessingParameterString,
-    QgsProcessingOutputMultipleLayers,
+    QgsProcessingOutputFile,
+    QgsProcessingMultiStepFeedback,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -38,7 +40,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
     FILE = "FILE"
     TEXT = "TEXT"
-    OUTPUT = "OUTPUT"
+    OUTPUT_PDF = "OUTPUT_PDF"
+    OUTPUT_GEOTIFF = "OUTPUT_GEOTIFF"
 
     def initAlgorithm(self, config):
         """
@@ -59,8 +62,12 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addOutput(QgsProcessingOutputFile(self.OUTPUT_PDF, self.tr("Saída PDF")))
+
         self.addOutput(
-            QgsProcessingOutputMultipleLayers(self.OUTPUT, self.tr("HTML text"))
+            QgsProcessingOutputFile(
+                self.OUTPUT_GEOTIFF, self.tr("Saída GEOTIFF"), optional=True
+            )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -71,6 +78,12 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         inputJSONFile = self.parameterAsFile(parameters, self.FILE, context)
         inputJSONData = json.loads(
             self.parameterAsString(parameters, self.TEXT, context)
+        )
+        self.outputPdfPath = self.parameterAsFileOutput(
+            parameters, self.OUTPUT_PDF, context
+        )
+        self.outputGeotiffPath = self.parameterAsFileOutput(
+            parameters, self.OUTPUT_GEOTIFF, context
         )
         if os.path.exists(inputJSONFile):
             return self.runFMEFromJSONFile(inputJSONFile, feedback)
@@ -100,7 +113,8 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         url_to_status = "{server}/jobs/{uuid}".format(
             server=inputJSONData["server"], uuid=response.json()["data"]["job_uuid"]
         )
-
+        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
+        multiStepFeedback.setCurrentStep(0)
         while True:
             if feedback.isCanceled():
                 feedback.pushInfo(self.tr("Canceled by user.\n"))
@@ -116,11 +130,37 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
                 responseData = {"status": "erro", "log": "Erro no plugin!"}
             if responseData["status"] in [2, 3, "erro"]:
                 break
+        multiStepFeedback.setCurrentStep(1)
+        return self.handleOutputs(responseData, multiStepFeedback)
 
-        output = "<p>[rotina nome] : {0}</p>".format(inputJSONData["workspace_name"])
-        for flags in responseData["log"].split("|"):
-            output += """<p>[rotina flags] : {0}</p>""".format(flags)
-        return {self.OUTPUT: output}
+    def handleOutputs(self, responseData, feedback):
+        pdfUrl = responseData.get("pdf", None)
+        geotiffUrl = responseData.get("geotiff", None)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(
+            2 if geotiffUrl is not None else 1, feedback
+        )
+        multiStepFeedback.setCurrentStep(0)
+        responseDict = dict()
+        responseDict["OUTPUT_PDF"] = self.downloadOutput(
+            url=pdfUrl, output=self.outputPdfPath, feedback=multiStepFeedback
+        )
+        if geotiffUrl is None:
+            return responseDict
+        responseDict["OUTPUT_GEOTIFF"] = self.downloadOutput(
+            url=geotiffUrl, output=self.outputGeotiffPath, feedback=multiStepFeedback
+        )
+        return responseDict
+
+    def downloadOutput(self, url, output, feedback):
+        response = processing.run(
+            "native:filedownloader",
+            {
+                "URL": url,
+                "OUTPUT": output,
+            },
+            feedback=feedback,
+        )
+        return response["OUTPUT"]
 
     def name(self):
         """
