@@ -1,6 +1,17 @@
 # CHANGELOG
 
-## 1.1.90 - dev
+## 1.2.0
+
+Novas Funcionalidades
+
+- Modo de exportação via linha de comando funcionando;
+- Novo processo de execução remota por meio do serviço de edição;
+
+Melhorias:
+
+- Adicionado o conceito de versionamento de linha de produção;
+
+## 1.1.90
 
 Novas Funcionalidades
 
@@ -14,8 +25,6 @@ Novas Funcionalidades
 - Novo processo de identificar rótulos fora da moldura;
 - O projeto agora é limpo antes de uma exportação para evitar camadas estranhas que estragam a exportação;
 - Novo botão para desligar/ligar o estilo "Não visível";
-- Modo de exportação via linha de comando funcionando;
-- Novo processo de execução remota por meio do serviço de edição;
 
 Melhorias:
 
@@ -45,7 +54,6 @@ Melhorias:
 - Quando existentes, alterados os estilos tanto de Edição quanto de Impressão.
 - Adicionado texto_edicao para duto baseado no tipo em Configura os Atributos de Edição de Carta Topográfica;
 - Agora "Esc" desativa a ferramenta ativa;
-- Adicionado o conceito de versionamento de linha de produção;
 
 Correção de bug:
 
