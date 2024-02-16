@@ -33,6 +33,7 @@ from qgis.core import (
     QgsProcessingParameterString,
     QgsProcessingOutputFile,
     QgsProcessingMultiStepFeedback,
+    QgsProcessingException,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -69,6 +70,11 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
                 self.OUTPUT_GEOTIFF, self.tr("Saída GEOTIFF"), optional=True
             )
         )
+        self.statusIdDict = {
+            1: "Em execução",
+            2: "Executado",
+            3: "Erro",
+        }
 
     def processAlgorithm(self, parameters, context, feedback):
         """
@@ -100,24 +106,25 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         header = {"content-type": "application/json"}
         session = requests.Session()
         session.trust_env = False
-        url = "{server}/versions/{workspace_id}/jobs".format(
-            server=inputJSONData["server"], workspace_id=inputJSONData["workspace_id"]
-        )
+        server = inputJSONData["server"]
+        url = f"{server}/execucoes"
         response = session.post(
-            url, data=json.dumps({"parameters": inputJSONData}), headers=header
+            url, data=json.dumps({"parametros": inputJSONData}), headers=header
         )
 
         if not response:
-            return {self.OUTPUT: "<p>Erro ao iniciar rotina.</p>"}
-
-        url_to_status = "{server}/jobs/{uuid}".format(
-            server=inputJSONData["server"], uuid=response.json()["data"]["job_uuid"]
-        )
+            raise QgsProcessingException("Erro ao iniciar rotina.")
+        uuid = response.json().get("data", {}).get("job_uuid", None)
+        if uuid is None:
+            raise QgsProcessingException(
+                "Erro no servidor! A requisição não retornou o uuid da execução."
+            )
+        url_to_status = f"{server}/execucoes/{uuid}"
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
         while True:
-            if feedback.isCanceled():
-                feedback.pushInfo(self.tr("Canceled by user.\n"))
+            if multiStepFeedback.isCanceled():
+                multiStepFeedback.pushInfo(self.tr("Cancelado pelo usuário.\n"))
                 break
             sleep(3)
             try:
@@ -126,14 +133,22 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
                 response = session.get(url_to_status)
                 session.close()
                 responseData = response.json()["data"]
-            except:
-                responseData = {"status": "erro", "log": "Erro no plugin!"}
+            except Exception as e:
+                responseData = {"status": "erro", "log": f"Erro no plugin!\n{e}"}
             if responseData["status"] in [2, 3, "erro"]:
                 break
         multiStepFeedback.setCurrentStep(1)
         return self.handleOutputs(responseData, multiStepFeedback)
 
     def handleOutputs(self, responseData, feedback):
+        status = responseData.get("status")
+        feedback.pushInfo(
+            f"O processo finalizou com status={self.statusIdDict.get(status)}"
+        )
+        if status == 3:
+            raise QgsProcessingException(
+                "O processo finalizou com erro! Verifique o servidor e tente novamente"
+            )
         pdfUrl = responseData.get("pdf", None)
         geotiffUrl = responseData.get("geotiff", None)
         multiStepFeedback = QgsProcessingMultiStepFeedback(
@@ -146,6 +161,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         )
         if geotiffUrl is None or geotiffUrl == "":
             return responseDict
+        multiStepFeedback.setCurrentStep(1)
         responseDict["OUTPUT_GEOTIFF"] = self.downloadOutput(
             url=geotiffUrl, output=self.outputGeotiffPath, feedback=multiStepFeedback
         )

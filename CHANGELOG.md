@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.89 - dev
+## 1.1.90 - dev
 
 Novas Funcionalidades
 
@@ -15,6 +15,7 @@ Novas Funcionalidades
 - O projeto agora é limpo antes de uma exportação para evitar camadas estranhas que estragam a exportação;
 - Novo botão para desligar/ligar o estilo "Não visível";
 - Modo de exportação via linha de comando funcionando;
+- Novo processo de execução remota por meio do serviço de edição;
 
 Melhorias:
 
