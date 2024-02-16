@@ -277,9 +277,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         # Adicionar tema após aplicação dos estilos
         themeCollection = core.QgsProject.instance().mapThemeCollection()
-        if mapType == 0:
+        if mapType in [0, 1]:
             themeName = "Carta Topográfica"
-        elif mapType == 1:
+        elif mapType in [2, 3]:
             themeName = "Carta Ortoimagem"
         root = core.QgsProject().instance().layerTreeRoot().clone()
         model = core.QgsLayerTreeModel(root)
