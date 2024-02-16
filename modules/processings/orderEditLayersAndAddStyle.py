@@ -281,6 +281,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             themeName = "Carta Topográfica"
         elif mapType in [2, 3]:
             themeName = "Carta Ortoimagem"
+        else:
+            feedback.pushInfo("Tipo de produto não encontrado para atribuir o tema.")
+            return {}
         root = core.QgsProject().instance().layerTreeRoot().clone()
         model = core.QgsLayerTreeModel(root)
         themeCollection.insert(
