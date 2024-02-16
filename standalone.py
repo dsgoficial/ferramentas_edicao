@@ -1,16 +1,21 @@
 import argparse
-from ast import arg
+from pathlib import Path
 import os
 import sys
 from pathlib import Path
 
+# import ptvsd
+
+# ptvsd.enable_attach(address=("localhost", 5678))
+# ptvsd.wait_for_attach()
+
 from qgis.core import QgsApplication, QgsNetworkAccessManager
 from qgis.PyQt.QtNetwork import QNetworkProxy
-
-from .controllers.mapBuilderController import MapBuildController
+from qgis import utils
 
 
 def exportMaps(args):
+    from .controllers.mapBuilderController import MapBuildController
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     controller = MapBuildController(args, None)
     controller.run()
@@ -69,12 +74,31 @@ def startNetwork(args):
     manager = QgsNetworkAccessManager().instance()
     manager.setFallbackProxyAndExcludes(proxy, [], [])
 
-
 if __name__ == "__main__":
+    print("iniciou o argparser")
     args = setupArgparser()
     qgs = QgsApplication([], False)
-    # QgsApplication.setPrefixPath('C:\\Program Files\\QGIS 3.20.1\\apps', True)
     qgs.initQgis()
+    p = Path(args.pathQgis)
+    prefixPath = p / "apps/qgis"
+    qgs.setPrefixPath(str(prefixPath), True)
+    pluginsFolder = Path("~\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins").expanduser()
+    qgs.setPluginPath(str(pluginsFolder))
+    sys.path.append(str(p / "apps/qgis/python/plugins"))
+    sys.path.append(str(pluginsFolder))
+
+    # para funcionar tem que ser nesse escopo, nao pode encapsular numa funcao
+    from processing.core.Processing import Processing
+    from .modules.processings.provider import Provider
+    from .modules.expressionFunctions import loadExpressionFunctions
+    from DsgTools.core.DSGToolsProcessingAlgs.dsgtoolsProcessingAlgorithmProvider import DSGToolsProcessingAlgorithmProvider
+
+    Processing.initialize()
+    feProvider = Provider()
+    qgs.processingRegistry().addProvider(feProvider)
+    dsgtoolsProvider = DSGToolsProcessingAlgorithmProvider()
+    QgsApplication.processingRegistry().addProvider(dsgtoolsProvider)
+
     startNetwork(args)
     exportMaps(args)
     qgs.exitQgis()

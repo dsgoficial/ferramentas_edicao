@@ -289,7 +289,8 @@ class MapBuilderUtils:
         """
         if debugMode:
             return
-        iface.newProject()
+        if iface is not None:
+            iface.newProject()
         if not hasattr(self, "composition"):
             return
         self.instance.layoutManager().removeLayout(self.composition)
@@ -302,6 +303,8 @@ class MapBuilderUtils:
             debugMode: Boolean value holding the debugMode status
         """
         if debugMode:
+            return
+        if iface is None:
             return
         iface.newProject(promptToSaveFlag=False)
         # if not debugMode and hasattr(self, 'layersIdsToBeRemoved') and hasattr(self, 'groupsToBeRemoved'):

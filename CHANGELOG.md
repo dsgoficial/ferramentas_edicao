@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.88 - dev
+## 1.1.89 - dev
 
 Novas Funcionalidades
 
@@ -13,7 +13,8 @@ Novas Funcionalidades
 - Novo botão para ciclar entre a ponto da simbologia;
 - Novo processo de identificar rótulos fora da moldura;
 - O projeto agora é limpo antes de uma exportação para evitar camadas estranhas que estragam a exportação;
-- Novo botão para desligar/ligar o estilo "Não visível"
+- Novo botão para desligar/ligar o estilo "Não visível";
+- Modo de exportação via linha de comando funcionando;
 
 Melhorias:
 

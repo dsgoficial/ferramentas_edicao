@@ -313,21 +313,21 @@ class MapBuildController(MapBuildControllerUtils):
         MapBuilderUtils().cleanProject(self.debugMode)
         productType, productName, productVersion, versionFolder = self.getProductType(dlgCfg.productType)
         builder = None
-        if self.dlg.jsonConfigs.filePath() == "":
+        if dlgCfg.jsonFilePaths == []:
             QMessageBox.warning(
                 self.dlg,
                 "Erro",
                 f"Não foi inserido um arquivo ou pasta de JSON para produto solicitado.",
             )
             return
-        if self.dlg.exportFolder.filePath() == "":
+        if dlgCfg.exportFolder == "":
             QMessageBox.warning(
                 self.dlg,
                 "Erro",
                 f"Não foi inserida uma pasta de saída para o produto solicitado.",
             )
             return
-        if "Carta Ortoimagem OM" in self.dlg.productType.currentText():
+        if "Carta Ortoimagem OM" in dlgCfg.productType:
             self.qptDlg()
         for jsonPath in dlgCfg.jsonFilePaths:
             self.setColorPalette()
@@ -407,6 +407,9 @@ class MapBuildController(MapBuildControllerUtils):
 
         messageType = "Informação"
         if not builder:
+            if dlgCfg.instance == "headless":
+                print("Não há cartas a serem exportadas")
+                return
             QMessageBox.warning(
                 self.dlg, messageType, "Não há cartas a serem exportadas"
             )
@@ -418,4 +421,7 @@ class MapBuildController(MapBuildControllerUtils):
             if exportResult == True
             else f"Ocorreu um erro durante a exportação: {exportMessage}"
         )
+        if dlgCfg.instance == "headless":
+            print(msg)
+            return
         QMessageBox.warning(self.dlg, messageType, msg)
