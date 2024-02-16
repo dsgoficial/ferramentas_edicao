@@ -137,14 +137,14 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         pdfUrl = responseData.get("pdf", None)
         geotiffUrl = responseData.get("geotiff", None)
         multiStepFeedback = QgsProcessingMultiStepFeedback(
-            2 if geotiffUrl is not None else 1, feedback
+            1 if geotiffUrl is None or geotiffUrl == "" else 2, feedback
         )
         multiStepFeedback.setCurrentStep(0)
         responseDict = dict()
         responseDict["OUTPUT_PDF"] = self.downloadOutput(
             url=pdfUrl, output=self.outputPdfPath, feedback=multiStepFeedback
         )
-        if geotiffUrl is None:
+        if geotiffUrl is None or geotiffUrl == "":
             return responseDict
         responseDict["OUTPUT_GEOTIFF"] = self.downloadOutput(
             url=geotiffUrl, output=self.outputGeotiffPath, feedback=multiStepFeedback
