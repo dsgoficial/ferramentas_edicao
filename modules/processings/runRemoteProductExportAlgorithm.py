@@ -26,12 +26,13 @@ import requests
 import json
 import processing
 from time import sleep
+from pathlib import Path
 
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterFile,
     QgsProcessingParameterString,
-    QgsProcessingOutputFile,
+    QgsProcessingParameterFolderDestination,
     QgsProcessingMultiStepFeedback,
     QgsProcessingException,
 )
@@ -41,8 +42,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
     FILE = "FILE"
     TEXT = "TEXT"
-    OUTPUT_PDF = "OUTPUT_PDF"
-    OUTPUT_GEOTIFF = "OUTPUT_GEOTIFF"
+    OUTPUT_FOLDER = "OUTPUT_FOLDER"
 
     def initAlgorithm(self, config):
         """
@@ -63,11 +63,9 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-        self.addOutput(QgsProcessingOutputFile(self.OUTPUT_PDF, self.tr("Saída PDF")))
-
-        self.addOutput(
-            QgsProcessingOutputFile(
-                self.OUTPUT_GEOTIFF, self.tr("Saída GEOTIFF")
+        self.addParameter(
+            QgsProcessingParameterFolderDestination(
+                self.OUTPUT_FOLDER, self.tr("Pasta para salvar os arquivos exportados")
             )
         )
         self.statusIdDict = {
@@ -85,17 +83,14 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         inputJSONData = json.loads(
             self.parameterAsString(parameters, self.TEXT, context)
         )
-        self.outputPdfPath = self.parameterAsFileOutput(
-            parameters, self.OUTPUT_PDF, context
-        )
-        self.outputGeotiffPath = self.parameterAsFileOutput(
-            parameters, self.OUTPUT_GEOTIFF, context
+        self.outputFolder = self.parameterAsString(
+            parameters, self.OUTPUT_FOLDER, context
         )
         if os.path.exists(inputJSONFile):
             return self.runFromJSONFile(inputJSONFile, feedback)
         elif len(inputJSONData) > 0:
             return self.runFromJSONData(inputJSONData, feedback)
-        return {self.OUTPUT: ""}
+        raise QgsProcessingException("Invalid inputs! Check the inputs and try again.")
 
     def runFromJSONFile(self, inputJSONFile, feedback):
         inputJSONData = json.load(inputJSONFile)
@@ -108,9 +103,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         session.trust_env = False
         server = inputJSONData["server"]
         url = f"{server}/execucoes"
-        response = session.post(
-            url, data=json.dumps(inputJSONData), headers=header
-        )
+        response = session.post(url, data=json.dumps(inputJSONData), headers=header)
 
         if not response:
             raise QgsProcessingException("Erro ao iniciar rotina.")
@@ -149,21 +142,25 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(
                 "O processo finalizou com erro! Verifique o servidor e tente novamente"
             )
-        pdfUrl = responseData.get('sumario', {}).get("pdf", None)
-        geotiffUrl = responseData.get('sumario', {}).get("geotiff", None)
+        pdfUrl = responseData.get("sumario", {}).get("pdf", None)
+        geotiffUrl = responseData.get("sumario", {}).get("geotiff", None)
         multiStepFeedback = QgsProcessingMultiStepFeedback(
             1 if geotiffUrl is None or geotiffUrl == "" else 2, feedback
         )
         multiStepFeedback.setCurrentStep(0)
-        responseDict = dict()
-        responseDict["OUTPUT_PDF"] = self.downloadOutput(
-            url=pdfUrl, output=self.outputPdfPath, feedback=multiStepFeedback
+        responseDict = {self.OUTPUT_FOLDER: self.outputFolder}
+        self.downloadOutput(
+            url=pdfUrl,
+            output=Path(self.outputFolder) / Path(pdfUrl).name,
+            feedback=multiStepFeedback,
         )
         if geotiffUrl is None or geotiffUrl == "":
             return responseDict
         multiStepFeedback.setCurrentStep(1)
-        responseDict["OUTPUT_GEOTIFF"] = self.downloadOutput(
-            url=geotiffUrl, output=self.outputGeotiffPath, feedback=multiStepFeedback
+        self.downloadOutput(
+            url=geotiffUrl,
+            output=Path(self.outputFolder) / Path(geotiffUrl).name,
+            feedback=multiStepFeedback,
         )
         return responseDict
 
