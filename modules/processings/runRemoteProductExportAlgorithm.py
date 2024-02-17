@@ -67,7 +67,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
 
         self.addOutput(
             QgsProcessingOutputFile(
-                self.OUTPUT_GEOTIFF, self.tr("Saída GEOTIFF"), optional=True
+                self.OUTPUT_GEOTIFF, self.tr("Saída GEOTIFF")
             )
         )
         self.statusIdDict = {
@@ -92,16 +92,16 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             parameters, self.OUTPUT_GEOTIFF, context
         )
         if os.path.exists(inputJSONFile):
-            return self.runFMEFromJSONFile(inputJSONFile, feedback)
+            return self.runFromJSONFile(inputJSONFile, feedback)
         elif len(inputJSONData) > 0:
-            return self.runFMEFromJSONData(inputJSONData, feedback)
+            return self.runFromJSONData(inputJSONData, feedback)
         return {self.OUTPUT: ""}
 
-    def runFMEFromJSONFile(self, inputJSONFile, feedback):
+    def runFromJSONFile(self, inputJSONFile, feedback):
         inputJSONData = json.load(inputJSONFile)
-        return self.runFMEFromJSONData(inputJSONData, feedback)
+        return self.runFromJSONData(inputJSONData, feedback)
 
-    def runFMEFromJSONData(self, inputJSONData, feedback):
+    def runFromJSONData(self, inputJSONData, feedback):
 
         header = {"content-type": "application/json"}
         session = requests.Session()
@@ -109,7 +109,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         server = inputJSONData["server"]
         url = f"{server}/execucoes"
         response = session.post(
-            url, data=json.dumps({"parametros": inputJSONData}), headers=header
+            url, data=json.dumps(inputJSONData), headers=header
         )
 
         if not response:
@@ -126,7 +126,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             if multiStepFeedback.isCanceled():
                 multiStepFeedback.pushInfo(self.tr("Cancelado pelo usuário.\n"))
                 break
-            sleep(3)
+            sleep(10)
             try:
                 session = requests.Session()
                 session.trust_env = False
@@ -141,7 +141,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         return self.handleOutputs(responseData, multiStepFeedback)
 
     def handleOutputs(self, responseData, feedback):
-        status = responseData.get("status")
+        status = responseData.get("status_id")
         feedback.pushInfo(
             f"O processo finalizou com status={self.statusIdDict.get(status)}"
         )
@@ -149,8 +149,8 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(
                 "O processo finalizou com erro! Verifique o servidor e tente novamente"
             )
-        pdfUrl = responseData.get("pdf", None)
-        geotiffUrl = responseData.get("geotiff", None)
+        pdfUrl = responseData.get('sumario', {}).get("pdf", None)
+        geotiffUrl = responseData.get('sumario', {}).get("geotiff", None)
         multiStepFeedback = QgsProcessingMultiStepFeedback(
             1 if geotiffUrl is None or geotiffUrl == "" else 2, feedback
         )
@@ -193,7 +193,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         Returns the translated algorithm name, which should be used for any
         user-visible display of the algorithm name.
         """
-        return self.tr("Exportar produto utilizando o serviço de exportação")
+        return self.tr("Exportar produto utilizando o serviço de edição")
 
     def group(self):
         """
