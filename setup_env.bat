@@ -17,7 +17,7 @@ set VSI_CACHE=TRUE
 set VSI_CACHE_SIZE=1000000
 set QT_PLUGIN_PATH=%OSGEO4W_ROOT%\apps\qgis\qtplugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 path %PATH%;%OSGEO4W_ROOT%\apps\%PYTHON_DIR%\Scripts
-set PYTHONPATH=%OSGEO4W_ROOT%\apps\qgis\python;%PYTHONPATH%
+set PYTHONPATH=%OSGEO4W_ROOT%\apps\qgis\python;%UserProfile%\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins;%PYTHONPATH%
 set PATH=%OSGEO4W_ROOT%\apps\qgis\bin;%OSGEO4W_ROOT%\apps\qgis\python\plugins;PATH=%OSGEO4W_ROOT%\apps\qgis\python\plugins\processing;%PATH%
 set PYTHONHOME=%OSGEO4W_ROOT%\apps\%PYTHON_DIR%
 cd ..
