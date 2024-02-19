@@ -22,6 +22,7 @@
 """
 
 import os
+from typing import Dict
 import requests
 import json
 import processing
@@ -35,13 +36,46 @@ from qgis.core import (
     QgsProcessingParameterFolderDestination,
     QgsProcessingMultiStepFeedback,
     QgsProcessingException,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterBool,
+    QgsProcessingFeedback,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from qgis.PyQt.QtWidgets import (
+    QLineEdit
+)
+
+from processing.gui.wrappers import WidgetWrapper
+
+
+class PasswordWrapper(WidgetWrapper):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.placeholder = args[0]
+
+    def createWidget(self):
+        self._lineedit = QLineEdit()
+        self._lineedit.setEchoMode(QLineEdit.Password)
+        return self._lineedit
+
+    def value(self):
+        return self._lineedit.text()
+
 
 class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
+    SERVICE_ADDRESS = "SERVICE_ADDRESS"
     FILE = "FILE"
     TEXT = "TEXT"
+    PRODUCT_TYPE = "PRODUCT_TYPE"
+    DB_USER = "DB_USER"
+    DB_PASSWORD = "DB_PASSWORD"
+    PROXY_HOST = "PROXY_HOST"
+    PROXY_PORT = "PROXY_PORT"
+    PROXY_USER = "PROXY_PASSWORD"
+    PROXY_PASSWORD = "PROXY_PASSWORD"
+    EXPORT_TIFF = "EXPORT_TIFF"
     OUTPUT_FOLDER = "OUTPUT_FOLDER"
 
     def initAlgorithm(self, config):
@@ -49,19 +83,67 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         Parameter setting.
         """
         self.addParameter(
+            QgsProcessingParameterString(self.SERVICE_ADDRESS, self.tr("Endereço do serviço de exportação"))
+        )
+        self.addParameter(
             QgsProcessingParameterFile(
-                self.FILE, self.tr("Input json file"), defaultValue=".json"
+                self.FILE, self.tr("JSON de exportação"), defaultValue=".json"
             )
         )
 
         self.addParameter(
             QgsProcessingParameterString(
                 self.TEXT,
-                description=self.tr("Input json text"),
+                description=self.tr("Texto do json de exportação"),
                 multiLine=True,
                 defaultValue="[]",
             )
         )
+
+        self.product_type_value_list = [
+            self.tr("Carta Topográfica 1.3"),
+            self.tr("Carta Topográfica 1.4"),
+            self.tr("Carta Ortoimagem 2.4"),
+            self.tr("Carta Ortoimagem 2.5"),
+            self.tr("Carta Ortoimagem OM 1.0"),
+            self.tr("Carta Ortoimagem Militar 2.5"),
+            self.tr("Carta Topográfica Militar 1.3"),
+            self.tr("Carta Topográfica Militar 1.4"),
+        ]
+
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.PRODUCT_TYPE,
+                self.tr("Tipo da carta"),
+                options=self.product_type_value_list,
+            )
+        )
+        self.addParameter(QgsProcessingParameterString(self.DB_USER, self.tr("Usuário do banco de dados")))
+        passwordParameter = QgsProcessingParameterString(self.DB_PASSWORD, self.tr("Senha do usuário do banco de dados"))
+        passwordParameter.setMetadata({
+            'widget_wrapper': 'PasswordWrapper',
+        })
+        self.addParameter(passwordParameter)
+        self.addParameter(QgsProcessingParameterString(self.PROXY_HOST, self.tr("Proxy Host"), optional=True))
+
+        self.addParameter(
+            QgsProcessingParameterString(self.PROXY_HOST, self.tr("Endereço do Proxy"), optional=True)
+        )
+        self.addParameter(
+            QgsProcessingParameterString(self.PROXY_PORT, self.tr("Porta do Proxy"), optional=True)
+        )
+        self.addParameter(
+            QgsProcessingParameterString(self.PROXY_USER, self.tr("Usuário do Proxy"), optional=True)
+        )
+        proxyPasswordParameter = QgsProcessingParameterString(self.PROXY_PASSWORD, self.tr("Usuário do Proxy"), optional=True)
+        proxyPasswordParameter.setMetadata({
+            'widget_wrapper': 'PasswordWrapper',
+        })
+        self.addParameter(proxyPasswordParameter)
+
+        self.addParameter(QgsProcessingParameterBool(
+            self.EXPORT_TIFF, self.tr("Exportar TIFF")
+        ))
 
         self.addParameter(
             QgsProcessingParameterFolderDestination(
@@ -79,29 +161,52 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         Here is where the processing itself takes place.
 
         """
+        server = self.parameterAsString(parameters, self.SERVICE_ADDRESS, context)
         inputJSONFile = self.parameterAsFile(parameters, self.FILE, context)
-        inputJSONData = json.loads(
+        inputJSONDataFromText = json.loads(
             self.parameterAsString(parameters, self.TEXT, context)
         )
+        productType = self.parameterAsEnum(parameters, self.PRODUCT_TYPE, context)
+        dbUser = self.parameterAsString(parameters, self.DB_USER, context)
+        dbPassword = self.parameterAsString(parameters, self.DB_PASSWORD, context)
+        proxyHost = self.parameterAsString(parameters, self.PROXY_HOST, context)
+        proxyPort = self.parameterAsString(parameters, self.PROXY_PORT, context)
+        proxyUser = self.parameterAsString(parameters, self.PROXY_USER, context)
+        proxyPassword = self.parameterAsString(parameters, self.PROXY_PASSWORD, context)
+        exportTiff = self.parameterAsBool(parameters, self.EXPORT_TIFF, context)
         self.outputFolder = self.parameterAsString(
             parameters, self.OUTPUT_FOLDER, context
         )
         if os.path.exists(inputJSONFile):
-            return self.runFromJSONFile(inputJSONFile, feedback)
-        elif len(inputJSONData) > 0:
-            return self.runFromJSONData(inputJSONData, feedback)
-        raise QgsProcessingException("Invalid inputs! Check the inputs and try again.")
+            productJsonData = json.load(inputJSONFile)
+        elif len(inputJSONDataFromText) > 0:
+            productJsonData = inputJSONDataFromText
+        else:
+            raise QgsProcessingException("Invalid Product JSON Parameters! Check the inputs and try again.")
+        
+        inputJSONData = {
+            "json": productJsonData,
+            "tipo": self.product_type_value_list.index(productType),
+            "login": dbUser,
+            "senha": dbPassword,
+            "exportTiff": exportTiff,
+        }
+        if proxyHost is not None:
+            inputJSONData["proxyHost"] = proxyHost
+        if proxyPort is not None:
+            inputJSONData["proxyPort"] = proxyPort
+        if proxyUser is not None:
+            inputJSONData["proxyUser"] = proxyUser
+        if proxyPassword is not None:
+            inputJSONData["proxyPassword"] = proxyPassword
 
-    def runFromJSONFile(self, inputJSONFile, feedback):
-        inputJSONData = json.load(inputJSONFile)
-        return self.runFromJSONData(inputJSONData, feedback)
+        return self.runFromJSONData(server, inputJSONData, feedback)
 
-    def runFromJSONData(self, inputJSONData, feedback):
+    def runFromJSONData(self, server: str, inputJSONData: Dict[str, str], feedback: QgsProcessingFeedback):
 
         header = {"content-type": "application/json"}
         session = requests.Session()
         session.trust_env = False
-        server = inputJSONData["server"]
         url = f"{server}/execucoes"
         response = session.post(url, data=json.dumps(inputJSONData), headers=header)
 
@@ -148,21 +253,20 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             1 if geotiffUrl is None or geotiffUrl == "" else 2, feedback
         )
         multiStepFeedback.setCurrentStep(0)
-        responseDict = {self.OUTPUT_FOLDER: self.outputFolder}
         self.downloadOutput(
             url=pdfUrl,
             output=Path(self.outputFolder) / Path(pdfUrl).name,
             feedback=multiStepFeedback,
         )
         if geotiffUrl is None or geotiffUrl == "":
-            return responseDict
+            return {self.OUTPUT_FOLDER: self.outputFolder}
         multiStepFeedback.setCurrentStep(1)
         self.downloadOutput(
             url=geotiffUrl,
             output=Path(self.outputFolder) / Path(geotiffUrl).name,
             feedback=multiStepFeedback,
         )
-        return responseDict
+        return {self.OUTPUT_FOLDER: self.outputFolder}
 
     def downloadOutput(self, url, output, feedback):
         response = processing.run(

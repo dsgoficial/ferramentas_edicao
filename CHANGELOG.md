@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.0
+## 1.2.1
 
 Novas Funcionalidades
 
@@ -10,6 +10,7 @@ Novas Funcionalidades
 Melhorias:
 
 - Adicionado o conceito de versionamento de linha de produção;
+- Melhora as entradas do processo de execução remota;
 
 ## 1.1.90
 
