@@ -37,7 +37,7 @@ from qgis.core import (
     QgsProcessingMultiStepFeedback,
     QgsProcessingException,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterBool,
+    QgsProcessingParameterBoolean,
     QgsProcessingFeedback,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -121,7 +121,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.DB_USER, self.tr("Usuário do banco de dados")))
         passwordParameter = QgsProcessingParameterString(self.DB_PASSWORD, self.tr("Senha do usuário do banco de dados"))
         passwordParameter.setMetadata({
-            'widget_wrapper': 'PasswordWrapper',
+            'widget_wrapper': 'ferramentas_edicao.modules.processings.runRemoteProductExportAlgorithm.PasswordWrapper',
         })
         self.addParameter(passwordParameter)
         self.addParameter(QgsProcessingParameterString(self.PROXY_HOST, self.tr("Proxy Host"), optional=True))
@@ -135,13 +135,13 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterString(self.PROXY_USER, self.tr("Usuário do Proxy"), optional=True)
         )
-        proxyPasswordParameter = QgsProcessingParameterString(self.PROXY_PASSWORD, self.tr("Usuário do Proxy"), optional=True)
+        proxyPasswordParameter = QgsProcessingParameterString(self.PROXY_PASSWORD, self.tr("Senha do Proxy"), optional=True)
         proxyPasswordParameter.setMetadata({
-            'widget_wrapper': 'PasswordWrapper',
+            'widget_wrapper': 'ferramentas_edicao.modules.processings.runRemoteProductExportAlgorithm.PasswordWrapper',
         })
         self.addParameter(proxyPasswordParameter)
 
-        self.addParameter(QgsProcessingParameterBool(
+        self.addParameter(QgsProcessingParameterBoolean(
             self.EXPORT_TIFF, self.tr("Exportar TIFF")
         ))
 
