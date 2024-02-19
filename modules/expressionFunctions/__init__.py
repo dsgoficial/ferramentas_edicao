@@ -9,7 +9,7 @@ def getFunctionsFolderPath():
 def loadExpressionFunctions():
     functionsFolderPath = getFunctionsFolderPath()
     for fileName in os.listdir(functionsFolderPath):
-        if "__init__" in fileName:
+        if "__init__" in fileName or "__pycache__" in fileName:
             continue
         codeFilePath = os.path.join(functionsFolderPath, fileName)
         with open(codeFilePath, "r") as f:
