@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from itertools import islice
+from collections import deque
+import os
 
 import numpy as np
 import processing
+import concurrent.futures
+
 from qgis.core import (
     QgsGeometry,
     QgsProcessing,
@@ -49,7 +53,7 @@ class SetCurveOrientation(QgsProcessingAlgorithm):
         inputSource = self.parameterAsSource(parameters, self.INPUT, context)
         orientation = self.parameterAsEnum(parameters, self.ORIENTATION, context)
         ccw = orientation == 1
-        multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(6, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
         nFeats = inputSource.featureCount()
@@ -57,11 +61,24 @@ class SetCurveOrientation(QgsProcessingAlgorithm):
             return {}
         stepSize = 100 / nFeats
         featDict = dict()
+        futures = set()
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
+        def compute(feat):
+            if not should_flip(feat.geometry(), ccw=ccw):
+                return None
+            return feat
         for current, feat in enumerate(inputSource.getFeatures()):
             if multiStepFeedback.isCanceled():
                 return {}
-            if not should_flip(feat.geometry(), ccw=ccw):
-                continue
+            futures.add(pool.submit(compute, feat))
+            multiStepFeedback.setProgress(current * stepSize)
+        
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        for current, future in enumerate(concurrent.futures.as_completed(futures)):
+            if multiStepFeedback.isCanceled():
+                return {}
+            feat = future.result()
             featDict[feat.id()] = feat
             multiStepFeedback.setProgress(current * stepSize)
         if featDict == dict():
@@ -161,10 +178,21 @@ def should_flip(geom: QgsGeometry, ccw=True) -> bool:
         b = [p1.x(), p1.y(), 0]
         prod = np.cross(a, b)
         return prod[-1] > 0 if ccw else prod[-1] < 0
-    p0 = geom.vertexAt(0)
-    p1 = geom.vertexAt(1)
-    p2 = geom.vertexAt(2)
-    a = [p1.x() - p0.x(), p1.y() - p0.y(), 0]
-    b = [p2.x() - p1.x(), p2.y() - p1.y(), 0]
-    z = np.cross(a, b)[-1]
+    z = 0
+    for p0, p1, p2 in sliding_window_iter(vertexList, 3):
+        a = [p1.x() - p0.x(), p1.y() - p0.y(), 0]
+        b = [p2.x() - p1.x(), p2.y() - p1.y(), 0]
+        z += np.sign(np.cross(a, b)[-1])
     return z > 0 if not ccw else z < 0
+
+def sliding_window_iter(iterable, size):
+    """..."""
+    iterable = iter(iterable)
+    window = deque(islice(iterable, size), maxlen=size)
+    for item in iterable:
+        yield tuple(window)
+        window.append(item)
+    if window:  
+        # needed because if iterable was already empty before the `for`,
+        # then the window would be yielded twice.
+        yield tuple(window)

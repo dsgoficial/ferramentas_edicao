@@ -36,7 +36,8 @@ class LoadMasks(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         jsonFilePath = self.parameterAsFile(parameters, self.JSON_FILE, context)
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
-        mask_dict = json.load(open(jsonFilePath))
+        with open(jsonFilePath, "r") as f:
+            mask_dict = json.load(f)
 
         mapId = {
             layer.dataProvider().uri().table(): layer.id() for layer in layers if layer

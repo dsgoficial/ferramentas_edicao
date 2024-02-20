@@ -3,7 +3,7 @@
 name=Ferramentas de Edição
 qgisMinimumVersion=3.24
 description=Plugin para realização a edição de mapas seguindo as normas nacionais
-version=1.2.0
+version=1.2.2
 author=1º CGEO
 email=eliton.filho@eb.mil.br
 about=This plugin generates maps following configurations predefined in JSON files.

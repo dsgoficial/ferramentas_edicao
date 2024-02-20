@@ -37,12 +37,12 @@ class MapBuildController(MapBuildControllerUtils):
         self,
         dlg: Union[QDialog, Namespace],
         iface: Union[QgisInterface, None],
-        defaults: ConfigDefaults = ConfigDefaults(),
+        defaults: Union[ConfigDefaults, None] = None,
     ) -> None:
         super().__init__()
         self.dlg = dlg
         self.iface = iface
-        self.defaults = defaults
+        self.defaults = ConfigDefaults() if defaults is None else defaults
         self.grid = GridFactory()
         self.conn = ConnectionSingleton()
         self.compositions = CompositionSingleton(defaults)

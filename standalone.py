@@ -9,9 +9,9 @@ from pathlib import Path
 # ptvsd.enable_attach(address=("localhost", 5678))
 # ptvsd.wait_for_attach()
 
-from qgis.core import QgsApplication, QgsNetworkAccessManager
+from qgis.core import QgsApplication, QgsNetworkAccessManager, QgsExpression
 from qgis.PyQt.QtNetwork import QNetworkProxy
-from qgis import utils
+from qgis import core, gui
 
 
 def exportMaps(args):
@@ -75,9 +75,9 @@ def startNetwork(args):
     manager.setFallbackProxyAndExcludes(proxy, [], [])
 
 if __name__ == "__main__":
-    print("iniciou o argparser")
     args = setupArgparser()
-    qgs = QgsApplication([], False)
+    print(f"Iniciando a exportação do produto {args.tipo} de json {args.json}")
+    qgs = QgsApplication([], True, profileFolder="default")
     qgs.initQgis()
     p = Path(args.pathQgis)
     prefixPath = p / "apps/qgis"
@@ -88,16 +88,18 @@ if __name__ == "__main__":
     sys.path.append(str(pluginsFolder))
 
     # para funcionar tem que ser nesse escopo, nao pode encapsular numa funcao
+    from .modules.expressionFunctions.functions.createCustomGridNumbers import longNumber, shortNumber
     from processing.core.Processing import Processing
     from .modules.processings.provider import Provider
-    from .modules.expressionFunctions import loadExpressionFunctions
     from DsgTools.core.DSGToolsProcessingAlgs.dsgtoolsProcessingAlgorithmProvider import DSGToolsProcessingAlgorithmProvider
 
     Processing.initialize()
     feProvider = Provider()
-    qgs.processingRegistry().addProvider(feProvider)
+    QgsApplication.processingRegistry().addProvider(feProvider)
     dsgtoolsProvider = DSGToolsProcessingAlgorithmProvider()
     QgsApplication.processingRegistry().addProvider(dsgtoolsProvider)
+    QgsExpression.registerFunction(longNumber)
+    QgsExpression.registerFunction(shortNumber)
 
     startNetwork(args)
     exportMaps(args)

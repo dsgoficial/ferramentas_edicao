@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.0
+## 1.2.2
 
 Novas Funcionalidades
 
@@ -10,6 +10,12 @@ Novas Funcionalidades
 Melhorias:
 
 - Adicionado o conceito de versionamento de linha de produção;
+- Melhora as entradas do processo de execução remota;
+
+Correção de bug:
+
+- Corrige diagrama de elevação na exportação via linha de comando (para serviço de edição);
+- Corrige bug no processo de orientação de curvas;
 
 ## 1.1.90
 

@@ -339,9 +339,11 @@ class ElevationDiagram(ComponentUtils, IComponent):
         if layers is not None:
             mapItem.setLayers(layers)
         mapItem.setExtent(mapExtents)
-        mapItem.setCrs(QgsProject.instance().crs())
+        projectCrs = QgsProject.instance().crs()
+        if not projectCrs.isValid():
+            projectCrs = QgsCoordinateReferenceSystem(crs.geographicCrsAuthId())
+        mapItem.setCrs(projectCrs)
         mapItem.refresh()
-
         scaleBar = composition.itemById("elevationDiagramColorBar")
         if scaleBar is None:
             return
