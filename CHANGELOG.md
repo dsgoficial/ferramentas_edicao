@@ -15,6 +15,7 @@ Melhorias:
 Correção de bug:
 
 - Corrige diagrama de elevação na exportação via linha de comando (para serviço de edição);
+- Corrige bug no processo de orientação de curvas;
 
 ## 1.1.90
 

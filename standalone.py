@@ -4,10 +4,10 @@ import os
 import sys
 from pathlib import Path
 
-import ptvsd
+# import ptvsd
 
-ptvsd.enable_attach(address=("localhost", 5678))
-ptvsd.wait_for_attach()
+# ptvsd.enable_attach(address=("localhost", 5678))
+# ptvsd.wait_for_attach()
 
 from qgis.core import QgsApplication, QgsNetworkAccessManager, QgsExpression
 from qgis.PyQt.QtNetwork import QNetworkProxy
