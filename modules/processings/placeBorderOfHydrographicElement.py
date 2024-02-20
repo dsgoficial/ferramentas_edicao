@@ -52,7 +52,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
             QgsProcessingParameterVectorLayer(
                 self.INPUT_SYMBOL_LAYER,
                 self.tr(
-                    "Selecionar camada de camada de edição de símbolo de vegetação"
+                    "Selecionar camada de camada de edição de borda de elemento hidrográfico"
                 ),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue="edicao_borda_elemento_hidrografico_l",
