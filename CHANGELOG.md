@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.4
+## 1.2.5
 
 Novas Funcionalidades
 
@@ -18,6 +18,7 @@ Correção de bug:
 - Corrige bug no processo de orientação de curvas;
 - Corrigido rótulo de Sede Operacional de fazenda ponto;
 - Corrigido bug na exportação de Carta Ortoimagem de OM;
+- Corrigido bug no estilo de camada da Carta Ortoimagem de OM;
 
 ## 1.1.90
 

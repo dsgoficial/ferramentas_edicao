@@ -27,7 +27,7 @@ from .componentUtils import ComponentUtils, OBB
 class MapOM(ComponentUtils, IComponent):
     def __init__(self, *args, **kwargs):
         self.stylesFolder = (
-            Path(__file__).parent.parent / "resources" / "products" / "omMap" / "styles"
+            Path(__file__).parent.parent / "resources" / "products" / "omMap" / "1_0" / "styles"
         )
         self.defaultMapSize = [
             (1025, 865),
