@@ -362,7 +362,7 @@ class MapBuildController(MapBuildControllerUtils):
                     f"Erro: {filePathError}" "",
                 )
                 continue
-            if productName != jsonData["tipo_produto"]:
+            if productName != "Carta Especial" and productName != jsonData["tipo_produto"]:
                 QMessageBox.warning(
                     self.dlg,
                     "Erro",

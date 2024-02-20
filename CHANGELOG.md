@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.3
+## 1.2.4
 
 Novas Funcionalidades
 
@@ -16,7 +16,8 @@ Correção de bug:
 
 - Corrige diagrama de elevação na exportação via linha de comando (para serviço de edição);
 - Corrige bug no processo de orientação de curvas;
-- Corrigido rótulo de Sede Operacional de fazenda ponto
+- Corrigido rótulo de Sede Operacional de fazenda ponto;
+- Corrigido bug na exportação de Carta Ortoimagem de OM;
 
 ## 1.1.90
 
