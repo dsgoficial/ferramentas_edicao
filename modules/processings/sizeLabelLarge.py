@@ -54,7 +54,7 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LINE_TEXT,
-                self.tr("Camada de texto ponto com as feições selecionadas"),
+                self.tr("Camada de texto linha com as feições selecionadas"),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue="edicao_texto_generico_l",
                 optional=True,
