@@ -4,10 +4,10 @@ import os
 import sys
 from pathlib import Path
 
-# import ptvsd
+#import ptvsd
 
-# ptvsd.enable_attach(address=("localhost", 5678))
-# ptvsd.wait_for_attach()
+#ptvsd.enable_attach(address=("localhost", 5678))
+#ptvsd.wait_for_attach()
 
 from qgis.core import QgsApplication, QgsNetworkAccessManager, QgsExpression
 from qgis.PyQt.QtNetwork import QNetworkProxy
@@ -15,7 +15,7 @@ from qgis import core, gui
 
 
 def exportMaps(args):
-    from .controllers.mapBuilderController import MapBuildController
+    from ferramentas_edicao.controllers.mapBuilderController import MapBuildController
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     controller = MapBuildController(args, None)
     controller.run()
@@ -88,9 +88,9 @@ if __name__ == "__main__":
     sys.path.append(str(pluginsFolder))
 
     # para funcionar tem que ser nesse escopo, nao pode encapsular numa funcao
-    from ferramentas_producao.modules.expressionFunctions.functions.createCustomGridNumbers import longNumber, shortNumber
+    from ferramentas_edicao.modules.expressionFunctions.functions.createCustomGridNumbers import longNumber, shortNumber
     from processing.core.Processing import Processing
-    from ferramentas_producao.modules.processings.provider import Provider
+    from ferramentas_edicao.modules.processings.provider import Provider
     from DsgTools.core.DSGToolsProcessingAlgs.dsgtoolsProcessingAlgorithmProvider import DSGToolsProcessingAlgorithmProvider
 
     Processing.initialize()
