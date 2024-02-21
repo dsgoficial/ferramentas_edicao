@@ -22,6 +22,7 @@
 """
 
 import os
+import platform
 from typing import Dict
 import requests
 import json
@@ -73,7 +74,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
     DB_PASSWORD = "DB_PASSWORD"
     PROXY_HOST = "PROXY_HOST"
     PROXY_PORT = "PROXY_PORT"
-    PROXY_USER = "PROXY_PASSWORD"
+    PROXY_USER = "PROXY_USER"
     PROXY_PASSWORD = "PROXY_PASSWORD"
     EXPORT_TIFF = "EXPORT_TIFF"
     OUTPUT_FOLDER = "OUTPUT_FOLDER"
@@ -178,7 +179,8 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             parameters, self.OUTPUT_FOLDER, context
         )
         if os.path.exists(inputJSONFile):
-            productJsonData = json.load(inputJSONFile)
+            with open(inputJSONFile, encoding="utf-8-sig") as f:
+                productJsonData = json.load(f)
         elif len(inputJSONDataFromText) > 0:
             productJsonData = inputJSONDataFromText
         else:
@@ -186,18 +188,18 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         
         inputJSONData = {
             "json": productJsonData,
-            "tipo": self.product_type_value_list.index(productType),
+            "tipo": self.product_type_value_list[productType],
             "login": dbUser,
             "senha": dbPassword,
             "exportTiff": exportTiff,
         }
-        if proxyHost is not None:
+        if proxyHost != "":
             inputJSONData["proxyHost"] = proxyHost
-        if proxyPort is not None:
+        if proxyPort != "":
             inputJSONData["proxyPort"] = proxyPort
-        if proxyUser is not None:
+        if proxyUser != "":
             inputJSONData["proxyUser"] = proxyUser
-        if proxyPassword is not None:
+        if proxyPassword != "":
             inputJSONData["proxyPassword"] = proxyPassword
 
         return self.runFromJSONData(server, inputJSONData, feedback)
@@ -207,45 +209,47 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         header = {"content-type": "application/json"}
         session = requests.Session()
         session.trust_env = False
-        url = f"{server}/execucoes"
+        url = f"{server}/api/execucoes"
         response = session.post(url, data=json.dumps(inputJSONData), headers=header)
 
         if not response:
-            raise QgsProcessingException("Erro ao iniciar rotina.")
-        uuid = response.json().get("data", {}).get("job_uuid", None)
+            responseDict = json.loads(response.text)
+            raise QgsProcessingException(f"""Erro ao iniciar rotina.\n{responseDict.get("message", "")}""")
+        uuid = response.json().get("dados", {}).get("job_uuid", None)
         if uuid is None:
             raise QgsProcessingException(
                 "Erro no servidor! A requisição não retornou o uuid da execução."
             )
-        url_to_status = f"{server}/execucoes/{uuid}"
+        url_to_status = f"{server}/api/execucoes/{uuid}"
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
         while True:
             if multiStepFeedback.isCanceled():
                 multiStepFeedback.pushInfo(self.tr("Cancelado pelo usuário.\n"))
                 break
-            sleep(10)
+            sleep(20)
             try:
                 session = requests.Session()
                 session.trust_env = False
                 response = session.get(url_to_status)
                 session.close()
-                responseData = response.json()["data"]
+                responseData = response.json()["dados"]
             except Exception as e:
-                responseData = {"status": "erro", "log": f"Erro no plugin!\n{e}"}
-            if responseData["status"] in [2, 3, "erro"]:
+                responseData = {"status_id": "erro", "log": f"Erro no plugin!\n{e}"}
+            if responseData["status_id"] in [2, 3, "erro"]:
                 break
         multiStepFeedback.setCurrentStep(1)
-        return self.handleOutputs(responseData, multiStepFeedback)
+        return self.handleOutputs(server, responseData, multiStepFeedback)
 
-    def handleOutputs(self, responseData, feedback):
+    def handleOutputs(self, server, responseData, feedback):
         status = responseData.get("status_id")
         feedback.pushInfo(
-            f"O processo finalizou com status={self.statusIdDict.get(status)}"
+            f"O processo finalizou com status={self.statusIdDict.get(status)}."
         )
         if status == 3:
+            responseText = f"""\nA mensagem de erro foi {responseData["text"]}""" if "text" in responseData else ""
             raise QgsProcessingException(
-                "O processo finalizou com erro! Verifique o servidor e tente novamente"
+                f"O processo finalizou com erro! Verifique o servidor e tente novamente.{responseText}"
             )
         pdfUrl = responseData.get("sumario", {}).get("pdf", None)
         geotiffUrl = responseData.get("sumario", {}).get("geotiff", None)
@@ -254,16 +258,16 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         )
         multiStepFeedback.setCurrentStep(0)
         self.downloadOutput(
-            url=pdfUrl,
-            output=Path(self.outputFolder) / Path(pdfUrl).name,
+            url=f"{server}/{pdfUrl}",
+            output=str(Path(self.outputFolder) / Path(pdfUrl).name),
             feedback=multiStepFeedback,
         )
         if geotiffUrl is None or geotiffUrl == "":
             return {self.OUTPUT_FOLDER: self.outputFolder}
         multiStepFeedback.setCurrentStep(1)
         self.downloadOutput(
-            url=geotiffUrl,
-            output=Path(self.outputFolder) / Path(geotiffUrl).name,
+            url=f"{server}/{geotiffUrl}",
+            output=str(Path(self.outputFolder) / Path(geotiffUrl).name),
             feedback=multiStepFeedback,
         )
         return {self.OUTPUT_FOLDER: self.outputFolder}
@@ -272,8 +276,10 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         response = processing.run(
             "native:filedownloader",
             {
-                "URL": url,
-                "OUTPUT": output,
+                "URL": str(url),
+                "METHOD": 0,
+                "DATA": "",
+                "OUTPUT": str(output),
             },
             feedback=feedback,
         )

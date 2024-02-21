@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.5
+## 1.2.6
 
 Novas Funcionalidades
 
@@ -19,6 +19,7 @@ Correção de bug:
 - Corrigido rótulo de Sede Operacional de fazenda ponto;
 - Corrigido bug na exportação de Carta Ortoimagem de OM;
 - Corrigido bug no estilo de camada da Carta Ortoimagem de OM;
+- Corrige rotas no processo de exportação remota por meio do serviço de edição;
 
 ## 1.1.90
 
