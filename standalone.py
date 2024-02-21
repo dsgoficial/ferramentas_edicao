@@ -88,9 +88,9 @@ if __name__ == "__main__":
     sys.path.append(str(pluginsFolder))
 
     # para funcionar tem que ser nesse escopo, nao pode encapsular numa funcao
-    from .modules.expressionFunctions.functions.createCustomGridNumbers import longNumber, shortNumber
+    from ferramentas_producao.modules.expressionFunctions.functions.createCustomGridNumbers import longNumber, shortNumber
     from processing.core.Processing import Processing
-    from .modules.processings.provider import Provider
+    from ferramentas_producao.modules.processings.provider import Provider
     from DsgTools.core.DSGToolsProcessingAlgs.dsgtoolsProcessingAlgorithmProvider import DSGToolsProcessingAlgorithmProvider
 
     Processing.initialize()
