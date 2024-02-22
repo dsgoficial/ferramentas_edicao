@@ -3,6 +3,8 @@ from qgis.core import (
     QgsProcessingParameterVectorLayer,
     QgsProcessingAlgorithm,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterDistance,
+    NULL
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
@@ -13,6 +15,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
 
     INPUT_LAYER_L = "INPUT_LAYER_L"
     INPUT_FRAME_A = "INPUT_FRAME_A"
+    BUFFER = "BUFFER"
     SCALE = "SCALE"
     PRODUCT = "PRODUCT"
 
@@ -29,6 +32,13 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 self.INPUT_FRAME_A,
                 self.tr("Selecionar camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterDistance(
+                self.BUFFER,
+                self.tr("Digite a distância que 'passa' da moldura"), # valor para ser considerado no buffer para englobar as partes clipadas dos rios que passam da moldura
+                parentParameterName=self.INPUT_FRAME_A,
             )
         )
         self.addParameter(
@@ -60,7 +70,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         )
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         self.productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
-
+        buffer = self.parameterAsDouble(parameters, self.BUFFER, context)
         if gridScaleParam == 0:
             self.scale = 25000
         elif gridScaleParam == 1:
@@ -77,18 +87,24 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
 
         self.sizeText(merged)
 
-        bufferRiver = self.bufferRiver(merged)
+        bufferRiver = self.bufferRiver(merged, buffer)
         self.runCreateSpatialIndex(bufferRiver, feedback=feedback)
 
         joinedAttribute = self.joinAttribute(lines, bufferRiver)
 
         id_to_tamanho = {}
         for feature in joinedAttribute.getFeatures():
+            if feature["nome"] == NULL:
+                continue
             id_to_tamanho[feature["id"]] = feature["join_tamanho_txt"]
 
         drainageLayer.startEditing()
         drainageLayer.beginEditCommand("Atualizando atributos")
         for feature in drainageLayer.getFeatures():
+            if feedback.isCanceled():
+                break
+            if feature["nome"] == NULL:
+                continue
             new_att = {}
             new_att[feature.fieldNameIndex("tamanho_txt")] = id_to_tamanho[
                 feature["id"]
@@ -97,6 +113,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         drainageLayer.endEditCommand()
 
         return {}
+    
 
     def getMergedRiver(self, layer, frame):
         merged = processing.run(
@@ -129,12 +146,12 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
             layer.changeAttributeValues(feature.id(), attributeDict)
         layer.endEditCommand()
 
-    def bufferRiver(self, inputLyr):
+    def bufferRiver(self, inputLyr, buffer):
         bufferRiver = processing.run(
             "native:buffer",
             {
                 "INPUT": inputLyr,
-                "DISTANCE": 0.000001,
+                "DISTANCE": buffer,
                 "SEGMENTS": 5,
                 "END_CAP_STYLE": 0,
                 "JOIN_STYLE": 0,

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.7
+## 1.2.8
 
 Novas Funcionalidades
 
@@ -21,6 +21,7 @@ Correção de bug:
 - Corrigido bug no estilo de camada da Carta Ortoimagem de OM;
 - Corrige rotas no processo de exportação remota por meio do serviço de edição;
 - Corrige bug no diagrama de localização da OM no município na exportação do produto Carta Ortoimagem OM 1.0 quando o polígono intersecta mais de um município;
+- Corrige bug no define o tamanho do texto de acordo com o comprimento
 
 ## 1.1.90
 
