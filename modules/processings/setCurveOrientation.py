@@ -79,6 +79,8 @@ class SetCurveOrientation(QgsProcessingAlgorithm):
             if multiStepFeedback.isCanceled():
                 return {}
             feat = future.result()
+            if feat is None:
+                continue
             featDict[feat.id()] = feat
             multiStepFeedback.setProgress(current * stepSize)
         if featDict == dict():
