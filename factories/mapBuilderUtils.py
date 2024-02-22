@@ -106,8 +106,9 @@ class MapBuilderUtils:
                         mapAreaFeature.geometry(), "EPSG:4674", layer.crs().authid()
                     )
                     mapAreaGeometryWkt = mapAreaGeometry.asWkt()
+                    srid = layer.crs().postgisSrid() if layer.crs().authid() != "" else "4674"
                     layer.setSubsetString(
-                        f"st_relate(geom,st_geomfromewkt('SRID={layer.crs().postgisSrid()};{mapAreaGeometryWkt}'),'T********')"
+                        f"st_relate(geom,st_geomfromewkt('SRID={srid};{mapAreaGeometryWkt}'),'T********')"
                     )
                 if stylePath := self.getStylePath(
                     layer.name(), defaults, productType, stylesFolder, scale

@@ -88,7 +88,7 @@ class CompositionSingleton:
         productFolder = compositionPath.parent
         commonFolder = self.resourcesPath / "common"
         layout = QgsPrintLayout(QgsProject.instance())
-        with open(compositionPath) as template:
+        with open(compositionPath, encoding="utf-8") as template:
             templateContent = template.read()
         doc = QDomDocument()
         doc.setContent(templateContent)
@@ -184,7 +184,7 @@ class CompositionSingleton:
 
         # Option 2: Create an empty layout from QDomDocument using loadFromTemplate
         for qpt in qptsToInsert:
-            with open(qpt.get("path")) as fp:
+            with open(qpt.get("path"), encoding="utf-8") as fp:
                 template = fp.read()
             doc = QDomDocument()
             doc.setContent(template)

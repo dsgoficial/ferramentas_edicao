@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import List
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -91,15 +92,15 @@ class DivisionOM(ComponentUtils, IComponent):
         uriPath = self.shpFolder / "Municipios_2020.shp"
         stylePath = self.styleFolder / "municipio_l.qml"
         countyLayer = self.loadShapeLayer(uriPath, stylePath, "counties")
-        county, countyLayerExtents = self.getCountyLayerExtents(
+        countyFeatList, countyLayerExtents = self.getCountyLayerExtents(
             mapAreaFeature, countyLayer
         )
-        self.updateCountyLayerStyle(county, countyLayer)
+        self.updateCountyLayerStyle(countyFeatList, countyLayer)
         return countyLayer, countyLayerExtents
 
     def getCountyLayerExtents(
         self, mapAreaFeature: QgsFeature, countyLayer: QgsVectorLayer
-    ) -> tuple[QgsFeature, QgsRectangle]:
+    ) -> tuple[List[QgsFeature], QgsRectangle]:
         """Calculates the DivisionOM extents and the county which will be displayed.
         Args:
             mapAreaFeature: a QgsFeature holding the OM area
@@ -109,16 +110,15 @@ class DivisionOM(ComponentUtils, IComponent):
         """
         geom = mapAreaFeature.geometry()
         request = QgsFeatureRequest().setFilterRect(geom.boundingBox())
-        for candidateCounty in countyLayer.getFeatures(request):
-            countyFeat = candidateCounty
-            if candidateCounty.geometry().intersects(geom):
-                countyFeat = candidateCounty
-                break
-        countyExtents = countyFeat.geometry().boundingBox()
+        countyFeatList = [f for f in countyLayer.getFeatures(request) if f.geometry().intersects(geom)]
+        countyExtents = countyFeatList[0].geometry().boundingBox()
+        for other in countyFeatList[1::]:
+            otherExtents = other.geometry().boundingBox()
+            countyExtents.combineExtentWith(otherExtents)
         countyExtents.grow(0.1)
-        return countyFeat, countyExtents
+        return countyFeatList, countyExtents
 
-    def updateCountyLayerStyle(self, county: QgsFeature, countyLayer: QgsVectorLayer):
+    def updateCountyLayerStyle(self, countyFeatList: List[QgsFeature], countyLayer: QgsVectorLayer):
         """Creates the rendering rules for countyLayer by handling its simbology and labeling.
         Args:
             county: a QgsFeature from the States shapefile the county to be displayed
@@ -138,9 +138,10 @@ class DivisionOM(ComponentUtils, IComponent):
         # Creating a QgsRuleBasedRenderer for the county which contains the mapAreaFeature
         renderer = QgsRuleBasedRenderer(symbol)
         rootRule = renderer.rootRule()
-        nome = county.attribute("NOME").replace('\'', "\\'")
-        countyRule = self.createCountyRenderingRule(rootRule, nome)
-        rootRule.appendChild(countyRule)
+        for county in countyFeatList:
+            nome = county.attribute("NOME").replace('\'', "\\'")
+            countyRule = self.createCountyRenderingRule(rootRule, nome)
+            rootRule.appendChild(countyRule)
         rootRule.removeChildAt(0)
         countyLayer.setRenderer(renderer)
 

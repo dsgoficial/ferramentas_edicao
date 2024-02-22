@@ -256,7 +256,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                     classDict = newClassDict
                     threshold = newThreshold
 
-        outputRaster = np.zeros_like(npRaster, dtype=np.int)
+        outputRaster = np.zeros_like(npRaster, dtype=np.int32)
         outputRaster[np.isnan(npRaster)] = -9999
         for i, (minB, maxB) in classDict.items():
             if int(i) == 0:
