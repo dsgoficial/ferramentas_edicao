@@ -405,11 +405,11 @@ class GridAndLabelCreator(QObject):
             pgrid.transform(trUTMLL)
         # Label Format Settings
         settings = QgsPalLayerSettings()
-        settings.placement = 1
+        settings.placement = 1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
         settings.isExpression = True
         textprop = QgsTextFormat()
         textprop.setColor(llcolor)
-        textprop.setSizeUnit(4)
+        textprop.setSizeUnit(4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points)
         textprop.setSize(fSize * 2.8346)
         textprop.setFont(QFont(fontType))
         textprop.setLineHeight(1)
