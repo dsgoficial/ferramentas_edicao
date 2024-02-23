@@ -4,6 +4,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterEnum,
     QgsProcessingParameterDistance,
+    QgsProcessingMultiStepFeedback,
     NULL
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -100,16 +101,20 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
 
         drainageLayer.startEditing()
         drainageLayer.beginEditCommand("Atualizando atributos")
-        for feature in drainageLayer.getFeatures():
-            if feedback.isCanceled():
+        nFeats = drainageLayer.featureCount()
+        if feedback is not None:
+            if nFeats == 0:
+                return {}
+            stepSize = 100 / nFeats
+        for current, feature in enumerate(drainageLayer.getFeatures()):
+            if feedback is not None and feedback.isCanceled():
                 break
             if feature["nome"] == NULL:
                 continue
-            new_att = {}
-            new_att[feature.fieldNameIndex("tamanho_txt")] = id_to_tamanho[
-                feature["id"]
-            ]
-            drainageLayer.dataProvider().changeAttributeValues({feature.id(): new_att})
+            feature["tamanho_txt"] = id_to_tamanho[feature["id"]]
+            drainageLayer.updateFeature(feature)
+            if feedback is not None:
+                feedback.setProgress(current * stepSize) 
         drainageLayer.endEditCommand()
 
         return {}
@@ -191,13 +196,12 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 "SORT_NULLS_FIRST": False,
                 "OUTPUT": "TEMPORARY_OUTPUT",
             },
-            feedback=feedback,
         )
         return output["OUTPUT"]
 
     def runCreateSpatialIndex(self, inputLyr, feedback):
         processing.run(
-            "native:createspatialindex", {"INPUT": inputLyr}, feedback=feedback
+            "native:createspatialindex", {"INPUT": inputLyr}
         )
 
     def tr(self, string):

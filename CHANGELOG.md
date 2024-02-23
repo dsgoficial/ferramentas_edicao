@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.8
+## 1.2.9
 
 Novas Funcionalidades
 
@@ -11,6 +11,7 @@ Melhorias:
 
 - Adicionado o conceito de versionamento de linha de produção;
 - Melhora as entradas do processo de execução remota;
+- Adicionado feedback para define o tamanho do texto de acordo com o comprimento
 
 Correção de bug:
 
