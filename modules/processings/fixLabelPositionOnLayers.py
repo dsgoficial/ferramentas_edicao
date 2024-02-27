@@ -67,39 +67,45 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         )
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         scale = self.scaleDict[self.scales[scaleIdx]]
-        lyrDict = {lyr.name():lyr for lyr in layerList}
+        lyrDict = {lyr.name(): lyr for lyr in layerList}
         nRegions = geographicBoundaryLyr.featureCount()
-        nSteps = 2 + 2*nRegions
+        nSteps = 2 + 2 * nRegions
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        labelDict = defaultdict(lambda :defaultdict(dict))
+        labelDict = defaultdict(lambda: defaultdict(dict))
         for feat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
                 return {}
             geom = feat.geometry()
             extent = geom.boundingBox()
             multiStepFeedback.setCurrentStep(currentStep)
-            multiStepFeedback.setProgressText(self.tr(f"Calculando posição dos textos para o extent {extent}"))
+            multiStepFeedback.setProgressText(
+                self.tr(f"Calculando posição dos textos para o extent {extent}")
+            )
             outputLabelLyr = processing.run(
                 "native:extractlabels",
                 {
                     "EXTENT": extent,
                     "SCALE": scale,
-                    "MAP_THEME":None,
-                    "INCLUDE_UNPLACED":True,
-                    "DPI":400,
-                    "OUTPUT":"memory:"
+                    "MAP_THEME": None,
+                    "INCLUDE_UNPLACED": True,
+                    "DPI": 300,
+                    "OUTPUT": "memory:",
                 },
                 context=context,
                 feedback=multiStepFeedback,
             )["OUTPUT"]
             currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
-            multiStepFeedback.setProgressText(self.tr(f"Adicionando dados calculados do extent {extent} às estruturas auxiliares"))
+            multiStepFeedback.setProgressText(
+                self.tr(
+                    f"Adicionando dados calculados do extent {extent} às estruturas auxiliares"
+                )
+            )
             nFeats = outputLabelLyr.featureCount()
             if nFeats == 0:
                 continue
-            stepSize = 100/nFeats
+            stepSize = 100 / nFeats
             for current, feat in enumerate(outputLabelLyr.getFeatures()):
                 if multiStepFeedback.isCanceled():
                     return {}
@@ -107,26 +113,29 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                 labelDict[feat["Layer"]][feat["FeatureID"]] = geom.asPoint()
                 multiStepFeedback.setProgress(current * stepSize)
             currentStep += 1
-        
+
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.setProgressText(self.tr("Submetendo para a thread"))
         currentFeat = 0
         futures = set()
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
+
         def compute(lyr, x_field_idx, y_field_idx, featid, point):
             if multiStepFeedback.isCanceled():
                 return
-            return lyr, {featid: {
+            return lyr, {
+                featid: {
                     x_field_idx: point.x(),
                     y_field_idx: point.y(),
                 }
             }
+
         for lyrName, lyr in lyrDict.items():
             if lyrName not in labelDict:
                 continue
             lyr.startEditing()
             lyr.beginEditCommand(f"Fixando labels da camada {lyrName}")
-        
+
         for lyrName, idDict in labelDict.items():
             if multiStepFeedback.isCanceled():
                 break
@@ -141,7 +150,16 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
             for featid, point in idDict.items():
                 if multiStepFeedback.isCanceled():
                     break
-                futures.add(pool.submit(compute, lyr, fieldIdxDict["label_x"], fieldIdxDict["label_y"], featid, point))
+                futures.add(
+                    pool.submit(
+                        compute,
+                        lyr,
+                        fieldIdxDict["label_x"],
+                        fieldIdxDict["label_y"],
+                        featid,
+                        point,
+                    )
+                )
                 currentFeat += 1
                 multiStepFeedback.setProgress(currentFeat * stepSize)
         currentStep += 1
@@ -159,15 +177,13 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
             lyr, attrDict = result
             for featid, attrMap in attrDict.items():
                 lyr.changeAttributeValues(featid, attrMap)
-        
+
         for lyrName in labelDict.keys():
             if lyrName not in lyrDict:
                 continue
             lyr.endEditCommand()
-        
-        return {}
 
-        
+        return {}
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

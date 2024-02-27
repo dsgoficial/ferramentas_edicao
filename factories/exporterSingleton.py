@@ -36,13 +36,15 @@ class ExporterSingleton:
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
-        self.dpi = int(data.get("dpi", 400))
-    
+        self.dpi = int(data.get("dpi", 300))
+
     def setMetadata(self):
         metadata = QgsProject.instance().metadata()
         dsgToolsVersion = utils.pluginMetadata("DsgTools", "version")
         FEVersion = utils.pluginMetadata("ferramentas_edicao", "version")
-        metadata.setAbstract(f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; Produto: {self.productName} {self.productVersion}; {self.dpi} dpi")
+        metadata.setAbstract(
+            f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; Produto: {self.productName} {self.productVersion}; {self.dpi} dpi"
+        )
         metadata.setAuthor("Diretoria de Serviço Geográfico")
         metadata.setTitle(f"{self.basename}")
         QgsProject.instance().setMetadata(metadata)
