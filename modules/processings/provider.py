@@ -48,6 +48,7 @@ from .verifySymbolOverlap import VerifySymbolOverlap
 from .fixLabelPositionCRS import FixLabelPositionCRS
 from .sizeLabelLarge import SizeLabelLarge
 from .runRemoteProductExportAlgorithm import RunRemoteProductExportAlgorithm
+from .placeMasterContourLabels import PlaceMasterContourLabels
 
 
 class Provider(QgsProcessingProvider):
@@ -97,6 +98,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(SizeLabelLarge())
         self.addAlgorithm(IdentifyLabelsOutsideGeographicBoundary())
         self.addAlgorithm(RunRemoteProductExportAlgorithm())
+        self.addAlgorithm(PlaceMasterContourLabels())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()

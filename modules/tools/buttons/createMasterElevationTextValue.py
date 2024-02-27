@@ -36,6 +36,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
     QgsWkbTypes,
+    NULL,
 )
 from qgis.gui import QgsRubberBand
 from qgis.PyQt import QtCore
@@ -230,7 +231,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
             geom=intersectionFromBuffer, text=contourText
         )
         self.genericTextLyr.addFeature(newFeat)
-        contourFeat["texto_edicao"] = None
+        contourFeat["texto_edicao"] = NULL
         self.contourLyr.updateFeature(contourFeat)
 
     def getBufferSize(self, contourText, contourLyr):
@@ -250,7 +251,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
 
     def convertLength(self, lyr, measure):
         convertLength = QgsDistanceArea()
-        #convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
+        # convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         return convertLength.convertLengthMeasurement(
             measure, QgsUnitTypes.DistanceMeters
         )

@@ -1,11 +1,12 @@
 # CHANGELOG
 
-## 1.2.10
+## 1.2.11
 
 Novas Funcionalidades
 
 - Modo de exportação via linha de comando funcionando;
 - Novo processo de execução remota por meio do serviço de edição;
+- Novo processo de fixar o rótulo de curvas mestras;
 
 Melhorias:
 
