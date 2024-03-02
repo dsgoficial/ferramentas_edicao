@@ -236,7 +236,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
                     "SCALE": scale,
                     "MAP_THEME": None,
                     "INCLUDE_UNPLACED": False,
-                    "DPI": 400,
+                    "DPI": 300,
                     "OUTPUT": "memory:",
                 },
                 context=context,
