@@ -313,19 +313,27 @@ class MapBuildController(MapBuildControllerUtils):
         MapBuilderUtils().cleanProject(self.debugMode)
         productType, productName, productVersion, versionFolder = self.getProductType(dlgCfg.productType)
         builder = None
+        is_headless = dlgCfg.instance == "headless"
+        
         if dlgCfg.jsonFilePaths == []:
-            QMessageBox.warning(
-                self.dlg,
-                "Erro",
-                f"Não foi inserido um arquivo ou pasta de JSON para produto solicitado.",
-            )
+            if is_headless:
+                print("Não foi inserido um arquivo ou pasta de JSON para produto solicitado.")
+            else:
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Não foi inserido um arquivo ou pasta de JSON para produto solicitado.",
+                )
             return
         if dlgCfg.exportFolder == "":
-            QMessageBox.warning(
-                self.dlg,
-                "Erro",
-                f"Não foi inserida uma pasta de saída para o produto solicitado.",
-            )
+            if is_headless:
+                print("Não foi inserida uma pasta de saída para o produto solicitado.")
+            else:
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Não foi inserida uma pasta de saída para o produto solicitado.",
+                )
             return
         if "Carta Ortoimagem OM" in dlgCfg.productType:
             self.qptDlg()
@@ -333,12 +341,15 @@ class MapBuildController(MapBuildControllerUtils):
             self.setColorPalette()
             jsonData = self.readJson(jsonPath)
             if "tipo_produto" not in jsonData:
-                QMessageBox.warning(
-                    self.dlg,
-                    "Erro",
-                    f"A chave tipo_produto não foi encontrada no json de entrada {jsonPath}, ignorando produto. "
-                    "Adicione a chave e tente novamente.",
-                )
+                if is_headless:
+                    print("A chave tipo_produto não foi encontrada no json de entrada, ignorando produto.")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"A chave tipo_produto não foi encontrada no json de entrada {jsonPath}, ignorando produto."
+                        "Adicione a chave e tente novamente.",
+                    )
                 continue
             if not self.debugMode and not jsonStructure.validate_dict(
                 jsonData, product_type=jsonData["tipo_produto"]
@@ -347,36 +358,48 @@ class MapBuildController(MapBuildControllerUtils):
                     jsonData, product_type=jsonData["tipo_produto"]
                 )
                 missingKeyText = ",".join(list(missingKeySet))
-                QMessageBox.warning(
-                    self.dlg,
-                    "Erro",
-                    f"Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. "
-                    "Corrija o json e tente novamente.",
-                )
+                if is_headless:
+                    print("Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. ")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. "
+                        "Corrija o json e tente novamente.",
+                    )
                 continue
             filePathError = jsonStructure.validate_file_paths(jsonData)
             if filePathError != "":
-                QMessageBox.warning(
-                    self.dlg,
-                    "Erro",
-                    f"Erro: {filePathError}" "",
-                )
+                if is_headless:
+                    print("Erro")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"Erro: {filePathError}" "",
+                    )
                 continue
             if productName != "Carta Especial" and productName != jsonData["tipo_produto"]:
-                QMessageBox.warning(
-                    self.dlg,
-                    "Erro",
-                    f"O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json {jsonPath}, ignorando produto. "
-                    "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
-                )
+                if is_headless:
+                    print("O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. ")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json {jsonPath}, ignorando produto. "
+                        "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
+                    )
                 continue
             if "versao_produto" in jsonData and productVersion != jsonData["versao_produto"]:
-                QMessageBox.warning(
-                    self.dlg,
-                    "Erro",
-                    f"O tipo de produto escolhido na interface não corresponde à chave versao_produto informada no arquivo json {jsonPath}, ignorando produto. "
-                    "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
-                )
+                if is_headless:
+                    print("O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. ")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"O tipo de produto escolhido na interface não corresponde à chave versao_produto informada no arquivo json {jsonPath}, ignorando produto. "
+                        "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
+                    )
                 continue
             jsonData.update({"productType": productType, "productName": productName, "productVersion": productVersion, "versionFolder": versionFolder})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
