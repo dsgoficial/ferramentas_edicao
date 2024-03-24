@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.11
+## 1.2.12
 
 Novas Funcionalidades
 
@@ -14,6 +14,7 @@ Melhorias:
 - Melhora as entradas do processo de execução remota;
 - Adicionado feedback para define o tamanho do texto de acordo com o comprimento
 - DPI padrão alterado para 300 dpi
+- Corrigido o estilo de infra_trecho_duto_l (caso duto nao agua subterraneo)
 
 Correção de bug:
 
