@@ -288,7 +288,8 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         pointsLayer.startEditing()
         pointsLayer.beginEditCommand("Removendo próximo a moldura")
         for frameLine in frameLinesLayer.getFeatures():
-            buffer = frameLine.buffer(distance, -1)
+            geom = frameLine.geometry()
+            buffer = geom.buffer(distance, -1)
             bufferBB = buffer.boundingBox()
             for point in pointsLayer.getFeatures(bufferBB):
                 if feedback.isCanceled():
