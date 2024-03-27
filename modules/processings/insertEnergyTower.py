@@ -321,7 +321,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         pointsLayer.startEditing()
         pointsLayer.beginEditCommand("Removendo próximo a moldura")
         expression = (
-            f"featid in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"
+            f""" "featid" in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"""
         )
         request = QgsFeatureRequest().setFilterExpression(expression)
         pointsLayer.deleteFeatures(pointsToDeleteLyr.getFeatures(request))
