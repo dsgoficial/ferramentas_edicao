@@ -284,17 +284,21 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         return output["OUTPUT"]
 
     def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance, feedback):
-        toBeRemoved = []
+        toBeRemoved = set()
         pointsLayer.startEditing()
         pointsLayer.beginEditCommand("Removendo próximo a moldura")
-        for point in pointsLayer.getFeatures():
-            for frameLine in frameLinesLayer.getFeatures():
+        for frameLine in frameLinesLayer.getFeatures():
+            buffer = frameLine.buffer(distance, -1)
+            bufferBB = buffer.boundingBox()
+            for point in pointsLayer.getFeatures(bufferBB):
                 if feedback.isCanceled():
                     return
+                if point.id() in toBeRemoved:
+                    continue
                 dist = QgsGeometry.distance(point.geometry(), frameLine.geometry())
                 if dist < distance:
-                    toBeRemoved.append(point.id())
-        pointsLayer.deleteFeatures(toBeRemoved)
+                    toBeRemoved.add(point.id())
+        pointsLayer.deleteFeatures(list(toBeRemoved))
         pointsLayer.endEditCommand()
 
     def runAddCount(self, inputLyr, feedback):
