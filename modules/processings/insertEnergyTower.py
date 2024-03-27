@@ -131,7 +131,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Clipando com a área"))
-        energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer)
+        energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         self.runCreateSpatialIndex(energyLyr, feedback=multiStepFeedback)
