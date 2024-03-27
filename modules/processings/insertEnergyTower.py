@@ -122,7 +122,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5)
+        energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         self.runCreateSpatialIndex(energyLyrBeforeClip, feedback=multiStepFeedback)
