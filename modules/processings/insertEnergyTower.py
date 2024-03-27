@@ -98,6 +98,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         multiStepFeedback = QgsProcessingMultiStepFeedback(17, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Preparando estrutura auxiliar"))
         frameLayer = self.runAddCount(frameLayer, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
@@ -120,6 +121,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         multiStepFeedback.setCurrentStep(currentStep)
         self.runCreateSpatialIndex(lyr, feedback=multiStepFeedback)
 
+        multiStepFeedback.pushInfo(self.tr("Unindo linhas"))
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5, feedback=multiStepFeedback)
@@ -128,6 +130,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         self.runCreateSpatialIndex(energyLyrBeforeClip, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Clipando com a área"))
         energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
@@ -139,15 +142,19 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Cortando as linhas"))
         pointsAndAngles = self.chopLineLayer(energyLyr, distance, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Gravando saida"))
         self.populateEnergyTowerSymbolLayer(tower, pointsAndAngles, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Avaliando elementos perto da moldura"))
         distanceNextToFrame = self.getChopDistance(energyLyr, scale * distanceFromFrame)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Removendo pontos próximos à moldura"))
         self.removePointsNextToFrame(frameLinesLayer, tower, distanceNextToFrame, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
