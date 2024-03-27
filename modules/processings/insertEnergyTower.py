@@ -15,6 +15,7 @@ from qgis.core import (
     QgsProcessingParameterEnum,
     QgsProcessingParameterDistance,
     QgsProcessingMultiStepFeedback,
+    QgsProcessingContext,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -284,22 +285,42 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         return output["OUTPUT"]
 
     def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance, feedback):
+        algRunner = AlgRunner()
+        multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
         toBeRemoved = set()
+        context = QgsProcessingContext()
+        currentStep = 0
+        multiStepFeedback.setCurrentStep(currentStep)
+        cacheLyr = algRunner.runCreateFieldWithExpression(
+            inputLyr=pointsLayer,
+            expression="$id",
+            fieldName="featid",
+            fieldType=1,
+            context=context,
+            feedback=multiStepFeedback,
+        )
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        algRunner.runCreateSpatialIndex(cacheLyr, context, feedback=multiStepFeedback, is_child_algorithm=True)
+        buffer = algRunner.runBuffer(
+            frameLinesLayer,
+            distance=distance,
+            context=context,
+            is_child_algorithm=True
+        )
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        algRunner.runCreateSpatialIndex(cacheLyr, context, feedback=multiStepFeedback, is_child_algorithm=True)
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        pointsToDeleteLyr = algRunner.runExtractByLocation(
+            cacheLyr, buffer, context, predicate=[AlgRunner.Intersect], feedback=multiStepFeedback
+        )
+        if pointsToDeleteLyr.featureCount() == 0:
+            return
         pointsLayer.startEditing()
         pointsLayer.beginEditCommand("Removendo próximo a moldura")
-        for frameLine in frameLinesLayer.getFeatures():
-            geom = frameLine.geometry()
-            buffer = geom.buffer(distance, -1)
-            bufferBB = buffer.boundingBox()
-            for point in pointsLayer.getFeatures(bufferBB):
-                if feedback.isCanceled():
-                    return
-                if point.id() in toBeRemoved:
-                    continue
-                dist = QgsGeometry.distance(point.geometry(), frameLine.geometry())
-                if dist < distance:
-                    toBeRemoved.add(point.id())
-        pointsLayer.deleteFeatures(list(toBeRemoved))
+        pointsLayer.deleteFeatures([feat["featid"] for feat in pointsToDeleteLyr.getFeatures()])
         pointsLayer.endEditCommand()
 
     def runAddCount(self, inputLyr, feedback):
