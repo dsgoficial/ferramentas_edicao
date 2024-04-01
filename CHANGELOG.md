@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.12
+## 1.2.13
 
 Novas Funcionalidades
 
@@ -15,6 +15,7 @@ Melhorias:
 - Adicionado feedback para define o tamanho do texto de acordo com o comprimento
 - DPI padrão alterado para 300 dpi
 - Corrigido o estilo de infra_trecho_duto_l (caso duto nao agua subterraneo)
+- Adicionado os limites municipais e estaduais da Guiana
 
 Correção de bug:
 
