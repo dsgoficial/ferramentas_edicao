@@ -322,7 +322,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             f""" "featid" in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"""
         )
         request = QgsFeatureRequest().setFilterExpression(expression)
-        featIdList = [feat.id() for feat in pointsToDeleteLyr.getFeatures(request)]
+        featIdList = [feat["featid"] for feat in pointsToDeleteLyr.getFeatures(request)]
         if len(featIdList) == 0:
             return
         pointsLayer.startEditing()
