@@ -310,7 +310,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(cacheLyr, context, feedback=multiStepFeedback, is_child_algorithm=True)
+        algRunner.runCreateSpatialIndex(buffer, context, feedback=multiStepFeedback, is_child_algorithm=True)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         pointsToDeleteLyr = algRunner.runExtractByLocation(
@@ -318,13 +318,16 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         )
         if pointsToDeleteLyr.featureCount() == 0:
             return
-        pointsLayer.startEditing()
-        pointsLayer.beginEditCommand("Removendo próximo a moldura")
         expression = (
             f""" "featid" in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"""
         )
         request = QgsFeatureRequest().setFilterExpression(expression)
-        pointsLayer.deleteFeatures(pointsToDeleteLyr.getFeatures(request))
+        featIdList = [feat.id() for feat in pointsToDeleteLyr.getFeatures(request)]
+        if len(featIdList) == 0:
+            return
+        pointsLayer.startEditing()
+        pointsLayer.beginEditCommand("Removendo próximo a moldura")
+        pointsLayer.deleteFeatures(featIdList)
         pointsLayer.endEditCommand()
 
     def runAddCount(self, inputLyr, feedback):
