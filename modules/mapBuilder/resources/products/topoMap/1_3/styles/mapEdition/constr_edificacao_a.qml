@@ -3,7 +3,7 @@
   <renderer-v2 referencescale="-1" symbollevels="0" type="RuleRenderer" enableorderby="0" forceraster="0">
     <rules key="{7e7c5e8b-3835-4813-bc90-01d87c84467a}">
       <rule filter="&quot;visivel&quot; = 1" key="{c9d1e298-fe17-4fe3-b8a6-842e7904d800}">
-        <rule filter="&quot;tipo&quot; in (0, 1212, 1213, 1214, 1298) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 19, 17, 20, 21,  22, 23, 24, 26, 30)" label="A20403A" symbol="0" key="{3026e123-049d-4763-bc61-54758e1d138a}" description="Energia, Industria, Genérico"/>
+        <rule filter="&quot;tipo&quot; in (0, 1212, 1213, 1214, 1217, 1298) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 19, 17, 20, 21,  22, 23, 24, 26, 30)" label="A20403A" symbol="0" key="{3026e123-049d-4763-bc61-54758e1d138a}" description="Energia, Industria, Genérico"/>
         <rule filter="&quot;tipo&quot; = 1216" label="A20405A" symbol="1" key="{a7db2143-7c53-43e9-a4a9-bc55b005d2d7}"/>
         <rule filter="&quot;tipo&quot; = 1218" label="Curral" symbol="2" key="{5dea4b5f-b74b-4539-924c-c5be6d2d8914}"/>
         <rule filter="&quot;tipo&quot; = 1215" symbol="3" key="{78509594-2c3b-4a2e-83ba-c2cfb831b683}"/>
@@ -398,8 +398,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{510af983-e719-49f9-886d-631f2790bb14}">
-      <rule filter="&quot;tipo&quot; = 1212 and &quot;visivel&quot; = 1" key="{665bfcca-dfc2-4373-903a-5d97e39fc879}" description="Sede operacional de fazenda">
+    <rules key="{1ec274bc-b258-4f27-909b-0026b8cefd4a}">
+      <rule filter="&quot;tipo&quot; = 1212 and &quot;visivel&quot; = 1" key="{b006e34f-ce39-43a5-bcac-05384c9fcacb}" description="Sede operacional de fazenda">
         <settings calloutType="simple">
           <text-style blendMode="0" useSubstitutions="0" textColor="36,31,33,255" fontWeight="50" fontUnderline="0" isExpression="0" allowHtml="0" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fontLetterSpacing="0" fontFamily="Noto Sans" fontKerning="1" fontWordSpacing="0" multilineHeight="0.80000000000000004" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" legendString="Aa" textOpacity="1" namedStyle="Regular" fontItalic="0">
             <families/>
@@ -595,7 +595,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; = 1218 and &quot;visivel&quot; = 1" key="{c9bdea20-5b6a-4e78-8d8f-a92631266c83}" description="Curral">
+      <rule filter="&quot;tipo&quot; = 1218 and &quot;visivel&quot; = 1" key="{476f2342-17c3-4bb1-a369-131e4d5d008b}" description="Curral">
         <settings calloutType="simple">
           <text-style blendMode="0" useSubstitutions="0" textColor="36,31,33,255" fontWeight="50" fontUnderline="0" isExpression="0" allowHtml="0" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fontLetterSpacing="0" fontFamily="Noto Sans" fontKerning="1" fontWordSpacing="0" multilineHeight="0.80000000000000004" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" legendString="Aa" textOpacity="1" namedStyle="Condensed" fontItalic="0">
             <families/>
@@ -791,7 +791,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; not in (1212, 1218) and &quot;visivel&quot; = 1" key="{6082703a-ccc9-4e05-a247-ce9095a98cf0}" description="Edificação">
+      <rule filter="&quot;tipo&quot; not in (1212, 1218) and &quot;visivel&quot; = 1" key="{632f67e2-1de8-44e2-bce1-3b9d80a8cab2}" description="Edificação">
         <settings calloutType="simple">
           <text-style blendMode="0" useSubstitutions="0" textColor="36,31,33,255" fontWeight="50" fontUnderline="0" isExpression="0" allowHtml="0" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fontLetterSpacing="0" fontFamily="Noto Sans" fontKerning="1" fontWordSpacing="0" multilineHeight="0.80000000000000004" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" legendString="Aa" textOpacity="1" namedStyle="Condensed" fontItalic="0">
             <families/>

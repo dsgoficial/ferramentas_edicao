@@ -3,7 +3,7 @@
   <renderer-v2 referencescale="-1" symbollevels="0" type="RuleRenderer" enableorderby="0" forceraster="0">
     <rules key="{af709a54-88ca-4a27-bba5-e0a7ac6ce840}">
       <rule filter=" &quot;visivel&quot; = 1" label="Visível" key="{4bdda895-97c4-4ad7-919c-b2b6ccf321c8}">
-        <rule filter=" (&quot;tipo&quot; in (0, 525, 608, 610, 1212, 1213, 1298, 2029, 2030, 2031) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (1, 2, 3, 4, 7, 8, 9, 10, 11, 15, 21, 23, 24, 25)) and &quot;tipo&quot; not in (803, 2429)" label="P20403A - Genérico Não Importante" symbol="0" key="{55073371-2bcb-4204-962b-25b9718a6ea4}" description="Edificação operacional"/>
+        <rule filter=" (&quot;tipo&quot; in (0, 525, 608, 610, 1212, 1213, 1217, 1298, 2029, 2030, 2031) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (1, 2, 3, 4, 7, 8, 9, 10, 11, 15, 21, 23, 24, 25)) and &quot;tipo&quot; not in (803, 2429)" label="P20403A - Genérico Não Importante" symbol="0" key="{55073371-2bcb-4204-962b-25b9718a6ea4}" description="Edificação operacional"/>
         <rule filter=" &quot;suprimir_bandeira&quot; = 1 and &quot;tipo&quot; not in (2429,1218,1216,1215,803) and (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 not in (13, 17, 19, 30)" label="Bandeira suprimida" symbol="1" key="{1d0aafdd-64b6-4744-852d-94b2496d4aa9}"/>
         <rule filter="(&quot;tipo&quot; in (803, 603, 605, 698) or (&quot;tipo&quot; - &quot;tipo&quot;%100)/100 in (13, 17, 19,22, 30))" label="P20418A - Importante" symbol="2" key="{832b4b14-42b1-4056-9886-114643611ddc}"/>
         <rule filter="(&quot;tipo&quot; - &quot;tipo&quot;%100)/100 = 5 and &quot;tipo&quot; not in (525) and  &quot;suprimir_bandeira&quot; != 1" label="P20415A" symbol="3" key="{09aaadda-6c3d-4bd5-9c3e-627f3740d93c}"/>
@@ -1094,8 +1094,8 @@
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{6177b90b-bff0-4615-92ec-9d41b36d80d2}">
-      <rule filter="&quot;tipo&quot; = 1212 and &quot;visivel&quot; = 1" key="{44d17b46-c0ca-4dd9-8a36-1b94c2be3430}" description="Sede operacional de fazenda">
+    <rules key="{f3066710-a8c8-4576-824f-6fca42f80dfb}">
+      <rule filter="&quot;tipo&quot; = 1212 and &quot;visivel&quot; = 1" key="{71ac9638-2dad-4275-90c3-ba0f8d022fed}" description="Sede operacional de fazenda">
         <settings calloutType="simple">
           <text-style blendMode="0" useSubstitutions="0" textColor="36,31,33,255" fontWeight="50" fontUnderline="0" isExpression="0" allowHtml="0" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fontLetterSpacing="0" fontFamily="Noto Sans" fontKerning="1" fontWordSpacing="0" multilineHeight="0.80000000000000004" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" legendString="Aa" textOpacity="1" namedStyle="Regular" fontItalic="0">
             <families/>
@@ -1291,7 +1291,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; = 1218 and &quot;visivel&quot; = 1" key="{42866fac-a04d-4992-98ee-ca3a449fc6f1}" description="Curral">
+      <rule filter="&quot;tipo&quot; = 1218 and &quot;visivel&quot; = 1" key="{d1a556a8-e597-4558-8b15-acb6070daff1}" description="Curral">
         <settings calloutType="simple">
           <text-style blendMode="0" useSubstitutions="0" textColor="36,31,33,255" fontWeight="50" fontUnderline="0" isExpression="0" allowHtml="0" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fontLetterSpacing="0" fontFamily="Noto Sans" fontKerning="1" fontWordSpacing="0" multilineHeight="0.80000000000000004" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" legendString="Aa" textOpacity="1" namedStyle="Condensed" fontItalic="0">
             <families/>
@@ -1487,7 +1487,7 @@
           </callout>
         </settings>
       </rule>
-      <rule filter="&quot;tipo&quot; not in (1212, 1218) and &quot;visivel&quot; = 1" key="{40f72f5e-2148-460c-a6d7-df54127a775b}" description="Edificação">
+      <rule filter="&quot;tipo&quot; not in (1212, 1218) and &quot;visivel&quot; = 1" key="{b95ed77b-1bae-464e-be1e-90d26e8985fd}" description="Edificação">
         <settings calloutType="simple">
           <text-style blendMode="0" useSubstitutions="0" textColor="36,31,33,255" fontWeight="50" fontUnderline="0" isExpression="0" allowHtml="0" previewBkgrdColor="255,255,255,255" fontSize="6" textOrientation="horizontal" fontLetterSpacing="0" fontFamily="Noto Sans" fontKerning="1" fontWordSpacing="0" multilineHeight="0.80000000000000004" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" capitalization="0" fieldName="texto_edicao" legendString="Aa" textOpacity="1" namedStyle="Condensed" fontItalic="0">
             <families/>
