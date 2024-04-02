@@ -324,7 +324,8 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             f""" "featid" in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"""
         )
         request = QgsFeatureRequest().setFilterExpression(expression)
-        pointsLayer.deleteFeatures(pointsToDeleteLyr.getFeatures(request))
+        featureIds = [feature.id() for feature in pointsToDeleteLyr.getFeatures(request)]
+        pointsLayer.deleteFeatures(featureIds)
         pointsLayer.endEditCommand()
 
     def runAddCount(self, inputLyr, feedback):
