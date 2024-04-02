@@ -93,6 +93,7 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute("jurisdicao", jurisd)
         toInsert.setAttribute("sigla", abbrv)
         toInsert.setAttribute("tipo", roadType)
+        toInsert.setAttribute("visivel", 1)
         toInsert.setGeometry(self.currPos)
         self.dstLyr.startEditing()
         self.dstLyr.addFeature(toInsert)
