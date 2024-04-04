@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.14
+## 1.2.15
 
 Novas Funcionalidades
 
@@ -12,10 +12,12 @@ Melhorias:
 
 - Adicionado o conceito de versionamento de linha de produção;
 - Melhora as entradas do processo de execução remota;
-- Adicionado feedback para define o tamanho do texto de acordo com o comprimento
-- DPI padrão alterado para 300 dpi
-- Corrigido o estilo de infra_trecho_duto_l (caso duto nao agua subterraneo)
-- Adicionado os limites municipais e estaduais da Guiana
+- Adicionado feedback para define o tamanho do texto de acordo com o comprimento;
+- DPI padrão alterado para 300 dpi;
+- Corrigido o estilo de infra_trecho_duto_l (caso duto nao agua subterraneo);
+- Adicionado os limites municipais e estaduais da Guiana;
+- Adicionada verificação de conexão com o banco de dados antes da exportação;
+- Adicionada verificação de tipo de produto versus tipo de modelagem de banco de dados (para corrigir bug de exportar carta ortoimagem com modelagem de carta topográfica, o que implica falta da tabela edicao_articulacao_imagem_a);
 
 Correção de bug:
 
