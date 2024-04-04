@@ -16,6 +16,9 @@ from qgis.core import (
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
+from DsgTools.core.dsgEnums import DsgEnums
+from DsgTools.core.Factories.DbFactory.dbFactory import DbFactory
+
 from ..config import jsonStructure
 from ..config.configDefaults import ConfigDefaults
 from ..factories.compositionSingleton import CompositionSingleton
@@ -350,6 +353,7 @@ class MapBuildController(MapBuildControllerUtils):
                         f"A chave tipo_produto não foi encontrada no json de entrada {jsonPath}, ignorando produto."
                         "Adicione a chave e tente novamente.",
                     )
+                exportResult = False
                 continue
             if not self.debugMode and not jsonStructure.validate_dict(
                 jsonData, product_type=jsonData["tipo_produto"]
@@ -367,6 +371,7 @@ class MapBuildController(MapBuildControllerUtils):
                         f"Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. "
                         "Corrija o json e tente novamente.",
                     )
+                exportResult = False
                 continue
             filePathError = jsonStructure.validate_file_paths(jsonData)
             if filePathError != "":
@@ -378,6 +383,7 @@ class MapBuildController(MapBuildControllerUtils):
                         "Erro",
                         f"Erro: {filePathError}" "",
                     )
+                exportResult = False
                 continue
             if productName != "Carta Especial" and productName != jsonData["tipo_produto"]:
                 if is_headless:
@@ -389,6 +395,7 @@ class MapBuildController(MapBuildControllerUtils):
                         f"O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json {jsonPath}, ignorando produto. "
                         "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
                     )
+                exportResult = False
                 continue
             if "versao_produto" in jsonData and productVersion != jsonData["versao_produto"]:
                 if is_headless:
@@ -400,9 +407,37 @@ class MapBuildController(MapBuildControllerUtils):
                         f"O tipo de produto escolhido na interface não corresponde à chave versao_produto informada no arquivo json {jsonPath}, ignorando produto. "
                         "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
                     )
+                exportResult = False
                 continue
             jsonData.update({"productType": productType, "productName": productName, "productVersion": productVersion, "versionFolder": versionFolder})
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
+            try:
+                abstractDb = self.getAbstractDb(jsonData, dlgCfg)
+            except:
+                if is_headless:
+                    print("Conexão inválida com o banco de dados. Verifique as configurações de conexão no json e as informações de usuário e senha.")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"Conexão inválida com o banco de dados, ignorando produto. "
+                        "Verifique as configurações de conexão no json e as informações de usuário e senha e tente novamente.",
+                    )
+                exportResult = False
+                continue
+            if not self.validateProductTypeAgainstDatabaseMetadata(abstractDb, jsonData):
+                if is_headless:
+                    print("O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada.")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada, ignorando produto. "
+                        "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
+                    )
+                exportResult = False
+                continue
+            del abstractDb
             builder = self.getProductBuilder(productType, versionFolder)
             # builder.removeLayers(False)
             composition = self.compositions.getComposition(jsonData).clone()
@@ -448,3 +483,31 @@ class MapBuildController(MapBuildControllerUtils):
             print(msg)
             return
         QMessageBox.warning(self.dlg, messageType, msg)
+
+    def validateProductTypeAgainstDatabaseMetadata(self, abstractDb, jsonData):
+        if jsonData["tipo_produto"] == "Carta Ortoimagem OM":
+            return True
+        version = abstractDb.getDatabaseVersion()
+        if "orto" in jsonData["tipo_produto"].lower() and "orto" not in version.lower():
+            return False
+        return True
+
+    def getAbstractDb(self, jsonData, dlgCfg):
+        dbData = jsonData.get("banco")
+        abstractDb = DbFactory().createDbFactory(driver=DsgEnums.DriverPostGIS)
+        if not abstractDb.testCredentials(
+            host=dbData.get("servidor"),
+            port=dbData.get("porta"),
+            database=dbData.get("nome"),
+            user=dlgCfg.username,
+            password=dlgCfg.password,
+        ):
+            raise Exception("Connection error")
+        abstractDb.connectDatabaseWithParameters(
+            host=dbData.get("servidor"),
+            port=dbData.get("porta"),
+            database=dbData.get("nome"),
+            user=dlgCfg.username,
+            password=dlgCfg.password,
+        )
+        return abstractDb
