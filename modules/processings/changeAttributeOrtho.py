@@ -5,6 +5,7 @@ from qgis.core import (
     QgsProcessingParameterEnum,
     NULL,
     QgsProcessingMultiStepFeedback,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from .processingUtils import ProcessingUtils
@@ -68,7 +69,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
         return {}
 
-    def process_layer(self, layer):
+    def process_layer(self, layer: QgsVectorLayer):
 
         table_name = layer.dataProvider().uri().table()
 
@@ -152,153 +153,134 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         layer.endEditCommand()
 
     def defaultExtMineral(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 1
+        feature["justificativa_txt"] = 1
         if feature["tipo"] == 1:
-            new_att[feature.fieldNameIndex("texto_edicao")] = "Poço"
+            feature["texto_edicao"] = "Poço"
         elif feature["tipo"] == 4:
-            new_att[feature.fieldNameIndex("texto_edicao")] = "Pedreira"
+            feature["texto_edicao"] = "Pedreira"
         elif feature["tipo"] == 5:
-            new_att[feature.fieldNameIndex("texto_edicao")] = "Garimpo"
+            feature["texto_edicao"] = "Garimpo"
         elif feature["tipo"] == 6:
-            new_att[feature.fieldNameIndex("texto_edicao")] = "Salina"
+            feature["texto_edicao"] = "Salina"
         elif feature["tipo"] == 8:
-            new_att[feature.fieldNameIndex("texto_edicao")] = "Petróleo"
-        return {feature.id(): new_att}
+            feature["texto_edicao"] = "Petróleo"
+        return feature
 
     def defaultElemnatElemHidPL(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 1
+        feature["justificativa_txt"] = 1
         if feature["nome"] == "":
             if feature["tipo"] == 9:
-                new_att[feature.fieldNameIndex("texto_edicao")] = "Cachoreira"
+                feature["texto_edicao"] = "Cachoreira"
             elif feature["tipo"] == 10:
-                new_att[feature.fieldNameIndex("texto_edicao")] = "Salto"
+                feature["texto_edicao"] = "Salto"
             elif feature["tipo"] == 11:
-                new_att[feature.fieldNameIndex("texto_edicao")] = "Catarata"
+                feature["texto_edicao"] = "Catarata"
             elif feature["tipo"] == 12:
-                new_att[feature.fieldNameIndex("texto_edicao")] = "Corredeira"
+                feature["texto_edicao"] = "Corredeira"
         else:
-            new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        return {feature.id(): new_att}
+            feature["texto_edicao"] = feature["nome"]
+        return feature
 
     def defaultElemnatElemHidA(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 1
+        feature["justificativa_txt"] = 1
         if feature["nome"] == "":
-            new_att[feature.fieldNameIndex("texto_edicao")] = "Corredeira"
+            feature["texto_edicao"] = "Corredeira"
         else:
-            new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        return {feature.id(): new_att}
+            feature["texto_edicao"] = feature["nome"]
+        return feature
 
     def defaultIlhaP(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        new_att[feature.fieldNameIndex("tamanho_txt")] = 7
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
-        return {feature.id(): new_att}
+        feature["texto_edicao"] = feature["nome"]
+        feature["tamanho_txt"] = 7
+        feature["justificativa_txt"] = 2
+        return feature
 
     def defaultIlhaA(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
+        feature["texto_edicao"] = feature["nome"]
+        feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        new_att[feature.fieldNameIndex("tamanho_txt")] = size if size > 6 else 7
-        return {feature.id(): new_att}
+        feature["tamanho_txt"] = size if size > 6 else 7
+        return feature
 
     def defaultPtoCotado(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("ancora_vertical")] = 1
-        new_att[feature.fieldNameIndex("ancora_horizontal")] = 1
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        feature["ancora_vertical"] = 1
+        feature["ancora_horizontal"] = 1
+        return feature
 
     def defaultTSI(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        return feature
 
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 1
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        feature["texto_edicao"] = feature["nome"]
+        feature["justificativa_txt"] = 1
+        return feature
 
     def defaultElemnatTopoFisioL(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        feature["texto_edicao"] = feature["nome"]
+        return feature
 
     def defaultElemnatTopoFisioA(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+        feature["texto_edicao"] = feature["nome"]
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
-        new_att[feature.fieldNameIndex("tamanho_txt")] = size if size > 6 else 7
-        return {feature.id(): new_att}
+        feature["tamanho_txt"] = size if size > 6 else 7
+        return feature
 
     def defaultInfraElemEnergPA(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 1
-        new_att[feature.fieldNameIndex("texto_edicao")] = "Subestação"
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        feature["justificativa_txt"] = 1
+        feature["texto_edicao"] = "Subestação"
+        return feature
 
     def defaultInfraElemEnergL(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        return feature
 
     def defaultInfraElemInfra(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("texto_edicao")] = "Atracadouro"
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 1
-        return {feature.id(): new_att}
+        feature["texto_edicao"] = "Atracadouro"
+        feature["justificativa_txt"] = 1
+        return feature
 
     def defaultEdicao(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("exibir_rotulo_aproximado")] = 1
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        feature["exibir_rotulo_aproximado"] = 1
+        return feature
 
     def defaultCurvaNivel(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
+        feature["visivel"] = 1
         if feature["cota"] == 0:
-            new_att[feature.fieldNameIndex("texto_edicao")] = "ZERO"
+            feature["texto_edicao"] = "ZERO"
         elif feature["cota"] < 0:
-            new_att[feature.fieldNameIndex("texto_edicao")] = "MENOS " + feature["cota"]
+            feature["texto_edicao"] = "MENOS " + feature["cota"]
         else:
-            new_att[feature.fieldNameIndex("texto_edicao")] = feature["cota"]
-        return {feature.id(): new_att}
+            feature["texto_edicao"] = feature["cota"]
+        return feature
 
     def defaultFerrovia(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        return feature
 
     def defaultViaDesloc(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        return {feature.id(): new_att}
+        feature["visivel"] = 1
+        return feature
 
     def defaultMassaDagua(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
-        new_att[feature.fieldNameIndex("apresentar_simbologia")] = 2
+        feature["visivel"] = 1
+        feature["justificativa_txt"] = 2
+        feature["apresentar_simbologia"] = 2
         if feature["tipo"] in [3, 4, 5, 6, 7, 11]:
-            new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+            feature["texto_edicao"] = feature["nome"]
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        new_att[feature.fieldNameIndex("tamanho_txt")] = size if size > 6 else 7
-        return {feature.id(): new_att}
+        feature["tamanho_txt"] = size if size > 6 else 7
+        return feature
 
     def defaultPistaPouso(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
+        feature["justificativa_txt"] = 2
         if feature["tipo"] != 10:
-            new_att[feature.fieldNameIndex("visivel")] = 1
+            feature["visivel"] = 1
             texto_edicao = []
             if feature["nome"] != NULL:
                 texto_edicao.append(feature["nome"])
@@ -315,48 +297,44 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             if feature["altitude"] != NULL:
                 texto_edicao.append(round(feature["altitude"]))
 
-            new_att[feature.fieldNameIndex("texto_edicao")] = "|".join(
+            feature["texto_edicao"] = "|".join(
                 map(str, texto_edicao)
             )
         else:
-            new_att[feature.fieldNameIndex("visivel")] = 2
-        return {feature.id(): new_att}
+            feature["visivel"] = 2
+        return feature
 
     def defaultllp(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
-        new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+        feature["visivel"] = 1
+        feature["justificativa_txt"] = 2
+        feature["texto_edicao"] = feature["nome"]
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
-        new_att[feature.fieldNameIndex("tamanho_txt")] = size if size > 6 else 7
-        return {feature.id(): new_att}
+        feature["tamanho_txt"] = size if size > 6 else 7
+        return feature
 
     def defaultAreaSemDados(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
-        new_att[feature.fieldNameIndex("texto_edicao")] = "DADOS INCOMPLETOS"
+        feature["justificativa_txt"] = 2
+        feature["texto_edicao"] = "DADOS INCOMPLETOS"
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
-        new_att[feature.fieldNameIndex("tamanho_txt")] = size if size > 6 else 7
-        return {feature.id(): new_att}
+        feature["tamanho_txt"] = size if size > 6 else 7
+        return feature
 
     def defaultTrechoDrenagem(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("visivel")] = 1
+        feature["visivel"] = 1
         if feature["situacao_em_poligono"] != 4 or feature["situacao_em_poligono"] != 3:
-            new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
+            feature["texto_edicao"] = feature["nome"]
 
         if feature["situacao_em_poligono"] in [2, 3]:
-            new_att[feature.fieldNameIndex("posicao_rotulo")] = 1
+            feature["posicao_rotulo"] = 1
         elif feature["situacao_em_poligono"] in [1]:
-            new_att[feature.fieldNameIndex("posicao_rotulo")] = 2
-        return {feature.id(): new_att}
+            feature["posicao_rotulo"] = 2
+        return feature
 
     def defaultllpLocalidade(self, feature, lyrCrs):
-        new_att = {}
-        new_att[feature.fieldNameIndex("justificativa_txt")] = 2
-        new_att[feature.fieldNameIndex("visivel")] = 1
-        new_att[feature.fieldNameIndex("texto_edicao")] = feature["nome"]
-        return {feature.id(): new_att}
+        feature["justificativa_txt"] = 2
+        feature["visivel"] = 1
+        feature["texto_edicao"] = feature["nome"]
+        return feature
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

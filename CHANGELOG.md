@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.16
+## 1.2.17
 
 Novas Funcionalidades
 
@@ -31,7 +31,8 @@ Correção de bug:
 - Corrige bug no define o tamanho do texto de acordo com o comprimento;
 - Corrigido a fonte para Condensed Italic em "cobter_massa_dagua_a";
 - Corrigido o atributo "visivel" no botão de Símbolo Idt.Tr.Rod.;
-- Corrigido o Configura os atributos de edição de Carta Topografica;
+- Corrigido o Configura os atributos de edição de Carta Topográfica;
+- Corrigido o Configura os atributos de edição de Carta Ortoimagem;
 
 ## 1.1.90
 
