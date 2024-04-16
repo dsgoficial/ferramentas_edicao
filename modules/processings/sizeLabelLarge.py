@@ -366,5 +366,6 @@ def getSirgasEpsg(key):
         "23S": "EPSG:31983",
         "24S": "EPSG:31984",
         "25S": "EPSG:31985",
+        "26S": "EPSG:5396",
     }
     return options[key] if key in options else ""

@@ -135,7 +135,7 @@ class Localization(ComponentUtils, IComponent):
         if len(rectBounds) > 1:
             for stateBound in rectBounds[1:]:
                 bound.combineExtentWith(stateBound)
-        self.growBound(bound)
+        #self.growBound(bound)
         return bound
 
     @staticmethod
@@ -260,7 +260,7 @@ class Localization(ComponentUtils, IComponent):
         if (mapItem := composition.itemById("localization")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
-            mapItem.setExtent(bounds)
+            mapItem.zoomToExtent(bounds)
             mapItem.setCrs(QgsCoordinateReferenceSystem("EPSG:4674"))
             mapItem.setLayers([mapAreaLayer, *layersToShow])
             mapItem.refresh()

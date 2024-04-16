@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.17
+## 1.2.18
 
 Novas Funcionalidades
 
@@ -18,6 +18,7 @@ Melhorias:
 - Adicionado os limites municipais e estaduais da Guiana;
 - Adicionada verificação de conexão com o banco de dados antes da exportação;
 - Adicionada verificação de tipo de produto versus tipo de modelagem de banco de dados (para corrigir bug de exportar carta ortoimagem com modelagem de carta topográfica, o que implica falta da tabela edicao_articulacao_imagem_a);
+- O quadrado verde representando a área mapeada no diagrama de estados agora tem um tamanho mínimo a ser exibido (para melhorar situação em que a escala muito pequena dificultava a visualização do quadrado);
 
 Correção de bug:
 

@@ -136,7 +136,7 @@ class MapBuildControllerUtils:
         templateType, scale = self.getOmScale(orientedBbox, epsg)
         return templateType, scale
 
-    def getEpsg(self, hemisphere: str, timeZone: str) -> int:
+    def getEpsg(self, hemisphere: str, timeZone: int) -> int:
         """Calculates the epsg by using the hemisphere and the timezone
         Args:
             hemisphere: N or S
@@ -144,13 +144,38 @@ class MapBuildControllerUtils:
         Returns:
             EPSG (int)
         """
-        timeZone = int(timeZone)
-        epsg = "319"
-        if hemisphere == "N":
-            epsg = epsg + str(72 + timeZone - 18)
-        elif hemisphere == "S":
-            epsg = epsg + str(78 + timeZone - 18)
-        return int(epsg)
+        # epsg = "319"
+        # if hemisphere == "N":
+        #     epsg = epsg + str(72 + timeZone - 18)
+        # elif hemisphere == "S":
+        #     epsg = epsg + str(78 + timeZone - 18)
+        # return int(epsg)
+        key = str(timeZone)+hemisphere
+        options = {
+            "11N": 31965,
+            "12N": 31966,
+            "13N": 31967,
+            "14N": 31968,
+            "15N": 31969,
+            "16N": 31970,
+            "17N": 31971,
+            "18N": 31972,
+            "19N": 31973,
+            "20N": 31974,
+            "21N": 31975,
+            "22N": 31976,
+            "17S": 31977,
+            "18S": 31978,
+            "19S": 31979,
+            "20S": 31980,
+            "21S": 31981,
+            "22S": 31982,
+            "23S": 31983,
+            "24S": 31984,
+            "25S": 31985,
+            "26S": 5396,
+        }
+        return options[key] if key in options else 0
 
     def getOmScale(self, orientedBboxGeom: QgsGeometry, epsg: str) -> float:
         """Returns the OM map scale based on the geometry's bounding box. The choice
