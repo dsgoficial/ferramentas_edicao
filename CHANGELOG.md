@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.18
+## 1.2.19
 
 Novas Funcionalidades
 
@@ -34,6 +34,7 @@ Correção de bug:
 - Corrigido o atributo "visivel" no botão de Símbolo Idt.Tr.Rod.;
 - Corrigido o Configura os atributos de edição de Carta Topográfica;
 - Corrigido o Configura os atributos de edição de Carta Ortoimagem;
+- Corrigido Moldura obrigatória em processings que usavam moldura e estava opcional (fixar rótulos e rótulos fora da moldura);
 
 ## 1.1.90
 

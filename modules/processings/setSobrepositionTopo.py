@@ -97,7 +97,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         ferrovia_filtrada = self.runExtractByExpression(
             layer_fer, expression=""" "visivel" = 1 """
         )
-        # merged = self.runMergeLayer([drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada])
+        merged = self.runMergeLayer([drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada])
 
         # Dissolver a moldura e clipar o poligono
         moldura_merged = self.dissolve(moldura)
@@ -112,7 +112,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             parameters, self.INPUT_POLYGON, context
         )
 
-        merged = self.mergelayer([layer_dre, layer_via, layer_fer])
+        # merged = self.mergelayer([layer_dre, layer_via, layer_fer])
         polygon_layer = self.dissolve(polygon_layer)
         polygon_cliped = self.runClip(polygon_layer, moldura_merged)
 
@@ -124,24 +124,34 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         layer.startEditing()
         layer.beginEditCommand("Iniciando edição.")
         intersect = self.intersect(line_layer, merged)
+        difference = self.difference(line_layer, merged)
+        
+        layer.deleteFeatures([feat.id() for feat in layer.getFeatures()])
+
         for feature in intersect.getFeatures():
             feat = QgsFeature(layer.fields())
             feat["sobreposto"] = 1
-            feat.setGeometry(feature.geometry())
-            feat["geometria_aproximada"] = feature["geometria_aproximada"]
-            feat["tipo"] = feature["tipo"]
-            feat["nome"] = feature["nome"]
             feat["exibir_rotulo_aproximado"] = 1
-            layer.addFeature(feat)
-        difference = self.difference(line_layer, merged)
+            feat.setGeometry(feature.geometry())
+
+            for field in layer.fields():
+                if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
+                    continue
+                feat[field.name()]=feature[field.name()]
+            
+            layer.addFeature(feat) 
+
         for feature in difference.getFeatures():
             feat = QgsFeature(layer.fields())
             feat["sobreposto"] = 2
-            feat.setGeometry(feature.geometry())
-            feat["geometria_aproximada"] = feature["geometria_aproximada"]
-            feat["tipo"] = feature["tipo"]
-            feat["nome"] = feature["nome"]
             feat["exibir_rotulo_aproximado"] = 1
+            feat.setGeometry(feature.geometry())
+
+            for field in layer.fields():
+                if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
+                    continue
+                feat[field.name()]=feature[field.name()]
+
             layer.addFeature(feat)
 
         layer.endEditCommand()

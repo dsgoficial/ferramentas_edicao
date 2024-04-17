@@ -89,21 +89,23 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
         layer_lim.deleteFeatures([feat.id() for feat in layer_lim.getFeatures()])
         for feature in intersect.getFeatures():
             feat = QgsFeature(layer_lim.fields())
-            feat["sobreposto"] = 1
             feat.setGeometry(feature.geometry())
-            feat["geometria_aproximada"] = feature["geometria_aproximada"]
-            feat["tipo"] = feature["tipo"]
-            feat["nome"] = feature["nome"]
+            for field in layer_lim.fields():
+                if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
+                    continue
+                feat[field.name()]=feature[field.name()]
             feat["exibir_rotulo_aproximado"] = 1
+            feat["sobreposto"] = 1
             layer_lim.addFeature(feat)
         for feature in difference.getFeatures():
             feat = QgsFeature(layer_lim.fields())
-            feat["sobreposto"] = 2
             feat.setGeometry(feature.geometry())
-            feat["geometria_aproximada"] = feature["geometria_aproximada"]
-            feat["tipo"] = feature["tipo"]
-            feat["nome"] = feature["nome"]
+            for field in layer_lim.fields():
+                if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
+                    continue
+                feat[field.name()]=feature[field.name()]
             feat["exibir_rotulo_aproximado"] = 1
+            feat["sobreposto"] = 2
             layer_lim.addFeature(feat)
 
         layer_lim.endEditCommand()
