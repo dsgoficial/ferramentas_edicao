@@ -43,9 +43,8 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.GEOGRAPHIC_BOUNDARY,
-                self.tr("Limite geográfico"),
+                self.tr("Selecionar a Camada de Moldura"),
                 [QgsProcessing.TypeVectorPolygon],
-                optional=True,
             )
         )
         self.scales = [
@@ -76,13 +75,15 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layerList = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
-        geographicBoundaryLyr = self.parameterAsLayer(
+        geographicBoundaryLyr = self.parameterAsVectorLayer(
             parameters, self.GEOGRAPHIC_BOUNDARY, context
         )
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         scale = self.scaleDict[self.scales[scaleIdx]]
         fields = QgsFields()
         fields.append(QgsField("flag", QVariant.String))
+        if layerList == []:
+            return {}
         (sink, sink_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,
@@ -168,6 +169,8 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
             )
             currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
+            if featsWithin.featureCount() == 0:
+                continue
             featsWithinIdList = [feat["featid"] for feat in featsWithin.getFeatures()]
             candidateFlagsLyr = algRunner.runFilterExpression(
                 inputLyr=labelPolygonsLayer,

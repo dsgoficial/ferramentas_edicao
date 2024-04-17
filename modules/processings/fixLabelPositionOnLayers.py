@@ -36,7 +36,6 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                 self.GEOGRAPHIC_BOUNDARY,
                 self.tr("Limite geográfico"),
                 [QgsProcessing.TypeVectorPolygon],
-                optional=True,
             )
         )
         self.scales = [
