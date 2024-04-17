@@ -55,7 +55,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             self.scale = 250000
 
         stepSize = 100 / (len(layer_list))
-        multiStepFeedback = QgsProcessingMultiStepFeedback(1, feedback)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
         multiStepFeedback.setProgressText("Submetendo tarefas para as threads")
         futures = set()
@@ -65,6 +65,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             if multiStepFeedback.isCanceled():
                 return {}
             futures.add(pool.submit(self.process_layer, layer))
+            multiStepFeedback.setProgress(current * stepSize)
+
+        multiStepFeedback.setCurrentStep(1)
+        multiStepFeedback.setProgressText("Avaliando os resultados")
+        for current, future in enumerate(concurrent.futures.as_completed(futures)):
+            if multiStepFeedback.isCanceled():
+                return {}
             multiStepFeedback.setProgress(current * stepSize)
 
         return {}
@@ -144,12 +151,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         layer.startEditing()
         layer.beginEditCommand("Atualizando atributos")
         lyrCrs = layer.dataProvider().crs()
-
-        for feature in layer.getFeatures():
-            updated_feature = processing_function(feature, lyrCrs)
-            if updated_feature:
-                layer.updateFeature(updated_feature)
-
+        update_func = lambda x: layer.updateFeature(processing_function(x, lyrCrs))
+        list(map(update_func, layer.getFeatures()))
         layer.endEditCommand()
 
     def defaultExtMineral(self, feature, lyrCrs):
