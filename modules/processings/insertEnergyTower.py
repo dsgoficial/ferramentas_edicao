@@ -53,7 +53,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.MIN_DISTANCE_FROM_FRAME,
                 self.tr("Distância mínima (em mm) com relação à moldura"),
                 minValue=0.0,
-                defaultValue=0.003,
+                defaultValue=3,
             )
         )
 
@@ -95,7 +95,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             scale = 250000
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-        distanceFromFrame = self.parameterAsDouble(parameters, self.MIN_DISTANCE_FROM_FRAME, context)
+        distanceFromFrame = self.parameterAsDouble(parameters, self.MIN_DISTANCE_FROM_FRAME, context)/1000
         multiStepFeedback = QgsProcessingMultiStepFeedback(17, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
