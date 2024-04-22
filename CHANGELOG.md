@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.19
+## 1.2.20
 
 Novas Funcionalidades
 
@@ -35,6 +35,7 @@ Correção de bug:
 - Corrigido o Configura os atributos de edição de Carta Topográfica;
 - Corrigido o Configura os atributos de edição de Carta Ortoimagem;
 - Corrigido Moldura obrigatória em processings que usavam moldura e estava opcional (fixar rótulos e rótulos fora da moldura);
+- Corrigido input nos processings setSobrepositionOrtho e setSobrepositionTopo
 
 ## 1.1.90
 

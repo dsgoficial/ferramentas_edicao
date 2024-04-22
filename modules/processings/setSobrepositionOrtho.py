@@ -79,7 +79,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_TO_CHECK_DRE,
-                self.tr('Selecione as camadas de conferência.'),
+                self.tr('Selecione a camada de trecho de drenagem linha.'),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue='elemnat_trecho_drenagem_l'
             )
@@ -87,7 +87,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_TO_CHECK_VIA,
-                self.tr('Selecione as camadas de conferência.'),
+                self.tr('Selecione a a camada via deslocamento linha.'),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue='infra_via_deslocamento_l'
             )
@@ -95,7 +95,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_TO_CHECK_FER,
-                self.tr('Selecione as camadas de conferência.'),
+                self.tr('Selecione a camada infra ferrovia linha.'),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue='infra_ferrovia_l'
             )
