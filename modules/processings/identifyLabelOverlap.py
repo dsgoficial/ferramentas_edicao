@@ -243,8 +243,8 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         for current, feat in enumerate(dissolvedLyr.getFeatures()):
             if multiStepFeedback.isCanceled():
                 break
-            if feat["featid"] == feat["featid_2"]:
-                continue
+            # if feat["featid"] == feat["featid_2"]:
+            #     continue
             flagFeat = QgsFeature(fields)
             flagFeat["id"] = flagId
             flagFeat["texto"] = "Rótulos sobrepostos"
