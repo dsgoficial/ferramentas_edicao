@@ -44,7 +44,7 @@ class AddNewLineCharToAttribute(BaseTools):
 
             if num_espacos == 0:
                 # Não há espaços no texto, retorna o texto original
-                return texto
+                return texto.replace("|", " ")
 
             # Calcula a posição mais central
             posicao_central = len(texto) // 2
