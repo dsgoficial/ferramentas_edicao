@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.23
+## 1.2.24
 
 Novas Funcionalidades
 
@@ -20,6 +20,7 @@ Melhorias:
 - Adicionada verificação de tipo de produto versus tipo de modelagem de banco de dados (para corrigir bug de exportar carta ortoimagem com modelagem de carta topográfica, o que implica falta da tabela edicao_articulacao_imagem_a);
 - O quadrado verde representando a área mapeada no diagrama de estados agora tem um tamanho mínimo a ser exibido (para melhorar situação em que a escala muito pequena dificultava a visualização do quadrado);
 - A ferramenta de pular linhas agora retorna ao estado original caso não tenha como inserir mais quebras;
+- Melhoria no cálculo de posicionamento de rótulo no diagrama de localização do produto
 
 Correção de bug:
 

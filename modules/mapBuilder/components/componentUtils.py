@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 from pathlib import Path
 
@@ -13,7 +14,7 @@ from numpy import (
     max as npmax,
 )
 from numpy.linalg import eigh, norm
-
+from qgis import processing
 from PyQt5.QtCore import QPointF, QSettings
 from PyQt5.QtXml import QDomDocument
 from qgis.core import (
@@ -94,7 +95,12 @@ class ComponentUtils:
         self, pathShp: Path, pathStyle: Path, lyrName: str
     ) -> QgsVectorLayer:
         if pathShp.is_file():
-            layer = QgsVectorLayer(str(pathShp), lyrName, "ogr")
+            layer_load = QgsVectorLayer(str(pathShp), lyrName, "ogr") 
+            if layer_load.isValid():
+                layer_load.setProviderEncoding("UTF-8")
+                layer_load.dataProvider().setEncoding("UTF-8")
+                layer = self.runAddAutoIncrementalField(layer_load) #deepcopy, layer is another instance
+            # layer = QgsVectorLayer(layer_load.source(), layer_load.name(), layer_load.providerType()) 
             if layer.isValid():
                 if pathStyle and isinstance(pathStyle, Path) and pathStyle.is_file():
                     layer.loadNamedStyle(str(pathStyle))
@@ -104,6 +110,37 @@ class ComponentUtils:
             return layer
         else:
             return None
+    
+    def runAddAutoIncrementalField(
+        self,
+        inputLyr,
+        feedback=None,
+        outputLyr=None,
+        fieldName=None,
+        start=1,
+        sortAscending=True,
+        sortNullsFirst=False,
+        is_child_algorithm=False,
+    ) -> QgsVectorLayer:
+        fieldName = "featid" if fieldName is None else fieldName
+        outputLyr = "memory:" if outputLyr is None else outputLyr
+        parameters = {
+            "INPUT": inputLyr,
+            "FIELD_NAME": fieldName,
+            "START": start,
+            "GROUP_FIELDS": [],
+            "SORT_EXPRESSION": "",
+            "SORT_ASCENDING": sortAscending,
+            "SORT_NULLS_FIRST": sortNullsFirst,
+            "OUTPUT": outputLyr,
+        }
+        output = processing.run(
+            "native:addautoincrementalfield",
+            parameters,
+            feedback=feedback,
+            is_child_algorithm=is_child_algorithm,
+        )
+        return output["OUTPUT"]
 
     def createLayersRasters(self, listDictImages):
         imageLayers = []

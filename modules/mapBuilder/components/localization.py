@@ -1,24 +1,15 @@
 from pathlib import Path
-
-from PyQt5.QtGui import QFont, QColor
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
     QgsLayerTreeGroup,
-    QgsPalLayerSettings,
     QgsPrintLayout,
     QgsProject,
     QgsRectangle,
-    QgsRuleBasedLabeling,
-    QgsTextBufferSettings,
-    QgsRuleBasedRenderer,
-    QgsSymbol,
-    QgsSymbolLayerRegistry,
-    QgsTextFormat,
     QgsVectorLayer,
-    QgsPainting,
+    QgsPointXY,
 )
 
 from ....interfaces.iComponent import IComponent
@@ -51,52 +42,58 @@ class Localization(ComponentUtils, IComponent):
         )
         mapIDsToBeDisplayed.append(mapAreaLayer.id())
 
-        # Getting state layer
-        stateLayerBackground = self.loadShapeLayer(
-            self.stateShpPath, "", "backgroundStates"
-        )
-        mapExtents = self.getExtent(
-            mapAreaFeature, stateLayerBackground, isInternational
-        )
-        self.setupBackgroundLayer(stateLayerBackground)
-        self.setLabel(stateLayerBackground, isInternational)
-        mapIDsToBeDisplayed.append(stateLayerBackground.id())
-
-        uriPath = self.shpFolder / "Paises_2020.shp"
-        stylePath = self.stylesFolder / "paises.qml"
-        layerCountryArea = self.loadShapeLayer(uriPath, stylePath, "countries")
-
         uriPath = self.shpFolder / "Oceano_2020.shp"
         stylePath = self.stylesFolder / "oceano.qml"
         layerOcean = self.loadShapeLayer(uriPath, stylePath, "ocean")
 
+        # Getting state layer
+        uriPath = self.shpFolder / "Estados_2020.shp"
         stylePath = self.stylesFolder / "estados.qml"
-        layerState = self.loadShapeLayer(self.stateShpPath, stylePath, "states")
+        stateLayerBackground = self.loadShapeLayer(
+            uriPath, stylePath, "backgroundstates"
+        )
+        mapExtents = self.getExtent(
+            mapAreaFeature, stateLayerBackground, isInternational
+        )
+        #calcular escala
+        if (mapItem := composition.itemById("localization")) is not None:
+            mapSize = mapItem.sizeWithUnits()
+            mapItem.setFixedSize(mapSize)
+            mapItem.zoomToExtent(mapExtents)
+            mapItem.setCrs(QgsCoordinateReferenceSystem("EPSG:4674"))
+            mapItem.refresh()
+            self.scale = mapItem.scale()
+
+        self.setupBackgroundLayer(stateLayerBackground)
+        self.setLabel(stateLayerBackground, isInternational, mapExtents)
+
+        uriPath = self.shpFolder / "Paises_2020.shp"
+        stylePath = self.stylesFolder / "paises.qml"
+        layerCountryArea = self.loadShapeLayer(uriPath, stylePath, "countries")
+        self.setupCountryLayer(layerCountryArea)
 
         mapIDsToBeDisplayed.extend(
-            [layerOcean.id(), layerCountryArea.id(), layerState.id()]
+            [layerOcean.id(), layerCountryArea.id(), stateLayerBackground.id()]
         )
 
-        layersToShow = (stateLayerBackground, layerState, layerCountryArea, layerOcean)
-        # Adding layers
+        layersToShow = [stateLayerBackground, layerCountryArea, layerOcean]
+        
+        self.updateComposition(composition, layersToShow, mapAreaLayer, mapExtents)
+        # # Adding layers
         for layer in layersToShow:
             instance.addMapLayer(layer, False)
 
         instance.addMapLayer(mapAreaLayer, False)
 
         # Updating composition
-        self.updateComposition(composition, layersToShow, mapAreaLayer, mapExtents)
 
         if showLayers:
             localizationGroupNode = QgsLayerTreeGroup("localization")
             localizationGroupNode.setItemVisibilityChecked(False)
-            for layer in (
+            for layer in [
                 mapAreaLayer,
-                stateLayerBackground,
-                layerState,
-                layerCountryArea,
-                layerOcean,
-            ):
+                *layersToShow       
+            ]:
                 localizationGroupNode.addLayer(layer)
             root = instance.layerTreeRoot()
             root.addChildNode(localizationGroupNode)
@@ -108,18 +105,18 @@ class Localization(ComponentUtils, IComponent):
         selectedFeature: QgsFeature,
         stateLayer: QgsVectorLayer,
         isInternational: bool,
-    ):
+    )->QgsRectangle:
         """Gets the component extents by checking intersections between selectedFeature and
         stateLayer.
         """
         self.estados = set()
+        self.paises = set()
         geom = selectedFeature.geometry()
         geomBbox = geom.boundingBox()
         rectBounds = [geomBbox]
         request = QgsFeatureRequest().setFilterRect(geomBbox)
         for stateFeature in stateLayer.getFeatures(request):
-            # Does not display foreign states if isInternational is false
-            if not isInternational and stateFeature["SIGLA_PAIS"] != "BR":
+            if not isInternational:
                 continue
             stateGeom = stateFeature.geometry()
             if stateGeom.isMultipart():
@@ -127,29 +124,17 @@ class Localization(ComponentUtils, IComponent):
                     singleStateAbsGeom = singleStateItem.boundary()
                     if singleStateAbsGeom.boundingBoxIntersects(geomBbox):
                         self.estados.add(stateFeature["SIGLA_UF"])
+                        self.paises.add(stateFeature["SIGLA_PAIS"])
                         rectBounds.append(singleStateAbsGeom.calculateBoundingBox())
             elif geom.intersects(stateGeom):
                 self.estados.add(stateFeature["SIGLA_UF"])
+                self.paises.add(stateFeature["SIGLA_PAIS"])
                 rectBounds.append(stateGeom.boundingBox())
         bound = rectBounds[0]
         if len(rectBounds) > 1:
             for stateBound in rectBounds[1:]:
                 bound.combineExtentWith(stateBound)
-        #self.growBound(bound)
         return bound
-
-    @staticmethod
-    def growBound(bounds):
-        """Grows the area ("zooms out") based on bounds area"""
-        area = bounds.area()
-        if area < 1:
-            bounds.grow(0.1)
-        elif 1 < area < 10:
-            bounds.grow(0.3)
-        elif 10 < area < 50:
-            bounds.grow(2.0)
-        else:
-            bounds.grow(2.3)
 
     def createGridRectangle(
         self, mapBounds: QgsRectangle, data: dict, layerName: str
@@ -178,77 +163,90 @@ class Localization(ComponentUtils, IComponent):
         rule.setFilterExpression(expression)
         return rule
 
-    def setupBackgroundLayer(self, stateLayer):
+    def setupBackgroundLayer(self, stateLayer: QgsVectorLayer):
         """
         Sets symbol rules for background layer in localization component
         """
-        symbol = QgsSymbol.defaultSymbol(stateLayer.geometryType())
-        registry = QgsSymbolLayerRegistry()
-        fillMeta = registry.symbolLayerMetadata("SimpleFill")
-        fillSymbolLayer = fillMeta.createSymbolLayer(
-            {"color": "211,211,211", "outline_width": 0.1}
-        )
-        # Replace the default style
-        symbol.deleteSymbolLayer(0)
-        symbol.appendSymbolLayer(fillSymbolLayer)
-
-        renderer = QgsRuleBasedRenderer(symbol)
-        rootRule = renderer.rootRule()
-        for state in self.estados:
-            # Appends the rule to the rootRule
-            rule = self.createStateRule(rootRule, state)
-            rootRule.appendChild(rule)
-        # Delete the default rule
-        rootRule.removeChildAt(0)
-        # Apply the renderer to the layer
-        stateLayer.setRenderer(renderer)
+        stateLayer.startEditing()
+        for f in stateLayer.getFeatures():
+            if f['SIGLA_UF'] in self.estados:
+                f['SELECT'] = 1
+            if f['SIGLA_PAIS'] in self.paises:
+                f['SHOW'] = 1
+            stateLayer.updateFeature(f)
+        stateLayer.commitChanges()
         stateLayer.triggerRepaint()
 
-    def setLabel(self, stateLayer, isInternational):
+    def setupCountryLayer(self, countryLayer: QgsVectorLayer):
+        countryLayer.startEditing()
+        for f in countryLayer.getFeatures():
+            if f['sigla'] in self.paises:
+                f['SELECT'] = 1
+            countryLayer.updateFeature(f)
+        countryLayer.commitChanges()
+        countryLayer.triggerRepaint()
+
+
+    def setLabel(self, stateLayer: QgsVectorLayer, isInternational, mapExtents = QgsRectangle()):
         """
         Sets label rules for layer in localization component
         """
         # Getting base rule
-        root = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
-
-        # Creating Rule
-        settings = QgsPalLayerSettings()
         if isInternational:
-            settings.fieldName = 'concat(upper("nome"), \' - \', upper("SIGLA_PAIS"))'
-        else:
-            settings.fieldName = 'upper("nome")'
-        settings.placement = QgsPalLayerSettings.Horizontal
-        settings.centroidInside = True
-        settings.isExpression = True
+            #pass
+            stateLayer.startEditing()
+            for f in stateLayer.getFeatures():
+                f['NOME']=f['NOME']+' - '+f["SIGLA_PAIS"]
+                stateLayer.updateFeature(f)
+            stateLayer.commitChanges()
 
-        textFormat = QgsTextFormat()
-        textFormat.setColor(QColor(0, 0, 0, 255))
-        textFormat.setSize(6)
-        textFormat.setFont(QFont("Noto Sans"))
-
-        # buffer
-        buffer = QgsTextBufferSettings()
-        buffer.setEnabled(True)
-        buffer.setSize(1)
-        buffer.setColor(QColor("#d3d3d3"))
-        buffer.setBlendMode(
-            QgsPainting.getCompositionMode(
-                stateLayer.customProperty(
-                    "labeling/bufferBlendMode", QgsPainting.BlendLighten
-                )
-            )
-        )
-        textFormat.setBuffer(buffer)
-        settings.setFormat(textFormat)
-
-        # Add rule to root and apply to stateLayer
-        rule = QgsRuleBasedLabeling.Rule(settings)
-        rule.setActive(True)
-        root.appendChild(rule)
-        rules = QgsRuleBasedLabeling(root)
-        stateLayer.setLabeling(rules)
-        stateLayer.setLabelsEnabled(True)
+        if mapExtents!=QgsRectangle():
+            extent = QgsGeometry().fromRect(mapExtents)
+            stateLayer.startEditing()
+            request = QgsFeatureRequest().setFilterRect(mapExtents)
+            for f in stateLayer.getFeatures(request):
+                if len(self.estados) == 1 and f['SIGLA_UF']in self.estados:
+                    continue
+                intersectionGeometry = extent.intersection(f.geometry())
+                pointGeom, radius = intersectionGeometry.poleOfInaccessibility(0.001)
+                height = (2.11/1000)*self.scale/111000 #altura para caber uma letra, 2.11mm
+                pointPoI = pointGeom.asPoint()
+                #pode haver limitacao vertical, mas o rotulo ainda caber horizontalmente, por isso, verificar maior retangulo interno
+                #para simplificar foi procurado maior retangulo interno centrado em um ponto (PoI) e altura fixa (uma linha)
+                maxRect = self.largestRectangleOnPoint(height, pointPoI, f.geometry(), 5) # 5 graus deve pegar todos os estados
+                maxWidth_m = maxRect.width()*111000
+                maxWidth_mm = 1000*maxWidth_m/self.scale
+                maxWordLen = max([len(word) for word in f["NOME"].split(' ')])
+                if maxWidth_mm<maxWordLen: # checar se rotulo cabe no poligono, diam menor que maior palavra do rotulo, cada caractere aprox 1mm
+                    f['NOME']=f['SIGLA_UF']+' - '+f["SIGLA_PAIS"]
+                    if maxWidth_mm<len(f['NOME']):
+                        f['NOME']= ''
+                        stateLayer.updateFeature(f)
+                        continue
+                pointRect = maxRect.center()
+                tolerancia_deslocamento_mm = 2.2 #pode deslocar rotulo ate 2.2mm, valor empirico, arbitrario
+                distancia_pontos_mm = 1000*pointRect.distance(pointPoI)*110000/self.scale
+                point = pointRect if distancia_pontos_mm<tolerancia_deslocamento_mm else pointPoI
+                f['LABEL_X'] = point.x()
+                f['LABEL_Y'] = point.y()
+                stateLayer.updateFeature(f)
+            stateLayer.commitChanges()
         stateLayer.triggerRepaint()
+
+    def largestRectangleOnPoint(self, height, center:QgsPointXY, polygon, maxWidth = 5)->QgsRectangle:
+        maxRect = QgsRectangle(center.x()-maxWidth/2, center.y()-height/2, center.x()+maxWidth/2, center.y()+height/2)
+        maxRectGeom = QgsGeometry.fromRect(maxRect)
+        inter = maxRectGeom.intersection(polygon)
+        minY = min(set(v.y() for v in inter.vertices()))
+        maxY = max(set(v.y() for v in inter.vertices()))
+        if maxY-minY<height*0.9:
+            return QgsRectangle()
+        xSmaller = set(v.x() for v in inter.vertices() if v.x()<center.x())
+        xBigger = set(v.x() for v in inter.vertices() if v.x()>center.x())
+        minX = max(xSmaller)   
+        maxX = min(xBigger)
+        return QgsRectangle(minX, minY, maxX, maxY)
+
 
     def updateComposition(
         self,
