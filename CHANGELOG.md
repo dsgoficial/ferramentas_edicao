@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.24
+## 1.2.25
 
 Novas Funcionalidades
 
@@ -39,7 +39,8 @@ Correção de bug:
 - Corrigido Moldura obrigatória em processings que usavam moldura e estava opcional (fixar rótulos e rótulos fora da moldura);
 - Corrigido input nos processings setSobrepositionOrtho e setSobrepositionTopo
 - Corrige símbolo de pista de pouso ponto e heliponto.
-- Corrigido bug na identifLabelOverlap
+- Corrigido bug na identifLabelOverlap;
+- Corrige bug na rotina de calcular o tamanho da fonte de rio para o caso dos dados em lat long;
 
 ## 1.1.90
 

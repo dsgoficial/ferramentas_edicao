@@ -5,7 +5,8 @@ from qgis.core import (
     QgsProcessingParameterEnum,
     QgsProcessingParameterDistance,
     QgsProcessingMultiStepFeedback,
-    NULL
+    NULL,
+    QgsProcessingException,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
@@ -63,6 +64,15 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
+        try:
+            from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
+        except ImportError:
+            raise QgsProcessingException(
+                self.tr(
+                    "This algorithm requires the plugin DSGTools. Please install this plugin and try again."
+                )
+            )
+
         drainageLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_LAYER_L, context
         )
@@ -80,25 +90,32 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
             self.scale = 100000
         elif gridScaleParam == 3:
             self.scale = 250000
+        algRunner = AlgRunner()
+        multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
+        currentStep = 0
+        multiStepFeedback.setCurrentStep(currentStep)
+        lines = algRunner.runCreateFieldWithExpression(
+            inputLyr=parameters[self.INPUT_LAYER_L],
+            expression="$id",
+            fieldName="featid",
+            fieldType=1,
+            context=context,
+            feedback=multiStepFeedback,
+        )
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        self.runCreateSpatialIndex(lines, feedback=multiStepFeedback)
 
-        lines = self.runAddCount(drainageLayer, feedback=feedback)
-        self.runCreateSpatialIndex(lines, feedback=feedback)
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        merged = self.getMergedRiver(lines, frameLayer, feedback=multiStepFeedback)
 
-        merged = self.getMergedRiver(lines, frameLayer)
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        id_to_tamanho = self.sizeText(merged, feedback=multiStepFeedback)
 
-        self.sizeText(merged)
-
-        bufferRiver = self.bufferRiver(merged, buffer)
-        self.runCreateSpatialIndex(bufferRiver, feedback=feedback)
-
-        joinedAttribute = self.joinAttribute(lines, bufferRiver)
-
-        id_to_tamanho = {}
-        for feature in joinedAttribute.getFeatures():
-            if feature["nome"] == NULL:
-                continue
-            id_to_tamanho[feature["id"]] = feature["join_tamanho_txt"]
-
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
         drainageLayer.startEditing()
         drainageLayer.beginEditCommand("Atualizando atributos")
         nFeats = drainageLayer.featureCount()
@@ -107,20 +124,19 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 return {}
             stepSize = 100 / nFeats
         for current, feature in enumerate(drainageLayer.getFeatures()):
-            if feedback is not None and feedback.isCanceled():
+            if multiStepFeedback.isCanceled():
                 break
             if feature["nome"] == NULL:
                 continue
-            feature["tamanho_txt"] = id_to_tamanho[feature["id"]]
+            feature["tamanho_txt"] = id_to_tamanho.get(feature.id(), 7)
             drainageLayer.updateFeature(feature)
-            if feedback is not None:
-                feedback.setProgress(current * stepSize) 
+            multiStepFeedback.setProgress(current * stepSize) 
         drainageLayer.endEditCommand()
 
         return {}
     
 
-    def getMergedRiver(self, layer, frame):
+    def getMergedRiver(self, layer, frame, feedback):
         merged = processing.run(
             "ferramentasedicao:mergerivers",
             {
@@ -128,15 +144,20 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 "INPUT_FRAME_A": frame,
                 "OUTPUT_LAYER_L": "TEMPORARY_OUTPUT",
             },
+            feedback=feedback
         )
         return merged["OUTPUT_LAYER_L"]
 
-    def sizeText(self, layer):
+    def sizeText(self, layer, feedback):
         lyrCrs = layer.dataProvider().crs()
-        layer.startEditing()
-        layer.beginEditCommand("Atualizando atributos")
-        for feature in layer.getFeatures():
-            attributeDict = {}
+        nFeatures = layer.featureCount()
+        if nFeatures == 0:
+            return
+        stepSize = 100/nFeatures
+        id_to_tamanho = dict()
+        for current, feature in enumerate(layer.getFeatures()):
+            if feedback.isCanceled():
+                return
             if feature['situacao_em_poligono'] == 1:
                 size = ProcessingUtils.getRiverOutPolyLabelFontSize(
                     feature, self.scale, lyrCrs
@@ -147,9 +168,9 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 )
             if self.productParam == 0:  # Para carta ortoimagem o tamanho mínimo é 7
                 size = size if size > 6 else 7
-            attributeDict[feature.fieldNameIndex("tamanho_txt")] = size
-            layer.changeAttributeValues(feature.id(), attributeDict)
-        layer.endEditCommand()
+            id_to_tamanho[feature["featid"]] = size
+            feedback.setProgress(current * stepSize)
+        return id_to_tamanho
 
     def bufferRiver(self, inputLyr, buffer):
         bufferRiver = processing.run(
@@ -201,7 +222,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
 
     def runCreateSpatialIndex(self, inputLyr, feedback):
         processing.run(
-            "native:createspatialindex", {"INPUT": inputLyr}
+            "native:createspatialindex", {"INPUT": inputLyr}, is_child_algorithm=True, feedback=feedback
         )
 
     def tr(self, string):
