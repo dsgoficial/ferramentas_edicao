@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.25
+## 1.2.26
 
 Novas Funcionalidades
 
@@ -41,6 +41,7 @@ Correção de bug:
 - Corrige símbolo de pista de pouso ponto e heliponto.
 - Corrigido bug na identifLabelOverlap;
 - Corrige bug na rotina de calcular o tamanho da fonte de rio para o caso dos dados em lat long;
+- Corrige bug na ferramenta de alternar justificativa quando o campo está nulo;
 
 ## 1.1.90
 

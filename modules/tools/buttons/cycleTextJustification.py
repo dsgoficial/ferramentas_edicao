@@ -2,6 +2,7 @@ from pathlib import Path
 from qgis.core import (
     QgsGeometry,
     Qgis,
+    NULL,
 )
 from .baseTools import BaseTools
 from PyQt5.QtWidgets import QMessageBox
@@ -58,7 +59,8 @@ class CycleTextJustification(BaseTools):
                         return
                 lyr.startEditing()
                 for feat in lyr.getSelectedFeatures():
-                    just = int(feat.attribute("justificativa_txt"))
+                    just = feat.attribute("justificativa_txt")
+                    just = int(just) if just != NULL else 0
                     if just == 9999:
                         lyr.changeAttributeValue(feat.id(), fieldIdx, 1)
                     else:
