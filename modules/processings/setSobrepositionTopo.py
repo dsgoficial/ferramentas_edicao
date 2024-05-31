@@ -164,11 +164,11 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         )
         return clipado["OUTPUT"]
 
-    def mergelayer(self, layers) -> QgsVectorLayer:
+    def runMergeLayer(self, layers):
         m = processing.run(
             "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "TEMPORARY_OUTPUT"}
         )
-        return m["OUTPUT"]
+        return m['OUTPUT']
 
     def runExtractByExpression(self, layer, expression):
         extractbyexpression = processing.run(
