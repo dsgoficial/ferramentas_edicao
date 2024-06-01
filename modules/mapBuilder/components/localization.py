@@ -55,6 +55,8 @@ class Localization(ComponentUtils, IComponent):
             mapAreaFeature, stateLayerBackground, isInternational
         )
         #calcular escala
+        if len(self.estados)==1 and mapExtents.area()<0.5:#menor que 0.5 graus, considerar caso ilha
+            mapExtents = self.getExtent2(mapAreaFeature)
         if (mapItem := composition.itemById("localization")) is not None:
             mapSize = mapItem.sizeWithUnits()
             mapItem.setFixedSize(mapSize)
@@ -139,6 +141,20 @@ class Localization(ComponentUtils, IComponent):
             for stateBound in rectBounds[1:]:
                 bound.combineExtentWith(stateBound)
         return bound
+    
+    def getExtent2(self, mapAreaFeature: QgsFeature):
+        gridBound = mapAreaFeature.geometry().boundingBox()
+        x_min, x_max = gridBound.xMinimum(), gridBound.xMaximum()
+        delta = round(abs(x_max - x_min) * 60)
+        angle_spliter = delta
+        centroid = mapAreaFeature.geometry().centroid()
+        x = centroid.asPoint().x()
+        x_min = x - (1 / 60) * angle_spliter
+        x_max = x + (1 / 60) * angle_spliter
+        y = centroid.asPoint().y()
+        y_min = y - (1 / 60) * angle_spliter
+        y_max = y + (1 / 60) * angle_spliter
+        return QgsRectangle(x_min, y_min, x_max, y_max)
 
     def createGridRectangle(
         self, mapBounds: QgsRectangle, data: dict, layerName: str
@@ -210,7 +226,7 @@ class Localization(ComponentUtils, IComponent):
             request = QgsFeatureRequest().setFilterRect(mapExtents)
             for f in stateLayer.getFeatures(request):
                 if len(self.estados) == 1 and f['SIGLA_UF']in self.estados:
-                    if mapExtents.area()<1.5: #menor que 1.5 graus, considerar caso ilha
+                    if mapExtents.area()<0.5: #menor que 0.5 graus, considerar caso ilha
                         f['SOLO']=1
                     stateLayer.updateFeature(f)
                     continue
@@ -220,29 +236,45 @@ class Localization(ComponentUtils, IComponent):
                 pointGeom, radius = intersectionGeometry.poleOfInaccessibility(0.0001)
                 if pointGeom.isNull():
                     continue
-                height = (1.5/1000)*self.scale/111000 #altura para caber uma letra, 2.11mm
+                maxChar = 15
+                height = (2/1000)*self.scale/111000 #altura para caber uma letra, 2mm
+                if len(f["NOME"])>maxChar:
+                    height*=2.5
                 pointPoI = pointGeom.asPoint()
                 radius_m = radius*111000
                 diam_mm = 2*1000*radius_m/self.scale
                 #pode haver limitacao vertical, mas o rotulo ainda caber horizontalmente, por isso, verificar maior retangulo interno
-                #para simplificar foi procurado maior retangulo interno centrado em um ponto (PoI) e altura fixa (uma linha)
+                #para simplificar foi procurado maior retangulo interno centrado em um ponto (PoI) e altura fixa
                 maxRect = self.largestRectangleOnPoint(height, pointPoI, intersectionGeometry, 5) # 5 graus deve pegar todos os estados
                 maxRectWidth_m = maxRect.width()*111000
                 maxRectWidth_mm = 1000*maxRectWidth_m/self.scale
-                maxWordLen = max([self.text_size_six_pt_in_mm(word) for word in f["NOME"].split(' ')])
+                #maxWordLen = max([self.text_size_six_pt_in_mm(word) for word in f["NOME"].split(' ')])
+                maxWordLen = self.text_size_six_pt_in_mm(self.truncate_string(f["NOME"], maxChar))
                 pointRect = maxRect.center()
-                tolerancia_deslocamento_mm = 2.2 #pode deslocar rotulo ate 2.2mm, valor empirico, arbitrario
+                tolerancia_deslocamento_mm = 200.2 #pode deslocar rotulo ate 2.2mm, valor empirico, arbitrario
                 distancia_pontos_mm = 1000*pointRect.distance(pointPoI)*110000/self.scale
-                point = pointRect if distancia_pontos_mm<tolerancia_deslocamento_mm else pointPoI
-                maxWidth_mm = maxRectWidth_mm if distancia_pontos_mm<tolerancia_deslocamento_mm else diam_mm
-                f['LABEL_X'] = point.x()
-                f['LABEL_Y'] = point.y()
-                if maxWidth_mm<maxWordLen: # checar se rotulo cabe no poligono
+                #point = pointRect if maxRectWidth_mm>diam_mm else pointPoI
+                point = pointRect
+                #maxWidth_mm = maxRectWidth_mm if distancia_pontos_mm<tolerancia_deslocamento_mm else diam_mm
+                #maxWidth_mm = max(diam_mm, maxRectWidth_mm)
+                maxWidth_mm = maxRectWidth_mm
+                if maxWidth_mm<maxWordLen*1.2: # checar se rotulo cabe no poligono
                     f['NOME']=f['SIGLA_UF']+' - '+f["SIGLA_PAIS"] if isInternational else f['SIGLA_UF']
-                    if maxWidth_mm<self.text_size_six_pt_in_mm(f['NOME']):
+                    height = (2/1000)*self.scale/111000 #altura para caber uma letra, 2mm
+                    maxRect = self.largestRectangleOnPoint(height, pointPoI, intersectionGeometry, 5) # 5 graus deve pegar todos os estados
+                    maxRectWidth_m = maxRect.width()*111000
+                    maxRectWidth_mm = 1000*maxRectWidth_m/self.scale
+                    maxWidth_mm = maxRectWidth_mm
+                    pointRect = maxRect.center()
+                    point = pointRect
+                    #maxWordLen = max([self.text_size_six_pt_in_mm(word) for word in f["NOME"].split(' ')])
+                    maxWordLen = self.text_size_six_pt_in_mm(self.truncate_string(f["NOME"], maxChar))
+                    if maxWidth_mm<self.text_size_six_pt_in_mm(f['NOME'])*1.15:
                         f['NOME']= ''
                         stateLayer.updateFeature(f)
                         continue
+                f['LABEL_X'] = point.x()
+                f['LABEL_Y'] = point.y()
                 stateLayer.updateFeature(f)
             stateLayer.commitChanges()
         stateLayer.triggerRepaint()
@@ -263,16 +295,25 @@ class Localization(ComponentUtils, IComponent):
         new_square_ymax = center_y + largest_length / 2.0
         return QgsRectangle(new_square_xmin, new_square_ymin, new_square_xmax, new_square_ymax)
     
+    def truncate_string(self,input_string, max_char):
+        if len(input_string) <= max_char:
+            return input_string
+        truncated = input_string[:max_char]
+        last_space = truncated.rfind(' ')
+        if last_space == -1:
+            return truncated
+        return truncated[:last_space]
+    
     def text_size_six_pt_in_mm(self, text):
         points_to_mm = 0.352778
         char_widths = {
             'a': 3.0, 'b': 3.0, 'c': 3.0, 'd': 3.0, 'e': 3.0, 'f': 2.0, 'g': 3.0, 'h': 3.0, 'i': 1.5, 'j': 1.5,
             'k': 3.0, 'l': 1.5, 'm': 4.5, 'n': 3.0, 'o': 3.0, 'p': 3.0, 'q': 3.0, 'r': 2.0, 's': 3.0, 't': 2.0,
-            'u': 3.0, 'v': 3.0, 'w': 4.5, 'x': 3.0, 'y': 3.0, 'z': 3.0, 'A': 4.0, 'B': 4.0, 'C': 4.0, 'D': 4.0,
-            'E': 4.0, 'F': 4.0, 'G': 4.0, 'H': 4.0, 'I': 1.5, 'J': 3.0, 'K': 4.0, 'L': 4.0, 'M': 5.0, 'N': 4.0,
-            'O': 4.0, 'P': 4.0, 'Q': 4.0, 'R': 4.0, 'S': 4.0, 'T': 4.0, 'U': 4.0, 'V': 4.0, 'W': 5.0, 'X': 4.0,
-            'Y': 4.0, 'Z': 4.0, '0': 3.0, '1': 3.0, '2': 3.0, '3': 3.0, '4': 3.0, '5': 3.0, '6': 3.0, '7': 3.0,
-            '8': 3.0, '9': 3.0, ' ': 2.0, '/': 2.0, ':': 1.5, ';': 1.5, ',': 1.5, '.': 1.5, '-': 2.0, '_': 3.0,
+            'u': 3.0, 'v': 3.0, 'w': 4.5, 'x': 3.0, 'y': 3.0, 'z': 3.0, 'A': 4.5, 'B': 4.5, 'C': 4.5, 'D': 4.5,
+            'E': 4.5, 'F': 4.5, 'G': 4.5, 'H': 4.5, 'I': 1.5, 'J': 3.0, 'K': 4.5, 'L': 4.5, 'M': 5.0, 'N': 4.5,
+            'O': 4.5, 'P': 4.5, 'Q': 4.5, 'R': 4.5, 'S': 4.5, 'T': 4.5, 'U': 4.5, 'V': 4.5, 'W': 5.0, 'X': 4.5,
+            'Y': 4.5, 'Z': 4.5, '0': 3.0, '1': 3.0, '2': 3.0, '3': 3.0, '4': 3.0, '5': 3.0, '6': 3.0, '7': 3.0,
+            '8': 3.0, '9': 3.0, ' ': 5.0, '/': 2.0, ':': 1.5, ';': 1.5, ',': 1.5, '.': 1.5, '-': 2.0, '_': 3.0,
             '+': 3.0, '=': 3.0, '!': 1.5, '?': 3.0, '@': 5.0, '#': 3.0, '$': 3.0, '%': 5.0, '^': 3.0, '&': 4.0,
             '*': 3.0, '(': 2.0, ')': 2.0, '[': 2.0, ']': 2.0, '{': 2.0, '}': 2.0, '<': 3.0, '>': 3.0, '|': 1.5,
             '\\': 2.0, '\'': 1.5, '\"': 2.0
@@ -294,8 +335,6 @@ class Localization(ComponentUtils, IComponent):
         inter = maxRectGeom.intersection(polygon)
         minY = min(set(v.y() for v in inter.vertices()))
         maxY = max(set(v.y() for v in inter.vertices()))
-        if maxY-minY<height*0.9:
-            return QgsRectangle()
         xSmaller = set(v.x() for v in inter.vertices() if v.x()<center.x())
         xBigger = set(v.x() for v in inter.vertices() if v.x()>center.x())
         minX = max(xSmaller)   

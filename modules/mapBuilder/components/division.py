@@ -12,7 +12,7 @@ from qgis.core import (
     QgsGeometry,
     QgsLayerTreeGroup,
     QgsLayoutItemLabel,
-    QgsLineString,
+    QgsPointXY,
     QgsPalLayerSettings,
     QgsProject,
     QgsRectangle,
@@ -87,13 +87,18 @@ class Division(ComponentUtils, IComponent):
         # Get map extent for intersections
         # TODO: Check possible refactor on getExtent
         outerExtents = self.getExtent(gridBound, mapAreaFeature, data)
+        if (mapItem := composition.itemById("map_divisao")) is not None:
+            mapItem.setExtent(outerExtents)
+            self.scale = mapItem.scale()
+        else: 
+            self.scale = 1
         (
             orderedCountiesByCentroidDistance,
             orderedCountiesNamesByArea,
         ) = self.getIntersections(layerCountyArea, outerExtents, mapAreaFeature, data)
 
         # Labeling counties
-        self.setStyles(
+        self.setLabels(
             layerCountyArea,
             orderedCountiesByCentroidDistance,
             orderedCountiesNamesByArea,
@@ -193,24 +198,23 @@ class Division(ComponentUtils, IComponent):
         m = round(distance.measureLine(geomOne, geomTwo), 2)
         return m
 
-    def checkRadiusPoleForLabel(self, countyFeature, outerExtentsGeometry, data):
+    def checkRadiusPoleForLabel(self, countyFeature: QgsFeature, outerExtentsGeometry, data):
         """
         Uses poleOfInaccessibility to decide the renderization of countyFeature if it intersects outerExtentsGeometry
         """
         epsg = data.get("epsg")
-        maxRadiusPerMapArea = 2300
-        outerExtentsArea = math.sqrt(outerExtentsGeometry.area())
         intersectionGeometry = countyFeature.geometry().intersection(
             outerExtentsGeometry
         )
         crsSrc = QgsCoordinateReferenceSystem("EPSG:4326")  # WGS 84
         crsExtents = QgsCoordinateReferenceSystem(f"EPSG:{epsg}")
         transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
-        intersectionGeometry.transform(transform)
-        _, radius = intersectionGeometry.poleOfInaccessibility(10)
-        radiusPerMapArea = radius / (outerExtentsArea + 1e-8)
-        show = False if radiusPerMapArea < maxRadiusPerMapArea else True
-        return radiusPerMapArea, show
+        #intersectionGeometry.transform(transform)
+        pointGeom, radius = intersectionGeometry.poleOfInaccessibility(0.0001)
+        point = pointGeom.asPoint() if not intersectionGeometry.isEmpty() else QgsPointXY()
+        if intersectionGeometry.isEmpty():
+            radius = 0
+        return point, radius
 
     # def convertPolygonToMultilineGeometry(self, geom):
     #     _geom = geom.asWkt()
@@ -222,7 +226,7 @@ class Division(ComponentUtils, IComponent):
     #     boundary_geom = QgsGeometry(boundary_polyline)
     #     return boundary_geom
 
-    def getIntersections(self, layerCounty, outerExtents, mapAreaFeature, data):
+    def getIntersections(self, layerCounty: QgsVectorLayer, outerExtents, mapAreaFeature, data):
         """
         Gets every county that intersects the outerExtents and decides if the county will be displayed or not.
         """
@@ -233,6 +237,7 @@ class Division(ComponentUtils, IComponent):
         countiesToDisplay = []
         mapAreaCentroid = mapAreaFeature.geometry().centroid().asPoint()
         request = QgsFeatureRequest().setFilterRect(outerExtents)
+        layerCounty.startEditing()
         for countyFeature in layerCounty.getFeatures(request):
             # Inside map extents
             name = countyFeature[self.nameAttribute]
@@ -246,9 +251,10 @@ class Division(ComponentUtils, IComponent):
                 labelTable = f"{name} - {county}"
                 if isInternational:
                     labelTable = f"{labelTable} / {country}"
-                _, show = self.checkRadiusPoleForLabel(
+                point, radius = self.checkRadiusPoleForLabel(
                     countyFeature, outerExtentsGeometry, data
                 )
+                show = radius/self.scale > 1.7e-8
                 if show:
                     countyIntersection = countyGeometry.intersection(
                         outerExtentsGeometry
@@ -265,6 +271,52 @@ class Division(ComponentUtils, IComponent):
                         ),
                     }
                     countiesToDisplay.append(countyDict)
+                    countyFeature["SELECT"]=1
+                    countyFeature["LABEL_X"]=point.x()
+                    countyFeature["LABEL_Y"]=point.y()
+                    layerCounty.updateFeature(countyFeature)
+        if countiesToDisplay == []:
+            biggest_radius = 0
+            for countyFeature in layerCounty.getFeatures(request):
+                name = countyFeature[self.nameAttribute]
+                county = countyFeature[self.countyAttribute]
+                country = countyFeature[self.countryAttribute]
+                countyGeometry = countyFeature.geometry()
+                if name and not isinstance(name, QVariant):
+                    # Does not display international counties if isInternational is False
+                    if not isInternational and country != "BR":
+                        continue
+                    labelTable = f"{name} - {county}"
+                    if isInternational:
+                        labelTable = f"{labelTable} / {country}"
+                    point, radius = self.checkRadiusPoleForLabel(
+                        countyFeature, outerExtentsGeometry, data
+                    )
+                    if radius>biggest_radius:
+                        biggest_radius=radius
+                        countyIntersection = countyGeometry.intersection(
+                            outerExtentsGeometry
+                        )
+                        countyCentroid = countyIntersection.centroid().asPoint()
+                        countyDict = {
+                            self.nameAttribute: name,
+                            self.countyAttribute: county,
+                            self.countryAttribute: country,
+                            "label": labelTable,
+                            "area": d.measureArea(countyGeometry),
+                            "centroidDistance": d.measureLine(
+                                mapAreaCentroid, countyCentroid
+                            ),
+                        }
+                        countiesToDisplay = [countyDict]
+                        selectedFeature = countyFeature
+            selectedFeature["SELECT"]=1
+            selectedFeature["SOLO"]=1
+            layerCounty.updateFeature(selectedFeature)
+
+
+        layerCounty.commitChanges()
+        layerCounty.triggerRepaint()
         orderedCountiesByCentroidDistance = sorted(
             countiesToDisplay, key=lambda x: x["centroidDistance"], reverse=False
         )
@@ -405,20 +457,27 @@ class Division(ComponentUtils, IComponent):
         rectangleLayer.triggerRepaint()
         return rectangleLayer
 
-    def setStyles(
-        self, layerCounty, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea
+    def setLabels(
+        self, layerCounty: QgsVectorLayer, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea
     ):
         rulesRoot = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
+        layerCounty.startEditing()
         for n in range(len(orderedCountiesNamesByArea)):
             value = orderedCountiesByCentroidDistance[n][self.nameAttribute].replace("'","\\'")
-            rule = self.createRules(
-                f"'{n+1}'",
-                f"\"{self.nameAttribute}\" = \'{value}\'",
-            )
-            rulesRoot.appendChild(rule)
-        rules = QgsRuleBasedLabeling(rulesRoot)
-        layerCounty.setLabeling(rules)
-        layerCounty.setLabelsEnabled(True)
+            # rule = self.createRules(
+            #     f"'{n+1}'",
+            #     f"\"{self.nameAttribute}\" = \'{value}\'",
+            # )
+            expression = f"\"{self.nameAttribute}\" = \'{value}\'"
+            request = QgsFeatureRequest().setFilterExpression(expression)
+            for feature in layerCounty.getFeatures(request):
+                feature["NUMBER"]=n+1
+            # rulesRoot.appendChild(rule)
+                layerCounty.updateFeature(feature)
+        layerCounty.commitChanges()
+        # rules = QgsRuleBasedLabeling(rulesRoot)
+        # layerCounty.setLabeling(rules)
+        # layerCounty.setLabelsEnabled(True)
         layerCounty.triggerRepaint()
 
     def updateComposition(

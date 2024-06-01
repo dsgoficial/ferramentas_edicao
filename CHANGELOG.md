@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.26
+## 1.2.27
 
 Novas Funcionalidades
 
@@ -42,6 +42,7 @@ Correção de bug:
 - Corrigido bug na identifLabelOverlap;
 - Corrige bug na rotina de calcular o tamanho da fonte de rio para o caso dos dados em lat long;
 - Corrige bug na ferramenta de alternar justificativa quando o campo está nulo;
+- Corrige bug na geração dos diagramas de localização e de divisão político-administrativa;
 
 ## 1.1.90
 
