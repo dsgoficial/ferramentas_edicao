@@ -653,7 +653,9 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             intersection.convertToMultiType()
             newFeat = QgsFeature(fields)
             newFeat.setGeometry(intersection)
-            newFeat["id"] = feat["id"] + "_" + feat["id_2"]
+            id1 = feat["id"] if feat["id"] is not None else 'NULL'
+            id2 = feat["id_2"] if feat["id_2"] is not None else 'NULL'
+            newFeat["id"] = id1 + "_" + id2
             newFeat["camada_1"] = feat1["nome_camada"]
             newFeat["camada_2"] = feat2["nome_camada"]
             features.add(newFeat)
