@@ -453,8 +453,15 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             progressStep = 100 / layer.featureCount()
         toDelete = set()
         for step, feat in enumerate(layer.getFeatures()):
+            # Precisa refatorar: filtrar casos
             # exceção caixa d'água (constr_deposito_p, tipo = 202), removendo para não verificar
             if layer_orig.name() == "constr_deposito_p" and feat["tipo"] == 202:
+                toDelete.add(feat.id())
+            # torre de energia (infra_elemento_energia_p, tipo = 1401) não tem simbologia, removendo para não gerar polígono inválido (altura e largura sera 0)
+            if layer_orig.name() == "infra_elemento_energia_p" and feat["tipo"] == 1401:
+                toDelete.add(feat.id())
+            # ponto cotado nao visivel (elemnat_ponto_cotado_p, suprimir_simbologia = 1) não tem simbologia (na verdade tem tamanho, mas é invisível), removendo para não verificar
+            if layer_orig.name() == "elemnat_ponto_cotado_p" and feat["suprimir_simbologia"] == 1:
                 toDelete.add(feat.id())
             if feedback is not None and feedback.isCanceled():
                 return

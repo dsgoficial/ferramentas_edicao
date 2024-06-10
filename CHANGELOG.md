@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.27
+## 1.2.28
 
 Novas Funcionalidades
 
@@ -43,6 +43,7 @@ Correção de bug:
 - Corrige bug na rotina de calcular o tamanho da fonte de rio para o caso dos dados em lat long;
 - Corrige bug na ferramenta de alternar justificativa quando o campo está nulo;
 - Corrige bug na geração dos diagramas de localização e de divisão político-administrativa;
+- Corrige bug na rotina para verificar sobreposição de símbolos (casos de ponto cotado com suprimir_simbologia e torre de energia, que não tem simbologia, em elemento de energia)
 
 ## 1.1.90
 
