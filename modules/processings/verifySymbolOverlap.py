@@ -593,7 +593,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         )
         multiStepFeedback.setCurrentStep(2)
         featSet = self.removeOutputFeatures(
-            featSet, frameLyr, min_area, multiStepFeedback
+            featSet, frameLyr, min_area, context, multiStepFeedback
         )
         list(
             map(
@@ -763,7 +763,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
 
     def removeInvisibleFeatures(self, layer: QgsVectorLayer, context) -> QgsVectorLayer:
         if layer.fields().indexFromName("visivel") == -1:
-            return
+            return layer
         newLayer = self.algRunner.runFilterExpression(layer, '"visivel" !=2', context)
         return newLayer
 
@@ -775,7 +775,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         context,
         feedback=None,
     ) -> QgsVectorLayer:
-        id_field = "new_id_field"
+        id_field = "newidfield"
         layer_with_id_field = self.addIdField(layer, id_field, context, None)
         renderer = layer_orig.renderer().clone()
         renderContext = QgsRenderContext()
@@ -800,11 +800,9 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             if layer_orig.name() == "infra_elemento_energia_p" and feat["tipo"] == 1401:
                 toDelete.add(feat[id_field])
             # ponto cotado nao visivel (elemnat_ponto_cotado_p, suprimir_simbologia = 1) não tem simbologia (na verdade tem tamanho, mas é invisível), removendo para não verificar
-            if (
-                layer_orig.name() == "elemnat_ponto_cotado_p"
-                and feat["suprimir_simbologia"] == 1
-            ):
-                toDelete.add(feat[id_field])
+            if layer_orig.name() == "elemnat_ponto_cotado_p":
+                if 'suprimir_simbologia' in [field.name() for field in layer_orig.fields()] and feat["suprimir_simbologia"] == 1:
+                    toDelete.add(feat[id_field])
             if feedback is not None and feedback.isCanceled():
                 return
             if multiStepFeedback is not None:
@@ -876,7 +874,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         # if len(toDelete) != 0:
         #     dp.deleteFeatures(list(toDelete))
         layer_with_id_field.commitChanges(),
-        filtro = f'("{id_field}" not in {",".join(map(str, toDelete))})'
+        filtro = f'"{id_field}" not in ({",".join(map(str, toDelete))})' if len(toDelete) != 0 else 'true'
         newLayer = self.algRunner.runFilterExpression(
             layer_with_id_field, filtro, context
         )
@@ -1036,7 +1034,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         return False
 
     def removeOutputFeatures(
-        self, feats: Set[QgsFeature], frameLyr: QgsVectorLayer, areaInput, feedback=None
+        self, feats: Set[QgsFeature], frameLyr: QgsVectorLayer, areaInput, context, feedback=None
     ):
         featsToRemove = set()
         if feedback is not None:
@@ -1049,7 +1047,19 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             geom = feat.geometry()
             if geom.area() < areaInput:
                 featsToRemove.add(feat)
-        return feats - featsToRemove
+        featsToKeep = feats - featsToRemove
+        if frameLyr is None:
+            return featsToKeep
+        dissolvedFrame = self.algRunner.runDissolve(frameLyr, context)
+        for feat in dissolvedFrame.getFeatures():
+            dissolved_geom = feat.geometry()
+            break
+        for feat in featsToKeep:
+            feat_geom = feat.geometry()
+            if not feat_geom.intersects(dissolved_geom):
+                featsToKeep.remove(feat)
+        return featsToKeep
+            
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
