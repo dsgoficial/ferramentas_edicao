@@ -950,20 +950,20 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-        layer1 = self.addIdField(layer1, "id_pol", context, None)
+        newlayer1 = self.addIdField(layer1, "id_pol", context, None)
         if feedback is not None:
             multiStepFeedback.setCurrentStep(1)
-        layer2 = self.addIdField(layer2, "id_pol", context, None)
+        newlayer2 = self.addIdField(layer2, "id_pol", context, None)
         if feedback is not None:
             multiStepFeedback.setCurrentStep(2)
-        self.algRunner.runCreateSpatialIndex(layer1, context, None)
+        self.algRunner.runCreateSpatialIndex(newlayer1, context, None)
         if feedback is not None:
             multiStepFeedback.setCurrentStep(3)
-        self.algRunner.runCreateSpatialIndex(layer2, context, None)
+        self.algRunner.runCreateSpatialIndex(newlayer2, context, None)
         if feedback is not None:
             multiStepFeedback.setCurrentStep(4)
         interLayer = self.algRunner.runJoinAttributesByLocation(
-            inputLyr=layer1, joinLyr=layer2, context=context
+            inputLyr=newlayer1, joinLyr=newlayer2, context=context
         )
         if feedback is not None:
             multiStepFeedback.setCurrentStep(5)
