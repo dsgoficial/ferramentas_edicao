@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.28
+## 1.2.29
 
 Novas Funcionalidades
 
@@ -44,6 +44,7 @@ Correção de bug:
 - Corrige bug na ferramenta de alternar justificativa quando o campo está nulo;
 - Corrige bug na geração dos diagramas de localização e de divisão político-administrativa;
 - Corrige bug na rotina para verificar sobreposição de símbolos (casos de ponto cotado com suprimir_simbologia e torre de energia, que não tem simbologia, em elemento de energia)
+- Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem
 
 ## 1.1.90
 

@@ -129,10 +129,6 @@
             "schema": "edgv"
         },
         {
-            "table": "constr_extracao_mineral_a",
-            "schema": "edgv"
-        },
-        {
             "table": "elemnat_elemento_hidrografico_a",
             "schema": "edgv"
         },
@@ -150,6 +146,10 @@
         },
         {
             "table": "elemnat_curva_nivel_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "constr_extracao_mineral_a",
             "schema": "edgv"
         },
         {
