@@ -673,7 +673,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             fieldName="nome_camada",
             feedback=multiStepFeedback,
             context=context,
-            is_child_algorithm=False,
+            is_child_algorithm=True,
         )
         if feedback is not None:
             multiStepFeedback.setCurrentStep(1)
@@ -684,7 +684,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             fieldName="x",
             feedback=multiStepFeedback,
             context=context,
-            is_child_algorithm=False,
+            is_child_algorithm=True,
         )
         if feedback is not None:
             multiStepFeedback.setCurrentStep(2)
@@ -710,23 +710,18 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         lyr_xy.commitChanges()
         if feedback is not None:
             multiStepFeedback.setCurrentStep(3)
-        layer = self.addIdField(lyr_xy, "new_id", context, multiStepFeedback)
+        layer = self.addIdField(lyr_xy.clone(), "new_id", context, multiStepFeedback)
         return layer
 
     def addIdField(
         self, layer: QgsVectorLayer, fieldName, context, feedback
     ) -> QgsVectorLayer:
-        if feedback is not None:
-            multiStepFeedback = QgsProcessingMultiStepFeedback(1, feedback)
-            multiStepFeedback.setCurrentStep(0)
-        else:
-            multiStepFeedback = None
         newLayer = self.algRunner.runCreateFieldWithExpression(
             inputLyr=layer,
             expression="$id",
             fieldType=0,
             fieldName=fieldName,
-            feedback=multiStepFeedback,
+            feedback=feedback,
             context=context,
             is_child_algorithm=False,
         )
@@ -746,9 +741,10 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         else:
             multiStepFeedback = None
         layer = self.removeInvisibleFeatures(layer_pre, context)
+        layerGeomType = layer.geometryType()
         if feedback is not None:
             multiStepFeedback.setCurrentStep(1)
-        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+        if layerGeomType == QgsWkbTypes.PolygonGeometry:
             return layer
         if feedback is not None:
             multiStepFeedback.setCurrentStep(2)
@@ -757,7 +753,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         )
         if feedback is not None:
             multiStepFeedback.setCurrentStep(3)
-        if layer.geometryType() == QgsWkbTypes.PointGeometry:
+        if layerGeomType == QgsWkbTypes.PointGeometry:
             self.updateGeometries(layer_buffered, multiStepFeedback)
         return layer_buffered
 
@@ -776,7 +772,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         feedback=None,
     ) -> QgsVectorLayer:
         id_field = "newidfield"
-        layer_with_id_field = self.addIdField(layer, id_field, context, None)
+        layer_with_id_field = self.addIdField(layer.clone(), id_field, context, None)
         renderer = layer_orig.renderer().clone()
         renderContext = QgsRenderContext()
         renderer.startRender(renderContext, layer_with_id_field.fields())
@@ -950,10 +946,10 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-        newlayer1 = self.addIdField(layer1, "id_pol", context, None)
+        newlayer1 = self.addIdField(layer1.clone(), "id_pol", context, None)
         if feedback is not None:
             multiStepFeedback.setCurrentStep(1)
-        newlayer2 = self.addIdField(layer2, "id_pol", context, None)
+        newlayer2 = self.addIdField(layer2.clone(), "id_pol", context, None)
         if feedback is not None:
             multiStepFeedback.setCurrentStep(2)
         self.algRunner.runCreateSpatialIndex(newlayer1, context, None)
