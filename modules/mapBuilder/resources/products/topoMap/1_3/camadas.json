@@ -197,10 +197,6 @@
             "schema": "edgv"
         },
         {
-            "table": "constr_extracao_mineral_a",
-            "schema": "edgv"
-        },
-        {
             "table": "infra_alteracao_fisiografica_antropica_a",
             "schema": "edgv"
         },
@@ -238,6 +234,10 @@
         },
         {
             "table": "edicao_borda_elemento_hidrografico_l",
+            "schema": "edgv"
+        },
+        {
+            "table": "constr_extracao_mineral_a",
             "schema": "edgv"
         },
         {
