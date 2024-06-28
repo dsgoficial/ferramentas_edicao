@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.29
+## 1.2.30
 
 Novas Funcionalidades
 
@@ -45,6 +45,7 @@ Correção de bug:
 - Corrige bug na geração dos diagramas de localização e de divisão político-administrativa;
 - Corrige bug na rotina para verificar sobreposição de símbolos (casos de ponto cotado com suprimir_simbologia e torre de energia, que não tem simbologia, em elemento de energia)
 - Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem
+- Corrigido os símbolos de constr_eficacao_a, infra_trecho_duto_l, infra_travessia_hidroviaria_l e infra_elemento_infraestrutura_l para contemplar mais classes em Carta Topográfica
 
 ## 1.1.90
 
