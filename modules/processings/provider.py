@@ -49,7 +49,8 @@ from .fixLabelPositionCRS import FixLabelPositionCRS
 from .sizeLabelLarge import SizeLabelLarge
 from .runRemoteProductExportAlgorithm import RunRemoteProductExportAlgorithm
 from .placeMasterContourLabels import PlaceMasterContourLabels
-
+from .reprojectAttributes import ReprojectAttributesAlgorithm
+from .createCustomPolygons import CreateCustomPolygons
 
 class Provider(QgsProcessingProvider):
     def __init__(self):
@@ -99,6 +100,8 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(IdentifyLabelsOutsideGeographicBoundary())
         self.addAlgorithm(RunRemoteProductExportAlgorithm())
         self.addAlgorithm(PlaceMasterContourLabels())
+        self.addAlgorithm(ReprojectAttributesAlgorithm())
+        self.addAlgorithm(CreateCustomPolygons())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
