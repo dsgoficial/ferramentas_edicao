@@ -197,7 +197,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
-        styleOption = "mapEdition"
+        styleOption = "map"
         groupName = "map"
 
         stylePath = os.path.join(
