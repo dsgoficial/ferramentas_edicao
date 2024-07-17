@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.31
+## 1.2.32
 
 Novas Funcionalidades
 
@@ -47,6 +47,7 @@ Correção de bug:
 - Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem
 - Corrigido os símbolos de constr_eficacao_a, infra_trecho_duto_l, infra_travessia_hidroviaria_l e infra_elemento_infraestrutura_l para contemplar mais classes em Carta Topográfica
 - Corrigido bug na definição da região da carta
+- Corrigido bug na Configura atributos de edição de carta topo e orto
 
 ## 1.1.90
 
