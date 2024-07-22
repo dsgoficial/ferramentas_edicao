@@ -416,7 +416,7 @@ class ConfigDefaults:
             / "resources"
             / "products"
             / "common"
-            / "creditsCartaMilitar.qpt",
+            / "creditsDSG.qpt",
             "qpt": {
                 25: {
                     "project": {
@@ -559,7 +559,7 @@ class ConfigDefaults:
             / "resources"
             / "products"
             / "common"
-            / "creditsCartaMilitar.qpt",
+            / "creditsDSG.qpt",
             "grid": {
                 "crossX": 4,
                 "crossY": 4,

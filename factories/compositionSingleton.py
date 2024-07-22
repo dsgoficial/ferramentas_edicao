@@ -32,6 +32,11 @@ class CompositionSingleton:
             / "resources"
             / "products"
         )
+        self.licenseDict = {
+            "CC-BY-SA 4.0": self.config.reproductionRights,
+            "CC-BY-NC-SA 4.0": Path(self.config.reproductionRights).parent / "reproductionRights_CC-BY-SA_4_0.qpt",
+            "Carta Militar": Path(self.config.reproductionRights).parent / "reproductionRights_Carta_Militar.qpt",
+        }
 
     def getComposition(self, jsonData: Dict) -> QgsPrintLayout:
         """Returns the desired composition based on product type and scale.
@@ -128,8 +133,9 @@ class CompositionSingleton:
             or productParams.get("qpt", {}).get(scale, {}).get("projectPath", None)
             or self.config.project
         )
-        repRightsQptPath = (
+        repRightsQptPath = self.licenseDict.get("Carta Militar", None) if productType in ("militaryOrthoMap", "militaryTopoMap") else (
             self.setupPath(jsonData.get("direitos_reproducao"))
+            or self.licenseDict.get(jsonData.get("licenca_produto", None), None)
             or productParams.get("qpt", {})
             .get(scale, {})
             .get("reproductionRightsPath", None)

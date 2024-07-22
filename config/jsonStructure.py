@@ -56,6 +56,12 @@ data_structure = {
             "children": None,
             "required": False,
         },
+        {
+            "key": "licenca_produto",
+            "type": str,
+            "children": None,
+            "required": False,
+        },
         {"key": "acesso_informacao", "type": str, "children": None, "required": False},
         {
             "key": "territorio_internacional",
@@ -256,6 +262,12 @@ data_structure = {
         {"key": "projeto", "type": str, "children": None, "required": False},
         {
             "key": "direitos_reproducao",
+            "type": str,
+            "children": None,
+            "required": False,
+        },
+        {
+            "key": "licenca_produto",
             "type": str,
             "children": None,
             "required": False,
@@ -880,6 +892,8 @@ def validate_keys(input_dict: dict, required=True, reference_schema=None) -> boo
         if key == "inom" and "center" in input_dict:
             continue
         if key not in input_dict:
+            return False
+        if key == "licenca_produto" and item[key] not in ["CC-BY-SA 4.0", "CC-BY-NC-SA 4.0"]:
             return False
         if item["type"] not in (dict, list):
             continue
