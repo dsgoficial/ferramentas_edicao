@@ -51,9 +51,6 @@ class CompositionSingleton:
         composition = self.createComposition(
                 productType, jsonData
             )
-        self.updatePrintLayoutFromConfig(
-            composition, jsonData
-        )
         return composition
 
     def createComposition(self, productType: str, jsonData: Dict) -> QgsPrintLayout:
