@@ -1,3 +1,4 @@
+from collections import defaultdict
 from pathlib import Path
 
 from qgis.core import (
@@ -32,6 +33,11 @@ class CompositionSingleton:
             / "resources"
             / "products"
         )
+        self.licenseDict = {
+            "CC-BY-SA 4.0": self.config.reproductionRights,
+            "CC-BY-NC-SA 4.0": Path(self.config.reproductionRights).parent / "reproductionRights_CC-BY-SA_4_0.qpt",
+            "Carta Militar": Path(self.config.reproductionRights).parent / "reproductionRights_Carta_Militar.qpt",
+        }
 
     def getComposition(self, jsonData: Dict) -> QgsPrintLayout:
         """Returns the desired composition based on product type and scale.
@@ -42,21 +48,10 @@ class CompositionSingleton:
             The QgsPrintLayout associated to the request
         """
         productType = jsonData.get("productType")
-        scale = (
-            jsonData.get("scale")
-            if productType != "omMap"
-            else jsonData.get("omTemplateType")
-        )
-        if productType not in self.compositions:
-            self.compositions[productType] = dict()
-        if scale not in self.compositions.get(productType):
-            self.compositions[productType][scale] = self.createComposition(
+        composition = self.createComposition(
                 productType, jsonData
             )
-        self.updatePrintLayoutFromConfig(
-            self.compositions[productType][scale], jsonData
-        )
-        return self.compositions[productType][scale]
+        return composition
 
     def createComposition(self, productType: str, jsonData: Dict) -> QgsPrintLayout:
         productType = jsonData.get("productType")
@@ -128,8 +123,9 @@ class CompositionSingleton:
             or productParams.get("qpt", {}).get(scale, {}).get("projectPath", None)
             or self.config.project
         )
-        repRightsQptPath = (
+        repRightsQptPath = self.licenseDict.get("Carta Militar", None) if productType in ("militaryOrthoMap", "militaryTopoMap") else (
             self.setupPath(jsonData.get("direitos_reproducao"))
+            or self.licenseDict.get(jsonData.get("licenca_produto", None), None)
             or productParams.get("qpt", {})
             .get(scale, {})
             .get("reproductionRightsPath", None)
@@ -139,32 +135,18 @@ class CompositionSingleton:
             self.setupPath(jsonData.get("acesso_informacao"))
             or self.config.bdgexAcessInfo
         )
-        if headerQptPath != self.previousQpts.get(
-            "header"
-        ) or composition != self.compositions.get(productType, {}).get(scale):
-            self.previousQpts["header"] = headerQptPath
-            headerConfig = productParams["qpt"][scale]["header"].copy()
-            headerConfig.update({"path": headerQptPath})
-            qptsToInsert.append(headerConfig)
-        if projectQptPath != self.previousQpts.get(
-            "project"
-        ) or composition != self.compositions.get(productType, {}).get(scale):
-            self.previousQpts["project"] = projectQptPath
-            projectConfig = productParams["qpt"][scale]["project"].copy()
-            projectConfig.update({"path": projectQptPath})
-            qptsToInsert.append(projectConfig)
-        if repRightsQptPath != self.previousQpts.get(
-            "reproductionRights"
-        ) or composition != self.compositions.get(productType, {}).get(scale):
-            self.previousQpts["reproductionRights"] = repRightsQptPath
-            repRightsConfig = productParams["qpt"][scale]["reproductionRights"].copy()
-            repRightsConfig.update({"path": repRightsQptPath})
-            qptsToInsert.append(repRightsConfig)
-        if productType in ("omMap") and (
-            bdgexAcessInfoQptPath != self.previousQpts.get("bdgexAcessInfo")
-            or composition != self.compositions.get(productType, {}).get(scale)
-        ):
-            self.previousQpts["bdgexAcessInfo"] = bdgexAcessInfoQptPath
+        headerConfig = productParams["qpt"][scale]["header"].copy()
+        headerConfig.update({"path": headerQptPath})
+        qptsToInsert.append(headerConfig)
+
+        projectConfig = productParams["qpt"][scale]["project"].copy()
+        projectConfig.update({"path": projectQptPath})
+        qptsToInsert.append(projectConfig)
+
+        repRightsConfig = productParams["qpt"][scale]["reproductionRights"].copy()
+        repRightsConfig.update({"path": repRightsQptPath})
+        qptsToInsert.append(repRightsConfig)
+        if productType in ("omMap"):
             bdgexAcessInfoConfig = productParams["qpt"][scale]["bdgexAcessInfo"].copy()
             bdgexAcessInfoConfig.update({"path": bdgexAcessInfoQptPath})
             qptsToInsert.append(bdgexAcessInfoConfig)

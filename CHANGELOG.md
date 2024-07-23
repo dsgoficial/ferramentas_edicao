@@ -1,12 +1,14 @@
 # CHANGELOG
 
-## 1.2.32
+## 1.2.33
+
 
 Novas Funcionalidades
 
 - Modo de exportação via linha de comando funcionando;
 - Novo processo de execução remota por meio do serviço de edição;
 - Novo processo de fixar o rótulo de curvas mestras;
+- Adiciona licença nos produtos;
 
 Melhorias:
 
@@ -20,7 +22,7 @@ Melhorias:
 - Adicionada verificação de tipo de produto versus tipo de modelagem de banco de dados (para corrigir bug de exportar carta ortoimagem com modelagem de carta topográfica, o que implica falta da tabela edicao_articulacao_imagem_a);
 - O quadrado verde representando a área mapeada no diagrama de estados agora tem um tamanho mínimo a ser exibido (para melhorar situação em que a escala muito pequena dificultava a visualização do quadrado);
 - A ferramenta de pular linhas agora retorna ao estado original caso não tenha como inserir mais quebras;
-- Melhoria no cálculo de posicionamento de rótulo no diagrama de localização do produto
+- Melhoria no cálculo de posicionamento de rótulo no diagrama de localização do produto;
 
 Correção de bug:
 
@@ -48,6 +50,9 @@ Correção de bug:
 - Corrigido os símbolos de constr_eficacao_a, infra_trecho_duto_l, infra_travessia_hidroviaria_l e infra_elemento_infraestrutura_l para contemplar mais classes em Carta Topográfica
 - Corrigido bug na definição da região da carta
 - Corrigido bug na Configura atributos de edição de carta topo e orto
+- Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem;
+- Corrige bug no diagrama de elevação de não aparecerem as valas;
+- Corrige bug de múltiplos projetos aparecerem sobrepostos na exportação em lote;
 
 ## 1.1.90
 

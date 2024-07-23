@@ -358,6 +358,16 @@ class MapBuildController(MapBuildControllerUtils):
             if not self.debugMode and not jsonStructure.validate_dict(
                 jsonData, product_type=jsonData["tipo_produto"]
             ):
+                if "licenca_produto" in jsonData and jsonData["licenca_produto"] not in ["CC-BY-SA 4.0", "CC-BY-NC-SA 4.0"]:
+                    if is_headless:
+                        print("""Licença inválida no json. Os únicos valores possíveis aceitos são "CC-BY-SA 4.0" ou "CC-BY-NC-SA 4.0" """)
+                    else:
+                        QMessageBox.warning(
+                            self.dlg,
+                            "Erro",
+                            """Licença inválida no json. Os únicos valores possíveis aceitos são "CC-BY-SA 4.0" ou "CC-BY-NC-SA 4.0" """
+                            "Corrija o json e tente novamente.",
+                        )
                 missingKeySet = jsonStructure.find_missing_required_keys_on_dict(
                     jsonData, product_type=jsonData["tipo_produto"]
                 )

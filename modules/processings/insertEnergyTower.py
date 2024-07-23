@@ -222,13 +222,16 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             ):
                 attributeMapping = {x: feat.attribute(x) for x in requiredAttrs}
             isBoundVertex = False
-            request = QgsFeatureRequest().setFilterRect(feat.geometry().boundingBox())
-            geomEngine = QgsGeometry.createGeometryEngine(feat.geometry().constGet())
+            geom = feat.geometry()
+            bbox = geom.boundingBox()
+            request = QgsFeatureRequest().setFilterRect(bbox)
+            geomEngine = QgsGeometry.createGeometryEngine(geom.constGet())
             geomEngine.prepareGeometry()
             for featBound in bounds.getFeatures(request):
                 if multiStepFeedback.isCanceled():
                     break
-                if geomEngine.touches(featBound.geometry().constGet()):
+                featGeom = featBound.geometry()
+                if geomEngine.touches(featGeom.constGet()):
                     isBoundVertex = True
                     break
             if not isBoundVertex:
