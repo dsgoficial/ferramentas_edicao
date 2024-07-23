@@ -2,6 +2,7 @@
 
 ## 1.2.33
 
+
 Novas Funcionalidades
 
 - Modo de exportação via linha de comando funcionando;
@@ -45,6 +46,10 @@ Correção de bug:
 - Corrige bug na ferramenta de alternar justificativa quando o campo está nulo;
 - Corrige bug na geração dos diagramas de localização e de divisão político-administrativa;
 - Corrige bug na rotina para verificar sobreposição de símbolos (casos de ponto cotado com suprimir_simbologia e torre de energia, que não tem simbologia, em elemento de energia)
+- Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem
+- Corrigido os símbolos de constr_eficacao_a, infra_trecho_duto_l, infra_travessia_hidroviaria_l e infra_elemento_infraestrutura_l para contemplar mais classes em Carta Topográfica
+- Corrigido bug na definição da região da carta
+- Corrigido bug na Configura atributos de edição de carta topo e orto
 - Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem;
 - Corrige bug no diagrama de elevação de não aparecerem as valas;
 - Corrige bug de múltiplos projetos aparecerem sobrepostos na exportação em lote;

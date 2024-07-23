@@ -59,6 +59,8 @@ class Subtitle(ComponentUtils, IComponent):
             mapAreaFeature.geometry().boundingBox()
         )
         for feat in layer.getFeatures(request):
+            if not feat.geometry().intersects(mapAreaFeature.geometry()):
+                continue
             if isInternational:
                 if name := feat.attribute("nome"):
                     intersections.add(name)
