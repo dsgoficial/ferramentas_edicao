@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.30
+## 1.2.33
 
 Novas Funcionalidades
 
@@ -21,7 +21,7 @@ Melhorias:
 - Adicionada verificação de tipo de produto versus tipo de modelagem de banco de dados (para corrigir bug de exportar carta ortoimagem com modelagem de carta topográfica, o que implica falta da tabela edicao_articulacao_imagem_a);
 - O quadrado verde representando a área mapeada no diagrama de estados agora tem um tamanho mínimo a ser exibido (para melhorar situação em que a escala muito pequena dificultava a visualização do quadrado);
 - A ferramenta de pular linhas agora retorna ao estado original caso não tenha como inserir mais quebras;
-- Melhoria no cálculo de posicionamento de rótulo no diagrama de localização do produto
+- Melhoria no cálculo de posicionamento de rótulo no diagrama de localização do produto;
 
 Correção de bug:
 
@@ -45,7 +45,9 @@ Correção de bug:
 - Corrige bug na ferramenta de alternar justificativa quando o campo está nulo;
 - Corrige bug na geração dos diagramas de localização e de divisão político-administrativa;
 - Corrige bug na rotina para verificar sobreposição de símbolos (casos de ponto cotado com suprimir_simbologia e torre de energia, que não tem simbologia, em elemento de energia)
-- Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem
+- Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem;
+- Corrige bug no diagrama de elevação de não aparecerem as valas;
+- Corrige bug de múltiplos projetos aparecerem sobrepostos na exportação em lote;
 
 ## 1.1.90
 
