@@ -1,3 +1,4 @@
+from collections import defaultdict
 from pathlib import Path
 
 from qgis.core import (
@@ -53,15 +54,16 @@ class CompositionSingleton:
             else jsonData.get("omTemplateType")
         )
         if productType not in self.compositions:
-            self.compositions[productType] = dict()
-        if scale not in self.compositions.get(productType):
-            self.compositions[productType][scale] = self.createComposition(
+            self.compositions[productType] = defaultdict(dict)
+        license = "Carta Militar" if productType in ("militaryOrthoMap", "militaryTopoMap") else jsonData.get("licenca_produto", "CC-BY-SA 4.0")
+        if scale not in self.compositions.get(productType, {}).get(license, {}):
+            self.compositions[productType][license][scale] = self.createComposition(
                 productType, jsonData
             )
         self.updatePrintLayoutFromConfig(
-            self.compositions[productType][scale], jsonData
+            self.compositions[productType][license][scale], jsonData
         )
-        return self.compositions[productType][scale]
+        return self.compositions[productType][license][scale]
 
     def createComposition(self, productType: str, jsonData: Dict) -> QgsPrintLayout:
         productType = jsonData.get("productType")
