@@ -279,6 +279,10 @@
             "schema": "edgv"
         },
         {
+            "table": "infra_vala_l",
+            "schema": "edgv"
+        },
+        {
             "table": "edicao_area_sem_dados_a",
             "schema": "edgv"
         },
