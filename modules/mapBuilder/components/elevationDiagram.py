@@ -90,6 +90,14 @@ class ElevationDiagram(ComponentUtils, IComponent):
                 str(self.stylesFolder / "elemnat_trecho_drenagem_l.qml"), True
             )
             drenagemLayer.triggerRepaint()
+        valaLayer = next(
+            filter(lambda x: x.name() == "infra_vala_l", layers), None
+        )
+        if valaLayer is not None:
+            valaLayer.loadNamedStyle(
+                str(self.stylesFolder / "infra_vala_l.qml"), True
+            )
+            valaLayer.triggerRepaint()
         elevationPointsIdx, pointsLayer = next(
             filter(lambda x: x[1].name() == "elemnat_ponto_cotado_p", enumerate(layers))
         )
