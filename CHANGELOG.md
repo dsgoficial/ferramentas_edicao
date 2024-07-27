@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.33
+## 1.2.34
 
 
 Novas Funcionalidades
@@ -23,6 +23,7 @@ Melhorias:
 - O quadrado verde representando a área mapeada no diagrama de estados agora tem um tamanho mínimo a ser exibido (para melhorar situação em que a escala muito pequena dificultava a visualização do quadrado);
 - A ferramenta de pular linhas agora retorna ao estado original caso não tenha como inserir mais quebras;
 - Melhoria no cálculo de posicionamento de rótulo no diagrama de localização do produto;
+- Adicionada generalização automática de drenagens no diagrama de elevação;
 
 Correção de bug:
 

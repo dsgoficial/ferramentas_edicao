@@ -82,21 +82,38 @@ class ElevationDiagram(ComponentUtils, IComponent):
                 str(self.stylesFolder / "cobter_massa_dagua_a.qml"), True
             )
             massaDaguaLayer.triggerRepaint()
-        drenagemLayer = next(
-            filter(lambda x: x.name() == "elemnat_trecho_drenagem_l", layers), None
+        drenagemIdx, drenagemLayer = next(
+            filter(
+                lambda x: x[1].name() == "elemnat_trecho_drenagem_l", enumerate(layers)
+            ),
+            None,
         )
+
         if drenagemLayer is not None:
+            drenagemLayer = processing.run(
+                "native:addautoincrementalfield",
+                {
+                    "INPUT": drenagemLayer.clone(),
+                    "FIELD_NAME": " AUTO",
+                    "START": 0,
+                    "MODULUS": 0,
+                    "GROUP_FIELDS": [],
+                    "SORT_EXPRESSION": "",
+                    "SORT_ASCENDING": True,
+                    "SORT_NULLS_FIRST": False,
+                    "OUTPUT": "memory:",
+                },
+            )["OUTPUT"]
+            drenagemLayer.setName("elemnat_trecho_drenagem_l_diagrama")
+            QgsProject.instance().addMapLayer(drenagemLayer, False)
             drenagemLayer.loadNamedStyle(
                 str(self.stylesFolder / "elemnat_trecho_drenagem_l.qml"), True
             )
             drenagemLayer.triggerRepaint()
-        valaLayer = next(
-            filter(lambda x: x.name() == "infra_vala_l", layers), None
-        )
+            layers[drenagemIdx] = drenagemLayer
+        valaLayer = next(filter(lambda x: x.name() == "infra_vala_l", layers), None)
         if valaLayer is not None:
-            valaLayer.loadNamedStyle(
-                str(self.stylesFolder / "infra_vala_l.qml"), True
-            )
+            valaLayer.loadNamedStyle(str(self.stylesFolder / "infra_vala_l.qml"), True)
             valaLayer.triggerRepaint()
         elevationPointsIdx, pointsLayer = next(
             filter(lambda x: x[1].name() == "elemnat_ponto_cotado_p", enumerate(layers))
@@ -128,6 +145,7 @@ class ElevationDiagram(ComponentUtils, IComponent):
             elevationSlicingRasterLyr=elevationSlicingRasterLyr,
             classThresholdDict=classThresholdDict,
         )
+
         if showLayers:
             elevationDiagramGroupNode = QgsLayerTreeGroup("elevationDiagram")
             elevationDiagramGroupNode.setItemVisibilityChecked(False)
@@ -135,6 +153,16 @@ class ElevationDiagram(ComponentUtils, IComponent):
                 elevationDiagramGroupNode.addLayer(layer)
             root = QgsProject.instance().layerTreeRoot()
             root.addChildNode(elevationDiagramGroupNode)
+
+        self.generalizeDrainages(
+            drainageLyr=drenagemLayer,
+            ditchLyr=valaLayer,
+            waterBody=massaDaguaLayer,
+            areaWithoutDataLyr=areaWithoutDataLayer,
+            geographicBoundsLyr=geographicBoundsLyr,
+            composition=composition,
+            scale=data.get("scale"),
+        )
 
         mapIDsToBeDisplayed = [x.id() for x in layers]
 
@@ -367,6 +395,65 @@ class ElevationDiagram(ComponentUtils, IComponent):
         if elevationSlicingRasterLyr is not None and nClasses > 1:
             self.setBarClassText(composition, nClasses)
             self.setRangeClass(composition, nClasses, classThresholdDict)
+
+    def generalizeDrainages(
+        self,
+        drainageLyr: QgsVectorLayer,
+        ditchLyr: QgsVectorLayer,
+        waterBody: QgsVectorLayer,
+        areaWithoutDataLyr: QgsVectorLayer,
+        geographicBoundsLyr: QgsVectorLayer,
+        composition: QgsPrintLayout,
+        scale: int,
+    ):
+        mapItem = composition.itemById("elevationDiagram")
+        if mapItem is None:
+            return
+        minDrainageValue = mapItem.scale() * 1e-2
+        reprojectedBounds = (
+            self.cloneVectorLayerReproject(
+                layer=geographicBoundsLyr,
+                layerName="aux_moldura_buffer_menos",
+                crsDest=drainageLyr.crs(),
+            )
+            if geographicBoundsLyr.crs() != drainageLyr.crs()
+            else geographicBoundsLyr
+        )
+        bufferedBounds = processing.run(
+            "native:buffer",
+            {
+                "INPUT": reprojectedBounds,
+                "DISTANCE": -1 * scale,
+                "SEGMENTS": 5,
+                "END_CAP_STYLE": 1,
+                "JOIN_STYLE": 1,
+                "MITER_LIMIT": 2,
+                "DISSOLVE": False,
+                "SEPARATE_DISJOINT": False,
+                "OUTPUT": "memory:",
+            },
+        )["OUTPUT"]
+        processing.run(
+            "dsgtools:generalizenetworkedgeswithlengthalgorithm",
+            {
+                "NETWORK_LAYER": drainageLyr,
+                "MIN_LENGTH": minDrainageValue,
+                "POINT_CONSTRAINT_LAYER_LIST": [],
+                "LINE_CONSTRAINT_LAYER_LIST": list(
+                    filter(lambda x: x is not None, [ditchLyr])
+                ),
+                "POLYGON_CONSTRAINT_LAYER_LIST": list(
+                    filter(lambda x: x is not None, [waterBody, areaWithoutDataLyr])
+                ),
+                "GEOGRAPHIC_BOUNDS_LAYER": bufferedBounds,
+                "GROUP_BY_SPATIAL_PARTITION": False,
+                "METHOD": 0,
+            },
+            context=QgsProcessingContext(),
+            feedback=QgsProcessingFeedback(),
+        )
+        drainageLyr.commitChanges()
+        mapItem.refresh()
 
     @staticmethod
     def getTextFormat():
