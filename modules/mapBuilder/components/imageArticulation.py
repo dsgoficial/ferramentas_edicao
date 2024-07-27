@@ -80,7 +80,7 @@ class ImageArticulation(ComponentUtils, IComponent):
                 "INPUT": singleParts,
                 "TARGET_CRS": QgsCoordinateReferenceSystem(4674),
                 "OUTPUT": "memory:",
-            }
+            },
         )["OUTPUT"]
         outputLyr = processing.run(
             "qgis:advancedpythonfieldcalculator",

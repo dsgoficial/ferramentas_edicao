@@ -797,7 +797,11 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                 toDelete.add(feat[id_field])
             # ponto cotado nao visivel (elemnat_ponto_cotado_p, suprimir_simbologia = 1) não tem simbologia (na verdade tem tamanho, mas é invisível), removendo para não verificar
             if layer_orig.name() == "elemnat_ponto_cotado_p":
-                if 'suprimir_simbologia' in [field.name() for field in layer_orig.fields()] and feat["suprimir_simbologia"] == 1:
+                if (
+                    "suprimir_simbologia"
+                    in [field.name() for field in layer_orig.fields()]
+                    and feat["suprimir_simbologia"] == 1
+                ):
                     toDelete.add(feat[id_field])
             if feedback is not None and feedback.isCanceled():
                 return
@@ -870,7 +874,11 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         # if len(toDelete) != 0:
         #     dp.deleteFeatures(list(toDelete))
         layer_with_id_field.commitChanges(),
-        filtro = f'"{id_field}" not in ({",".join(map(str, toDelete))})' if len(toDelete) != 0 else 'true'
+        filtro = (
+            f'"{id_field}" not in ({",".join(map(str, toDelete))})'
+            if len(toDelete) != 0
+            else "true"
+        )
         newLayer = self.algRunner.runFilterExpression(
             layer_with_id_field, filtro, context
         )
@@ -1030,7 +1038,12 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         return False
 
     def removeOutputFeatures(
-        self, feats: Set[QgsFeature], frameLyr: QgsVectorLayer, areaInput, context, feedback=None
+        self,
+        feats: Set[QgsFeature],
+        frameLyr: QgsVectorLayer,
+        areaInput,
+        context,
+        feedback=None,
     ):
         featsToRemove = set()
         if feedback is not None:
@@ -1055,7 +1068,6 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             if not feat_geom.intersects(dissolved_geom):
                 featsToKeep.remove(feat)
         return featsToKeep
-            
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

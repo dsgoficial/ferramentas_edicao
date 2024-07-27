@@ -35,8 +35,10 @@ class CompositionSingleton:
         )
         self.licenseDict = {
             "CC-BY-SA 4.0": self.config.reproductionRights,
-            "CC-BY-NC-SA 4.0": Path(self.config.reproductionRights).parent / "reproductionRights_CC-BY-SA_4_0.qpt",
-            "Carta Militar": Path(self.config.reproductionRights).parent / "reproductionRights_Carta_Militar.qpt",
+            "CC-BY-NC-SA 4.0": Path(self.config.reproductionRights).parent
+            / "reproductionRights_CC-BY-SA_4_0.qpt",
+            "Carta Militar": Path(self.config.reproductionRights).parent
+            / "reproductionRights_Carta_Militar.qpt",
         }
 
     def getComposition(self, jsonData: Dict) -> QgsPrintLayout:
@@ -48,9 +50,7 @@ class CompositionSingleton:
             The QgsPrintLayout associated to the request
         """
         productType = jsonData.get("productType")
-        composition = self.createComposition(
-                productType, jsonData
-            )
+        composition = self.createComposition(productType, jsonData)
         return composition
 
     def createComposition(self, productType: str, jsonData: Dict) -> QgsPrintLayout:
@@ -62,14 +62,20 @@ class CompositionSingleton:
         )
         compositionRootPath = self.resourcesPath / productType
         if productType == "omMap":
-            compositionRootPath = compositionRootPath / jsonData.get("versionFolder", "1_0")
+            compositionRootPath = compositionRootPath / jsonData.get(
+                "versionFolder", "1_0"
+            )
             qptNameText = f"{productType}{scale}"
         elif productType in ("orthoMap", "militaryOrthoMap"):
             qptNameText = "orthoMap"
-            compositionRootPath = self.resourcesPath / "orthoMap" / jsonData.get("versionFolder", "2_4")
+            compositionRootPath = (
+                self.resourcesPath / "orthoMap" / jsonData.get("versionFolder", "2_4")
+            )
         elif productType in ("topoMap", "militaryTopoMap"):
             qptNameText = "topoMap"
-            compositionRootPath = self.resourcesPath / "topoMap" / jsonData.get("versionFolder", "1_3")
+            compositionRootPath = (
+                self.resourcesPath / "topoMap" / jsonData.get("versionFolder", "1_3")
+            )
         else:
             qptNameText = f"{productType}"
         if scale == 250:
@@ -123,13 +129,17 @@ class CompositionSingleton:
             or productParams.get("qpt", {}).get(scale, {}).get("projectPath", None)
             or self.config.project
         )
-        repRightsQptPath = self.licenseDict.get("Carta Militar", None) if productType in ("militaryOrthoMap", "militaryTopoMap") else (
-            self.setupPath(jsonData.get("direitos_reproducao"))
-            or self.licenseDict.get(jsonData.get("licenca_produto", None), None)
-            or productParams.get("qpt", {})
-            .get(scale, {})
-            .get("reproductionRightsPath", None)
-            or self.config.reproductionRights
+        repRightsQptPath = (
+            self.licenseDict.get("Carta Militar", None)
+            if productType in ("militaryOrthoMap", "militaryTopoMap")
+            else (
+                self.setupPath(jsonData.get("direitos_reproducao"))
+                or self.licenseDict.get(jsonData.get("licenca_produto", None), None)
+                or productParams.get("qpt", {})
+                .get(scale, {})
+                .get("reproductionRightsPath", None)
+                or self.config.reproductionRights
+            )
         )
         bdgexAcessInfoQptPath = (
             self.setupPath(jsonData.get("acesso_informacao"))

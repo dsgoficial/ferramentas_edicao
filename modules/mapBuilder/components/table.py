@@ -222,7 +222,9 @@ class Table(IComponent, ComponentUtils):
                     {"class": "left", "rowspan": nContourInTable},
                     "Equidistância das curvas de nível",
                 )
-                texto_equidistancia = f"Mestra: {curveData[2]} m; Normal: {curveData[1]} m"
+                texto_equidistancia = (
+                    f"Mestra: {curveData[2]} m; Normal: {curveData[1]} m"
+                )
                 if displayAuxContour == 1:
                     texto_equidistancia += f"; Auxiliar:  {curveData[0]} m"
                 _ = self.generateElement(
@@ -231,10 +233,14 @@ class Table(IComponent, ComponentUtils):
                 _tmp = self.generateElement(firstTable, "tr")
             _tmp = self.generateElement(firstTable, "tr")
             _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Criação")
-            _ = self.generateElement(_tmp, "td", {"class": "right"}, tecnicalInfo.get("data_criacao"))
+            _ = self.generateElement(
+                _tmp, "td", {"class": "right"}, tecnicalInfo.get("data_criacao")
+            )
             _tmp = self.generateElement(firstTable, "tr")
             _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Edição")
-            _ = self.generateElement(_tmp, "td", {"class": "right"}, self.getDataEdicao())
+            _ = self.generateElement(
+                _tmp, "td", {"class": "right"}, self.getDataEdicao()
+            )
             _tmp = self.generateElement(firstTable, "tr")
             _ = self.generateElement(_tmp, "td", {"class": "left"}, "Erro gráfico")
             _ = self.generateElement(_tmp, "td", {"class": "right"}, "0,2 mm na escala")
@@ -354,7 +360,7 @@ class Table(IComponent, ComponentUtils):
             )
 
             label.setText(et.tostring(root, encoding="unicode", method="html"))
-    
+
     def getDataEdicao(self):
         now = datetime.datetime.now()
         return f"{now.day:02d}/{now.month:02d}/{now.year}"
@@ -387,13 +393,18 @@ class Table(IComponent, ComponentUtils):
             root = htmlData.getroot()
             table = next(root.iter("table"))
             _tmp = self.generateElement(table, "tr")
-            self.generateElement(_tmp, "td", {"class": "left"}, "Endereço da Organização Militar")
+            self.generateElement(
+                _tmp, "td", {"class": "left"}, "Endereço da Organização Militar"
+            )
             self.generateElement(
                 _tmp, "td", {"class": "right"}, data.get("endereco", "")
             )
             _tmp = self.generateElement(table, "tr")
             self.generateElement(
-                _tmp, "td", {"class": "left", "rowspan": "3"}, "Coordenadas geográficas da Organização Militar"
+                _tmp,
+                "td",
+                {"class": "left", "rowspan": "3"},
+                "Coordenadas geográficas da Organização Militar",
             )
             self.generateElement(
                 _tmp,
@@ -411,7 +422,10 @@ class Table(IComponent, ComponentUtils):
             )
             _tmp = self.generateElement(table, "tr")
             self.generateElement(
-                _tmp, "td", {"class": "left", "rowspan": "3"}, "Coordenadas UTM da Organização Militar"
+                _tmp,
+                "td",
+                {"class": "left", "rowspan": "3"},
+                "Coordenadas UTM da Organização Militar",
             )
             self.generateElement(
                 _tmp,
@@ -430,7 +444,9 @@ class Table(IComponent, ComponentUtils):
                 _tmp, "td", {"class": "right"}, f"Y: {omUTMPoint.y():.3f} m"
             )
             _tmp = self.generateElement(table, "tr")
-            self.generateElement(_tmp, "td", {"class": "left"}, "Subordinação da Organização Militar")
+            self.generateElement(
+                _tmp, "td", {"class": "left"}, "Subordinação da Organização Militar"
+            )
             self.generateElement(
                 _tmp,
                 "td",
@@ -438,28 +454,45 @@ class Table(IComponent, ComponentUtils):
                 data.get("subordinacao2") or data.get("subordinacao1"),
             )
             _tmp = self.generateElement(table, "tr")
-            self.generateElement(_tmp, "td", {"class": "left"}, "Altitude aproximada da Organização Militar")
+            self.generateElement(
+                _tmp,
+                "td",
+                {"class": "left"},
+                "Altitude aproximada da Organização Militar",
+            )
             self.generateElement(
                 _tmp, "td", {"class": "right"}, data.get("altitude", 0)
             )
             _tmp = self.generateElement(table, "tr")
-            self.generateElement(_tmp, "td", {"class": "left"}, "Área aproximada da Organização Militar")
+            self.generateElement(
+                _tmp, "td", {"class": "left"}, "Área aproximada da Organização Militar"
+            )
             self.generateElement(
                 _tmp, "td", {"class": "right"}, f"{omUTMGeom.area():.3f} m²"
             )
             _tmp = self.generateElement(table, "tr")
-            self.generateElement(_tmp, "td", {"class": "left"}, "Perímetro aproximado da Organização Militar")
+            self.generateElement(
+                _tmp,
+                "td",
+                {"class": "left"},
+                "Perímetro aproximado da Organização Militar",
+            )
             self.generateElement(
                 _tmp, "td", {"class": "right"}, f"{omUTMGeom.length():.3f} m"
             )
             _tmp = self.generateElement(table, "tr")
             self.generateElement(_tmp, "td", {"class": "left"}, "Data de Criação")
             self.generateElement(
-                _tmp, "td", {"class": "right"}, data.get("info_tecnica").get("data_criacao")
+                _tmp,
+                "td",
+                {"class": "right"},
+                data.get("info_tecnica").get("data_criacao"),
             )
             _tmp = self.generateElement(table, "tr")
             _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Edição")
-            _ = self.generateElement(_tmp, "td", {"class": "right"}, self.getDataEdicao())
+            _ = self.generateElement(
+                _tmp, "td", {"class": "right"}, self.getDataEdicao()
+            )
 
             tableComp.setText(et.tostring(root, encoding="unicode", method="html"))
 

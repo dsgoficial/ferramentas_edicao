@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 
+
 class InsertEnergyTower(QgsProcessingAlgorithm):
 
     INPUT_ENERGY = "INPUT_ENERGY"
@@ -35,7 +36,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.INPUT_ENERGY,
                 self.tr("Selecionar camada de linha de energia"),
                 [QgsProcessing.TypeVectorLine],
-                defaultValue='infra_elemento_energia_l',
+                defaultValue="infra_elemento_energia_l",
             )
         )
 
@@ -44,7 +45,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.INPUT_TOWER,
                 self.tr("Selecionar camada de edição de torre de energia"),
                 [QgsProcessing.TypeVectorPoint],
-                defaultValue='edicao_simb_torre_energia_p',
+                defaultValue="edicao_simb_torre_energia_p",
             )
         )
 
@@ -75,7 +76,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.INPUT_FRAME,
                 self.tr("Selecionar camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
-                defaultValue='aux_moldura_a',
+                defaultValue="aux_moldura_a",
             )
         )
 
@@ -95,7 +96,10 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             scale = 250000
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-        distanceFromFrame = self.parameterAsDouble(parameters, self.MIN_DISTANCE_FROM_FRAME, context)/1000
+        distanceFromFrame = (
+            self.parameterAsDouble(parameters, self.MIN_DISTANCE_FROM_FRAME, context)
+            / 1000
+        )
         multiStepFeedback = QgsProcessingMultiStepFeedback(17, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
@@ -107,13 +111,19 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        frameLinesLayer = self.convertPolygonToLines(frameLayer, feedback=multiStepFeedback)
+        frameLinesLayer = self.convertPolygonToLines(
+            frameLayer, feedback=multiStepFeedback
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        frameLinesLayer = algRunner.runExplodeLines(inputLyr=frameLinesLayer, context=context, feedback=multiStepFeedback)
+        frameLinesLayer = algRunner.runExplodeLines(
+            inputLyr=frameLinesLayer, context=context, feedback=multiStepFeedback
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        self.runCreateSpatialIndex(frameLinesLayer, feedback=multiStepFeedback, is_child_algorithm=True)
+        self.runCreateSpatialIndex(
+            frameLinesLayer, feedback=multiStepFeedback, is_child_algorithm=True
+        )
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
@@ -132,7 +142,9 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Clipando com a área"))
-        energyLyr = self.clipLayer(energyLyrBeforeClip, frameLayer, feedback=multiStepFeedback)
+        energyLyr = self.clipLayer(
+            energyLyrBeforeClip, frameLayer, feedback=multiStepFeedback
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         self.runCreateSpatialIndex(energyLyr, feedback=multiStepFeedback)
@@ -144,11 +156,15 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Cortando as linhas"))
-        pointsAndAngles = self.chopLineLayer(energyLyr, distance, feedback=multiStepFeedback)
+        pointsAndAngles = self.chopLineLayer(
+            energyLyr, distance, feedback=multiStepFeedback
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Gravando saida"))
-        self.populateEnergyTowerSymbolLayer(tower, pointsAndAngles, feedback=multiStepFeedback)
+        self.populateEnergyTowerSymbolLayer(
+            tower, pointsAndAngles, feedback=multiStepFeedback
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Avaliando elementos perto da moldura"))
@@ -156,7 +172,9 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Removendo pontos próximos à moldura"))
-        self.removePointsNextToFrame(frameLinesLayer, tower, distanceNextToFrame, feedback=multiStepFeedback)
+        self.removePointsNextToFrame(
+            frameLinesLayer, tower, distanceNextToFrame, feedback=multiStepFeedback
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         distanceToRemoveEnergySymbol = self.getChopDistance(tower, scale * 0.003)
@@ -203,15 +221,16 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         bounds = processing.run(
-            "native:boundary", {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"},
-            feedback=multiStepFeedback
+            "native:boundary",
+            {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"},
+            feedback=multiStepFeedback,
         )["OUTPUT"]
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         nFeats = output.featureCount()
         if nFeats == 0:
             return pointsAndAngles
-        stepSize = 100/nFeats
+        stepSize = 100 / nFeats
         for current, feat in enumerate(output.getFeatures()):
             if multiStepFeedback.isCanceled():
                 break
@@ -304,26 +323,29 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(cacheLyr, context, feedback=multiStepFeedback, is_child_algorithm=True)
+        algRunner.runCreateSpatialIndex(
+            cacheLyr, context, feedback=multiStepFeedback, is_child_algorithm=True
+        )
         buffer = algRunner.runBuffer(
-            frameLinesLayer,
-            distance=distance,
-            context=context,
-            is_child_algorithm=True
+            frameLinesLayer, distance=distance, context=context, is_child_algorithm=True
         )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(buffer, context, feedback=multiStepFeedback, is_child_algorithm=True)
+        algRunner.runCreateSpatialIndex(
+            buffer, context, feedback=multiStepFeedback, is_child_algorithm=True
+        )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         pointsToDeleteLyr = algRunner.runExtractByLocation(
-            cacheLyr, buffer, context, predicate=[AlgRunner.Intersect], feedback=multiStepFeedback
+            cacheLyr,
+            buffer,
+            context,
+            predicate=[AlgRunner.Intersect],
+            feedback=multiStepFeedback,
         )
         if pointsToDeleteLyr.featureCount() == 0:
             return
-        expression = (
-            f""" "featid" in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"""
-        )
+        expression = f""" "featid" in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"""
         request = QgsFeatureRequest().setFilterExpression(expression)
         featIdList = [feat["featid"] for feat in pointsToDeleteLyr.getFeatures(request)]
         if len(featIdList) == 0:
@@ -352,7 +374,10 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
     def runCreateSpatialIndex(self, inputLyr, feedback, is_child_algorithm=True):
         processing.run(
-            "native:createspatialindex", {"INPUT": inputLyr}, feedback=feedback, is_child_algorithm=is_child_algorithm
+            "native:createspatialindex",
+            {"INPUT": inputLyr},
+            feedback=feedback,
+            is_child_algorithm=is_child_algorithm,
         )
 
     def tr(self, string):

@@ -39,7 +39,9 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterDistance(
                 self.BUFFER,
-                self.tr("Digite a distância que 'passa' da moldura"), # valor para ser considerado no buffer para englobar as partes clipadas dos rios que passam da moldura
+                self.tr(
+                    "Digite a distância que 'passa' da moldura"
+                ),  # valor para ser considerado no buffer para englobar as partes clipadas dos rios que passam da moldura
                 parentParameterName=self.INPUT_FRAME_A,
             )
         )
@@ -130,11 +132,10 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 continue
             feature["tamanho_txt"] = id_to_tamanho.get(feature.id(), 7)
             drainageLayer.updateFeature(feature)
-            multiStepFeedback.setProgress(current * stepSize) 
+            multiStepFeedback.setProgress(current * stepSize)
         drainageLayer.endEditCommand()
 
         return {}
-    
 
     def getMergedRiver(self, layer, frame, feedback):
         merged = processing.run(
@@ -144,7 +145,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 "INPUT_FRAME_A": frame,
                 "OUTPUT_LAYER_L": "TEMPORARY_OUTPUT",
             },
-            feedback=feedback
+            feedback=feedback,
         )
         return merged["OUTPUT_LAYER_L"]
 
@@ -153,12 +154,12 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         nFeatures = layer.featureCount()
         if nFeatures == 0:
             return
-        stepSize = 100/nFeatures
+        stepSize = 100 / nFeatures
         id_to_tamanho = dict()
         for current, feature in enumerate(layer.getFeatures()):
             if feedback.isCanceled():
                 return
-            if feature['situacao_em_poligono'] == 1:
+            if feature["situacao_em_poligono"] == 1:
                 size = ProcessingUtils.getRiverOutPolyLabelFontSize(
                     feature, self.scale, lyrCrs
                 )
@@ -222,7 +223,10 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
 
     def runCreateSpatialIndex(self, inputLyr, feedback):
         processing.run(
-            "native:createspatialindex", {"INPUT": inputLyr}, is_child_algorithm=True, feedback=feedback
+            "native:createspatialindex",
+            {"INPUT": inputLyr},
+            is_child_algorithm=True,
+            feedback=feedback,
         )
 
     def tr(self, string):

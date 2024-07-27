@@ -132,7 +132,9 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                     layer_marker, pointsAndAnglesN, n + 1
                 )
                 distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
-                self.removePointsNextToFrame(frameLinesLayer, layer_marker, distanceNextToFrame)
+                self.removePointsNextToFrame(
+                    frameLinesLayer, layer_marker, distanceNextToFrame
+                )
 
         return {}
 
@@ -183,7 +185,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             "native:boundary", {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"}
         )["OUTPUT"]
         bounds = processing.run(
-            "native:multiparttosingleparts", {"INPUT": bounds,"OUTPUT": "memory:"}
+            "native:multiparttosingleparts", {"INPUT": bounds, "OUTPUT": "memory:"}
         )["OUTPUT"]
         for feat in output.getFeatures():
             if (
@@ -218,8 +220,8 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 "FIELD": "sigla",
                 "OPERATOR": 9,
                 "VALUE": "",
-                "OUTPUT": "memory:"
-            }
+                "OUTPUT": "memory:",
+            },
         )["OUTPUT"]
         collected = processing.run(
             "native:dissolve",
@@ -235,7 +237,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 "INPUT": collected,
                 "OVERLAY": frame,
                 "OUTPUT": "memory:",
-            }
+            },
         )["OUTPUT"]
 
     def findMaxRoadIndentificationNumber(self, pointsAndAngles):

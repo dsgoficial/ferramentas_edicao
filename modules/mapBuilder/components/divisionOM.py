@@ -110,7 +110,9 @@ class DivisionOM(ComponentUtils, IComponent):
         """
         geom = mapAreaFeature.geometry()
         request = QgsFeatureRequest().setFilterRect(geom.boundingBox())
-        countyFeatList = [f for f in countyLayer.getFeatures(request) if f.geometry().intersects(geom)]
+        countyFeatList = [
+            f for f in countyLayer.getFeatures(request) if f.geometry().intersects(geom)
+        ]
         countyExtents = countyFeatList[0].geometry().boundingBox()
         for other in countyFeatList[1::]:
             otherExtents = other.geometry().boundingBox()
@@ -118,7 +120,9 @@ class DivisionOM(ComponentUtils, IComponent):
         countyExtents.grow(0.1)
         return countyFeatList, countyExtents
 
-    def updateCountyLayerStyle(self, countyFeatList: List[QgsFeature], countyLayer: QgsVectorLayer):
+    def updateCountyLayerStyle(
+        self, countyFeatList: List[QgsFeature], countyLayer: QgsVectorLayer
+    ):
         """Creates the rendering rules for countyLayer by handling its simbology and labeling.
         Args:
             county: a QgsFeature from the States shapefile the county to be displayed
@@ -139,7 +143,7 @@ class DivisionOM(ComponentUtils, IComponent):
         renderer = QgsRuleBasedRenderer(symbol)
         rootRule = renderer.rootRule()
         for county in countyFeatList:
-            nome = county.attribute("NOME").replace('\'', "\\'")
+            nome = county.attribute("NOME").replace("'", "\\'")
             countyRule = self.createCountyRenderingRule(rootRule, nome)
             rootRule.appendChild(countyRule)
         rootRule.removeChildAt(0)

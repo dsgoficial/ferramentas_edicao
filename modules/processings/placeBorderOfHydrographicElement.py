@@ -70,7 +70,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
             parameters, self.INPUT_SYMBOL_LAYER, context
         )
         if inputLyr.featureCount() == 0 or inputLyr.selectedFeatureCount() == 0:
-            selectedText = 'selecionadas ' if onlySelected else ''
+            selectedText = "selecionadas " if onlySelected else ""
             feedback.pushInfo(f"Não há feições {selectedText}na camada de entrada")
             return {}
         algRunner = AlgRunner()

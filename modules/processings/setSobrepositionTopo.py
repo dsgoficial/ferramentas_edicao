@@ -97,7 +97,9 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         ferrovia_filtrada = self.runExtractByExpression(
             layer_fer, expression=""" "visivel" = 1 """
         )
-        merged = self.runMergeLayer([drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada])
+        merged = self.runMergeLayer(
+            [drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada]
+        )
 
         # Dissolver a moldura e clipar o poligono
         moldura_merged = self.dissolve(moldura)
@@ -125,7 +127,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         layer.beginEditCommand("Iniciando edição.")
         intersect = self.intersect(line_layer, merged)
         difference = self.difference(line_layer, merged)
-        
+
         layer.deleteFeatures([feat.id() for feat in layer.getFeatures()])
 
         for feature in intersect.getFeatures():
@@ -137,9 +139,9 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             for field in layer.fields():
                 if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
                     continue
-                feat[field.name()]=feature[field.name()]
-            
-            layer.addFeature(feat) 
+                feat[field.name()] = feature[field.name()]
+
+            layer.addFeature(feat)
 
         for feature in difference.getFeatures():
             feat = QgsFeature(layer.fields())
@@ -150,7 +152,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             for field in layer.fields():
                 if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
                     continue
-                feat[field.name()]=feature[field.name()]
+                feat[field.name()] = feature[field.name()]
 
             layer.addFeature(feat)
 
@@ -168,7 +170,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         m = processing.run(
             "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "TEMPORARY_OUTPUT"}
         )
-        return m['OUTPUT']
+        return m["OUTPUT"]
 
     def runExtractByExpression(self, layer, expression):
         extractbyexpression = processing.run(

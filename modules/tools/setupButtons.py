@@ -166,7 +166,7 @@ class SetupButtons:
                 alternateBuildingFlag,
                 cycleSideVisibilityButton,
                 cycleTipVisibilityButton,
-                createToogleVisibility
+                createToogleVisibility,
             ]
         )
         self.actionGroup = self.setupActionGroup(*self.mapTools)

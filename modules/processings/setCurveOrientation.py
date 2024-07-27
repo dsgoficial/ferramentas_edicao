@@ -63,16 +63,18 @@ class SetCurveOrientation(QgsProcessingAlgorithm):
         featDict = dict()
         futures = set()
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
+
         def compute(feat):
             if not should_flip(feat.geometry(), ccw=ccw):
                 return None
             return feat
+
         for current, feat in enumerate(inputSource.getFeatures()):
             if multiStepFeedback.isCanceled():
                 return {}
             futures.add(pool.submit(compute, feat))
             multiStepFeedback.setProgress(current * stepSize)
-        
+
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         for current, future in enumerate(concurrent.futures.as_completed(futures)):
@@ -187,6 +189,7 @@ def should_flip(geom: QgsGeometry, ccw=True) -> bool:
         z += np.sign(np.cross(a, b)[-1])
     return z > 0 if not ccw else z < 0
 
+
 def sliding_window_iter(iterable, size):
     """..."""
     iterable = iter(iterable)
@@ -194,7 +197,7 @@ def sliding_window_iter(iterable, size):
     for item in iterable:
         yield tuple(window)
         window.append(item)
-    if window:  
+    if window:
         # needed because if iterable was already empty before the `for`,
         # then the window would be yielded twice.
         yield tuple(window)

@@ -95,12 +95,14 @@ class ComponentUtils:
         self, pathShp: Path, pathStyle: Path, lyrName: str
     ) -> QgsVectorLayer:
         if pathShp.is_file():
-            layer_load = QgsVectorLayer(str(pathShp), lyrName, "ogr") 
+            layer_load = QgsVectorLayer(str(pathShp), lyrName, "ogr")
             if layer_load.isValid():
                 layer_load.setProviderEncoding("UTF-8")
                 layer_load.dataProvider().setEncoding("UTF-8")
-                layer = self.runAddAutoIncrementalField(layer_load) #deepcopy, layer is another instance
-            # layer = QgsVectorLayer(layer_load.source(), layer_load.name(), layer_load.providerType()) 
+                layer = self.runAddAutoIncrementalField(
+                    layer_load
+                )  # deepcopy, layer is another instance
+            # layer = QgsVectorLayer(layer_load.source(), layer_load.name(), layer_load.providerType())
             if layer.isValid():
                 if pathStyle and isinstance(pathStyle, Path) and pathStyle.is_file():
                     layer.loadNamedStyle(str(pathStyle))
@@ -110,7 +112,7 @@ class ComponentUtils:
             return layer
         else:
             return None
-    
+
     def runAddAutoIncrementalField(
         self,
         inputLyr,

@@ -90,7 +90,7 @@ class Division(ComponentUtils, IComponent):
         if (mapItem := composition.itemById("map_divisao")) is not None:
             mapItem.setExtent(outerExtents)
             self.scale = mapItem.scale()
-        else: 
+        else:
             self.scale = 1
         (
             orderedCountiesByCentroidDistance,
@@ -198,7 +198,9 @@ class Division(ComponentUtils, IComponent):
         m = round(distance.measureLine(geomOne, geomTwo), 2)
         return m
 
-    def checkRadiusPoleForLabel(self, countyFeature: QgsFeature, outerExtentsGeometry, data):
+    def checkRadiusPoleForLabel(
+        self, countyFeature: QgsFeature, outerExtentsGeometry, data
+    ):
         """
         Uses poleOfInaccessibility to decide the renderization of countyFeature if it intersects outerExtentsGeometry
         """
@@ -209,9 +211,11 @@ class Division(ComponentUtils, IComponent):
         crsSrc = QgsCoordinateReferenceSystem("EPSG:4326")  # WGS 84
         crsExtents = QgsCoordinateReferenceSystem(f"EPSG:{epsg}")
         transform = QgsCoordinateTransform(crsSrc, crsExtents, QgsProject.instance())
-        #intersectionGeometry.transform(transform)
+        # intersectionGeometry.transform(transform)
         pointGeom, radius = intersectionGeometry.poleOfInaccessibility(0.0001)
-        point = pointGeom.asPoint() if not intersectionGeometry.isEmpty() else QgsPointXY()
+        point = (
+            pointGeom.asPoint() if not intersectionGeometry.isEmpty() else QgsPointXY()
+        )
         if intersectionGeometry.isEmpty():
             radius = 0
         return point, radius
@@ -226,7 +230,9 @@ class Division(ComponentUtils, IComponent):
     #     boundary_geom = QgsGeometry(boundary_polyline)
     #     return boundary_geom
 
-    def getIntersections(self, layerCounty: QgsVectorLayer, outerExtents, mapAreaFeature, data):
+    def getIntersections(
+        self, layerCounty: QgsVectorLayer, outerExtents, mapAreaFeature, data
+    ):
         """
         Gets every county that intersects the outerExtents and decides if the county will be displayed or not.
         """
@@ -254,7 +260,7 @@ class Division(ComponentUtils, IComponent):
                 point, radius = self.checkRadiusPoleForLabel(
                     countyFeature, outerExtentsGeometry, data
                 )
-                show = radius/self.scale > 1.7e-8
+                show = radius / self.scale > 1.7e-8
                 if show:
                     countyIntersection = countyGeometry.intersection(
                         outerExtentsGeometry
@@ -271,9 +277,9 @@ class Division(ComponentUtils, IComponent):
                         ),
                     }
                     countiesToDisplay.append(countyDict)
-                    countyFeature["SELECT"]=1
-                    countyFeature["LABEL_X"]=point.x()
-                    countyFeature["LABEL_Y"]=point.y()
+                    countyFeature["SELECT"] = 1
+                    countyFeature["LABEL_X"] = point.x()
+                    countyFeature["LABEL_Y"] = point.y()
                     layerCounty.updateFeature(countyFeature)
         if countiesToDisplay == []:
             biggest_radius = 0
@@ -292,8 +298,8 @@ class Division(ComponentUtils, IComponent):
                     point, radius = self.checkRadiusPoleForLabel(
                         countyFeature, outerExtentsGeometry, data
                     )
-                    if radius>biggest_radius:
-                        biggest_radius=radius
+                    if radius > biggest_radius:
+                        biggest_radius = radius
                         countyIntersection = countyGeometry.intersection(
                             outerExtentsGeometry
                         )
@@ -310,10 +316,9 @@ class Division(ComponentUtils, IComponent):
                         }
                         countiesToDisplay = [countyDict]
                         selectedFeature = countyFeature
-            selectedFeature["SELECT"]=1
-            selectedFeature["SOLO"]=1
+            selectedFeature["SELECT"] = 1
+            selectedFeature["SOLO"] = 1
             layerCounty.updateFeature(selectedFeature)
-
 
         layerCounty.commitChanges()
         layerCounty.triggerRepaint()
@@ -458,21 +463,26 @@ class Division(ComponentUtils, IComponent):
         return rectangleLayer
 
     def setLabels(
-        self, layerCounty: QgsVectorLayer, orderedCountiesByCentroidDistance, orderedCountiesNamesByArea
+        self,
+        layerCounty: QgsVectorLayer,
+        orderedCountiesByCentroidDistance,
+        orderedCountiesNamesByArea,
     ):
         rulesRoot = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
         layerCounty.startEditing()
         for n in range(len(orderedCountiesNamesByArea)):
-            value = orderedCountiesByCentroidDistance[n][self.nameAttribute].replace("'","\\'")
+            value = orderedCountiesByCentroidDistance[n][self.nameAttribute].replace(
+                "'", "\\'"
+            )
             # rule = self.createRules(
             #     f"'{n+1}'",
             #     f"\"{self.nameAttribute}\" = \'{value}\'",
             # )
-            expression = f"\"{self.nameAttribute}\" = \'{value}\'"
+            expression = f"\"{self.nameAttribute}\" = '{value}'"
             request = QgsFeatureRequest().setFilterExpression(expression)
             for feature in layerCounty.getFeatures(request):
-                feature["NUMBER"]=n+1
-            # rulesRoot.appendChild(rule)
+                feature["NUMBER"] = n + 1
+                # rulesRoot.appendChild(rule)
                 layerCounty.updateFeature(feature)
         layerCounty.commitChanges()
         # rules = QgsRuleBasedLabeling(rulesRoot)

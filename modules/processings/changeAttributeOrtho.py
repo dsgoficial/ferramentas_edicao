@@ -158,10 +158,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultExtMineral(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["tipo"] == 1:
             feature["texto_edicao"] = "Poço"
@@ -177,10 +180,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultElemnatElemHidPL(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["nome"] == "":
             if feature["tipo"] == 9:
@@ -197,10 +203,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultElemnatElemHidA(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["nome"] == "":
             feature["texto_edicao"] = "Corredeira"
@@ -211,10 +220,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultIlhaP(self, feature, lyrCrs):
         feature["tamanho_txt"] = 7
         feature["justificativa_txt"] = 2
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
@@ -223,10 +235,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
@@ -244,20 +259,26 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
         feature["visivel"] = 1
         feature["justificativa_txt"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
     def defaultElemnatTopoFisioL(self, feature, lyrCrs):
         feature["visivel"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
@@ -265,10 +286,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultElemnatTopoFisioA(self, feature, lyrCrs):
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
@@ -276,10 +300,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultInfraElemEnergPA(self, feature, lyrCrs):
         feature["visivel"] = 1
         feature["justificativa_txt"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = "Subestação"
         return feature
@@ -290,10 +317,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultInfraElemInfra(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = "Atracadouro"
         return feature
@@ -305,10 +335,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultCurvaNivel(self, feature, lyrCrs):
         feature["visivel"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["cota"] == 0:
             feature["texto_edicao"] = "ZERO"
@@ -332,10 +365,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["apresentar_simbologia"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["tipo"] in [3, 4, 5, 6, 7, 11]:
             feature["texto_edicao"] = feature["nome"]
@@ -345,7 +381,10 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         if feature["tipo"] != 10:
             feature["visivel"] = 1
-            if feature["texto_edicao"] != NULL and feature["texto_edicao"].strip() != '':
+            if (
+                feature["texto_edicao"] != NULL
+                and feature["texto_edicao"].strip() != ""
+            ):
                 return feature
             texto_edicao = []
             if feature["nome"] != NULL:
@@ -363,9 +402,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             if feature["altitude"] != NULL:
                 texto_edicao.append(round(feature["altitude"]))
 
-            feature["texto_edicao"] = "|".join(
-                map(str, texto_edicao)
-            )
+            feature["texto_edicao"] = "|".join(map(str, texto_edicao))
         else:
             feature["visivel"] = 2
         return feature
@@ -375,10 +412,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
@@ -387,10 +427,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = "DADOS INCOMPLETOS"
         return feature
@@ -402,10 +445,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             feature["posicao_rotulo"] = 1
         elif feature["situacao_em_poligono"] in [1]:
             feature["posicao_rotulo"] = 2
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["situacao_em_poligono"] != 4 or feature["situacao_em_poligono"] != 3:
             feature["texto_edicao"] = feature["nome"]
@@ -414,10 +460,13 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultllpLocalidade(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         feature["visivel"] = 1
-        if "texto_edicao" in feature.fields().names() and feature["texto_edicao"] != NULL:
+        if (
+            "texto_edicao" in feature.fields().names()
+            and feature["texto_edicao"] != NULL
+        ):
             if not isinstance(feature["texto_edicao"], str):
                 return feature
-            if feature["texto_edicao"].strip() != '':
+            if feature["texto_edicao"].strip() != "":
                 return feature
         feature["texto_edicao"] = feature["nome"]
         return feature

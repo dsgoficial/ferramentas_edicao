@@ -52,6 +52,7 @@ from .placeMasterContourLabels import PlaceMasterContourLabels
 from .reprojectAttributes import ReprojectAttributesAlgorithm
 from .createCustomPolygons import CreateCustomPolygons
 
+
 class Provider(QgsProcessingProvider):
     def __init__(self):
         super(Provider, self).__init__()

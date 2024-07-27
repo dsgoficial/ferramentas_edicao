@@ -136,7 +136,7 @@ class EditionPlugin:
 
         if add_to_menu:
             self.iface.addPluginToMenu(self.menu, action)
-        
+
         if parentToolbar:
             parentToolbar.addAction(action)
 
@@ -224,7 +224,10 @@ class EditionPlugin:
             return
         env_dict = self.loadEnv()
         self.dlg.jsonConfigs.setFilePath(
-            env_dict.get("jsonConfigs", "C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json")
+            env_dict.get(
+                "jsonConfigs",
+                "C:\\Users\\eliton\\Documents\\edicao\\json_test\\om\\om1.json",
+            )
         )
         self.dlg.exportFolder.setFilePath(env_dict.get("exportFolder", "D:\\export"))
         self.dlg.jsonConfigs.setFilter("JSON (*.json)")
@@ -239,7 +242,7 @@ class EditionPlugin:
         with open(Path(__file__).parent / ".env") as f:
             file_data = f.read()
         return json.loads(file_data)
-    
+
     def fontsAreInstalled(self):
         fontUtils = QgsFontUtils()
         if not fontUtils.fontFamilyOnSystem("Noto Sans"):

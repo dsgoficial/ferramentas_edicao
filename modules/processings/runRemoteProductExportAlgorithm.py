@@ -43,15 +43,12 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.PyQt.QtWidgets import (
-    QLineEdit
-)
+from qgis.PyQt.QtWidgets import QLineEdit
 
 from processing.gui.wrappers import WidgetWrapper
 
 
 class PasswordWrapper(WidgetWrapper):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.placeholder = args[0]
@@ -84,7 +81,9 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         Parameter setting.
         """
         self.addParameter(
-            QgsProcessingParameterString(self.SERVICE_ADDRESS, self.tr("Endereço do serviço de exportação"))
+            QgsProcessingParameterString(
+                self.SERVICE_ADDRESS, self.tr("Endereço do serviço de exportação")
+            )
         )
         self.addParameter(
             QgsProcessingParameterFile(
@@ -119,32 +118,54 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
                 options=self.product_type_value_list,
             )
         )
-        self.addParameter(QgsProcessingParameterString(self.DB_USER, self.tr("Usuário do banco de dados")))
-        passwordParameter = QgsProcessingParameterString(self.DB_PASSWORD, self.tr("Senha do usuário do banco de dados"))
-        passwordParameter.setMetadata({
-            'widget_wrapper': 'ferramentas_edicao.modules.processings.runRemoteProductExportAlgorithm.PasswordWrapper',
-        })
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.DB_USER, self.tr("Usuário do banco de dados")
+            )
+        )
+        passwordParameter = QgsProcessingParameterString(
+            self.DB_PASSWORD, self.tr("Senha do usuário do banco de dados")
+        )
+        passwordParameter.setMetadata(
+            {
+                "widget_wrapper": "ferramentas_edicao.modules.processings.runRemoteProductExportAlgorithm.PasswordWrapper",
+            }
+        )
         self.addParameter(passwordParameter)
-        self.addParameter(QgsProcessingParameterString(self.PROXY_HOST, self.tr("Proxy Host"), optional=True))
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.PROXY_HOST, self.tr("Proxy Host"), optional=True
+            )
+        )
 
         self.addParameter(
-            QgsProcessingParameterString(self.PROXY_HOST, self.tr("Endereço do Proxy"), optional=True)
+            QgsProcessingParameterString(
+                self.PROXY_HOST, self.tr("Endereço do Proxy"), optional=True
+            )
         )
         self.addParameter(
-            QgsProcessingParameterString(self.PROXY_PORT, self.tr("Porta do Proxy"), optional=True)
+            QgsProcessingParameterString(
+                self.PROXY_PORT, self.tr("Porta do Proxy"), optional=True
+            )
         )
         self.addParameter(
-            QgsProcessingParameterString(self.PROXY_USER, self.tr("Usuário do Proxy"), optional=True)
+            QgsProcessingParameterString(
+                self.PROXY_USER, self.tr("Usuário do Proxy"), optional=True
+            )
         )
-        proxyPasswordParameter = QgsProcessingParameterString(self.PROXY_PASSWORD, self.tr("Senha do Proxy"), optional=True)
-        proxyPasswordParameter.setMetadata({
-            'widget_wrapper': 'ferramentas_edicao.modules.processings.runRemoteProductExportAlgorithm.PasswordWrapper',
-        })
+        proxyPasswordParameter = QgsProcessingParameterString(
+            self.PROXY_PASSWORD, self.tr("Senha do Proxy"), optional=True
+        )
+        proxyPasswordParameter.setMetadata(
+            {
+                "widget_wrapper": "ferramentas_edicao.modules.processings.runRemoteProductExportAlgorithm.PasswordWrapper",
+            }
+        )
         self.addParameter(proxyPasswordParameter)
 
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.EXPORT_TIFF, self.tr("Exportar TIFF")
-        ))
+        self.addParameter(
+            QgsProcessingParameterBoolean(self.EXPORT_TIFF, self.tr("Exportar TIFF"))
+        )
 
         self.addParameter(
             QgsProcessingParameterFolderDestination(
@@ -184,8 +205,10 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         elif len(inputJSONDataFromText) > 0:
             productJsonData = inputJSONDataFromText
         else:
-            raise QgsProcessingException("Invalid Product JSON Parameters! Check the inputs and try again.")
-        
+            raise QgsProcessingException(
+                "Invalid Product JSON Parameters! Check the inputs and try again."
+            )
+
         inputJSONData = {
             "json": productJsonData,
             "tipo": self.product_type_value_list[productType],
@@ -204,7 +227,12 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
 
         return self.runFromJSONData(server, inputJSONData, feedback)
 
-    def runFromJSONData(self, server: str, inputJSONData: Dict[str, str], feedback: QgsProcessingFeedback):
+    def runFromJSONData(
+        self,
+        server: str,
+        inputJSONData: Dict[str, str],
+        feedback: QgsProcessingFeedback,
+    ):
 
         header = {"content-type": "application/json"}
         session = requests.Session()
@@ -214,7 +242,9 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
 
         if not response:
             responseDict = json.loads(response.text)
-            raise QgsProcessingException(f"""Erro ao iniciar rotina.\n{responseDict.get("message", "")}""")
+            raise QgsProcessingException(
+                f"""Erro ao iniciar rotina.\n{responseDict.get("message", "")}"""
+            )
         uuid = response.json().get("dados", {}).get("job_uuid", None)
         if uuid is None:
             raise QgsProcessingException(
@@ -247,7 +277,11 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             f"O processo finalizou com status={self.statusIdDict.get(status)}."
         )
         if status == 3:
-            responseText = f"""\nA mensagem de erro foi {responseData["text"]}""" if "text" in responseData else ""
+            responseText = (
+                f"""\nA mensagem de erro foi {responseData["text"]}"""
+                if "text" in responseData
+                else ""
+            )
             raise QgsProcessingException(
                 f"O processo finalizou com erro! Verifique o servidor e tente novamente.{responseText}"
             )

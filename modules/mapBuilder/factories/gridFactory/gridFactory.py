@@ -754,9 +754,7 @@ class GridFactory(QObject):
         layer, fields = self.createGridLayer("articulation", "Multipolygon", "4326")
         inomenList = self.getNeighbors(inom)
         feats = [
-            self.getNewGridFeat(
-                map_index, self.getQgsPolygonFrame(map_index), fields
-            )
+            self.getNewGridFeat(map_index, self.getQgsPolygonFrame(map_index), fields)
             for map_index in inomenList
         ]
         center_feat = self.getNewGridFeat(inom, self.getQgsPolygonFrame(inom), fields)

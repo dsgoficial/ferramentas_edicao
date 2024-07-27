@@ -4,10 +4,10 @@ import os
 import sys
 from pathlib import Path
 
-#import ptvsd
+# import ptvsd
 
-#ptvsd.enable_attach(address=("localhost", 5678))
-#ptvsd.wait_for_attach()
+# ptvsd.enable_attach(address=("localhost", 5678))
+# ptvsd.wait_for_attach()
 
 from qgis.core import QgsApplication, QgsNetworkAccessManager, QgsExpression
 from qgis.PyQt.QtNetwork import QNetworkProxy
@@ -16,6 +16,7 @@ from qgis import core, gui
 
 def exportMaps(args):
     from ferramentas_edicao.controllers.mapBuilderController import MapBuildController
+
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     controller = MapBuildController(args, None)
     controller.run()
@@ -74,6 +75,7 @@ def startNetwork(args):
     manager = QgsNetworkAccessManager().instance()
     manager.setFallbackProxyAndExcludes(proxy, [], [])
 
+
 if __name__ == "__main__":
     args = setupArgparser()
     print(f"Iniciando a exportação do produto {args.tipo} de json {args.json}")
@@ -82,16 +84,23 @@ if __name__ == "__main__":
     p = Path(args.pathQgis)
     prefixPath = p / "apps/qgis"
     qgs.setPrefixPath(str(prefixPath), True)
-    pluginsFolder = Path("~\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins").expanduser()
+    pluginsFolder = Path(
+        "~\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins"
+    ).expanduser()
     qgs.setPluginPath(str(pluginsFolder))
     sys.path.append(str(p / "apps/qgis/python/plugins"))
     sys.path.append(str(pluginsFolder))
 
     # para funcionar tem que ser nesse escopo, nao pode encapsular numa funcao
-    from ferramentas_edicao.modules.expressionFunctions.functions.createCustomGridNumbers import longNumber, shortNumber
+    from ferramentas_edicao.modules.expressionFunctions.functions.createCustomGridNumbers import (
+        longNumber,
+        shortNumber,
+    )
     from processing.core.Processing import Processing
     from ferramentas_edicao.modules.processings.provider import Provider
-    from DsgTools.core.DSGToolsProcessingAlgs.dsgtoolsProcessingAlgorithmProvider import DSGToolsProcessingAlgorithmProvider
+    from DsgTools.core.DSGToolsProcessingAlgs.dsgtoolsProcessingAlgorithmProvider import (
+        DSGToolsProcessingAlgorithmProvider,
+    )
 
     Processing.initialize()
     feProvider = Provider()

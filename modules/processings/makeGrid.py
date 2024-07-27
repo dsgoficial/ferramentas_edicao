@@ -159,19 +159,22 @@ class MakeGrid(QgsProcessingAlgorithm):
                 context=context,
                 feedback=multiStepFeedback,
             )
-            coordinateTransform = QgsCoordinateTransform(
-                QgsCoordinateReferenceSystem("EPSG:4674"),
-                inputFrameLayer.sourceCrs(),
-                QgsProject.instance(),
-            ) if inputFrameLayer.sourceCrs().authid() != "EPSG:4674" else None
+            coordinateTransform = (
+                QgsCoordinateTransform(
+                    QgsCoordinateReferenceSystem("EPSG:4674"),
+                    inputFrameLayer.sourceCrs(),
+                    QgsProject.instance(),
+                )
+                if inputFrameLayer.sourceCrs().authid() != "EPSG:4674"
+                else None
+            )
+
             def createFeat(geom):
                 if coordinateTransform is not None:
                     geom.transform(coordinateTransform)
                 return QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=geom)
 
-            self.sink.addFeatures(
-                list(map(createFeat, lineList))
-            )
+            self.sink.addFeatures(list(map(createFeat, lineList)))
             currentStep += 1
 
         multiStepFeedback.setCurrentStep(currentStep)
@@ -353,14 +356,18 @@ class MakeGrid(QgsProcessingAlgorithm):
                     [QgsPoint(x - halfDistance, y), QgsPoint(x + halfDistance, y)]
                 )
             )
-            hLine.transform(coordinateTransform, QgsCoordinateTransform.ReverseTransform)
+            hLine.transform(
+                coordinateTransform, QgsCoordinateTransform.ReverseTransform
+            )
             lineList.append(hLine)
             vLine = QgsGeometry(
                 QgsLineString(
                     [QgsPoint(x, y - halfDistance), QgsPoint(x, y + halfDistance)]
                 )
             )
-            vLine.transform(coordinateTransform, QgsCoordinateTransform.ReverseTransform)
+            vLine.transform(
+                coordinateTransform, QgsCoordinateTransform.ReverseTransform
+            )
             lineList.append(vLine)
 
         return lineList

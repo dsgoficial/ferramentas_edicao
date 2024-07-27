@@ -61,7 +61,13 @@ class Legend:
     }
 
     def __init__(self, versionFolder):
-        _p = Path(__file__).parent.parent / "resources" / "products" / "orthoMap" / versionFolder
+        _p = (
+            Path(__file__).parent.parent
+            / "resources"
+            / "products"
+            / "orthoMap"
+            / versionFolder
+        )
         self.qptsPath = _p / "symbols" / "legend"
         with open(_p / "mapClassToLegend.json") as mappingData:
             self.legendMappingData = json.load(mappingData)

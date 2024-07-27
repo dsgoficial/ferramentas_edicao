@@ -62,12 +62,14 @@ class FixLabelPositionCRS(QgsProcessingAlgorithm):
             updateLambda = lambda x: lyr.updateFeature(x)
             lyr.startEditing()
             lyr.beginEditCommand(f"Editando X,Y da camada {lyr.name()}")
-            featList = list(filter(lambda x: x is not None, map(fixLambda, lyr.getFeatures())))
+            featList = list(
+                filter(lambda x: x is not None, map(fixLambda, lyr.getFeatures()))
+            )
             list(map(updateLambda, featList))
             lyr.endEditCommand()
 
         return {}
-    
+
     @staticmethod
     def fixAndReprojectGeom(feat, coordinateTransformer):
         if feat["label_x"] == NULL or feat["label_y"] == NULL:
@@ -81,7 +83,6 @@ class FixLabelPositionCRS(QgsProcessingAlgorithm):
         feat["label_x"] = p.x()
         feat["label_y"] = p.y()
         return feat
-    
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

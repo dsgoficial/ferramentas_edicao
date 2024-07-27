@@ -10,28 +10,46 @@ from qgis.core import (
     QgsProcessingParameterCrs,
     QgsFeature,
     QgsPointXY,
-    NULL
+    NULL,
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 
+
 class ReprojectAttributesAlgorithm(QgsProcessingAlgorithm):
-    INPUT_LAYERS = 'INPUT_LAYERS'
-    LABEL_X = 'LABEL_X'
-    LABEL_Y = 'LABEL_Y'
-    SRC_EPSG = 'SRC_EPSG'
-    DST_EPSG = 'DST_EPSG'
+    INPUT_LAYERS = "INPUT_LAYERS"
+    LABEL_X = "LABEL_X"
+    LABEL_Y = "LABEL_Y"
+    SRC_EPSG = "SRC_EPSG"
+    DST_EPSG = "DST_EPSG"
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterMultipleLayers(
-            self.INPUT_LAYERS, 'Input Vector Layers', QgsProcessing.TypeVectorAnyGeometry))
-        self.addParameter(QgsProcessingParameterString(
-            self.LABEL_X, 'Label X', defaultValue='label_x'))
-        self.addParameter(QgsProcessingParameterString(
-            self.LABEL_Y, 'Label Y', defaultValue='label_y'))
-        self.addParameter(QgsProcessingParameterCrs(
-            self.SRC_EPSG, 'Source EPSG', defaultValue='EPSG:4674'))
-        self.addParameter(QgsProcessingParameterCrs(
-            self.DST_EPSG, 'Destination EPSG', defaultValue='EPSG:31981'))
+        self.addParameter(
+            QgsProcessingParameterMultipleLayers(
+                self.INPUT_LAYERS,
+                "Input Vector Layers",
+                QgsProcessing.TypeVectorAnyGeometry,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.LABEL_X, "Label X", defaultValue="label_x"
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.LABEL_Y, "Label Y", defaultValue="label_y"
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterCrs(
+                self.SRC_EPSG, "Source EPSG", defaultValue="EPSG:4674"
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterCrs(
+                self.DST_EPSG, "Destination EPSG", defaultValue="EPSG:31981"
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         layers = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
@@ -45,34 +63,44 @@ class ReprojectAttributesAlgorithm(QgsProcessingAlgorithm):
         transform = QgsCoordinateTransform(src_crs, dst_crs, QgsProject.instance())
 
         for layer in layers:
-            feedback.pushInfo(f'{layer.name()}')
-            if not layer.fields().indexFromName(label_x) != -1 or not layer.fields().indexFromName(label_y) != -1:
-                feedback.pushInfo(f'Skipping layer {layer.name()} because it does not have both attributes {label_x} and {label_y}.')
+            feedback.pushInfo(f"{layer.name()}")
+            if (
+                not layer.fields().indexFromName(label_x) != -1
+                or not layer.fields().indexFromName(label_y) != -1
+            ):
+                feedback.pushInfo(
+                    f"Skipping layer {layer.name()} because it does not have both attributes {label_x} and {label_y}."
+                )
                 continue
-            
+
             if not layer.isEditable():
-                feedback.pushInfo(f'Starting editing on layer {layer.name()}.')
+                feedback.pushInfo(f"Starting editing on layer {layer.name()}.")
                 layer.startEditing()
 
             for feature in layer.getFeatures():
                 x_value = feature.attribute(label_x)
                 y_value = feature.attribute(label_y)
-               
+
                 if x_value == NULL or y_value == NULL:
-                        continue
-                    
+                    continue
+
                 try:
                     x_value = float(x_value)
                     y_value = float(y_value)
                 except (TypeError, ValueError):
-                    feedback.pushInfo(f'Skipping feature {feature.id()} due to invalid number format in attributes.')
+                    feedback.pushInfo(
+                        f"Skipping feature {feature.id()} due to invalid number format in attributes."
+                    )
                     continue
-
 
                 point = QgsPointXY(x_value, y_value)
                 reprojected_point = transform.transform(point)
-                feature.setAttribute(layer.fields().indexFromName(label_x), reprojected_point.x())
-                feature.setAttribute(layer.fields().indexFromName(label_y), reprojected_point.y())
+                feature.setAttribute(
+                    layer.fields().indexFromName(label_x), reprojected_point.x()
+                )
+                feature.setAttribute(
+                    layer.fields().indexFromName(label_y), reprojected_point.y()
+                )
                 layer.updateFeature(feature)
 
         return {}
@@ -81,7 +109,7 @@ class ReprojectAttributesAlgorithm(QgsProcessingAlgorithm):
         return QCoreApplication.translate("Processing", string)
 
     def name(self):
-        return 'reprojectattributes'
+        return "reprojectattributes"
 
     def displayName(self):
         return self.tr("Reprojeta atributos")

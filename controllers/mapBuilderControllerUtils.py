@@ -150,7 +150,7 @@ class MapBuildControllerUtils:
         # elif hemisphere == "S":
         #     epsg = epsg + str(78 + timeZone - 18)
         # return int(epsg)
-        key = str(timeZone)+hemisphere
+        key = str(timeZone) + hemisphere
         options = {
             "11N": 31965,
             "12N": 31966,

@@ -226,9 +226,19 @@ class MapBuildController(MapBuildControllerUtils):
         if productType == "Carta Ortoimagem OM":
             return "omMap", "Carta Especial", productVersion, versionFolder
         if productType == "Carta Ortoimagem Militar":
-            return "militaryOrthoMap", "Carta Ortoimagem Militar", productVersion, versionFolder
+            return (
+                "militaryOrthoMap",
+                "Carta Ortoimagem Militar",
+                productVersion,
+                versionFolder,
+            )
         if productType == "Carta Topográfica Militar":
-            return "militaryTopoMap", "Carta Topográfica Militar", productVersion, versionFolder
+            return (
+                "militaryTopoMap",
+                "Carta Topográfica Militar",
+                productVersion,
+                versionFolder,
+            )
 
     def unload(self):
         """Unloads the Controller. It's called when the plugin is uninstalled or reloaded"""
@@ -251,8 +261,7 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update(
                 {
                     productType: OrthoMapBuilder(
-                        componentFactory=ComponentFactory(),
-                        versionFolder=versionFolder
+                        componentFactory=ComponentFactory(), versionFolder=versionFolder
                     )
                 }
             )
@@ -269,8 +278,7 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update(
                 {
                     productType: OmMapBuilder(
-                        componentFactory=ComponentFactory(),
-                        versionFolder=versionFolder
+                        componentFactory=ComponentFactory(), versionFolder=versionFolder
                     )
                 }
             )
@@ -278,8 +286,7 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update(
                 {
                     productType: MilitaryOrthoMapBuilder(
-                        componentFactory=ComponentFactory(),
-                        versionFolder=versionFolder
+                        componentFactory=ComponentFactory(), versionFolder=versionFolder
                     )
                 }
             )
@@ -287,8 +294,7 @@ class MapBuildController(MapBuildControllerUtils):
             self.builders.update(
                 {
                     productType: MilitaryTopoMapBuilder(
-                        componentFactory=ComponentFactory(),
-                        versionFolder=versionFolder
+                        componentFactory=ComponentFactory(), versionFolder=versionFolder
                     )
                 }
             )
@@ -314,13 +320,17 @@ class MapBuildController(MapBuildControllerUtils):
         """Runs the specified MapBuilder according to dlg / json preferences"""
         dlgCfg = self.setupDlgCfg(self.dlg)
         MapBuilderUtils().cleanProject(self.debugMode)
-        productType, productName, productVersion, versionFolder = self.getProductType(dlgCfg.productType)
+        productType, productName, productVersion, versionFolder = self.getProductType(
+            dlgCfg.productType
+        )
         builder = None
         is_headless = dlgCfg.instance == "headless"
-        
+
         if dlgCfg.jsonFilePaths == []:
             if is_headless:
-                print("Não foi inserido um arquivo ou pasta de JSON para produto solicitado.")
+                print(
+                    "Não foi inserido um arquivo ou pasta de JSON para produto solicitado."
+                )
             else:
                 QMessageBox.warning(
                     self.dlg,
@@ -345,7 +355,9 @@ class MapBuildController(MapBuildControllerUtils):
             jsonData = self.readJson(jsonPath)
             if "tipo_produto" not in jsonData:
                 if is_headless:
-                    print("A chave tipo_produto não foi encontrada no json de entrada, ignorando produto.")
+                    print(
+                        "A chave tipo_produto não foi encontrada no json de entrada, ignorando produto."
+                    )
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -358,9 +370,13 @@ class MapBuildController(MapBuildControllerUtils):
             if not self.debugMode and not jsonStructure.validate_dict(
                 jsonData, product_type=jsonData["tipo_produto"]
             ):
-                if "licenca_produto" in jsonData and jsonData["licenca_produto"] not in ["CC-BY-SA 4.0", "CC-BY-NC-SA 4.0"]:
+                if "licenca_produto" in jsonData and jsonData[
+                    "licenca_produto"
+                ] not in ["CC-BY-SA 4.0", "CC-BY-NC-SA 4.0"]:
                     if is_headless:
-                        print("""Licença inválida no json. Os únicos valores possíveis aceitos são "CC-BY-SA 4.0" ou "CC-BY-NC-SA 4.0" """)
+                        print(
+                            """Licença inválida no json. Os únicos valores possíveis aceitos são "CC-BY-SA 4.0" ou "CC-BY-NC-SA 4.0" """
+                        )
                     else:
                         QMessageBox.warning(
                             self.dlg,
@@ -373,7 +389,9 @@ class MapBuildController(MapBuildControllerUtils):
                 )
                 missingKeyText = ",".join(list(missingKeySet))
                 if is_headless:
-                    print("Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. ")
+                    print(
+                        "Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. "
+                    )
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -395,9 +413,14 @@ class MapBuildController(MapBuildControllerUtils):
                     )
                 exportResult = False
                 continue
-            if productName != "Carta Especial" and productName != jsonData["tipo_produto"]:
+            if (
+                productName != "Carta Especial"
+                and productName != jsonData["tipo_produto"]
+            ):
                 if is_headless:
-                    print("O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. ")
+                    print(
+                        "O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. "
+                    )
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -407,9 +430,14 @@ class MapBuildController(MapBuildControllerUtils):
                     )
                 exportResult = False
                 continue
-            if "versao_produto" in jsonData and productVersion != jsonData["versao_produto"]:
+            if (
+                "versao_produto" in jsonData
+                and productVersion != jsonData["versao_produto"]
+            ):
                 if is_headless:
-                    print("O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. ")
+                    print(
+                        "O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. "
+                    )
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -419,13 +447,22 @@ class MapBuildController(MapBuildControllerUtils):
                     )
                 exportResult = False
                 continue
-            jsonData.update({"productType": productType, "productName": productName, "productVersion": productVersion, "versionFolder": versionFolder})
+            jsonData.update(
+                {
+                    "productType": productType,
+                    "productName": productName,
+                    "productVersion": productVersion,
+                    "versionFolder": versionFolder,
+                }
+            )
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
             try:
                 abstractDb = self.getAbstractDb(jsonData, dlgCfg)
             except:
                 if is_headless:
-                    print("Conexão inválida com o banco de dados. Verifique as configurações de conexão no json e as informações de usuário e senha.")
+                    print(
+                        "Conexão inválida com o banco de dados. Verifique as configurações de conexão no json e as informações de usuário e senha."
+                    )
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -435,9 +472,13 @@ class MapBuildController(MapBuildControllerUtils):
                     )
                 exportResult = False
                 continue
-            if not self.validateProductTypeAgainstDatabaseMetadata(abstractDb, jsonData):
+            if not self.validateProductTypeAgainstDatabaseMetadata(
+                abstractDb, jsonData
+            ):
                 if is_headless:
-                    print("O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada.")
+                    print(
+                        "O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada."
+                    )
                 else:
                     QMessageBox.warning(
                         self.dlg,

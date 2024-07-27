@@ -64,7 +64,13 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
         self.components.update(
             {"subtitle": self.componentFactory.getComponent("Subtitle")}
         )
-        self.components.update({"legend": self.componentFactory.getComponent("Legend", versionFolder=versionFolder)})
+        self.components.update(
+            {
+                "legend": self.componentFactory.getComponent(
+                    "Legend", versionFolder=versionFolder
+                )
+            }
+        )
         self.components.update(
             {"anglesHandler": self.componentFactory.getComponent("AnglesHandler")}
         )

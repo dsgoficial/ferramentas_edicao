@@ -43,6 +43,7 @@ from qgis.core import (
 )
 from scipy import signal
 
+
 class BuildElevationDiagram(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
@@ -233,21 +234,51 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         )  # performs clipping in raster
         npRaster_without_nodata = npRaster[~np.isnan(npRaster)]  # removes nodata values
         minValue = np.amin(npRaster_without_nodata) // 1
-        maxValue = np.amax(npRaster_without_nodata)  // 1
+        maxValue = np.amax(npRaster_without_nodata) // 1
         if minValue == 0 and maxValue > 2:
             minValue = 1
-        classDict, outputRaster = self.compute_slicing(npRaster, npRaster_without_nodata, minValue, maxValue, threshold)
+        classDict, outputRaster = self.compute_slicing(
+            npRaster, npRaster_without_nodata, minValue, maxValue, threshold
+        )
 
         return classDict, outputRaster, ds
 
-    def compute_slicing(self, npRaster, npRaster_without_nodata, minValue, maxValue, threshold, numberOfElevationBands=None):
-        numberOfElevationBands = self.getNumberOfElevationBands(maxValue - minValue) if numberOfElevationBands is None else numberOfElevationBands
+    def compute_slicing(
+        self,
+        npRaster,
+        npRaster_without_nodata,
+        minValue,
+        maxValue,
+        threshold,
+        numberOfElevationBands=None,
+    ):
+        numberOfElevationBands = (
+            self.getNumberOfElevationBands(maxValue - minValue)
+            if numberOfElevationBands is None
+            else numberOfElevationBands
+        )
         threshold = 10 if numberOfElevationBands > 2 else 1
-        threshold, classDict = self.computeClassDict(threshold, npRaster, npRaster_without_nodata, minValue, numberOfElevationBands)
-        if any(abs(b-a) < 10 for _, (a, b) in classDict.items()):
+        threshold, classDict = self.computeClassDict(
+            threshold,
+            npRaster,
+            npRaster_without_nodata,
+            minValue,
+            numberOfElevationBands,
+        )
+        if any(abs(b - a) < 10 for _, (a, b) in classDict.items()):
             currentNumberOfElevationBands = numberOfElevationBands - 1
-            while currentNumberOfElevationBands >= 2 and len(classDict) > 2 and any(abs(b-a) < 10 for _, (a, b) in classDict.items()):
-                newThreshold, newClassDict = self.computeClassDict(threshold, npRaster, npRaster_without_nodata, minValue, currentNumberOfElevationBands)
+            while (
+                currentNumberOfElevationBands >= 2
+                and len(classDict) > 2
+                and any(abs(b - a) < 10 for _, (a, b) in classDict.items())
+            ):
+                newThreshold, newClassDict = self.computeClassDict(
+                    threshold,
+                    npRaster,
+                    npRaster_without_nodata,
+                    minValue,
+                    currentNumberOfElevationBands,
+                )
                 if newClassDict == classDict and newThreshold == threshold:
                     classDict = newClassDict
                     threshold = newThreshold
@@ -262,10 +293,19 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             if int(i) == 0:
                 outputRaster[np.where((minB <= npRaster) & (npRaster <= maxB))] = int(i)
             else:
-                outputRaster[np.where((minB < npRaster) & (npRaster <= maxB + threshold))] = int(i)
+                outputRaster[
+                    np.where((minB < npRaster) & (npRaster <= maxB + threshold))
+                ] = int(i)
         return classDict, outputRaster
 
-    def computeClassDict(self, threshold, npRaster, npRaster_without_nodata, minValue, numberOfElevationBands):
+    def computeClassDict(
+        self,
+        threshold,
+        npRaster,
+        npRaster_without_nodata,
+        minValue,
+        numberOfElevationBands,
+    ):
         npRaster_without_nodata = threshold * np.floor(
             npRaster_without_nodata / threshold
         ).astype(int)
@@ -338,7 +378,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
                 i: (int(a), int(b))
                 for i, (a, b) in enumerate(zip(lowerBounds, classThresholds))
             }
-            
+
         return threshold, classDict
 
     def getAreaRatioList(self, numberOfElevationBands):
@@ -386,7 +426,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
             feedback=feedback,
         )
         return output["OUTPUT"]
-    
+
     def buildRasterWithMedianFilter(self, inputRaster, outputRaster):
         ds = gdal.Open(inputRaster)
         npRaster = np.array(ds.GetRasterBand(1).ReadAsArray())

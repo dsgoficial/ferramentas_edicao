@@ -2,73 +2,92 @@ from qgis.core import (
     QgsProcessing,
     QgsFeature,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterVectorLayer
+    QgsProcessingParameterVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
 
+
 class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
-    INPUT_MOLDURA = 'INPUT_MOLDURA'
-    INPUT_LAYER_SOBREPOSITION_LIM = 'INPUT_LAYER_SOBREPOSITION_LIM'
-    INPUT_LAYER_TO_CHECK_DRE = 'INPUT_LAYER_TO_CHECK_DRE'
-    INPUT_LAYER_TO_CHECK_VIA = 'INPUT_LAYER_TO_CHECK_VIA'
-    INPUT_LAYER_TO_CHECK_FER = 'INPUT_LAYER_TO_CHECK_FER'
+    INPUT_MOLDURA = "INPUT_MOLDURA"
+    INPUT_LAYER_SOBREPOSITION_LIM = "INPUT_LAYER_SOBREPOSITION_LIM"
+    INPUT_LAYER_TO_CHECK_DRE = "INPUT_LAYER_TO_CHECK_DRE"
+    INPUT_LAYER_TO_CHECK_VIA = "INPUT_LAYER_TO_CHECK_VIA"
+    INPUT_LAYER_TO_CHECK_FER = "INPUT_LAYER_TO_CHECK_FER"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_MOLDURA,
-                self.tr('Selecionar a camada de moldura'),
+                self.tr("Selecionar a camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
-                defaultValue='aux_moldura_a'
+                defaultValue="aux_moldura_a",
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_SOBREPOSITION_LIM,
-                self.tr('Selecionar de edicao_limite_legal'),
+                self.tr("Selecionar de edicao_limite_legal"),
                 [QgsProcessing.TypeVectorLine],
-                defaultValue='edicao_limite_legal_l'
+                defaultValue="edicao_limite_legal_l",
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_TO_CHECK_DRE,
-                self.tr('Selecione a camada de trecho de drenagem.'),
+                self.tr("Selecione a camada de trecho de drenagem."),
                 [QgsProcessing.TypeVectorLine],
-                defaultValue='elemnat_trecho_drenagem_l'
+                defaultValue="elemnat_trecho_drenagem_l",
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_TO_CHECK_VIA,
-                self.tr('Selecione a camada de via de deslocamento.'),
+                self.tr("Selecione a camada de via de deslocamento."),
                 [QgsProcessing.TypeVectorLine],
-                defaultValue='infra_via_deslocamento_l'
+                defaultValue="infra_via_deslocamento_l",
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_TO_CHECK_FER,
-                self.tr('Selecione a camada de ferrovia.'),
+                self.tr("Selecione a camada de ferrovia."),
                 [QgsProcessing.TypeVectorLine],
-                defaultValue='infra_ferrovia_l'
+                defaultValue="infra_ferrovia_l",
             )
         )
 
-    def processAlgorithm(self, parameters, context, feedback): 
+    def processAlgorithm(self, parameters, context, feedback):
         # Camadas de entrada
-        layer_moldura = self.parameterAsVectorLayer(parameters, self.INPUT_MOLDURA, context)
-        layer_lim = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_SOBREPOSITION_LIM, context)
-        layer_dre = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_TO_CHECK_DRE, context)
-        layer_via = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_TO_CHECK_VIA, context)
-        layer_fer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_TO_CHECK_FER, context)
+        layer_moldura = self.parameterAsVectorLayer(
+            parameters, self.INPUT_MOLDURA, context
+        )
+        layer_lim = self.parameterAsVectorLayer(
+            parameters, self.INPUT_LAYER_SOBREPOSITION_LIM, context
+        )
+        layer_dre = self.parameterAsVectorLayer(
+            parameters, self.INPUT_LAYER_TO_CHECK_DRE, context
+        )
+        layer_via = self.parameterAsVectorLayer(
+            parameters, self.INPUT_LAYER_TO_CHECK_VIA, context
+        )
+        layer_fer = self.parameterAsVectorLayer(
+            parameters, self.INPUT_LAYER_TO_CHECK_FER, context
+        )
 
         # Filtrar visivel e situacao em poligono para mergear camadas de verificação
-        drenagem_filtrada = self.runExtractByExpression(layer_dre, expression=''' "visivel" = 1 AND "situacao_em_poligono" = 1''')
-        via_deslocamento_filtrada = self.runExtractByExpression(layer_via, expression=''' "visivel" = 1 ''')
-        ferrovia_filtrada = self.runExtractByExpression(layer_fer, expression=''' "visivel" = 1 ''')
-        merged = self.runMergeLayer([drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada])
+        drenagem_filtrada = self.runExtractByExpression(
+            layer_dre, expression=""" "visivel" = 1 AND "situacao_em_poligono" = 1"""
+        )
+        via_deslocamento_filtrada = self.runExtractByExpression(
+            layer_via, expression=""" "visivel" = 1 """
+        )
+        ferrovia_filtrada = self.runExtractByExpression(
+            layer_fer, expression=""" "visivel" = 1 """
+        )
+        merged = self.runMergeLayer(
+            [drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada]
+        )
 
         # Criar índice espacial
         self.runCreateSpatialIndex(merged)
@@ -78,7 +97,7 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
         moldura_linha = self.runPolyToLine(moldura_dissolved)
 
         # Percorrer as camadas de poligono e alterar o atributo "sobreposto" das camadas de edicao
-        
+
         line_layer_diff = self.runDifference(layer_lim, moldura_linha)
         layer_lim.startEditing()
         layer_lim.beginEditCommand("Iniciando edição.")
@@ -93,7 +112,7 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
             for field in layer_lim.fields():
                 if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
                     continue
-                feat[field.name()]=feature[field.name()]
+                feat[field.name()] = feature[field.name()]
             feat["exibir_rotulo_aproximado"] = 1
             feat["sobreposto"] = 1
             layer_lim.addFeature(feat)
@@ -103,7 +122,7 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
             for field in layer_lim.fields():
                 if field.name() in ["sobreposto", "exibir_rotulo_aproximado"]:
                     continue
-                feat[field.name()]=feature[field.name()]
+                feat[field.name()] = feature[field.name()]
             feat["exibir_rotulo_aproximado"] = 1
             feat["sobreposto"] = 2
             layer_lim.addFeature(feat)
@@ -116,25 +135,21 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
         m = processing.run(
             "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "TEMPORARY_OUTPUT"}
         )
-        return m['OUTPUT']
+        return m["OUTPUT"]
 
     def runExtractByExpression(self, layer, expression):
         extractbyexpression = processing.run(
-            'native:extractbyexpression',
-            {
-                'INPUT': layer,
-                'EXPRESSION': expression,
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            }
+            "native:extractbyexpression",
+            {"INPUT": layer, "EXPRESSION": expression, "OUTPUT": "TEMPORARY_OUTPUT"},
         )
-        return extractbyexpression['OUTPUT']
+        return extractbyexpression["OUTPUT"]
 
     def runDissolve(self, layer):
         dissolve = processing.run(
             "native:dissolve",
             {"INPUT": layer, "FIELD": ["nome"], "OUTPUT": "TEMPORARY_OUTPUT"},
         )
-        return dissolve['OUTPUT']
+        return dissolve["OUTPUT"]
 
     def runPolyToLine(self, layer):
         line = processing.run(
@@ -154,12 +169,12 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
             "native:difference",
             {"INPUT": layer, "OVERLAY": overlaylayer, "OUTPUT": "TEMPORARY_OUTPUT"},
         )
-        return diff['OUTPUT']
+        return diff["OUTPUT"]
 
     def runCreateSpatialIndex(self, layer):
         output = processing.run(
             "native:createspatialindex",
-            {'INPUT': layer},
+            {"INPUT": layer},
             is_child_algorithm=True,
         )
         return layer

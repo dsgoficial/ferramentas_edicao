@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from DsgTools.core.GeometricTools import graphHandler
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 
+
 class MergeLinesByAngle(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
@@ -90,18 +91,23 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
         return output["OUTPUT"]
 
     def runCreateSpatialIndex(self, inputLyr):
-        processing.run("native:createspatialindex", {"INPUT": inputLyr}, is_child_algorithm=True)
+        processing.run(
+            "native:createspatialindex", {"INPUT": inputLyr}, is_child_algorithm=True
+        )
 
     def mergeLines(self, layer, context, feedback):
         multiStepFeedback = QgsProcessingMultiStepFeedback(4, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
-        pointsAndLineDict, cacheLayer = self.startOrEndIntersectionsDict(layer, feedback=multiStepFeedback)
+        pointsAndLineDict, cacheLayer = self.startOrEndIntersectionsDict(
+            layer, feedback=multiStepFeedback
+        )
         lineDict = {feat["featid"]: feat for feat in cacheLayer.getFeatures()}
         currentStep += 1
         if not pointsAndLineDict:
             return False
         toMerge = []
+
         def compute(ptAndLine, linesArray):
             smallerAngle = 360
             linePair = []
@@ -132,15 +138,17 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo("Submitting to thread")
-        stepSize = 100/len(pointsAndLineDict)
+        stepSize = 100 / len(pointsAndLineDict)
         for current, (geomWkb, linesIdSet) in enumerate(pointsAndLineDict.items()):
             if multiStepFeedback.isCanceled():
                 break
             ptAndLine = QgsGeometry()
             ptAndLine.fromWkb(geomWkb)
-            futures.add(pool.submit(compute, ptAndLine, [lineDict[i] for i in linesIdSet]))
-            multiStepFeedback.setProgress(current* stepSize)
-        
+            futures.add(
+                pool.submit(compute, ptAndLine, [lineDict[i] for i in linesIdSet])
+            )
+            multiStepFeedback.setProgress(current * stepSize)
+
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo("Evaluating results")
@@ -164,7 +172,7 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
         nSteps = len(toMerge)
         if nSteps == 0:
             return True
-        stepSize = 100/nSteps
+        stepSize = 100 / nSteps
         for current, lines in enumerate(toMerge):
             if multiStepFeedback.isCanceled():
                 break
@@ -200,13 +208,15 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
     def startOrEndIntersectionsDict(self, layer, feedback):
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
-        cacheLayer, nodesLayer = graphHandler.buildAuxLayersPriorGraphBuilding(layer, feedback=multiStepFeedback)
+        cacheLayer, nodesLayer = graphHandler.buildAuxLayersPriorGraphBuilding(
+            layer, feedback=multiStepFeedback
+        )
         pointsDict = defaultdict(set)
         multiStepFeedback.setCurrentStep(1)
         nNodes = nodesLayer.featureCount()
         if nNodes == 0:
             return pointsDict, cacheLayer
-        stepSize = 100/nNodes
+        stepSize = 100 / nNodes
         for current, nodeFeat in enumerate(nodesLayer.getFeatures()):
             if multiStepFeedback.isCanceled():
                 break

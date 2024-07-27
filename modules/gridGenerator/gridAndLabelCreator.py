@@ -405,11 +405,15 @@ class GridAndLabelCreator(QObject):
             pgrid.transform(trUTMLL)
         # Label Format Settings
         settings = QgsPalLayerSettings()
-        settings.placement = 1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
+        settings.placement = (
+            1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
+        )
         settings.isExpression = True
         textprop = QgsTextFormat()
         textprop.setColor(llcolor)
-        textprop.setSizeUnit(4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points)
+        textprop.setSizeUnit(
+            4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points
+        )
         textprop.setSize(fSize * 2.8346)
         textprop.setFont(QFont(fontType))
         textprop.setLineHeight(1)
@@ -626,7 +630,11 @@ class GridAndLabelCreator(QObject):
             full_label = str((floor(y_UTM / grid_spacing) + u) * grid_spacing)
             utmLabelPoint = QgsPoint(ancY.x(), ancY.y())
             utmLabelPoint.transform(trLLUTM)
-            if test_plac.y() < (y_min_test) or test_plac.y() > (y_max_test) or abs(utmLabelPoint.y()-float(full_label)) < 40:
+            if (
+                test_plac.y() < (y_min_test)
+                or test_plac.y() > (y_max_test)
+                or abs(utmLabelPoint.y() - float(full_label)) < 40
+            ):
                 rule_fake = self.grid_labeler(
                     x,
                     y,

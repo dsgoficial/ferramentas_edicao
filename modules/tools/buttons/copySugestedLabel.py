@@ -79,7 +79,11 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         feat = scope.feature()
         config["justificativa_txt"] = 1
         if "justificativa_txt" in feat.fields().names():
-            config["justificativa_txt"] = 1 if feat["justificativa_txt"] in (None, 9999) else feat["justificativa_txt"] 
+            config["justificativa_txt"] = (
+                1
+                if feat["justificativa_txt"] in (None, 9999)
+                else feat["justificativa_txt"]
+            )
         config["placement"] = labelSettings.placement
         config["estilo_fonte"] = textFormat.namedStyle()
         config["tamanho_txt"] = textFormat.size()
@@ -108,10 +112,9 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
     def getAcceptedRule(self, baseLabeling, context, configs):
         if isinstance(baseLabeling, QgsVectorLayerSimpleLabeling):
             config = self.getConfigFromLabelSettings(baseLabeling.settings(), context)
-            configs.append(config)  
+            configs.append(config)
             return
-            
-            
+
         if isinstance(baseLabeling, list):
             for childLabelRule in baseLabeling:
                 rule_expresion = QgsExpression(childLabelRule.filterExpression())
@@ -148,7 +151,11 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         scope.setFeature(feat)
         config = {"found": False}
         labeling = self.srcLyr.labeling()
-        baseLabeling = labeling if isinstance(labeling, QgsVectorLayerSimpleLabeling) else labeling.rootRule()        
+        baseLabeling = (
+            labeling
+            if isinstance(labeling, QgsVectorLayerSimpleLabeling)
+            else labeling.rootRule()
+        )
         configs = []
         self.getAcceptedRule(baseLabeling, context, configs)
         return {"found": False} if len(configs) != 1 else configs[0]
@@ -174,13 +181,17 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
                 letter_geometry = letter_data[0]
                 words_points.append(letter_geometry.centroid())
 
-        word_geometry = QgsGeometry.fromPolylineXY([p.asPoint() if not isinstance(p, QgsPointXY) else p for p in words_points])
+        word_geometry = QgsGeometry.fromPolylineXY(
+            [p.asPoint() if not isinstance(p, QgsPointXY) else p for p in words_points]
+        )
         oldLen = word_geometry.length()
         word_text = letters_data[0][1]
         nLetters = len(word_text)
         lenPerLetter = oldLen / nLetters
         increaseFactor = 1.05
-        word_geometry = word_geometry.extendLine(increaseFactor * lenPerLetter, increaseFactor * lenPerLetter)        
+        word_geometry = word_geometry.extendLine(
+            increaseFactor * lenPerLetter, increaseFactor * lenPerLetter
+        )
         return word_geometry, word_text, centroidGeom
 
     def mouseClick(self, pos, btn):
@@ -189,7 +200,9 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
             self.displayErrorMessage(self.tr("Não há camada selecionada"))
             return
         if self.srcLyr.sourceName() == "edicao_texto_generico_l":
-            self.displayErrorMessage(self.tr("Camada selecionada edicao_texto_generico_l, selecione outra."))
+            self.displayErrorMessage(
+                self.tr("Camada selecionada edicao_texto_generico_l, selecione outra.")
+            )
             return
         fieldIdx = self.srcLyr.dataProvider().fieldNameIndex("texto_edicao")
         if fieldIdx == -1:
@@ -264,7 +277,11 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         sugestedLabelConfig = self.getSugestedLabelConfig(feat)
         if sugestedLabelConfig["found"]:
             self.createSugestedLabelFeature(
-                feat, word_text, sugestedLabelGeometry, centroidGeom, sugestedLabelConfig
+                feat,
+                word_text,
+                sugestedLabelGeometry,
+                centroidGeom,
+                sugestedLabelConfig,
             )
         else:
             self.displayErrorMessage(
@@ -276,17 +293,29 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         return not not feat.attribute("texto_edicao")
 
     def createSugestedLabelFeature(
-        self, originFeat, word_text, sugestedLabelGeometry, centroidGeom, sugestedLabelConfig
+        self,
+        originFeat,
+        word_text,
+        sugestedLabelGeometry,
+        centroidGeom,
+        sugestedLabelConfig,
     ):
         destLayer = self.dstLyrL
-        if sugestedLabelConfig["placement"] in (QgsPalLayerSettings.Horizontal, QgsPalLayerSettings.OverPoint, QgsPalLayerSettings.AroundPoint, QgsPalLayerSettings.OrderedPositionsAroundPoint):
+        if sugestedLabelConfig["placement"] in (
+            QgsPalLayerSettings.Horizontal,
+            QgsPalLayerSettings.OverPoint,
+            QgsPalLayerSettings.AroundPoint,
+            QgsPalLayerSettings.OrderedPositionsAroundPoint,
+        ):
             destLayer = self.dstLyrP
             sugestedLabelGeometry = centroidGeom
 
         toInsert = QgsFeature(destLayer.fields())
         toInsert.setAttribute("texto_edicao", word_text)
-        for attrToAdd in ["justificativa_txt","estilo_fonte", "tamanho_txt", "cor"]:
-            if attrToAdd in destLayer.fields().names() and  attrToAdd in list(sugestedLabelConfig.keys()):
+        for attrToAdd in ["justificativa_txt", "estilo_fonte", "tamanho_txt", "cor"]:
+            if attrToAdd in destLayer.fields().names() and attrToAdd in list(
+                sugestedLabelConfig.keys()
+            ):
                 toInsert.setAttribute(attrToAdd, sugestedLabelConfig[attrToAdd])
         toInsert.setGeometry(sugestedLabelGeometry)
         destLayer.startEditing()
@@ -321,6 +350,6 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         lastExtent = self.mapCanvas.extent()
         self.mapCanvas.zoomScale(self.getScale())
         self.mapCanvas.setScaleLocked(True)
-        self.mapCanvas.setExtent(lastExtent,True)
+        self.mapCanvas.setExtent(lastExtent, True)
         # self.mapCanvas.setMagnificationFactor(1.0)
         return True

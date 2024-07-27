@@ -1,10 +1,11 @@
 from pathlib import Path
 
 from qgis.core import Qgis
-from qgis.PyQt.QtCore import QCoreApplication,Qt
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QPushButton
 from PyQt5.QtGui import QIcon, QKeyEvent
 from qgis.utils import iface
+
 
 class BaseTools:
     @staticmethod
@@ -46,7 +47,7 @@ class BaseTools:
             scale = self.scaleSelector.currentText()
             scale = scale.replace(".", "").split(":")[1]
             return int(scale)
-    
+
     def keyPressEvent(self, event):
         activeTool = iface.mapCanvas().mapTool()
         if event.key() == Qt.Key_Escape:
@@ -57,6 +58,6 @@ class BaseTools:
     @staticmethod
     def tr(message):
         return QCoreApplication.translate("FerramentasEdicao", message)
-    
+
     def unsetTool(self):
         return None

@@ -893,7 +893,10 @@ def validate_keys(input_dict: dict, required=True, reference_schema=None) -> boo
             continue
         if key not in input_dict:
             return False
-        if key == "licenca_produto" and item[key] not in ["CC-BY-SA 4.0", "CC-BY-NC-SA 4.0"]:
+        if key == "licenca_produto" and item[key] not in [
+            "CC-BY-SA 4.0",
+            "CC-BY-NC-SA 4.0",
+        ]:
             return False
         if item["type"] not in (dict, list):
             continue
