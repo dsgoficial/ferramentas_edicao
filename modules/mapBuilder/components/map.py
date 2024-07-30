@@ -145,7 +145,7 @@ class Map(ComponentUtils, IComponent):
         gridLayer.updateFields()
 
         mapExtentsGeom = mapExtents.geometry()
-        mapExtentsGeom = mapExtentsGeom.densifyByDistance(0.001)
+        # mapExtentsGeom = mapExtentsGeom.densifyByDistance(0.001)
         crsSrc = QgsCoordinateReferenceSystem("EPSG:4674")
         crcDest = QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}')
         transform = QgsCoordinateTransform(crsSrc, crcDest, QgsProject.instance())
