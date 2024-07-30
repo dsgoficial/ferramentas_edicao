@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.34
+## 1.2.35
 
 
 Novas Funcionalidades
@@ -54,6 +54,7 @@ Correção de bug:
 - Corrige o ordenamento das camadas para a classe "constr_extracao_mineral_a" nas Cartas Topográficas e Cartas Ortoimagem;
 - Corrige bug no diagrama de elevação de não aparecerem as valas;
 - Corrige bug de múltiplos projetos aparecerem sobrepostos na exportação em lote;
+- Corrige gap com a moldura na escala 1:250.000;
 
 ## 1.1.90
 
