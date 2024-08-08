@@ -36,7 +36,6 @@ class Localization(ComponentUtils, IComponent):
 
         # Creating layer for mapArea
         mapAreaBoundingBox = mapAreaFeature.geometry().boundingBox()
-        print(f"mapAreaBoundingBox = {mapAreaBoundingBox}")
         mapAreaLayer = self.createGridRectangle(
             mapAreaBoundingBox, data, "localizationMapArea"
         )
@@ -55,7 +54,6 @@ class Localization(ComponentUtils, IComponent):
         mapExtents = self.getExtent(
             mapAreaFeature, stateLayerBackground, isInternational
         )
-        print(f"mapExtents = {mapExtents}")
         # calcular escala
         if (
             len(self.estados) == 1 and mapExtents.area() < 0.5
@@ -68,7 +66,6 @@ class Localization(ComponentUtils, IComponent):
             mapItem.setCrs(QgsCoordinateReferenceSystem("EPSG:4674"))
             mapItem.refresh()
             self.scale = mapItem.scale()
-            print(f"self.scale = {self.scale}")
 
         self.setupBackgroundLayer(stateLayerBackground)
         self.setLabel(stateLayerBackground, isInternational, mapExtents)
@@ -123,13 +120,6 @@ class Localization(ComponentUtils, IComponent):
             if stateGeom.isMultipart():
                 parts = stateGeom.asGeometryCollection()
                 for part in parts:
-                    #     print(part)
-                    #     pass
-                    # for singleStateItem in stateGeom.constParts():
-                    #     print(stateFeature["SIGLA_UF"], singleStateItem, QgsGeometry(singleStateItem))
-                    #     singleStateAbsGeom = singleStateItem.boundary()
-                    #     singleStateGeom = QgsGeometry(singleStateAbsGeom)
-                    # print(stateFeature["SIGLA_UF"], part, part.boundingBox(), geom, geom.intersects(part))
                     if geom.intersects(part):
                         self.estados.add(stateFeature["SIGLA_UF"])
                         self.paises.add(stateFeature["SIGLA_PAIS"])
