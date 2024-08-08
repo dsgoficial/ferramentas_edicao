@@ -36,6 +36,7 @@ class Localization(ComponentUtils, IComponent):
 
         # Creating layer for mapArea
         mapAreaBoundingBox = mapAreaFeature.geometry().boundingBox()
+        print(f"mapAreaBoundingBox = {mapAreaBoundingBox}")
         mapAreaLayer = self.createGridRectangle(
             mapAreaBoundingBox, data, "localizationMapArea"
         )
@@ -54,6 +55,7 @@ class Localization(ComponentUtils, IComponent):
         mapExtents = self.getExtent(
             mapAreaFeature, stateLayerBackground, isInternational
         )
+        print(f"mapExtents = {mapExtents}")
         # calcular escala
         if (
             len(self.estados) == 1 and mapExtents.area() < 0.5
@@ -66,6 +68,7 @@ class Localization(ComponentUtils, IComponent):
             mapItem.setCrs(QgsCoordinateReferenceSystem("EPSG:4674"))
             mapItem.refresh()
             self.scale = mapItem.scale()
+            print(f"self.scale = {self.scale}")
 
         self.setupBackgroundLayer(stateLayerBackground)
         self.setLabel(stateLayerBackground, isInternational, mapExtents)
@@ -221,8 +224,8 @@ class Localization(ComponentUtils, IComponent):
             stateLayer.commitChanges()
         if mapExtents != QgsRectangle():
             stateLayer.startEditing()
-            mapExtents = self.squareOutsideRectangle(mapExtents)
             extent = QgsGeometry().fromRect(mapExtents)
+            mapExtents = self.squareOutsideRectangle(mapExtents)
             request = QgsFeatureRequest().setFilterRect(mapExtents)
             for f in stateLayer.getFeatures(request):
                 if len(self.estados) == 1 and f["SIGLA_UF"] in self.estados:

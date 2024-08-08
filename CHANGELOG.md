@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.35
+## 1.2.36
 
 
 Novas Funcionalidades
@@ -55,6 +55,7 @@ Correção de bug:
 - Corrige bug no diagrama de elevação de não aparecerem as valas;
 - Corrige bug de múltiplos projetos aparecerem sobrepostos na exportação em lote;
 - Corrige gap com a moldura na escala 1:250.000;
+- Corrige de bug ao calcular extensão do mapa de localização;
 
 ## 1.1.90
 
