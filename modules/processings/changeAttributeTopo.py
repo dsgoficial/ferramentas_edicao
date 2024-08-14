@@ -240,6 +240,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultIlhaA(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
+        if size>16:
+            size=16 #na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size
         feature["visivel"] = 1
         if (
@@ -428,6 +430,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultMassaDagua(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
+        if size>16:
+            size=16 # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size
         if (
             "texto_edicao" in feature.fields().names()

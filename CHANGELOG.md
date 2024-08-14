@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.36
+## 1.2.37
 
 
 Novas Funcionalidades
@@ -56,6 +56,7 @@ Correção de bug:
 - Corrige bug de múltiplos projetos aparecerem sobrepostos na exportação em lote;
 - Corrige gap com a moldura na escala 1:250.000;
 - Corrige de bug ao calcular extensão do mapa de localização;
+- Corrigido o tamanho maximo da fonte de massa d'água e ilha
 
 ## 1.1.90
 
