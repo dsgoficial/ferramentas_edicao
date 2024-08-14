@@ -60,8 +60,8 @@ class Provider(QgsProcessingProvider):
     def loadAlgorithms(self, *args, **kwargs):
         self.addAlgorithm(OrderEditLayersAndAddStyle())
         self.addAlgorithm(MergeRivers())
-        self.addAlgorithm(PrepareOrtho())
-        self.addAlgorithm(PrepareTopo())
+        # self.addAlgorithm(PrepareOrtho())
+        # self.addAlgorithm(PrepareTopo())
         self.addAlgorithm(InsertEnergyTower())
         self.addAlgorithm(InsertRoadMarker())
         self.addAlgorithm(HighestSpotOnTheFrame())
