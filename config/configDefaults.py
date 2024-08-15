@@ -366,7 +366,7 @@ class ConfigDefaults:
                     },
                     "reproductionRights": {
                         "x_0": 7,
-                        "y_0": 890,
+                        "y_0": 880,
                         "width": 110,
                         "height": 20,
                     },
