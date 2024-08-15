@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.37
+## 1.2.38
 
 
 Novas Funcionalidades
@@ -57,6 +57,7 @@ Correção de bug:
 - Corrige gap com a moldura na escala 1:250.000;
 - Corrige de bug ao calcular extensão do mapa de localização;
 - Corrigido o tamanho maximo da fonte de massa d'água e ilha
+- Corrigido o posicionamento dos seguintes elementos no QPT da Carta Ortoimagem 2.4 e 2.5: tabela_articulacao_imagens, imagemArticulation, label_tabela_info_ortoimagem, label_tabela_info_carta
 
 ## 1.1.90
 

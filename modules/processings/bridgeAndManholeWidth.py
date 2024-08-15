@@ -336,4 +336,13 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr(
+        """Este algoritmo ajusta a largura de elementos viários (pontes, bueiros, etc.) em camadas de pontos e linhas.
+
+        Ele compara a geometria desses elementos com as rodovias próximas para determinar a largura adequada com base em critérios específicos, como tipo de via, situação física, número de faixas, entre outros.
+
+        O usuário pode optar por aplicar a operação somente nas feições selecionadas ou em todas as feições.
+
+        As camadas de elementos viários (ponto e linha) e a camada de rodovias devem ser fornecidas pelo usuário."""
+        )
+

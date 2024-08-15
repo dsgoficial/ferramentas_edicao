@@ -1,7 +1,7 @@
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterNumber,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
     QgsVectorLayer,
     QgsFeature,
@@ -13,38 +13,47 @@ from qgis.core import (
     QgsProcessing,
     QgsWkbTypes,
     QgsFeatureSink,
+    QgsProcessingParameterNumber
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 
 
 class CreateCustomPolygons(QgsProcessingAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
-    SIDE_LENGTH = "SIDE_LENGTH"
+    SCALE = "SCALE"
     ROUNDING_FACTOR = "ROUNDING_FACTOR"
     OUTPUT_LAYER = "OUTPUT_LAYER"
+
+    SCALE_OPTIONS = ["25.000", "50.000", "100.000", "250.000"]
+    SIDE_LENGTH_MAP = {
+        0: 0.125,   # 25.000
+        1: 0.250,   # 50.000
+        2: 0.500,   # 100.000
+        3: 1.250    # 250.000
+    }
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER,
-                "Input Polygon Layer",
+                "Polígono de entrada",
                 [QgsProcessing.TypeVectorPolygon],
             )
         )
 
         self.addParameter(
-            QgsProcessingParameterNumber(
-                self.SIDE_LENGTH,
-                "Side Length of Polygons",
-                type=QgsProcessingParameterNumber.Double,
-                defaultValue=0.125,
+            QgsProcessingParameterEnum(
+                self.SCALE,
+                "Escala do produto desejada",
+                options=self.SCALE_OPTIONS,
+                defaultValue=0,  # Default to 25.000
             )
         )
 
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.ROUNDING_FACTOR,
-                "Rounding Factor",
+                "Fator de arredondamento",
                 type=QgsProcessingParameterNumber.Double,
                 defaultValue=0.015,
             )
@@ -52,16 +61,15 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(
-                self.OUTPUT_LAYER, "Output Layer", QgsProcessing.TypeVectorPolygon
+                self.OUTPUT_LAYER, "Camada de saída", QgsProcessing.TypeVectorPolygon
             )
         )
 
     def processAlgorithm(self, parameters, context, feedback):
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER, context)
-        side_length = self.parameterAsDouble(parameters, self.SIDE_LENGTH, context)
-        rounding_factor = self.parameterAsDouble(
-            parameters, self.ROUNDING_FACTOR, context
-        )
+        scale_index = self.parameterAsEnum(parameters, self.SCALE, context)
+        side_length = self.SIDE_LENGTH_MAP[scale_index]
+        rounding_factor = self.parameterAsDouble(parameters, self.ROUNDING_FACTOR, context)
 
         (sink, dest_id) = self.parameterAsSink(
             parameters,
@@ -101,6 +109,7 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
             QgsPointXY(lon - half_side, lat - half_side),  # Closing the polygon
         ]
         polygon = QgsGeometry.fromPolygonXY([points])
+
         return polygon
 
     def round_to_nearest_multiple(self, value, multiple):
@@ -122,7 +131,19 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr(
+        """Este algoritmo gera polígonos personalizados com base nas coordenadas centróides dos polígonos da camada de entrada.
+
+
+        O usuário pode selecionar a escala desejada (25.000, 50.000, 100.000, 250.000), que define a escala do produto sistemático desejado.
+        
+        
+        O algoritmo ajusta automaticamente a posição do polígono de modo a englobar o máximo do polígono de entrada.
+        
+        
+        O polígono resultante é a moldura em enquadramento especial que pode ser utilizada no Ferramenta de Edição para geração de produtos em enquadramento especial."""
+    )
+
 
     def createInstance(self):
         return CreateCustomPolygons()
