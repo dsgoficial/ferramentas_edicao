@@ -647,4 +647,11 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr(
+        """Este algoritmo insere pontos de mudança em uma camada de pontos com base em alterações detectadas em uma camada de linhas de rodovias.
+
+        O algoritmo analisa a geometria das linhas de rodovia em diferentes escalas e tipos de produtos (Ortoimagem ou Topográfica) para determinar onde os pontos de mudança devem ser inseridos.
+
+        Ele também leva em consideração a proximidade das feições à moldura (se fornecida) e insere os pontos conforme necessário."""
+        )
+

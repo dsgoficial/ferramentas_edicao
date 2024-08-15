@@ -20,7 +20,7 @@ class LoadMasks(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 self.JSON_FILE,
-                self.tr("Selecionar o arquivo de máscaras:"),
+                self.tr("Selecionar o arquivo .json de máscaras"),
                 extension="json",
             )
         )
@@ -28,7 +28,7 @@ class LoadMasks(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterMultipleLayers(
                 self.INPUT_LAYERS,
-                self.tr("Input Layers"),
+                self.tr("Camadas que terão máscaras aplicadas"),
                 QgsProcessing.TypeVectorAnyGeometry,
             )
         )
