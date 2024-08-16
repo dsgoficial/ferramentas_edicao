@@ -50,6 +50,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Selecione a escala de edição"),
                 options=[
+                    self.tr("1:10.000"),
                     self.tr("1:25.000"),
                     self.tr("1:50.000"),
                     self.tr("1:100.000"),
@@ -85,10 +86,12 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         self.productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
         buffer = self.parameterAsDouble(parameters, self.BUFFER, context)
         if gridScaleParam == 0:
-            self.scale = 25000
+            self.scale = 10000
         elif gridScaleParam == 1:
-            self.scale = 50000
+            self.scale = 25000
         elif gridScaleParam == 2:
+            self.scale = 50000
+        elif gridScaleParam == 3:
             self.scale = 100000
         elif gridScaleParam == 3:
             self.scale = 250000

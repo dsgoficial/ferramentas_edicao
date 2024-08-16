@@ -39,6 +39,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
             )
         )
         self.scales = [
+            "1:10.000",
             "1:25.000",
             "1:50.000",
             "1:100.000",
@@ -53,6 +54,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
             )
         )
         self.scaleDict = {
+            "1:10.000": 10000,
             "1:25.000": 25000,
             "1:50.000": 50000,
             "1:100.000": 100000,
