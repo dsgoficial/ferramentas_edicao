@@ -522,8 +522,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 return feature
             if feature["texto_edicao"].strip() != "":
                 return feature
-        if feature["situacao_em_poligono"] != 4:
-            feature["texto_edicao"] = feature["nome"]
+        if feature["situacao_em_poligono"] != 4 and feature["nome"] != NULL:
+                feature["texto_edicao"] = self.abreviaNomeTrechoDrenagem(feature["nome"])
 
         return feature
 
@@ -575,7 +575,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["nome"] != NULL:
-            feature["texto_edicao"] = feature["nome"]
+            feature["texto_edicao"] = self.abreviaNomeEdif(feature["nome"], feature["tipo"])
+
         return feature
 
     def defaultElementoViario(self, feature, lyrCrs):
@@ -595,6 +596,65 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             feature["texto_edicao"] = feature["nome"]
 
         return feature
+
+    def abreviaNomeEdif(self, nome, tipo):
+        abreviacoes = {
+            302: {"estação de tratamento de água": "ETA"},
+            303: {"estação de bombeamento de água": "EBA"},
+            405: {"estação de tratamento de esgoto": "ETE"},
+            518: {"escola municipal de ensino fundamental": "EMEF", "escola estadual de ensino fundamental": "EEEF"},
+            519: {"escola municipal de ensino médio": "EMEM", "escola estadual de ensino médio": "EEEM"},
+            520: {"universidade": "Univ", "faculdade": "Fac"},
+            521: {"universidade": "Univ", "faculdade": "Fac"},
+            522: {"universidade": "Univ", "faculdade": "Fac"},
+            601: {"paróquia": "Paroq"},
+            712: {"monumento": "Mon"},
+            810: {"biblioteca": "Bibl"},
+            1098: {"fábrica": "Fab", "Indústria": "Ind"},
+            1212: {"fazenda": "Faz", "chácara": "Chac", "Estância": "Esta", "nossa senhora": "N Sra"},
+            1308: {"câmara municipal": "CM"},
+            1316: {"secretaria municipal": "SM"},
+            1322: {"prefeitura": "Pref"},
+            2025: {"hospital": "Hosp", "nossa senhora": "N Sra"},
+            2026: {"policlínica": "Pclin", "Maternidade": "Mater"},
+            2027: {"unidade básica de pronto atendimento": "UPA"},
+            2028: {"unidade básica de saúde": "UBS", "unidade básica da família": "UBF", "policlínica": "Pclin", "Posto de Saúde": "P Saúde"},
+            3001: {"delegacia": "Del"},
+            3004: {"polícia rodoviária federal": "PRF"},
+            3005: {"polícia militar": "PM", "brigada militar": "BM"},
+            3007: {"corpo de bombeiros militar": "CBM"},
+            3008: {"corpo de bombeiros voluntário": "CBV", "corpo de bombeiro civil": "CBC"}
+        }
+
+        nome_lower = nome.lower()
+
+        if tipo in abreviacoes:
+            for palavra, abreviacao in abreviacoes[tipo].items():
+                nome = nome.replace(palavra, abreviacao, 1)
+                if palavra in nome_lower:
+                    start_index = nome_lower.index(palavra)
+                    end_index = start_index + len(palavra)
+                    nome = nome[:start_index] + abreviacao + nome[end_index:]
+                    nome_lower = nome.lower()
+
+        return nome
+
+    def abreviaNomeTrechoDrenagem(self, nome):
+        nome_lower = nome.lower()
+        if "córrego" in nome_lower:
+            nome_abreviado = nome.replace("Córrego", "Corr")
+            return nome_abreviado
+        if "igarapé" in nome_lower:
+            nome_abreviado = nome.replace("Igarapé", "Ig")
+            return nome_abreviado
+        if "ribeirão" in nome_lower:
+            nome_abreviado = nome.replace("Ribeirão", "Rib")
+            return nome_abreviado
+        if "arroio" in nome_lower:
+            nome_abreviado = nome.replace("Arroio", "Arr")
+            return nome_abreviado
+
+        return nome
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

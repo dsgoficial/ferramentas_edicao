@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.38
+## 1.2.40
 
 
 Novas Funcionalidades
@@ -9,6 +9,7 @@ Novas Funcionalidades
 - Novo processo de execução remota por meio do serviço de edição;
 - Novo processo de fixar o rótulo de curvas mestras;
 - Adiciona licença nos produtos;
+- Criar molduras não-SCN com base na escala e em um polígono de entrada;
 
 Melhorias:
 
@@ -24,6 +25,8 @@ Melhorias:
 - A ferramenta de pular linhas agora retorna ao estado original caso não tenha como inserir mais quebras;
 - Melhoria no cálculo de posicionamento de rótulo no diagrama de localização do produto;
 - Adicionada generalização automática de drenagens no diagrama de elevação;
+- Melhorada a documentação dos seguintes processings: brdigeAndManholeRotation, bridgeAndManholeWidth, createCustomPolygons, damWidth, loadMasks, placePointOfChange;
+- Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_edificacao_p, constr_edificacao_a e elemnat_trecho_drenagem_l.
 
 Correção de bug:
 
