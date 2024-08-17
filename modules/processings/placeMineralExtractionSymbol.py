@@ -161,4 +161,13 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("""
+        Este algoritmo insere símbolos de extração mineral em polígonos de áreas de extração, levando em conta o tamanho do polígono e a escala de edição.
+                       
+        O algoritmo permite ocultar feições que não são grandes o suficiente para acomodar o símbolo de extração.
+                       
+        A inserção dos símbolos é baseada no centroide ou ponto dentro da feição, e o tamanho do símbolo é ajustado conforme a escala selecionada.
+                       
+        O algoritmo pode ser aplicado em todas as feições ou apenas nas feições selecionadas.
+    """)
+

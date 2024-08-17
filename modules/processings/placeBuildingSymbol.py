@@ -216,7 +216,16 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("""
+        Este algoritmo insere símbolos de edificações em polígonos de edifícios com base em regras predefinidas.
+                       
+        Primeiro, posiciona automaticamente símbolos em polígonos que representam hospitais.
+                        
+        Em seguida, posiciona símbolos no segmento mais ao norte dos polígonos das edificações, ajustando a rotação dos símbolos de acordo com a orientação dos segmentos.
+                       
+        O algoritmo permite a escolha de feições selecionadas ou todas as feições da camada de entrada.
+        """)
+
 
 
 def pairwise(iterable: Iterable) -> Iterable:

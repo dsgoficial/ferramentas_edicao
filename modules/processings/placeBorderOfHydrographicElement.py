@@ -229,4 +229,11 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("""
+        Este algoritmo processa elementos hidrográficos, inserindo bordas ao redor deles com base na proximidade com massas d'água.
+                       
+        Ele utiliza camadas selecionadas que representam elementos hidrográficos, massas d'água e camadas de símbolos para criar linhas de borda onde os elementos hidrográficos encontram as massas d'água.
+                       
+        O resultado é uma camada de linhas com bordas simbolizadas indicando elementos hidrográficos em massas d'água.
+        """)
+

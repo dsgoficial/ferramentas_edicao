@@ -169,7 +169,12 @@ class SetCurveOrientation(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo ...")
+        return self.tr("""
+        Este algoritmo ajusta a orientação das curvas de nível em uma camada de linhas, permitindo que o usuário escolha entre sentido horário ou anti-horário.
+                       
+        Ele identifica as curvas que estão orientadas de forma diferente da desejada e as inverte para corresponder à orientação especificada.
+        """)
+
 
 
 def should_flip(geom: QgsGeometry, ccw=True) -> bool:
