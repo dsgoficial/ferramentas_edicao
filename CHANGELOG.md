@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.41
+## 1.2.42
 
 Novas Funcionalidades
 
@@ -27,6 +27,7 @@ Melhorias:
 - Melhoria na documentação dos seguintes processings: bridgeAndManholeRotation, bridgeAndManholeWidth, createCustomPolygons, damWidth, loadMasks, placePointOfChange;
 - Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_edificacao_p, constr_edificacao_a e elemnat_trecho_drenagem_l.
 - Melhoria na documentação dos seguintes processings: fixLabelPostionsCRS, placeBorderOfHydrographicElement, placeBuildingSymbol, placeMineralExtractionSymbol, placepowerPlantSymbol, placeVegetationSymbol, rapidsAndWaterfallRotation, reprojectAttributes, setCurveOrientation
+- Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_ocupacao_solo_p e constr_ocupacao_solo_a. Além disso, a mudança automática para visivel e justificativa_txt nas mesmas classes.
 
 Correção de bug:
 

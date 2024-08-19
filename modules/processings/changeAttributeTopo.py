@@ -151,6 +151,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             processing_function = self.defaultTrechoDrenagem
         elif table_name in ["llp_localidade_p"]:
             processing_function = self.defaultllpLocalidade
+        elif table_name in ["constr_ocupacao_solo_p", "constr_ocupacao_solo_a"]:
+            processing_function = self.defaultOcupacaoSolo
         else:
             return
 
@@ -597,6 +599,14 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
         return feature
 
+    def defaultOcupacaoSolo(self, feature):
+        feature["visivel"] = 1
+        feature["justificativa_txt"] = 2
+        if feature["nome"] != NULL:
+            feature["texto_edicao"] = self.abreviaNomeOcupacaoSolo(feature["nome"])
+        
+        return feature
+
     def abreviaNomeEdif(self, nome, tipo):
         abreviacoes = {
             302: {"estação de tratamento de água": "ETA"},
@@ -640,19 +650,33 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return nome
 
     def abreviaNomeTrechoDrenagem(self, nome):
+        abreviations = {
+            "córrego": "Corr",
+            "igarapé": "Ig",
+            "ribeirão": "Rib",
+            "arroio": "Arr"
+        }
+
         nome_lower = nome.lower()
-        if "córrego" in nome_lower:
-            nome_abreviado = nome.replace("Córrego", "Corr")
-            return nome_abreviado
-        if "igarapé" in nome_lower:
-            nome_abreviado = nome.replace("Igarapé", "Ig")
-            return nome_abreviado
-        if "ribeirão" in nome_lower:
-            nome_abreviado = nome.replace("Ribeirão", "Rib")
-            return nome_abreviado
-        if "arroio" in nome_lower:
-            nome_abreviado = nome.replace("Arroio", "Arr")
-            return nome_abreviado
+
+        for key, value in abreviations.items():
+            if key in nome_lower:
+                return nome.replace(key.capitalize(), value)
+
+        return nome
+
+    def abreviaNomeOcupacaoSolo(self, nome):
+        abreviations = {
+            "cemitério": "Cem",
+            "Parque": "Pq",
+            "nossa senhora": "N Sra"
+        }
+
+        nome_lower = nome.lower()
+
+        for key, value in abreviations.items():
+            if key in nome_lower:
+                return nome.replace(key.capitalize(), value)
 
         return nome
 
