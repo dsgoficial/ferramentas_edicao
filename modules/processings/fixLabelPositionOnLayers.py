@@ -13,8 +13,12 @@ from qgis.core import (
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterEnum,
     QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterBoolean,
+    QgsVectorLayer,
+    NULL,
 )
 from qgis.PyQt.QtCore import QCoreApplication
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 
 class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
@@ -22,6 +26,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
     INPUT_LAYERS = "INPUT_LAYERS"
     GEOGRAPHIC_BOUNDARY = "GEOGRAPHIC_BOUNDARY"
     SCALE = "SCALE"
+    OVERWRITE_LABELS = "OVERWRITE_LABELS"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -53,6 +58,13 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                 defaultValue=0,
             )
         )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.OVERWRITE_LABELS,
+                self.tr("Substituir rótulos já fixados"),
+                defaultValue=False
+            )
+        )
         self.scaleDict = {
             "1:10.000": 10000,
             "1:25.000": 25000,
@@ -63,11 +75,10 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layerList = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
-        geographicBoundaryLyr = self.parameterAsLayer(
-            parameters, self.GEOGRAPHIC_BOUNDARY, context
-        )
+        geographicBoundaryLyr = self.parameterAsLayer(parameters, self.GEOGRAPHIC_BOUNDARY, context)
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         scale = self.scaleDict[self.scales[scaleIdx]]
+        overwrite_labels = self.parameterAsBoolean(parameters, self.OVERWRITE_LABELS, context)
         lyrDict = {lyr.name(): lyr for lyr in layerList}
         nRegions = geographicBoundaryLyr.featureCount()
         nSteps = 2 + 2 * nRegions
@@ -121,13 +132,19 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         futures = set()
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
 
-        def compute(lyr, x_field_idx, y_field_idx, featid, point):
+        def compute(lyr:QgsVectorLayer, x_field_idx, y_field_idx, featid, point, overwrite_labels):
             if multiStepFeedback.isCanceled():
                 return
+            x = point.x()
+            y = point.y()
+            if not overwrite_labels:
+                feature = lyr.getFeature(featid)
+                x = feature[x_field_idx] if feature[x_field_idx]!=NULL else point.x()
+                y = feature[y_field_idx] if feature[y_field_idx]!=NULL else point.y()
             return lyr, {
                 featid: {
-                    x_field_idx: point.x(),
-                    y_field_idx: point.y(),
+                    x_field_idx: x,
+                    y_field_idx: y,
                 }
             }
 
@@ -159,6 +176,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                         fieldIdxDict["label_y"],
                         featid,
                         point,
+                        overwrite_labels
                     )
                 )
                 currentFeat += 1
@@ -193,7 +211,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         return FixLabelPostionOnLayers()
 
     def name(self):
-        return "fixlabelpostiononlayers"
+        return "fixLabelPositionOnLayers"
 
     def displayName(self):
         return self.tr("Fixa posição dos labels")
@@ -205,4 +223,4 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("Fixa posição dos labels de acordo com o calculado pelo QGIS.")
+        return help().shortHelpString(self.name())

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.43
+## 1.2.44
 
 Novas Funcionalidades
 
@@ -28,6 +28,7 @@ Melhorias:
 - Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_edificacao_p, constr_edificacao_a e elemnat_trecho_drenagem_l.
 - Melhoria na documentação dos seguintes processings: fixLabelPostionsCRS, placeBorderOfHydrographicElement, placeBuildingSymbol, placeMineralExtractionSymbol, placepowerPlantSymbol, placeVegetationSymbol, rapidsAndWaterfallRotation, reprojectAttributes, setCurveOrientation
 - Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_ocupacao_solo_p e constr_ocupacao_solo_a. Além disso, a mudança automática para visivel e justificativa_txt nas mesmas classes.
+- Melhoria no fixLabelsPositionOnLayers: Adição de uma checkbox para sobrescrever ou não os rótulos já fixados. 
 
 Correção de bug:
 
