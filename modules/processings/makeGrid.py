@@ -124,7 +124,6 @@ class MakeGrid(QgsProcessingAlgorithm):
         multiStepFeedback.setCurrentStep(currentStep)
         for feature in frameLayerReprojected.getFeatures():
             geometria = feature.geometry()
-            # print(geometria, frameLayerReprojected.crs())
             retangulo = geometria.boundingBox()
             xmin = retangulo.xMinimum()
             xmax = retangulo.xMaximum()
@@ -132,16 +131,11 @@ class MakeGrid(QgsProcessingAlgorithm):
             ymax = retangulo.yMaximum()
             gridSize = 4 * gridScale / 100
             xmin, xmax, ymin, ymax = self.processExtent(xmin, xmax, ymin, ymax, gridSize)
-            #gridSize, xmin, xmax, ymin, ymax = self.getGridParameters(
-            #    gridScale, frameLayerReprojected
-            #)
-        #currentStep += 1
-        
-        #multiStepFeedback.setCurrentStep(currentStep)
+            
             grid = self.makeGrid(
                 gridSize, gridSize, utm, xmin, xmax, ymin, ymax, context, multiStepFeedback
             )
-            # print(grid.featureCount())
+            
             grids.append(grid)
         gridFinal = processing.run("native:mergevectorlayers", {'LAYERS':grids,'CRS':inputFrameLayer.sourceCrs(),'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
 
@@ -185,7 +179,7 @@ class MakeGrid(QgsProcessingAlgorithm):
 
             self.sink.addFeatures(list(map(createFeat, lineList)))
             currentStep += 1
-        print(lineLayer.featureCount())
+        
         multiStepFeedback.setCurrentStep(currentStep)
         newLayer = self.outLayer(
             parameters, context, lineLayer, QgsWkbTypes.LineString, multiStepFeedback
