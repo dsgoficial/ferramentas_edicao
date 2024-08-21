@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="br">
+
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+
+   <body>
+
+      <div>
+         <p > Help versão 1.0 </p>
+         <hr/>
+         <h2>Descrição:</h2>
+         <h4 style="text-align: center; padding: 6px;">
+            O algoritmo gera o vetor de grade em UTM no fuso correto baseado na moldura e reprojeta para o epsg de interesse 
+            <span style="color: #ff0000; font-weight: bold; text-decoration: underline;">(Apenas dentro do Brasil)</span>
+         </h4>
+         <hr />
+      </div>
+
+      <div>
+
+         <h2>Parâmetros:</h2>
+         <p>
+            <span style="margin-bottom: 10px;">
+             &#8226; Camada de moldura &rarr;  Camada de moldura a ser processada para a gereação do grid sobre toda a sua extensão.
+            </span>
+            <span style="margin-bottom: 10px;">
+             &#8226; Escala de edição &rarr;  Escala a ser considerada para a edição.
+            <span style="margin-bottom: 10px;">
+             &#8226; Gerar cruzetas de lat lon &rarr;  Gera cruzetas baseadas nas coordenadas de latitude do sistema de referência em selecionado.
+
+            <span style="color:#ff0000; font-weight: bold;"><u>Atenção:</u> Os elementos da moldura devem estar todos no mesmo fuso-horário.</span>
+
+
+         </p>
+         <hr />
+
+
+      </div>
+
+      <div>
+         <h2>Exemplo de uso: </h2>
+
+         <span style="margin-bottom: 10px;"> &#8226; Gerar cruzetas de lat lon  &rarr;  ativado</span>
+
+         <hr />
+      </div>
+
+      <div>
+         <h2>Exemplo de Saída:</h2>
+         <center><img src= "{}"></center>
+         <p style="text-align: center; font-style: italic;">A grade é gerada sobre cada feição da moldura, ainda que se trate de uma moldura gerada a partir de multipolígonos não interligados entre si.</p>
+         <hr/>
+      </div>
+   </body>
+
+</html>

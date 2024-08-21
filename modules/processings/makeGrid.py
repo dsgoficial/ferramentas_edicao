@@ -28,6 +28,7 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.PyQt.QtCore import QCoreApplication
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 
 class MakeGrid(QgsProcessingAlgorithm):
@@ -119,31 +120,35 @@ class MakeGrid(QgsProcessingAlgorithm):
         )
         # Criar a grade com 4cm (baseado na escala) de distancia entre as linhas no fuso
         currentStep += 1
-
+        grids = []
         multiStepFeedback.setCurrentStep(currentStep)
-        gridSize, xmin, xmax, ymin, ymax = self.getGridParameters(
-            gridScale, frameLayerReprojected
-        )
-        currentStep += 1
+        for feature in frameLayerReprojected.getFeatures():
+            geometria = feature.geometry()
+            # print(geometria, frameLayerReprojected.crs())
+            retangulo = geometria.boundingBox()
+            xmin = retangulo.xMinimum()
+            xmax = retangulo.xMaximum()
+            ymin = retangulo.yMinimum()
+            ymax = retangulo.yMaximum()
+            gridSize = 4 * gridScale / 100
+            xmin, xmax, ymin, ymax = self.processExtent(xmin, xmax, ymin, ymax, gridSize)
+            #gridSize, xmin, xmax, ymin, ymax = self.getGridParameters(
+            #    gridScale, frameLayerReprojected
+            #)
+        #currentStep += 1
+        
+        #multiStepFeedback.setCurrentStep(currentStep)
+            grid = self.makeGrid(
+                gridSize, gridSize, utm, xmin, xmax, ymin, ymax, context, multiStepFeedback
+            )
+            # print(grid.featureCount())
+            grids.append(grid)
+        gridFinal = processing.run("native:mergevectorlayers", {'LAYERS':grids,'CRS':inputFrameLayer.sourceCrs(),'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
 
-        multiStepFeedback.setCurrentStep(currentStep)
-        grid = self.makeGrid(
-            gridSize, gridSize, utm, xmin, xmax, ymin, ymax, context, multiStepFeedback
-        )
-        currentStep += 1
-
-        # Reprojetar para CRS de destino (moldura)
-        multiStepFeedback.setCurrentStep(currentStep)
-        reprojectGrid = self.reprojectLayer(
-            grid, inputFrameLayer.sourceCrs(), context, multiStepFeedback
-        )
-        currentStep += 1
-
-        multiStepFeedback.setCurrentStep(currentStep)
         lineLayer = self.convertPolygonToLines(
-            reprojectGrid, context, multiStepFeedback
+            gridFinal, context, multiStepFeedback
         )
-        currentStep += 1
+        
 
         (self.sink, self.sink_id) = self.parameterAsSink(
             parameters,
@@ -180,7 +185,7 @@ class MakeGrid(QgsProcessingAlgorithm):
 
             self.sink.addFeatures(list(map(createFeat, lineList)))
             currentStep += 1
-
+        print(lineLayer.featureCount())
         multiStepFeedback.setCurrentStep(currentStep)
         newLayer = self.outLayer(
             parameters, context, lineLayer, QgsWkbTypes.LineString, multiStepFeedback
@@ -259,7 +264,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         )
         return output["OUTPUT"]
 
-    def reprojectLayer(self, layer, crs, context, feedback):
+    def reprojectLayer(self, layer, crs, context, feedback)->QgsVectorLayer:
         output = processing.run(
             "native:reprojectlayer",
             {"INPUT": layer, "TARGET_CRS": crs, "OUTPUT": "memory:"},
@@ -289,7 +294,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         context,
         feedback,
         gridType=2,
-    ):
+    ) -> QgsVectorLayer:
         extent = str(str(xmin) + ", " + str(xmax) + ", " + str(ymin) + ", " + str(ymax))
         output = processing.run(
             "native:creategrid",
@@ -383,15 +388,15 @@ class MakeGrid(QgsProcessingAlgorithm):
             return self.sink_id
         stepSize = 100 / nFeats
         for current, feature in enumerate(layer.getFeatures()):
-            if feedback.isCanceled():
-                break
-            self.sink.addFeature(feature, QgsFeatureSink.FastInsert)
-            feedback.setProgress(current * stepSize)
+           if feedback.isCanceled():
+               break
+           self.sink.addFeature(feature, QgsFeatureSink.FastInsert)
+           feedback.setProgress(current * stepSize)
 
         return self.sink_id
 
     def tr(self, string):
-        return QCoreApplication.translate("Processing", string)
+        return QCoreApplication.translate("processing", string)
 
     def createInstance(self):
         return MakeGrid()
@@ -409,9 +414,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         return "preparo_edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo gera o vetor de grade em UTM no fuso correto baseado na moldura e reprojeta para o epsg de interesse"
-        )
+        return help().shortHelpString(self.name())
 
 
 def getSirgasAuthIdByPointLatLong(lat, long):
@@ -457,3 +460,4 @@ def getSirgasEpsg(key):
         "26S": "EPSG:5396",
     }
     return options[key] if key in options else ""
+
