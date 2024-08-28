@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.42
+## 1.2.43
 
 Novas Funcionalidades
 
@@ -60,8 +60,9 @@ Correção de bug:
 - Corrige bug de múltiplos projetos aparecerem sobrepostos na exportação em lote;
 - Corrige gap com a moldura na escala 1:250.000;
 - Corrige de bug ao calcular extensão do mapa de localização;
-- Corrigido o tamanho maximo da fonte de massa d'água e ilha
-- Corrigido o posicionamento dos seguintes elementos no QPT da Carta Ortoimagem 2.4 e 2.5: tabela_articulacao_imagens, imagemArticulation, label_tabela_info_ortoimagem, label_tabela_info_carta
+- Corrigido o tamanho maximo da fonte de massa d'água e ilha;
+- Corrigido o posicionamento dos seguintes elementos no QPT da Carta Ortoimagem 2.4 e 2.5: tabela_articulacao_imagens, imagemArticulation, label_tabela_info_ortoimagem, label_tabela_info_carta;
+- Removida a entrada duplicada de PROXY_HOST do Sv Edição.
 
 ## 1.1.90
 
