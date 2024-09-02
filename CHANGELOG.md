@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.43
+## 1.2.45
 
 Novas Funcionalidades
 
@@ -29,6 +29,7 @@ Melhorias:
 - Melhoria na documentação dos seguintes processings: fixLabelPostionsCRS, placeBorderOfHydrographicElement, placeBuildingSymbol, placeMineralExtractionSymbol, placepowerPlantSymbol, placeVegetationSymbol, rapidsAndWaterfallRotation, reprojectAttributes, setCurveOrientation
 - Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_ocupacao_solo_p e constr_ocupacao_solo_a. Além disso, a mudança automática para visivel e justificativa_txt nas mesmas classes.
 - Melhoria no fixLabelsPositionOnLayers: Adição de uma checkbox para sobrescrever ou não os rótulos já fixados. 
+
 
 Correção de bug:
 
@@ -65,6 +66,7 @@ Correção de bug:
 - Corrigido o posicionamento dos seguintes elementos no QPT da Carta Ortoimagem 2.4 e 2.5: tabela_articulacao_imagens, imagemArticulation, label_tabela_info_ortoimagem, label_tabela_info_carta;
 - Removida a entrada duplicada de PROXY_HOST do Sv Edição;
 - Correção do símbolo de palafitas em constr_edificacao_p e _a;
+- Correção de bug na ferramenta Gera Vetor de Grade: Grade gerada a partir de cada feição da moldura, ao invés de utilizar a extensão total da camada;
 
 ## 1.1.90
 
