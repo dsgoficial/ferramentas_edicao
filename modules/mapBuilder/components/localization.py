@@ -216,6 +216,7 @@ class Localization(ComponentUtils, IComponent):
             stateLayer.startEditing()
             extent = QgsGeometry().fromRect(mapExtents)
             mapExtents = self.squareOutsideRectangle(mapExtents)
+            localization_extent = QgsGeometry().fromRect(mapExtents)
             request = QgsFeatureRequest().setFilterRect(mapExtents)
             for f in stateLayer.getFeatures(request):
                 if len(self.estados) == 1 and f["SIGLA_UF"] in self.estados:
@@ -227,7 +228,7 @@ class Localization(ComponentUtils, IComponent):
                     continue
                 if f["SIGLA_PAIS"] not in self.paises:
                     continue
-                intersectionGeometry = extent.intersection(f.geometry())
+                intersectionGeometry = localization_extent.intersection(f.geometry())
                 pointGeom, radius = intersectionGeometry.poleOfInaccessibility(0.0001)
                 if pointGeom.isNull():
                     continue
@@ -295,6 +296,7 @@ class Localization(ComponentUtils, IComponent):
         stateLayer.triggerRepaint()
 
     def squareOutsideRectangle(self, rect: QgsRectangle):
+        # location no QPT é quadrado, e o mapExtent originalmente pode ser retangulo
         xmin = rect.xMinimum()
         ymin = rect.yMinimum()
         xmax = rect.xMaximum()
