@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.45
+## 1.2.46
 
 Novas Funcionalidades
 
@@ -67,6 +67,7 @@ Correção de bug:
 - Removida a entrada duplicada de PROXY_HOST do Sv Edição;
 - Correção do símbolo de palafitas em constr_edificacao_p e _a;
 - Correção de bug na ferramenta Gera Vetor de Grade: Grade gerada a partir de cada feição da moldura, ao invés de utilizar a extensão total da camada;
+- Corrige bug no diagrama de elevação quando não há drenagens;
 
 ## 1.1.90
 

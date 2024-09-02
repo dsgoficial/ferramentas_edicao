@@ -153,16 +153,16 @@ class ElevationDiagram(ComponentUtils, IComponent):
                 elevationDiagramGroupNode.addLayer(layer)
             root = QgsProject.instance().layerTreeRoot()
             root.addChildNode(elevationDiagramGroupNode)
-
-        self.generalizeDrainages(
-            drainageLyr=drenagemLayer,
-            ditchLyr=valaLayer,
-            waterBody=massaDaguaLayer,
-            areaWithoutDataLyr=areaWithoutDataLayer,
-            geographicBoundsLyr=geographicBoundsLyr,
-            composition=composition,
-            scale=data.get("scale"),
-        )
+        if drenagemLayer.featureCount() > 0:
+            self.generalizeDrainages(
+                drainageLyr=drenagemLayer,
+                ditchLyr=valaLayer,
+                waterBody=massaDaguaLayer,
+                areaWithoutDataLyr=areaWithoutDataLayer,
+                geographicBoundsLyr=geographicBoundsLyr,
+                composition=composition,
+                scale=data.get("scale"),
+            )
 
         mapIDsToBeDisplayed = [x.id() for x in layers]
 
