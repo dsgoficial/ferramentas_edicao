@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.46
+## 1.2.47
 
 Novas Funcionalidades
 
@@ -68,6 +68,7 @@ Correção de bug:
 - Correção do símbolo de palafitas em constr_edificacao_p e _a;
 - Correção de bug na ferramenta Gera Vetor de Grade: Grade gerada a partir de cada feição da moldura, ao invés de utilizar a extensão total da camada;
 - Corrige bug no diagrama de elevação quando não há drenagens;
+- Correção do bug na ferramenta "Copiar texto sugerido" do "ferramentas de edição": agora, para Cartas Ortoimagem, os atributos 'cor_do_buffer' e 'tamanho_buffer' também são copiados;
 
 ## 1.1.90
 
