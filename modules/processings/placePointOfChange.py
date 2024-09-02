@@ -37,6 +37,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
     TOLERANCE = "TOLERANCE"
     SCALE = "SCALE"
     SYMBOL_LAYER = "SYMBOL_LAYER"
+    LABEL_LAYER = "LABEL_LAYER"
     OUTPUT = "OUTPUT"
     PRODUCT_TYPE = "PRODUCT_TYPE"
 
@@ -86,9 +87,17 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.SYMBOL_LAYER,
-                self.tr("Selecionar camada de camada de edição"),
+                self.tr("Selecionar camada de ponto de mudança"),
                 [QgsProcessing.TypeVectorPoint],
                 defaultValue="edicao_ponto_mudanca_p",
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.LABEL_LAYER,
+                self.tr("Selecionar camada de texto genérico de edição"),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue="edicao_texto_generico_l",
             )
         )
         self.addParameter(
@@ -108,6 +117,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         inputLyrPre = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        labelLyr = self.parameterAsVectorLayer(parameters, self.FRAME_LAYER, context)
         frameLyrPre = self.parameterAsVectorLayer(parameters, self.FRAME_LAYER, context)
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         distance = self.parameterAsDouble(parameters, self.TOLERANCE, context) / 1000
@@ -124,8 +134,6 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         simbPointLayer = self.parameterAsVectorLayer(
             parameters, self.SYMBOL_LAYER, context
         )
-        labelLyrName = "edicao_texto_generico_l"
-        labelLyr = getLayerByName(labelLyrName)
         (feats_sink, feats_sink_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,
@@ -186,6 +194,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             productTypeName,
             fields,
             inputLyr,
+            labelLyr,
             symbolTypeFieldName,
             lanesNumberFieldName,
             boundaryDict,
@@ -220,6 +229,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         productTypeName,
         fields: QgsFields,
         inputLyr: QgsVectorLayer,
+        labelLyr: QgsVectorLayer,
         symbolTypeFieldName,
         lanesNumberFieldName,
         boundaryDict: dict,
@@ -285,12 +295,13 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             )
             featToAdd.setAttribute("visivel", 1)  # 1 = Sim, 2 = Não
             featsToAdd.append(featToAdd)
+            attrNameLane = "nr_faixas"
             labelA = self.insertRoadLabel(
-                a, featA, scale, productTypeName, crsString=crsString
+                inputLyr, labelLyr, attrNameLane, a, featA, scale, productTypeName, crsString=crsString
             )
             labels.add(labelA)
             labelB = self.insertRoadLabel(
-                b, featB, scale, productTypeName, crsString=crsString
+                inputLyr, labelLyr, attrNameLane, b, featB, scale, productTypeName, crsString=crsString
             )
             labels.add(labelB)
             if feedback is not None:
@@ -576,6 +587,9 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
 
     def insertRoadLabel(
         self,
+        srcLyr: QgsVectorLayer, 
+        dstLyr: QgsVectorLayer, 
+        attrNameLane, 
         point: QgsFeature,
         feat: QgsFeature,
         scale,
@@ -592,7 +606,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         posGeom = QgsGeometry()
         posGeom = posGeom.fromPointXY(middlePoint)
         label = createLabelFromLayerAToLayerB(
-            posGeom, scale, "createroadlabel", productTypeName, crsString="EPSG:3857"
+            posGeom, srcLyr, dstLyr, attrNameLane, scale, "createroadlabel", productTypeName, crsString="EPSG:3857"
         )
         return label
 

@@ -19,6 +19,9 @@ from qgis.core import (
 # as camadas ja predefinidas dependem da funcao chamada
 def createLabelFromLayerAToLayerB(
     pos: QgsGeometry,
+    srcLyr: QgsVectorLayer, 
+    dstLyr: QgsVectorLayer, 
+    attrNameLane, 
     scale: int,
     functionName: Literal["createroadlabel"],
     productTypeName: Literal["orto", "topo"],
@@ -32,16 +35,12 @@ def createLabelFromLayerAToLayerB(
     productTypeDict = {"orto": 0, "topo": 1}
     productType = productTypeDict[productTypeName]
     if functionName == "createroadlabel":
-        label = createRoadLabel(pos, scale, productType, crsString)
+        label = createRoadLabel(pos, srcLyr, dstLyr, attrNameLane, scale, productType, crsString)
 
     return label
 
 
-def createRoadLabel(pos: QgsGeometry, scale, productType, crsString) -> QgsFeature:
-    srcLyrName = "infra_via_deslocamento_l"
-    srcLyr = getLayerByName(srcLyrName)
-    dstLyrName = "edicao_texto_generico_l"
-    dstLyr = getLayerByName(dstLyrName)
+def createRoadLabel(pos: QgsGeometry, srcLyr, dstLyr, attrNameLane, scale, productType, crsString) -> QgsFeature:
     tolerance = getToleranceForLyr(srcLyr, scale, crsString)
     feat = getNearestFeat(pos, srcLyr, tolerance)
     attrNameLane = "nr_faixas"
@@ -59,10 +58,10 @@ def createRoadLabel(pos: QgsGeometry, scale, productType, crsString) -> QgsFeatu
     avgLetterSizeInDegrees = 0.0006
     crs = srcLyr.crs()
     displacement = getRoadLabelDisplacement(feat, scale, crs)
-    texto = str(feat.attribute("nr_faixas")) + " FAIXAS"
+    text = str(feat.attribute(attrNameLane)) + " FAIXAS"
     toInsertGeom = getLabelGeometry(
         feat,
-        texto,
+        text,
         pos,
         crs,
         displacement,
