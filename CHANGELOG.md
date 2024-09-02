@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.47
+## 1.2.48
 
 Novas Funcionalidades
 
@@ -69,6 +69,7 @@ Correção de bug:
 - Correção de bug na ferramenta Gera Vetor de Grade: Grade gerada a partir de cada feição da moldura, ao invés de utilizar a extensão total da camada;
 - Corrige bug no diagrama de elevação quando não há drenagens;
 - Correção do bug na ferramenta "Copiar texto sugerido" do "ferramentas de edição": agora, para Cartas Ortoimagem, os atributos 'cor_do_buffer' e 'tamanho_buffer' também são copiados;
+- Adicionado o estilo para constr_edificacao_p com tipo = 606 e edicao_simb_area_p com tipo = 13;
 
 ## 1.1.90
 
