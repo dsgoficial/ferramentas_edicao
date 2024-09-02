@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.48
+## 1.2.49
 
 Novas Funcionalidades
 
@@ -70,6 +70,7 @@ Correção de bug:
 - Corrige bug no diagrama de elevação quando não há drenagens;
 - Correção do bug na ferramenta "Copiar texto sugerido" do "ferramentas de edição": agora, para Cartas Ortoimagem, os atributos 'cor_do_buffer' e 'tamanho_buffer' também são copiados;
 - Adicionado o estilo para constr_edificacao_p com tipo = 606 e edicao_simb_area_p com tipo = 13;
+-Correção de bug em "Configura Sobreposição de Linhas Carta Topo" - correção de KeyError:length_otf
 
 ## 1.1.90
 
