@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.51
+## 1.2.52
 
 Novas Funcionalidades
 
@@ -73,6 +73,7 @@ Correção de bug:
 - Adicionado o estilo para constr_edificacao_p com tipo = 606 e edicao_simb_area_p com tipo = 13;
 - Correção de bug em "Configura Sobreposição de Linhas Carta Topo" - correção de KeyError:length_otf;
 - Correção ao calcular a extensão do mapa de localização para posicionamento dos rótulos;
+- Adicionado o estilo para infra_elemento_energia_l, tipo = 408 e infra_elemento_infraestrutura_l, tipo = 1001;
 
 ## 1.1.90
 
