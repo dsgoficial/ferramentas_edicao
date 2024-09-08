@@ -13,6 +13,10 @@
             "schema": "edgv"
         },
         {
+            "table": "edicao_simb_area_p",
+            "schema": "edgv"
+        },
+        {
             "table": "edicao_texto_generico_p",
             "schema": "edgv"
         },
