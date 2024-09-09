@@ -64,16 +64,21 @@ class LoadMasks(QgsProcessingAlgorithm):
                         x.description(): x.ruleKey()
                         for x in labels.rootRule().children()
                     }
-                    label_settings = labels.settings(providerInverseMap[provider])
+                    settingsFromProvider = providerInverseMap.get(provider, None)
+                    if settingsFromProvider is None:
+                        continue
+                    label_settings = labels.settings(settingsFromProvider)
                 label_format = label_settings.format()
                 masks = label_format.mask()
                 new_symbol_mask = []
                 for symbol in mask_dict[layerName][provider]:
-                    symbol_id = QgsSymbolLayerId(symbol[1], symbol[2])
+                    if len(symbol) == 3:
+                        symbol_id = QgsSymbolLayerId(symbol[1], symbol[2])
                     if symbol[0] in mapId:
-                        reference = QgsSymbolLayerReference(mapId[symbol[0]], symbol_id)
+                        reference = QgsSymbolLayerReference(mapId[symbol[0]], symbol_id) if len(symbol) == 3 else QgsSymbolLayerReference(mapId[symbol[0]], symbol[1])
                         new_symbol_mask.append(reference)
                 masks.setMaskedSymbolLayers(new_symbol_mask)
+                label_format.setMask(masks)
                 label_settings.setFormat(label_format)
                 if provider == "--SINGLE--RULE--":
                     labels.setSettings(label_settings)

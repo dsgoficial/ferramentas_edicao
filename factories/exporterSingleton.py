@@ -63,7 +63,7 @@ class ExporterSingleton:
         if not self.debugMode:
             pdfFilePath = Path(self.exportFolder, f"{self.basename}.pdf")
             pdfExportSettings = QgsLayoutExporter.PdfExportSettings()
-            pdfExportSettings.rasterizeWholeImage = True
+            pdfExportSettings.rasterizeWholeImage = False
             pdfExportSettings.simplifyGeometries = False
             pdfExportSettings.appendGeoreference = True
             pdfExportSettings.exportMetadata = True

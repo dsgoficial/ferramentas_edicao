@@ -16,6 +16,8 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsExpressionContextUtils,
+    QgsSettings,
+    Qgis,
 )
 
 from ..config.configDefaults import ConfigDefaults
@@ -336,8 +338,11 @@ class MapBuilderUtils:
             layers: list of vector layers which masks will be modified
         """
         pathJson = productPath / "masks.json"
-        if pathJson.exists():
-            processing.run(
-                "ferramentasedicao:loadmasks",
-                {"JSON_FILE": str(pathJson), "INPUT_LAYERS": layers},
-            )
+        if not pathJson.exists():
+            return
+        if Qgis.QGIS_VERSION_INT >= 33800: 
+            QgsSettings().setValue('map/mask-backend', 'geometry')
+        processing.run(
+            "ferramentasedicao:loadmasks",
+            {"JSON_FILE": str(pathJson), "INPUT_LAYERS": layers},
+        )

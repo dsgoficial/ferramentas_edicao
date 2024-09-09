@@ -62,8 +62,8 @@ class SaveMasks(QgsProcessingAlgorithm):
                         mask_dict[layerName][providerMap[provider]].append(
                             [
                                 symbol.layerId()[:-37],
-                                symbol.symbolLayerId().symbolKey(),
-                                symbol.symbolLayerId().symbolLayerIndexPath(),
+                                symbol.symbolLayerIdV2(),
+                                # symbol.symbolLayerId().symbolLayerIndexPath(),
                             ]
                         )
         with open("{0}".format(fileOutput), "w") as f:
