@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.52
+## 1.2.53
 
 Novas Funcionalidades
 
@@ -29,7 +29,8 @@ Melhorias:
 - Melhoria na documentação dos seguintes processings: fixLabelPostionsCRS, placeBorderOfHydrographicElement, placeBuildingSymbol, placeMineralExtractionSymbol, placepowerPlantSymbol, placeVegetationSymbol, rapidsAndWaterfallRotation, reprojectAttributes, setCurveOrientation
 - Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_ocupacao_solo_p e constr_ocupacao_solo_a. Além disso, a mudança automática para visivel e justificativa_txt nas mesmas classes.
 - Melhoria no fixLabelsPositionOnLayers: Adição de uma checkbox para sobrescrever ou não os rótulos já fixados. 
-- Refatoração do Insere Ponto de Mudança para compatibilidade com Workflow e organização
+- Refatoração do Insere Ponto de Mudança para compatibilidade com Workflow e organização;
+- Melhora o nome do arquivo de carta especial;
 
 
 Correção de bug:
