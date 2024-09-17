@@ -32,7 +32,7 @@ class ExporterSingleton:
         self.productVersion = data.get("productVersion")
         self.basename = (
             f"{self.exportNameDict.get(data.get('productType'))}_{self.basename}"
-        )
+        ) if self.basename != "Especial" else f"{self.exportNameDict.get(data.get('productType'))}_{self.basename}_{data.get('scale')}k_{data.get('nome')}"
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
