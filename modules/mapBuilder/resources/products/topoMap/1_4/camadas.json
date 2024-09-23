@@ -53,6 +53,10 @@
             "schema": "edgv"
         },
         {
+            "table": "infra_obstrucao_vertical_p",
+            "schema": "edgv"
+        },
+        {
             "table": "infra_pista_pouso_p",
             "schema": "edgv"
         },
@@ -109,7 +113,7 @@
             "schema": "edgv"
         },
         {
-            "table": "edicao_limite_legal_l",
+            "table": "llp_limite_legal_l",
             "schema": "edgv"
         },
         {
@@ -161,11 +165,11 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_travessia_hidroviaria_l",
+            "table": "infra_travessia_hidroviaria_p",
             "schema": "edgv"
         },
         {
-            "table": "llp_delimitacao_fisica_l",
+            "table": "infra_travessia_hidroviaria_l",
             "schema": "edgv"
         },
         {
@@ -225,6 +229,10 @@
             "schema": "edgv"
         },
         {
+            "table": "infra_trecho_hidroviario_l",
+            "schema": "edgv"
+        },
+        {
             "table": "elemnat_trecho_drenagem_l",
             "schema": "edgv"
         },
@@ -237,6 +245,10 @@
             "schema": "edgv"
         },
         {
+            "table": "elemnat_terreno_sujeito_inundacao_a",
+            "schema": "edgv"
+        },
+        {
             "table": "constr_extracao_mineral_a",
             "schema": "edgv"
         },
@@ -245,11 +257,11 @@
             "schema": "edgv"
         },
         {
-            "table": "elemnat_elemento_hidrografico_a",
+            "table": "constr_area_uso_especifico_a",
             "schema": "edgv"
         },
         {
-            "table": "elemnat_terreno_sujeito_inundacao_a",
+            "table": "elemnat_elemento_hidrografico_a",
             "schema": "edgv"
         },
         {
@@ -257,11 +269,11 @@
             "schema": "edgv"
         },
         {
-            "table": "edicao_area_sem_dados_a",
+            "table": "llp_area_sem_dados_a",
             "schema": "edgv"
         },
         {
-            "table": "cobter_area_construida_a",
+            "table": "cobter_area_edificada_a",
             "schema": "edgv"
         },
         {
@@ -283,7 +295,7 @@
             "schema": "edgv"
         },
         {
-            "table": "edicao_area_sem_dados_a",
+            "table": "llp_area_sem_dados_a",
             "schema": "edgv"
         },
         {
