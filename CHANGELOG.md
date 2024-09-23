@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.53
+## 1.2.54
 
 Novas Funcionalidades
 
@@ -75,6 +75,7 @@ Correção de bug:
 - Correção de bug em "Configura Sobreposição de Linhas Carta Topo" - correção de KeyError:length_otf;
 - Correção ao calcular a extensão do mapa de localização para posicionamento dos rótulos;
 - Adicionado o estilo para infra_elemento_energia_l, tipo = 408 e infra_elemento_infraestrutura_l, tipo = 1001;
+- Corrigido cor do grid orto e topo
 
 ## 1.1.90
 
