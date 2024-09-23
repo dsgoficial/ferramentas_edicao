@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.54
+## 1.2.55
 
 Novas Funcionalidades
 
@@ -76,6 +76,7 @@ Correção de bug:
 - Correção ao calcular a extensão do mapa de localização para posicionamento dos rótulos;
 - Adicionado o estilo para infra_elemento_energia_l, tipo = 408 e infra_elemento_infraestrutura_l, tipo = 1001;
 - Corrigido cor do grid orto e topo
+- Corrigido posição da escala na carta orto
 
 ## 1.1.90
 
