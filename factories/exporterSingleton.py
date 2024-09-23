@@ -32,7 +32,7 @@ class ExporterSingleton:
         self.productVersion = data.get("productVersion")
         self.basename = (
             f"{self.exportNameDict.get(data.get('productType'))}_{self.basename}"
-        )
+        ) if self.basename != "Especial" else f"{self.exportNameDict.get(data.get('productType'))}_{self.basename}_{data.get('scale')}k_{data.get('nome')}"
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.debugMode = debugMode
@@ -63,7 +63,7 @@ class ExporterSingleton:
         if not self.debugMode:
             pdfFilePath = Path(self.exportFolder, f"{self.basename}.pdf")
             pdfExportSettings = QgsLayoutExporter.PdfExportSettings()
-            pdfExportSettings.rasterizeWholeImage = True
+            pdfExportSettings.rasterizeWholeImage = False
             pdfExportSettings.simplifyGeometries = False
             pdfExportSettings.appendGeoreference = True
             pdfExportSettings.exportMetadata = True
