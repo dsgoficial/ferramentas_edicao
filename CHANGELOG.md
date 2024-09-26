@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.55
+## 1.2.56
 
 Novas Funcionalidades
 
@@ -77,6 +77,7 @@ Correção de bug:
 - Adicionado o estilo para infra_elemento_energia_l, tipo = 408 e infra_elemento_infraestrutura_l, tipo = 1001;
 - Corrigido cor do grid orto e topo
 - Corrigido posição da escala na carta orto
+- Corrigido o bug de rotação de elemnat_elemento_hidrografico_p
 
 ## 1.1.90
 

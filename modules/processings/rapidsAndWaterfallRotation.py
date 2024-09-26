@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessing,
@@ -11,7 +9,6 @@ from qgis.core import (
 from qgis import core
 import math
 
-
 class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
 
     INPUT_LAYER_P = "INPUT_LAYER_P"
@@ -20,6 +17,8 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
     INPUT_MIN_DIST = "INPUT_MIN_DIST"
 
     def initAlgorithm(self, config=None):
+        # Define the necessary input parameters of the algorithm.
+        # Camada de pontos a ter elementos rotacionados
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_P,
@@ -28,6 +27,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                 defaultValue="elemnat_elemento_hidrografico_p",
             )
         )
+        # Atributo de rotação
         self.addParameter(
             core.QgsProcessingParameterField(
                 self.INPUT_FIELD_LAYER_P,
@@ -38,7 +38,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                 defaultValue="simb_rot",
             )
         )
-
+        # Tolerência da distância
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.INPUT_MIN_DIST,
@@ -48,7 +48,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                 defaultValue=0.00001,
             )
         )
-
+        # Camada de drenagem que serve de referência para a rotação
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_DRAINAGE,
@@ -59,36 +59,34 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        pointLayer = self.parameterAsVectorLayer(
-            parameters, self.INPUT_LAYER_P, context
-        )
-        rotationField = self.parameterAsFields(
-            parameters, self.INPUT_FIELD_LAYER_P, context
-        )[0]
-        drainageLayer = self.parameterAsVectorLayer(
-            parameters, self.INPUT_DRAINAGE, context
-        )
+        # Process the algorithm.
+        pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_P, context)
+        rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD_LAYER_P, context)[0]
+        drainageLayer = self.parameterAsVectorLayer(parameters, self.INPUT_DRAINAGE, context)
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
 
-        self.setRotationFieldOnLayer(
-            pointLayer, rotationField, drainageLayer, distance, [9, 10, 11, 12]
-        )
+        self.setRotationFieldOnLayer(pointLayer, rotationField, drainageLayer, distance, [9, 10, 11, 12], feedback)
 
         return {}
 
-    def setRotationFieldOnLayer(
-        self, layer, rotationField, highwayLayer, distance, filterType
-    ):
-        for layerFeature in layer.getFeatures():
+    def setRotationFieldOnLayer(self, pointLayer, rotationField, drainageLayer, distance, filterType, feedback):
+        for layerFeature in pointLayer.getFeatures():
+            # Excluir pontos que não são previsto serem rotacionados
             if not (layerFeature["tipo"] in filterType):
+                feedback.pushInfo(f"Tipo não previsto para ser rotacionado, ignorado: {layerFeature['tipo']}")
                 continue
+            # Receber a camada de pontos
             layerGeometry = layerFeature.geometry()
-            request = QgsFeatureRequest().setFilterRect(layerGeometry.boundingBox())
-            for highwayFeature in highwayLayer.getFeatures(request):
-                highwayFeatureGeometry = highwayFeature.geometry()
-                if not (highwayFeatureGeometry.intersects(layerGeometry)):
+            # Criar um buffer da geometria do ponto
+            layerGeometryBuffered = layerGeometry.buffer(distance, 5)
+            # Verificar se o buffer se intersecta com a camada de drenagem e rotacionar de acordo com a direção de interseção
+            request = QgsFeatureRequest().setFilterRect(layerGeometryBuffered.boundingBox())
+            for drainageFeature in drainageLayer.getFeatures(request):
+                drainageFeatureGeometry = drainageFeature.geometry()
+                if not (drainageFeatureGeometry.intersects(layerGeometryBuffered)):
+                    feedback.pushInfo("Geometria não se intersecta")
                     continue
-                clippedGeometry = highwayFeatureGeometry.clipped(
+                clippedGeometry = drainageFeatureGeometry.clipped(
                     layerGeometry.buffer(distance, 5).boundingBox()
                 )
                 if not (clippedGeometry.type() == core.QgsWkbTypes.LineGeometry):
@@ -109,7 +107,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                         angleRadian += math.pi
                     angleDegrees = round(math.degrees(angleRadian))
                 layerFeature[rotationField] = angleDegrees
-                self.updateLayerFeature(layer, layerFeature)
+                self.updateLayerFeature(pointLayer, layerFeature)
 
     def getPointWithMaxY(self, points):
         pointMaxY = None
@@ -135,7 +133,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
         return "rapidsandwaterfallrotation"
 
     def displayName(self):
-        return self.tr("Definir rotação corredeira e queda d'água ")
+        return self.tr("Definir rotação de corredeira e queda d'água")
 
     def group(self):
         return self.tr("Edição")
@@ -151,4 +149,4 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                        
         O cálculo é feito considerando uma tolerância de distância definida pelo usuário.
         """)
-
+    
