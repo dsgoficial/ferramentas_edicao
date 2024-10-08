@@ -6,7 +6,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterVectorLayer,
     QgsFeatureRequest,
-    QgsProcessingParameterNumber,
+    QgsProcessingParameterDistance,
     QgsProcessingParameterBoolean,
 )
 from qgis import core
@@ -50,10 +50,10 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterNumber(
+            QgsProcessingParameterDistance(
                 self.INPUT_MIN_DIST,
                 self.tr("Tolerância da distância"),
-                type=QgsProcessingParameterNumber.Double,
+                parentParameterName=self.INPUT_LAYER_P,
                 defaultValue=0.00001,
             )
         )

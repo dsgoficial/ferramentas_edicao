@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.56
+## 1.2.57
 
 Novas Funcionalidades
 
@@ -31,7 +31,7 @@ Melhorias:
 - Melhoria no fixLabelsPositionOnLayers: Adição de uma checkbox para sobrescrever ou não os rótulos já fixados. 
 - Refatoração do Insere Ponto de Mudança para compatibilidade com Workflow e organização;
 - Melhora o nome do arquivo de carta especial;
-
+- Parâmetros de distancias conforme sistema da camada de referência
 
 Correção de bug:
 

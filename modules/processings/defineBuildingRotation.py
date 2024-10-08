@@ -7,7 +7,7 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterNumber,
+    QgsProcessingParameterDistance,
     QgsProcessingParameterBoolean,
     QgsProcessingMultiStepFeedback,
 )
@@ -54,10 +54,10 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterNumber(
+            QgsProcessingParameterDistance(
                 self.INPUT_MIN_DIST,
                 self.tr("Tolerância da distância"),
-                type=QgsProcessingParameterNumber.Double,
+                parentParameterName=self.INPUT,
                 minValue=0,
             )
         )
