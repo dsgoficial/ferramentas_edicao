@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.57
+## 1.2.58
 
 Novas Funcionalidades
 
@@ -78,6 +78,7 @@ Correção de bug:
 - Corrigido cor do grid orto e topo
 - Corrigido posição da escala na carta orto
 - Corrigido o bug de rotação de elemnat_elemento_hidrografico_p
+- Inserido os estilos de Estação Meteorológica e Cemitério Israelita nas respectivas classes.
 
 ## 1.1.90
 
