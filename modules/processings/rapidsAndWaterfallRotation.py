@@ -4,7 +4,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterVectorLayer,
     QgsFeatureRequest,
-    QgsProcessingParameterNumber,
+    QgsProcessingParameterDistance,
 )
 from qgis import core
 import math
@@ -42,10 +42,10 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
         )
         # Tolerência da distância
         self.addParameter(
-            QgsProcessingParameterNumber(
+            QgsProcessingParameterDistance(
                 self.INPUT_MIN_DIST,
                 self.tr("Tolerância da distância"),
-                type=QgsProcessingParameterNumber.Double,
+                parentParameterName=self.INPUT_LAYER_P,
                 minValue=0,
                 defaultValue=0.00001,
             )
