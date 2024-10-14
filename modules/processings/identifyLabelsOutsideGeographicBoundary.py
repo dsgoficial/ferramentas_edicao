@@ -24,6 +24,8 @@ from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from DsgTools.core.GeometricTools.layerHandler import LayerHandler
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
 

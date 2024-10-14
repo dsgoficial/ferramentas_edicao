@@ -19,6 +19,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.utils import iface
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 class MergeRivers(QgsProcessingAlgorithm):
 

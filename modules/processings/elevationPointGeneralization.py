@@ -24,6 +24,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from .makeGrid import MakeGrid
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class ElevationPointsGeneralization(QgsProcessingAlgorithm):
 

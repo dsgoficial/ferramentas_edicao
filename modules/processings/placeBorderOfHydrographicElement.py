@@ -16,6 +16,8 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
 

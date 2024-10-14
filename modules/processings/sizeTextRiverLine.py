@@ -12,6 +12,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class SizeTextRiverLine(QgsProcessingAlgorithm):
 

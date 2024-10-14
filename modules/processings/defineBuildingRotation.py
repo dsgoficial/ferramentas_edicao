@@ -14,6 +14,8 @@ from qgis.core import (
 from qgis import core
 import concurrent.futures
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class DefineBuildingRotation(QgsProcessingAlgorithm):
 

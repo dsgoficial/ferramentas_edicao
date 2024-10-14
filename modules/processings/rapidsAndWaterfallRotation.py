@@ -9,6 +9,8 @@ from qgis.core import (
 from qgis import core
 import math
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
 
     INPUT_LAYER_P = "INPUT_LAYER_P"

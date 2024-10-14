@@ -9,6 +9,8 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class SetSobrepositionTopo(QgsProcessingAlgorithm):
     INPUT_LAYER_SOBREPOSITION = "INPUT_LAYER_SOBREPOSITION"

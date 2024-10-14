@@ -21,6 +21,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class SizeLabelLarge(QgsProcessingAlgorithm):
 

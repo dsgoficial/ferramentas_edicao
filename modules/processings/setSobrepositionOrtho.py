@@ -7,6 +7,8 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class SetSobrepositionOrtho(QgsProcessingAlgorithm):
     INPUT_MOLDURA = "INPUT_MOLDURA"

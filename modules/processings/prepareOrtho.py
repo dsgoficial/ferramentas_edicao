@@ -16,6 +16,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PrepareOrtho(QgsProcessingAlgorithm):
 

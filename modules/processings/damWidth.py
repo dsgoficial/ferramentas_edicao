@@ -21,6 +21,7 @@ from qgis import core, gui
 from qgis.utils import iface
 import math
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 class DamWidth(QgsProcessingAlgorithm):
 

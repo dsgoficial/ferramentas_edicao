@@ -21,6 +21,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from .makeGrid import getSirgasAuthIdByPointLatLong
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
 

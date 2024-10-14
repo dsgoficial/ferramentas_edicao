@@ -27,6 +27,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class InsertRoadMarker(QgsProcessingAlgorithm):
 

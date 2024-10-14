@@ -23,6 +23,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from DsgTools.core.GeometricTools import graphHandler
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class MergeLinesByAngle(QgsProcessingAlgorithm):
 

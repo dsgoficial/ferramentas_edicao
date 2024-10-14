@@ -17,6 +17,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class CreateCustomPolygons(QgsProcessingAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"

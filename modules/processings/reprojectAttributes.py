@@ -14,6 +14,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class ReprojectAttributesAlgorithm(QgsProcessingAlgorithm):
     INPUT_LAYERS = "INPUT_LAYERS"

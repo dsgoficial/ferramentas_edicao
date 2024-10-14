@@ -36,6 +36,8 @@ from qgis.core import (
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class IdentifyLabelOverlap(QgsProcessingAlgorithm):
 

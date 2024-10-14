@@ -9,6 +9,8 @@ from qgis.core import (
 )
 from qgis import core
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
 

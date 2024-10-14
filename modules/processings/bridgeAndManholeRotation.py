@@ -13,6 +13,8 @@ from qgis import core
 import math
 import processing
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class BridgeAndManholeRotation(QgsProcessingAlgorithm):
 

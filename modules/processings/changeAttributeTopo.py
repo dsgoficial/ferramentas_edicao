@@ -12,6 +12,8 @@ from .processingUtils import ProcessingUtils
 import concurrent.futures
 import os
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class ChangeAttributeTopo(QgsProcessingAlgorithm):
 

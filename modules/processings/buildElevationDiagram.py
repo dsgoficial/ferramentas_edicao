@@ -43,6 +43,8 @@ from qgis.core import (
 )
 from scipy import signal
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class BuildElevationDiagram(QgsProcessingAlgorithm):
 
