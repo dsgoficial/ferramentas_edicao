@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="br">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Ajuda - Ferramenta de Exportação</title>
+      <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+   </head>
+
+   <body>
+      <div class="section">
+         <h2>Descrição do Plugin</h2>
+         <p>Esta ferramenta permite a exportação de Cartas Topográficas em formato PDF e GeoTIFF, com base em configurações estabelecidas em arquivos JSON e layouts definidos em arquivos QPT.</p>
+         <hr />
+      </div>
+
+      <div class="section">
+         <h2>Seleção do Tipo de Produto</h2>
+         <p>Na caixa <b>Selecione o tipo de produto</b>, o usuário poderá escolher dentre cinco opções:</p>
+         <ul>
+            <li>- Carta Topográfica</li>
+            <li>- Carta Ortoimagem</li>
+            <li>- Carta Ortoimagem OM</li>
+            <li>- Carta Ortoimagem Militar</li>
+            <li>- Carta Topográfica Militar</li>
+         </ul>
+         <hr />
+      </div>
+
+      <div class="section">
+         <h2>Configuração dos Arquivos JSON</h2>
+         <p>Para realizar a exportação, o usuário deve selecionar um ou mais arquivos JSON de configuração que contenham as especificações do produto a ser exportado. Esses arquivos definem os parâmetros de escala, simbologia, camadas a serem exportadas, e informações de layout.</p>
+         <p>Para saber mais sobre como <b>configurar</b> um arquivo JSON, e como realizar o <b>download</b> do arquivo <b>clique no botão abaixo:</b></p>
+         <p><a href="config_json.html" class="button-link">
+            <img src="path_to_config_json_icon" alt="Ícone JSON" width="32" height="32" style="vertical-align: middle;">
+            Ajuda para Configurar Arquivo JSON
+         </a></p>
+         <hr />
+      </div>
+
+      <div class="section">
+         <h2>Parâmetros de Conexão</h2>
+         <p>No campo <b>Parâmetros de conexão</b>, o usuário deve fornecer as informações necessárias para que o plugin possa se conectar aos bancos de dados geoespaciais referenciados no arquivo JSON. Isso garante que as camadas de dados sejam carregadas corretamente durante a exportação.</p>
+         <hr />
+      </div>
+
+      <div class="section">
+         <h2>Configuração do Layout (QPT)</h2>
+         <p>O layout de impressão do produto é configurado em um arquivo de projeto no formato QPT. Esse layout define elementos importantes como margens, escalas, rótulos, logotipos e créditos, que serão exibidos no produto final exportado.</p>
+         <p>Para garantir que o layout seja adequado, é importante configurar o arquivo <b>creditsDSG</b> no QPT, que permite alterar os créditos do produto, nome do projeto, logotipo, e outros elementos visuais. A correta configuração deste arquivo garante que o produto atenda às normas e padrões de apresentação.</p>
+         <p>Para saber mais sobre como configurar o layout de projeto (QPT), clique no botão abaixo:</p>
+         <p><a href="config_project.html" class="button-link">
+            <img src="path_to_config_project_icon" alt="Ícone Projeto" width="32" height="32" style="vertical-align: middle;">
+            Ajuda para Configurar Arquivo de Projeto (QPT)
+         </a></p>
+         <hr />
+      </div>
+
+   </body>
+</html>

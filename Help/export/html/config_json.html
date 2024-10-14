@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuda - Configuração do Arquivo JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            color: #0057b7;
+        }
+        p, table {
+            padding: 6px;
+            font-size: 14px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            font-weight: bold;
+        }
+        .required {
+            font-weight: bold;
+            color: #0057b7; /* Azul mais escuro */
+        }
+        .optional {
+            color: #228B22; /* Verde */
+            font-weight: bold;
+        }
+        a {
+            color: #0057b7;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .button-link:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h2>Configuração de Arquivo JSON</h2>
+        <p>O arquivo JSON contém as definições e configurações necessárias para a exportação dos produtos cartográficos, como escala, simbologia, camadas e layout. Abaixo está um guia de como configurar corretamente este arquivo.</p>
+        <hr />
+
+        <h2>1. Estrutura do Arquivo JSON</h2>
+        <p>Os itens destacados em <span class="required">AZUL</span> são obrigatórios. Itens opcionais estão em <span class="optional">VERDE</span>.</p>
+        <table>
+            <tr>
+                <th>Atributo</th>
+                <th>Atributo no JSON</th>
+                <th>Características / Exemplos</th>
+            </tr>
+            <tr>
+                <td class="required">Tipo de Produto</td>
+                <td>tipo_produto</td>
+                <td>Preencher com "Carta Topográfica".</td>
+            </tr>
+            <tr>
+                <td class="required">Edição do Produto</td>
+                <td>edicao_produto</td>
+                <td>Preencher com a Edição do Produto.</td>
+            </tr>
+            <tr>
+                <td class="required">Licenciamento Produto</td>
+                <td>licenciamento_produto</td>
+                <td>"CC-BY-SA 4.0" ou "CC-BY-NC-SA 4.0".</td>
+            </tr>
+            <tr>
+                <td class="optional">Índice de Nomenclatura</td>
+                <td>inom</td>
+                <td>Ex: SF-22-Y-C-I-1. No caso de cartas Não-SCN, esse atributo não é utilizado.</td>
+            </tr>
+            <tr>
+                <td class="optional">Escala</td>
+                <td>escala</td>
+                <td>Indica a escala do produto. Exemplo: 25000, 50000.</td>
+            </tr>
+            <tr>
+                <td class="optional">Centro da Carta</td>
+                <td>center</td>
+                <td>Localização do centro do produto. Com latitude e longitude em graus decimais.</td>
+            </tr>
+            <tr>
+                <td class="required">Nome</td>
+                <td>nome</td>
+                <td>Nome da carta. Ex: "Rio Laranjaí".</td>
+            </tr>
+            <tr>
+                <td class="optional">Cabeçalho</td>
+                <td>cabecalho</td>
+                <td>Caminho do arquivo QPT a ser inserido na parte superior esquerda da carta.</td>
+            </tr>
+            <tr>
+                <td class="optional">Créditos</td>
+                <td>projeto</td>
+                <td>Caminho do arquivo QPT a ser inserido na parte inferior esquerda da carta.</td>
+            </tr>
+            <tr>
+                <td class="optional">Direitos de Reprodução</td>
+                <td>direitos_reproducao</td>
+                <td>Caminho do arquivo QPT a ser inserido na parte inferior direita da carta.</td>
+            </tr>
+            <tr>
+                <td class="optional">Acesso à Informação</td>
+                <td>acesso_informacao</td>
+                <td>Caminho do arquivo QPT a ser inserido na parte inferior direita da carta.</td>
+            </tr>
+            <tr>
+                <td class="optional">Território Internacional</td>
+                <td>territorio_internacional</td>
+                <td>Define se o produto engloba área internacional. Valores possíveis: true ou false.</td>
+            </tr>
+            <tr>
+                <td class="optional">Acesso Restrito</td>
+                <td>acesso_restrito</td>
+                <td>Define se o produto é de acesso restrito. Valores: true ou false.</td>
+            </tr>
+            <tr>
+                <td class="required">MDE para Diagrama de Elevação</td>
+                <td>mde_diagrama_elevacao</td>
+                <td>Defina o caminho para o MDE e seu EPSG.</td>
+            </tr>
+            <tr>
+                <td class="optional">Caminho da MDE</td>
+                <td>mde_diagrama_elevacao/caminho_mde</td>
+                <td>Caminho absoluto para o arquivo MDE.</td>
+            </tr>
+            <tr>
+                <td class="required">Conexão com Banco de Dados</td>
+                <td>banco</td>
+                <td>Informações da conexão com banco de dados. Exemplo: servidor, porta, nome.</td>
+            </tr>
+            <tr>
+                <td class="optional">Fases de Produção</td>
+                <td>fases</td>
+                <td>Lista com as fases de produção, como "Imageamento", "Aquisição Vetorial".</td>
+            </tr>
+            <tr>
+                <td class="optional">Executantes</td>
+                <td>fases/executantes</td>
+                <td>Lista de executantes com atributos como nome e ano de execução.</td>
+            </tr>
+            <tr>
+                <td class="optional">PEC Planimétrico</td>
+                <td>info_tecnica/pec_planimetrico</td>
+                <td>Ex: "A".</td>
+            </tr>
+            <tr>
+                <td class="optional">PEC Altimétrico</td>
+                <td>info_tecnica/pec_altimetrico</td>
+                <td>Ex: "A".</td>
+            </tr>
+            <tr>
+                <td class="optional">Dados de Terceiros</td>
+                <td>info_tecnica/dados_terceiros</td>
+                <td>Informações de terceiros, como FUNAI e IBAMA.</td>
+            </tr>
+        </table>
+        <hr />
+
+        <!-- Exemplo textual de arquivo JSON -->
+        <h2>2. Exemplo Textual de Arquivo JSON</h2>
+        <pre>
+{
+    "inom": "SF-22-Y-C-I-1-NE",
+    "nome": "MI-2753-1-NE",
+    "territorio_internacional": false,
+    "acesso_restrito": false,
+    "licenciamento_produto": "CC-BY-SA 4.0",
+    "tipo_produto": "Carta Topográfica",
+    "edicao_produto": "1-DSG",
+    "mde_diagrama_elevacao": {
+        "caminho_mde": "E:\\mde\\mosaico_mdt.tif",
+        "epsg": "4326"
+    },
+    "banco": {
+        "servidor": "localhost",
+        "porta": "5432",
+        "nome": "cartatopografica_50k_31982_edgv3pro"
+    },
+    "fases": [
+        {
+            "nome": "Imageamento",
+            "executantes": [
+                {
+                    "nome": "DigitalGlobe, Inc.",
+                    "ano": "MM/AAAA"
+                }
+            ]
+        },
+        {
+            "nome": "Processamento Digital de Imagens",
+            "executantes": [
+                {
+                    "nome": "Diretoria de Serviço Geográfico - 1º CGEO",
+                    "ano": "MM/AAAA"
+                }
+            ]
+        },
+        {
+            "nome": "Aquisição Vetorial",
+            "executantes": [
+                {
+                    "nome": "Diretoria de Serviço Geográfico - 1º CGEO",
+                    "ano": "MM/AAAA"
+                }
+            ]
+        },
+        {
+            "nome": "Validação",
+            "executantes": [
+                {
+                    "nome": "Diretoria de Serviço Geográfico - 1º CGEO",
+                    "ano": "MM/AAAA"
+                }
+            ]
+        },
+        {
+            "nome": "Edição",
+            "executantes": [
+                {
+                    "nome": "Diretoria de Serviço Geográfico - 1º CGEO",
+                    "ano": "2020"
+                }
+            ]
+        }
+    ],
+    "info_tecnica": {
+        "data_criacao": "06/05/1996",
+        "pec_planimetrico": "A",
+        "pec_altimetrico": "A",
+        "datum_vertical": "Imbituba - Santa Catarina",
+        "origem_dados_altimetricos": "GLO-30 com correção do efeito do dossel vegetativo",
+        "dados_terceiros":[
+            "Terras indígenas: FUNAI",
+            "Unidades de conservação: IBAMA",
+            "Modelo geoidal: MAPGEO2015 - IBGE"
+        ]
+    },
+    "projeto": "/caminho/para/creditsDSG.qpt"
+}
+
+        </pre>
+
+        <hr />
+        <div class="section">
+         <h2>3. Download do Arquivo JSON de Exemplo</h2>
+         <p>Clique no link abaixo para baixar um arquivo JSON de exemplo para sua configuração:</p>
+            <p><img src="path_to_config_json_icon" alt="Ícone JSON" width="32" height="32" style="vertical-align: middle;">
+            <a href="download_json">Clique aqui para baixar o arquivo JSON de exemplo</a>
+         </p>
+         <hr />
+      </div>
+	          <hr />
+<p><strong><span style="color:red;">OBSERVAÇÃO:</span></strong> Se o atributo <strong>projeto</strong> não for incluído no arquivo JSON, o plugin buscará automaticamente o arquivo <strong>creditsDSG.qpt</strong>, que já está presente no diretório do plugin por padrão. Caso seja necessário definir um arquivo QPT específico para os créditos ou outras informações, inclua o caminho no atributo <strong>projeto</strong>.</p>
+
+<p>Para mais informações sobre como configurar o arquivo de projeto (QPT), navegue para a página:</p>
+
+<p><a href="config_project.html" class="button-link">
+    <img src="path_to_config_project_icon" alt="Ícone Projeto" width="32" height="32" style="vertical-align: middle;">
+    Ajuda para Configurar Arquivo de Projeto (QPT)
+</a></p>
+    </div>
+
+</body>
+</html>
+

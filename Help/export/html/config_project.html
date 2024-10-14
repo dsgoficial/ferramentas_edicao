@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuda - Configuração do Arquivo QPT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            color: #0057b7;
+        }
+        p {
+            padding: 6px;
+            font-size: 14px;
+        }
+        a {
+            color: #0057b7;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .button-link:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h2>Configuração do Arquivo de Projeto (QPT)</h2>
+        <p>O arquivo de projeto (QPT) é utilizado para configurar o layout dos produtos cartográficos. Ele define elementos como créditos, logos e informações adicionais que aparecem nas cartas exportadas. Caso esteja desenvolvendo um novo projeto ou precise alterar detalhes como a logo ou os créditos, você deve editar o arquivo QPT.</p>
+
+        <h2>Alterando o Arquivo QPT <b>(Créditos)</b></h2>
+        <p>O arquivo padrão utilizado pelo plugin é o <strong>creditsDSG.qpt</strong>. Se não for necessário customizar o layout dos créditos, este arquivo será carregado automaticamente. No entanto, se houver necessidade de alterar elementos como a logo ou outros detalhes, será necessário editar esse arquivo ou criar um novo arquivo QPT.</p>
+		<p style="text-align: center;">
+    <img src="path_to_example" alt="Ícone Pasta" width="450" height="256" style="display: block; margin: 0 auto;">
+    <br><b>Exemplo:</b> Modelo Padrão
+</p>
+
+        <p><strong><span style="color:red;">OBSERVAÇÃO:</span></strong> Se houver necessidade de configurar um arquivo específico, o usuário deve especificar o novo caminho no arquivo JSON. <br>
+		<strong>Para editar o arquivo padrão, siga as etapas a seguir:</strong></p>
+
+        <h2>Abrir a Pasta de Configuração</h2>
+        <p>Clique no botão abaixo para acessar a pasta onde o arquivo <strong>creditsDSG.qpt</strong> está localizado e faça as alterações necessárias:</p>
+
+        <p><a href="open_qpt_directory" class="button-link">
+    <img src="path_to_config_pasta_icon" alt="Ícone Pasta" width="32" height="32" style="vertical-align: middle;">
+    Abrir Pasta de Configuração com os Layouts (QPT)
+</a></p>
+
+
+        <p>Você pode editar o arquivo QPT diretamente no QGIS, ajustando os elementos visuais conforme necessário, ou criar um novo arquivo QPT a partir do layout desejado.</p>
+    </div>
+
+</body>
+</html>
