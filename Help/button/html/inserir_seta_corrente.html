@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inserir Seta de Corrente</title>
+	<style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_image9" alt="Ícone da ferramenta Sentido Corrente" width="32" height="32" style="vertical-align: middle;">    Inserir Seta de Corrente</h2>
+	<p style="color:red; font-weight:bold;">
+        &#8226; <strong>Importante:</strong> Para ativar a ferramenta "Sentido Corrente", o usuário deve clicar no ícone acima
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p  align="justify" style="border: none; padding: 0cm">
+        A ferramenta <strong>"Sentido Corrente"</strong> foi projetada para auxiliar na criação de setas que indicam a direção de fluxos d'água em cartas topográficas. Esta funcionalidade é exclusiva para a camada <strong>edicao_simb_direcao_corrente_p</strong>, que contém os símbolos usados para representar a direção do fluxo em rios, córregos e outros corpos d'água. 
+        <br/><br/>
+        O usuário define o fluxo de uma corrente de forma interativa, clicando no mapa para indicar o ponto de origem e o destino. Dessa maneira, a ferramenta gera automaticamente uma seta que representa o sentido da correnteza entre os pontos indicados.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; <strong>Tipo de Produto</strong>: Para utilizar a ferramenta, o usuário deve alterar o tipo de produto para <b>Carta Topográfica</b> na aba dos botões de edição.
+        </span>
+		<span style="margin-bottom: 10px;">
+            &#8226; <strong>Escala da Carta</strong>: Para utilizar a ferramenta, o usuário deve escolher a escala da carta topográfica no botão <b>seletor de escala</b>.
+        </span>
+		<span style="margin-bottom: 10px;">
+            &#8226; <strong>Camada de edição</strong>: Para utilizar a ferramenta, o usuário deve garantir que a camada <strong>edicao_simb_direcao_corrente_p</strong> esteja visível e selecionada no QGIS. Esta camada será usada para desenhar as setas de direção da corrente.
+        </span>
+        <br/>
+        <span style="margin-bottom: 10px;">
+            &#8226; <strong>Origem e destino</strong>: Após selecionar a camada correta, o usuário precisa clicar em dois pontos no mapa:
+            <ul>
+                <li><strong>Primeiro clique</strong>: Define o ponto de origem da corrente (onde a seta começará).</li>
+                <li><strong>Segundo clique</strong>: Define o ponto de destino (para onde a seta apontará, indicando a direção do fluxo).</li>
+            </ul>
+            Após os dois cliques, a seta será gerada automaticamente na direção correta.
+        </span>
+    </p>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação prática:</h2>
+        <center>
+            <img src="path_to_imagem" alt="Exemplo de uso do Sentido da Corrente">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Seta de direção sendo inserida em um mapa topográfico, indicando o sentido do fluxo de uma corrente.
+        </p>
+        <hr/>
+    </div>
+</body>
+</html>
