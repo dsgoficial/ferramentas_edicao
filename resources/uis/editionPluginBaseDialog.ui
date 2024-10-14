@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>410</width>
-    <height>307</height>
+    <height>313</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Ferramentas de Edição. v 1.2.56</string>
+   <string>Ferramentas de Edição. v 1.2.36</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
@@ -189,6 +189,13 @@
     <widget class="QPushButton" name="pushButton">
      <property name="text">
       <string>Gerar cartas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="helpButton">
+     <property name="text">
+      <string>Ajuda</string>
      </property>
     </widget>
    </item>
