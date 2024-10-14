@@ -1092,6 +1092,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo verifica se alguma simbologia sobrepõe outra dentre as camadas pre-definidas"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

@@ -144,11 +144,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("""
-        Este algoritmo define a rotação de símbolos para corredeiras e quedas d'água em uma camada de pontos com base na direção das linhas de drenagem próximas.
-                       
-        O algoritmo busca feições de linha em uma camada de drenagem que intersectam com a feição de ponto e calcula o ângulo de rotação para alinhar o símbolo com a direção do fluxo de drenagem.
-                       
-        O cálculo é feito considerando uma tolerância de distância definida pelo usuário.
-        """)
-    
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

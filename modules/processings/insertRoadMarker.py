@@ -386,6 +386,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo insere os identificadores de trecho rodoviário para carta topográfica"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

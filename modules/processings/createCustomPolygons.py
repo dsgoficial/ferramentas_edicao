@@ -133,19 +133,10 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr(
-        """Este algoritmo gera polígonos personalizados com base nas coordenadas centróides dos polígonos da camada de entrada.
+        return help().shortHelpString(self.name())
 
-
-        O usuário pode selecionar a escala desejada (25.000, 50.000, 100.000, 250.000), que define a escala do produto sistemático desejado.
-        
-        
-        O algoritmo ajusta automaticamente a posição do polígono de modo a englobar o máximo do polígono de entrada.
-        
-        
-        O polígono resultante é a moldura em enquadramento especial que pode ser utilizada no Ferramenta de Edição para geração de produtos em enquadramento especial."""
-    )
-
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 
     def createInstance(self):
         return CreateCustomPolygons()

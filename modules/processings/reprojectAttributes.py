@@ -123,13 +123,10 @@ class ReprojectAttributesAlgorithm(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr("""
-        Este algoritmo reprojeta os valores dos atributos de coordenadas X e Y de uma ou mais camadas vetoriais, de um sistema de referência de coordenadas (SRC) de origem para um de destino.
-        
-        O algoritmo permite selecionar as camadas de entrada e especificar os nomes dos atributos que contêm as coordenadas X e Y, além de definir os EPSGs de origem e destino para a reprojeção.
-        
-        Durante a execução, os valores dos atributos X e Y são atualizados para refletir as novas coordenadas no SRC de destino.
-        """)
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 
 
     def createInstance(self):

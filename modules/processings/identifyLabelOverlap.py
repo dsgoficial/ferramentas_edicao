@@ -325,4 +325,7 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("Identifica sobreposição dos rótulos.")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

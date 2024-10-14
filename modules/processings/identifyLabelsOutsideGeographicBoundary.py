@@ -263,4 +263,7 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("Identifica rótulos fora da moldura.")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

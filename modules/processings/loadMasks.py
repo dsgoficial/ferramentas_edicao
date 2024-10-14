@@ -104,4 +104,7 @@ class LoadMasks(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo carrega as máscaras de acordo com o json.")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

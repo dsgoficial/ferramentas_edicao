@@ -258,10 +258,7 @@ class DamWidth(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-        """Este algoritmo calcula e define a largura de feições de barragem em uma camada de linha com base na interseção com rodovias próximas.
+        return help().shortHelpString(self.name())
 
-        Ele compara a geometria das barragens com a das rodovias para determinar a largura adequada de acordo com critérios específicos, como tipo de via, situação física, revestimento, número de faixas, entre outros atributos.
-
-        O usuário deve selecionar as camadas de barragem e rodovia, além do campo de atributo onde a largura será definida."""
-        )
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

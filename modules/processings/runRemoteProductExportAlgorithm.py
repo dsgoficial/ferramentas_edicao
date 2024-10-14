@@ -47,7 +47,6 @@ from qgis.PyQt.QtWidgets import QLineEdit
 
 from processing.gui.wrappers import WidgetWrapper
 
-from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 
 class PasswordWrapper(WidgetWrapper):

@@ -323,9 +323,10 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo calcula o tamanho do texto de acordo com a área e a largura do polígono"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 
 
 def getSirgasAuthIdByPointLatLong(lat, long):

@@ -253,6 +253,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo mergeia os trechos de drenagem e corta de acordo com a moldura, definindo assim o tamanho do rio para em seguida definir o tamanho_txt"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

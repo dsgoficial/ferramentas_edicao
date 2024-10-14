@@ -234,6 +234,7 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo define a rotação das edificações de acordo com feições da vizinhança, seguindo a seguinte prioridade: rodovias, ferrovias, drenagens, massas dagua e área construída."
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

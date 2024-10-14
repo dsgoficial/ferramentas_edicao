@@ -202,13 +202,7 @@ class BridgeAndManholeRotation(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-        """Este algoritmo ajusta a rotação de elementos viários do tipo ponto (como pontes e bueiros) com base na orientação das camadas de rodovias ou drenagem próximas.
+        return help().shortHelpString(self.name())
 
-        Ele permite que o usuário selecione feições específicas ou aplique a todas as feições na camada de entrada.
-
-        A rotação é determinada pela geometria das rodovias ou cursos d'água mais próximos, com base em uma tolerância de distância definida pelo usuário.
-
-        O algoritmo também pode combinar camadas de drenagem e valas antes de calcular a rotação."""
-        )
-
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

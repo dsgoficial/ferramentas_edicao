@@ -478,6 +478,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo generaliza os pontos cotados para o diagrama de elevação"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

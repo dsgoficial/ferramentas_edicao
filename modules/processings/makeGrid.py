@@ -410,6 +410,9 @@ class MakeGrid(QgsProcessingAlgorithm):
     def shortHelpString(self):
         return help().shortHelpString(self.name())
 
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
+
 
 def getSirgasAuthIdByPointLatLong(lat, long):
     """

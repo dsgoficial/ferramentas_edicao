@@ -91,4 +91,7 @@ class SaveMasks(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo salva máscaras criadas no formato .json")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

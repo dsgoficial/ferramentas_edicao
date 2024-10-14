@@ -470,9 +470,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         return "preparo_edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo ordena as camadas e aplica os estilos para a edição"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 
 
 class GroupsWidgetWrapper(WidgetWrapper):

@@ -187,8 +187,7 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo posiciona os símbolos dentro da camada ocupação do solo área."
-            " Posiciona elementos dos seguintes tipos: cemitério cristão, edificação de ensino, "
-            ""
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
