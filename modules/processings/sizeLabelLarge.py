@@ -314,7 +314,7 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
         return "sizelabellarge"
 
     def displayName(self):
-        return self.tr("Tamanho da fonte pela largura")
+        return self.tr("Denifir tamanho da fonte pela largura")
 
     def group(self):
         return self.tr("Edição")

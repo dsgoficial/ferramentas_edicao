@@ -244,7 +244,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         return "sizetextriverline"
 
     def displayName(self):
-        return self.tr("Define o tamanho do texto de acordo com o comprimento")
+        return self.tr("Definir o tamanho do texto de acordo com o comprimento")
 
     def group(self):
         return self.tr("Edição")
