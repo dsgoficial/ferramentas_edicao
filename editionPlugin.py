@@ -4,7 +4,7 @@ from pathlib import Path
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMessageBox
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QDialog, QTextBrowser, QVBoxLayout, QPushButton
 
 from qgis.core import QgsFontUtils
 from qgis.utils import active_plugins
@@ -30,6 +30,7 @@ class EditionPlugin:
         """
         # Save reference to the QGIS interface
         self.iface = iface
+        self.history = []  # Lista para armazenar o histórico de navegação
         self.debugMode = (Path(__file__).parent / ".env").exists()
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
@@ -150,6 +151,8 @@ class EditionPlugin:
         self.firstStart = True
         self.toolBar = self.iface.addToolBar("ferramentas_edicao")
         self.toolBar.setObjectName("ferramentas_edicao")
+        
+        # Botão principal
         icon_path = Path(__file__).parent / "icon.png"
         self.add_action(
             str(icon_path),
@@ -158,11 +161,132 @@ class EditionPlugin:
             parentToolbar=self.toolBar,
             add_to_toolbar=False,
         )
+
+        # Adicionando o botão de ajuda
+        help_icon_path = Path(__file__).parent / "Help" / "button" / "icons" / "icon2.png"
+        self.add_action(
+            str(help_icon_path),
+            text=self.tr("Clique aqui para obter ajuda"),
+            callback=self.show_help_dialog,
+            parentToolbar=self.toolBar,
+        )
+
+        # Inicializando outras ferramentas
         self.tools = SetupButtons(toolbar=self.toolBar, iface=self.iface)
         self.tools.initToolBar()
         self.processingProvider = ProcessingProvider()
         self.processingProvider.initProcessing()
         loadExpressionFunctions()
+
+    def show_help_dialog(self):
+        """Exibe a caixa de diálogo de ajuda com navegação e botão de voltar."""
+        help_dialog = QDialog(self.iface.mainWindow())
+        help_dialog.setWindowTitle("Ajuda")
+        help_dialog.resize(800, 600)
+
+        # Criando um widget de navegador de texto para exibir o conteúdo HTML
+        self.help_text = QTextBrowser(help_dialog)
+        
+        # Caminho inicial para carregar o conteúdo principal (buttonTools.html)
+        self.current_page = "buttonTools.html"
+
+        # Conectar ao método para navegar entre páginas ao clicar nos links
+        self.help_text.anchorClicked.connect(self.handle_link_click)
+
+        # Botão de voltar
+        self.back_button = QPushButton("Voltar", help_dialog)
+        self.back_button.clicked.connect(self.go_back)
+        self.back_button.setEnabled(False)  # Desativado inicialmente
+
+        # Layout da janela de ajuda
+        layout = QVBoxLayout()
+        layout.addWidget(self.help_text)
+        layout.addWidget(self.back_button)
+        help_dialog.setLayout(layout)
+
+        # Carregar a página inicial
+        self.load_page(self.current_page)  # Página inicial é a buttonTools.html
+        help_dialog.exec_()
+
+    def load_page(self, page):
+        """Carrega uma página HTML específica."""
+        html_file_path = Path(__file__).parent / "Help" / "button" / "html" / page
+        image_file_path1 = Path(__file__).parent / "Help" / "button" / "img" / "botoes.png"
+        image_file_path3 = Path(__file__).parent / "Help" / "button" / "icons" / "alternar_justificativa.png"
+        image_file_path4 = Path(__file__).parent / "Help" / "button" / "icons" / "alternar_rotulo.png"
+        image_file_path5 = Path(__file__).parent / "Help" / "button" / "icons" / "alternar_visibilidade_do_texto.png"
+        image_file_path6 = Path(__file__).parent / "Help" / "button" / "icons" / "alternar_visibilidade.png"
+        image_file_path7 = Path(__file__).parent / "Help" / "button" / "icons" / "copiar_texto_generico.png"
+        image_file_path8 = Path(__file__).parent / "Help" / "button" / "icons" / "copiar_texto_sugerido.png"
+        image_file_path9 = Path(__file__).parent / "Help" / "button" / "icons" / "insere_seta_de_corrente.png"
+        image_file_patha = Path(__file__).parent / "Help" / "button" / "icons" / "numero_de_faixas.png"
+        image_file_pathb = Path(__file__).parent / "Help" / "button" / "icons" / "quebra_linha.png"
+        image_file_pathc = Path(__file__).parent / "Help" / "button" / "icons" / "rotulo_aproximado.png"
+        image_file_pathd = Path(__file__).parent / "Help" / "button" / "icons" / "rotulo_de_fronteira.png"
+        image_file_pathe = Path(__file__).parent / "Help" / "button" / "icons" / "rotulo_lago.png"
+        image_file_pathf = Path(__file__).parent / "Help" / "button" / "icons" / "rotulo_rio.png"
+        image_file_pathg = Path(__file__).parent / "Help" / "button" / "icons" / "simbolo_idt_trecho_rodoviario.png"
+        image_file_pathh = Path(__file__).parent / "Help" / "button" / "icons" / "simbolo_vegetacao.png"
+        image_file_pathi = Path(__file__).parent / "Help" / "button" / "icons" / "suprimir_bandeira_edificacao.png"
+        image_file_pathj = Path(__file__).parent / "Help" / "button" / "icons" / "texto_de_cota_mestra.png"
+        image_file_pathk = Path(__file__).parent / "Help" / "button" / "icons" / "visibilidade_de_ponta.png"
+        image_file_pathl = Path(__file__).parent / "Help" / "button" / "icons" / "visibilidade_lateral_ponte.png"
+        image_file_pathm = Path(__file__).parent / "Help" / "button" / "img" / "sentido_corrente.png"
+        image_file_pathn = Path(__file__).parent / "Help" / "button" / "icons" / "alternar_estilo_nao_visivel.png"
+
+        if html_file_path.exists():
+            with open(html_file_path, "r", encoding="utf-8") as file:
+                html_content = file.read()
+
+            # Substituir os placeholders pelas imagens reais
+            html_content = html_content.replace("path_to_image1", image_file_path1.as_posix())
+            html_content = html_content.replace("path_to_image3", image_file_path3.as_posix())
+            html_content = html_content.replace("path_to_image4", image_file_path4.as_posix())
+            html_content = html_content.replace("path_to_image5", image_file_path5.as_posix())
+            html_content = html_content.replace("path_to_image6", image_file_path6.as_posix())
+            html_content = html_content.replace("path_to_image7", image_file_path7.as_posix())
+            html_content = html_content.replace("path_to_image8", image_file_path8.as_posix())
+            html_content = html_content.replace("path_to_image9", image_file_path9.as_posix())
+            html_content = html_content.replace("path_to_imagea", image_file_patha.as_posix())
+            html_content = html_content.replace("path_to_imageb", image_file_pathb.as_posix())
+            html_content = html_content.replace("path_to_imagec", image_file_pathc.as_posix())
+            html_content = html_content.replace("path_to_imaged", image_file_pathd.as_posix())
+            html_content = html_content.replace("path_to_imagee", image_file_pathe.as_posix())
+            html_content = html_content.replace("path_to_imagef", image_file_pathf.as_posix())
+            html_content = html_content.replace("path_to_imageg", image_file_pathg.as_posix())
+            html_content = html_content.replace("path_to_imageh", image_file_pathh.as_posix())
+            html_content = html_content.replace("path_to_imagei", image_file_pathi.as_posix())
+            html_content = html_content.replace("path_to_imagej", image_file_pathj.as_posix())
+            html_content = html_content.replace("path_to_imagek", image_file_pathk.as_posix())
+            html_content = html_content.replace("path_to_imagel", image_file_pathl.as_posix())
+            html_content = html_content.replace("path_to_imagem", image_file_pathm.as_posix())
+            html_content = html_content.replace("path_to_imagen", image_file_pathn.as_posix())
+
+            self.help_text.setHtml(html_content)
+        else:
+            self.help_text.setPlainText("Arquivo de ajuda não encontrado: " + page)
+
+
+    def handle_link_click(self, url):
+        """Lida com o clique nos links e navega entre páginas."""
+        current_page = self.current_page  # Página atual
+        self.history.append(current_page)  # Armazena a página atual no histórico
+        self.back_button.setEnabled(True)  # Ativa o botão de voltar
+
+        # Extrair o nome da página do link clicado
+        page_name = url.toString().split('/')[-1]
+        self.current_page = page_name  # Atualiza a página atual
+        self.load_page(page_name)
+
+    def go_back(self):
+        """Volta para a última página visualizada."""
+        if self.history:
+            last_page = self.history.pop()  # Retorna a última página do histórico
+            self.current_page = last_page  # Atualiza a página atual
+            self.load_page(last_page)
+
+        if not self.history:
+            self.back_button.setEnabled(False)  # Desativa o botão se não houver mais histórico
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
