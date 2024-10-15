@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	
+</head>
+<body lang="pt-BR" dir="ltr"><p>Help versão 1.0 
+</p>
+<hr/>
+
+<h2 class="western">Descrição:</h2>
+<h4 class="western" align="center" style="border: none; padding: 0cm">
+O algoritmo fixa a posição dos labels de acordo com o calculado pelo QGIS.
+<span style="color:#ff0000; font-weight: bold;"><u>Atenção</u>: Eventuais reprojeções no banco após essa rotina ser utilizada pode causar o reposicionamento do rótulo. Isso acontece devido a interpolação dos cálculos do QGIS ao mudar de sistemas de projeção. Assim, o ideal é rodar essa rotina com o banco na projeção UTM correta.
+</span>
+
+</h4>
+<hr/>
+
+<h2>Parâmetros:</h2>
+         <p>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar camadas: &rarr;  Indicar as camada que serão utilizadas no processo.
+            </span>
+
+            <span style="margin-bottom: 10px;">
+                &#8226; Limite geográfico &rarr;  Indicar a moldura do produto.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+            &#8226; Escala &rarr;  Indicar a escala do produto cartográfico.
+            </span>
+
+         </p>  
+
+
+
+      
+    <div>
+<hr/>
+
+<h2 class="western">Exemplo de uso: 
+</h2>
+<h4 class="western">Modelagem EDGV3.0_TOPO na escala de 1:25.000
+(EPSG):4674</h4>
+
+        <p>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar camadas: &rarr;  todas as camadas
+            </span>
+
+            <span style="margin-bottom: 10px;">
+                &#8226; Limite geográfico &rarr;  aux_moldura_a
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+                &#8226; Escala &rarr;  1:25.000
+            </span>
+
+        </p>  
+
+    <div>
+<hr/>
+
+      <div>
+         <h2>Aplicação:</h2>
+         <center><img src= "{}"></center>
+         <p style="text-align: center; font-style: italic;">Labels fixados.</p>
+         <hr/>
+      </div> 
+   </body>
+
+</html>

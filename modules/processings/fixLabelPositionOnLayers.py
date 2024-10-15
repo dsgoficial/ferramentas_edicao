@@ -213,7 +213,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         return FixLabelPostionOnLayers()
 
     def name(self):
-        return "fixLabelPositionOnLayers"
+        return "FixLabelPositionOnLayers"
 
     def displayName(self):
         return self.tr("Fixa posição dos labels")
