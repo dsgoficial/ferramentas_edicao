@@ -1,38 +1,62 @@
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        <title>Criação de Polígonos Customizados</title>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
     </head>
+
     <body lang="pt-BR" dir="ltr">
         <p>Help versão 1.0</p>
         <hr/>
     
         <h2 class="western">Descrição:</h2>
         <h4 class="western" align="center" style="border: none; padding: 0cm">
-            O algoritmo cria polígonos customizados com base em uma camada de entrada e nas definições de escala e fator de arredondamento.
+           O algoritmo cria enquadramentos nas escalas sistemáticas, fora do enquadramento cartográfico nacional. 
         </h4>
         <hr/>
     
         <h2>Parâmetros:</h2>
         <p>
-            &#8226; Selecione a camada de entrada.<br/>&#8226; Selecione a escala do produto.<br/>&#8226; Defina o fator de arredondamento.
-        </p>
+            <span style="margin-bottom: 10px;">
+                &#8226; Polígono de entrada &rarr; Polígono com os limites da área alvo do mapeamento.
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Escala do produto desejada &rarr; Indicar a escala do produto cartográfico.
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Fator de arredondamento &rarr; Define o valor que será calculado para a moldura, tendo em vista que nem sempre é possível enquadrar o elemento dentro de uma única carta.
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Camada de saída &rarr; Como padrão, cria uma camada temporária com o resultado do processo. 
+            </span>
+            </p>
     
         <hr/>
     
-        <h2 class="western">Exemplo de uso: </h2>
-        <h4 class="western">Criação de articulações não-SCN a partir de uma camada de polígonos.</h4>
-        <p>Exemplo de parâmetros usados:</p>
-        <p>&#8226; Parâmetros aplicados com valores específicos para execução da ferramenta.</p>
+        <h2 class="western">Exemplo de uso: 
+        </h2>
+
+        <p>
+            <span style="margin-bottom: 10px;">
+                &#8226; Polígono de entrada &rarr; limites_mapeamento
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Escala do produto desejada &rarr; 1:25.000
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Fator de arredondamento &rarr; 0,015
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Camada de saída &rarr; Criar camada temporária
+            </span>
+            </p>
 
         <hr/>
     
         <div>
             <h2>Aplicação:</h2>
             <center><img src= "{}"></center>
-            <p style="text-align: center; font-style: italic;">Imagem representativa da ferramenta em ação.</p>
+            <p style="text-align: center; font-style: italic;">Articulação Não-SCN criada por ação da rotina.</p>
             <hr/>
         </div>
     </body>
