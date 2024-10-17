@@ -5,10 +5,109 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rótulo Lago</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
 </head>
 <body>
-    <h2>Rótulo Lago</h2>
-    <p>Detalhes sobre a ferramenta Rótulo Lago.</p>
-    <!-- Adicione o conteúdo específico da ferramenta aqui -->
+    <h2><img src="path_to_imagee" alt="Ícone Rótulo Lago" width="32" height="32" style="vertical-align: middle;">    Rótulo Lago</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Rótulo Lago", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Rótulo Lago"</strong> cria feições de rótulo automáticas para lagos ou massas d'água com base na camada <i>cobter_massa_dagua_a</i>. Ela insere o nome do lago ou corpo d'água na camada <i>edicao_texto_generico_p</i>, ajustando automaticamente o estilo do texto de acordo com o tipo de produto selecionado (Ortoimagem ou Topográfica).
+    </p>
+    <p>
+        A ferramenta identifica a feição mais próxima na camada de massas d'água e utiliza seus atributos, como o nome e tipo, para criar o rótulo na posição clicada pelo usuário.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a camada <i>cobter_massa_dagua_a</i> que contém as massas d'água.</li>
+        <li>Clique no botão <strong>"Rótulo Lago"</strong> na barra de ferramentas de edição.</li>
+        <li>Clique em um ponto no mapa sobre a massa d'água que deseja rotular. A ferramenta buscará o nome e o tipo da feição e criará o rótulo na camada <i>edicao_texto_generico_p</i>.</li>
+        <li>O estilo do rótulo será ajustado automaticamente conforme o tipo de produto selecionado: rótulos brancos para Ortoimagem e rótulos azuis para Topográfica.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se a camada <i>cobter_massa_dagua_a</i> está ativa e contém os atributos "nome" e "tipo" preenchidos corretamente.</li>
+        <li>A ferramenta é ideal para projetos que envolvem corpos d'água, como lagos, rios ou represas.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            A ferramenta <b>Rótulo Lago</b> permite inserir rótulos automáticos para lagos e outros corpos d'água, facilitando a identificação e a rotulagem de massas d'água.
+        </p>
+        <center>
+            <img src="path_to_imagex" alt="Exemplo de uso da ferramenta Rótulo Lago" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Inserindo rótulos automáticos para lagos e massas d'água.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Rótulo Lago</b> só funcionará corretamente em camadas que possuem os atributos "nome" e "tipo" configurados. Caso esses atributos não estejam presentes ou preenchidos, a ferramenta exibirá uma mensagem de erro.
+    </p>
 </body>
 </html>

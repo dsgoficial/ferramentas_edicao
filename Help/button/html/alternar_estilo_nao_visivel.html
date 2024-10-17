@@ -1,15 +1,117 @@
-
 <!DOCTYPE html>
 <html lang="br">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alternar Estilo não Visível</title>
+    <title>Alternar o Estilo 'Não Visível'</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
 </head>
 <body>
-    <h2>Alternar Estilo não Visível</h2>
-    <p>Detalhes sobre a ferramenta Alternar Estilo não Visível.</p>
-    <!-- Adicione o conteúdo específico da ferramenta aqui -->
+    <h2><img src="path_to_imagen" alt="Ícone Alternar o Estilo 'Não Visível'" width="32" height="32" style="vertical-align: middle;">    Alternar o Estilo 'Não Visível'</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Rótulo Lago", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Alternar o Estilo 'Não Visível'"</strong> é usada para alternar a visibilidade de camadas no projeto que possuem um estilo de simbologia baseado em regra referente ao atributo <i>'Visível' = 1, 'Não Visível' = 2</i>. Esta ferramenta permite que o usuário oculte ou exiba camadas de forma rápida, sem alterar manualmente suas propriedades de estilo.
+    </p>
+    <p>
+        Ela é ideal para cenários onde é necessário ocultar temporariamente camadas que não são relevantes para uma visualização específica, ou para alternar rapidamente a exibição de camadas de controle e dados temporários ou não pertinentes a um projeto específico.
+    </p>
+    <p>
+        <strong>Aplicação:</strong> Utilizada em quaisquer projetos que necessitem de controle dinâmico de camadas visíveis.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Localize o ícone <strong>"Alternar o Estilo 'Não Visível'"</strong> na barra de ferramentas de edição e clique nele.</li>
+        <li>A ferramenta buscará todas as camadas que possuem renderizadores baseados em regras e verificará se há alguma regra com o nome <i>'Não Visível'</i>.</li>
+        <li>Se a regra for encontrada, a ferramenta alternará a visibilidade da camada, fazendo com que ela se torne visível ou invisível conforme o estado anterior.</li>
+        <li>A atualização é aplicada automaticamente no mapa.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Para que a ferramenta funcione corretamente, a camada deve incluir uma regra de estilo com o rótulo <i>'Não Visível'</i> nas suas propriedades de renderização.</li>
+        <li>Verifique nas propriedades da camada em "Simbolização" se a regra foi corretamente nomeada para que a ferramenta possa agir sobre ela.</li>
+        <li>Utilize a ferramenta para alternar rapidamente camadas de controle ou dados que não são necessários em todas as visualizações.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            Por exemplo, ao trabalhar com uma carta topográfica, você pode ter camadas com dados de controle ou camadas temporárias que só são relevantes em situações específicas. A ferramenta <b>Alternar o Estilo 'Não Visível'</b> permite ocultar essas camadas durante as etapas em que não são necessárias, e depois exibi-las novamente com apenas um clique, facilitando a alternância.
+        </p>
+        <center>
+            <img src="path_to_imagfg" alt="Exemplo de uso da ferramenta Alternar o Estilo 'Não Visível'" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Alternando a visibilidade de camadas em um projeto.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Alternar o Estilo 'Não Visível'</b> só funciona em camadas que utilizam renderização baseada em regras e possuem o rótulo <i>'Não Visível'</i>. Se uma camada não tiver essa regra configurada, ela não será afetada pela ferramenta.
+    </p>
 </body>
 </html>

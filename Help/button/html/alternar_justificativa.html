@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="br">
 <head>
@@ -6,10 +5,109 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alternar Justificativa</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
 </head>
 <body>
-    <h2>Alternar Justificativa</h2>
-    <p>Detalhes sobre a ferramenta Alternar Justificativa.</p>
-    <!-- Adicione o conteúdo específico da ferramenta aqui -->
+    <h2><img src="path_to_image3" alt="Ícone Alternar Justificativa" width="32" height="32" style="vertical-align: middle;">    Alternar Justificativa</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Rótulo Lago", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Alternar Justificativa"</strong> permite ciclar entre diferentes valores de justificativa para o atributo <i>justificativa_txt</i> das feições selecionadas em uma camada. O ciclo segue o padrão: <b>1 -> 2 -> 3 -> 1</b>, permitindo que o usuário altere rapidamente o alinhamento de  rótulos na camada selecionada sem a necessidade de fazer ajustes manuais em cada feição.
+    </p>
+    <p>
+        Esta ferramenta é ideal para organizar textos em diferentes posições, como justificativas(alinhamentos) de rótulos em projetos.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a feição desejada na camada ativa.</li>
+        <li>Clique no botão <strong>"Alternar Justificativa"</strong> na barra de ferramentas de edição.</li>
+        <li>A ferramenta irá verificar se o atributo <i>justificativa_txt</i> existe na camada. Caso o atributo não esteja presente, será exibida uma mensagem de erro.</li>
+        <li>Para as feições selecionadas, o valor de <i>justificativa_txt</i> será ciclado entre os valores 1, 2 e 3, permitindo a alteração da justificativa do texto.</li>
+        <li>A atualização será refletida automaticamente no mapa, ajustando a posição do texto de acordo com o valor atribuído para <strong>esquerda, centro e direita</strong>.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se o campo <i>justificativa_txt</i> está presente na camada antes de usar a ferramenta.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            Por exemplo, ao trabalhar com manipulação de rótulos para estradas, rios ou outros elementos, você pode ajustar a posição do texto com a ferramenta <b>Alternar Justificativa</b>, alterando entre alinhamentos diferentes (esquerda, centro e direita) de forma rápida e prática.
+        </p>
+        <center>
+            <img src="path_to_imaggh" alt="Exemplo de uso da ferramenta Alternar Justificativa" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Alternando a justificativa de rótulos de elementos.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Alternar Justificativa</b> só funcionará em camadas que possuam o campo <i>justificativa_txt</i>. Se o campo não existir, será exibida uma mensagem de erro e a ferramenta não poderá fazer as alterações.
+    </p>
 </body>
 </html>

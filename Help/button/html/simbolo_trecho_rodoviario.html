@@ -2,13 +2,111 @@
 <html lang="br">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Símbolo Trecho Rodoviário</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
 </head>
 <body>
-    <h2>Símbolo Trecho Rodoviário</h2>
-    <p>Detalhes sobre a ferramenta Símbolo Trecho Rodoviário.</p>
-    <!-- Adicione o conteúdo específico da ferramenta aqui -->
+    <h2><img src="path_to_imageg" alt="Ícone Símbolo Trecho Rodoviário" width="32" height="32" style="vertical-align: middle;"> Símbolo Trecho Rodoviário</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Rótulo Lago", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Símbolo Trecho Rodoviário"</strong> permite a criação de feições representando trechos rodoviários, inserindo símbolos com base nos valores da camada (<i>infra_via_deslocamento_l</i>). O símbolo gerado será adicionado à camada <i>edicao_identificador_trecho_rod_p</i>, utilizando dados como a sigla da via e o tipo de estrada.
+    </p>
+    <p>
+        A ferramenta também permite a seleção entre múltiplas siglas caso uma via possua mais de um identificador, como rodovias federais e estaduais compartilhando o mesmo trecho.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a camada <i>infra_via_deslocamento_l</i> para identificar as vias de deslocamento.</li>
+        <li>Clique no botão <strong>"Símbolo Trecho Rodoviário"</strong> na barra de ferramentas de edição.</li>
+        <li>Clique na carta sobre o trecho de rodovia que deseja rotular. Se houver múltiplos identificadores (por exemplo, BR-101 e RS-040), um menu de seleção será exibido.</li>
+        <li>Selecione o identificador desejado, e a ferramenta criará uma nova feição na camada <i>edicao_identificador_trecho_rod_p</i>, preenchendo os campos <i>sigla</i> e <i>jurisdição</i>.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se a camada <i>infra_via_deslocamento_l</i> está ativa e possui os atributos "sigla" e "tipo" preenchidos corretamente.</li>
+        <li>A ferramenta é ideal para criar identificadores de trechos de rodovias</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            A ferramenta <b>Símbolo Trecho Rodoviário</b> cria identificadores automáticos para os trechos de vias. Ela facilita a rotulagem de trechos que compartilham múltiplas siglas e possibilita a seleção de uma delas para ser exibida no mapa.
+        </p>
+        <center>
+            <img src="path_to_imagez" alt="Exemplo de uso da ferramenta Símbolo Trecho Rodoviário" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Identificação de um trecho rodoviário.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Símbolo Trecho Rodoviário</b> só funcionará corretamente em camadas que possuem os atributos "sigla" e "tipo" preenchidos. Se esses atributos não estiverem presentes ou forem inválidos, a ferramenta exibirá uma mensagem de erro.
+    </p>
 </body>
 </html>

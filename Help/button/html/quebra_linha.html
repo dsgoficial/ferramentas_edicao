@@ -5,10 +5,109 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quebra Linha</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
 </head>
 <body>
-    <h2>Quebra Linha</h2>
-    <p>Detalhes sobre a ferramenta Quebra Linha.</p>
-    <!-- Adicione o conteúdo específico da ferramenta aqui -->
+    <h2><img src="path_to_imageb" alt="Ícone Quebra Linha" width="32" height="32" style="vertical-align: middle;">    Quebra Linha</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Rótulo Lago", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Quebra Linha"</strong> permite quebrar o texto contido no atributo <i>texto_edicao</i> de uma feição em várias linhas. O texto é quebrado inserindo o símbolo <strong>|</strong> no espaço mais central de uma string de texto, dividindo-o em duas partes.
+    </p>
+    <p>
+        Essa funcionalidade é útil quando se deseja melhorar a legibilidade de rótulos longos, ajustando-os automaticamente para que caibam em linhas separadas.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione as feições desejadas na camada ativa que contenha o campo <i>texto_edicao</i>.</li>
+        <li>Clique no botão <strong>"Quebra Linha"</strong> na barra de ferramentas de edição.</li>
+        <li>A ferramenta identificará o espaço em branco mais central no texto selecionado e adicionará o símbolo <strong>|</strong> para dividir o texto em linhas diferentes.</li>
+        <li>Se o campo <i>texto_edicao</i> estiver vazio, uma mensagem de erro será exibida e a quebra de linha não será aplicada.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se o campo <i>texto_edicao</i> está presente e preenchido corretamente nas feições antes de usar a ferramenta.</li>
+        <li>A ferramenta é ideal para ajustar automaticamente textos longos que precisam ser exibidos em múltiplas linhas, como rótulos de elementos em cartas topográficos.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            A ferramenta <b>Quebra Linha</b> permite que textos longos em atributos de rótulo sejam automaticamente ajustados para múltiplas linhas, facilitando a leitura.
+        </p>
+        <center>
+            <img src="path_to_imageu" alt="Exemplo de uso da ferramenta Quebra Linha" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Aplicação da ferramenta para ajustar rótulos longos, dividindo-os em múltiplas linhas.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Quebra Linha</b> só funcionará corretamente em camadas que possuem o campo <i>texto_edicao</i> preenchido. Se o campo estiver vazio ou não existir, uma mensagem de erro será exibida.
+    </p>
 </body>
 </html>

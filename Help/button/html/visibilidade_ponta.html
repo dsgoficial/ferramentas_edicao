@@ -2,13 +2,108 @@
 <html lang="br">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visibilidade de Ponta</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
 </head>
 <body>
-    <h2>Visibilidade de Ponta</h2>
-    <p>Detalhes sobre a ferramenta Visibilidade de Ponta.</p>
-    <!-- Adicione o conteúdo específico da ferramenta aqui -->
+    <h2><img src="path_to_imagek" alt="Ícone Visibilidade de Ponta" width="32" height="32" style="vertical-align: middle;"> Visibilidade de Ponta</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Rótulo Lago", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Visibilidade de Ponta"</strong> altera o atributo <i>"exibir_ponta_simbologia"</i> das feições selecionadas, permitindo alternar entre três estados: exibição da ponta esquerda, exibição da ponta direita, ou exibição de ambas as pontas da simbologia. Esta ferramenta é útil para ajustar a simbologia de pontes, melhorando a visualização.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a camada que contém as feições de ponte ou estrutura com o atributo <i>"exibir_ponta_simbologia"</i>.</li>
+        <li>Clique no botão <strong>"Visibilidade de Ponta"</strong> na barra de ferramentas de edição.</li>
+        <li>Selecione as feições que deseja ajustar no mapa.</li>
+        <li>A ferramenta irá alternar o valor do atributo <i>"exibir_ponta_simbologia"</i> entre 1 (ponta esquerda), 2 (ponta direita) e 3 (ambas as pontas).</li>
+        <li>Se as feições selecionadas estiverem fora da área visível, uma caixa de diálogo solicitará confirmação para continuar a operação.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se a camada ativa contém o atributo <i>"exibir_ponta_simbologia"</i> corretamente configurado.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            A ferramenta <b>Visibilidade de Ponta</b> permite alternar entre diferentes modos de visualização das pontas da simbologia para otimizar a clareza visual e o espaço.
+        </p>
+        <center>
+            <img src="path_to_imagde" alt="Exemplo de uso da ferramenta Visibilidade de Ponta" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Alternando a visibilidade das pontas de uma ponte em uma carta topográfica.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Visibilidade de Ponta</b> só funcionará corretamente em camadas que possuem o atributo <i>"exibir_ponta_simbologia"</i>. Caso esse atributo não exista, a ferramenta exibirá uma mensagem de erro.
+    </p>
 </body>
 </html>
