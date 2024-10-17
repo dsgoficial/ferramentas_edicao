@@ -681,7 +681,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         return ElevationPointsGeneralization()
 
     def name(self):
-        return "elevationpointsgeneralization"
+        return "elevationPointGeneralization"
 
     def displayName(self):
         return self.tr("Generalização de pontos cotados")

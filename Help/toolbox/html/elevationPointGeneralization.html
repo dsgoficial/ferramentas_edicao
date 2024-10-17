@@ -1,40 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Generalização de Pontos Cotados</title>
+</head>
+<body lang="pt-BR" dir="ltr">
+    <p>Help versão 1.0</p>
+    <hr/>
 
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        <title>Generalização de Pontos Cotados</title>
-    </head>
-    <body lang="pt-BR" dir="ltr">
-        <p>Help versão 1.0</p>
+    <h2 class="western">Descrição:</h2>
+    <h4 class="western" align="center" style="border: none; padding: 0cm">
+        O algoritmo generaliza os pontos cotados com base em critérios definidos e na escala de edição, assim, omite alguns pontos a fim de melhorar a visualização das informações.
+    </h4>
+    <hr/>
+
+    <h2>Parâmetros:</h2>
+    <p>
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecione a escala para gerar as quadrículas: &rarr; Indicar a escala do produto cartográfico.
+    </span>
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecione a camada contendo os pontos cotados &rarr; Indicar a camada que contém as feições de ponto cotado.
+    </span>
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecione a camada contendo as curvas de nível &rarr; Indicar a camada que contém as curvas de nível.
+    </span>
+    <span style="margin-bottom: 10px;">
+        &#8226; Limite Geográfico &rarr; Indicar a camada que contém a moldura do projeto. 
+    </span>
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecione o campo que informa se é depressão ou não &rarr; Indicar o atributo da curva de nível que contém a informação sobre depressão.
+    </span>
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecione o campo que informa se o ponto é visível ou não &rarr; Indicar o atributo do ponto cotado que contém a informação sobre visibilidade.
+    </span>
+    <span style="margin-bottom: 10px;">
+        &#8226; Generalização de Ponto Cotado &rarr; Camada resultado do processo.
+    </span>
+    </p>
+
+
+      
+    <div>
         <hr/>
-    
-        <h2 class="western">Descrição:</h2>
-        <h4 class="western" align="center" style="border: none; padding: 0cm">
-            O algoritmo generaliza os pontos cotados com base em critérios definidos e na escala de edição.
-        </h4>
-        <hr/>
-    
-        <h2>Parâmetros:</h2>
+        
+        <h2 class="western">Exemplo de uso: 
+        </h2>
+        <h4 class="western">Modelagem EDGV3.0_TOPO na escala de 1:25.000
+        (EPSG):4674</h4>
+        
         <p>
-            &#8226; Selecione a camada de pontos cotados.<br/>&#8226; Selecione o campo de depressão.<br/>&#8226; Defina o campo de visibilidade.
-        </p>
-    
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecione a escala para gerar as quadrículas: &rarr; 1:25.000
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecione a camada contendo os pontos cotados &rarr; elemnat_ponto_cotado_p
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecione a camada contendo as curvas de nível &rarr; elemnat_curva_nivel_l
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Limite Geográfico &rarr; aux_moldura_a
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecione o campo que informa se é depressão ou não &rarr; depressao
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecione o campo que informa se o ponto é visível ou não &rarr; visivel
+            </span>
+            <span style="margin-bottom: 10px;">
+                &#8226; Generalização de Ponto Cotado &rarr; Criar camada temporária
+            </span>
+            </p>
         <hr/>
-    
-        <h2 class="western">Exemplo de uso: </h2>
-        <h4 class="western">Generalização de pontos cotados para otimizar a visualização.</h4>
-        <p>Exemplo de parâmetros usados:</p>
-        <p>&#8226; Parâmetros aplicados com valores específicos para execução da ferramenta.</p>
-
-        <hr/>
-    
-        <div>
-            <h2>Aplicação:</h2>
-            <center><img src= "{}"></center>
-            <p style="text-align: center; font-style: italic;">Imagem representativa da ferramenta em ação.</p>
-            <hr/>
-        </div>
-    </body>
-    </html>
-    
+        
+              <div>
+                 <h2>Aplicação:</h2>
+                 <center><img src= "{}"></center>
+                 <p style="text-align: center; font-style: italic;">Vetor de grade gerado e reclassificado em "edicao_grid_edicao_l".</p>
+                 <hr/>
+              </div> 
+           </body>
+        
+        </html>
