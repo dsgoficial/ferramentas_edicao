@@ -231,8 +231,28 @@ class EditionPlugin:
         image_file_pathj = Path(__file__).parent / "Help" / "button" / "icons" / "texto_de_cota_mestra.png"
         image_file_pathk = Path(__file__).parent / "Help" / "button" / "icons" / "visibilidade_de_ponta.png"
         image_file_pathl = Path(__file__).parent / "Help" / "button" / "icons" / "visibilidade_lateral_ponte.png"
-        image_file_pathm = Path(__file__).parent / "Help" / "button" / "img" / "sentido_corrente.png"
         image_file_pathn = Path(__file__).parent / "Help" / "button" / "icons" / "alternar_estilo_nao_visivel.png"
+        image_file_pathm = Path(__file__).parent / "Help" / "button" / "img" / "sentido_corrente.png"
+        image_file_patho = Path(__file__).parent / "Help" / "button" / "img" / "alternar_rotulo.png"
+        image_file_pathp = Path(__file__).parent / "Help" / "button" / "img" / "alternar_visibilidade_do_texto.png"
+        image_file_pathq = Path(__file__).parent / "Help" / "button" / "img" / "alternar_visibilidade.png"
+        image_file_pathr = Path(__file__).parent / "Help" / "button" / "img" / "copiar_texto_generico.png"
+        image_file_paths = Path(__file__).parent / "Help" / "button" / "img" / "copiar_texto_sugerido.png"
+        image_file_patht = Path(__file__).parent / "Help" / "button" / "img" / "numero_de_faixas.png"
+        image_file_pathu = Path(__file__).parent / "Help" / "button" / "img" / "quebra_linha.png"
+        image_file_pathv = Path(__file__).parent / "Help" / "button" / "img" / "rotulo_aproximado.png"
+        image_file_pathw = Path(__file__).parent / "Help" / "button" / "img" / "rotulo_de_fronteira.png"
+        image_file_pathx = Path(__file__).parent / "Help" / "button" / "img" / "rotulo_lago.png"
+        image_file_pathy = Path(__file__).parent / "Help" / "button" / "img" / "rotulo_rio.png"
+        image_file_pathz = Path(__file__).parent / "Help" / "button" / "img" / "simbolo_idt_trecho_rodoviario.png"
+        image_file_path0 = Path(__file__).parent / "Help" / "button" / "img" / "simbolo_vegetacao.png"
+        image_file_patab = Path(__file__).parent / "Help" / "button" / "img" / "suprimir_bandeira_edificacao.png"
+        image_file_patcd = Path(__file__).parent / "Help" / "button" / "img" / "texto_de_cota_mestra.png"
+        image_file_patde = Path(__file__).parent / "Help" / "button" / "img" / "visibilidade_de_ponta.png"
+        image_file_patij = Path(__file__).parent / "Help" / "button" / "img" / "visibilidade_lateral_ponte.png"
+        image_file_patfg = Path(__file__).parent / "Help" / "button" / "img" / "alternar_estilo_nao_visivel.png"
+        image_file_patgh = Path(__file__).parent / "Help" / "button" / "img" / "alternar_justificativa.png"
+        
 
         if html_file_path.exists():
             with open(html_file_path, "r", encoding="utf-8") as file:
@@ -261,6 +281,25 @@ class EditionPlugin:
             html_content = html_content.replace("path_to_imagel", image_file_pathl.as_posix())
             html_content = html_content.replace("path_to_imagem", image_file_pathm.as_posix())
             html_content = html_content.replace("path_to_imagen", image_file_pathn.as_posix())
+            html_content = html_content.replace("path_to_imageo", image_file_patho.as_posix())
+            html_content = html_content.replace("path_to_imagep", image_file_pathp.as_posix())
+            html_content = html_content.replace("path_to_imageq", image_file_pathq.as_posix())
+            html_content = html_content.replace("path_to_imager", image_file_pathr.as_posix())
+            html_content = html_content.replace("path_to_images", image_file_paths.as_posix())
+            html_content = html_content.replace("path_to_imaget", image_file_patht.as_posix())
+            html_content = html_content.replace("path_to_imageu", image_file_pathu.as_posix())
+            html_content = html_content.replace("path_to_imagev", image_file_pathv.as_posix())
+            html_content = html_content.replace("path_to_imagew", image_file_pathw.as_posix())
+            html_content = html_content.replace("path_to_imagex", image_file_pathx.as_posix())
+            html_content = html_content.replace("path_to_imagey", image_file_pathy.as_posix())
+            html_content = html_content.replace("path_to_imagez", image_file_pathz.as_posix())
+            html_content = html_content.replace("path_to_image0", image_file_path0.as_posix())
+            html_content = html_content.replace("path_to_imagab", image_file_patab.as_posix())
+            html_content = html_content.replace("path_to_imagcd", image_file_patcd.as_posix())
+            html_content = html_content.replace("path_to_imagde", image_file_patde.as_posix())
+            html_content = html_content.replace("path_to_imagij", image_file_patij.as_posix())
+            html_content = html_content.replace("path_to_imagfg", image_file_patfg.as_posix())
+            html_content = html_content.replace("path_to_imaggh", image_file_patgh.as_posix())
 
             self.help_text.setHtml(html_content)
         else:
