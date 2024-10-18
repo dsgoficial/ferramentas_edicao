@@ -47,7 +47,7 @@ from qgis.PyQt.QtWidgets import QLineEdit
 
 from processing.gui.wrappers import WidgetWrapper
 
-
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 class PasswordWrapper(WidgetWrapper):
     def __init__(self, *args, **kwargs):
@@ -359,3 +359,9 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
 
     def createInstance(self):
         return RunRemoteProductExportAlgorithm()
+
+    def shortHelpString(self):
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
