@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.58
+## 1.2.59
 
 Novas Funcionalidades
 
@@ -79,6 +79,7 @@ Correção de bug:
 - Corrigido posição da escala na carta orto
 - Corrigido o bug de rotação de elemnat_elemento_hidrografico_p
 - Inserido os estilos de Estação Meteorológica e Cemitério Israelita nas respectivas classes.
+- Inserido o estilo de Caverna em elemnat_elemento_fisiografico_p.
 
 ## 1.1.90
 
