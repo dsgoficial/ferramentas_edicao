@@ -294,7 +294,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         territorio_internacional = form_dialog.input_territorio_internacional.currentText() == "True"
         acesso_restrito = form_dialog.input_acesso_restrito.currentText() == "True"
         licenciamento_produto = form_dialog.input_licenciamento.text().strip()
-        tipo_produto = form_dialog.input_produto.text().strip()
+        tipo_produto = form_dialog.input_produto.currentText() == "Carta Topográfica"
         edicao_produto = form_dialog.input_edicao.text().strip()
         caminho_mde = form_dialog.input_mde_diagrama.text().strip().replace("/", "\\")
         epsg = form_dialog.input_epsg.text().strip()
