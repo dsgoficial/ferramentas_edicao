@@ -184,6 +184,8 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         nome_instituicao = dialog.input_nome_projeto.text().strip().upper()
         endereco_instituicao = dialog.input_creditos.toPlainText().strip()
         caminho_imagem = dialog.input_imagem.text().strip()
+        novo_nome_projeto = dialog.input_nome_projeto2.text().strip().upper()
+        novos_creditos = dialog.input_creditos2.toPlainText().strip().upper()
 
         # Carrega o arquivo creditsDOIS.qpt como um texto
         qpt_file_path = Path(__file__).parent.parent.parent / "Help" / "export" / "src" / "creditsDOIS.qpt"
@@ -199,6 +201,14 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         qpt_content = qpt_content.replace('labelText="name_2"', f'labelText="{nome_instituicao}"')
         qpt_content = qpt_content.replace('labelText="address"', f'labelText="{endereco_instituicao}"')
         qpt_content = qpt_content.replace('file="teste.png"', f'file="{caminho_imagem}"')
+        qpt_content = qpt_content.replace(
+            'labelText="MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE"',
+            f'labelText="{novo_nome_projeto}"'
+        )
+        qpt_content = qpt_content.replace(
+            'labelText="PRODUTO ELABORADO PELA DIRETORIA DE SERVIÇO GEOGRÁFICO NO CONTEXTO DO PROJETO MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE"',
+            f'labelText="{novos_creditos}"'
+        )
 
         # Salva o novo arquivo em uma nova localização
         save_file_dialog = QFileDialog()
@@ -372,17 +382,20 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
             json_object["fases"] = fases
 
         # Salvar o arquivo JSON gerado
-        json_str = json.dumps(json_object, indent=4)
+        json_str = json.dumps(json_object, indent=4, ensure_ascii=False)
+
+        # Ao salvar o arquivo, especifique a codificação utf-8
         save_file_dialog = QFileDialog()
         save_file_path, _ = save_file_dialog.getSaveFileName(self, "Salvar Arquivo JSON", "", "JSON Files (*.json)")
 
         if save_file_path:
             try:
-                with open(save_file_path, 'w') as json_file:
+                with open(save_file_path, 'w', encoding='utf-8') as json_file:
                     json_file.write(json_str)
                 QMessageBox.information(self, "Sucesso", f"Arquivo JSON salvo em: {save_file_path}")
             except Exception as e:
                 QMessageBox.critical(self, "Erro", f"Falha ao salvar o arquivo: {e}")
+
 
 
 
