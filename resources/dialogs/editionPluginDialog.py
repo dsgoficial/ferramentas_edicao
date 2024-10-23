@@ -309,6 +309,16 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         pec_planimetrico = form_dialog.input_pec_planimetrico.text().strip() if form_dialog.input_pec_planimetrico.text().strip() else None
         pec_altimetrico = form_dialog.input_pec_altimetrico.text().strip() if form_dialog.input_pec_altimetrico.text().strip() else None
 
+        # Captura os novos campos obrigatórios de info_tecnica
+        data_criacao = form_dialog.input_data_criacao.text().strip()
+        datum_vertical = form_dialog.input_datum_vertical.text().strip()
+        origem_dados_altimetricos = form_dialog.input_origem_dados_altimetricos.text().strip()
+
+        # Verifica se os novos campos obrigatórios estão preenchidos
+        if not data_criacao or not datum_vertical or not origem_dados_altimetricos:
+            QMessageBox.critical(self, "Erro", "Preencha todos os campos obrigatórios de Informações Técnicas!")
+            return
+
         # Verifica se os campos obrigatórios estão preenchidos
         if not tipo_produto or not nome or not caminho_mde or not epsg or not banco_servidor or not banco_porta or not banco_nome:
             QMessageBox.critical(self, "Erro", "Preencha todos os campos obrigatórios!")
@@ -339,7 +349,11 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
             json_object["projeto"] = projeto
 
         # Adicionando info_tecnica se houver valores preenchidos
-        info_tecnica = {}
+        info_tecnica = {
+            "data_criacao": data_criacao,
+            "datum_vertical": datum_vertical,
+            "origem_dados_altimetricos": origem_dados_altimetricos
+        }
         if pec_planimetrico:
             info_tecnica["pec_planimetrico"] = pec_planimetrico
         if pec_altimetrico:
@@ -395,6 +409,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
                 QMessageBox.information(self, "Sucesso", f"Arquivo JSON salvo em: {save_file_path}")
             except Exception as e:
                 QMessageBox.critical(self, "Erro", f"Falha ao salvar o arquivo: {e}")
+
 
 
 
