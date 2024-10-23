@@ -14,6 +14,7 @@
    <string>Criar Arquivo JSON</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <!-- Tipo de Produto -->
    <item>
     <widget class="QLabel" name="label_produto">
      <property name="text">
@@ -24,6 +25,7 @@
    <item>
     <widget class="QLineEdit" name="input_produto"/>
    </item>
+   <!-- Edição do Produto -->
    <item>
     <widget class="QLabel" name="label_edicao">
      <property name="text">
@@ -34,6 +36,7 @@
    <item>
     <widget class="QLineEdit" name="input_edicao"/>
    </item>
+   <!-- Licenciamento Produto -->
    <item>
     <widget class="QLabel" name="label_licenciamento">
      <property name="text">
@@ -44,6 +47,7 @@
    <item>
     <widget class="QLineEdit" name="input_licenciamento"/>
    </item>
+   <!-- Nome -->
    <item>
     <widget class="QLabel" name="label_nome">
      <property name="text">
@@ -51,6 +55,7 @@
      </property>
     </widget>
    </item>
+   <!-- MDE para Diagrama de Elevação -->
    <item>
     <widget class="QLineEdit" name="input_nome"/>
    </item>
@@ -81,6 +86,7 @@
    <item>
     <widget class="QLineEdit" name="input_epsg"/>
    </item>
+   <!-- Configurações do Banco de Dados -->
    <item>
     <widget class="QLabel" name="label_banco_configuracao">
      <property name="text">
@@ -121,6 +127,7 @@
      </column>
     </widget>
    </item>
+   <!-- Índice de Nomenclatura -->
    <item>
     <widget class="QLabel" name="label_inom">
      <property name="text">
@@ -150,43 +157,6 @@
    </item>
    <item>
     <widget class="QLineEdit" name="input_centro_carta"/>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_creditos">
-     <property name="text">
-      <string>Créditos (Opcional) - Caminho do arquivo QPT para a parte inferior esquerda</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="input_creditos"/>
-   </item>
-   <item>
-    <widget class="QPushButton" name="browse_project_button">
-     <property name="text">
-      <string>Buscar Projeto</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_pec_planimetrico">
-     <property name="text">
-      <string>PEC Planimétrico (Opcional) - Ex.: &quot;A&quot;</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="input_pec_planimetrico"/>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_pec_altimetrico">
-     <property name="text">
-      <string>PEC Altimétrico (Opcional) - Ex.: &quot;A&quot;</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="input_pec_altimetrico"/>
    </item>
    <item>
     <widget class="QLabel" name="label_territorio_internacional">
@@ -230,6 +200,65 @@
      </item>
     </widget>
    </item>
+   <!-- Seção Info Técnica -->
+   <item>
+    <widget class="QLabel" name="label_info_tecnica">
+     <property name="text">
+      <string>Informações Técnicas:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_data_criacao">
+     <property name="text">
+      <string>Data de Criação (Obrigatório) - Ex.: 06/05/1996</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_data_criacao"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_datum_vertical">
+     <property name="text">
+      <string>Datum Vertical (Obrigatório) - Ex.: Imbituba - Santa Catarina</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_datum_vertical"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_origem_dados_altimetricos">
+     <property name="text">
+      <string>Origem dos Dados Altimétricos (Obrigatório) - Ex.: GLO-30 com correção do efeito do dossel vegetativo</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_origem_dados_altimetricos"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_pec_planimetrico">
+     <property name="text">
+      <string>PEC Planimétrico (Opcional) - Ex.: &quot;A&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_pec_planimetrico"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_pec_altimetrico">
+     <property name="text">
+      <string>PEC Altimétrico (Opcional) - Ex.: &quot;A&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_pec_altimetrico"/>
+   </item>
+   <!-- Fases e Executantes -->
    <item>
     <widget class="QLabel" name="label_fases">
      <property name="text">
@@ -312,6 +341,23 @@
     <widget class="QPushButton" name="add_dado_terceiro_button">
      <property name="text">
       <string>Adicionar Linhas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_creditos">
+     <property name="text">
+      <string>Créditos (Opcional) - Caminho do arquivo QPT para a parte inferior esquerda</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_creditos"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="browse_project_button">
+     <property name="text">
+      <string>Buscar Projeto</string>
      </property>
     </widget>
    </item>
