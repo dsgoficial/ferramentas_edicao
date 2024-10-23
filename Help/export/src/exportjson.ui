@@ -23,7 +23,33 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="input_produto"/>
+    <widget class="QComboBox" name="input_produto">
+     <item>
+      <property name="text">
+       <string>Carta Topográfica</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Carta Ortoimagem</string>
+      </property>
+     </item>
+	 <item>
+      <property name="text">
+       <string>Carta Ortoimagem OM</string>
+      </property>
+     </item>
+	 <item>
+      <property name="text">
+       <string>Carta Ortoimagem Militar</string>
+      </property>
+     </item>
+	 <item>
+      <property name="text">
+       <string>Carta Topográfica Militar</string>
+      </property>
+     </item>
+    </widget>
    </item>
    <!-- Edição do Produto -->
    <item>
