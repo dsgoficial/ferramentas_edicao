@@ -278,7 +278,113 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def generate_json(self, form_dialog):
         """Gera o arquivo JSON baseado nas entradas do formulário."""
-        # (Conteúdo do método `generate_json` permanece o mesmo)
+        # Coleta dados obrigatórios e opcionais
+        tipo_produto = form_dialog.input_produto.text().strip()
+        nome = form_dialog.input_nome.text().strip()
+        caminho_mde = form_dialog.input_mde_diagrama.text().strip().replace("/", "\\")
+        epsg = form_dialog.input_epsg.text().strip()
+
+        # Coleta informações de configuração do banco de dados na tabela
+        banco_servidor = form_dialog.bancoTable.item(0, 0).text().strip() if form_dialog.bancoTable.item(0, 0) else ""
+        banco_porta = form_dialog.bancoTable.item(0, 1).text().strip() if form_dialog.bancoTable.item(0, 1) else ""
+        banco_nome = form_dialog.bancoTable.item(0, 2).text().strip() if form_dialog.bancoTable.item(0, 2) else ""
+
+        edicao_produto = form_dialog.input_edicao.text().strip()
+        licenciamento_produto = form_dialog.input_licenciamento.text().strip()
+        inom = form_dialog.input_inom.text().strip() if form_dialog.input_inom.text().strip() else None
+        territorio_internacional = form_dialog.input_territorio_internacional.currentText() == "True"
+        acesso_restrito = form_dialog.input_acesso_restrito.currentText() == "True"
+        projeto = form_dialog.input_creditos.text().strip() if form_dialog.input_creditos.text().strip() else None
+
+        pec_planimetrico = form_dialog.input_pec_planimetrico.text().strip() if form_dialog.input_pec_planimetrico.text().strip() else None
+        pec_altimetrico = form_dialog.input_pec_altimetrico.text().strip() if form_dialog.input_pec_altimetrico.text().strip() else None
+
+        # Verifica se os campos obrigatórios estão preenchidos
+        if not tipo_produto or not nome or not caminho_mde or not epsg or not banco_servidor or not banco_porta or not banco_nome:
+            QMessageBox.critical(self, "Erro", "Preencha todos os campos obrigatórios!")
+            return
+
+        # Criando o objeto JSON
+        json_object = {
+            "nome": nome,
+            "territorio_internacional": territorio_internacional,
+            "acesso_restrito": acesso_restrito,
+            "licenciamento_produto": licenciamento_produto,
+            "tipo_produto": tipo_produto,
+            "edicao_produto": edicao_produto,
+            "mde_diagrama_elevacao": {
+                "caminho_mde": caminho_mde,
+                "epsg": epsg
+            },
+            "banco": {
+                "servidor": banco_servidor,
+                "porta": banco_porta,
+                "nome": banco_nome
+            }
+        }
+
+        if inom:
+            json_object["inom"] = inom
+        if projeto:
+            json_object["projeto"] = projeto
+
+        # Adicionando info_tecnica se houver valores preenchidos
+        info_tecnica = {}
+        if pec_planimetrico:
+            info_tecnica["pec_planimetrico"] = pec_planimetrico
+        if pec_altimetrico:
+            info_tecnica["pec_altimetrico"] = pec_altimetrico
+
+        # Adicionando dados técnicos - dados de terceiros
+        dados_terceiros = []
+        for row in range(form_dialog.dadosTerceirosTable.rowCount()):
+            nome_terceiro = form_dialog.dadosTerceirosTable.item(row, 0)
+            sigla_terceiro = form_dialog.dadosTerceirosTable.item(row, 1)
+            if nome_terceiro and sigla_terceiro:
+                nome_terceiro_text = nome_terceiro.text().strip()
+                sigla_terceiro_text = sigla_terceiro.text().strip()
+                if nome_terceiro_text and sigla_terceiro_text:
+                    dados_terceiros.append(f"{nome_terceiro_text}: {sigla_terceiro_text}")
+
+        if dados_terceiros:
+            info_tecnica["dados_terceiros"] = dados_terceiros
+
+        if info_tecnica:
+            json_object["info_tecnica"] = info_tecnica
+
+        # Adicionando as fases se houver
+        fases = []
+        for row in range(form_dialog.fasesTable.rowCount()):
+            fase_nome = form_dialog.fasesTable.item(row, 0)
+            executante_nome = form_dialog.fasesTable.item(row, 1)
+            executante_ano = form_dialog.fasesTable.item(row, 2)
+
+            if fase_nome and executante_nome and executante_ano:
+                fase_nome_text = fase_nome.text().strip()
+                executante_nome_text = executante_nome.text().strip()
+                executante_ano_text = executante_ano.text().strip()
+
+                if fase_nome_text and executante_nome_text and executante_ano_text:
+                    executantes = [{"nome": executante_nome_text, "ano": executante_ano_text}]
+                    fases.append({"nome": fase_nome_text, "executantes": executantes})
+
+        if fases:
+            json_object["fases"] = fases
+
+        # Salvar o arquivo JSON gerado
+        json_str = json.dumps(json_object, indent=4)
+        save_file_dialog = QFileDialog()
+        save_file_path, _ = save_file_dialog.getSaveFileName(self, "Salvar Arquivo JSON", "", "JSON Files (*.json)")
+
+        if save_file_path:
+            try:
+                with open(save_file_path, 'w') as json_file:
+                    json_file.write(json_str)
+                QMessageBox.information(self, "Sucesso", f"Arquivo JSON salvo em: {save_file_path}")
+            except Exception as e:
+                QMessageBox.critical(self, "Erro", f"Falha ao salvar o arquivo: {e}")
+
+
 
     def download_qpt_file(self):
         """Faz o download do arquivo QPT padrão."""
