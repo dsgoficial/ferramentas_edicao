@@ -14,6 +14,26 @@
    <string>Alterar Nome do Projeto e Créditos</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+	<item>
+    <widget class="QLabel" name="label_nome_projeto2">
+     <property name="text">
+      <string>Nome do Projeto (Obrigatório) - Preencher com o nome completo do projeto</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_nome_projeto2"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_creditos2">
+     <property name="text">
+      <string>Créditos (Opcional) - Preencher com a descrição e/ou nomes das instituições relacionadas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="input_creditos2"/>
+   </item>
    <item>
     <widget class="QLabel" name="label_name">
      <property name="text">
