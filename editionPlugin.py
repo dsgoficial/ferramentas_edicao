@@ -169,6 +169,7 @@ class EditionPlugin:
             text=self.tr("Clique aqui para obter ajuda"),
             callback=self.show_help_dialog,
             parentToolbar=self.toolBar,
+            add_to_toolbar=False,
         )
 
         # Inicializando outras ferramentas
