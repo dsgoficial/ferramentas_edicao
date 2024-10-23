@@ -131,7 +131,7 @@
    <item>
     <widget class="QLabel" name="label_inom">
      <property name="text">
-      <string>Índice de Nomenclatura (Opcional) - Ex.: SF-22-Y-C-I-1</string>
+      <string>Índice de Nomenclatura (Obrigatório) - Ex.: SF-22-Y-C-I-1</string>
      </property>
     </widget>
    </item>
@@ -262,7 +262,7 @@
    <item>
     <widget class="QLabel" name="label_fases">
      <property name="text">
-      <string>Fases e Executantes (Opcional)</string>
+      <string>Fases e Executantes (Obrigatório)</string>
      </property>
     </widget>
    </item>
@@ -306,7 +306,7 @@
    <item>
     <widget class="QLabel" name="label_dados_terceiros">
      <property name="text">
-      <string>Dados de Terceiros (Opcional)</string>
+      <string>Dados de Terceiros (Obrigatório)</string>
      </property>
     </widget>
    </item>
