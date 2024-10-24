@@ -1,10 +1,15 @@
 import json
 import os
+import shutil
+import platform
+import ctypes
+
 from pathlib import Path
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QDialog, QTextBrowser, QVBoxLayout, QPushButton
+
 
 from qgis.core import QgsFontUtils
 from qgis.utils import active_plugins
@@ -171,6 +176,15 @@ class EditionPlugin:
             parentToolbar=self.toolBar,
             add_to_toolbar=False,
         )
+        
+        # Adiciona a ação para instalar fontes
+        self.add_action(
+            icon_path="",
+            text=self.tr("Instalar Fontes Noto Sans"),
+            callback=self.installFonts,
+            add_to_menu=False,
+            add_to_toolbar=False,
+        )
 
         # Inicializando outras ferramentas
         self.tools = SetupButtons(toolbar=self.toolBar, iface=self.iface)
@@ -253,6 +267,7 @@ class EditionPlugin:
         image_file_patij = Path(__file__).parent / "Help" / "button" / "img" / "visibilidade_lateral_ponte.png"
         image_file_patfg = Path(__file__).parent / "Help" / "button" / "img" / "alternar_estilo_nao_visivel.png"
         image_file_patgh = Path(__file__).parent / "Help" / "button" / "img" / "alternar_justificativa.png"
+        image_file_patgi = Path(__file__).parent / "Help" / "button" / "icons" / "font.png"
         
 
         if html_file_path.exists():
@@ -301,6 +316,7 @@ class EditionPlugin:
             html_content = html_content.replace("path_to_imagij", image_file_patij.as_posix())
             html_content = html_content.replace("path_to_imagfg", image_file_patfg.as_posix())
             html_content = html_content.replace("path_to_imaggh", image_file_patgh.as_posix())
+            html_content = html_content.replace("path_to_imaggi", image_file_patgi.as_posix())
 
             self.help_text.setHtml(html_content)
         else:
@@ -309,14 +325,21 @@ class EditionPlugin:
 
     def handle_link_click(self, url):
         """Lida com o clique nos links e navega entre páginas."""
+        page_name = url.toString().split('/')[-1]
+
+        if page_name == "install_fonts":
+            self.installFonts()
+            # Adiciona uma mensagem de sucesso diretamente no navegador de ajuda
+            self.help_text.setHtml("<h2>Fontes instaladas com sucesso!</h2><p>Reinicie o QGIS para que as mudanças sejam aplicadas.</p>")
+            return
+
         current_page = self.current_page  # Página atual
         self.history.append(current_page)  # Armazena a página atual no histórico
         self.back_button.setEnabled(True)  # Ativa o botão de voltar
 
-        # Extrair o nome da página do link clicado
-        page_name = url.toString().split('/')[-1]
         self.current_page = page_name  # Atualiza a página atual
         self.load_page(page_name)
+
 
     def go_back(self):
         """Volta para a última página visualizada."""
@@ -327,6 +350,35 @@ class EditionPlugin:
 
         if not self.history:
             self.back_button.setEnabled(False)  # Desativa o botão se não houver mais histórico
+            
+    def installFonts(self):
+        """Instala as fontes Noto Sans no sistema."""
+        pasta_fontes = os.path.join(self.plugin_dir, 'Help', 'button', 'fonts')
+        if not os.path.exists(pasta_fontes):
+            QMessageBox.warning(self.iface.mainWindow(), "Erro", "Pasta de fontes não encontrada.")
+            return
+
+        try:
+            for arquivo in os.listdir(pasta_fontes):
+                if arquivo.endswith(".ttf"):
+                    caminho_fonte = os.path.join(pasta_fontes, arquivo)
+                    # Se for Windows, usar AddFontResourceW para registrar a fonte
+                    if platform.system() == "Windows":
+                        if ctypes.windll.gdi32.AddFontResourceW(caminho_fonte) == 0:
+                            raise PermissionError("Erro ao adicionar a fonte: {}".format(arquivo))
+                    else:
+                        # Se for Linux ou macOS, continuar copiando para as pastas padrões
+                        pasta_destino = "/Library/Fonts/" if platform.system() == "Darwin" else os.path.expanduser("~/.local/share/fonts/")
+                        shutil.copy(caminho_fonte, pasta_destino)
+            if platform.system() == "Linux":
+                os.system("fc-cache -f -v")
+
+            QMessageBox.information(self.iface.mainWindow(), "Sucesso", "Fontes instaladas com sucesso! Reinicie o QGIS para aplicar as mudanças.")
+        except PermissionError as e:
+            QMessageBox.warning(self.iface.mainWindow(), "Erro", str(e))
+        except Exception as e:
+            QMessageBox.warning(self.iface.mainWindow(), "Erro", f"Erro ao instalar fontes: {str(e)}")
+
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -450,3 +502,4 @@ class EditionPlugin:
             return
         self.dlg.show()
         self.dlg.exec_()
+    
