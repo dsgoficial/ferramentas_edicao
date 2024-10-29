@@ -52,7 +52,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
 
         # Carregar a página inicial
         self.load_page(self.current_page)
-        help_dialog.exec_()
+        help_dialog.show()
 
     def load_page(self, page):
         """Carrega uma página HTML específica."""
@@ -124,7 +124,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         change_dialog.save_button.clicked.connect(lambda: self.save_project_name_and_credits(change_dialog))
 
         # Mostrar o diálogo
-        change_dialog.exec_()
+        change_dialog.show()
 
     def save_project_name_and_credits(self, dialog):
         """Salva as alterações de nome do projeto e créditos."""
@@ -176,7 +176,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         change_dialog.save_button.clicked.connect(lambda: self.save_project_and_institution_data(change_dialog))
 
         # Mostrar o diálogo
-        change_dialog.exec_()
+        change_dialog.show()
 
     def save_project_and_institution_data(self, dialog):
         """Salva as alterações de nome do projeto, endereço e logotipo da instituição."""
@@ -254,7 +254,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         form_content.generate_button.clicked.connect(lambda: self.generate_json(form_content))
 
         # Mostrar a nova janela
-        json_form_dialog.exec_()
+        json_form_dialog.show()
 
         # Restaurar o conteúdo da janela anterior depois de fechar a janela de criação de JSON
         self.help_text.setHtml(self.current_html_content)

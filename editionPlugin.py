@@ -221,7 +221,7 @@ class EditionPlugin:
 
         # Carregar a página inicial
         self.load_page(self.current_page)  # Página inicial é a buttonTools.html
-        help_dialog.exec_()
+        help_dialog.show()
 
     def load_page(self, page):
         """Carrega uma página HTML específica."""
