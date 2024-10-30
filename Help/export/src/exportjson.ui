@@ -6,15 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>1150</height>
+    <width>521</width>
+    <height>1197</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Criar Arquivo JSON</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <!-- Tipo de Produto -->
    <item>
     <widget class="QLabel" name="label_produto">
      <property name="text">
@@ -34,24 +33,23 @@
        <string>Carta Ortoimagem</string>
       </property>
      </item>
-	 <item>
+     <item>
       <property name="text">
        <string>Carta Ortoimagem OM</string>
       </property>
      </item>
-	 <item>
+     <item>
       <property name="text">
        <string>Carta Ortoimagem Militar</string>
       </property>
      </item>
-	 <item>
+     <item>
       <property name="text">
        <string>Carta Topográfica Militar</string>
       </property>
      </item>
     </widget>
    </item>
-   <!-- Edição do Produto -->
    <item>
     <widget class="QLabel" name="label_edicao">
      <property name="text">
@@ -62,7 +60,6 @@
    <item>
     <widget class="QLineEdit" name="input_edicao"/>
    </item>
-   <!-- Licenciamento Produto -->
    <item>
     <widget class="QLabel" name="label_licenciamento">
      <property name="text">
@@ -73,7 +70,6 @@
    <item>
     <widget class="QLineEdit" name="input_licenciamento"/>
    </item>
-   <!-- Nome -->
    <item>
     <widget class="QLabel" name="label_nome">
      <property name="text">
@@ -81,7 +77,6 @@
      </property>
     </widget>
    </item>
-   <!-- MDE para Diagrama de Elevação -->
    <item>
     <widget class="QLineEdit" name="input_nome"/>
    </item>
@@ -112,7 +107,6 @@
    <item>
     <widget class="QLineEdit" name="input_epsg"/>
    </item>
-   <!-- Configurações do Banco de Dados -->
    <item>
     <widget class="QLabel" name="label_banco_configuracao">
      <property name="text">
@@ -153,7 +147,6 @@
      </column>
     </widget>
    </item>
-   <!-- Índice de Nomenclatura -->
    <item>
     <widget class="QLabel" name="label_inom">
      <property name="text">
@@ -226,7 +219,6 @@
      </item>
     </widget>
    </item>
-   <!-- Seção Info Técnica -->
    <item>
     <widget class="QLabel" name="label_info_tecnica">
      <property name="text">
@@ -257,7 +249,7 @@
    <item>
     <widget class="QLabel" name="label_origem_dados_altimetricos">
      <property name="text">
-      <string>Origem dos Dados Altimétricos (Obrigatório) - Ex.: GLO-30 com correção do efeito do dossel vegetativo</string>
+      <string>Origem dos Dados Altimétricos (Obrigatório) - Ex.: FABDEM</string>
      </property>
     </widget>
    </item>
@@ -284,7 +276,6 @@
    <item>
     <widget class="QLineEdit" name="input_pec_altimetrico"/>
    </item>
-   <!-- Fases e Executantes -->
    <item>
     <widget class="QLabel" name="label_fases">
      <property name="text">
@@ -330,6 +321,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="rm_fase_button">
+     <property name="text">
+      <string>Remover Linhas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="label_dados_terceiros">
      <property name="text">
       <string>Dados de Terceiros (Obrigatório)</string>
@@ -367,6 +365,13 @@
     <widget class="QPushButton" name="add_dado_terceiro_button">
      <property name="text">
       <string>Adicionar Linhas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="rm_dado_terceiro_button">
+     <property name="text">
+      <string>Remover Linhas</string>
      </property>
     </widget>
    </item>

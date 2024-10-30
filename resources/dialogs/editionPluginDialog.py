@@ -3,6 +3,7 @@ import webbrowser
 from pathlib import Path
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox, QScrollArea, QVBoxLayout, QTableWidgetItem, QComboBox
+from qgis.PyQt.QtCore import Qt
 import json
 import shutil  # Importação para operações de arquivos
 
@@ -14,8 +15,12 @@ FORM_CLASS, _ = uic.loadUiType(
 class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
-        super(EditionPluginDialog, self).__init__(parent)
+        super().__init__(parent)
         self.setupUi(self)
+        
+        # Inicializa o atributo `current_page` com uma página padrão
+        self.current_page = "buttonTools.html"  # Define uma página padrão apropriada para o seu caso
+
 
         # Inicializar o histórico de navegação
         self.history = []
@@ -23,36 +28,48 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
 
         # Conectando o botão de ajuda ao método que exibe a caixa de diálogo
         self.helpButton.clicked.connect(self.show_help_dialog)
+        self.helpJson.clicked.connect(self.open_json_form)
 
     def show_help_dialog(self):
         """Exibe a caixa de diálogo de ajuda com navegação e botão de voltar."""
-        help_dialog = QtWidgets.QDialog(self)
-        help_dialog.setWindowTitle("Ajuda")
-        help_dialog.resize(800, 600)
+        # Verifica se a janela JSON está visível, se sim, não exibe a janela de ajuda
+        if hasattr(self, "json_form_dialog") and self.json_form_dialog.isVisible():
+            return  # Retorna sem exibir a janela de ajuda para evitar sobreposição
+
+        # Inicializa a janela de ajuda como um atributo de instância
+        self.help_dialog = QtWidgets.QDialog(self)
+        self.help_dialog.setWindowTitle("Ajuda")
+        self.help_dialog.resize(800, 600)
+        
+        # Adicionando botões de controle de janela (minimizar, maximizar, fechar)
+        self.help_dialog.setWindowFlags(self.help_dialog.windowFlags() | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
 
         # Criando um widget de navegador de texto para exibir o conteúdo HTML
-        self.help_text = QtWidgets.QTextBrowser(help_dialog)
+        self.help_text = QtWidgets.QTextBrowser(self.help_dialog)
 
-        # Caminho inicial para carregar o conteúdo principal (GenerateCards.html)
+        # Carregar a página específica "GenerateCards.html"
         self.current_page = "GenerateCards.html"
 
         # Conectar ao método para navegar entre páginas ao clicar nos links
         self.help_text.anchorClicked.connect(self.handle_link_click)
 
         # Botão de voltar
-        self.back_button = QtWidgets.QPushButton("Voltar", help_dialog)
+        self.back_button = QtWidgets.QPushButton("Voltar", self.help_dialog)
         self.back_button.clicked.connect(self.go_back)
-        self.back_button.setEnabled(False)
+        self.back_button.setEnabled(len(self.history) > 0)  # Habilitar se houver histórico
 
         # Layout da janela de ajuda
         layout = QVBoxLayout()
         layout.addWidget(self.help_text)
         layout.addWidget(self.back_button)
-        help_dialog.setLayout(layout)
+        self.help_dialog.setLayout(layout)
 
         # Carregar a página inicial
         self.load_page(self.current_page)
-        help_dialog.show()
+
+        # Exibir a janela de ajuda como modal para impedir sobreposição
+        self.help_dialog.show()
+
 
     def load_page(self, page):
         """Carrega uma página HTML específica."""
@@ -224,12 +241,13 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def open_json_form(self):
         """Exibe o formulário de entrada de dados para o arquivo JSON em uma nova janela com barra de rolagem."""
-        json_form_dialog = QtWidgets.QDialog(self)
-        json_form_dialog.setWindowTitle("Criar Arquivo JSON")
-        json_form_dialog.resize(800, 600)
+        # Inicializa a janela do formulário JSON como um diálogo modal
+        self.json_form_dialog = QtWidgets.QDialog(self)
+        self.json_form_dialog.setWindowTitle("Criar Arquivo JSON")
+        self.json_form_dialog.resize(800, 600)
 
         # Criar uma área de rolagem para o formulário
-        scroll_area = QScrollArea(json_form_dialog)
+        scroll_area = QScrollArea(self.json_form_dialog)
         scroll_area.setWidgetResizable(True)
 
         # Carregar o conteúdo do formulário dentro de um widget
@@ -237,8 +255,12 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         scroll_area.setWidget(form_content)
 
         # Layout para a janela do diálogo
-        layout = QVBoxLayout(json_form_dialog)
+        layout = QVBoxLayout(self.json_form_dialog)
         layout.addWidget(scroll_area)
+
+        # Preencher automaticamente os campos para teste
+        form_content.input_licenciamento.setText("CC-BY-NC-SA 4.0")
+        form_content.input_edicao.setText("1 - DSG")
 
         # Conectar os botões de seleção de arquivos
         form_content.browse_mde_button.clicked.connect(lambda: self.select_file(form_content.input_mde_diagrama))
@@ -250,14 +272,34 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         # Conectar o botão de adicionar dado de terceiros
         form_content.add_dado_terceiro_button.clicked.connect(lambda: self.add_dado_terceiro(form_content))
 
+        # Conectar o botão de remover fase
+        form_content.rm_fase_button.clicked.connect(lambda: self.remove_selected_row(form_content.fasesTable))
+
+        # Conectar o botão de remover dado de terceiro
+        form_content.rm_dado_terceiro_button.clicked.connect(lambda: self.remove_selected_row(form_content.dadosTerceirosTable))
+
         # Conectar o botão de geração de JSON ao método
         form_content.generate_button.clicked.connect(lambda: self.generate_json(form_content))
 
-        # Mostrar a nova janela
-        json_form_dialog.show()
+        # Exibir a janela como modal para impedir sobreposição
+        self.json_form_dialog.show()
 
-        # Restaurar o conteúdo da janela anterior depois de fechar a janela de criação de JSON
-        self.help_text.setHtml(self.current_html_content)
+        # Restaurar o conteúdo da janela de ajuda quando o formulário JSON for fechado
+        self.json_form_dialog.finished.connect(self.restore_help_content)
+
+    def remove_selected_row(self, table_widget):
+        """Remove a linha selecionada na tabela fornecida."""
+        selected_rows = table_widget.selectionModel().selectedRows()
+        if not selected_rows:
+            # Exibir uma mensagem de aviso se nenhuma linha estiver selecionada
+            QMessageBox.warning(self, "Atenção", "Por favor, selecione uma linha para remover.")
+            return
+
+        for index in sorted(selected_rows, reverse=True):
+            table_widget.removeRow(index.row())
+
+
+
 
     def select_file(self, line_edit):
         """Abre um diálogo de seleção de arquivo e insere o caminho no campo fornecido."""
@@ -288,79 +330,64 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def generate_json(self, form_dialog):
         """Gera o arquivo JSON baseado nas entradas do formulário."""
+        def add_if_not_empty(dictionary, key, value):
+            """Adiciona a chave e o valor ao dicionário se o valor não estiver vazio ou None."""
+            if value not in ("", None):
+                dictionary[key] = value
+
         # Coleta dados obrigatórios e opcionais
-        inom = form_dialog.input_inom.text().strip() if form_dialog.input_inom.text().strip() else None
         nome = form_dialog.input_nome.text().strip()
         territorio_internacional = form_dialog.input_territorio_internacional.currentText() == "True"
         acesso_restrito = form_dialog.input_acesso_restrito.currentText() == "True"
-        licenciamento_produto = form_dialog.input_licenciamento.text().strip()
         tipo_produto = form_dialog.input_produto.currentText() == "Carta Topográfica"
-        edicao_produto = form_dialog.input_edicao.text().strip()
         caminho_mde = form_dialog.input_mde_diagrama.text().strip().replace("/", "\\")
         epsg = form_dialog.input_epsg.text().strip()
 
-        # Coleta informações de configuração do banco de dados na tabela
-        banco_servidor = form_dialog.bancoTable.item(0, 0).text().strip() if form_dialog.bancoTable.item(0, 0) else ""
-        banco_porta = form_dialog.bancoTable.item(0, 1).text().strip() if form_dialog.bancoTable.item(0, 1) else ""
-        banco_nome = form_dialog.bancoTable.item(0, 2).text().strip() if form_dialog.bancoTable.item(0, 2) else ""
-
-        projeto = form_dialog.input_creditos.text().strip() if form_dialog.input_creditos.text().strip() else None
-
-        # Captura os novos campos obrigatórios de info_tecnica
-        data_criacao = form_dialog.input_data_criacao.text().strip()
-        datum_vertical = form_dialog.input_datum_vertical.text().strip()
-        origem_dados_altimetricos = form_dialog.input_origem_dados_altimetricos.text().strip()
-
-        pec_planimetrico = form_dialog.input_pec_planimetrico.text().strip() if form_dialog.input_pec_planimetrico.text().strip() else None
-        pec_altimetrico = form_dialog.input_pec_altimetrico.text().strip() if form_dialog.input_pec_altimetrico.text().strip() else None
-
-        # Captura os novos campos opcionais escala e centro_carta
-        escala = form_dialog.input_escala.text().strip() if form_dialog.input_escala.text().strip() else None
-        centro_carta = form_dialog.input_centro_carta.text().strip() if form_dialog.input_centro_carta.text().strip() else None
-
-        # Verifica se os novos campos obrigatórios estão preenchidos
-        if not data_criacao or not datum_vertical or not origem_dados_altimetricos:
-            QMessageBox.critical(self, "Erro", "Preencha todos os campos obrigatórios de Informações Técnicas!")
-            return
-
         # Verifica se os campos obrigatórios estão preenchidos
-        if not tipo_produto or not nome or not caminho_mde or not epsg or not banco_servidor or not banco_porta or not banco_nome:
+        if not tipo_produto or not nome or not caminho_mde or not epsg:
             QMessageBox.critical(self, "Erro", "Preencha todos os campos obrigatórios!")
             return
 
-        # Criando o objeto JSON com a sequência especificada
+        # Cria o objeto JSON principal
         json_object = {
-            "inom": inom,
             "nome": nome,
             "territorio_internacional": territorio_internacional,
             "acesso_restrito": acesso_restrito,
-            "licenciamento_produto": licenciamento_produto,
             "tipo_produto": tipo_produto,
-            "edicao_produto": edicao_produto,
-            "escala": escala,
-            "centro_carta": centro_carta,
             "mde_diagrama_elevacao": {
                 "caminho_mde": caminho_mde,
                 "epsg": epsg
             },
-            "banco": {
-                "servidor": banco_servidor,
-                "porta": banco_porta,
-                "nome": banco_nome
-            },
+            "banco": {},
             "fases": [],
             "info_tecnica": {
-                "data_criacao": data_criacao,
-                "pec_planimetrico": pec_planimetrico,
-                "pec_altimetrico": pec_altimetrico,
-                "datum_vertical": datum_vertical,
-                "origem_dados_altimetricos": origem_dados_altimetricos,
                 "dados_terceiros": []
-            },
-            "projeto": projeto
+            }
         }
 
-        # Adicionando as fases se houver
+        # Adiciona campos não obrigatórios ao JSON na ordem original
+        add_if_not_empty(json_object, "inom", form_dialog.input_inom.text().strip())
+        add_if_not_empty(json_object, "licenciamento_produto", form_dialog.input_licenciamento.text().strip())
+        add_if_not_empty(json_object, "edicao_produto", form_dialog.input_edicao.text().strip())
+        add_if_not_empty(json_object, "escala", form_dialog.input_escala.text().strip())
+        add_if_not_empty(json_object, "centro_carta", form_dialog.input_centro_carta.text().strip())
+        add_if_not_empty(json_object, "projeto", form_dialog.input_creditos.text().strip())
+
+        # Adiciona informações técnicas
+        info_tecnica = json_object["info_tecnica"]
+        add_if_not_empty(info_tecnica, "data_criacao", form_dialog.input_data_criacao.text().strip())
+        add_if_not_empty(info_tecnica, "datum_vertical", form_dialog.input_datum_vertical.text().strip())
+        add_if_not_empty(info_tecnica, "origem_dados_altimetricos", form_dialog.input_origem_dados_altimetricos.text().strip())
+        add_if_not_empty(info_tecnica, "pec_planimetrico", form_dialog.input_pec_planimetrico.text().strip())
+        add_if_not_empty(info_tecnica, "pec_altimetrico", form_dialog.input_pec_altimetrico.text().strip())
+
+        # Captura informações de configuração do banco de dados
+        banco = json_object["banco"]
+        add_if_not_empty(banco, "servidor", form_dialog.bancoTable.item(0, 0).text().strip() if form_dialog.bancoTable.item(0, 0) else "")
+        add_if_not_empty(banco, "porta", form_dialog.bancoTable.item(0, 1).text().strip() if form_dialog.bancoTable.item(0, 1) else "")
+        add_if_not_empty(banco, "nome", form_dialog.bancoTable.item(0, 2).text().strip() if form_dialog.bancoTable.item(0, 2) else "")
+
+        # Adiciona fases se houver
         for row in range(form_dialog.fasesTable.rowCount()):
             fase_nome = form_dialog.fasesTable.item(row, 0)
             executante_nome = form_dialog.fasesTable.item(row, 1)
@@ -375,7 +402,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
                     executantes = [{"nome": executante_nome_text, "ano": executante_ano_text}]
                     json_object["fases"].append({"nome": fase_nome_text, "executantes": executantes})
 
-        # Adicionando dados de terceiros
+        # Adiciona dados de terceiros
         for row in range(form_dialog.dadosTerceirosTable.rowCount()):
             nome_terceiro = form_dialog.dadosTerceirosTable.item(row, 0)
             sigla_terceiro = form_dialog.dadosTerceirosTable.item(row, 1)
@@ -400,6 +427,7 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
             except Exception as e:
                 QMessageBox.critical(self, "Erro", f"Falha ao salvar o arquivo: {e}")
 
+
     def download_qpt_file(self):
         """Faz o download do arquivo QPT padrão."""
         qpt_file_path = Path(__file__).parent.parent.parent / "Help" / "export" / "src" / "creditsDSG.qpt"
@@ -418,3 +446,26 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
                     QMessageBox.critical(self, "Erro", f"Falha ao salvar o arquivo QPT: {e}")
         else:
             QMessageBox.critical(self, "Erro", "Arquivo QPT não encontrado.")
+            
+    def restore_help_content(self):
+        """Restaura o conteúdo HTML na janela de ajuda, se necessário."""
+        if hasattr(self, 'help_text') and self.help_text:  # Verifica se o atributo existe e está inicializado
+            if hasattr(self, 'current_html_content') and self.current_html_content:
+                # Recarrega o conteúdo HTML atual se ele foi perdido ou limpo
+                self.help_text.setHtml(self.current_html_content)
+            elif hasattr(self, 'current_page'):
+                # Se o conteúdo atual não estiver disponível, recarrega a página inicial
+                self.load_page(self.current_page)
+            else:
+                # Carregar uma página padrão em caso de falha
+                self.help_text.setPlainText("Nenhuma página inicial disponível para restaurar.")
+        else:
+            # Caso a help_text não esteja definida, não tente carregar o conteúdo
+            print("Erro: A janela de ajuda não está disponível para restaurar o conteúdo.")
+
+            
+            
+            
+            
+    
+
