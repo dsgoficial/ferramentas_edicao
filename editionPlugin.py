@@ -198,40 +198,42 @@ class EditionPlugin:
 
     def show_help_dialog(self):
         """Exibe a caixa de diálogo de ajuda com navegação e botão de voltar."""
-        help_dialog = QDialog(self.iface.mainWindow())
-        help_dialog.setWindowTitle("Ajuda")
-        help_dialog.resize(800, 600)
-        
-        # Adicionando botões de controle de janela (minimizar, maximizar, fechar)
-        help_dialog.setWindowFlags(help_dialog.windowFlags() | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
+        if hasattr(self, "help_dialog") and self.help_dialog.isVisible():
+            return  # Se a janela já está visível, não faz nada
+
+        self.help_dialog = QDialog(self.iface.mainWindow())
+        self.help_dialog.setWindowTitle("Ajuda")
+        self.help_dialog.resize(800, 600)
+        self.help_dialog.setWindowFlags(self.help_dialog.windowFlags() | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
 
         # Criando um widget de navegador de texto para exibir o conteúdo HTML
-        self.help_text = QTextBrowser(help_dialog)
-        
+        self.help_text = QTextBrowser(self.help_dialog)
+
         # Caminho inicial para carregar o conteúdo principal (buttonTools.html)
         self.current_page = "buttonTools.html"
-
+        
         # Conectar ao método para navegar entre páginas ao clicar nos links
         self.help_text.anchorClicked.connect(self.handle_link_click)
 
         # Botão de voltar
-        self.back_button = QPushButton("Voltar", help_dialog)
+        self.back_button = QPushButton("Voltar", self.help_dialog)
         self.back_button.clicked.connect(self.go_back)
-        self.back_button.setEnabled(len(self.history) > 0)  # Habilitar se houver histórico
+        self.back_button.setEnabled(len(self.history) > 0)
 
         # Layout da janela de ajuda
         layout = QVBoxLayout()
         layout.addWidget(self.help_text)
         layout.addWidget(self.back_button)
-        help_dialog.setLayout(layout)
+        self.help_dialog.setLayout(layout)
 
-        # Carregar a página inicial
-        self.load_page(self.current_page, from_export=False)  # Página inicial é a buttonTools.html
-        help_dialog.show()
-        
-        # Restaurar o conteúdo após o fechamento da janela
-        self.help_text.setHtml(self.current_html_content)
-        self.back_button.setEnabled(len(self.history) > 0)
+        # Verificar se o conteúdo atual foi carregado anteriormente
+        if hasattr(self, "current_html_content") and self.current_html_content:
+            self.help_text.setHtml(self.current_html_content)
+        else:
+            self.load_page(self.current_page, from_export=False)
+
+        self.help_dialog.show()
+
 
     def load_page(self, page, from_export=False):
         """Carrega uma página HTML específica."""
@@ -338,22 +340,22 @@ class EditionPlugin:
 
     def handle_link_click(self, url):
         """Lida com o clique nos links e navega entre páginas ou abre janelas `ui`."""
+        # Salvar o conteúdo atual antes de mudar de página
+        self.current_html_content = self.help_text.toHtml()
+
         page_name = url.toString().split('/')[-1]
 
         # Verifica se o link é relacionado a uma janela `ui`
-        if page_name == "create_json":
-            self.open_json_form()
-            return
-        elif page_name == "change_project_name":
-            self.open_change_project_name_dialog()
-            return
-        elif page_name == "change_project_and_add_institution":
-            self.open_alter_institution_dialog()
-            return
+        if page_name in ["create_json", "change_project_name", "change_project_and_add_institution"]:
+            # Atualiza imediatamente o conteúdo HTML para evitar que a janela de ajuda fique em branco
+            self.help_text.setHtml(self.current_html_content)
 
-        if page_name == "install_fonts":
-            self.installFonts()
-            self.help_text.setHtml("<h2>Fontes instaladas com sucesso!</h2><p>Reinicie o QGIS para que as mudanças sejam aplicadas.</p>")
+            if page_name == "create_json":
+                self.open_json_form()
+            elif page_name == "change_project_name":
+                self.open_change_project_name_dialog()
+            elif page_name == "change_project_and_add_institution":
+                self.open_alter_institution_dialog()
             return
 
         # Verifica se o link é para baixar um arquivo QPT
@@ -365,15 +367,19 @@ class EditionPlugin:
         if page_name in ["GenerateCards.html", "config_json.html", "config_project.html"]:
             self.history.append((self.current_page, self.current_html_content))
             self.current_page = page_name
-            self.load_page(page_name, from_export=True)  # Indicando que é da pasta "export"
+            self.load_page(page_name, from_export=True)
             self.back_button.setEnabled(True)
             return
 
         # Caso contrário, navegue para outras páginas HTML da pasta "button"
         self.history.append((self.current_page, self.current_html_content))
         self.current_page = page_name
-        self.load_page(page_name, from_export=False)  # Indicando que é da pasta "button"
+        self.load_page(page_name, from_export=False)
         self.back_button.setEnabled(True)
+
+        # Atualiza o conteúdo HTML atual para a página carregada
+        self.current_html_content = self.help_text.toHtml()
+
 
 
 
@@ -546,6 +552,7 @@ class EditionPlugin:
     
     def open_json_form(self):
         """Exibe o formulário de entrada de dados para o arquivo JSON em uma nova janela com barra de rolagem."""
+        self.current_html_content = self.help_text.toHtml()  # Salva o conteúdo antes de abrir a janela
         json_form_dialog = QtWidgets.QDialog(self.iface.mainWindow())  # Definir o pai corretamente
         json_form_dialog.setWindowTitle("Criar Arquivo JSON")
         json_form_dialog.resize(800, 600)
@@ -585,12 +592,14 @@ class EditionPlugin:
         # Conectar o botão de geração de JSON ao método
         form_content.generate_button.clicked.connect(lambda: self.generate_json(form_content))
 
-        # Conectar o fechamento do diálogo para restaurar o conteúdo
+        # Conectar o fechamento do diálogo para restaurar o conteúdo HTML da janela de ajuda
         json_form_dialog.finished.connect(self.restore_help_content)
 
-        # Mostrar a nova janela como modal
-        json_form_dialog.setModal(True)
+        # Mostrar a janela como não modal para permitir interação com a janela de ajuda
         json_form_dialog.show()
+
+        # Atualizar a janela de ajuda para manter o conteúdo visível
+        self.help_text.setHtml(self.current_html_content)
         
     def remove_selected_row(self, table_widget):
         """Remove a linha selecionada na tabela fornecida."""
@@ -734,45 +743,187 @@ class EditionPlugin:
 
 
     def open_change_project_name_dialog(self):
-        """Abre o diálogo para alterar nome do projeto e créditos."""
-        change_dialog = QtWidgets.QDialog(self.iface.mainWindow())  # Definir o pai corretamente
+        """Abre o diálogo para alterar nome do projeto e créditos sem bloquear a janela anterior."""
+        # Salva o conteúdo atual antes de abrir a janela de diálogo
+        self.current_html_content = self.help_text.toHtml()
+        change_dialog = QtWidgets.QDialog(self.iface.mainWindow())
         uic.loadUi(Path(__file__).parent / "Help" / "export" / "src" / "alter_qpt.ui", change_dialog)
 
         # Conectar o botão de salvar do diálogo
         change_dialog.save_button.clicked.connect(lambda: self.save_project_name_and_credits(change_dialog))
-        
-        # Conectar o fechamento do diálogo para restaurar o conteúdo
+
+        # Restaurar o conteúdo apenas se necessário, após o fechamento do diálogo
         change_dialog.finished.connect(self.restore_help_content)
 
-        # Mostrar o diálogo como modal
-        change_dialog.setModal(True)
+        # Mostrar a janela de diálogo sem bloquear a anterior
         change_dialog.show()
+        
+        
+        # Atualizar a janela de ajuda para manter o conteúdo visível
+        self.help_text.setHtml(self.current_html_content)
     
     def download_qpt(self):
-        """Função para baixar um arquivo QPT."""
-        file_path = QtWidgets.QFileDialog.getSaveFileName(
-            self.iface.mainWindow(),
-            "Salvar Arquivo QPT",
-            str(Path.home() / "default.qpt"),
-            "QPT Files (*.qpt)"
-        )[0]
+        """Faz o download do arquivo QPT padrão."""
+       # Salva o conteúdo atual antes de abrir a janela de diálogo
+        self.current_html_content = self.help_text.toHtml()
+        qpt_file_path = Path(__file__).parent / "Help" / "export" / "src" / "creditsDSG.qpt"
+        
+        if qpt_file_path.exists():
+            save_file_dialog = QFileDialog()
+            save_file_path, _ = save_file_dialog.getSaveFileName(self.iface.mainWindow(), "Salvar Arquivo QPT", "", "QPT Files (*.qpt)")
 
-        if file_path:
-            try:
-                # Verifica se o arquivo `default.qpt` existe na pasta correta
-                default_qpt_path = Path(__file__).parent / "default.qpt"
-                if default_qpt_path.exists():
-                    shutil.copy(default_qpt_path, file_path)
-                    QMessageBox.information(self.iface.mainWindow(), "Sucesso", "Arquivo QPT salvo com sucesso!")
-                else:
-                    QMessageBox.warning(self.iface.mainWindow(), "Erro", "Arquivo QPT padrão não encontrado.")
-            except Exception as e:
-                QMessageBox.warning(self.iface.mainWindow(), "Erro", f"Erro ao salvar o arquivo QPT: {str(e)}")
+            
+            if save_file_path:
+                try:
+                    with open(qpt_file_path, "rb") as file_in:
+                        with open(save_file_path, "wb") as file_out:
+                            file_out.write(file_in.read())
+                    QMessageBox.information(self.iface.mainWindow(), "Sucesso", f"Arquivo QPT salvo em: {save_file_path}")
+
+                except Exception as e:
+                    QMessageBox.critical(self.iface.mainWindow(), "Erro", f"Falha ao salvar o arquivo QPT: {e}")
+
+        else:
+            QMessageBox.critical(self, "Erro", "Arquivo QPT não encontrado.")
+            
+        # Atualizar a janela de ajuda para manter o conteúdo visível
+        self.help_text.setHtml(self.current_html_content)
                 
     def restore_help_content(self):
-        """Restaura o conteúdo HTML original na janela de ajuda."""
-        if self.help_text:
+        """Restaura o conteúdo HTML na janela de ajuda, se necessário."""
+        if hasattr(self, 'help_text') and self.help_text:
+            # Se há conteúdo atual, apenas o restaure, caso contrário, recarregue a página
+            if hasattr(self, 'current_html_content') and self.current_html_content:
+                if not self.help_text.toHtml().strip() or self.help_text.toHtml() != self.current_html_content:
+                    self.help_text.setHtml(self.current_html_content)
+            else:
+                self.load_page(self.current_page)
+        else:
+            print("Erro: A janela de ajuda não está disponível para restaurar o conteúdo.")
+
+
+    def go_back(self):
+        """Volta para a última página visualizada."""
+        if self.history:
+            last_page, last_content = self.history.pop()  # Retorna a última página do histórico
+            self.current_page = last_page  # Atualiza a página atual
+            self.current_html_content = last_content  # Restaura o conteúdo anterior
             self.help_text.setHtml(self.current_html_content)
+
+        # Desativar o botão se não houver mais histórico
+        self.back_button.setEnabled(len(self.history) > 0)
+
+
+
+
+
+
+    def open_alter_institution_dialog(self):
+        """Abre o diálogo para alterar nome do projeto, adicionar uma instituição e o logotipo sem bloquear a janela anterior."""
+        # Salva o conteúdo atual antes de abrir a janela de diálogo
+        self.current_html_content = self.help_text.toHtml()
+        change_dialog = QtWidgets.QDialog(self.iface.mainWindow())
+        uic.loadUi(Path(__file__).parent / "Help" / "export" / "src" / "alter_dois.ui", change_dialog)
+
+        # Conectar o botão de procurar imagem
+        change_dialog.browse_image_button.clicked.connect(lambda: self.select_file(change_dialog.input_imagem))
+
+        # Conectar o botão de salvar do diálogo
+        change_dialog.save_button.clicked.connect(lambda: self.save_project_and_institution_data(change_dialog))
+
+        # Restaurar o conteúdo apenas se necessário, após o fechamento do diálogo
+        change_dialog.finished.connect(self.restore_help_content)
+
+        # Mostrar a janela de diálogo sem bloquear a anterior
+        change_dialog.show()
+        
+        # Atualizar a janela de ajuda para manter o conteúdo visível
+        self.help_text.setHtml(self.current_html_content)
+    
+    def save_project_and_institution_data(self, dialog):
+        """Salva as alterações de nome do projeto, endereço e logotipo da instituição."""
+        # Obtém os valores inseridos pelo usuário e converte para caixa alta
+        nome_instituicao = dialog.input_nome_projeto.text().strip().upper()
+        endereco_instituicao = dialog.input_creditos.toPlainText().strip()
+        caminho_imagem = dialog.input_imagem.text().strip()
+        novo_nome_projeto = dialog.input_nome_projeto2.text().strip().upper()
+        novos_creditos = dialog.input_creditos2.toPlainText().strip().upper()
+
+        # Carrega o arquivo creditsDOIS.qpt como um texto
+        qpt_file_path = Path(__file__).parent / "Help" / "export" / "src" / "creditsDOIS.qpt"
+        if not qpt_file_path.exists():
+            QMessageBox.critical(self.iface.mainWindow(), "Erro", f"Arquivo creditsDOIS.qpt não encontrado em: {qpt_file_path}")
+            return
+
+        # Lê o conteúdo do arquivo QPT e substitui as linhas necessárias
+        with open(qpt_file_path, "r", encoding="utf-8") as file:
+            qpt_content = file.read()
+
+        # Substituir o valor de labelText e file nas linhas desejadas
+        qpt_content = qpt_content.replace('labelText="name_2"', f'labelText="{nome_instituicao}"')
+        qpt_content = qpt_content.replace('labelText="address"', f'labelText="{endereco_instituicao}"')
+        qpt_content = qpt_content.replace('file="teste.png"', f'file="{caminho_imagem}"')
+        qpt_content = qpt_content.replace(
+            'labelText="MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE"',
+            f'labelText="{novo_nome_projeto}"'
+        )
+        qpt_content = qpt_content.replace(
+            'labelText="PRODUTO ELABORADO PELA DIRETORIA DE SERVIÇO GEOGRÁFICO NO CONTEXTO DO PROJETO MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE"',
+            f'labelText="{novos_creditos}"'
+        )
+
+        # Salva o novo arquivo em uma nova localização
+        save_file_dialog = QFileDialog()
+        save_file_path, _ = save_file_dialog.getSaveFileName(self.iface.mainWindow(), "Salvar Arquivo QPT Alterado", "", "QPT Files (*.qpt)")
+
+        if save_file_path:
+            try:
+                with open(save_file_path, 'w', encoding="utf-8") as qpt_file:
+                    qpt_file.write(qpt_content)
+                QMessageBox.information(self.iface.mainWindow(), "Sucesso", f"Arquivo QPT salvo em: {save_file_path}")
+
+            except Exception as e:
+                QMessageBox.critical(self.iface.mainWindow(), "Erro", f"Falha ao salvar o arquivo: {e}")
+                
+    def save_project_name_and_credits(self, dialog):
+        """Salva as alterações de nome do projeto e créditos."""
+        # Obtém os valores inseridos pelo usuário e converte para caixa alta
+        novo_nome_projeto = dialog.input_nome_projeto.text().strip().upper()
+        novos_creditos = dialog.input_creditos.toPlainText().strip().upper()
+
+        # Carrega o arquivo creditsDSG.qpt como um texto
+        qpt_file_path = Path(__file__).parent / "Help" / "export" / "src" / "creditsDSG.qpt"
+        if not qpt_file_path.exists():
+            QMessageBox.critical(self.iface.mainWindow(), "Erro", f"Arquivo creditsDSG.qpt não encontrado em: {qpt_file_path}")
+
+            return
+
+        # Lê o conteúdo do arquivo QPT e substitui as linhas necessárias
+        with open(qpt_file_path, "r", encoding="utf-8") as file:
+            qpt_content = file.read()
+
+        # Substituir o valor de labelText nas linhas desejadas
+        qpt_content = qpt_content.replace(
+            'labelText="MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE"',
+            f'labelText="{novo_nome_projeto}"'
+        )
+        qpt_content = qpt_content.replace(
+            'labelText="PRODUTO ELABORADO PELA DIRETORIA DE SERVIÇO GEOGRÁFICO NO CONTEXTO DO PROJETO MAPEAMENTO DE INTERESSE DA FORÇA TERRESTRE"',
+            f'labelText="{novos_creditos}"'
+        )
+
+        # Salva o novo arquivo em uma nova localização
+        save_file_dialog = QFileDialog()
+        save_file_path, _ = save_file_dialog.getSaveFileName(self.iface.mainWindow(), "Salvar Arquivo QPT Alterado", "", "QPT Files (*.qpt)")
+
+        if save_file_path:
+            try:
+                with open(save_file_path, 'w', encoding="utf-8") as qpt_file:
+                    qpt_file.write(qpt_content)
+                QMessageBox.information(self.iface.mainWindow(), "Sucesso", f"Arquivo QPT salvo em: {save_file_path}")
+            except Exception as e:
+                QMessageBox.critical(self.iface.mainWindow(), "Erro", f"Falha ao salvar o arquivo: {e}")
+
 
 
 
