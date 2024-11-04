@@ -340,10 +340,19 @@ class EditionPlugin:
 
     def handle_link_click(self, url):
         """Lida com o clique nos links e navega entre páginas ou abre janelas `ui`."""
+        
+        
+            
         # Salvar o conteúdo atual antes de mudar de página
         self.current_html_content = self.help_text.toHtml()
 
         page_name = url.toString().split('/')[-1]
+        
+        if page_name == "install_fonts":
+            self.installFonts()
+            # Adiciona uma mensagem de sucesso diretamente no navegador de ajuda
+            self.help_text.setHtml("<h2>Fontes instaladas com sucesso!</h2><p>Reinicie o QGIS para que as mudanças sejam aplicadas.</p>")
+            return
 
         # Verifica se o link é relacionado a uma janela `ui`
         if page_name in ["create_json", "change_project_name", "change_project_and_add_institution"]:
