@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.59
+## 1.2.60
 
 Novas Funcionalidades
 
@@ -80,6 +80,7 @@ Correção de bug:
 - Corrigido o bug de rotação de elemnat_elemento_hidrografico_p
 - Inserido os estilos de Estação Meteorológica e Cemitério Israelita nas respectivas classes.
 - Inserido o estilo de Caverna em elemnat_elemento_fisiografico_p.
+- Inserido o estilo para Cemitério Mulçumano em edicao_simb_area_p e em constr_ocupacao_solo_p.
 
 ## 1.1.90
 
