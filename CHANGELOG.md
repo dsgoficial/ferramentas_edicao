@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.60
+## 1.2.61
 
 Novas Funcionalidades
 
@@ -81,6 +81,7 @@ Correção de bug:
 - Inserido os estilos de Estação Meteorológica e Cemitério Israelita nas respectivas classes.
 - Inserido o estilo de Caverna em elemnat_elemento_fisiografico_p.
 - Inserido o estilo para Cemitério Mulçumano em edicao_simb_area_p e em constr_ocupacao_solo_p.
+- Corrigido o bug em changeAttributeTopo.py na configuração de atributos default em Ocupação do Solo.
 
 ## 1.1.90
 

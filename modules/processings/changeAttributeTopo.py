@@ -599,7 +599,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
         return feature
 
-    def defaultOcupacaoSolo(self, feature):
+    def defaultOcupacaoSolo(self, feature, lyrCrs):
         feature["visivel"] = 1
         feature["justificativa_txt"] = 2
         if feature["nome"] != NULL:
