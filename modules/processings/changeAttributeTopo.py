@@ -151,7 +151,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             processing_function = self.defaultTrechoDrenagem
         elif table_name in ["llp_localidade_p"]:
             processing_function = self.defaultllpLocalidade
-        elif table_name in ["constr_ocupacao_solo_p", "constr_ocupacao_solo_a"]:
+        elif table_name in ["constr_ocupacao_solo_p", "constr_ocupacao_solo_l", "constr_ocupacao_solo_a"]:
             processing_function = self.defaultOcupacaoSolo
         else:
             return

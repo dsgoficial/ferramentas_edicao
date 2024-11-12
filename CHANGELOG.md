@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.61
+## 1.2.62
 
 Novas Funcionalidades
 
@@ -32,6 +32,7 @@ Melhorias:
 - Refatoração do Insere Ponto de Mudança para compatibilidade com Workflow e organização;
 - Melhora o nome do arquivo de carta especial;
 - Parâmetros de distancias conforme sistema da camada de referência
+- Inserido o constr_ocupacao_solo_l na lista de camadas que tem seu atributo alterado conforme o changeAttributeTopo.py
 
 Correção de bug:
 
