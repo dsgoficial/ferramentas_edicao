@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.62
+## 1.2.63
 
 Novas Funcionalidades
 
