@@ -21,6 +21,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
     INPUT_LAYER_L = "INPUT_LAYER_L"
     INPUT_FIELD_LAYER_L = "INPUT_FIELD_LAYER_L"
     INPUT_HIGHWAY = "INPUT_HIGHWAY"
+    INPUT_RAILWAY = "INPUT_RAILWAY"
     ONLY_SELECTED_P = "ONLY_SELECTED_P"
     ONLY_SELECTED_L = "ONLY_SELECTED_L"
 
@@ -89,6 +90,15 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_RAILWAY,
+                self.tr("Selecionar camada de ferrovia"),
+                [QgsProcessing.TypeVectorLine],
+                defaultValue="infra_ferrovia_l",
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         pointLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_LAYER_P, context
@@ -107,6 +117,9 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         highwayLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_HIGHWAY, context
         )
+        railwayLayer = self.parameterAsVectorLayer(
+            parameters, "INPUT_RAILWAY", context
+        )
 
         has_length_config = 'config_comprimento_simb' in lineLayer.fields().names()
 
@@ -122,6 +135,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 onlySelectedP,
                 pointWidthField,
                 highwayLayer,
+                railwayLayer,
                 self.POINT_FILTER_TYPES,
                 feedback=multiStepFeedback,
             )
@@ -134,6 +148,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             onlySelectedL,
             lineWidthField,
             highwayLayer,
+            railwayLayer,
             self.LINE_FILTER_TYPES,
             feedback=multiStepFeedback,
             check_length=has_length_config
@@ -141,7 +156,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         return {}
 
     def setWidthFieldOnLayer(
-        self, layer, onlySelected, widthField, highwayLayer, filterType, feedback, check_length=False
+        self, layer, onlySelected, widthField, highwayLayer, railwayLayer, filterType, feedback, check_length=False
     ):
 
         features = layer.getSelectedFeatures() if onlySelected else layer.getFeatures()
@@ -171,18 +186,19 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 layer=layer,
                 widthField=widthField,
                 highwayLayer=highwayLayer,
+                railwayLayer=railwayLayer,
                 distance_calculator=distance_calculator,
                 check_length=check_length
             )
                 
             feedback.setProgress(current * step_size)
 
-    def _process_single_feature(self, feature, layer, widthField, highwayLayer, distance_calculator=None, check_length=False):
+    def _process_single_feature(self, feature, layer, widthField, highwayLayer, railwayLayer, distance_calculator=None, check_length=False):
 
         feature_geometry = feature.geometry()
         
         # Encontra a maior largura das rodovias que intersectam
-        max_width = self._find_max_highway_width(feature_geometry, highwayLayer, layer.geometryType())
+        max_width = self._find_max_intersection_width(feature_geometry, highwayLayer, railwayLayer, layer.geometryType())
         
         # Se não encontrou largura ou a largura é a mesma, não precisa atualizar
         if max_width == 0 or max_width == feature[widthField]:
@@ -198,10 +214,11 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         # Atualiza a feature
         layer.updateFeature(feature)
 
-    def _find_max_highway_width(self, feature_geometry, highwayLayer, geometry_type):
-        request = QgsFeatureRequest().setFilterRect(feature_geometry.boundingBox())
-        
+    def _find_max_intersection_width(self, feature_geometry, highwayLayer, railwayLayer, geometry_type):
         max_width = 0
+        
+        # Verifica intersecções com rodovias
+        request = QgsFeatureRequest().setFilterRect(feature_geometry.boundingBox())
         
         for highway in highwayLayer.getFeatures(request):
             highway_geometry = highway.geometry()
@@ -209,13 +226,27 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             if not highway_geometry.intersects(feature_geometry):
                 continue
                 
-            # Verifica se o tipo da geometria da intersecção é compatível
             intersection = highway_geometry.intersection(feature_geometry)
             if intersection.type() != geometry_type:
                 continue
                 
             width = self.getSymbolWidth(highway)
             max_width = max(max_width, width)
+        
+        # Verifica intersecções com ferrovias
+        for railway in railwayLayer.getFeatures(request):
+            railway_geometry = railway.geometry()
+            
+            if not railway_geometry.intersects(feature_geometry):
+                continue
+                
+            intersection = railway_geometry.intersection(feature_geometry)
+            if intersection.type() != geometry_type:
+                continue
+                
+            # Largura fixa para ferrovias
+            railway_width = 0.5
+            max_width = max(max_width, railway_width)
         
         return max_width
 
