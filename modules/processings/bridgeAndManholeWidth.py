@@ -8,6 +8,8 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterBoolean,
+    QgsDistanceArea,
+    QgsWkbTypes
 )
 from qgis import core
 
@@ -22,6 +24,9 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
     ONLY_SELECTED_P = "ONLY_SELECTED_P"
     ONLY_SELECTED_L = "ONLY_SELECTED_L"
 
+    POINT_FILTER_TYPES = [201, 202, 203, 204, 501, 302]
+    LINE_FILTER_TYPES = [201, 202, 203, 204, 302]
+
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
@@ -29,6 +34,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
                 self.tr("Selecionar camada de elemento viário (Ponto)"),
                 [QgsProcessing.TypeVectorPoint],
                 defaultValue="infra_elemento_viario_p",
+                optional=True
             )
         )
         self.addParameter(
@@ -40,11 +46,12 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         self.addParameter(
             core.QgsProcessingParameterField(
                 self.INPUT_FIELD_LAYER_P,
-                self.tr("Selecionar o atributo de largura"),
+                self.tr("Selecionar o atributo de largura (Ponto)"),
                 type=core.QgsProcessingParameterField.Any,
                 parentLayerParameterName=self.INPUT_LAYER_P,
                 allowMultiple=False,
                 defaultValue="largura_simbologia",
+                optional=True
             )
         )
 
@@ -65,7 +72,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         self.addParameter(
             core.QgsProcessingParameterField(
                 self.INPUT_FIELD_LAYER_L,
-                self.tr("Selecionar o atributo de largura"),
+                self.tr("Selecionar o atributo de largura (Linha)"),
                 type=core.QgsProcessingParameterField.Any,
                 parentLayerParameterName=self.INPUT_LAYER_L,
                 allowMultiple=False,
@@ -87,9 +94,11 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             parameters, self.INPUT_LAYER_P, context
         )
         onlySelectedP = self.parameterAsBool(parameters, self.ONLY_SELECTED_P, context)
-        pointWidthField = self.parameterAsFields(
-            parameters, self.INPUT_FIELD_LAYER_P, context
-        )[0]
+        pointWidthField = None
+        if pointLayer:
+            pointWidthField = self.parameterAsFields(
+                parameters, self.INPUT_FIELD_LAYER_P, context
+            )[0]
         lineLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
         onlySelectedL = self.parameterAsBool(parameters, self.ONLY_SELECTED_L, context)
         lineWidthField = self.parameterAsFields(
@@ -99,65 +108,116 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
             parameters, self.INPUT_HIGHWAY, context
         )
 
-        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
-        multiStepFeedback.setCurrentStep(0)
-        self.setWidthFieldOnLayer(
-            pointLayer,
-            onlySelectedP,
-            pointWidthField,
-            highwayLayer,
-            [201, 202, 203, 204, 501, 302],
-            feedback=multiStepFeedback,
-        )
-        multiStepFeedback.setCurrentStep(1)
+        has_length_config = 'config_comprimento_simb' in lineLayer.fields().names()
+
+        steps = 1 if not pointLayer else 2
+        multiStepFeedback = QgsProcessingMultiStepFeedback(steps, feedback)
+        
+        current_step = 0
+
+        if pointLayer:
+            multiStepFeedback.setCurrentStep(current_step)
+            self.setWidthFieldOnLayer(
+                pointLayer,
+                onlySelectedP,
+                pointWidthField,
+                highwayLayer,
+                self.POINT_FILTER_TYPES,
+                feedback=multiStepFeedback,
+            )
+            current_step += 1
+
+        multiStepFeedback.setCurrentStep(current_step)
+
         self.setWidthFieldOnLayer(
             lineLayer,
             onlySelectedL,
             lineWidthField,
             highwayLayer,
-            [201, 202, 203, 204, 302],
+            self.LINE_FILTER_TYPES,
             feedback=multiStepFeedback,
+            check_length=has_length_config
         )
         return {}
 
     def setWidthFieldOnLayer(
-        self, layer, onlySelected, widthField, highwayLayer, filterType, feedback
+        self, layer, onlySelected, widthField, highwayLayer, filterType, feedback, check_length=False
     ):
-        nFeats = (
-            layer.featureCount() if not onlySelected else layer.selectedFeatureCount()
-        )
-        iterator = (
-            layer.getFeatures() if not onlySelected else layer.getSelectedFeatures()
-        )
-        if nFeats == 0:
+
+        features = layer.getSelectedFeatures() if onlySelected else layer.getFeatures()
+        feature_count = layer.selectedFeatureCount() if onlySelected else layer.featureCount()
+        
+        if feature_count == 0:
             return
-        stepSize = 100 / nFeats
-        for current, layerFeature in enumerate(iterator):
+            
+        distance_calculator = None
+        if check_length:
+            distance_calculator = QgsDistanceArea()
+            distance_calculator.setEllipsoid('WGS84')
+        
+        step_size = 100 / feature_count
+        
+        layer.startEditing()
+        
+        for current, feature in enumerate(features):
             if feedback.isCanceled():
                 break
-            if not (layerFeature["tipo"] in filterType):
+                
+            if feature["tipo"] not in filterType:
                 continue
-            layerGeometry = layerFeature.geometry()
-            request = QgsFeatureRequest().setFilterRect(layerGeometry.boundingBox())
-            width = 0
-            for highwayFeature in highwayLayer.getFeatures(request):
-                highwayFeatureGeometry = highwayFeature.geometry()
-                if not (highwayFeatureGeometry.intersects(layerGeometry)):
-                    continue
-                intersection = highwayFeatureGeometry.intersection(layerGeometry)
-                if not (intersection.type() == layer.geometryType()):
-                    continue
-                newWidth = self.getSymbolWidth(highwayFeature)
-                if newWidth > width:
-                    width = newWidth
-            if width != 0 and width != layerFeature[widthField]:
-                layerFeature[widthField] = width
-                self.updateLayerFeature(layer, layerFeature)
-            feedback.setProgress(current * stepSize)
+                
+            self._process_single_feature(
+                feature=feature,
+                layer=layer,
+                widthField=widthField,
+                highwayLayer=highwayLayer,
+                distance_calculator=distance_calculator,
+                check_length=check_length
+            )
+                
+            feedback.setProgress(current * step_size)
 
-    def updateLayerFeature(self, layer, feature):
-        layer.startEditing()
+    def _process_single_feature(self, feature, layer, widthField, highwayLayer, distance_calculator=None, check_length=False):
+
+        feature_geometry = feature.geometry()
+        
+        # Encontra a maior largura das rodovias que intersectam
+        max_width = self._find_max_highway_width(feature_geometry, highwayLayer, layer.geometryType())
+        
+        # Se não encontrou largura ou a largura é a mesma, não precisa atualizar
+        if max_width == 0 or max_width == feature[widthField]:
+            return
+            
+        feature[widthField] = max_width
+        
+        # Se necessário, calcula e atualiza o comprimento
+        if check_length and layer.geometryType() == QgsWkbTypes.LineGeometry:
+            length = distance_calculator.measureLength(feature_geometry)
+            feature['config_comprimento_simb'] = 1 if length < 20 else 2
+        
+        # Atualiza a feature
         layer.updateFeature(feature)
+
+    def _find_max_highway_width(self, feature_geometry, highwayLayer, geometry_type):
+        request = QgsFeatureRequest().setFilterRect(feature_geometry.boundingBox())
+        
+        max_width = 0
+        
+        for highway in highwayLayer.getFeatures(request):
+            highway_geometry = highway.geometry()
+            
+            if not highway_geometry.intersects(feature_geometry):
+                continue
+                
+            # Verifica se o tipo da geometria da intersecção é compatível
+            intersection = highway_geometry.intersection(feature_geometry)
+            if intersection.type() != geometry_type:
+                continue
+                
+            width = self.getSymbolWidth(highway)
+            max_width = max(max_width, width)
+        
+        return max_width
 
     def getSymbolWidth(self, highwayFeature):
         tipo = highwayFeature["tipo"]
@@ -337,12 +397,16 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-        """Este algoritmo ajusta a largura de elementos viários (pontes, bueiros, etc.) em camadas de pontos e linhas.
+        """Este algoritmo ajusta a largura de elementos viários (pontes, bueiros, etc.) em camadas de pontos (opcional) e linhas.
 
         Ele compara a geometria desses elementos com as rodovias próximas para determinar a largura adequada com base em critérios específicos, como tipo de via, situação física, número de faixas, entre outros.
 
+        Para elementos lineares, se existir o campo 'config_comprimento_simb', ele será preenchido com:
+        - 1: se o comprimento for menor que 20 metros
+        - 2: se o comprimento for maior ou igual a 20 metros
+
         O usuário pode optar por aplicar a operação somente nas feições selecionadas ou em todas as feições.
 
-        As camadas de elementos viários (ponto e linha) e a camada de rodovias devem ser fornecidas pelo usuário."""
+        A camada de elementos viários (ponto) é opcional. A camada de elementos viários (linha) e a camada de rodovias são obrigatórias."""
         )
 
