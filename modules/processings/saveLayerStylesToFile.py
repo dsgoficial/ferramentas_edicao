@@ -22,7 +22,7 @@ class SaveLayerStylesToFile(QgsProcessingAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterFolderDestination(
-                self.FOLDER_OUTPUT, self.tr("Pasta destino treino")
+                self.FOLDER_OUTPUT, self.tr("Pasta destino dos arquivos")
             )
         )
 

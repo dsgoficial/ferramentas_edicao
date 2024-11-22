@@ -375,7 +375,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         return "insertroadmarker"
 
     def displayName(self):
-        return self.tr("Inserir identificador trecho rodoviário")
+        return self.tr("Insere identificador trecho rodoviário")
 
     def group(self):
         return self.tr("Edição")
