@@ -58,7 +58,11 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
                 defaultValue="edicao_borda_elemento_hidrografico_l",
             )
         )
-        self.mappingDict = {8: 1}  # rocha em agua
+        self.mappingDict = {
+            8: 1,   # rocha em agua
+            18: 2,  # recife contiguo
+            19: 2,  # recife afastado
+        }
 
     def processAlgorithm(self, parameters, context, feedback):
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
