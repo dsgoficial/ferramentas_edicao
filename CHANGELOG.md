@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.64
+## 1.2.65
 
 Novas Funcionalidades
 
@@ -83,7 +83,8 @@ Correção de bug:
 - Inserido o estilo de Caverna em elemnat_elemento_fisiografico_p.
 - Inserido o estilo para Cemitério Mulçumano em edicao_simb_area_p e em constr_ocupacao_solo_p.
 - Corrigido o bug em changeAttributeTopo.py na configuração de atributos default em Ocupação do Solo.
-- Inserido o estilo para infra_barragem_a e infra_elemento_infraestrutura_l para o caso Comporta
+- Inserido o estilo para infra_barragem_a e infra_elemento_infraestrutura_l para o caso Comporta.
+- Corrigido o bug no placeBorderOfHydrographicElement do funcionamento apenas em feições selecionadas.
 
 ## 1.1.90
 
