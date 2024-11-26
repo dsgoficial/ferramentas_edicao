@@ -943,11 +943,11 @@ def validate_file_paths(input_dict: dict) -> str:
 
 def validate_rasters_against_extents(frameLyr: QgsVectorLayer, input_dict: dict) -> str:
     mbUtils = MapBuilderUtils()
-    elevationDiagramImage = mbUtils.getRasterLayerByType(input_dict["mde_diagrama_elevacao"]["caminho_mde"])
+    elevationDiagramImage = mbUtils.getRasterLayerByType(input_dict["mde_diagrama_elevacao"]["caminho_mde"]) if "mde_diagrama_elevacao" in input_dict else None
     frameExtent = frameLyr.extent()
-    if not elevationDiagramImage.isValid():
+    if elevationDiagramImage is not None and not elevationDiagramImage.isValid():
         return f'A imagem do diagrama de elevação não existe ou não está acessível no caminho {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}.\n'
-    if not frameExtent.intersects(elevationDiagramImage.extent()):
+    if elevationDiagramImage is not None and not frameExtent.intersects(elevationDiagramImage.extent()):
         return f"A imagem do diagrama de elevação não intersecta a região de moldura informada. Verifique a moldura e o arquivo do diagrama.\n"
     for image_item in input_dict.get("imagens", []):
         file_path = image_item.get("caminho_imagem", None)
