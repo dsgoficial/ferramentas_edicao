@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.65
+## 1.2.66
 
 Novas Funcionalidades
 
@@ -33,6 +33,7 @@ Melhorias:
 - Melhora o nome do arquivo de carta especial;
 - Parâmetros de distancias conforme sistema da camada de referência
 - Inserido o constr_ocupacao_solo_l na lista de camadas que tem seu atributo alterado conforme o changeAttributeTopo.py
+- Adicionada verificação de bounding box do produto versus imagens antes da exportação;
 
 Correção de bug:
 
