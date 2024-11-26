@@ -1,7 +1,8 @@
 import os
 import time
 from typing import List, Dict, Tuple
-from qgis.core import QgsFileUtils
+from ..factories.mapBuilderUtils import MapBuilderUtils
+from qgis.core import QgsFileUtils, QgsRasterLayer, QgsVectorLayer
 
 data_structure = {
     "Carta Ortoimagem": [
@@ -939,3 +940,23 @@ def validate_file_paths(input_dict: dict) -> str:
     if " " in input_dict["mde_diagrama_elevacao"]["caminho_mde"]:
         return f'Há espaços no caminho do arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}. \nInforme outro caminho sem espaços e tente novamente.'
     return ""
+
+def validate_rasters_against_extents(frameLyr: QgsVectorLayer, input_dict: dict) -> str:
+    mbUtils = MapBuilderUtils()
+    elevationDiagramImage = mbUtils.getRasterLayerByType(input_dict["mde_diagrama_elevacao"]["caminho_mde"])
+    frameExtent = frameLyr.extent()
+    if not elevationDiagramImage.isValid():
+        return f'A imagem do diagrama de elevação não existe ou não está acessível no caminho {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}.\n'
+    if not frameExtent.intersects(elevationDiagramImage.extent()):
+        return f"A imagem do diagrama de elevação não intersecta a região de moldura informada. Verifique a moldura e o arquivo do diagrama.\n"
+    for image_item in input_dict.get("imagens", []):
+        file_path = image_item.get("caminho_imagem", None)
+        if file_path is None:
+            continue
+        rasterLyr: QgsRasterLayer = mbUtils.getRasterLayerByType(file_path)
+        if not rasterLyr.isValid():
+            return f"A imagem {file_path} não existe ou não está acessível\n"
+        if not frameExtent.intersects(rasterLyr.extent()):
+            return f"A imagem {file_path} não intersecta a região da moldura informada. Verifique a moldura e a imagem.\n"
+    return ""
+
