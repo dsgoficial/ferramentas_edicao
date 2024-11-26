@@ -12,6 +12,8 @@ from .processingUtils import ProcessingUtils
 import concurrent.futures
 import os
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
@@ -494,6 +496,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo configura os atributos default de Carta Ortoimagem."
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

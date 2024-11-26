@@ -7,6 +7,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
 
@@ -130,4 +132,7 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr("")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

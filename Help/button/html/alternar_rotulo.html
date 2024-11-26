@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternar Rótulo</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_image4" alt="Ícone Alternar Rótulo" width="32" height="32" style="vertical-align: middle;">    Alternar Rótulo</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Alternar Rótulo", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Alternar Rótulo"</strong> permite alternar a posição de rótulos de pontos cotados. O ciclo alterna as âncoras verticais e horizontais de um rótulo, permitindo ajustar sua posição de maneira rápida e prática. 
+    </p>
+    <p>
+        O ciclo de posições segue o padrão: canto superior direito, canto superior esquerdo, canto inferior direito, canto inferior esquerdo, topo, direita, esquerda, e finalmente inferior. Isso permite ao usuário ajustar a posição de rótulos de acordo com as necessidades de visualização da carta.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione as feições desejadas na camada <i>elemnat_ponto_cotado_p</i>.</li>
+        <li>Clique no botão <strong>"Alternar Rótulo"</strong> na barra de ferramentas.</li>
+        <li>A ferramenta buscará os atributos <i>label_x</i>, <i>label_y</i>, <i>ancora_horizontal</i> e <i>ancora_vertical</i> para as feições selecionadas.</li>
+        <li>Os valores dos atributos serão alterados, reposicionando o rótulo de acordo com o ciclo de posições predefinido.</li>
+        <li>A alteração será refletida automaticamente no mapa, reposicionando o rótulo conforme o novo valor de âncora.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se os campos <i>label_x</i>, <i>label_y</i>, <i>ancora_horizontal</i> e <i>ancora_vertical</i> estão presentes na camada antes de usar a ferramenta.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            Em projetos onde rótulos podem se sobrepor ou estar mal posicionados, a ferramenta <b>Alternar Rótulo</b> permite reposicionar os rótulos sem a necessidade de realizar ajustes manuais em cada feição individualmente. Isso otimiza o fluxo de trabalho em grandes áreas de trabalho.
+        </p>
+        <center>
+            <img src="path_to_imageo" alt="Exemplo de uso da ferramenta Alternar Rótulo" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Reposicionamento de rótulos de pontos cotados para evitar sobreposição de elementos no mapa.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Alternar Rótulo de Ponto Cotado</b> só funcionará em camadas que possuem os campos <i>label_x</i>, <i>label_y</i>, <i>ancora_horizontal</i> e <i>ancora_vertical</i> corretamente configurados. Se algum desses campos estiver ausente, uma mensagem de erro será exibida.
+    </p>
+</body>
+</html>

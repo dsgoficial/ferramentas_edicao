@@ -13,6 +13,8 @@ from qgis.core import (
 )
 from qgis import core
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class BridgeAndManholeWidth(QgsProcessingAlgorithm):
 
@@ -427,17 +429,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-        """Este algoritmo ajusta a largura de elementos viários (pontes, bueiros, etc.) em camadas de pontos (opcional) e linhas.
+        return help().shortHelpString(self.name())
 
-        Ele compara a geometria desses elementos com as rodovias próximas para determinar a largura adequada com base em critérios específicos, como tipo de via, situação física, número de faixas, entre outros.
-
-        Para elementos lineares, se existir o campo 'config_comprimento_simb', ele será preenchido com:
-        - 1: se o comprimento for menor que 20 metros
-        - 2: se o comprimento for maior ou igual a 20 metros
-
-        O usuário pode optar por aplicar a operação somente nas feições selecionadas ou em todas as feições.
-
-        A camada de elementos viários (ponto) é opcional. A camada de elementos viários (linha) e a camada de rodovias são obrigatórias."""
-        )
-
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

@@ -22,6 +22,8 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
 from qgis import core
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
@@ -468,9 +470,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         return "preparo_edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo ordena as camadas e aplica os estilos para a edição"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 
 
 class GroupsWidgetWrapper(WidgetWrapper):

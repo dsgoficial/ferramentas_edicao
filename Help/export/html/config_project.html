@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuda - Configuração do Arquivo QPT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            color: #0057b7;
+        }
+        p {
+            padding: 6px;
+            font-size: 14px;
+        }
+        a {
+            color: #0057b7;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .button-link:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h2>Configuração do Arquivo de Projeto (QPT)</h2>
+        <p>O arquivo de projeto (QPT) é utilizado para configurar o layout dos produtos cartográficos. Ele define elementos como créditos, logos e informações adicionais que aparecem nas cartas exportadas. Caso esteja desenvolvendo um novo projeto ou precise alterar detalhes como a logo ou os créditos, você pode editar o arquivo QPT.</p>
+
+        <h2>Alterando o Arquivo QPT <b>(Créditos)</b></h2>
+        <p>O arquivo padrão utilizado pelo plugin é o <strong>creditsDSG.qpt</strong>. Se não for necessário customizar o layout dos créditos, este arquivo será carregado automaticamente. No entanto, se houver necessidade de alterar elementos como a logo ou outros detalhes, será necessário editar esse arquivo ou criar um novo arquivo QPT.</p>
+        <p style="text-align: center;">
+            <img src="path_to_example" alt="Ícone Pasta" width="450" height="256" style="display: block; margin: 0 auto;">
+            <br><b>Exemplo:</b> Modelo Padrão
+        </p>
+
+        <p><strong><span style="color:red;">OBSERVAÇÃO:</span></strong> Se houver necessidade de configurar um arquivo específico, o usuário deve especificar o novo caminho no arquivo JSON. <br>
+        <strong>Para editar o arquivo padrão, siga as etapas a seguir:</strong></p>
+
+        <h2>Quando Pode Ser Necessário Alterar o Arquivo</h2>
+        <p>Talvez seja necessário alterar o <strong>creditsDSG.qpt</strong> caso o projeto tenha algum convênio onde seja preciso representar a logo e o nome da instituição parceira, ou se precisar mudar o nome do projeto ou sua descrição. Isso só precisa ser feito uma vez e, se for alterado, é necessário apontar o novo arquivo no JSON; caso contrário, será utilizado o arquivo padrão.</p>
+
+        <h2>Opções de Ação</h2>
+        <p>Clique em uma das opções abaixo conforme sua necessidade:</p>
+
+        <p>
+			<a href="download_qpt_file" class="button-link">
+				<img src="path_to_config_project_icon" alt="Ícone Config Projeto" width="32" height="32" style="vertical-align: middle;">
+				Baixar Arquivo QPT
+			</a>
+		</p>
+
+
+        <p>
+            <a href="change_project_name" class="button-link">
+                <img src="path_to_config_project_icon" alt="Ícone Config Projeto" width="32" height="32" style="vertical-align: middle;">
+                Alterar Nome do Projeto
+            </a>
+        </p>
+
+        <p>
+            <a href="change_project_and_add_institution" class="button-link">
+                <img src="path_to_config_project_icon" alt="Ícone Config Projeto" width="32" height="32" style="vertical-align: middle;">
+                Alterar Nome do Projeto e Adicionar Outra Instituição
+            </a>
+        </p>
+
+        <h2>Importante</h2>
+        <p>Não é recomendável que o operador altere o QPT dos produtos sem necessidade, principalmente em Cartas Ortoimagem, onde a legenda é dinâmica. Alterações inadequadas podem desconfigurar a exportação e comprometer o uso do plugin. Além disso, o tamanho do <strong>creditsDSG.qpt</strong> impacta no posicionamento de outros elementos do rodapé, portanto, mantenha o padrão sempre que possível.</p>
+    </div>
+
+</body>
+</html>

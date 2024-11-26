@@ -21,6 +21,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from .makeGrid import getSirgasAuthIdByPointLatLong
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
 
@@ -476,6 +478,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo generaliza os pontos cotados para o diagrama de elevação"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

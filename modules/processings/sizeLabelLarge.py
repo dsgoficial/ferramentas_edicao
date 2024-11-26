@@ -21,6 +21,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class SizeLabelLarge(QgsProcessingAlgorithm):
 
@@ -312,7 +314,7 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
         return "sizelabellarge"
 
     def displayName(self):
-        return self.tr("Tamanho da fonte pela largura")
+        return self.tr("Denifir tamanho da fonte pela largura")
 
     def group(self):
         return self.tr("Edição")
@@ -321,9 +323,10 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo calcula o tamanho do texto de acordo com a área e a largura do polígono"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 
 
 def getSirgasAuthIdByPointLatLong(lat, long):

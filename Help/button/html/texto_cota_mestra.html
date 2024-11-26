@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texto de Cota Mestra</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_imagej" alt="Ícone Texto de Cota Mestra" width="32" height="32" style="vertical-align: middle;"> Texto de Cota Mestra</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Texto de Cota Mestra", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Texto de Cota Mestra"</strong> cria automaticamente feições na camada <i>edicao_simb_cota_mestra_l</i> com o valor da cota mestra (elevada). A ferramenta é utilizada para adicionar rótulos automáticos em interseções entre curvas de nível e linhas de referência definidas pelo usuário, facilitando a inserção de textos representativos em cartas topográficas.
+    </p>
+    <p>
+        A ferramenta utiliza camadas de curvas de nível (<i>elemnat_curva_nivel_l</i>) e insere o valor da cota no local de interseção entre a linha da ferramenta e as curvas de nível, automatizando o processo de rotulagem com base na altitude.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a camada <i>elemnat_curva_nivel_l</i> que contém as curvas de nível.</li>
+        <li>Clique no botão <strong>"Texto de Cota Mestra"</strong> na barra de ferramentas de edição.</li>
+        <li>Clique em dois pontos no mapa para desenhar uma linha de referência que cruza as curvas de nível. A ferramenta identificará a interseção e criará feições com o valor da cota mestra na camada <i>edicao_simb_cota_mestra_l</i>.</li>
+        <li>Os rótulos de cota mestra serão inseridos automaticamente no local de interseção, com o texto configurado conforme o estilo da carta.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se a camada <i>elemnat_curva_nivel_l</i> está ativa e contém os valores de cota preenchidos corretamente.</li>
+        <li>A ferramenta é ideal para a rotulagem automática de elevações em curvas de nível.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            A ferramenta <b>Texto de Cota Mestra</b> é utilizada para rotular automaticamente elevações em curvas de nível em cartas topográficas, facilitando a identificação visual de cotas mestras.
+        </p>
+        <center>
+            <img src="path_to_imagcd" alt="Exemplo de uso da ferramenta Texto de Cota Mestra" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Inserção automática de rótulos de cota mestra em uma área de curvas de nível em um mapa topográfico.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Texto de Cota Mestra</b> só funcionará corretamente em camadas que possuem o atributo de cota configurado. Se os valores de cota estiverem ausentes ou incorretos, a ferramenta exibirá uma mensagem de erro.
+    </p>
+</body>
+</html>

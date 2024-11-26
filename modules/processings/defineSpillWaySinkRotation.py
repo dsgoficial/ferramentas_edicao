@@ -9,6 +9,8 @@ from qgis.core import (
 )
 from qgis import core
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
 
@@ -117,6 +119,7 @@ class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo define a rotação dos sumidouros em relação às drenagens."
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

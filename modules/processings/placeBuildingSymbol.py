@@ -17,6 +17,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PlaceBuildingSymbol(QgsProcessingAlgorithm):
 
@@ -216,15 +218,10 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("""
-        Este algoritmo insere símbolos de edificações em polígonos de edifícios com base em regras predefinidas.
-                       
-        Primeiro, posiciona automaticamente símbolos em polígonos que representam hospitais.
-                        
-        Em seguida, posiciona símbolos no segmento mais ao norte dos polígonos das edificações, ajustando a rotação dos símbolos de acordo com a orientação dos segmentos.
-                       
-        O algoritmo permite a escolha de feições selecionadas ou todas as feições da camada de entrada.
-        """)
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 
 
 

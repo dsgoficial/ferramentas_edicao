@@ -16,6 +16,8 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
 
@@ -233,11 +235,8 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("""
-        Este algoritmo processa elementos hidrográficos, inserindo bordas ao redor deles com base na proximidade com massas d'água.
-                       
-        Ele utiliza camadas selecionadas que representam elementos hidrográficos, massas d'água e camadas de símbolos para criar linhas de borda onde os elementos hidrográficos encontram as massas d'água.
-                       
-        O resultado é uma camada de linhas com bordas simbolizadas indicando elementos hidrográficos em massas d'água.
-        """)
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 

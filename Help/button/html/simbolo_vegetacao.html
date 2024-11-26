@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Símbolo Vegetação</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_imageh" alt="Ícone Símbolo Vegetação" width="32" height="32" style="vertical-align: middle;"> Símbolo Vegetação</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Símbolo Vegetação", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Símbolo Vegetação"</strong> permite a criação de feições representando tipos de vegetação com base na camada <i>cobter_vegetacao_a</i>. Ela insere automaticamente o nome do tipo de vegetação na camada <i>edicao_simb_vegetacao_p</i>, ajustando a posição de acordo com o local clicado no mapa.
+    </p>
+    <p>
+        A ferramenta identifica a feição de vegetação ao clique do usuário, utilizando um mapeamento pré-definido para determinar o nome da vegetação. Apenas os tipos de vegetação válidos serão processados, e a ferramenta funciona exclusivamente em produtos de Carta Topográfica.
+    </p>
+    <p><strong>Tipos válidos:</strong><br>
+        -  1296: "Reflorestamento",<br>
+        -  801: "Caatinga",<br>
+        -  501: "Campinarana",<br>
+        -  701: "Cerrado",<br>
+        -  401: "Restinga",<br>
+        -  1003: "Terreno Exposto - Pedregoso",
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a camada <i>cobter_vegetacao_a</i> que contém as feições de vegetação.</li>
+        <li>Clique no botão <strong>"Símbolo Vegetação"</strong> na barra de ferramentas de edição.</li>
+        <li>Clique em um ponto no mapa sobre a feição de vegetação que deseja rotular. A ferramenta buscará o tipo de vegetação e criará uma nova feição na camada <i>edicao_simb_vegetacao_p</i>, preenchendo o campo <i>texto_edicao</i> com o nome do tipo de vegetação.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se a camada <i>cobter_vegetacao_a</i> está ativa e possui o atributo "tipo" preenchido corretamente.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            A ferramenta <b>Símbolo Vegetação</b> é utilizada para inserir automaticamente rótulos em áreas de vegetação em cartas topográficas.
+        </p>
+        <center>
+            <img src="path_to_image0" alt="Exemplo de uso da ferramenta Símbolo Vegetação" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Identificação de áreas de vegetação com rótulos automáticos.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Símbolo Vegetação</b> só funcionará corretamente em camadas que possuem o atributo "tipo" configurado. Caso contrário, a ferramenta exibirá uma mensagem de erro.
+    </p>
+</body>
+</html>

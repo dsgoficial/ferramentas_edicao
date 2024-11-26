@@ -7,6 +7,8 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class SetSobrepositionOrtho(QgsProcessingAlgorithm):
     INPUT_MOLDURA = "INPUT_MOLDURA"
@@ -280,8 +282,7 @@ class SetSobrepositionOrtho(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            """A rotina altera o atributo 'sobreposto' das camadas de entrada caso essas camadas tenham interseção com uma camada a ser sobreposta.
+        return help().shortHelpString(self.name())
 
-                        As entradas são do tipo linha e o atributo a ser alterado é do tipo texto e deve ser exatamente conforme o nome do atributo a ser alterado da camada de entrada."""
-        )
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

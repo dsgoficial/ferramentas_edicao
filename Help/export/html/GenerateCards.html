@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="br">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Ajuda - Ferramenta de Exportação</title>
+      <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+   </head>
+
+   <body>
+      <div class="section">
+         <h2>Descrição do Plugin</h2>
+         <p>Esta ferramenta permite a exportação de Cartas em formato PDF e GeoTIFF, com base em configurações estabelecidas em arquivos JSON e layouts definidos em arquivos QPT.</p>
+         <hr />
+      </div>
+
+      <div class="section">
+		   <h2>Seleção do Tipo de Produto</h2>
+		   <p>Na caixa <b>Selecione o tipo de produto</b>, você pode escolher dentre diferentes tipos de produtos geoespaciais. Cada tipo de produto pode alterar a forma como os dados são representados, processados e exportados. Alguns exemplos de produtos disponíveis são:</p>
+		   <ul>
+			  <li><b>Carta Topográfica</b>: Representação cartográfica convencional usada para a visualização de elementos geográficos em escalas como 1:25.000, 1:50.000, 1:100.000, ou 1:250.000. Utilizada para aplicações gerais de geoinformação, permitindo a visualização de relevo, hidrografia, vegetação e infraestrutura.</li>
+			  <p style="text-align: center;">
+			  <img src="path_to_image" alt="Ícone Pasta" width="450" height="256" style="display: block; margin: 0 auto;">
+			  </p>
+			  
+			  <li><b>Carta Ortoimagem</b>: Combina dados vetoriais com imagens ortorretificadas (ortofotos), permitindo uma visualização precisa e detalhada da superfície terrestre. Este produto é ideal para análises que exigem imagens reais e detalhamento espacial, como monitoramento ambiental ou planejamento urbano.</li>
+			  <p style="text-align: center;">
+			  <img src="path_to_config_pasta_icon" alt="Ícone Pasta" width="450" height="256" style="display: block; margin: 0 auto;">
+			  </p>
+			  <li><b>Carta Ortoimagem Militar</b>: Variante militar da Carta Ortoimagem, que inclui dados sensíveis e simbologias personalizadas voltadas para operações estratégicas e de defesa.</li>
+			  
+			  <li><b>Carta Topográfica Militar</b>: Adaptada para fins militares, essa carta inclui dados táticos e camadas adicionais de segurança e acessibilidade, utilizadas em operações militares ou missões especiais.</li>
+		   </ul>
+		   <p>Esses são apenas exemplos, e novos produtos podem ser adicionados ou modificados de acordo com as necessidades do projeto.</p>
+		   <hr />
+		</div>
+
+      <div class="section">
+		   <h2>Configuração dos Arquivos JSON</h2>
+		   <p>Os arquivos JSON usados no plugin servem para carregar e configurar parâmetros pré-definidos para a execução das ferramentas de edição. Eles atuam como arquivos de configuração, permitindo que o sistema leia as definições necessárias sem a necessidade de configurá-las manualmente a cada execução.</p>
+		   
+		   <p>Esses arquivos JSON não têm a função de criar elementos dentro do projeto. Eles apenas carregam dados e configurações previamente estabelecidos, garantindo a consistência e o funcionamento adequado ao executar a ferramenta.</p>
+
+		   <p>Certifique-se de que os arquivos JSON estão corretamente estruturados e que contêm todas as informações necessárias para o uso correto da ferramenta, como parâmetros e outros ajustes técnicos.</p>
+
+		    <p>Para saber mais sobre como <b>configurar</b> um arquivo JSON, e como realizar o <b>download</b> do arquivo <b>clique no botão abaixo:</b></p>
+         <p><a href="config_json.html" class="button-link">
+            <img src="path_to_config_json_icon" alt="Ícone JSON" width="32" height="32" style="vertical-align: middle;">
+            Ajuda para Configurar Arquivo JSON
+         </a></p>
+         <hr />
+		</div>
+
+
+      <div class="section">
+         <h2>Parâmetros de Conexão</h2>
+         <p>No campo <b>Parâmetros de conexão</b>, o usuário deve fornecer as informações necessárias para que o plugin possa se conectar aos bancos de dados geoespaciais referenciados no arquivo JSON. Isso garante que as camadas de dados sejam carregadas corretamente durante a exportação.</p>
+         <hr />
+      </div>
+
+      <div class="section">
+   <h2>Configuração e Edição do Arquivo QPT</h2>
+   <p>O arquivo <b>QPT</b> (template de layout) é utilizado para definir a estrutura dos produtos gerados pelo plugin. Cada produto, tem um layout específico que é gerado de forma sistemática, dependendo do tipo de produto e da legenda dinâmica.</p>
+
+   <p><strong>Não é recomendável que o operador faça alterações no arquivo QPT dos produtos</strong>, pois isso pode desconfigurar a exportação e comprometer o funcionamento do plugin. Alterações não autorizadas podem quebrar o processo automatizado de criação e exportação dos layouts.</p>
+
+   <p>A única edição permitida no QPT é na seção de <strong>creditsDSG</strong>, onde o operador pode ajustar os créditos e informações relacionadas. No entanto, é importante seguir o padrão estabelecido para o tamanho e posicionamento do creditsDSG, uma vez que qualquer alteração significativa pode impactar no posicionamento de outros elementos no rodapé (rodamão) da carta.</p>
+
+   <p>Certifique-se de seguir os padrões recomendados para garantir a correta exportação e apresentação dos produtos.</p>
+
+         <p>Para saber mais sobre como configurar o layout de projeto (QPT), clique no botão abaixo:</p>
+         <p><a href="config_project.html" class="button-link">
+            <img src="path_to_config_project_icon" alt="Ícone Projeto" width="32" height="32" style="vertical-align: middle;">
+            Ajuda para Configurar Arquivo de Projeto (QPT)
+         </a></p>
+         <hr />
+      </div>
+
+   </body>
+</html>

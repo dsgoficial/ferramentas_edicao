@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternar Visibilidade</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_image6" alt="Ícone Alternar Visibilidade" width="32" height="32" style="vertical-align: middle;">    Alternar Visibilidade</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Alternar Visibilidade", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Alternar Visibilidade"</strong> permite alternar o atributo <i>visivel</i> nas feições selecionadas de uma camada entre os valores 1 e 2, facilitando o controle de visibilidade de elementos diretamente na carta sem precisar editar manualmente o atributo de cada feição.
+    </p>
+    <p>
+        Esta ferramenta é ideal para alternar a exibição de feições em casos que exija mudanças rápidas de visibilidade.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione as feições desejadas na camada ativa.</li>
+        <li>Clique no botão <strong>"Alternar Visibilidade"</strong> na barra de ferramentas de edição.</li>
+        <li>A ferramenta verificará se o atributo <i>visivel</i> existe na camada. Se não for encontrado, uma mensagem de erro será exibida.</li>
+        <li>Para as feições selecionadas, o valor do atributo <i>visivel</i> será alternado entre 1 e 2. Se o valor for 9999(A ser preenchido), ele será ajustado para 1.</li>
+        <li>A atualização será refletida automaticamente na carta, alterando a visibilidade das feições.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se o campo <i>visivel</i> está presente na camada antes de usar a ferramenta.</li>
+        <li>Essa ferramenta é especialmente útil quando se trabalha com feições que precisam ser ocultadas e exibidas frequentemente durante o processo de edição.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            Por exemplo, a ferramenta <b>Alternar Visibilidade</b> permite que você oculte ou exiba rapidamente feições sem precisar remover ou alterar manualmente suas propriedades.
+        </p>
+        <center>
+            <img src="path_to_imageq" alt="Exemplo de uso da ferramenta Alternar Visibilidade" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Alternando a visibilidade de feições.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Alternar Visibilidade</b> só funcionará corretamente em camadas que possuem o campo <i>visivel</i> configurado. Se o campo estiver ausente ou se não houver feições selecionadas, uma mensagem de erro será exibida.
+    </p>
+</body>
+</html>

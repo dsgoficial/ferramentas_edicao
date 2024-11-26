@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	
+</head>
+<body lang="pt-BR" dir="ltr"><p>Help versão 1.0 
+</p>
+<hr/>
+
+<h2 class="western">Descrição:</h2>
+<h4 class="western" align="center" style="border: none; padding: 0cm">
+O algoritmo gera o vetor de grade em UTM no fuso correto baseado na moldura e reprojeta para o sistema de referência de interesse
+</h4>
+<hr/>
+
+<h2>Parâmetros:</h2>
+         <p>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecione a camada de moldura &rarr; Indicar a camada com a moldura do projeto. Há possibilidade de rodar o processo apenas na(s) moldura(s) selecionada(s).
+            </span>
+            
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecione a escala de edição &rarr;  Indicar a escala do produto.
+            </span>
+            
+            <span style="margin-bottom: 10px;">
+                &#8226; Gerar cruzetas de lat long &rarr;  Gera cruzetas de encontro da latitude com a longitude de acordo com as marcações das margens.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+                &#8226; Vetor de grade &rarr;  Por padrão, cria uma camada temporária contendo o vetor gerado. Há possibilidade de indicar um caminho para salvar o vetor resultante do processo.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+                &#8226; Open output file after running algotithm &rarr;  Carregar a camada resultante no Canvas do QGIS.
+            </span>
+
+            <span style="color:#ff0000; font-weight: bold;"><u>Atenção</u>: Após gerar o vetor temporário, verificar se está corretamente construído e reclassificar para a camada correta: "edicao_grid_edicao_l". 
+            </span>
+
+            
+         </p>  
+
+
+
+      
+      <div>
+<hr/>
+
+<h2 class="western">Exemplo de uso: 
+</h2>
+<h4 class="western">Modelagem EDGV3.0_TOPO na escala de 1:25.000
+(EPSG):4674</h4>
+
+<p>
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecione a camada de moldura &rarr; aux_moldura_a
+    </span>
+    
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecione a escala de edição &rarr;  1:25.000
+    </span>
+    
+    <span style="margin-bottom: 10px;">
+        &#8226; Gerar cruzetas de lat long &rarr;  Marcado
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+        &#8226; Vetor de grade &rarr;  Padrão - Criar camada temporária.
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+        &#8226; Open output file after running algotithm &rarr;  Marcado
+    </span>
+    
+ </p> 
+<hr/>
+
+      <div>
+         <h2>Aplicação:</h2>
+         <center><img src= "{}"></center>
+         <p style="text-align: center; font-style: italic;">Vetor de grade gerado e reclassificado em "edicao_grid_edicao_l".</p>
+         <hr/>
+      </div> 
+   </body>
+
+</html>

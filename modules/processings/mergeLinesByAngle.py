@@ -23,6 +23,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from DsgTools.core.GeometricTools import graphHandler
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class MergeLinesByAngle(QgsProcessingAlgorithm):
 
@@ -291,7 +293,7 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
+        return help().shortHelpString(self.name())
 
-        return self.tr(
-            "Esse algoritmo mescla linhas conectadas. Em caso de bifurcação, mescla as de menor ângulo entre si."
-        )
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

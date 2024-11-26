@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copiar Texto Sugerido</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_image8" alt="Ícone Copiar Texto Sugerido" width="32" height="32" style="vertical-align: middle;">    Copiar Texto Sugerido</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Copiar Texto Sugerido", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Copiar Texto Sugerido"</strong> permite copiar rótulos sugeridos automaticamente pelo QGIS para a camada <i>edicao_texto_generico_l</i>. Essa ferramenta usa os dados gerados automaticamente durante a rotulagem e cria feições de rótulo baseadas no <strong>estilo e nas configurações</strong> de texto do rótulo sugerido.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a camada que contém as feições com rótulos a serem copiados.</li>
+        <li>Clique no botão <strong>"Copiar Texto Sugerido"</strong> na barra de ferramentas de edição.</li>
+        <li>Selecione a feição que deseja copiar o rótulo. A ferramenta copiará suas configurações, como fonte, tamanho e cor.</li>
+        <li>Essas informações serão usadas para criar uma nova feição na camada <i>edicao_texto_generico_l</i>, dependendo da geometria do rótulo.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se a camada ativa possui o campo <i>texto_edicao</i> configurado corretamente.</li>
+        <li>Essa ferramenta é útil em projetos de mapeamento que envolvem uma grande quantidade de rótulos similares, como rodovias ou trechos de drenagem.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            Em casos onde rótulos sugeridos automaticamente precisam ser replicados para camadas específicas mantendo o estilo, a ferramenta <b>Copiar Texto Sugerido</b> facilita o processo, copiando automaticamente os rótulos gerados e suas configurações.
+        </p>
+        <center>
+            <img src="path_to_images" alt="Exemplo de uso da ferramenta Copiar Texto Sugerido" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Copiando rótulos sugeridos automaticamente para a camada <i>edicao_texto_generico_l</i>.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Copiar Texto Sugerido</b> só funcionará corretamente em camadas que possuem o campo <i>texto_edicao</i> configurado. Caso o campo esteja ausente ou mal configurado, a ferramenta exibirá uma mensagem de erro.
+    </p>
+</body>
+</html>

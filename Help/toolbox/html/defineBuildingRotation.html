@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	
+</head>
+<body lang="pt-BR" dir="ltr"><p>Help versão 1.0 
+</p>
+<hr/>
+
+<h2 class="western">Descrição:</h2>
+<h4 class="western" align="center" style="border: none; padding: 0cm">
+O algoritmo define a rotação das edificações de acordo com feições da vizinhança, seguindo esta prioridade: rodovias, ferrovias, drenagens, massas d'água e área construída.
+</h4>
+<hr/>
+
+<h2>Parâmetros:</h2>
+         <p>
+            <span style="margin-bottom: 10px;">
+                &#8226; Edificações &rarr;  Indicar a camada que contém as edificações com geometria do tipo ponto. Há possibilidade de executar apenas para as feições selecionadas.
+            
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar o atributo de rotação da camada &rarr;  Indicar o atributo da camada acima que contém a informação da rotação da simbologia.
+            </span>
+            
+            <span style="margin-bottom: 10px;">
+                &#8226; Tolerância da distância &rarr;  Indicar a distância a ser considerada no buffer em relação às camadas da vizinhança.
+            </span>
+
+            <span    style="color:#ff0000; font-weight: bold;"><u>Atenção</u>: A depender do sistema de referência utilizado, será necessário a indicação da tolerância em graus, para um sistema geográfico, ou em metros, no caso de um sistema projetado.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+            &#8226; Rodovias &rarr;  Indicar a camada que contém as vias de deslocamento.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+            &#8226; Ferrovias &rarr;  Indicar a camada que contém as ferrovias.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+            &#8226; Drenagens &rarr;  Indicar a camada que contém os trechos de drenagem.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+            &#8226; Massas D'água &rarr;  Indicar a camada que contém a cobertura terrestre de massa d'água.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+            &#8226; Áreas Edificadas &rarr;  Indicar a camada que contém a cobertura terrestre de área construída.
+            </span>
+            
+         </p>  
+
+
+
+      
+      <div>
+<hr/>
+
+<h2 class="western">Exemplo de uso: 
+</h2>
+<h4 class="western">Modelagem EDGV3.0_TOPO na escala de 1:25.000
+(EPSG):4674</h4>
+
+<p>
+    <span style="margin-bottom: 10px;">
+        &#8226; Edificações &rarr;  constr_edificacao_p
+    
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecionar o atributo de rotação da camada &rarr;  simb_rot
+    </span>
+    
+    <span style="margin-bottom: 10px;">
+        &#8226; Tolerância da distância &rarr;  0,0001
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+    &#8226; Rodovias &rarr;  infra_via_deslocamento_l
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+    &#8226; Ferrovias &rarr;  infra_ferrovia_l
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+    &#8226; Drenagens &rarr;  elemnat_trecho_drenagem_l
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+    &#8226; Massas D'água &rarr;  cobter_massa_dagua_a
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+    &#8226; Áreas Edificadas &rarr;  cobter_area_construida_a
+    </span>
+    
+ </p>   
+<hr/>
+
+      <div>
+         <h2>Aplicação:</h2>
+         <center><img src= "{}"></center>
+         <p style="text-align: center; font-style: italic;">Atributo 'simb_rot' preenchido adequadamente.</p>
+         <hr/>
+      </div> 
+   </body>
+
+</html>

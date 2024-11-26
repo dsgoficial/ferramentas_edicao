@@ -42,6 +42,7 @@ from qgis.core import (
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 class PlaceMasterContourLabels(QgsProcessingAlgorithm):
 
@@ -585,4 +586,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("Posiciona os rótulos de curva de nível mestra.")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

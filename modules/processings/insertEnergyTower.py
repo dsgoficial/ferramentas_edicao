@@ -21,6 +21,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class InsertEnergyTower(QgsProcessingAlgorithm):
 
@@ -399,4 +401,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo insere símbolos de torre de energia")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

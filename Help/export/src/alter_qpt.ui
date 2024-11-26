@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AlterarProjetoCreditosDialog</class>
+ <widget class="QDialog" name="AlterarProjetoCreditosDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>250</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Alterar Nome do Projeto e Créditos</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_nome_projeto">
+     <property name="text">
+      <string>Nome do Projeto (Obrigatório) - Preencher com o nome completo do projeto</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_nome_projeto"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_creditos">
+     <property name="text">
+      <string>Créditos (Opcional) - Preencher com a descrição e/ou nomes das instituições relacionadas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="input_creditos"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="save_button">
+     <property name="text">
+      <string>Baixar creditsDSG com ajustes</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

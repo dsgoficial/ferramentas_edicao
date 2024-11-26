@@ -15,6 +15,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PlacePowerPlantSymbol(QgsProcessingAlgorithm):
 
@@ -169,13 +171,8 @@ class PlacePowerPlantSymbol(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("""
-        Este algoritmo insere símbolos de elementos de energia em polígonos específicos de infraestrutura energética, conforme seu tamanho e escala de edição.
-                       
-        O algoritmo permite ocultar feições que não possuem tamanho suficiente para o símbolo.
-                       
-        A inserção dos símbolos é realizada no centroide ou ponto interno da feição, ajustando o tamanho do símbolo de acordo com a escala selecionada.
-                       
-        O algoritmo pode ser aplicado em todas as feições ou apenas nas feições selecionadas.
-        """)
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 

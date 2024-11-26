@@ -12,6 +12,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class SizeTextRiverLine(QgsProcessingAlgorithm):
 
@@ -242,7 +244,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         return "sizetextriverline"
 
     def displayName(self):
-        return self.tr("Define o tamanho do texto de acordo com o comprimento")
+        return self.tr("Definir o tamanho do texto de acordo com o comprimento")
 
     def group(self):
         return self.tr("Edição")
@@ -251,6 +253,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo mergeia os trechos de drenagem e corta de acordo com a moldura, definindo assim o tamanho do rio para em seguida definir o tamanho_txt"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

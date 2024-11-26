@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visibilidade Lateral Ponte</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_imagel" alt="Ícone Visibilidade Lateral" width="32" height="32" style="vertical-align: middle;"> Visibilidade Lateral Ponte</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Visibilidade Lateral Ponte", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Visibilidade Lateral Ponte"</strong> altera o atributo <i>"exibir_lado_simbologia"</i> nas feições selecionadas, permitindo alternar entre três estados: visível à esquerda, visível à direita ou visível em ambos os lados da simbologia da ponte. Esta ferramenta é essencial para ajustar a visualização de pontes, facilitando o controle sobre como a simbologia será exibida.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione a camada que contém as feições de ponte com o atributo <i>"exibir_lado_simbologia"</i> configurado.</li>
+        <li>Clique no botão <strong>"Visibilidade Lateral Ponte"</strong> na barra de ferramentas de edição.</li>
+        <li>Selecione as feições de ponte que deseja ajustar no mapa.</li>
+        <li>A ferramenta irá alternar o valor do atributo <i>"exibir_lado_simbologia"</i> entre 1 (lado esquerdo), 2 (lado direito) e 3 (ambos os lados).</li>
+        <li>Se as feições selecionadas estiverem fora da área visível, uma caixa de diálogo solicitará confirmação para continuar a operação.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Verifique se a camada ativa contém o atributo <i>"exibir_lado_simbologia"</i> preenchido corretamente.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            A ferramenta <b>Visibilidade Lateral Ponte</b> permite alternar entre diferentes modos de visualização lateral das simbologias de ponte para otimizar a clareza visual e o espaço.
+        </p>
+        <center>
+            <img src="path_to_imagij" alt="Exemplo de uso da ferramenta Visibilidade Lateral Ponte" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Alternando a visibilidade lateral de uma ponte em uma carta topográfica.
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Visibilidade Lateral Ponte</b> só funcionará corretamente em camadas que possuem o atributo <i>"exibir_lado_simbologia"</i>. Se o atributo estiver ausente ou configurado incorretamente, a ferramenta exibirá uma mensagem de erro.
+    </p>
+</body>
+</html>

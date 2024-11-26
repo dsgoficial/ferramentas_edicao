@@ -16,6 +16,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PrepareTopo(QgsProcessingAlgorithm):
     INPUT_LAYERS = "INPUT_LAYERS"
@@ -255,4 +257,7 @@ class PrepareTopo(QgsProcessingAlgorithm):
         return "preparo_edicao"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo prepara os atributos para carta topográfica")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

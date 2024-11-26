@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>410</width>
-    <height>307</height>
+    <height>339</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -87,6 +87,13 @@
       <widget class="QgsFileWidget" name="jsonConfigs">
        <property name="storageMode">
         <enum>QgsFileWidget::GetMultipleFiles</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="helpJson">
+       <property name="text">
+        <string>Criar arquivo de configuração (Ajuda)</string>
        </property>
       </widget>
      </item>
@@ -189,6 +196,13 @@
     <widget class="QPushButton" name="pushButton">
      <property name="text">
       <string>Gerar cartas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="helpButton">
+     <property name="text">
+      <string>Ajuda</string>
      </property>
     </widget>
    </item>

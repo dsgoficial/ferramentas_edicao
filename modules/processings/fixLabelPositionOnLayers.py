@@ -18,6 +18,8 @@ from qgis.core import (
     NULL,
 )
 from qgis.PyQt.QtCore import QCoreApplication
+
+
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 
@@ -211,7 +213,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         return FixLabelPostionOnLayers()
 
     def name(self):
-        return "fixLabelPositionOnLayers"
+        return "FixLabelPositionOnLayers"
 
     def displayName(self):
         return self.tr("Fixa posição dos labels")
@@ -224,3 +226,6 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

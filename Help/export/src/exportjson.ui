@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ExportJsonDialog</class>
+ <widget class="QDialog" name="ExportJsonDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>521</width>
+    <height>1197</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Criar Arquivo JSON</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_produto">
+     <property name="text">
+      <string>Tipo de Produto (Obrigatório) - Preencher com &quot;Carta Topográfica&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="input_produto">
+     <item>
+      <property name="text">
+       <string>Carta Topográfica</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Carta Ortoimagem</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Carta Ortoimagem OM</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Carta Ortoimagem Militar</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Carta Topográfica Militar</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_edicao">
+     <property name="text">
+      <string>Edição do Produto (Obrigatório) - Preencher com a edição do produto</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_edicao"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_licenciamento">
+     <property name="text">
+      <string>Licenciamento Produto (Obrigatório) - Ex.: &quot;CC-BY-SA 4.0&quot; ou &quot;CC-BY-NC-SA 4.0&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_licenciamento"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_nome">
+     <property name="text">
+      <string>Nome (Obrigatório) - Ex.: &quot;Rio Laranjaí&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_nome"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_mde_diagrama">
+     <property name="text">
+      <string>MDE para Diagrama de Elevação (Obrigatório) - Preencha o caminho do MDE</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_mde_diagrama"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="browse_mde_button">
+     <property name="text">
+      <string>Buscar MDE</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_epsg">
+     <property name="text">
+      <string>EPSG do MDE (Obrigatório)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_epsg"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_banco_configuracao">
+     <property name="text">
+      <string>Configurações do Banco de Dados (Obrigatório) - Insira servidor, porta e nome do banco</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="bancoTable">
+     <property name="rowCount">
+      <number>1</number>
+     </property>
+     <property name="columnCount">
+      <number>3</number>
+     </property>
+     <property name="horizontalHeaderLabels" stdset="0">
+      <stringlist>
+       <string>Servidor</string>
+       <string>Porta</string>
+       <string>Nome do Banco</string>
+      </stringlist>
+     </property>
+     <row/>
+     <column>
+      <property name="text">
+       <string>Servidor</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Porta</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Nome do Banco</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_inom">
+     <property name="text">
+      <string>Índice de Nomenclatura (Obrigatório) - Ex.: SF-22-Y-C-I-1</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_inom"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_escala">
+     <property name="text">
+      <string>Escala (Opcional) - Ex.: 25000, 50000</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_escala"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_centro_carta">
+     <property name="text">
+      <string>Centro da Carta (Opcional) - Latitude/Longitude (graus decimais)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_centro_carta"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_territorio_internacional">
+     <property name="text">
+      <string>Território Internacional (Opcional) - Selecione &quot;True&quot; ou &quot;False&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="input_territorio_internacional">
+     <item>
+      <property name="text">
+       <string>True</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>False</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_acesso_restrito">
+     <property name="text">
+      <string>Acesso Restrito (Opcional) - Selecione &quot;True&quot; ou &quot;False&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="input_acesso_restrito">
+     <item>
+      <property name="text">
+       <string>True</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>False</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_info_tecnica">
+     <property name="text">
+      <string>Informações Técnicas:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_data_criacao">
+     <property name="text">
+      <string>Data de Criação (Obrigatório) - Ex.: 06/05/1996</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_data_criacao"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_datum_vertical">
+     <property name="text">
+      <string>Datum Vertical (Obrigatório) - Ex.: Imbituba - Santa Catarina</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_datum_vertical"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_origem_dados_altimetricos">
+     <property name="text">
+      <string>Origem dos Dados Altimétricos (Obrigatório) - Ex.: FABDEM</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_origem_dados_altimetricos"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_pec_planimetrico">
+     <property name="text">
+      <string>PEC Planimétrico (Opcional) - Ex.: &quot;A&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_pec_planimetrico"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_pec_altimetrico">
+     <property name="text">
+      <string>PEC Altimétrico (Opcional) - Ex.: &quot;A&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_pec_altimetrico"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_fases">
+     <property name="text">
+      <string>Fases e Executantes (Obrigatório)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="fasesTable">
+     <property name="rowCount">
+      <number>1</number>
+     </property>
+     <property name="horizontalHeaderLabels" stdset="0">
+      <stringlist>
+       <string>Nome da Fase</string>
+       <string>Nome do Executante</string>
+       <string>Ano</string>
+      </stringlist>
+     </property>
+     <row/>
+     <column>
+      <property name="text">
+       <string>Nome da Fase</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Executante</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Ano</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="add_fase_button">
+     <property name="text">
+      <string>Adicionar Linhas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="rm_fase_button">
+     <property name="text">
+      <string>Remover Linhas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_dados_terceiros">
+     <property name="text">
+      <string>Dados de Terceiros (Obrigatório)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="dadosTerceirosTable">
+     <property name="rowCount">
+      <number>1</number>
+     </property>
+     <property name="columnCount">
+      <number>2</number>
+     </property>
+     <property name="horizontalHeaderLabels" stdset="0">
+      <stringlist>
+       <string>Nome</string>
+       <string>Sigla</string>
+      </stringlist>
+     </property>
+     <row/>
+     <column>
+      <property name="text">
+       <string>Nome</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Sigla</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="add_dado_terceiro_button">
+     <property name="text">
+      <string>Adicionar Linhas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="rm_dado_terceiro_button">
+     <property name="text">
+      <string>Remover Linhas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_creditos">
+     <property name="text">
+      <string>Créditos (Opcional) - Caminho do arquivo QPT para a parte inferior esquerda</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_creditos"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="browse_project_button">
+     <property name="text">
+      <string>Buscar Projeto</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="generate_button">
+     <property name="text">
+      <string>Gerar JSON</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

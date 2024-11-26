@@ -19,6 +19,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.utils import iface
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 class MergeRivers(QgsProcessingAlgorithm):
 
@@ -270,6 +271,7 @@ class MergeRivers(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "Mescla os rios de acordo com os atributos *nome*, *tipo* e *situacao_poligono*, desconsiderando rios sem nome, e depois recorta os rios com a moldura. O resultado é retornado em outra camada e é utilizado como referência para auxiliar no processo de edição."
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

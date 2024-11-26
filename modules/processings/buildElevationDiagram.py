@@ -43,6 +43,8 @@ from qgis.core import (
 )
 from scipy import signal
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class BuildElevationDiagram(QgsProcessingAlgorithm):
 
@@ -502,6 +504,7 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo constrói o diagrama de elevação baseado no MDS de entrada."
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

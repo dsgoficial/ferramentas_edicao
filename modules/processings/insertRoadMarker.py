@@ -27,6 +27,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class InsertRoadMarker(QgsProcessingAlgorithm):
 
@@ -384,6 +386,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            "O algoritmo insere os identificadores de trecho rodoviário para carta topográfica"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

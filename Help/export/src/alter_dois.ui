@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AlterarProjetoCreditosDialog</class>
+ <widget class="QDialog" name="AlterarProjetoCreditosDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>320</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Alterar Nome do Projeto e Créditos</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+	<item>
+    <widget class="QLabel" name="label_nome_projeto2">
+     <property name="text">
+      <string>Nome do Projeto (Obrigatório) - Preencher com o nome completo do projeto</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_nome_projeto2"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_creditos2">
+     <property name="text">
+      <string>Créditos (Opcional) - Preencher com a descrição e/ou nomes das instituições relacionadas</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="input_creditos2"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_name">
+     <property name="text">
+      <string>Nome da Instituição (Obrigatório) - Preencher com o nome completo da Instituição</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_nome_projeto"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_address">
+     <property name="text">
+      <string>Endereço (Obrigatório) - Preencher com o endereço completo da instituição relacionada</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="input_creditos"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_imagem_instituicao">
+     <property name="text">
+      <string>Selecionar Logotipo da Instituição (PNG, JPEG ou JPG)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_imagem"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="browse_image_button">
+     <property name="text">
+      <string>Procurar Imagem</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="save_button">
+     <property name="text">
+      <string>Baixar creditsPARCEIRO com ajustes</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -29,6 +29,8 @@ from qgis.core import (
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PlacePointOfChange(QgsProcessingAlgorithm):
 
@@ -661,11 +663,8 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr(
-        """Este algoritmo insere pontos de mudança em uma camada de pontos com base em alterações detectadas em uma camada de linhas de rodovias.
+        return help().shortHelpString(self.name())
 
-        O algoritmo analisa a geometria das linhas de rodovia em diferentes escalas e tipos de produtos (Ortoimagem ou Topográfica) para determinar onde os pontos de mudança devem ser inseridos.
-
-        Ele também leva em consideração a proximidade das feições à moldura (se fornecida) e insere os pontos conforme necessário."""
-        )
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
 

@@ -27,6 +27,8 @@ from qgis.utils import iface
 
 import math
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class FixLabelPositionCRS(QgsProcessingAlgorithm):
 
@@ -103,9 +105,7 @@ class FixLabelPositionCRS(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr("""
-        Este algoritmo corrige a posição de rótulos (label_x e label_y) em camadas vetoriais quando há uma mudança no Sistema de Referência de Coordenadas (CRS).
-        Ele permite selecionar várias camadas de entrada e especificar o CRS antigo para reprojetar as coordenadas dos rótulos para o novo CRS da camada.
-        O algoritmo atualiza os valores dos atributos label_x e label_y com as novas coordenadas, mantendo a precisão da localização dos rótulos após a mudança de CRS.
-        """)
+        return help().shortHelpString(self.name())
 
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

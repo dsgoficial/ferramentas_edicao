@@ -16,6 +16,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class PrepareOrtho(QgsProcessingAlgorithm):
 
@@ -273,12 +275,7 @@ class PrepareOrtho(QgsProcessingAlgorithm):
         return "preparo_edicao"
 
     def shortHelpString(self):
-        return self.tr(
-            """O algoritmo prepara os atributos para Carta Ortoimagem:
-        1. Define cota mais alta
-        2. Configura atributos padrão
-        3. Configura sobreposição de feições
-        4. Define tamanho do texto de rio
-        5. Insere identificador de elemento de energia
-        6. Insere identificador de trecho rodoviário"""
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

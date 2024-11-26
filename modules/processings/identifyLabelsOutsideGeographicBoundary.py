@@ -24,6 +24,8 @@ from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from DsgTools.core.GeometricTools.layerHandler import LayerHandler
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
 
@@ -261,4 +263,7 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
         return "edicao"
 
     def shortHelpString(self):
-        return self.tr("Identifica rótulos fora da moldura.")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())

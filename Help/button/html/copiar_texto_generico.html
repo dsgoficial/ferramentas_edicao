@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copiar Texto Genérico</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+         }
+         h2 {
+            color: #0057b7;
+         }
+         p {
+            padding: 6px;
+            font-size: 14px;
+         }
+         ul {
+            list-style-type: none;
+         }
+         ul li {
+            margin: 10px 0;
+         }
+         a {
+            color: #0057b7;
+            text-decoration: none;
+         }
+         a:hover {
+            text-decoration: underline;
+         }
+         hr {
+            border: 1px solid #0057b7;
+         }
+         .section {
+            margin-bottom: 30px;
+         }
+         .button-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #0057b7;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #0057b7;
+            font-size: 14px;
+            margin: 5px 0;
+         }
+         .button-link img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+         }
+         .button-link:hover {
+            background-color: #e0e0e0;
+         }
+      </style>
+</head>
+<body>
+    <h2><img src="path_to_image7" alt="Ícone Copiar Texto Genérico" width="32" height="32" style="vertical-align: middle;">    Copiar Texto Genérico</h2>
+    <p style="color:red; font-weight:normal;">
+        &#8226; <strong>IMPORTANTE:</strong> Para ativar a ferramenta "Copiar Texto Genérico", <b>clique no ícone</b> referente a ferramenta, conforme o exemplo acima, lembre-se também de selecionar o produto correto que você está trabalhando <b>(Carta Topográfica ou Ortoimagem)</b> e de selecionar a <b>escala da carta</b>.
+    </p>
+    <hr/>
+
+    <!-- Descrição da ferramenta -->
+    <h2>Descrição:</h2>
+    <p align="justify">
+        A ferramenta <strong>"Copiar Texto Genérico"</strong> permite copiar feições selecionadas de uma camada ativa e transferi-las para as camadas <i>edicao_texto_generico_p</i> ou <i>edicao_texto_generico_l</i>. O texto é transferido junto com a geometria da feição, facilitando a inserção automática de rótulos.
+    </p>
+    <p>
+        Esta ferramenta é ideal para criar rótulos rapidamente com base em feições existentes, sem a necessidade de criar rótulos manualmente ou ajustar o texto posteriormente.
+    </p>
+    <hr/>
+
+    <!-- Instruções de uso com detalhamento dos parâmetros -->
+    <h2>Modo de Uso:</h2>
+    <ol>
+        <li>Selecione as feições desejadas na camada ativa que contenha o atributo <i>nome</i> (o valor do atributo não pode ser nulo).</li>
+        <li>Clique no botão <strong>"Copiar Texto Genérico"</strong> na barra de ferramentas de edição.</li>
+        <li>A ferramenta verificará se o atributo <i>nome</i> está presente na camada. Se o atributo não existir, uma mensagem de erro será exibida.</li>
+        <li>Para feições do tipo ponto, a geometria será copiada para a camada <i>edicao_texto_generico_p</i>, e para feições do tipo linha, será copiada para a camada <i>edicao_texto_generico_l</i>.</li>
+        <li>O valor do campo <i>nome</i> será atribuído ao campo <i>texto_edicao</i> na camada de destino, e o estilo padrão será aplicado ao texto.</li>
+    </ol>
+
+    <h3>Dicas para Configuração:</h3>
+    <ul>
+        <li>Certifique-se de que o campo <i>nome</i> está presente e preenchido nas feições antes de usar a ferramenta.</li>
+        <li>Utilize a ferramenta para criar rótulos genéricos rapidamente.</li>
+    </ul>
+    <hr/>
+
+    <!-- Seção para inclusão de uma imagem que exemplifica o uso da ferramenta -->
+    <div>
+        <h2>Aplicação Prática:</h2>
+        <p>
+            Situações onde feições como pontos de interesse ou linhas de drenagem, por exemplo, precisam ser rotuladas rapidamente, a ferramenta <b>Copiar Texto Genérico</b> permite que você copie as feições para camadas específicas e adicione rótulos automaticamente, agilizando o processo de rotulagem.
+        </p>
+        <center>
+            <img src="path_to_imager" alt="Exemplo de uso da ferramenta Copiar Texto Genérico" width="700" height="300">
+        </center>
+        <p style="text-align: center; font-style: italic;">
+            Exemplo: Copiando feições e inserindo rótulos automáticos com base no atributo "nome".
+        </p>
+    </div>
+    <hr/>
+
+    <h3>Limitações:</h3>
+    <p>
+        A ferramenta <b>Copiar Texto Genérico</b> só funcionará corretamente em camadas que possuem o campo <i>nome</i> não nulo. Caso contrário, a ferramenta não poderá copiar o texto e exibirá uma mensagem de erro.
+    </p>
+</body>
+</html>

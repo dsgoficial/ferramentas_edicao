@@ -24,6 +24,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from .makeGrid import MakeGrid
 from .processingUtils import ProcessingUtils
 
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
 
 class ElevationPointsGeneralization(QgsProcessingAlgorithm):
 
@@ -679,7 +681,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         return ElevationPointsGeneralization()
 
     def name(self):
-        return "elevationpointsgeneralization"
+        return "elevationPointGeneralization"
 
     def displayName(self):
         return self.tr("Generalização de pontos cotados")
@@ -691,4 +693,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr("O algoritmo generaliza os pontos cotados baseados na escala")
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return  help().helpUrl(self.name())
