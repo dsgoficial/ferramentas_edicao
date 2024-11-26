@@ -123,9 +123,7 @@ class CompositionSingleton:
             or self.config.header
         )
         projectQptPath = (
-            productParams.get("projectPath", None)
-            if productType in ("militaryOrthoMap", "militaryTopoMap")
-            else self.setupPath(jsonData.get("projeto"))
+            self.setupPath(jsonData.get("projeto"))
             or productParams.get("qpt", {}).get(scale, {}).get("projectPath", None)
             or self.config.project
         )

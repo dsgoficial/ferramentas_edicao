@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.67
+## 1.2.68
 
 Novas Funcionalidades
 
@@ -87,6 +87,7 @@ Correção de bug:
 - Corrigido o bug em changeAttributeTopo.py na configuração de atributos default em Ocupação do Solo.
 - Inserido o estilo para infra_barragem_a e infra_elemento_infraestrutura_l para o caso Comporta.
 - Corrigido o bug no placeBorderOfHydrographicElement do funcionamento apenas em feições selecionadas.
+- Corrige projeto em produto militar;
 
 ## 1.1.90
 
