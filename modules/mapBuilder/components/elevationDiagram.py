@@ -116,12 +116,16 @@ class ElevationDiagram(ComponentUtils, IComponent):
             valaLayer.loadNamedStyle(str(self.stylesFolder / "infra_vala_l.qml"), True)
             valaLayer.triggerRepaint()
         elevationPointsIdx, pointsLayer = next(
-            filter(lambda x: x[1].name() == "elemnat_ponto_cotado_p", enumerate(layers))
+            filter(
+                lambda x: x[1].name() == "elemnat_ponto_cotado_p", enumerate(layers)
+            ),
+            None
         )
         generalizedPoints, outputGrid = self.getGeneralizedPoints(
             pointsLayer, geographicBoundsLyr, data.get("scale")
         )
-        layers[elevationPointsIdx] = generalizedPoints
+        if generalizedPoints is not None:
+            layers[elevationPointsIdx] = generalizedPoints
         layers.append(outputGrid)
         (
             elevationSlicingRasterLyr,
@@ -322,13 +326,14 @@ class ElevationDiagram(ComponentUtils, IComponent):
             },
             context=QgsProcessingContext(),
             feedback=QgsProcessingFeedback(),
-        )
-        outputPoints = processingOutput["OUTPUT_POINTS"]
-        outputPoints.loadNamedStyle(
-            str(self.stylesFolder / "elemnat_ponto_cotado_p.qml"), True
-        )
-        outputPoints.triggerRepaint()
-        QgsProject.instance().addMapLayer(outputPoints, False)
+        ) if pointsLayer is not None else None
+        outputPoints = processingOutput["OUTPUT_POINTS"] if processingOutput is not None else None
+        if outputPoints is not None:
+            outputPoints.loadNamedStyle(
+                str(self.stylesFolder / "elemnat_ponto_cotado_p.qml"), True
+            )
+            outputPoints.triggerRepaint()
+            QgsProject.instance().addMapLayer(outputPoints, False)
 
         outputGrid = processingOutput["OUTPUT_GRID"]
         outputGrid.loadNamedStyle(

@@ -404,7 +404,7 @@ class MapBuildController(MapBuildControllerUtils):
             filePathError = jsonStructure.validate_file_paths(jsonData)
             if filePathError != "":
                 if is_headless:
-                    print("Erro")
+                    print("Erro no arquivo do diagrama de elevação.")
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -489,6 +489,19 @@ class MapBuildController(MapBuildControllerUtils):
                 exportResult = False
                 continue
             del abstractDb
+            imageError = jsonStructure.validate_rasters_against_extents(frameLyr=mapExtentsLyr, input_dict=jsonData)
+            if imageError != "":
+                if is_headless:
+                    print(f"Erro: {imageError}")
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"Erro: {imageError}" "",
+                    )
+                exportResult = False
+                continue
+
             builder = self.getProductBuilder(productType, versionFolder)
             # builder.removeLayers(False)
             composition = self.compositions.getComposition(jsonData).clone()

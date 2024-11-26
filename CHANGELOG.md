@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.59
+## 1.2.68
 
 Novas Funcionalidades
 
@@ -32,6 +32,9 @@ Melhorias:
 - Refatoração do Insere Ponto de Mudança para compatibilidade com Workflow e organização;
 - Melhora o nome do arquivo de carta especial;
 - Parâmetros de distancias conforme sistema da camada de referência
+- Inserido o constr_ocupacao_solo_l na lista de camadas que tem seu atributo alterado conforme o changeAttributeTopo.py
+- Adicionada verificação de bounding box do produto versus imagens antes da exportação;
+- Corrigido bug na carta orto de quando não tem ponto cotado nas classes opcionais;
 
 Correção de bug:
 
@@ -80,6 +83,11 @@ Correção de bug:
 - Corrigido o bug de rotação de elemnat_elemento_hidrografico_p
 - Inserido os estilos de Estação Meteorológica e Cemitério Israelita nas respectivas classes.
 - Inserido o estilo de Caverna em elemnat_elemento_fisiografico_p.
+- Inserido o estilo para Cemitério Mulçumano em edicao_simb_area_p e em constr_ocupacao_solo_p.
+- Corrigido o bug em changeAttributeTopo.py na configuração de atributos default em Ocupação do Solo.
+- Inserido o estilo para infra_barragem_a e infra_elemento_infraestrutura_l para o caso Comporta.
+- Corrigido o bug no placeBorderOfHydrographicElement do funcionamento apenas em feições selecionadas.
+- Corrige projeto em produto militar;
 
 ## 1.1.90
 
