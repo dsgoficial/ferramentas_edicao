@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.66
+## 1.2.67
 
 Novas Funcionalidades
 
@@ -34,6 +34,7 @@ Melhorias:
 - Parâmetros de distancias conforme sistema da camada de referência
 - Inserido o constr_ocupacao_solo_l na lista de camadas que tem seu atributo alterado conforme o changeAttributeTopo.py
 - Adicionada verificação de bounding box do produto versus imagens antes da exportação;
+- Corrigido bug na carta orto de quando não tem ponto cotado nas classes opcionais;
 
 Correção de bug:
 
