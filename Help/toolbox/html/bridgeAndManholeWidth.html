@@ -11,18 +11,18 @@
 
 <h2 class="western">Descrição:</h2>
 <h4 class="western" align="center" style="border: none; padding: 0cm">
-O algoritmo define a largura de representação das pontes, viadutos e outras feições que compõem a camada de elemento viário, levando em consideração, inclusive, as sobreposições com as vias de deslocamento.
+O algoritmo define a largura de representação das pontes, viadutos e outras feições que compõem a camada de elemento viário, levando em consideração, inclusive, as sobreposições com as vias de deslocamento e ferrovias.
 </h4>
 <hr/>
 
 <h2>Parâmetros:</h2>
          <p>
             <span style="margin-bottom: 10px;">
-                &#8226; Selecionar a camada de elemento viário (Ponto) &rarr;  Indicar a camada que contém os elementos viários com geometria do tipo ponto. Há a possibilidade de executar apenas os elementos selecionados.
+                &#8226; Selecionar a camada de elemento viário (Ponto) &rarr;  Indicar a camada que contém os elementos viários com geometria do tipo ponto. Há a possibilidade de executar apenas os elementos selecionados. Parâmetro opcional.
             </span>
             
             <span style="margin-bottom: 10px;">
-                &#8226; Selecionar o atributo de largura &rarr;  Indicar o atributo da camada acima que contém a informação da largura da simbologia.
+                &#8226; Selecionar o atributo de largura (ponto) &rarr;  Indicar o atributo da camada acima que contém a informação da largura da simbologia da camada ponto.
             </span>
             
             <span style="margin-bottom: 10px;">
@@ -30,11 +30,15 @@ O algoritmo define a largura de representação das pontes, viadutos e outras fe
             </span>
 
             <span style="margin-bottom: 10px;"></span>
-            &#8226; Selecionar o atributo de largura &rarr;  Indicar o atributo da camada acima que contém a informação da largura da simbologia.
+            &#8226; Selecionar o atributo de largura (linha) &rarr;  Indicar o atributo da camada acima que contém a informação da largura da simbologia da camada linha.
             </span>
 
             <span style="margin-bottom: 10px;"></span>
             &#8226; Selecionar camada de rodovia &rarr;  Indicar a camada que contém as vias de deslocamento.
+            </span>
+
+            <span style="margin-bottom: 10px;"></span>
+            &#8226; Selecionar camada de ferrovia &rarr;  Indicar a camada que contém as ferrovias.
             </span>
             
          </p>  
@@ -52,23 +56,19 @@ O algoritmo define a largura de representação das pontes, viadutos e outras fe
 
 <p>
     <span style="margin-bottom: 10px;">
-        &#8226; Selecionar a camada de elemento viário (Ponto) &rarr;  infra_elemento_viario_p
-    </span>
-    
-    <span style="margin-bottom: 10px;">
-        &#8226; Selecionar o atributo de largura &rarr;  largura_simbologia
-    </span>
-    
-    <span style="margin-bottom: 10px;">
         &#8226; Selecionar a camada de elemento viário (Linha) &rarr;  infra_elemento_viario_l
     </span>
 
     <span style="margin-bottom: 10px;"></span>
-    &#8226; Selecionar o atributo de largura &rarr;  largura_simbologia
+    &#8226; Selecionar o atributo de largura (Linha) &rarr;  largura_simbologia
     </span>
 
     <span style="margin-bottom: 10px;"></span>
     &#8226; Selecionar camada de rodovia &rarr;  infra_via_deslocamento_l
+    </span>
+
+    <span style="margin-bottom: 10px;"></span>
+    &#8226; Selecionar camada de ferrovia &rarr;  infra_ferrovia_l
     </span>
     
  </p>   
