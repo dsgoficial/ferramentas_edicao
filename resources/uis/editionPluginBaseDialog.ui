@@ -27,17 +27,7 @@
       <widget class="QComboBox" name="productType">
        <item>
         <property name="text">
-         <string>Carta Topográfica 1.3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Carta Topográfica 1.4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Carta Ortoimagem 2.4</string>
         </property>
        </item>
        <item>
@@ -52,17 +42,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Carta Ortoimagem Militar 2.4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Carta Ortoimagem Militar 2.5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Carta Topográfica Militar 1.3</string>
         </property>
        </item>
        <item>

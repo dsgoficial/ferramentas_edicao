@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.3
+
+- Remove modelagens Topo 1.3 e Orto 2.4
+
 ## 1.2.68
 
 Novas Funcionalidades
