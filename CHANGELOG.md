@@ -2,7 +2,15 @@
 
 ## 1.3
 
+Novas Funcionalidades:
+
 - Remove modelagens Topo 1.3 e Orto 2.4
+
+Melhorias:
+
+Correção de bug:
+
+- Inserido o estilo para tipo = 802 (Moinho) em constr_ocupacao_solo_p
 
 ## 1.2.68
 
