@@ -133,6 +133,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             processing_function = self.defaultEdicao
         elif table_name in ["elemnat_curva_nivel_l"]:
             processing_function = self.defaultCurvaNivel
+        elif table_name in ["infra_barragem_l", "infra_barragem_a"]:
+            processing_function = self.defaultBarragem
         elif table_name in ["infra_ferrovia_l"]:
             processing_function = self.defaultFerrovia
         elif table_name in ["infra_via_deslocamento_l"]:
@@ -167,6 +169,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
     def defaultExtMineral(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
+        feature["visivel"] = 1
         if (
             "texto_edicao" in feature.fields().names()
             and feature["texto_edicao"] != NULL
@@ -333,6 +336,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
     def defaultInfraElemInfra(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
+        feature["visivel"] = 1
         return feature
 
     def defaultEdicao(self, feature, lyrCrs):
@@ -358,6 +362,10 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return feature
 
     def defaultFerrovia(self, feature, lyrCrs):
+        feature["visivel"] = 1
+        return feature
+    
+    def defaultBarragem(self, feature, lyrCrs):
         feature["visivel"] = 1
         return feature
 
@@ -450,6 +458,14 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return feature
 
     def defaultPistaPouso(self, feature, lyrCrs):
+        situacao_fisica_map = {
+            0: "Desconhecida",
+            1: "Abandonada",
+            2: "Destruída",
+            3: "Construída",
+            4: "Em construção"
+        }
+
         feature["justificativa_txt"] = 2
         feature["visivel"] = 1
         if (
@@ -465,7 +481,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             if feature["nome"] != NULL:
                 texto_edicao.append(feature["nome"])
             if feature["situacao_fisica"] != 3:
-                texto_edicao.append("(" + feature["situacao_fisica"].lower() + ")")
+                situacao = situacao_fisica_map.get(feature["situacao_fisica"], "Desconhecida")
+                texto_edicao.append("(" + situacao.lower() + ")")
 
             if feature["revestimento"] == 1:
                 texto_edicao.append("Revestimento natural")
@@ -546,7 +563,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return feature
 
     def defaultDeposito(self, feature, lyrCrs):
-        feature["justificativa_txt"] = 2
+        feature["justificativa_txt"] = 1
         feature["visivel"] = 1
         feature["exibir_linha_rotulo"] = 2
         if (
@@ -565,7 +582,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return feature
 
     def defaultEdificacao(self, feature, lyrCrs):
-        feature["justificativa_txt"] = 2
+        feature["justificativa_txt"] = 1
         feature["visivel"] = 1
         feature["exibir_linha_rotulo"] = 2
         if "suprimir_bandeira" in [field.name() for field in feature.fields()]:
@@ -584,7 +601,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return feature
 
     def defaultElementoViario(self, feature, lyrCrs):
-        feature["justificativa_txt"] = 2
+        feature["justificativa_txt"] = 1
         feature["visivel"] = 1
         feature["exibir_lado_simbologia"] = 1
         feature["exibir_ponta_simbologia"] = 1
@@ -603,9 +620,20 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
     def defaultOcupacaoSolo(self, feature, lyrCrs):
         feature["visivel"] = 1
-        feature["justificativa_txt"] = 2
+        feature["justificativa_txt"] = 1
         if feature["nome"] != NULL:
             feature["texto_edicao"] = self.abreviaNomeOcupacaoSolo(feature["nome"])
+        elif feature["tipo"] in (301,302,303,304,305,306,307):
+            tipo_ocupacao_map = {
+                301: "Pista de atletismo",
+                302: "Pista de ciclismo",
+                303: "Pista de motociclismo",
+                304: "Pista de automobilismo",
+                305: "Pista de corrida de cavalos",
+                306: "Pista de bicicross",
+                307: "Pista de motocross",
+            }
+            feature["texto_edicao"] = tipo_ocupacao_map.get(feature["tipo"])
         
         return feature
 
