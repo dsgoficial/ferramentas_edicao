@@ -10,7 +10,8 @@ Melhorias:
 
 Correção de bug:
 
-- Inserido o estilo para tipo = 802 (Moinho) em constr_ocupacao_solo_p
+- Inserido o estilo para tipo = 802 (Moinho) em constr_ocupacao_solo_p; 
+- Corrigido o bug de rótulo em constr_edificacao_p
 
 ## 1.2.68
 
