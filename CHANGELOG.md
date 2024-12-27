@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.2.69
+## 1.2.70
 
 Novas Funcionalidades
 
@@ -88,7 +88,8 @@ Correção de bug:
 - Inserido o estilo para infra_barragem_a e infra_elemento_infraestrutura_l para o caso Comporta.
 - Corrigido o bug no placeBorderOfHydrographicElement do funcionamento apenas em feições selecionadas.
 - Corrige projeto em produto militar;
-- Inserido o estilo de Moinho em constr_ocupacao_solo_p;
+- Inserido o estilo de Moinho em constr_ocupacao_solo_p; e
+- Corrigido o bug de rótulo em constr_edificacao_p
 
 ## 1.1.90
 
