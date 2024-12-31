@@ -27,7 +27,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFontMarkerSymbolLayer,
     QgsMarkerLineSymbolLayer,
-    QgsProcessingException,
+    QgsCoordinateReferenceSystem,
     NULL,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
@@ -399,142 +399,153 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
         multiStepFeedback.pushInfo(self.tr("Verificando as camadas."))
         multiStepFeedback.setCurrentStep(0)
-        allLayers = []
+        
+        # Collect layers
         infra_via_deslocamento_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_VIA, context
         )
-        if infra_via_deslocamento_l is not None:
-            allLayers.append(infra_via_deslocamento_l)
         constr_edificacao_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_EDIF_P, context
         )
-        if constr_edificacao_p is not None:
-            allLayers.append(constr_edificacao_p)
         edicao_simb_area_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_EDICAO_SIMB_AREA, context
         )
-        if edicao_simb_area_p is not None:
-            allLayers.append(edicao_simb_area_p)
         cobter_massa_dagua_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_MASSA_DAGUA, context
         )
-        if cobter_massa_dagua_a is not None:
-            allLayers.append(cobter_massa_dagua_a)
         constr_deposito_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_DEPOSITO_P, context
         )
-        if constr_deposito_p is not None:
-            allLayers.append(constr_deposito_p)
         constr_extracao_mineral_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_EXT_MIN_P, context
         )
-        if constr_extracao_mineral_p is not None:
-            allLayers.append(constr_extracao_mineral_p)
         constr_ocupacao_solo_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_OCUP_SOLO_P, context
         )
-        if constr_ocupacao_solo_p is not None:
-            allLayers.append(constr_ocupacao_solo_p)
         edicao_identificador_trecho_rod_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_IDENT_TRECHO_ROD, context
         )
-        if edicao_identificador_trecho_rod_p is not None:
-            allLayers.append(edicao_identificador_trecho_rod_p)
         edicao_simb_torre_energia_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_SIMB_TORRE_ENERGIA, context
         )
-        if edicao_simb_torre_energia_p is not None:
-            allLayers.append(edicao_simb_torre_energia_p)
         edicao_simb_direcao_corrente_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_SIMB_DIRECAO_CORRENTE, context
         )
-        if edicao_simb_direcao_corrente_p is not None:
-            allLayers.append(edicao_simb_direcao_corrente_p)
         elemnat_ponto_cotado_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_PONTO_COTADO, context
         )
-        if elemnat_ponto_cotado_p is not None:
-            allLayers.append(elemnat_ponto_cotado_p)
         infra_elemento_energia_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEM_ENERGIA_P, context
         )
-        if infra_elemento_energia_p is not None:
-            allLayers.append(infra_elemento_energia_p)
         infra_elemento_infraestrutura_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEM_INFRA_P, context
         )
-        if infra_elemento_infraestrutura_p is not None:
-            allLayers.append(infra_elemento_infraestrutura_p)
         infra_pista_pouso_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_PISTA_POUSO_P, context
         )
-        if infra_pista_pouso_p is not None:
-            allLayers.append(infra_pista_pouso_p)
         constr_ocupacao_solo_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_OCUP_SOLO_L, context
         )
-        if constr_ocupacao_solo_l is not None:
-            allLayers.append(constr_ocupacao_solo_l)
         infra_pista_pouso_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_PISTA_POUSO_L, context
         )
-        if infra_pista_pouso_l is not None:
-            allLayers.append(infra_pista_pouso_l)
         constr_deposito_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_DEPOSITO_A, context
         )
-        if constr_deposito_a is not None:
-            allLayers.append(constr_deposito_a)
         constr_edificacao_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_EDIF_A, context
         )
-        if constr_edificacao_a is not None:
-            allLayers.append(constr_edificacao_a)
         constr_extracao_mineral_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_EXT_MIN_A, context
         )
-        if constr_extracao_mineral_a is not None:
-            allLayers.append(constr_extracao_mineral_a)
         constr_ocupacao_solo_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_OCUP_SOLO_A, context
         )
-        if constr_ocupacao_solo_a is not None:
-            allLayers.append(constr_ocupacao_solo_a)
         infra_elemento_energia_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEM_ENERGIA_A, context
         )
-        if infra_elemento_energia_a is not None:
-            allLayers.append(infra_elemento_energia_a)
         infra_elemento_infraestrutura_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEM_INFRA_A, context
         )
-        if infra_elemento_infraestrutura_a is not None:
-            allLayers.append(infra_elemento_infraestrutura_a)
         infra_pista_pouso_a = self.parameterAsVectorLayer(
             parameters, self.INPUT_PISTA_POUSO_A, context
         )
-        if infra_pista_pouso_a is not None:
-            allLayers.append(infra_pista_pouso_a)
         infra_elemento_viario_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEMENTO_VIARIO_L, context
         )
-        if infra_elemento_viario_l is not None:
-            allLayers.append(infra_elemento_viario_l)
         infra_elemento_viario_p = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEMENTO_VIARIO_P, context
         )
-        if infra_elemento_viario_p is not None:
-            allLayers.append(infra_elemento_viario_p)
         elemnat_trecho_drenagem_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_TRECHO_DRENAGEM, context
         )
-        if elemnat_trecho_drenagem_l is not None:
-            allLayers.append(elemnat_trecho_drenagem_l)
         infra_ferrovia_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_FERROVIA, context
         )
-        if infra_ferrovia_l is not None:
-            allLayers.append(infra_ferrovia_l)
+        
+        # Collect all layers
+        allLayers = []
+        layerVars = [
+            infra_via_deslocamento_l, constr_edificacao_p, edicao_simb_area_p, 
+            cobter_massa_dagua_a, constr_deposito_p, constr_extracao_mineral_p,
+            constr_ocupacao_solo_p, edicao_identificador_trecho_rod_p, 
+            edicao_simb_torre_energia_p, edicao_simb_direcao_corrente_p,
+            elemnat_ponto_cotado_p, infra_elemento_energia_p, 
+            infra_elemento_infraestrutura_p, infra_pista_pouso_p,
+            constr_ocupacao_solo_l, infra_pista_pouso_l, 
+            constr_deposito_a, constr_edificacao_a, constr_extracao_mineral_a, 
+            constr_ocupacao_solo_a, infra_elemento_energia_a, 
+            infra_elemento_infraestrutura_a, infra_pista_pouso_a, 
+            infra_elemento_viario_l, infra_elemento_viario_p, 
+            elemnat_trecho_drenagem_l, infra_ferrovia_l
+        ]
+        
+        # Collect layers and check CRS
+        projected_layers = []
+        geographic_layers_exist = False
+        
+        for layer in layerVars:
+            if layer is not None:
+                # Check if layer is geographic
+                if layer.crs().isGeographic():
+                    geographic_layers_exist = True
+                    # Reproject to Web Mercator (EPSG:3857)
+                    projected_layer = self.reprojectLayer(
+                        layer, 
+                        QgsCoordinateReferenceSystem('EPSG:3857'), 
+                        context
+                    )
+                    projected_layers.append(projected_layer)
+                    allLayers.append(projected_layer)
+                else:
+                    projected_layers.append(layer)
+                    allLayers.append(layer)
+        
+        # Reproject frame layer if it exists
+        if frameLyrPre:
+            if frameLyrPre.crs().isGeographic():
+                frameLyr = self.reprojectLayer(
+                    frameLyrPre, 
+                    QgsCoordinateReferenceSystem('EPSG:3857'), 
+                    context
+                )
+            else:
+                frameLyr = frameLyrPre
+        else:
+            frameLyr = None
+        
+        # If no layers or all layers are empty, return
+        if len(allLayers) == 0:
+            return
+        
+        # If any layer is geographic, inform the user
+        if geographic_layers_exist:
+            feedback.pushInfo(self.tr(
+                "Algumas camadas estavam em coordenadas geográficas. "
+                "Todas foram reprojetadas para EPSG:3857 (Web Mercator) para processamento."
+            ))
+        
+        # Restore original exceptions using projected layers
         exceptions = [
             {infra_via_deslocamento_l, cobter_massa_dagua_a},
             {infra_via_deslocamento_l, infra_via_deslocamento_l},
@@ -558,26 +569,11 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             {infra_ferrovia_l, edicao_simb_torre_energia_p},
             {infra_ferrovia_l, infra_ferrovia_l},
         ]
-        layersSet = self.generateLayerSet(allLayers)
+        
+        layersSet = self.generateLayerSet(projected_layers)
         verifyList = [layerSet for layerSet in layersSet if layerSet not in exceptions]
-        if len(allLayers) == 0:
-            return
-        crs = allLayers[0].crs()
-        if crs.isGeographic():
-            raise QgsProcessingException(
-                "Verificar sobreposição não pode ser feito em lat/long"
-            )
-        frameLyr = (
-            self.algRunner.runDissolve(
-                inputLyr=frameLyrPre,
-                feedback=multiStepFeedback,
-                context=context,
-                is_child_algorithm=False,
-            )
-            if frameLyrPre
-            else None
-        )
-
+        
+        # Prepare output fields
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
         fields.append(QgsField("camada_1", QVariant.String))
@@ -588,17 +584,23 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             context,
             fields,
             QgsWkbTypes.MultiPolygon,
-            crs,
+            QgsCoordinateReferenceSystem('EPSG:3857')
         )
+        
         multiStepFeedback.setCurrentStep(1)
         multiStepFeedback.pushInfo(self.tr("Calculando as interseções."))
+        
+        # Calculate intersections in the projected CRS
         featSet = self.calculateIntersections(
             verifyList, scale, fields, context, feedback=multiStepFeedback
         )
+        
         multiStepFeedback.setCurrentStep(2)
         featSet = self.removeOutputFeatures(
             featSet, frameLyr, min_area, context, multiStepFeedback
         )
+        
+        # Add features to the sink
         list(
             map(
                 lambda x: feats_sink.addFeature(x, QgsFeatureSink.FastInsert),
@@ -1072,6 +1074,33 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             if not feat_geom.intersects(dissolved_geom):
                 featsToKeep.remove(feat)
         return featsToKeep
+
+    def reprojectLayer(self, inputLayer, targetCrs, context, feedback=None):
+        """
+        Reprojects a layer to the target coordinate reference system using QGIS native processing
+        
+        :param inputLayer: Input vector layer to be reprojected
+        :param targetCrs: Target coordinate reference system
+        :param context: QGIS processing context
+        :param feedback: Optional processing feedback
+        :return: Reprojected layer
+        """
+        # Use native QGIS reproject algorithm
+        parameters = {
+            'INPUT': inputLayer,
+            'TARGET_CRS': targetCrs,
+            'OUTPUT': 'memory:'
+        }
+        
+        # Run the native reproject algorithm
+        result = processing.run(
+            'native:reprojectlayer', 
+            parameters, 
+            context=context, 
+            feedback=feedback
+        )
+        
+        return result['OUTPUT']
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
