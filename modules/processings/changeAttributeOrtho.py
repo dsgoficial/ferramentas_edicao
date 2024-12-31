@@ -160,6 +160,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultExtMineral(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
+        feature["visivel"] = 1
         if (
             "texto_edicao" in feature.fields().names()
             and feature["texto_edicao"] != NULL
@@ -321,6 +322,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultInfraElemInfra(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
+        feature["visivel"] = 1
         if (
             "texto_edicao" in feature.fields().names()
             and feature["texto_edicao"] != NULL
@@ -384,6 +386,14 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         return feature
 
     def defaultPistaPouso(self, feature, lyrCrs):
+        situacao_fisica_map = {
+            0: "Desconhecida",
+            1: "Abandonada",
+            2: "Destruída",
+            3: "Construída",
+            4: "Em construção"
+        }
+
         feature["justificativa_txt"] = 2
         if feature["tipo"] != 10:
             feature["visivel"] = 1
@@ -396,7 +406,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             if feature["nome"] != NULL:
                 texto_edicao.append(feature["nome"])
             if feature["situacao_fisica"] != 3:
-                texto_edicao.append("(" + feature["situacao_fisica"].lower() + ")")
+                situacao = situacao_fisica_map.get(feature["situacao_fisica"], "Desconhecida")
+                texto_edicao.append("(" + situacao.lower() + ")")
 
             if feature["revestimento"] == 1:
                 texto_edicao.append("Revestimento natural")

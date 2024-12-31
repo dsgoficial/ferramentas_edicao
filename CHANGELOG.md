@@ -1,6 +1,21 @@
 # CHANGELOG
 
+## 1.3
+
+Novas Funcionalidades:
+
+- Remove modelagens Topo 1.3 e Orto 2.4
+
 ## 1.2.70
+
+Melhorias:
+
+Correção de bug:
+
+- Inserido o estilo para tipo = 802 (Moinho) em constr_ocupacao_solo_p; 
+- Corrigido o bug de rótulo em constr_edificacao_p
+
+## 1.2.68
 
 Novas Funcionalidades
 
