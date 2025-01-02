@@ -38,10 +38,10 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             buttonImg,
             lambda _: None,
             self.tr(
-                'Cria feições com o texto "(APROXIMADO)" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" (e correspondentes para Carta Ortoimagem)'
+                'Cria feições com o texto "(APROXIMADO)" em "edicao_texto_generico_l" baseadas na proximidade na camada "llp_limite_legal_l" e/ou "edicao_limite_especial_l" (e correspondentes para Carta Ortoimagem)'
             ),
             self.tr(
-                'Cria feições com o texto "(APROXIMADO)" em "edicao_texto_generico_l" baseadas na proximidade na camada "edicao_limite_legal_l" e/ou "edicao_limite_especial_l" (e correspondentes para Carta Ortoimagem)'
+                'Cria feições com o texto "(APROXIMADO)" em "edicao_texto_generico_l" baseadas na proximidade na camada "llp_limite_legal_l" e/ou "edicao_limite_especial_l" (e correspondentes para Carta Ortoimagem)'
             ),
             self.iface,
         )
@@ -273,7 +273,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             )
         else:
             self.tolerance = self.getScale() * 0.005
-        srcLyr_legal = QgsProject.instance().mapLayersByName("edicao_limite_legal_l")
+        srcLyr_legal = QgsProject.instance().mapLayersByName("llp_limite_legal_l")
 
         if self.productTypeSelector.currentIndex() == 1:
             srcLyr_especial = QgsProject.instance().mapLayersByName(
@@ -283,7 +283,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             if len(srcLyr_legal) == 0 and len(srcLyr_especial) == 0:
                 self.displayErrorMessage(
                     self.tr(
-                        'Camada "edicao_limite_legal_l" e "edicao_limite_especial_l" não encontrada.'
+                        'Camada "llp_limite_legal_l" e "edicao_limite_especial_l" não encontrada.'
                     )
                 )
                 return None

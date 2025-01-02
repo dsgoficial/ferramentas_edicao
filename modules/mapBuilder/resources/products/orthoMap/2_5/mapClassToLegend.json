@@ -24,9 +24,13 @@
             "group": "hidrografia",
             "labels": ["massa_dagua"]
         },
-        "edicao_area_sem_dados_a":{
+        "llp_area_sem_dados_a":{
             "group": "limites",
             "labels": ["area_sem_dados"]
+        },
+        "infra_obstaculo_vertical_p":{
+            "group": "estruturas",
+            "labels": ["obstaculo_vertical"]
         },
         "infra_elemento_energia_l":{
             "group": "estruturas",
@@ -162,9 +166,13 @@
             "group": "hidrografia",
             "labels": ["massa_dagua"]
         },
-        "edicao_area_sem_dados_a":{
+        "llp_area_sem_dados_a":{
             "group": "limites",
             "labels": ["area_sem_dados"]
+        },
+        "infra_obstaculo_vertical_p":{
+            "group": "estruturas",
+            "labels": ["obstaculo_vertical"]
         },
         "infra_elemento_energia_l":{
             "group": "estruturas",
@@ -300,9 +308,13 @@
             "group": "hidrografia",
             "labels": ["massa_dagua"]
         },
-        "edicao_area_sem_dados_a":{
+        "llp_area_sem_dados_a":{
             "group": "limites",
             "labels": ["area_sem_dados"]
+        },
+        "infra_obstaculo_vertical_p":{
+            "group": "estruturas",
+            "labels": ["obstaculo_vertical"]
         },
         "infra_elemento_energia_l":{
             "group": "estruturas",
@@ -438,9 +450,13 @@
             "group": "hidrografia",
             "labels": ["massa_dagua"]
         },
-        "edicao_area_sem_dados_a":{
+        "llp_area_sem_dados_a":{
             "group": "limites",
             "labels": ["area_sem_dados"]
+        },
+        "infra_obstaculo_vertical_p":{
+            "group": "estruturas",
+            "labels": ["obstaculo_vertical"]
         },
         "infra_elemento_energia_l":{
             "group": "estruturas",

@@ -31,7 +31,7 @@ class SetSobrepositionLegalBoundary(QgsProcessingAlgorithm):
                 self.INPUT_LAYER_SOBREPOSITION_LIM,
                 self.tr("Selecionar de edicao_limite_legal"),
                 [QgsProcessing.TypeVectorLine],
-                defaultValue="edicao_limite_legal_l",
+                defaultValue="llp_limite_legal_l",
             )
         )
         self.addParameter(

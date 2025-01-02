@@ -50,7 +50,7 @@ class ConfigDefaults:
                 "infra_ferrovia_l",
                 "cobter_massa_dagua_a",
                 "elemnat_trecho_drenagem_l",
-                "edicao_area_sem_dados_a",
+                "llp_area_sem_dados_a",
                 "edicao_texto_generico_p",
                 "edicao_texto_generico_l",
             ]

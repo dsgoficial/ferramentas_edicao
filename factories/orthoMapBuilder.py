@@ -117,7 +117,7 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
 
             if "llp_unidade_federacao_a" in _toDisplay:
                 layersToDisplay.insert(
-                    0, {"table": "edicao_limite_legal_l", "schema": "edgv"}
+                    0, {"table": "llp_limite_legal_l", "schema": "edgv"}
                 )
 
             if "llp_area_pub_militar_a" in _toDisplay:

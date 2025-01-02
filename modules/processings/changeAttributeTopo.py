@@ -129,7 +129,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             "infra_elemento_infraestrutura_a",
         ]:
             processing_function = self.defaultInfraElemInfra
-        elif table_name in ["edicao_limite_legal_l"]:
+        elif table_name in ["llp_limite_legal_l"]:
             processing_function = self.defaultEdicao
         elif table_name in ["elemnat_curva_nivel_l"]:
             processing_function = self.defaultCurvaNivel
@@ -149,7 +149,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             processing_function = self.defaultPistaPouso
         elif table_name in ["llp_limite_especial_a"]:
             processing_function = self.defaultllp
-        elif table_name in ["edicao_area_sem_dados_a"]:
+        elif table_name in ["llp_area_sem_dados_a"]:
             processing_function = self.defaultAreaSemDados
         elif table_name in ["elemnat_trecho_drenagem_l"]:
             processing_function = self.defaultTrechoDrenagem

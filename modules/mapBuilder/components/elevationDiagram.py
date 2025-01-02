@@ -72,7 +72,7 @@ class ElevationDiagram(ComponentUtils, IComponent):
             "geographicBounds", [mapAreaFeature]
         )
         areaWithoutDataLayer = next(
-            filter(lambda x: x.name() == "edicao_area_sem_dados_a", layers), None
+            filter(lambda x: x.name() == "llp_area_sem_dados_a", layers), None
         )
         massaDaguaLayer = next(
             filter(lambda x: x.name() == "cobter_massa_dagua_a", layers), None

@@ -53,7 +53,7 @@
             "schema": "edgv"
         },
         {
-            "table": "infra_obstrucao_vertical_p",
+            "table": "infra_obstaculo_vertical_p",
             "schema": "edgv"
         },
         {

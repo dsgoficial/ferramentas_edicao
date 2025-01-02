@@ -45,6 +45,10 @@
             "schema": "edgv"
         },
         {
+            "table": "infra_obstaculo_vertical_p",
+            "schema": "edgv"
+        },
+        {
             "table": "elemnat_ponto_cotado_p",
             "schema": "edgv"
         },
@@ -179,7 +183,7 @@
             "schema": "edgv"
         },
         {
-            "table": "edicao_area_sem_dados_a",
+            "table": "llp_area_sem_dados_a",
             "schema": "edgv"
         },
         {

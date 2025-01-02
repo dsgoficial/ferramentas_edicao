@@ -104,7 +104,7 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
                 self.INPUT_BUILT_UP_AREAS,
                 self.tr("Áreas Edificadas"),
                 [QgsProcessing.TypeVectorPolygon],
-                defaultValue="cobter_area_construida_a",
+                defaultValue="cobter_area_edificada_a",
             )
         )
 

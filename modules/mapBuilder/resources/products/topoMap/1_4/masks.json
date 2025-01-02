@@ -1259,7 +1259,7 @@
             ]
         ]
     },
-    "edicao_area_sem_dados_a": {
+    "llp_area_sem_dados_a": {
         "": [
             [
                 "cobter_vegetacao_a",
@@ -1544,7 +1544,7 @@
             ]
         ]
     },
-    "edicao_limite_legal_l": {
+    "llp_limite_legal_l": {
         "Texto aproximado": [
             [
                 "auxiliar_moldura",
