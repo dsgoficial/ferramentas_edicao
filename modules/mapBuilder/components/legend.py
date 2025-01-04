@@ -41,13 +41,18 @@ class Legend:
                 "atracadouro_terminal",
                 "extracao_mineral",
                 "subestacao_energia_eletrica",
-                "trecho_de_energia",
+                "trecho_de_energia"
+            ],
+        },
+        "ov": {
+            "order": 5,
+            "order_classes": [
                 "obstaculo_vertical"
             ],
         },
-        "transporte_aereo": {"order": 5, "order_classes": ["pista_pouso", "heliponto"]},
+        "transporte_aereo": {"order": 6, "order_classes": ["pista_pouso", "heliponto"]},
         "hidrografia": {
-            "order": 6,
+            "order": 7,
             "order_classes": [
                 "massa_dagua",
                 "terreno_sujeito_inundacao",
@@ -56,7 +61,7 @@ class Legend:
             ],
         },
         "relevo": {
-            "order": 7,
+            "order": 8,
             "order_classes": ["elemento_fisiografico", "curva_nivel", "ponto_cotado"],
         },
     }
