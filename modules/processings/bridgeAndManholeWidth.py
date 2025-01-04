@@ -18,46 +18,15 @@ from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 class BridgeAndManholeWidth(QgsProcessingAlgorithm):
 
-    INPUT_LAYER_P = "INPUT_LAYER_P"
-    INPUT_FIELD_LAYER_P = "INPUT_FIELD_LAYER_P"
     INPUT_LAYER_L = "INPUT_LAYER_L"
     INPUT_FIELD_LAYER_L = "INPUT_FIELD_LAYER_L"
     INPUT_HIGHWAY = "INPUT_HIGHWAY"
     INPUT_RAILWAY = "INPUT_RAILWAY"
-    ONLY_SELECTED_P = "ONLY_SELECTED_P"
     ONLY_SELECTED_L = "ONLY_SELECTED_L"
 
-    POINT_FILTER_TYPES = [201, 202, 203, 204, 501, 302]
     LINE_FILTER_TYPES = [201, 202, 203, 204, 302]
 
     def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterVectorLayer(
-                self.INPUT_LAYER_P,
-                self.tr("Selecionar camada de elemento viário (Ponto)"),
-                [QgsProcessing.TypeVectorPoint],
-                defaultValue="infra_elemento_viario_p",
-                optional=True
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.ONLY_SELECTED_P,
-                self.tr("Executar somente nas feições ponto selecionadas"),
-            )
-        )
-        self.addParameter(
-            core.QgsProcessingParameterField(
-                self.INPUT_FIELD_LAYER_P,
-                self.tr("Selecionar o atributo de largura (Ponto)"),
-                type=core.QgsProcessingParameterField.Any,
-                parentLayerParameterName=self.INPUT_LAYER_P,
-                allowMultiple=False,
-                defaultValue="largura_simbologia",
-                optional=True
-            )
-        )
-
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_L,
@@ -102,15 +71,6 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        pointLayer = self.parameterAsVectorLayer(
-            parameters, self.INPUT_LAYER_P, context
-        )
-        onlySelectedP = self.parameterAsBool(parameters, self.ONLY_SELECTED_P, context)
-        pointWidthField = None
-        if pointLayer:
-            pointWidthField = self.parameterAsFields(
-                parameters, self.INPUT_FIELD_LAYER_P, context
-            )[0]
         lineLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
         onlySelectedL = self.parameterAsBool(parameters, self.ONLY_SELECTED_L, context)
         lineWidthField = self.parameterAsFields(
@@ -125,23 +85,10 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
 
         has_length_config = 'config_comprimento_simb' in lineLayer.fields().names()
 
-        steps = 1 if not pointLayer else 2
+        steps = 1
         multiStepFeedback = QgsProcessingMultiStepFeedback(steps, feedback)
         
         current_step = 0
-
-        if pointLayer:
-            multiStepFeedback.setCurrentStep(current_step)
-            self.setWidthFieldOnLayer(
-                pointLayer,
-                onlySelectedP,
-                pointWidthField,
-                highwayLayer,
-                railwayLayer,
-                self.POINT_FILTER_TYPES,
-                feedback=multiStepFeedback,
-            )
-            current_step += 1
 
         multiStepFeedback.setCurrentStep(current_step)
 
