@@ -4,7 +4,6 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
 
-from .bridgeAndManholeRotation import BridgeAndManholeRotation
 from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .buildElevationDiagram import BuildElevationDiagram
 from .damWidth import DamWidth
@@ -73,7 +72,6 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ElevationDiagramPointGeneralization())
         self.addAlgorithm(MakeGrid())
         self.addAlgorithm(BridgeAndManholeWidth())
-        self.addAlgorithm(BridgeAndManholeRotation())
         self.addAlgorithm(DamWidth())
         self.addAlgorithm(DefineBuildingRotation())
         self.addAlgorithm(RapidsAndWaterfallRotation())
