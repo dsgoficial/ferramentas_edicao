@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import processing
-
 from qgis import core
 from qgis.core import (
-    QgsFeatureRequest,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterEnum,
     QgsDistanceArea,
     QgsCoordinateReferenceSystem,
-    QgsProcessingFeatureSourceDefinition,
     QgsVectorLayerUtils,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -26,7 +21,6 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
     INPUT = "INPUT"
     ONLY_SELECTED = "ONLY_SELECTED"
     INPUT_VISIBLE_FIELD = "INPUT_VISIBLE_FIELD"
-    HIDE_FEATS = "HIDE_FEATS"
     SCALE = "SCALE"
     INPUT_SYMBOL_LAYER = "INPUT_SYMBOL_LAYER"
 
@@ -47,23 +41,13 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         self.addParameter(
             core.QgsProcessingParameterField(
                 self.INPUT_VISIBLE_FIELD,
-                self.tr(
-                    'Selecionar o atributo de "visibilidade" da camada ocupação do solo'
-                ),
+                self.tr('Selecionar o atributo de "visibilidade" da camada de entrada'),
                 type=core.QgsProcessingParameterField.Any,
                 parentLayerParameterName=self.INPUT,
                 allowMultiple=False,
                 defaultValue="visivel",
             )
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.HIDE_FEATS,
-                self.tr("Ocultar feições que não tem tamanho suficiente"),
-                defaultValue=False,
-            )
-        )
-
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.SCALE,
@@ -110,7 +94,6 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
-        hideFeats = self.parameterAsBool(parameters, self.HIDE_FEATS, context)
         inputLyrVisibleField = self.parameterAsFields(
             parameters, self.INPUT_VISIBLE_FIELD, context
         )[0]
@@ -118,6 +101,8 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
             parameters, self.INPUT_SYMBOL_LAYER, context
         )
         scaleIdx = self.parameterAsInt(parameters, self.SCALE, context)
+
+        # Configuração do cálculo de área apenas para tipos que mapeiam para 18
         d = QgsDistanceArea()
         d.setSourceCrs(
             QgsCoordinateReferenceSystem("EPSG:3857"), context.transformContext()
@@ -125,6 +110,7 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         bufferSize = d.convertLengthMeasurement(
             1.5e-3 * self.sizesDict[scaleIdx], inputLyr.crs().mapUnits()
         )
+        
         iterator = (
             inputLyr.getFeatures() if not onlySelected else inputLyr.selectedFeatures()
         )
@@ -136,35 +122,40 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         if nFeats == 0:
             return {}
         stepSize = 100 / nFeats
-        inputLyr.startEditing()
+
         simbAreaLayer.startEditing()
-        if hideFeats:
-            inputLyr.beginEditCommand(
-                "Ocultando feições da entrada que não tem tamanho suficiente para o símbolo"
-            )
         simbAreaLayer.beginEditCommand("Posicionando símbolos")
         newFeatList = []
+        
         for current, feat in enumerate(iterator):
             if feedback.isCanceled():
                 break
+            
+            # Verifica se a feição está visível
+            if feat[inputLyrVisibleField] != 1:
+                continue
+                
             if feat["tipo"] not in self.mappingDict:
                 continue
+                
             geom = feat.geometry()
             innerPoint = geom.centroid()
             if not innerPoint.within(geom):
                 innerPoint = geom.pointOnSurface()
-            buffer = innerPoint.buffer(bufferSize, -1)
-            if buffer.within(geom):
-                newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
-                newFeat["tipo"] = self.mappingDict[feat["tipo"]]
-                newFeatList.append(newFeat)
-            elif hideFeats:
-                feat[inputLyrVisibleField] = 2
-                inputLyr.updateFeature(feat)
+                
+            # Verifica o tamanho apenas para tipos que mapeiam para 18
+            if self.mappingDict[feat["tipo"]] == 18:
+                buffer = innerPoint.buffer(bufferSize, -1)
+                if not buffer.within(geom):
+                    continue
+                    
+            newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
+            newFeat["tipo"] = self.mappingDict[feat["tipo"]]
+            newFeatList.append(newFeat)
+            
             feedback.setProgress(current * stepSize)
+            
         simbAreaLayer.addFeatures(newFeatList)
-        if hideFeats:
-            inputLyr.endEditCommand()
         simbAreaLayer.endEditCommand()
         return {}
 
@@ -190,4 +181,4 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())
