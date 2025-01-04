@@ -314,16 +314,6 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterVectorLayer(
-                self.INPUT_ELEMENTO_VIARIO_P,
-                self.tr("Selecionar camada de elemento viário ponto"),
-                [QgsProcessing.TypeVectorPoint],
-                defaultValue="infra_elemento_viario_p",
-                optional=True,
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterVectorLayer(
                 self.INPUT_TRECHO_DRENAGEM,
                 self.tr("Selecionar camada de trecho de drenagem"),
                 [QgsProcessing.TypeVectorLine],
@@ -473,9 +463,6 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         infra_elemento_viario_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEMENTO_VIARIO_L, context
         )
-        infra_elemento_viario_p = self.parameterAsVectorLayer(
-            parameters, self.INPUT_ELEMENTO_VIARIO_P, context
-        )
         elemnat_trecho_drenagem_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_TRECHO_DRENAGEM, context
         )
@@ -496,16 +483,21 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             constr_deposito_a, constr_edificacao_a, constr_extracao_mineral_a, 
             constr_ocupacao_solo_a, infra_elemento_energia_a, 
             infra_elemento_infraestrutura_a, infra_pista_pouso_a, 
-            infra_elemento_viario_l, infra_elemento_viario_p, 
+            infra_elemento_viario_l, 
             elemnat_trecho_drenagem_l, infra_ferrovia_l
         ]
         
         # Collect layers and check CRS
         projected_layers = []
         geographic_layers_exist = False
+        output_crs = None
         
         for layer in layerVars:
             if layer is not None:
+                # Set output_crs on first valid layer if not already set
+                if output_crs is None:
+                    output_crs = layer.crs()
+                    
                 # Check if layer is geographic
                 if layer.crs().isGeographic():
                     geographic_layers_exist = True
@@ -520,6 +512,15 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                 else:
                     projected_layers.append(layer)
                     allLayers.append(layer)
+
+        # If any layer was geographic, use EPSG:3857 for output
+        if geographic_layers_exist:
+            output_crs = QgsCoordinateReferenceSystem('EPSG:3857')
+            if feedback:
+                feedback.pushInfo(self.tr(
+                    "Algumas camadas estavam em coordenadas geográficas. "
+                    "Todas foram reprojetadas para EPSG:3857 (Web Mercator) para processamento."
+                ))
         
         # Reproject frame layer if it exists
         if frameLyrPre:
@@ -555,10 +556,6 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             {infra_elemento_viario_l, cobter_massa_dagua_a},
             {infra_elemento_viario_l, infra_ferrovia_l},
             {infra_elemento_viario_l, elemnat_trecho_drenagem_l},
-            {infra_elemento_viario_p, infra_via_deslocamento_l},
-            {infra_elemento_viario_p, cobter_massa_dagua_a},
-            {infra_elemento_viario_p, infra_ferrovia_l},
-            {infra_elemento_viario_p, elemnat_trecho_drenagem_l},
             {elemnat_trecho_drenagem_l, infra_via_deslocamento_l},
             {elemnat_trecho_drenagem_l, cobter_massa_dagua_a},
             {elemnat_trecho_drenagem_l, infra_ferrovia_l},
@@ -584,7 +581,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             context,
             fields,
             QgsWkbTypes.MultiPolygon,
-            QgsCoordinateReferenceSystem('EPSG:3857')
+            output_crs or QgsCoordinateReferenceSystem('EPSG:3857')
         )
         
         multiStepFeedback.setCurrentStep(1)
@@ -626,44 +623,68 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-        for step, layerSet in enumerate(layersList):
-            layerList = list(layerSet)
-            if len(layerList) == 1:
-                a = b = layerList[0]
-            else:
-                a, b = layerList
-            if feedback is not None and feedback.isCanceled():
-                return
-            if feedback is not None:
-                multiStepFeedback.setCurrentStep(step * 5)
-            layer_pre_a = self.prepareInputLayer(a, context, None)
-            if feedback is not None:
-                multiStepFeedback.setCurrentStep(step * 5 + 1)
-            layer_a = self.polygonLayer(layer_pre_a, a, scale, context, feedback=None)
-            if a == b:
-                layer_pre_b = layer_pre_a
-                layer_b = layer_a
-            else:
+            
+        try:
+            for step, layerSet in enumerate(layersList):
+                if feedback is not None and feedback.isCanceled():
+                    return featSet
+                    
+                layerList = list(layerSet)
+                if len(layerList) == 1:
+                    a = b = layerList[0]
+                else:
+                    a, b = layerList
+                    
                 if feedback is not None:
-                    multiStepFeedback.setCurrentStep(step * 5 + 2)
-                layer_pre_b = self.prepareInputLayer(b, context, feedback=None)
+                    multiStepFeedback.setCurrentStep(step * 5)
+                    
+                # Keep references to prepared layers
+                layer_pre_a = self.prepareInputLayer(a, context, None)
+                
                 if feedback is not None:
-                    multiStepFeedback.setCurrentStep(step * 5 + 3)
-                layer_b = self.polygonLayer(
-                    layer_pre_b, b, scale, context, feedback=multiStepFeedback
-                )
+                    multiStepFeedback.setCurrentStep(step * 5 + 1)
+                    
+                layer_a = self.polygonLayer(layer_pre_a, a, scale, context, feedback=None)
+                
+                if a == b:
+                    layer_pre_b = layer_pre_a
+                    layer_b = layer_a
+                else:
+                    if feedback is not None:
+                        multiStepFeedback.setCurrentStep(step * 5 + 2)
+                    layer_pre_b = self.prepareInputLayer(b, context, feedback=None)
+                    
+                    if feedback is not None:
+                        multiStepFeedback.setCurrentStep(step * 5 + 3)
+                    layer_b = self.polygonLayer(
+                        layer_pre_b, b, scale, context, feedback=multiStepFeedback
+                    )
+                    
+                if feedback is not None:
+                    multiStepFeedback.setCurrentStep(step * 5 + 4)
+                    
+                # Process intersections with error handling
+                try:
+                    featSet_a_b = self.getIntersectionsFeats(
+                        layer_a,
+                        layer_pre_a,
+                        layer_b,
+                        layer_pre_b,
+                        fields,
+                        context,
+                        feedback=multiStepFeedback,
+                    )
+                    featSet = featSet.union(featSet_a_b)
+                except Exception as e:
+                    if feedback is not None:
+                        feedback.pushInfo(f"Error processing intersection for layers {a.name()} and {b.name()}: {str(e)}")
+                    continue
+                    
+        except Exception as e:
             if feedback is not None:
-                multiStepFeedback.setCurrentStep(step * 5 + 4)
-            featSet_a_b = self.getIntersectionsFeats(
-                layer_a,
-                layer_pre_a,
-                layer_b,
-                layer_pre_b,
-                fields,
-                context,
-                feedback=multiStepFeedback,
-            )
-            featSet = featSet.union(featSet_a_b)
+                feedback.pushInfo(f"Error in calculateIntersections: {str(e)}")
+            raise
+            
         return featSet
 
     def prepareInputLayer(self, lyr, context, feedback=None) -> QgsVectorLayer:
@@ -944,76 +965,134 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         layer.commitChanges()
 
     def getIntersectionsFeats(
-        self,
-        layer1: QgsVectorLayer,
-        layer1_pre: QgsVectorLayer,
-        layer2: QgsVectorLayer,
-        layer2_pre: QgsVectorLayer,
-        fields,
-        context,
-        frameLyr=None,
-        feedback=None,
-    ) -> Set[QgsFeature]:
+            self,
+            layer1: QgsVectorLayer,
+            layer1_pre: QgsVectorLayer,
+            layer2: QgsVectorLayer,
+            layer2_pre: QgsVectorLayer,
+            fields,
+            context,
+            frameLyr=None,
+            feedback=None,
+        ) -> Set[QgsFeature]:
         features = set()
         if feedback is not None:
             multiStepFeedback = QgsProcessingMultiStepFeedback(6, feedback)
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-        newlayer1 = self.addIdField(layer1.clone(), "id_pol", context, None)
-        if feedback is not None:
-            multiStepFeedback.setCurrentStep(1)
-        newlayer2 = self.addIdField(layer2.clone(), "id_pol", context, None)
-        if feedback is not None:
-            multiStepFeedback.setCurrentStep(2)
-        self.algRunner.runCreateSpatialIndex(newlayer1, context, None)
-        if feedback is not None:
-            multiStepFeedback.setCurrentStep(3)
-        self.algRunner.runCreateSpatialIndex(newlayer2, context, None)
-        if feedback is not None:
-            multiStepFeedback.setCurrentStep(4)
-        interLayer = self.algRunner.runJoinAttributesByLocation(
-            inputLyr=newlayer1, joinLyr=newlayer2, context=context
-        )
-        if feedback is not None:
-            multiStepFeedback.setCurrentStep(5)
-            nSteps = interLayer.featureCount()
-            progressStep = 100 / nSteps if nSteps != 0 else 0
-        alreadyVerify = []
-        for step, feat in enumerate(interLayer.getFeatures()):
-            if feedback is not None and feedback.isCanceled():
-                return
-            if {feat["id"], feat["id_2"]} in alreadyVerify:
-                continue
-            alreadyVerify.append({feat["id"], feat["id_2"]})
-            if feat["id"] == feat["id_2"]:
-                continue
-            feat1_orig = layer1_pre.getFeature(feat["new_id"])
-            feat2_orig = layer2_pre.getFeature(feat["new_id_2"])
-            if feat1_orig.geometry().intersects(feat2_orig.geometry()):
-                continue
-            feat1 = layer1.getFeature(feat["id_pol"])
-            feat2 = layer2.getFeature(feat["id_pol_2"])
-            intersection = feat1.geometry().intersection(feat2.geometry())
-            if intersection.isEmpty() or (
-                not intersection.wkbType() == QgsWkbTypes.Polygon
-                and not intersection.wkbType() == QgsWkbTypes.MultiPolygon
-            ):
-                continue
-            if frameLyr is not None:
-                if not self.geomInLayer(intersection, frameLyr, multiStepFeedback):
-                    continue
-            intersection.convertToMultiType()
-            newFeat = QgsFeature(fields)
-            newFeat.setGeometry(intersection)
-            id1 = feat["id"] if feat["id"] is not None else "NULL"
-            id2 = feat["id_2"] if feat["id_2"] is not None else "NULL"
-            newFeat["id"] = id1 + "_" + id2
-            newFeat["camada_1"] = feat1["nome_camada"]
-            newFeat["camada_2"] = feat2["nome_camada"]
-            features.add(newFeat)
+            
+        try:
+            # Store references to cloned layers to prevent premature deletion
+            newlayer1 = None
+            newlayer2 = None
+            interLayer = None
+            
+            # Clone layers and add ID fields
+            if layer1 is not None:
+                newlayer1 = layer1.clone()
+                newlayer1 = self.addIdField(newlayer1, "id_pol", context, None)
+            
             if feedback is not None:
-                multiStepFeedback.setProgress(progressStep * step)
+                multiStepFeedback.setCurrentStep(1)
+                
+            if layer2 is not None:
+                newlayer2 = layer2.clone()
+                newlayer2 = self.addIdField(newlayer2, "id_pol", context, None)
+                
+            if newlayer1 is None or newlayer2 is None:
+                return features
+                
+            if feedback is not None:
+                multiStepFeedback.setCurrentStep(2)
+                
+            # Create spatial indexes
+            self.algRunner.runCreateSpatialIndex(newlayer1, context, None)
+            
+            if feedback is not None:
+                multiStepFeedback.setCurrentStep(3)
+                
+            self.algRunner.runCreateSpatialIndex(newlayer2, context, None)
+            
+            if feedback is not None:
+                multiStepFeedback.setCurrentStep(4)
+                
+            # Join attributes by location
+            interLayer = self.algRunner.runJoinAttributesByLocation(
+                inputLyr=newlayer1, joinLyr=newlayer2, context=context
+            )
+            
+            if feedback is not None:
+                multiStepFeedback.setCurrentStep(5)
+                nSteps = interLayer.featureCount()
+                progressStep = 100 / nSteps if nSteps != 0 else 0
+                
+            alreadyVerify = []
+            
+            # Process features
+            for step, feat in enumerate(interLayer.getFeatures()):
+                if feedback is not None and feedback.isCanceled():
+                    return features
+                    
+                if {feat["id"], feat["id_2"]} in alreadyVerify:
+                    continue
+                    
+                alreadyVerify.append({feat["id"], feat["id_2"]})
+                
+                if feat["id"] == feat["id_2"]:
+                    continue
+                    
+                # Get original features
+                feat1_orig = layer1_pre.getFeature(feat["new_id"])
+                feat2_orig = layer2_pre.getFeature(feat["new_id_2"])
+                
+                if feat1_orig.geometry().intersects(feat2_orig.geometry()):
+                    continue
+                    
+                feat1 = layer1.getFeature(feat["id_pol"])
+                feat2 = layer2.getFeature(feat["id_pol_2"])
+                
+                intersection = feat1.geometry().intersection(feat2.geometry())
+                
+                if intersection.isEmpty() or (
+                    not intersection.wkbType() == QgsWkbTypes.Polygon
+                    and not intersection.wkbType() == QgsWkbTypes.MultiPolygon
+                ):
+                    continue
+                    
+                if frameLyr is not None:
+                    if not self.geomInLayer(intersection, frameLyr, multiStepFeedback):
+                        continue
+                        
+                intersection.convertToMultiType()
+                newFeat = QgsFeature(fields)
+                newFeat.setGeometry(intersection)
+                
+                id1 = feat["id"] if feat["id"] is not None else "NULL"
+                id2 = feat["id_2"] if feat["id_2"] is not None else "NULL"
+                newFeat["id"] = id1 + "_" + id2
+                newFeat["camada_1"] = feat1["nome_camada"]
+                newFeat["camada_2"] = feat2["nome_camada"]
+                
+                features.add(newFeat)
+                
+                if feedback is not None:
+                    multiStepFeedback.setProgress(progressStep * step)
+                    
+        except Exception as e:
+            if feedback is not None:
+                feedback.pushInfo(f"Error in getIntersectionsFeats: {str(e)}")
+            raise
+            
+        finally:
+            # Explicitly clear references to temporary layers
+            if 'newlayer1' in locals():
+                newlayer1 = None
+            if 'newlayer2' in locals():
+                newlayer2 = None
+            if 'interLayer' in locals():
+                interLayer = None
+                
         return features
 
     def removeNullGeometries(
