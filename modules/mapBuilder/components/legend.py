@@ -42,6 +42,7 @@ class Legend:
                 "extracao_mineral",
                 "subestacao_energia_eletrica",
                 "trecho_de_energia",
+                "obstaculo_vertical"
             ],
         },
         "transporte_aereo": {"order": 5, "order_classes": ["pista_pouso", "heliponto"]},
