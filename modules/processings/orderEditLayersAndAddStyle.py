@@ -177,9 +177,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             layers = [layerTree.layer() for layerTree in group.findLayers()]
         else:
             layers = project.instance().mapLayers().values()
-        if mapType in [0, 1]:
+        if mapType in [0]:
             carta = "topoMap"
-        elif mapType in [2, 3]:
+        elif mapType in [1]:
             carta = "orthoMap"
         else:
             feedback.pushInfo("Valor para tipo de carta inválido")
@@ -279,9 +279,9 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         # Adicionar tema após aplicação dos estilos
         themeCollection = core.QgsProject.instance().mapThemeCollection()
-        if mapType in [0, 1]:
+        if mapType in [0]:
             themeName = "Carta Topográfica"
-        elif mapType in [2, 3]:
+        elif mapType in [1]:
             themeName = "Carta Ortoimagem"
         else:
             feedback.pushInfo("Tipo de produto não encontrado para atribuir o tema.")
