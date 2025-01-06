@@ -339,7 +339,7 @@ class Table(IComponent, ComponentUtils):
                 _tmp,
                 "td",
                 {"class": "right"},
-                "Declinação magnética: NOAA (WMM 2020-2025)",
+                "Declinação magnética: NOAA (WMM 2025-2029)",
             )
 
             secondTable = next(tables)
