@@ -356,7 +356,7 @@ class Table(IComponent, ComponentUtils):
                 _tmp,
                 "td",
                 {"class": "phases"},
-                "Para maiores informações consulte o arquivo de metadados.",
+                "Para mais informações, consulte o arquivo de metadados.",
             )
 
             label.setText(et.tostring(root, encoding="unicode", method="html"))
