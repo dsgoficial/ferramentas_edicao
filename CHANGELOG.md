@@ -1,10 +1,14 @@
 # CHANGELOG
 
-## 1.3
+## 1.3.1
 
 Novas Funcionalidades:
 
-- Remove modelagens Topo 1.3 e Orto 2.4
+- Remove modelagens Topo 1.3 e Orto 2.4;
+
+Melhorias:
+
+- Agora a exportação tem que ser feita usando a tag versao_produto no json;
 
 ## 1.2.70
 
