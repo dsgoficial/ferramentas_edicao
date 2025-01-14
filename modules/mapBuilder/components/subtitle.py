@@ -24,8 +24,8 @@ class Subtitle(ComponentUtils, IComponent):
                 Path(__file__).parent.parent
                 / "resources"
                 / "limits"
-                / "2020"
-                / "Paises_2020.shp"
+                / "2023"
+                / "Paises_2023.shp"
             )
             layer = self.loadShapeLayer(pathShpCountries, "", "countries")
         else:
@@ -33,8 +33,8 @@ class Subtitle(ComponentUtils, IComponent):
                 Path(__file__).parent.parent
                 / "resources"
                 / "limits"
-                / "2020"
-                / "Estados_2020.shp"
+                / "2023"
+                / "Estados_2023.shp"
             )
             layer = self.loadShapeLayer(pathShpStates, "", "states")
 
