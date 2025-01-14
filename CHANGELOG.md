@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.3.1
+## 1.3.2
 
 Novas Funcionalidades:
 
@@ -9,6 +9,10 @@ Novas Funcionalidades:
 Melhorias:
 
 - Agora a exportação tem que ser feita usando a tag versao_produto no json;
+
+Correção de bug:
+
+- Adicionado o estilo para tipo = 802 (Moinho) para constr_ocupacao_solo_p em Carta Topográfica 1.4
 
 ## 1.2.70
 
