@@ -26,8 +26,10 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsCoordinateTransform,
     QgsProject,
+    QgsField,
+    QgsFields
 )
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication, QVariant)
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 
@@ -36,7 +38,9 @@ class MakeGrid(QgsProcessingAlgorithm):
     INPUT_FRAME = "INPUT_FRAME"
     INPUT_SCALE = "INPUT_SCALE"
     GENERATE_LAT_LON_TICKS = "GENERATE_LAT_LON_TICKS"
+    GENERATE_GRID_NUMBERS = "GENERATE_GRID_NUMBERS"
     OUTPUT = "OUTPUT"
+    OUTPUT_GRID_NUMBERS = "OUTPUT_GRID_NUMBERS"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -71,8 +75,27 @@ class MakeGrid(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.GENERATE_GRID_NUMBERS,
+                self.tr("Gerar pontos de número do grid"),
+                defaultValue=True,
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr("Vetor de Grade"))
         )
+
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT_GRID_NUMBERS, 
+                self.tr("Pontos de número do grid"),
+                optional=True,
+                createByDefault=True,
+                type=QgsProcessing.TypeVectorPoint
+            )
+        )
+
         self.gridScaleDict = {
             0: 5000,
             1: 10000,
@@ -89,39 +112,50 @@ class MakeGrid(QgsProcessingAlgorithm):
         generateLatLonTicks = self.parameterAsBool(
             parameters, self.GENERATE_LAT_LON_TICKS, context
         )
+        generateGridNumbers = self.parameterAsBool(
+            parameters, self.GENERATE_GRID_NUMBERS, context
+        )
 
-        nSteps = 16 if generateLatLonTicks else 10
+        nSteps = 8 if (generateLatLonTicks and generateGridNumbers) else (7 if (generateLatLonTicks or generateGridNumbers) else 6)
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
 
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
         frameLayer2 = self.runAddCount(inputFrameLayer, boolVar, context, feedback)
         gridScale = self.gridScaleDict[gridScaleParam]
-        currentStep += 1
 
+        currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+
         self.runCreateSpatialIndex(frameLayer2, context, multiStepFeedback)
         # Converter moldura para lat long
         crs = QgsCoordinateReferenceSystem("EPSG:4674")
-        currentStep += 1
 
+        currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+
         frameLayer = self.reprojectLayer(frameLayer2, crs, context, multiStepFeedback)
         # Pegar centro da moldura  (se tiver mais de um polígono na camada de moldura pegar o centro dos centros)
+        
+        currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
+
         utm = self.getUtmRefSys(frameLayer)
         if utm is None:
             raise QgsProcessingException("Camada de moldura vazia")
+        
         currentStep += 1
-
         multiStepFeedback.setCurrentStep(currentStep)
+
         frameLayerReprojected = self.reprojectLayer(
             frameLayer, utm, context, multiStepFeedback
         )
-        # Criar a grade com 4cm (baseado na escala) de distancia entre as linhas no fuso
+
         currentStep += 1
-        grids = []
         multiStepFeedback.setCurrentStep(currentStep)
+
+        # Criar a grade com 4cm (baseado na escala) de distancia entre as linhas no fuso
+        grids = []
         for feature in frameLayerReprojected.getFeatures():
             geometria = feature.geometry()
             retangulo = geometria.boundingBox()
@@ -139,11 +173,11 @@ class MakeGrid(QgsProcessingAlgorithm):
             grids.append(grid)
         gridFinal = processing.run("native:mergevectorlayers", {'LAYERS':grids,'CRS':inputFrameLayer.sourceCrs(),'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
 
-        lineLayer = self.convertPolygonToLines(
-            gridFinal, context, multiStepFeedback
-        )
-        
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
 
+        lineLayer = gridFinal
+        
         (self.sink, self.sink_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,
@@ -154,7 +188,9 @@ class MakeGrid(QgsProcessingAlgorithm):
         )
 
         if generateLatLonTicks:
+            currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
+            
             lineList = self.generateLatLonTicks(
                 frameLayer,
                 scale=gridScale,
@@ -178,13 +214,40 @@ class MakeGrid(QgsProcessingAlgorithm):
                 return QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=geom)
 
             self.sink.addFeatures(list(map(createFeat, lineList)))
-            currentStep += 1
-        
-        multiStepFeedback.setCurrentStep(currentStep)
+            
         newLayer = self.outLayer(
             parameters, context, lineLayer, QgsWkbTypes.LineString, multiStepFeedback
         )
-        return {self.OUTPUT: newLayer}
+
+        if generateGridNumbers:
+            gridNumberPoints = self.generateGridNumberPoints(
+                frameLayerReprojected,
+                utm,
+                gridSize,
+                context,
+                multiStepFeedback
+            )
+            
+            # Criar sink para os pontos
+            (numbers_sink, numbers_sink_id) = self.parameterAsSink(
+                parameters,
+                self.OUTPUT_GRID_NUMBERS,
+                context,
+                gridNumberPoints[0].fields() if gridNumberPoints else QgsFields(),
+                QgsWkbTypes.Point,
+                frameLayerReprojected.sourceCrs()
+            )
+            
+            if numbers_sink is not None and gridNumberPoints:
+                numbers_sink.addFeatures(gridNumberPoints)
+
+            currentStep += 1
+            multiStepFeedback.setCurrentStep(currentStep)
+
+        return {
+            self.OUTPUT: newLayer,
+            self.OUTPUT_GRID_NUMBERS: numbers_sink_id if generateGridNumbers else None
+        }
 
     def getGridParameters(self, gridScale, frameLayerReprojected):
         gridSize = 4 * gridScale / 100
@@ -249,15 +312,6 @@ class MakeGrid(QgsProcessingAlgorithm):
 
         return False
 
-    def convertPolygonToLines(self, inputLayer, context, feedback):
-        output = processing.run(
-            "native:polygonstolines",
-            {"INPUT": inputLayer, "OUTPUT": "memory:"},
-            context=context,
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
-
     def reprojectLayer(self, layer, crs, context, feedback)->QgsVectorLayer:
         output = processing.run(
             "native:reprojectlayer",
@@ -289,32 +343,58 @@ class MakeGrid(QgsProcessingAlgorithm):
         feedback,
         gridType=2,
     ) -> QgsVectorLayer:
-        extent = str(str(xmin) + ", " + str(xmax) + ", " + str(ymin) + ", " + str(ymax))
-        output = processing.run(
-            "native:creategrid",
-            {
-                "TYPE": gridType,
-                "EXTENT": extent,
-                "HSPACING": hGridSize,
-                "VSPACING": vGridSize,
-                "HOVERLAY": 0,
-                "VOVERLAY": 0,
-                "CRS": CRS,
-                "OUTPUT": "memory:",
-            },
-            context=context,
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
-
-    def convertPolygonToLines(self, inputLayer, context, feedback):
-        output = processing.run(
-            "native:polygonstolines",
-            {"INPUT": inputLayer, "OUTPUT": "memory:"},
-            context=context,
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
+        """Cria linhas verticais e horizontais do grid"""
+        # Criar camada de linhas
+        fields = QgsFields()
+        fields.append(QgsField("tipo_grid", QVariant.String))
+        fields.append(QgsField("direcao", QVariant.String))
+        
+        layer = QgsVectorLayer(f"LineString?crs={CRS.authid()}", "grid", "memory")
+        layer.dataProvider().addAttributes(fields)
+        layer.updateFields()
+        
+        features = []
+        
+        # Criar linhas verticais
+        x = xmin
+        while x <= xmax:
+            # Criar a linha
+            line = QgsFeature(fields)
+            line.setGeometry(QgsGeometry.fromPolylineXY([
+                QgsPointXY(x, ymin),
+                QgsPointXY(x, ymax)
+            ]))
+            
+            # Definir atributos
+            is_master = abs(x % (10 * hGridSize)) < 0.1
+            line.setAttribute("tipo_grid", "master" if is_master else "regular")
+            line.setAttribute("direcao", "vertical")
+            
+            features.append(line)
+            x += hGridSize
+        
+        # Criar linhas horizontais
+        y = ymin
+        while y <= ymax:
+            # Criar a linha
+            line = QgsFeature(fields)
+            line.setGeometry(QgsGeometry.fromPolylineXY([
+                QgsPointXY(xmin, y),
+                QgsPointXY(xmax, y)
+            ]))
+            
+            # Definir atributos
+            is_master = abs(y % (10 * vGridSize)) < 0.1
+            line.setAttribute("tipo_grid", "master" if is_master else "regular")
+            line.setAttribute("direcao", "horizontal")
+            
+            features.append(line)
+            y += vGridSize
+        
+        # Adicionar todas as features
+        layer.dataProvider().addFeatures(features)
+        
+        return layer
 
     def generateLatLonTicks(self, frameLayer, utm, scale, context, feedback):
         layer = QgsVectorLayer(f"Point?crs=4674", "Points", "memory")
@@ -374,6 +454,111 @@ class MakeGrid(QgsProcessingAlgorithm):
             lineList.append(vLine)
 
         return lineList
+
+    def generateGridNumberPoints(self, frameLayer, utm, gridSize, context, feedback):
+        """Gera pontos com os números do grid"""
+        fields = QgsFields()
+        fields.append(QgsField("numero", QVariant.String))
+        fields.append(QgsField("direcao", QVariant.String))  # E ou N
+        
+        points = []
+        MIN_CELL_COVERAGE = 0.85  # 85% de cobertura mínima para células nas bordas
+        
+        for feat in frameLayer.getFeatures():
+            if feedback.isCanceled():
+                break
+                
+            geom = feat.geometry()
+            bbox = geom.boundingBox()
+            
+            # Calcular posições desejadas a 1/3 e 2/3 da moldura
+            width = bbox.width()
+            height = bbox.height()
+            
+            # Posições desejadas
+            target_x = [
+                bbox.xMinimum() + width/3,
+                bbox.xMinimum() + 2*width/3
+            ]
+            target_y = [
+                bbox.yMinimum() + height/3,
+                bbox.yMinimum() + 2*height/3
+            ]
+            
+            # Encontrar linhas de grid mais próximas das posições desejadas
+            grid_lines_x = []
+            for x_target in target_x:
+                grid_x = round(x_target / gridSize) * gridSize
+                if bbox.xMinimum() <= grid_x <= bbox.xMaximum():
+                    grid_lines_x.append(grid_x)
+            
+            grid_lines_y = []
+            for y_target in target_y:
+                grid_y = round(y_target / gridSize) * gridSize
+                if bbox.yMinimum() <= grid_y <= bbox.yMaximum():
+                    grid_lines_y.append(grid_y)
+                
+            # Para cada linha vertical selecionada
+            for grid_x in grid_lines_x:
+                # Garantir que comece exatamente no primeiro grid dentro da moldura
+                y_start = math.ceil(bbox.yMinimum() / gridSize) * gridSize
+                y_end = math.floor(bbox.yMaximum() / gridSize) * gridSize
+                
+                for grid_y in range(int(y_start - gridSize), int(y_end + 2*gridSize), int(gridSize)):
+                    cell_bottom = grid_y
+                    cell_top = grid_y + gridSize
+                    
+                    # Verificar se é uma célula de borda (primeira ou última)
+                    is_border_cell = (cell_bottom < bbox.yMinimum() or cell_top > bbox.yMaximum())
+                    
+                    # Se for célula de borda, calcular cobertura
+                    if is_border_cell:
+                        cell_height = min(cell_top, bbox.yMaximum()) - max(cell_bottom, bbox.yMinimum())
+                        coverage = cell_height / gridSize
+                        if coverage < MIN_CELL_COVERAGE:
+                            continue
+                    
+                    # Só criar ponto se o centro da célula estiver dentro da moldura
+                    point_y = grid_y + gridSize/2
+                    if bbox.yMinimum() <= point_y <= bbox.yMaximum():
+                        grid_number = str(int((point_y / 1000) % 100)).zfill(2)  # Usa a coordenada N para pontos E
+                        point = QgsFeature(fields)
+                        point.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(grid_x, point_y)))
+                        point.setAttribute("numero", grid_number)
+                        point.setAttribute("direcao", "E")
+                        points.append(point)
+            
+            # Para cada linha horizontal selecionada
+            for grid_y in grid_lines_y:
+                # Garantir que comece exatamente no primeiro grid dentro da moldura
+                x_start = math.ceil(bbox.xMinimum() / gridSize) * gridSize
+                x_end = math.floor(bbox.xMaximum() / gridSize) * gridSize
+                
+                for grid_x in range(int(x_start - gridSize), int(x_end + 2*gridSize), int(gridSize)):
+                    cell_left = grid_x
+                    cell_right = grid_x + gridSize
+                    
+                    # Verificar se é uma célula de borda (primeira ou última)
+                    is_border_cell = (cell_left < bbox.xMinimum() or cell_right > bbox.xMaximum())
+                    
+                    # Se for célula de borda, calcular cobertura
+                    if is_border_cell:
+                        cell_width = min(cell_right, bbox.xMaximum()) - max(cell_left, bbox.xMinimum())
+                        coverage = cell_width / gridSize
+                        if coverage < MIN_CELL_COVERAGE:
+                            continue
+                    
+                    # Só criar ponto se o centro da célula estiver dentro da moldura
+                    point_x = grid_x + gridSize/2
+                    if bbox.xMinimum() <= point_x <= bbox.xMaximum():
+                        grid_number = str(int((point_x / 1000) % 100)).zfill(2)  # Usa a coordenada E para pontos N
+                        point = QgsFeature(fields)
+                        point.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, grid_y)))
+                        point.setAttribute("numero", grid_number)
+                        point.setAttribute("direcao", "N")
+                        points.append(point)
+        
+        return points
 
     def outLayer(self, parameters, context, layer, type, feedback):
 
