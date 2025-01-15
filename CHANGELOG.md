@@ -1,10 +1,23 @@
 # CHANGELOG
 
-## 1.3
+## 1.3.3
+
+Atualiza os limites municipais do IBGE para versão 2023 e GADM para versão 4.1
+
+## 1.3.2
 
 Novas Funcionalidades:
 
-- Remove modelagens Topo 1.3 e Orto 2.4
+- Remove modelagens Topo 1.3 e Orto 2.4;
+
+Melhorias:
+
+- Agora a exportação tem que ser feita usando a tag versao_produto no json;
+
+Correção de bug:
+
+- Adicionado o estilo para tipo = 802 (Moinho) para constr_ocupacao_solo_p em Carta Topográfica 1.4
+- Adicionado o estilo para tipo in (4, 3) (Olho d'água permanente e temporário) para elemnat_elemento_hidrografico_p em Carta Topográfica 1.4
 
 ## 1.2.70
 

@@ -10,6 +10,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterNumber,
+    QgsProcessingParameterBoolean,
     QgsExpressionContextUtils,
     QgsProcessingParameterEnum,
     QgsProject,
@@ -34,6 +35,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     EQUIDISTANCIA = "EQUIDISTANCIA"
     OUTPUT = "OUTPUT"
     EXIBIR_AUXILIAR = "EXIBIR_AUXILIAR"
+    PRINT_STYLE = "PRINT_STYLE"
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
@@ -87,14 +89,22 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.EQUIDISTANCIA,
-                self.tr("Definir equidistância fora do padrão"),
-                optional=True,
-                type=QgsProcessingParameterNumber.Integer,
-            )
+        param = QgsProcessingParameterNumber(
+            self.EQUIDISTANCIA,
+            self.tr("Definir equidistância fora do padrão"),
+            optional=True,
+            type=QgsProcessingParameterNumber.Integer,
         )
+        param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(param)
+
+        param = QgsProcessingParameterBoolean(
+            self.PRINT_STYLE,
+            self.tr("Utilizar estilo de impressão"),
+            defaultValue=False,
+        )
+        param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(param)
 
     def parameterAsGroup(self, parameters, name, context):
         return parameters[name]
@@ -142,6 +152,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             parameters, self.EQUIDISTANCIA, context
         )
         exibirAuxiliar = self.parameterAsEnum(parameters, self.EXIBIR_AUXILIAR, context)
+        usePrintStyle = self.parameterAsBool(parameters, self.PRINT_STYLE, context)
 
         if gridScaleParam == 0:
             gridScale = 10
@@ -199,7 +210,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
-        styleOption = "mapEdition"
+        styleOption = "map" if usePrintStyle else "mapEdition"
         groupName = "map"
 
         stylePath = os.path.join(
@@ -269,15 +280,6 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         if multiStepFeedback.isCanceled():
             return {}
 
-        # feedback.pushInfo("Configurando escala de renderização...")
-        # self.renderizar(layers, gridScale * 1000)
-
-        # feedback.pushInfo('Carregando as máscaras...')
-        # self.loadMasks(carta, layers)
-        # if multiStepFeedback.isCanceled():
-        #    return {self.OUTPUT: 'Cancelado'}
-
-        # Adicionar tema após aplicação dos estilos
         themeCollection = core.QgsProject.instance().mapThemeCollection()
         if mapType in [0]:
             themeName = "Carta Topográfica"

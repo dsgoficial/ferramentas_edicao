@@ -20,8 +20,8 @@ class Localization(ComponentUtils, IComponent):
         self.stylesFolder = (
             Path(__file__).parent.parent / "resources" / "styles" / "localization"
         )
-        self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2020"
-        self.stateShpPath = self.shpFolder / "Estados_2020.shp"
+        self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2023"
+        self.stateShpPath = self.shpFolder / "Estados_2023.shp"
 
     def build(
         self,
@@ -41,12 +41,12 @@ class Localization(ComponentUtils, IComponent):
         )
         mapIDsToBeDisplayed.append(mapAreaLayer.id())
 
-        uriPath = self.shpFolder / "Oceano_2020.shp"
+        uriPath = self.shpFolder / "Oceano_2023.shp"
         stylePath = self.stylesFolder / "oceano.qml"
         layerOcean = self.loadShapeLayer(uriPath, stylePath, "ocean")
 
         # Getting state layer
-        uriPath = self.shpFolder / "Estados_2020.shp"
+        uriPath = self.shpFolder / "Estados_2023.shp"
         stylePath = self.stylesFolder / "estados.qml"
         stateLayerBackground = self.loadShapeLayer(
             uriPath, stylePath, "backgroundstates"
@@ -70,7 +70,7 @@ class Localization(ComponentUtils, IComponent):
         self.setupBackgroundLayer(stateLayerBackground)
         self.setLabel(stateLayerBackground, isInternational, mapExtents)
 
-        uriPath = self.shpFolder / "Paises_2020.shp"
+        uriPath = self.shpFolder / "Paises_2023.shp"
         stylePath = self.stylesFolder / "paises.qml"
         layerCountryArea = self.loadShapeLayer(uriPath, stylePath, "countries")
         self.setupCountryLayer(layerCountryArea)

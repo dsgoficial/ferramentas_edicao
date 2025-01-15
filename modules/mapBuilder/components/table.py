@@ -22,8 +22,8 @@ class Table(IComponent, ComponentUtils):
             Path(__file__).parent.parent
             / "resources"
             / "limits"
-            / "2020"
-            / "Brasil_2020.shp"
+            / "2023"
+            / "Brasil_2023.shp"
         )
 
     def build(
@@ -297,28 +297,28 @@ class Table(IComponent, ComponentUtils):
                         _tmp,
                         "td",
                         {"class": "right"},
-                        "Limites internacionais: CBDL* e GADM 3.6",
+                        "Limites internacionais: CBDL* e GADM 4.1",
                     )
                     _tmp = self.generateElement(_tmp, "tr")
                     _ = self.generateElement(
                         _tmp,
                         "td",
                         {"class": "right"},
-                        "Limites estaduais e municipais: IBGE* / 2020 e GADM 3.6",
+                        "Limites estaduais e municipais: IBGE* / 2023 e GADM 4.1",
                     )
                 else:
                     _ = self.generateElement(
                         _tmp,
                         "td",
                         {"class": "right"},
-                        "Limites internacionais: GADM 3.6",
+                        "Limites internacionais: GADM 4.1",
                     )
                     _tmp = self.generateElement(_tmp, "tr")
                     _ = self.generateElement(
                         _tmp,
                         "td",
                         {"class": "right"},
-                        "Limites estaduais e municipais: GADM 3.6",
+                        "Limites estaduais e municipais: GADM 4.1",
                     )
             else:
                 _ = self.generateElement(
@@ -329,7 +329,7 @@ class Table(IComponent, ComponentUtils):
                     _tmp,
                     "td",
                     {"class": "right"},
-                    "Limites estaduais e municipais: IBGE* / 2020",
+                    "Limites estaduais e municipais: IBGE* / 2023",
                 )
             for info in thirdPartyData:
                 _tmp = self.generateElement(firstTable, "tr")
@@ -339,7 +339,7 @@ class Table(IComponent, ComponentUtils):
                 _tmp,
                 "td",
                 {"class": "right"},
-                "Declinação magnética: NOAA (WMM 2020-2025)",
+                "Declinação magnética: NOAA (WMM 2025-2029)",
             )
 
             secondTable = next(tables)
@@ -356,7 +356,7 @@ class Table(IComponent, ComponentUtils):
                 _tmp,
                 "td",
                 {"class": "phases"},
-                "Para maiores informações consulte o arquivo de metadados.",
+                "Para mais informações, consulte o arquivo de metadados.",
             )
 
             label.setText(et.tostring(root, encoding="unicode", method="html"))

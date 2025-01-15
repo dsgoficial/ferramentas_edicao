@@ -28,7 +28,7 @@ def setupArgparser():
     parser.add_argument(
         "-t",
         "--tipo",
-        default="Carta Topográfica 1.3",
+        default="Carta Topográfica 1.4",
         choices=(
             "Carta Topográfica 1.4",
             "Carta Ortoimagem 2.5",
