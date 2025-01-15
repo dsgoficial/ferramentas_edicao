@@ -169,8 +169,26 @@ class MakeGrid(QgsProcessingAlgorithm):
             grid = self.makeGrid(
                 gridSize, gridSize, utm, xmin, xmax, ymin, ymax, context, multiStepFeedback
             )
+
+            frame_layer = QgsVectorLayer("Polygon?crs=" + utm.authid(), "frame", "memory")
+            frame_provider = frame_layer.dataProvider()
+            frame_feat = QgsFeature()
+            frame_feat.setGeometry(geometria)
+            frame_provider.addFeatures([frame_feat])
+
+            clipped_grid = processing.run(
+                "native:clip",
+                {
+                    'INPUT': grid,
+                    'OVERLAY': frame_layer,
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                },
+                context=context,
+                feedback=multiStepFeedback
+            )['OUTPUT']
             
-            grids.append(grid)
+            grids.append(clipped_grid)
+
         gridFinal = processing.run("native:mergevectorlayers", {'LAYERS':grids,'CRS':inputFrameLayer.sourceCrs(),'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
 
         currentStep += 1
