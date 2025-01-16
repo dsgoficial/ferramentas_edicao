@@ -10,6 +10,8 @@ from qgis.core import (
     QgsDistanceArea,
     QgsCoordinateReferenceSystem,
     QgsVectorLayerUtils,
+    QgsGeometry,
+    QgsRectangle
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -127,6 +129,8 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         simbAreaLayer.beginEditCommand("Posicionando símbolos")
         newFeatList = []
         
+        tolerance = self.get_appropriate_tolerance(inputLyr.crs())
+
         for current, feat in enumerate(iterator):
             if feedback.isCanceled():
                 break
@@ -139,17 +143,18 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
                 continue
                 
             geom = feat.geometry()
-            innerPoint = geom.centroid()
-            if not innerPoint.within(geom):
-                innerPoint = geom.pointOnSurface()
+            poi_geom, radius = geom.poleOfInaccessibility(tolerance)
+            innerPoint = poi_geom.asPoint()
                 
-            # Verifica o tamanho apenas para tipos que mapeiam para 18
+            # Verifica o tamanho apenas para tipos que mapeiam para 18 (Sports Ground)
             if self.mappingDict[feat["tipo"]] == 18:
-                buffer = innerPoint.buffer(bufferSize, -1)
-                if not buffer.within(geom):
+                width, height = self.get_sport_symbol_dimensions(self.sizesDict[scaleIdx])
+                symbol_rect = self.create_symbol_rectangle(innerPoint, width, height)
+                if not symbol_rect.within(geom):
                     continue
-                    
-            newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
+
+            point_geom = QgsGeometry.fromPointXY(innerPoint)
+            newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, point_geom)
             newFeat["tipo"] = self.mappingDict[feat["tipo"]]
             newFeatList.append(newFeat)
             
@@ -158,6 +163,45 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
         simbAreaLayer.addFeatures(newFeatList)
         simbAreaLayer.endEditCommand()
         return {}
+
+
+    def get_sport_symbol_dimensions(self, scale):
+        """
+        Calcula as dimensões do símbolo 'S' na escala do mapa
+        Retorna (largura, altura) em metros
+        """
+        # Tamanho base em mm
+        height_mm = 2.1168  # 6pt
+        width_mm = 1.4112   # estimativa para 'S'
+        
+        # Conversão para metros na escala do mapa
+        scale_factor = scale / 1000  # escala para metros
+        height_m = height_mm * scale_factor
+        width_m = width_mm * scale_factor
+        
+        return (width_m, height_m)
+
+    def create_symbol_rectangle(self, point, width, height):
+        """
+        Cria um retângulo centrado no ponto com as dimensões especificadas
+        """
+        dx = width / 2
+        dy = height / 2
+        return QgsGeometry.fromRect(
+            QgsRectangle(
+                point.x() - dx, point.y() - dy,
+                point.x() + dx, point.y() + dy
+            )
+        )
+
+    def get_appropriate_tolerance(self, crs):
+        """
+        Retorna uma tolerância apropriada baseada no CRS
+        """
+        if crs.isGeographic():  # Sistema lat/long
+            return 0.0001  # ~11m no equador
+        else:  # Sistema projetado (como UTM)
+            return 1.0    # 1 metro
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
