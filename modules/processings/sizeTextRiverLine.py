@@ -95,7 +95,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
             self.scale = 50000
         elif gridScaleParam == 3:
             self.scale = 100000
-        elif gridScaleParam == 3:
+        elif gridScaleParam == 4:
             self.scale = 250000
         algRunner = AlgRunner()
         multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)

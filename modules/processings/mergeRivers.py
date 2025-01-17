@@ -198,44 +198,63 @@ class MergeRivers(QgsProcessingAlgorithm):
             newLayer.addAttribute(field)
         newLayer.updateFields()
         newLayer.beginEditCommand("Editando")
-        features = list(layer.getFeatures())
-        for current, currentFeature in enumerate(features):
+
+        # Agrupar features por nome e ordenar por comprimento
+        features_by_name = {}
+        for feature in layer.getFeatures():
+            if feature["nome"] == NULL:
+                continue
+            length = feature.geometry().length()
+            if feature["nome"] not in features_by_name:
+                features_by_name[feature["nome"]] = []
+            features_by_name[feature["nome"]].append((length, feature))
+        
+        # Ordenar cada grupo por comprimento (decrescente)
+        for nome in features_by_name:
+            features_by_name[nome].sort(reverse=True)
+
+        # Processar features na ordem de tamanho
+        total = sum(len(group) for group in features_by_name.values())
+        current = 0
+        
+        for nome, features in features_by_name.items():
             if feedback is not None and feedback.isCanceled():
                 break
-            newGeom = currentFeature.geometry()
-            if currentFeature["nome"] == NULL:
-                continue
-            featuresRequest = list(
-                newLayer.getFeatures(
-                    QgsFeatureRequest().setFilterRect(newGeom.boundingBox())
+                
+            for length, currentFeature in features:
+                newGeom = currentFeature.geometry()
+                # Buscar features já adicionadas que se intersectam
+                featuresRequest = list(
+                    newLayer.getFeatures(
+                        QgsFeatureRequest().setFilterRect(newGeom.boundingBox())
+                    )
                 )
-            )
-            for idx, currentFeature2 in enumerate(featuresRequest):
-                if currentFeature2["nome"] == NULL:
-                    continue
-                if newGeom.intersects(currentFeature2.geometry()) and self.condition(
-                    currentFeature, currentFeature2
-                ):
-                    newGeom = newGeom.combine(currentFeature2.geometry()).mergeLines()
-                    newLayer.deleteFeature(currentFeature2.id())
-            feat = QgsFeature()
-            feat.setFields(newLayer.fields())
-            for field in newLayer.fields().names():
-                feat.setAttribute(
-                    newLayer.fields().indexFromName(field), currentFeature[field]
-                )
-            feat.setGeometry(newGeom)
-            newLayer.addFeatures([feat])
-            if feedback is not None:
-                feedback.setProgress(current * 100 / len(features))
+                
+                for currentFeature2 in featuresRequest:
+                    if currentFeature2["nome"] == nome and newGeom.intersects(currentFeature2.geometry()):
+                        newGeom = newGeom.combine(currentFeature2.geometry()).mergeLines()
+                        newLayer.deleteFeature(currentFeature2.id())
+                
+                # Adicionar nova feature com atributos da maior
+                feat = QgsFeature()
+                feat.setFields(newLayer.fields())
+                for field in newLayer.fields().names():
+                    feat.setAttribute(
+                        newLayer.fields().indexFromName(field), currentFeature[field]
+                    )
+                feat.setGeometry(newGeom)
+                newLayer.addFeatures([feat])
+                
+                if feedback is not None:
+                    current += 1
+                    feedback.setProgress(current * 100 / total)
+
         newLayer.endEditCommand()
         return newLayer
 
     def condition(self, feat1, feat2):
         return (
-            feat1["tipo"] == feat2["tipo"]
-            and feat1["nome"] == feat2["nome"]
-            and feat1["situacao_em_poligono"] == feat2["situacao_em_poligono"]
+            feat1["nome"] == feat2["nome"]
         )
 
     def clipLayer(self, layer, frame, context, feedback):
