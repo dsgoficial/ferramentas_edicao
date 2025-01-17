@@ -25,17 +25,25 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
-from .processingUtils import ProcessingUtils
-
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
-
 class InsertRoadMarker(QgsProcessingAlgorithm):
-
+    # Input parameters
     INPUT_FRAME = "INPUT_FRAME"
     SCALE = "SCALE"
     ROAD = "ROAD"
     MARKER = "MARKER"
+
+    # Constantes de configuração
+    NEAR_START_PERCENTAGE = 0.15  # 15% do comprimento
+    NEAR_END_PERCENTAGE = 0.85    # 85% do comprimento
+    FRAME_DISTANCE_FACTOR = 0.006  # Distância mínima da moldura
+    SIGLA_OFFSET_FACTOR = 0.008   # Deslocamento entre siglas
+    MIN_LENGTH_FACTOR = 0.01  # Comprimento mínimo para inserir identificador
+    SMALL_LENGTH_FACTOR = 0.2   # X = 20% da escala
+    MEDIUM_LENGTH_FACTOR = 0.3  # Y = 30% da escala
+    LARGE_LENGTH_FACTOR = 0.5   # Z = 40% da escala
+    VERY_LARGE_LENGTH_FACTOR = 0.6  # W = 50% da escala
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -85,14 +93,39 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         layer_marker = self.parameterAsVectorLayer(parameters, self.MARKER, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
 
+        # Define escala
         if gridScaleParam == 0:
             scale = 25000
         elif gridScaleParam == 1:
             scale = 50000
-        if gridScaleParam == 2:
+        elif gridScaleParam == 2:
             scale = 100000
         elif gridScaleParam == 3:
             scale = 250000
+
+        # Converter distâncias baseadas na escala e CRS
+        is_geographic = layer_road.crs().isGeographic()
+        
+        def convert_distance(dist):
+            if is_geographic:
+                d = QgsDistanceArea()
+                d.setSourceCrs(
+                    QgsCoordinateReferenceSystem("EPSG:3857"),
+                    QgsCoordinateTransformContext(),
+                )
+                return d.convertLengthMeasurement(dist, QgsUnitTypes.DistanceDegrees)
+            return dist
+
+        # Calcular distâncias baseadas na escala
+        frame_distance = convert_distance(scale * self.FRAME_DISTANCE_FACTOR)
+        sigla_offset = convert_distance(scale * self.SIGLA_OFFSET_FACTOR)
+        
+        # Limiares de comprimento
+        min_length = convert_distance(scale * self.MIN_LENGTH_FACTOR)
+        small_length = convert_distance(scale * self.SMALL_LENGTH_FACTOR)
+        medium_length = convert_distance(scale * self.MEDIUM_LENGTH_FACTOR)
+        large_length = convert_distance(scale * self.LARGE_LENGTH_FACTOR)
+        very_large_length = convert_distance(scale * self.VERY_LARGE_LENGTH_FACTOR)
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
         frameLayer = self.runAddCount(frameLayer, feedback=feedback)
@@ -101,249 +134,243 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         frameLinesLayer = self.convertPolygonToLines(frameLayer)
         self.runCreateSpatialIndex(frameLinesLayer, feedback=feedback)
 
+        # Filtrar rodovias com sigla não nula e mesclar por sigla
         layer_road = self.runAddCount(layer_road, feedback=feedback)
-        self.runCreateSpatialIndex(layer_road, feedback=feedback)
+        notNullRoads = self.filterNotNullRoads(layer_road)
+        mergedRoads = self.mergeRoads(notNullRoads)
+        self.runCreateSpatialIndex(mergedRoads, feedback=feedback)
 
-        highwayLyr = self.mergeHighways(layer_road, frameLayer)
-        self.runCreateSpatialIndex(highwayLyr, feedback=feedback)
+        # Clipa rodovias dentro da moldura
+        clippedRoads = self.clipRoads(mergedRoads, frameLayer)
+        self.runCreateSpatialIndex(clippedRoads, feedback=feedback)
 
-        distance1 = self.getChopDistance(highwayLyr, scale * 0.2)
-        pointsAndAngles1 = self.chopLineLayer(
-            highwayLyr, distance1, ["sigla", "jurisdicao", "tipo"]
-        )
-        self.populateRoadIndentificationSymbolLayer(layer_marker, pointsAndAngles1, 0)
+        # Intersectar rodovias entre si
+        intersectedRoads = self.intersectRoads(clippedRoads, feedback=feedback)
+        self.runCreateSpatialIndex(intersectedRoads, feedback=feedback)
 
-        maxRoadIndentificationNumber = self.findMaxRoadIndentificationNumber(
-            pointsAndAngles1
-        )
-        if maxRoadIndentificationNumber > 1:
-            for n in range(maxRoadIndentificationNumber - 1):
-                distanceFromSymbol = self.getChopDistance(
-                    highwayLyr, scale * (n + 1) * 0.008
-                )
-                highwayLyrSubstring = self.getLineSubstring(
-                    highwayLyr,
-                    distanceFromSymbol,
-                    QgsProperty.fromExpression("length( $geometry)"),
-                )
-                chopDistance = self.getChopDistance(highwayLyrSubstring, scale * 0.2)
-                pointsAndAnglesN = self.chopLineLayer(
-                    highwayLyrSubstring, chopDistance, ["sigla", "jurisdicao", "tipo"]
-                )
-                self.populateRoadIndentificationSymbolLayer(
-                    layer_marker, pointsAndAnglesN, n + 1
-                )
-                distanceNextToFrame = self.getChopDistance(highwayLyr, scale * 0.006)
-                self.removePointsNextToFrame(
-                    frameLinesLayer, layer_marker, distanceNextToFrame
-                )
+        # Intersectar rodovias com a moldura
+        intersectedRoadsFrame = self.clipLines(intersectedRoads, frameLinesLayer, feedback=feedback)
+        self.runCreateSpatialIndex(intersectedRoadsFrame, feedback=feedback)
+
+        # Para cada segmento, criar pontos baseado no comprimento
+        points = self.createPoints(intersectedRoadsFrame, {
+            'min_length': min_length,
+            'small_length': small_length,
+            'medium_length': medium_length,
+            'large_length': large_length,
+            'very_large_length': very_large_length,
+            'near_start': self.NEAR_START_PERCENTAGE,
+            'near_end': self.NEAR_END_PERCENTAGE
+        })
+        
+        # Remover pontos próximos à moldura
+        points = self.removePointsNearFrame(points, frameLinesLayer, frame_distance)
+        
+        # Criar identificadores para múltiplas siglas
+        self.createMultipleMarkers(layer_marker, points, sigla_offset)
 
         return {}
 
-    def getLineSubstring(self, layer, startDistance, endDistance):
-        r = processing.run(
-            "native:linesubstring",
-            {
-                "END_DISTANCE": endDistance,
-                "INPUT": layer,
-                "OUTPUT": "TEMPORARY_OUTPUT",
-                "START_DISTANCE": startDistance,
-            },
-        )
-        return r["OUTPUT"]
-
-    @staticmethod
-    def getChopDistance(layer, distance):
-        """Helper function to get distances in decimal degrees"""
-        if layer.crs().isGeographic():
-            d = QgsDistanceArea()
-            d.setSourceCrs(
-                QgsCoordinateReferenceSystem("EPSG:3857"),
-                QgsCoordinateTransformContext(),
-            )
-            return d.convertLengthMeasurement(distance, QgsUnitTypes.DistanceDegrees)
-        else:
-            return distance
-
-    @staticmethod
-    def chopLineLayer(layer, cutDistance, requiredAttrs=None):
-        """Chops layer using cutDistance, returning initial points of chopped features and its angles.
-        If the point touches the initial/final point of any original feature the point is discarded.
-        If requiredAttrs is provided, the mapping {attr:feat[attr] for attr in requiredAttrs} is also returned
-        """
-        attributeMapping = {}
-        pointsAndAngles = []
-        output = processing.run(
-            "native:splitlinesbylength",
-            {"INPUT": layer, "LENGTH": cutDistance, "OUTPUT": "TEMPORARY_OUTPUT"},
-        )["OUTPUT"]
-
-        output = processing.run(
-            "native:extractspecificvertices",
-            {"INPUT": output, "VERTICES": 0, "OUTPUT": "TEMPORARY_OUTPUT"},
-        )["OUTPUT"]
-
-        bounds = processing.run(
-            "native:boundary", {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"}
-        )["OUTPUT"]
-        bounds = processing.run(
-            "native:multiparttosingleparts", {"INPUT": bounds, "OUTPUT": "memory:"}
-        )["OUTPUT"]
-        for feat in output.getFeatures():
-            if (
-                requiredAttrs
-                and all((x in layer.fields().names() for x in requiredAttrs))
-                and all((feat.attribute(x) for x in requiredAttrs))
-            ):
-                attributeMapping = {x: feat.attribute(x) for x in requiredAttrs}
-            isBoundVertex = False
-            request = QgsFeatureRequest().setFilterRect(feat.geometry().boundingBox())
-            geomEngine = QgsGeometry.createGeometryEngine(feat.geometry().constGet())
-            geomEngine.prepareGeometry()
-            for featBound in bounds.getFeatures(request):
-                if geomEngine.intersects(featBound.geometry().constGet()):
-                    isBoundVertex = True
-                    break
-            if not isBoundVertex:
-                geom = feat.geometry()
-                angle = (geom.angleAtVertex(0) + (math.pi / 2)) * 180 / math.pi
-                if angle > 360:
-                    angle = angle - 360
-                if angle > 90 and angle < 270:
-                    angle = angle - 180
-                pointsAndAngles.append((geom, angle, attributeMapping))
-        return pointsAndAngles
-
-    def mergeHighways(self, lyr, frame):
-        notNullIdentificationNumber = processing.run(
+    def filterNotNullRoads(self, layer):
+        """Filtra rodovias com sigla não nula"""
+        return processing.run(
             "native:extractbyattribute",
             {
-                "INPUT": lyr,
+                "INPUT": layer,
                 "FIELD": "sigla",
-                "OPERATOR": 9,
+                "OPERATOR": 9,  # is not null
                 "VALUE": "",
                 "OUTPUT": "memory:",
             },
         )["OUTPUT"]
-        collected = processing.run(
+
+    def mergeRoads(self, layer):
+        """Mescla rodovias por sigla"""
+        return processing.run(
             "native:dissolve",
             {
-                "INPUT": notNullIdentificationNumber,
-                "FIELD": ["sigla", "jurisdicao", "tipo"],
+                "INPUT": layer,
+                "FIELD": ["sigla", "tipo"],
                 "OUTPUT": "memory:",
             },
         )["OUTPUT"]
+
+    def clipRoads(self, roads, frame):
+        """Intersecta rodovias com moldura"""
         return processing.run(
             "native:clip",
             {
-                "INPUT": collected,
+                "INPUT": roads,
                 "OVERLAY": frame,
                 "OUTPUT": "memory:",
             },
         )["OUTPUT"]
 
-    def findMaxRoadIndentificationNumber(self, pointsAndAngles):
-        n = 0
-        for point, angle, mapping in pointsAndAngles:
-            if sigla := mapping.get("sigla"):
-                name = sigla.split(";")
-                if len(name) > n:
-                    n = len(name)
-        return n
+    def createPoints(self, layer, params):
+        """Cria pontos ao longo dos segmentos baseado no comprimento"""
+        points = []
+        
+        for feat in layer.getFeatures():
+            length = feat.geometry().length()
+            sigla = feat.attribute("sigla")
+            
+            if length < params['min_length']:
+                continue
+                
+            if length <= params['small_length']:
+                # Um ponto no centro
+                points.append(self.createPointAtDistance(feat, 0.5, sigla))
+                
+            elif length <= params['medium_length']:
+                # Dois pontos em 1/4 e 3/4
+                points.append(self.createPointAtDistance(feat, 0.25, sigla))
+                points.append(self.createPointAtDistance(feat, 0.75, sigla))
+                
+            elif length <= params['large_length']:
+                # Três pontos: próximo início, centro e próximo fim
+                points.append(self.createPointAtDistance(feat, params['near_start'], sigla))
+                points.append(self.createPointAtDistance(feat, 0.5, sigla))
+                points.append(self.createPointAtDistance(feat, params['near_end'], sigla))
+                
+            elif length <= params['very_large_length']:
+                # Quatro pontos: início, 2/5, 3/5 e fim
+                points.append(self.createPointAtDistance(feat, params['near_start'], sigla))
+                points.append(self.createPointAtDistance(feat, 0.4, sigla))
+                points.append(self.createPointAtDistance(feat, 0.6, sigla))
+                points.append(self.createPointAtDistance(feat, params['near_end'], sigla))
+                
+            else:
+                # Cinco pontos: início, 1/3, meio, 2/3 e fim
+                points.append(self.createPointAtDistance(feat, params['near_start'], sigla))
+                points.append(self.createPointAtDistance(feat, 0.33, sigla))
+                points.append(self.createPointAtDistance(feat, 0.5, sigla))
+                points.append(self.createPointAtDistance(feat, 0.67, sigla))
+                points.append(self.createPointAtDistance(feat, params['near_end'], sigla))
+                
+        return points
 
-    @staticmethod
-    def populateRoadIndentificationSymbolLayer(layer, pointsAndAngles, n):
-        """Populates the layer edicao_identificador_trecho_rod_p"""
-        fields = layer.fields()
-        layer.startEditing()
-        layer.beginEditCommand("Criando pontos")
-        feats = []
-        for point, angle, mapping in pointsAndAngles:
-            feat = QgsFeature(fields)
-            geom = QgsGeometry.fromWkt(point.asWkt())
-            feat.setGeometry(geom)
-            if sigla := mapping.get("sigla"):
-                if not len(sigla.split(";")) > n:
-                    continue
+    def createPointAtDistance(self, feature, distance_fraction, sigla):
+        """Cria um ponto a uma fração específica do comprimento da linha"""
+        geom = feature.geometry()
+        length = geom.length()
+        point = geom.interpolate(length * distance_fraction)
+        tipo = feature.attribute("tipo")
+        return {
+            'point': point,
+            'sigla': sigla,
+            'line_geom': geom,
+            'tipo': tipo
+        }
+
+    def removePointsNearFrame(self, points, frame_lines, min_distance):
+        """Remove pontos muito próximos da moldura"""
+        filtered_points = []
+        
+        for point in points:
+            is_far_enough = True
+            for line in frame_lines.getFeatures():
+                if point['point'].distance(line.geometry()) < min_distance:
+                    is_far_enough = False
+                    break
+            if is_far_enough:
+                filtered_points.append(point)
+                
+        return filtered_points
+
+    def createMultipleMarkers(self, layer_marker, points, offset):
+        """Cria identificadores para cada sigla com offset ao longo da linha"""
+        layer_marker.startEditing()
+        layer_marker.beginEditCommand("Criando pontos")
+
+        for point in points:
+            siglas = point['sigla'].split(';')
+            num_siglas = len(siglas)
+            
+            # Calcular distâncias de offset para cada lado do ponto original
+            total_offset = offset * (num_siglas - 1)
+            start_offset = -total_offset / 2
+            
+            line_geom = point['line_geom']
+            
+            for i, sigla in enumerate(siglas):
+                feat = QgsFeature(layer_marker.fields())
+                
+                # Calcular posição com offset
+                current_offset = start_offset + (i * offset)
+                
+                if i == 0:
+                    # Primeiro ponto usa a geometria original
+                    new_point = QgsGeometry(point['point'])
+                else:
+                    # Para pontos adicionais, encontrar o ponto mais próximo na linha
+                    # a uma distância current_offset do ponto original
+                    distance = line_geom.lineLocatePoint(point['point'])
+                    new_point = QgsGeometry(line_geom.interpolate(distance + current_offset))
+                
+                feat.setGeometry(new_point)
+                
+                # Definir atributos
                 try:
-                    name = sigla.split(";")[n].split("-")[1]
+                    name = sigla.split('-')[1]
+                    feat.setAttribute('sigla', name)
+                    
+                    # Definir jurisdição
+                    if sigla.split('-')[0] == 'BR':
+                        jurisdicao = 1
+                    else:
+                        jurisdicao = 2
+                    feat.setAttribute('jurisdicao', jurisdicao)
+                    
+                    feat.setAttribute('visivel', 1)
+                    
+                    feat.setAttribute('tipo', point['tipo'])
+
                 except IndexError:
                     continue
-                feat.setAttribute("sigla", name)
-                siglasEstados = [
-                    "AC",
-                    "AL",
-                    "AP",
-                    "AM",
-                    "BA",
-                    "CE",
-                    "ES",
-                    "GO",
-                    "MA",
-                    "MT",
-                    "MS",
-                    "MG",
-                    "PA",
-                    "PB",
-                    "PR",
-                    "PE",
-                    "PI",
-                    "RJ",
-                    "RN",
-                    "RO",
-                    "RR",
-                    "RS",
-                    "SC",
-                    "SE",
-                    "SP",
-                    "TO",
-                ]
-                if sigla.split(";")[n].split("-")[0] == "BR":
-                    jurisdicao = 1
-                elif sigla.split(";")[n].split("-")[0] in siglasEstados:
-                    jurisdicao = 2
-                elif mapping.get("jurisdicao"):
-                    jurisdicao = mapping.get("jurisdicao")
-                feat.setAttribute("jurisdicao", jurisdicao)
-                tipo = mapping.get("tipo")
-                feat.setAttribute("tipo", tipo)
-                feat.setAttribute("visivel", 1)
-            # if jurisdicao:=mapping.get('jurisdicao'):
-            #     feat.setAttribute('jurisdicao', jurisdicao)
-            feats.append(feat)
-        layer.dataProvider().addFeatures(feats)
-        layer.endEditCommand()
-
-    def clipLayer(self, layer, frame):
-        r = processing.run(
-            "native:clip",
-            {
-                "FIELD": [],
-                "INPUT": layer,
-                "OVERLAY": frame,
-                "OUTPUT": "TEMPORARY_OUTPUT",
-            },
-        )
-        return r["OUTPUT"]
+                
+                layer_marker.addFeature(feat)
+    
+        layer_marker.endEditCommand()
 
     def convertPolygonToLines(self, inputLayer):
+        """Converte polígono em linhas"""
         output = processing.run(
             "native:polygonstolines",
             {"INPUT": inputLayer, "OUTPUT": "TEMPORARY_OUTPUT"},
         )
         return output["OUTPUT"]
 
-    def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance):
-        toBeRemoved = []
-        pointsLayer.startEditing()
-        pointsLayer.beginEditCommand("Removendo próximo a moldura")
-        for point in pointsLayer.getFeatures():
-            for frameLine in frameLinesLayer.getFeatures():
-                dist = QgsGeometry.distance(point.geometry(), frameLine.geometry())
-                if dist < distance:
-                    toBeRemoved.append(point.id())
-        pointsLayer.dataProvider().deleteFeatures(toBeRemoved)
-        pointsLayer.endEditCommand()
+    def intersectRoads(self, roads, feedback):
+            """Intersecta as rodovias entre si para obter os segmentos"""
+            # Primeiro, explodir linhas multi-parte em single-parte
+            single_parts = processing.run(
+                "native:multiparttosingleparts",
+                {
+                    "INPUT": roads,
+                    "OUTPUT": "memory:"
+                }
+            )["OUTPUT"]
+            self.runCreateSpatialIndex(single_parts, feedback=feedback)
+
+            # Intersectar linhas
+            split_lines = processing.run(
+                "native:splitwithlines",
+                {
+                    "INPUT": single_parts,
+                    "LINES": single_parts,
+                    "OUTPUT": "memory:"
+                }
+            )["OUTPUT"]
+            
+            return split_lines
+
+    def clipLines(self, inputLayer, segmentLayer, feedback):
+        output = processing.run(
+            "native:splitwithlines",
+            {"INPUT": inputLayer, "LINES": segmentLayer, "OUTPUT": "TEMPORARY_OUTPUT"},
+            feedback=feedback,
+        )
+        return output["OUTPUT"]
 
     def runAddCount(self, inputLyr, feedback):
         output = processing.run(

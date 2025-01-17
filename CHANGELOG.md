@@ -2,8 +2,11 @@
 
 ## 1.3.3
 
-Atualiza os limites municipais do IBGE para versão 2023 e GADM para versão 4.1
-Melhorar critério para inserir o S de campo quadra.
+Melhorias:
+- Atualiza os limites municipais do IBGE para versão 2023 e GADM para versão 4.1
+- Melhoria no critério para inserir o S de campo quadra.
+- Melhoria no critério para inserir identificador trecho rodoviário
+- Melhoria no critério para mergear rios
 
 ## 1.3.2
 
