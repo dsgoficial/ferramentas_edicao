@@ -1,6 +1,14 @@
 {
     "map": [
         {
+            "table": "edicao_grid_numerico_p",
+            "schema": "edgv"
+        },
+        {
+            "table": "edicao_grid_edicao_l",
+            "schema": "edgv"
+        },
+        {
             "table": "edicao_simb_cota_mestra_l",
             "schema": "edgv"
         },

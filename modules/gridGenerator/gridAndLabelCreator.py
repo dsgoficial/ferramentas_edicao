@@ -121,6 +121,7 @@ class GridAndLabelCreator(QObject):
         properties = {"color": color.name()}
         line_temp = QgsLineSymbol.createSimple(properties)
         line_temp.setWidth(linwidth_utm)
+        line_temp.setColor(color)
         symb = QgsGeometryGeneratorSymbolLayer.create(properties)
         symb.setSymbolType(Qgis.SymbolType.Line)
         symb.setSubSymbol(line_temp)

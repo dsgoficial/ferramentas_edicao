@@ -44,6 +44,8 @@ class ConfigDefaults:
     orthoMandatoryClasses: set = field(
         default_factory=lambda: set(
             [
+                "edicao_grid_numerico_p",
+                "edicao_grid_edicao_l",
                 "llp_localidade_p",
                 "infra_via_deslocamento_l",
                 "edicao_identificador_trecho_rod_p",
@@ -103,11 +105,11 @@ class ConfigDefaults:
                 "fontLL": QFont("Noto Sans"),
                 "llcolor": QColor("black"),
                 "linwidth_geo": 0.07,
-                "linwidth_utm": 0.05,
+                "linwidth_utm": 0.0,
                 "linwidth_buffer_geo": 0,
                 "linwidth_buffer_utm": 0,
                 "geo_grid_color": QColor(36, 31, 33),
-                "utm_grid_color": QColor(36, 31, 33),
+                "utm_grid_color": QColor(0, 0, 0, 0),
                 "geo_grid_buffer_color": QColor(36, 31, 33),
                 "utm_grid_buffer_color": QColor(36, 31, 33),
                 "masks_check": True,
@@ -322,7 +324,7 @@ class ConfigDefaults:
                 "fontLL": QFont("Noto Sans"),
                 "llcolor": QColor("black"),
                 "linwidth_geo": 0.3,
-                "linwidth_utm": 0.2,
+                "linwidth_utm": 0.0,
                 "linwidth_buffer_geo": 0.1,
                 "linwidth_buffer_utm": 0.1,
                 "geo_grid_color": QColor(227, 227, 227),

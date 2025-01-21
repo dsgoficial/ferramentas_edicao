@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.4
+
+Novas Funcionalidades:
+
+- Adiciona o grid no padrão americano;
+
 ## 1.3.3
 
 Melhorias:
