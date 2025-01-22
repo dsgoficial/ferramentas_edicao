@@ -35,6 +35,7 @@ from .prepareTopo import PrepareTopo
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
+from .validateGrid import ValidateGrid
 from .setSobrepositionOrtho import SetSobrepositionOrtho
 from .setSobrepositionTopo import SetSobrepositionTopo
 from .changeAttributeOrtho import ChangeAttributeOrtho
@@ -68,6 +69,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(LoadMasks())
         self.addAlgorithm(SaveLayerStylesToFile())
         self.addAlgorithm(SaveMasks())
+        self.addAlgorithm(ValidateGrid())
         self.addAlgorithm(ElevationPointsGeneralization())
         self.addAlgorithm(ElevationDiagramPointGeneralization())
         self.addAlgorithm(MakeGrid())

@@ -196,7 +196,7 @@ class MakeGrid(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(currentStep)
             
             lineList = self.generateLatLonTicks(
-                frameLayerReprojected,
+                frameLayer2,
                 scale=gridScale,
                 utm=utm,
                 context=context,
@@ -260,24 +260,18 @@ class MakeGrid(QgsProcessingAlgorithm):
         return gridSize, xmin, xmax, ymin, ymax
 
     def getUtmRefSys(self, frameLayer):
-        centroidList = []
-        for poly in frameLayer.getFeatures():
-            geom = poly.geometry()
-            centroid = geom.centroid()
-            centroidList.append(QgsPointXY(centroid.constGet()))
-
-        nCentroids = len(centroidList)
-        if nCentroids == 0:
+        features = frameLayer.getFeatures()
+        first_feature = next(features, None)
+        
+        # Se não houver feições, retorna None
+        if first_feature is None:
             return None
-        centroid = (
-            centroidList[0]
-            if nCentroids == 1
-            else QgsPointXY(
-                sum(centroid.x() for centroid in centroidList) / nCentroids,
-                sum(centroid.y() for centroid in centroidList) / nCentroids,
-            )
-        )
-        utmString = getSirgasAuthIdByPointLatLong(centroid.y(), centroid.x())
+            
+        geom = first_feature.geometry()
+        centroid = geom.centroid()
+        point = QgsPointXY(centroid.constGet())
+        
+        utmString = getSirgasAuthIdByPointLatLong(point.y(), point.x())
         utm = QgsCoordinateReferenceSystem(utmString)
         return utm
 
@@ -392,10 +386,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         return layer
 
     def generateLatLonTicks(self, frameLayer, utm, scale, context, feedback):
-        """
-        Gera as cruzetas de lat/lon com verificações de valores válidos
-        """
-        layer = QgsVectorLayer(f"Point?crs={frameLayer.crs().authid()}", "Points", "memory")
+        layer = QgsVectorLayer(f"Point?crs=4674", "Points", "memory")
         layer.startEditing()
         layer.beginEditCommand("")
 
@@ -409,91 +400,47 @@ class MakeGrid(QgsProcessingAlgorithm):
             ymin = bbox.yMinimum()
             ymax = bbox.yMaximum()
 
-            # Verifica se os valores são válidos
-            if not all(map(lambda x: isinstance(x, (int, float)) and abs(x) != float('inf'),
-                        [xmin, xmax, ymin, ymax])):
-                continue
-
             xsize = abs(xmax - xmin) / 5
             ysize = abs(ymax - ymin) / 5
 
-            # Gera as coordenadas das cruzetas
-            points = []
-            for i in range(6):
-                for j in range(6):
-                    x = xmin + i * xsize
-                    y = ymin + j * ysize
-                    if isinstance(x, (int, float)) and isinstance(y, (int, float)):
-                        if abs(x) != float('inf') and abs(y) != float('inf'):
-                            points.append((x, y))
-
-            # Adiciona os pontos à camada
-            for x, y in points:
+            xTicks = (xmin + i * xsize for i in range(6))
+            yTicks = (ymin + i * ysize for i in range(6))
+            for x, y in product(xTicks, yTicks):
                 feat = QgsFeature()
-                try:
-                    point = QgsPoint(x, y)
-                    geom = QgsGeometry(point)
-                    feat.setGeometry(geom)
-                    layer.addFeature(feat)
-                except Exception as e:
-                    continue
-
+                geom = QgsGeometry(QgsPoint(x, y))
+                feat.setGeometry(geom)
+                layer.addFeature(feat)
         layer.endEditCommand()
 
-        # Prepara a transformação de coordenadas
         coordinateTransform = QgsCoordinateTransform(
-            layer.crs(),
+            QgsCoordinateReferenceSystem("EPSG:4674"),
             utm,
-            QgsProject.instance()
+            QgsProject.instance(),
         )
-
         lineList = []
         halfDistance = 5e-3 * scale / 2
-
         for pointFeat in layer.getFeatures():
-            try:
-                geom = pointFeat.geometry()
-                if not geom or geom.isEmpty():
-                    continue
-
-                # Transforma o ponto para UTM
-                geom.transform(coordinateTransform)
-                point = geom.asPoint()
-                
-                if not point:
-                    continue
-                    
-                x, y = point.x(), point.y()
-                
-                # Verifica se as coordenadas são válidas
-                if not all(map(lambda coord: isinstance(coord, (int, float)) and abs(coord) != float('inf'),
-                            [x, y, x - halfDistance, x + halfDistance, y - halfDistance, y + halfDistance])):
-                    continue
-
-                # Cria as linhas horizontais e verticais
-                try:
-                    # Linha horizontal
-                    hLine = QgsGeometry(
-                        QgsLineString([
-                            QgsPoint(x - halfDistance, y),
-                            QgsPoint(x + halfDistance, y)
-                        ])
-                    )
-                    
-                    # Linha vertical
-                    vLine = QgsGeometry(
-                        QgsLineString([
-                            QgsPoint(x, y - halfDistance),
-                            QgsPoint(x, y + halfDistance)
-                        ])
-                    )
-                    
-                    lineList.extend([hLine, vLine])
-                except Exception as e:
-                    continue
-
-            except Exception as e:
-                continue
+            geom = pointFeat.geometry()
+            geom.transform(coordinateTransform)
+            x, y = geom.asPoint()
+            hLine = QgsGeometry(
+                QgsLineString(
+                    [QgsPoint(x - halfDistance, y), QgsPoint(x + halfDistance, y)]
+                )
+            )
+            hLine.transform(
+                coordinateTransform, QgsCoordinateTransform.ReverseTransform
+            )
+            lineList.append(hLine)
+            vLine = QgsGeometry(
+                QgsLineString(
+                    [QgsPoint(x, y - halfDistance), QgsPoint(x, y + halfDistance)]
+                )
+            )
+            vLine.transform(
+                coordinateTransform, QgsCoordinateTransform.ReverseTransform
+            )
+            lineList.append(vLine)
 
         return lineList
 
