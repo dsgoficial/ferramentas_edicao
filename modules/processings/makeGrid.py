@@ -105,7 +105,6 @@ class MakeGrid(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         inputFrameLayer = self.parameterAsSource(parameters, self.INPUT_FRAME, context)
-        boolVar = self.parameterAsBool(parameters, self.INPUT_FRAME, context)
         gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
         generateLatLonTicks = self.parameterAsBool(
             parameters, self.GENERATE_LAT_LON_TICKS, context
@@ -119,7 +118,10 @@ class MakeGrid(QgsProcessingAlgorithm):
 
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
-        frameLayer2 = self.runAddCount(inputFrameLayer, boolVar, context, feedback)
+        frameLayer2 = self.runAddCount(parameters[self.INPUT_FRAME], context, feedback)
+        frameLayer2 = self.reprojectLayer(
+            frameLayer2, QgsCoordinateReferenceSystem("EPSG:4674"), context, None
+        )
         gridScale = self.gridScaleDict[gridScaleParam]
 
         currentStep += 1
@@ -167,10 +169,9 @@ class MakeGrid(QgsProcessingAlgorithm):
                 {
                     'INPUT': grid,
                     'OVERLAY': frame_layer,
-                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                    'OUTPUT': 'memory:'
                 },
                 context=context,
-                feedback=multiStepFeedback
             )['OUTPUT']
             extended_grid = processing.run(
                 "native:extendlines",
@@ -178,10 +179,9 @@ class MakeGrid(QgsProcessingAlgorithm):
                     'INPUT': clipped_grid,
                     'START_DISTANCE': 0.5 if not utm.isGeographic() else 5e-6,
                     'END_DISTANCE': 0.5 if not utm.isGeographic() else 5e-6,
-                    'OUTPUT':'TEMPORARY_OUTPUT'
+                    'OUTPUT':'memory:'
                 },
                 context=context,
-                feedback=multiStepFeedback,
             )["OUTPUT"]
             
             grids.append(extended_grid)
@@ -281,18 +281,15 @@ class MakeGrid(QgsProcessingAlgorithm):
         geom = first_feature.geometry()
         centroid = geom.centroid()
         point = QgsPointXY(centroid.constGet())
-        
         utmString = getSirgasAuthIdByPointLatLong(point.y(), point.x())
         utm = QgsCoordinateReferenceSystem(utmString)
         return utm
 
-    def runAddCount(self, inputLyr, boolVar, context, feedback):
+    def runAddCount(self, inputLyr, context, feedback):
         output = processing.run(
             "native:addautoincrementalfield",
             {
-                "INPUT": QgsProcessingFeatureSourceDefinition(
-                    inputLyr.sourceName(), not boolVar
-                ),
+                "INPUT": inputLyr,
                 "FIELD_NAME": "AUTO",
                 "START": 0,
                 "GROUP_FIELDS": [],
@@ -312,6 +309,7 @@ class MakeGrid(QgsProcessingAlgorithm):
             {"INPUT": inputLyr},
             context=context,
             feedback=feedback,
+            is_child_algorithm=True,
         )
         return False
 
@@ -392,6 +390,7 @@ class MakeGrid(QgsProcessingAlgorithm):
             {"INPUT": layer},
             context=context,
             feedback=feedback,
+            is_child_algorithm=True,
         )
         
         return layer
