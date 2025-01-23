@@ -172,6 +172,7 @@ class MakeGrid(QgsProcessingAlgorithm):
                     'OUTPUT': 'memory:'
                 },
                 context=context,
+                is_child_algorithm=True,
             )['OUTPUT']
             extended_grid = processing.run(
                 "native:extendlines",
@@ -179,14 +180,14 @@ class MakeGrid(QgsProcessingAlgorithm):
                     'INPUT': clipped_grid,
                     'START_DISTANCE': 0.5 if not utm.isGeographic() else 5e-6,
                     'END_DISTANCE': 0.5 if not utm.isGeographic() else 5e-6,
-                    'OUTPUT':'memory:'
+                    'OUTPUT':'memory:',
                 },
                 context=context,
             )["OUTPUT"]
             
             grids.append(extended_grid)
 
-        gridFinal = processing.run("native:mergevectorlayers", {'LAYERS':grids,'CRS':utm,'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
+        gridFinal = processing.run("native:mergevectorlayers", {'LAYERS':grids,'CRS':utm,'OUTPUT':'memory:'}, context=context)['OUTPUT']
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
