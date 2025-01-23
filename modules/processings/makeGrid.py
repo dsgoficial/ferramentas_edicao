@@ -224,7 +224,9 @@ class MakeGrid(QgsProcessingAlgorithm):
             def createFeat(geom):
                 if coordinateTransform is not None:
                     geom.transform(coordinateTransform)
-                return QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=geom)
+                feat = QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=geom)
+                feat["tipo_grid"] = "cross"
+                return feat
 
             self.sink.addFeatures(list(map(createFeat, lineList)))
             
