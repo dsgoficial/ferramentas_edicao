@@ -50,6 +50,8 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
             )
         )
         self.scales = [
+            "1:5.000",
+            "1:10.000",
             "1:25.000",
             "1:50.000",
             "1:100.000",
@@ -60,10 +62,12 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Escala"),
                 options=self.scales,
-                defaultValue=0,
+                defaultValue=2,
             )
         )
         self.scaleDict = {
+            "1:5.000": 5000,
+            "1:10.000": 10000,
             "1:25.000": 25000,
             "1:50.000": 50000,
             "1:100.000": 100000,

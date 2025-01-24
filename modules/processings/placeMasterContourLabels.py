@@ -96,6 +96,8 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
             )
         )
         self.scales = [
+            "1:5.000",
+            "1:10.000",
             "1:25.000",
             "1:50.000",
             "1:100.000",
@@ -106,22 +108,28 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Escala"),
                 options=self.scales,
-                defaultValue=0,
+                defaultValue=2,
             )
         )
         self.scaleDict = {
+            "1:5.000": 5000,
+            "1:10.000": 10000,
             "1:25.000": 25000,
             "1:50.000": 50000,
             "1:100.000": 100000,
             "1:250.000": 250000,
         }
         self.masterIndexDict = {
+            5_000: 10,
+            10_000: 25,
             25_000: 50,
             50_000: 100,
             100_000: 200,
             250_000: 500,
         }
         self.masterLengthDictInDegrees = {
+            5_000: 0.015625 / 4,
+            10_000: 0.015625 / 2,
             25_000: 0.015625,
             50_000: 0.03125,
             100_000: 0.0625,
@@ -510,7 +518,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
         extractedContours = self.algRunner.runExtractByLocation(
             inputLyr=singlePartClippedContours,
             intersectLyr=miniBuffer,
-            predicate=[AlgRunner.Intersect],
+            predicate=[AlgRunner.Intersects],
             context=context,
             feedback=multiStepFeedback,
         )

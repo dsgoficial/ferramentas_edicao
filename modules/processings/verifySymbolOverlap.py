@@ -341,6 +341,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             )
         )
         self.scales = [
+            "1:5.000",
             "1:10.000",
             "1:25.000",
             "1:50.000",
@@ -352,7 +353,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Escala"),
                 options=self.scales,
-                defaultValue=0,
+                defaultValue=2,
             )
         )
         self.addParameter(
@@ -379,6 +380,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)
         scaleDict = {
+            "1:5.000": 5000,
             "1:10.000": 10000,
             "1:25.000": 25000,
             "1:50.000": 50000,
@@ -746,7 +748,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         newLayer = self.algRunner.runCreateFieldWithExpression(
             inputLyr=layer,
             expression="$id",
-            fieldType=0,
+            fieldType=AlgRunner.FieldTypeInteger,
             fieldName=fieldName,
             feedback=feedback,
             context=context,
@@ -1131,8 +1133,11 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         feedback=None,
     ):
         featsToRemove = set()
+        nFeats = len(feats)
+        if nFeats == 0:
+            return
         if feedback is not None:
-            progressStep = 100 / len(feats)
+            progressStep = 100 / nFeats
         for step, feat in enumerate(feats):
             if feedback is not None and feedback.isCanceled():
                 return

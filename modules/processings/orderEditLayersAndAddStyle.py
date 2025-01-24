@@ -61,6 +61,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         )
 
         self.scales = [
+            self.tr("1:5.000"),
             self.tr("1:10.000"),
             self.tr("1:25.000"),
             self.tr("1:50.000"),
@@ -73,6 +74,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
                 self.INPUT_SCALE,
                 self.tr("Selecione a escala de edição:"),
                 options=self.scales,
+                defaultValue=2,
             )
         )
 
@@ -155,18 +157,21 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         usePrintStyle = self.parameterAsBool(parameters, self.PRINT_STYLE, context)
 
         if gridScaleParam == 0:
+            gridScale = 5
+            equidistancia = 1
+        elif gridScaleParam == 1:
             gridScale = 10
             equidistancia = 5
-        elif gridScaleParam == 1:
+        elif gridScaleParam == 2:
             gridScale = 25
             equidistancia = 10
-        elif gridScaleParam == 2:
+        elif gridScaleParam == 3:
             gridScale = 50
             equidistancia = 20
-        elif gridScaleParam == 3:
+        elif gridScaleParam == 4:
             gridScale = 100
             equidistancia = 40
-        elif gridScaleParam == 4:
+        elif gridScaleParam == 5:
             gridScale = 250
             equidistancia = 100
         else:

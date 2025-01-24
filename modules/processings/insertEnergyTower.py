@@ -65,11 +65,14 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Selecione a escala de edição:"),
                 options=[
+                    self.tr("1:5.000"),
+                    self.tr("1:10.000"),
                     self.tr("1:25.000"),
                     self.tr("1:50.000"),
                     self.tr("1:100.000"),
                     self.tr("1:250.000"),
                 ],
+                defaultValue=2,
             )
         )
 
@@ -87,15 +90,15 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         lyr = self.parameterAsVectorLayer(parameters, self.INPUT_ENERGY, context)
         tower = self.parameterAsVectorLayer(parameters, self.INPUT_TOWER, context)
-
-        if gridScaleParam == 0:
-            scale = 25000
-        elif gridScaleParam == 1:
-            scale = 50000
-        elif gridScaleParam == 2:
-            scale = 100000
-        elif gridScaleParam == 3:
-            scale = 250000
+        self.gridScaleDict = {
+            0: 5000,
+            1: 10000,
+            2: 25000,
+            3: 50000,
+            4: 100000,
+            5: 250000,
+        }
+        scale = self.gridScaleDict[gridScaleParam]
 
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
         distanceFromFrame = (
@@ -342,7 +345,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             cacheLyr,
             buffer,
             context,
-            predicate=[AlgRunner.Intersect],
+            predicate=[AlgRunner.Intersects],
             feedback=multiStepFeedback,
         )
         if pointsToDeleteLyr.featureCount() == 0:

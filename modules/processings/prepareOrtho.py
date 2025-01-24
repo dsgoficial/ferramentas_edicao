@@ -40,11 +40,14 @@ class PrepareOrtho(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Selecione a escala de edição:"),
                 options=[
+                    self.tr("1:5.000"),
+                    self.tr("1:10.000"),
                     self.tr("1:25.000"),
                     self.tr("1:50.000"),
                     self.tr("1:100.000"),
                     self.tr("1:250.000"),
                 ],
+                defaultValue=2,
             )
         )
 

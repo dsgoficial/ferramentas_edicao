@@ -79,26 +79,33 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Selecione a escala de edição:"),
                 options=[
+                    self.tr("1:5.000"),
+                    self.tr("1:10.000"),
                     self.tr("1:25.000"),
                     self.tr("1:50.000"),
                     self.tr("1:100.000"),
                     self.tr("1:250.000"),
                 ],
+                defaultValue=2,
             )
         )
 
         self.scaleDict = {
-            0: 25000,
-            1: 50000,
-            2: 100000,
-            3: 250000,
+            0: 5000,
+            1: 10000,
+            2: 25000,
+            3: 50000,
+            4: 100000,
+            5: 250000,
         }
 
         self.searchBufferDict = {  # 4 mm na escala
-            0: 100,
-            1: 200,
-            2: 400,
-            3: 1000,
+            0: 20,
+            1: 40,
+            2: 100,
+            3: 200,
+            4: 400,
+            5: 1000,
         }
 
     def processAlgorithm(self, parameters, context, feedback):
