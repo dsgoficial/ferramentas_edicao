@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from PyQt5.QtWidgets import QButtonGroup, QActionGroup
+from PyQt5.QtWidgets import QButtonGroup, QActionGroup, QAction
 from qgis.core import QgsExpressionContextUtils, QgsProject
 
 from .buttons.productTypeSelector import ProductTypeSelector
@@ -26,7 +26,7 @@ from .buttons.alternateBuildingFlag import AlternateBuildingFlag
 from .buttons.cycleSideVisibility import CycleSideVisibility
 from .buttons.cycleTipVisibility import CycleTipVisibility
 from .buttons.toggleVisibility import ToggleVisibility
-
+from .radial_menu import RadialMenuTool
 
 class SetupButtons:
     def __init__(self, toolbar, iface=None) -> None:
@@ -43,22 +43,30 @@ class SetupButtons:
         productTypeSelector = ProductTypeSelector(self.iface, self.toolBar)
         productTypeSelector.setupUi()
 
+        self.toggleRadialMenuAction = QAction("Radial Menu", self.toolBar)
+        self.toggleRadialMenuAction.setCheckable(True)
+        self.toggleRadialMenuAction.triggered.connect(self.toggleRadialMenu)
+
+        self.toolBar.addAction(self.toggleRadialMenuAction)
+
         scaleSelector = ScaleSelector(self.iface, self.toolBar)
         scaleSelector.setupUi()
+
         cycleVisibilityButton = CycleVisibility(self.toolBar, self.iface)
         cycleVisibilityButton.setupUi()
+
         cycleTextJustificationButton = CycleTextJustification(self.toolBar, self.iface)
         cycleTextJustificationButton.setupUi()
-        copySugestedLabelButton = CopySugestedLabel(
-            self.iface, self.toolBar, productTypeSelector, scaleSelector
-        )
+
+        copySugestedLabelButton = CopySugestedLabel(self.iface, self.toolBar, productTypeSelector, scaleSelector)
         copySugestedLabelButton.setupUi()
+
         copyToGenericLabelButton = CopyToGenericLabel(self.toolBar, self.iface)
         copyToGenericLabelButton.setupUi()
-        cycleLabelPositionButton = CycleLabelPosition(
-            self.toolBar, self.iface, scaleSelector
-        )
+
+        cycleLabelPositionButton = CycleLabelPosition(self.toolBar, self.iface, scaleSelector)
         cycleLabelPositionButton.setupUi()
+
         createMasterElevationTextValueTool = CreateMasterElevationTextValue(
             iface=self.iface,
             toolBar=self.toolBar,
@@ -116,6 +124,26 @@ class SetupButtons:
         cycleTipVisibilityButton.setupUi()
         createToogleVisibility = ToggleVisibility(self.iface, self.toolBar)
         createToogleVisibility.setupUi()
+
+        # Menu Radial
+        # Colete todas as ações para o menu radial
+        self.actions = [
+            alternateTextVisibilityButton._action,
+            cycleVisibilityButton._action,
+            cycleTextJustificationButton._action,
+            createAproximateLabel._action,
+            alternateBuildingFlag._action,
+            cycleSideVisibilityButton._action,
+            cycleTipVisibilityButton._action,
+            createToogleVisibility._action,
+            createRoadIdentifierSymbol._action,
+            # Adicione mais ações aqui...
+        ]
+        # Ative a ferramenta do menu radial        
+        self.radial_menu_tool = RadialMenuTool(self.mapCanvas, self.actions)
+        self.mapCanvas.setMapTool(self.radial_menu_tool)
+        # Menu Radial
+        
         self.mapTools.extend(
             [
                 createVegetationSymbol,
@@ -262,6 +290,12 @@ class SetupButtons:
         QgsProject.instance().projectSaved.disconnect(self.saveStateOnProject)
         QgsProject.instance().write()
         QgsProject.instance().projectSaved.connect(self.saveStateOnProject)
+
+    def toggleRadialMenu(self):
+        if self.toggleRadialMenuAction.isChecked():
+            self.mapCanvas.setMapTool(self.radial_menu_tool)
+        else:
+            self.mapCanvas.unsetMapTool(self.radial_menu_tool)
 
     def loadStateFromProject(self):
         state = json.loads(
