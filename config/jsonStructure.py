@@ -2,7 +2,7 @@ import os
 import time
 from typing import List, Dict, Tuple
 from ..factories.mapBuilderUtils import MapBuilderUtils
-from qgis.core import QgsFileUtils, QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsFileUtils, QgsRasterLayer, QgsVectorLayer, QgsCoordinateTransform, QgsCoordinateReferenceSystem, QgsProject, QgsRectangle
 
 data_structure = {
     "Carta Ortoimagem": [
@@ -954,9 +954,37 @@ def validate_rasters_against_extents(frameLyr: QgsVectorLayer, input_dict: dict)
         if file_path is None:
             continue
         rasterLyr: QgsRasterLayer = mbUtils.getRasterLayerByType(file_path)
+        epsg = image_item.get("epsg", None)
+        if rasterLyr.crs() is None and epsg is not None:
+            epsgId = QgsCoordinateReferenceSystem(f"EPSG:{epsg}")
+            rasterLyr.setCrs(epsgId)
         if not rasterLyr.isValid():
             return f"A imagem {file_path} não existe ou não está acessível\n"
+        rasterExtent = rasterLyr.extent()
+        if rasterLyr.crs() != frameLyr.crs():
+            rasterExtent = reproject_extent(rasterExtent, rasterLyr.crs(), frameLyr.crs())
         if not frameExtent.intersects(rasterLyr.extent()):
             return f"A imagem {file_path} não intersecta a região da moldura informada. Verifique a moldura e a imagem.\n"
     return ""
+
+def reproject_extent(extent, source_crs, target_crs):
+    # Create a coordinate transform
+    transform = QgsCoordinateTransform(
+        QgsCoordinateReferenceSystem(source_crs),
+        QgsCoordinateReferenceSystem(target_crs),
+        QgsProject.instance()
+    )
+    
+    # Create a QgsRectangle from the extent
+    rect = QgsRectangle(
+        extent.xMinimum(),
+        extent.yMinimum(),
+        extent.xMaximum(),
+        extent.yMaximum()
+    )
+    
+    # Transform the rectangle
+    transformed_extent = transform.transformBoundingBox(rect)
+    
+    return transformed_extent
 
