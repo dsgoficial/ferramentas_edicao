@@ -963,7 +963,7 @@ def validate_rasters_against_extents(frameLyr: QgsVectorLayer, input_dict: dict)
         rasterExtent = rasterLyr.extent()
         if rasterLyr.crs() != frameLyr.crs():
             rasterExtent = reproject_extent(rasterExtent, rasterLyr.crs(), frameLyr.crs())
-        if not frameExtent.intersects(rasterLyr.extent()):
+        if not frameExtent.intersects(rasterExtent):
             return f"A imagem {file_path} não intersecta a região da moldura informada. Verifique a moldura e a imagem.\n"
     return ""
 
