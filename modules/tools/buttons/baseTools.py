@@ -7,7 +7,7 @@ from qgis.PyQt.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QPushButton
 from PyQt5.QtGui import QIcon, QKeyEvent
 from qgis.utils import iface
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsCoordinateTransform
 from PyQt5.QtWidgets import QMessageBox
 
 class BaseTools:
@@ -78,15 +78,14 @@ class BaseTools:
             confirmation = True
         return confirmation
     
-    def featInCanvas(self, selectedFeature, crsLyr):
-        featIn = True
+    def featInCanvas(self, selectedFeatures, crsLyr):
         crsProject = QgsProject.instance().crs()
-        QgsProject.instance().setCrs(crsLyr)
-        for feat in selectedFeature:
-            extentCanvas = iface.mapCanvas().extent()
-            geomExtentCanvas = QgsGeometry.fromRect(extentCanvas)
-            geomFeat = feat.geometry()
-            if not geomFeat.intersects(geomExtentCanvas):
-                featIn = False
-        QgsProject.instance().setCrs(crsProject)
-        return featIn
+        
+        extentCanvas = iface.mapCanvas().extent()
+        geomExtentCanvas = QgsGeometry.fromRect(extentCanvas)
+        
+        transformContext = QgsProject.instance().transformContext()
+        xform = QgsCoordinateTransform(crsProject, crsLyr, transformContext)
+        geomExtentCanvas.transform(xform)
+        
+        return all(feat.geometry().intersects(geomExtentCanvas) for feat in selectedFeatures)

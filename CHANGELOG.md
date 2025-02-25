@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.5
+
+Correção de bug:
+
+- Corrige bug de uso de ferramentas com feições selecionadas fora do canvas quando o sistema de referência da camada é distinto ao do projeto;
+
 ## 1.3.4
 
 Novas Funcionalidades:
