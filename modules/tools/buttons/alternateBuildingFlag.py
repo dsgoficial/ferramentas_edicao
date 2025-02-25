@@ -42,9 +42,10 @@ class AlternateBuildingFlag(BaseTools):
         selectedFeature = lyr.getSelectedFeatures()
         if lyr.selectedFeatureCount() == 0:
             self.displayErrorMessage(self.tr("Não há feições selecionadas"))
-        featIn = self.featInCanvas(selectedFeature)
+        crsLyr = lyr.crs()
+        featIn = BaseTools().featInCanvas(selectedFeature, crsLyr)
         if not featIn:
-            confirm = self.confirmation()
+            confirm = BaseTools().confirmation()
             if not confirm:
                 self.iface.messageBar().pushMessage(
                     "Cancelado",
@@ -61,26 +62,3 @@ class AlternateBuildingFlag(BaseTools):
                     feat.id(), fieldIdx, int(feat.attribute(fieldStr)) ^ 3
                 )
         lyr.triggerRepaint()
-
-    def featInCanvas(self, selectedFeature):
-        featIn = True
-        for feat in selectedFeature:
-            extentCanvas = self.iface.mapCanvas().extent()
-            geomWktExtentCanvas = QgsGeometry.fromRect(extentCanvas)
-            geomFeat = feat.geometry()
-            if not geomFeat.intersects(geomWktExtentCanvas):
-                featIn = False
-        return featIn
-
-    def confirmation(self):
-        confirmation = False
-        reply = QMessageBox.question(
-            self.iface.mainWindow(),
-            "Continuar ?",
-            "Há feições selecionadas fora do canvas. Deseja continuar ?",
-            QMessageBox.Yes,
-            QMessageBox.No,
-        )
-        if reply == QMessageBox.Yes:
-            confirmation = True
-        return confirmation

@@ -1,11 +1,14 @@
 from pathlib import Path
 
-from qgis.core import Qgis
+from qgis.core import (
+    Qgis,
+    QgsGeometry)
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QPushButton
 from PyQt5.QtGui import QIcon, QKeyEvent
 from qgis.utils import iface
-
+from qgis.core import QgsProject
+from PyQt5.QtWidgets import QMessageBox
 
 class BaseTools:
     @staticmethod
@@ -61,3 +64,29 @@ class BaseTools:
 
     def unsetTool(self):
         return None
+
+    def confirmation(self):
+        confirmation = False
+        reply = QMessageBox.question(
+            iface.mainWindow(),
+            "Continuar ?",
+            "Há feições selecionadas fora do canvas. Deseja continuar ?",
+            QMessageBox.Yes,
+            QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+            confirmation = True
+        return confirmation
+    
+    def featInCanvas(self, selectedFeature, crsLyr):
+        featIn = True
+        crsProject = QgsProject.instance().crs()
+        QgsProject.instance().setCrs(crsLyr)
+        for feat in selectedFeature:
+            extentCanvas = iface.mapCanvas().extent()
+            geomExtentCanvas = QgsGeometry.fromRect(extentCanvas)
+            geomFeat = feat.geometry()
+            if not geomFeat.intersects(geomExtentCanvas):
+                featIn = False
+        QgsProject.instance().setCrs(crsProject)
+        return featIn
