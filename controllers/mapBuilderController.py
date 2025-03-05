@@ -456,39 +456,40 @@ class MapBuildController(MapBuildControllerUtils):
                 }
             )
             mapExtentsLyr, mapExtentsFeat = self.getComplementaryData(jsonData)
-            try:
-                abstractDb = self.getAbstractDb(jsonData, dlgCfg)
-            except:
-                if is_headless:
-                    print(
-                        "Conexão inválida com o banco de dados. Verifique as configurações de conexão no json e as informações de usuário e senha."
-                    )
-                else:
-                    QMessageBox.warning(
-                        self.dlg,
-                        "Erro",
-                        f"Conexão inválida com o banco de dados, ignorando produto. "
-                        "Verifique as configurações de conexão no json e as informações de usuário e senha e tente novamente.",
-                    )
-                exportResult = False
-                continue
-            if not self.validateProductTypeAgainstDatabaseMetadata(
-                abstractDb, jsonData
-            ):
-                if is_headless:
-                    print(
-                        "O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada."
-                    )
-                else:
-                    QMessageBox.warning(
-                        self.dlg,
-                        "Erro",
-                        f"O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada, ignorando produto. "
-                        "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
-                    )
-                exportResult = False
-                continue
-            del abstractDb
+            if productType != "omMap":
+                try:
+                    abstractDb = self.getAbstractDb(jsonData, dlgCfg)
+                except:
+                    if is_headless:
+                        print(
+                            "Conexão inválida com o banco de dados. Verifique as configurações de conexão no json e as informações de usuário e senha."
+                        )
+                    else:
+                        QMessageBox.warning(
+                            self.dlg,
+                            "Erro",
+                            f"Conexão inválida com o banco de dados, ignorando produto. "
+                            "Verifique as configurações de conexão no json e as informações de usuário e senha e tente novamente.",
+                        )
+                    exportResult = False
+                    continue
+                if not self.validateProductTypeAgainstDatabaseMetadata(
+                    abstractDb, jsonData
+                ):
+                    if is_headless:
+                        print(
+                            "O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada."
+                        )
+                    else:
+                        QMessageBox.warning(
+                            self.dlg,
+                            "Erro",
+                            f"O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada, ignorando produto. "
+                            "Escolha corretamente o produto ou altere o json de entrada e tente novamente.",
+                        )
+                    exportResult = False
+                    continue
+                del abstractDb
             imageError = jsonStructure.validate_rasters_against_extents(frameLyr=mapExtentsLyr, input_dict=jsonData)
             if imageError != "":
                 if is_headless:

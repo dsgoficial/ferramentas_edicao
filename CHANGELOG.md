@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.6
+
+Correção de bug:
+
+- Corrige bug de exportação do tipo Carta Ortoimagem de OM (validação errada do json);
+
 ## 1.3.5
 
 Correção de bug:
