@@ -125,7 +125,7 @@ class PlaceVegetationSymbol(QgsProcessingAlgorithm):
     @staticmethod
     def getVegetationMapping(feat):
         mapping = {
-            1296: "Ref",
+            1296: "Reflo",
             801: "Caat",
             501: "Campnr",
             701: "Cerr",
