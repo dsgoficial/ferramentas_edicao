@@ -1,5 +1,12 @@
 # CHANGELOG
 
+
+## 1.3.7
+
+Correção de bug:
+
+- Corrige bug na rotina Configura os Atributos de Edição de Carta Ortoimagem do atributo "visivel" em cobter_massa_dagua_a para Carta Ortoimagem;
+
 ## 1.3.6
 
 Correção de bug:

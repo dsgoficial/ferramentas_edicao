@@ -369,7 +369,6 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         return feature
 
     def defaultMassaDagua(self, feature, lyrCrs):
-        feature["visivel"] = 1
         feature["justificativa_txt"] = 2
         feature["apresentar_simbologia"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
