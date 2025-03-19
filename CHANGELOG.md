@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.3.8
+
+Correção de bug:
+
+- Altera classes default para Carta Ortoimagem (insere ponto cotado na lista);
 
 ## 1.3.7
 

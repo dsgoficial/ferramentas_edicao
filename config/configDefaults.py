@@ -55,6 +55,7 @@ class ConfigDefaults:
                 "llp_area_sem_dados_a",
                 "edicao_texto_generico_p",
                 "edicao_texto_generico_l",
+                "elemnat_ponto_cotado_p",
             ]
         )
     )
@@ -69,7 +70,6 @@ class ConfigDefaults:
                 "elemnat_terreno_sujeito_inundacao_a",
                 "llp_unidade_federacao_a",
                 "elemnat_curva_nivel_l",
-                "elemnat_ponto_cotado_p",
                 "infra_pista_pouso_p",
                 "infra_pista_pouso_l",
                 "infra_pista_pouso_a",
