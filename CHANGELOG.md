@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.9
+
+Melhorias:
+
+- Adicionada a tag observacoes nas informações técnicas para adicionar info com asterisco;
+
 ## 1.3.8
 
 Correção de bug:

@@ -344,13 +344,17 @@ class Table(IComponent, ComponentUtils):
 
             secondTable = next(tables)
             if tecnicalInfo.get("observacao_homologacao", True):
-                _tmp = self.generateElement(secondTable, "tr")
-                _ = self.generateElement(
-                    _tmp,
-                    "td",
-                    {"class": "phases"},
-                    "* Limites sujeitos à homologação do referido órgão.",
-                )
+                obsList = data.get(
+                    "info_tecnica", {}
+                ).get("observacoes", ["* Limites sujeitos à homologação do referido órgão."])
+                for obsText in obsList:
+                    _tmp = self.generateElement(secondTable, "tr")
+                    _ = self.generateElement(
+                        _tmp,
+                        "td",
+                        {"class": "phases"},
+                        obsText,
+                    )
             _tmp = self.generateElement(secondTable, "tr")
             _ = self.generateElement(
                 _tmp,
