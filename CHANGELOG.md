@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.10
+
+Melhorias:
+
+- Adicionado os estilos de edificação indígena isolada e edificação indígena coletiva para Carta Topográfica 1.4;
+
 ## 1.3.9
 
 Melhorias:
