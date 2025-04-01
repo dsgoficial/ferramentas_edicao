@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.3.12
+
+Melhorias:
+
+- Inserção de Edificação Índigena Isolada na legenda de Carta Topográfica 1.4;
+- Mudança de Ref para Reflo na indicação de Reflorestamento na legenda de Carta Topográfica 1.4;
+- Correções nos textos de (EM CONSTRUÇÃO), (ABANDONADA), (DESTRUÍDA) na legenda de Carta Topográfica 1.4;
+
 ## 1.3.11
 
 Melhorias:
