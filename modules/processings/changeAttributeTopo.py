@@ -121,8 +121,6 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             processing_function = self.defaultElemnatTopoFisioP
         elif table_name in ["elemnat_toponimo_fisiografico_natural_l"]:
             processing_function = self.defaultElemnatTopoFisioL
-        elif table_name in ["elemnat_toponimo_fisiografico_natural_a"]:
-            processing_function = self.defaultElemnatTopoFisioA
         elif table_name in ["infra_elemento_energia_p", "infra_elemento_energia_a"]:
             processing_function = self.defaultInfraElemEnergPA
         elif table_name in ["infra_elemento_energia_l"]:
@@ -283,40 +281,26 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if "nome" in feature.fields().names() and feature["nome"] != NULL:
+            if feature["tipo"] in [4, 12]:
+                feature["tamanho_txt"] = 6
+            elif feature["tipo"] in [7, 6]:
+                feature["tamanho_txt"] = 7
+        if "texto_edicao" in feature.fields().names():
+            if feature["texto_edicao"] != NULL:
+                if isinstance(feature["texto_edicao"], str) and feature["texto_edicao"].strip():
+                    return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
     def defaultElemnatTopoFisioL(self, feature, lyrCrs):
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
-        feature["texto_edicao"] = feature["nome"]
-        return feature
-
-    def defaultElemnatTopoFisioA(self, feature, lyrCrs):
-        size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
-        feature["tamanho_txt"] = size
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if "nome" in feature.fields().names() and feature["nome"] != NULL:
+            if feature["tipo"] in [12]:
+                feature["tamanho_txt"] = 6
+        if "texto_edicao" in feature.fields().names():
+            if feature["texto_edicao"] != NULL:
+                if not isinstance(feature["texto_edicao"], str) and feature["texto_edicao"].strip():
+                    return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.11
+
+Melhorias:
+
+- Definido o valor de "tamanho_txt" para elemnat_toponimo_fisiografico_natural_p e _l para tipo in (4, 6, 7, 12) na ferramenta Configura os Atributos de Edição de Carta Topográfica.
+
 ## 1.3.10
 
 Melhorias:
