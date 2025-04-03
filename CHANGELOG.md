@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.13
+
+Melhorias:
+
+- A barra de ferramentas agora é colapsável;
+
 ## 1.3.12
 
 Melhorias:
@@ -85,7 +91,7 @@ Melhorias:
 
 Correção de bug:
 
-- Inserido o estilo para tipo = 802 (Moinho) em constr_ocupacao_solo_p; 
+- Inserido o estilo para tipo = 802 (Moinho) em constr_ocupacao_solo_p;
 - Corrigido o bug de rótulo em constr_edificacao_p
 
 ## 1.2.68
@@ -116,7 +122,7 @@ Melhorias:
 - Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_edificacao_p, constr_edificacao_a e elemnat_trecho_drenagem_l.
 - Melhoria na documentação dos seguintes processings: fixLabelPostionsCRS, placeBorderOfHydrographicElement, placeBuildingSymbol, placeMineralExtractionSymbol, placepowerPlantSymbol, placeVegetationSymbol, rapidsAndWaterfallRotation, reprojectAttributes, setCurveOrientation
 - Melhoria no changeAttributeTopo: há previsão da abreviação dos textos de edição nas classes constr_ocupacao_solo_p e constr_ocupacao_solo_a. Além disso, a mudança automática para visivel e justificativa_txt nas mesmas classes.
-- Melhoria no fixLabelsPositionOnLayers: Adição de uma checkbox para sobrescrever ou não os rótulos já fixados. 
+- Melhoria no fixLabelsPositionOnLayers: Adição de uma checkbox para sobrescrever ou não os rótulos já fixados.
 - Refatoração do Insere Ponto de Mudança para compatibilidade com Workflow e organização;
 - Melhora o nome do arquivo de carta especial;
 - Parâmetros de distancias conforme sistema da camada de referência
