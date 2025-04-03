@@ -1,14 +1,13 @@
 from pathlib import Path
 
-from qgis.core import (
-    Qgis,
-    QgsGeometry)
+from qgis.core import Qgis, QgsGeometry
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QAction, QPushButton
 from PyQt5.QtGui import QIcon, QKeyEvent
 from qgis.utils import iface
 from qgis.core import QgsProject, QgsCoordinateTransform
 from PyQt5.QtWidgets import QMessageBox
+
 
 class BaseTools:
     @staticmethod
@@ -77,15 +76,17 @@ class BaseTools:
         if reply == QMessageBox.Yes:
             confirmation = True
         return confirmation
-    
+
     def featInCanvas(self, selectedFeatures, crsLyr):
         crsProject = QgsProject.instance().crs()
-        
+
         extentCanvas = iface.mapCanvas().extent()
         geomExtentCanvas = QgsGeometry.fromRect(extentCanvas)
-        
+
         transformContext = QgsProject.instance().transformContext()
         xform = QgsCoordinateTransform(crsProject, crsLyr, transformContext)
         geomExtentCanvas.transform(xform)
-        
-        return all(feat.geometry().intersects(geomExtentCanvas) for feat in selectedFeatures)
+
+        return all(
+            feat.geometry().intersects(geomExtentCanvas) for feat in selectedFeatures
+        )

@@ -11,6 +11,7 @@ import math
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
+
 class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
 
     INPUT_LAYER_P = "INPUT_LAYER_P"
@@ -62,27 +63,46 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # Process the algorithm.
-        pointLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_P, context)
-        rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD_LAYER_P, context)[0]
-        drainageLayer = self.parameterAsVectorLayer(parameters, self.INPUT_DRAINAGE, context)
+        pointLayer = self.parameterAsVectorLayer(
+            parameters, self.INPUT_LAYER_P, context
+        )
+        rotationField = self.parameterAsFields(
+            parameters, self.INPUT_FIELD_LAYER_P, context
+        )[0]
+        drainageLayer = self.parameterAsVectorLayer(
+            parameters, self.INPUT_DRAINAGE, context
+        )
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
 
-        self.setRotationFieldOnLayer(pointLayer, rotationField, drainageLayer, distance, [9, 10, 11, 12], feedback)
+        self.setRotationFieldOnLayer(
+            pointLayer,
+            rotationField,
+            drainageLayer,
+            distance,
+            [9, 10, 11, 12],
+            feedback,
+        )
 
         return {}
 
-    def setRotationFieldOnLayer(self, pointLayer, rotationField, drainageLayer, distance, filterType, feedback):
+    def setRotationFieldOnLayer(
+        self, pointLayer, rotationField, drainageLayer, distance, filterType, feedback
+    ):
         for layerFeature in pointLayer.getFeatures():
             # Excluir pontos que não são previsto serem rotacionados
             if not (layerFeature["tipo"] in filterType):
-                feedback.pushInfo(f"Tipo não previsto para ser rotacionado, ignorado: {layerFeature['tipo']}")
+                feedback.pushInfo(
+                    f"Tipo não previsto para ser rotacionado, ignorado: {layerFeature['tipo']}"
+                )
                 continue
             # Receber a camada de pontos
             layerGeometry = layerFeature.geometry()
             # Criar um buffer da geometria do ponto
             layerGeometryBuffered = layerGeometry.buffer(distance, 5)
             # Verificar se o buffer se intersecta com a camada de drenagem e rotacionar de acordo com a direção de interseção
-            request = QgsFeatureRequest().setFilterRect(layerGeometryBuffered.boundingBox())
+            request = QgsFeatureRequest().setFilterRect(
+                layerGeometryBuffered.boundingBox()
+            )
             for drainageFeature in drainageLayer.getFeatures(request):
                 drainageFeatureGeometry = drainageFeature.geometry()
                 if not (drainageFeatureGeometry.intersects(layerGeometryBuffered)):
@@ -147,4 +167,4 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

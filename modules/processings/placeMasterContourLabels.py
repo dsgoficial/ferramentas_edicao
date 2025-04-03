@@ -44,6 +44,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
+
 class PlaceMasterContourLabels(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
@@ -597,4 +598,4 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

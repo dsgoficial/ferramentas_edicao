@@ -40,7 +40,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
                     self.tr("1:100.000"),
                     self.tr("1:250.000"),
                 ],
-                defaultValue=2
+                defaultValue=2,
             )
         )
 
@@ -240,8 +240,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultIlhaA(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        if size>16:
-            size=16 # na MTM o tamanho maximo da fonte é 16
+        if size > 16:
+            size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size if size > 6 else 7
         if (
             "texto_edicao" in feature.fields().names()
@@ -372,8 +372,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         feature["apresentar_simbologia"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        if size>16:
-            size=16 # na MTM o tamanho maximo da fonte é 16
+        if size > 16:
+            size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size if size > 6 else 7
         if (
             "texto_edicao" in feature.fields().names()
@@ -393,7 +393,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             1: "Abandonada",
             2: "Destruída",
             3: "Construída",
-            4: "Em construção"
+            4: "Em construção",
         }
 
         feature["justificativa_txt"] = 2
@@ -408,7 +408,9 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             if feature["nome"] != NULL:
                 texto_edicao.append(feature["nome"])
             if feature["situacao_fisica"] != 3:
-                situacao = situacao_fisica_map.get(feature["situacao_fisica"], "Desconhecida")
+                situacao = situacao_fisica_map.get(
+                    feature["situacao_fisica"], "Desconhecida"
+                )
                 texto_edicao.append("(" + situacao.lower() + ")")
 
             if feature["revestimento"] == 1:
@@ -512,4 +514,4 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

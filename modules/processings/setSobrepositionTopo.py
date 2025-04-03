@@ -4,7 +4,7 @@ from qgis.core import (
     QgsProcessingParameterVectorLayer,
     QgsProcessingAlgorithm,
     QgsVectorLayer,
-    QgsFields
+    QgsFields,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
@@ -140,8 +140,11 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             feat.setGeometry(feature.geometry())
 
             for field in layer.fields():
-                if field.name() in ["sobreposto", "exibir_rotulo_aproximado"] or feature.fieldNameIndex(field.name())==-1:
-                    continue                
+                if (
+                    field.name() in ["sobreposto", "exibir_rotulo_aproximado"]
+                    or feature.fieldNameIndex(field.name()) == -1
+                ):
+                    continue
                 feat[field.name()] = feature[field.name()]
 
             layer.addFeature(feat)
@@ -153,7 +156,10 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             feat.setGeometry(feature.geometry())
 
             for field in layer.fields():
-                if field.name() in ["sobreposto", "exibir_rotulo_aproximado"] or feature.fieldNameIndex(field.name())==-1:
+                if (
+                    field.name() in ["sobreposto", "exibir_rotulo_aproximado"]
+                    or feature.fieldNameIndex(field.name()) == -1
+                ):
                     continue
                 feat[field.name()] = feature[field.name()]
 
@@ -231,4 +237,4 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

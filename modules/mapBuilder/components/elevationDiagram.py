@@ -119,7 +119,7 @@ class ElevationDiagram(ComponentUtils, IComponent):
             filter(
                 lambda x: x[1].name() == "elemnat_ponto_cotado_p", enumerate(layers)
             ),
-            None
+            None,
         )
         generalizedPoints, outputGrid = self.getGeneralizedPoints(
             pointsLayer, geographicBoundsLyr, data.get("scale")
@@ -314,20 +314,26 @@ class ElevationDiagram(ComponentUtils, IComponent):
 
     def getGeneralizedPoints(self, pointsLayer, geographicBoundsLyr, scale):
 
-        processingOutput = processing.run(
-            "ferramentasedicao:elevationdiagrampointgeneralization",
-            {
-                "INPUT_ELEVATION_POINTS": pointsLayer,
-                "ELEVATION_FIELD": "cota",
-                "GEOGRAPHIC_BOUNDARY": geographicBoundsLyr,
-                "INPUT_SCALE": self.scalesDict[scale],
-                "OUTPUT_POINTS": "memory:",
-                "OUTPUT_GRID": "memory:",
-            },
-            context=QgsProcessingContext(),
-            feedback=QgsProcessingFeedback(),
-        ) if pointsLayer is not None else None
-        outputPoints = processingOutput["OUTPUT_POINTS"] if processingOutput is not None else None
+        processingOutput = (
+            processing.run(
+                "ferramentasedicao:elevationdiagrampointgeneralization",
+                {
+                    "INPUT_ELEVATION_POINTS": pointsLayer,
+                    "ELEVATION_FIELD": "cota",
+                    "GEOGRAPHIC_BOUNDARY": geographicBoundsLyr,
+                    "INPUT_SCALE": self.scalesDict[scale],
+                    "OUTPUT_POINTS": "memory:",
+                    "OUTPUT_GRID": "memory:",
+                },
+                context=QgsProcessingContext(),
+                feedback=QgsProcessingFeedback(),
+            )
+            if pointsLayer is not None
+            else None
+        )
+        outputPoints = (
+            processingOutput["OUTPUT_POINTS"] if processingOutput is not None else None
+        )
         if outputPoints is not None:
             outputPoints.loadNamedStyle(
                 str(self.stylesFolder / "elemnat_ponto_cotado_p.qml"), True

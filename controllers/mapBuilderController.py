@@ -490,7 +490,9 @@ class MapBuildController(MapBuildControllerUtils):
                     exportResult = False
                     continue
                 del abstractDb
-            imageError = jsonStructure.validate_rasters_against_extents(frameLyr=mapExtentsLyr, input_dict=jsonData)
+            imageError = jsonStructure.validate_rasters_against_extents(
+                frameLyr=mapExtentsLyr, input_dict=jsonData
+            )
             if imageError != "":
                 if is_headless:
                     print(f"Erro: {imageError}")

@@ -313,7 +313,14 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert = QgsFeature(destLayer.fields())
         toInsert.setAttribute("texto_edicao", word_text)
 
-        for attrToAdd in ["justificativa_txt", "estilo_fonte", "tamanho_txt", "cor", "cor_buffer", "tamanho_buffer"]:
+        for attrToAdd in [
+            "justificativa_txt",
+            "estilo_fonte",
+            "tamanho_txt",
+            "cor",
+            "cor_buffer",
+            "tamanho_buffer",
+        ]:
             if attrToAdd in destLayer.fields().names() and attrToAdd in list(
                 sugestedLabelConfig.keys()
             ):

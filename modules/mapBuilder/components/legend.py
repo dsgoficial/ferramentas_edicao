@@ -41,14 +41,12 @@ class Legend:
                 "atracadouro_terminal",
                 "extracao_mineral",
                 "subestacao_energia_eletrica",
-                "trecho_de_energia"
+                "trecho_de_energia",
             ],
         },
         "ov": {
             "order": 5,
-            "order_classes": [
-                "obstaculo_vertical"
-            ],
+            "order_classes": ["obstaculo_vertical"],
         },
         "transporte_aereo": {"order": 6, "order_classes": ["pista_pouso", "heliponto"]},
         "hidrografia": {

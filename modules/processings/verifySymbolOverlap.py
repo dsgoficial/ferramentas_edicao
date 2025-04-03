@@ -391,7 +391,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
         multiStepFeedback.pushInfo(self.tr("Verificando as camadas."))
         multiStepFeedback.setCurrentStep(0)
-        
+
         # Collect layers
         infra_via_deslocamento_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_VIA, context
@@ -471,43 +471,55 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         infra_ferrovia_l = self.parameterAsVectorLayer(
             parameters, self.INPUT_FERROVIA, context
         )
-        
+
         # Collect all layers
         allLayers = []
         layerVars = [
-            infra_via_deslocamento_l, constr_edificacao_p, edicao_simb_area_p, 
-            cobter_massa_dagua_a, constr_deposito_p, constr_extracao_mineral_p,
-            constr_ocupacao_solo_p, edicao_identificador_trecho_rod_p, 
-            edicao_simb_torre_energia_p, edicao_simb_direcao_corrente_p,
-            elemnat_ponto_cotado_p, infra_elemento_energia_p, 
-            infra_elemento_infraestrutura_p, infra_pista_pouso_p,
-            constr_ocupacao_solo_l, infra_pista_pouso_l, 
-            constr_deposito_a, constr_edificacao_a, constr_extracao_mineral_a, 
-            constr_ocupacao_solo_a, infra_elemento_energia_a, 
-            infra_elemento_infraestrutura_a, infra_pista_pouso_a, 
-            infra_elemento_viario_l, 
-            elemnat_trecho_drenagem_l, infra_ferrovia_l
+            infra_via_deslocamento_l,
+            constr_edificacao_p,
+            edicao_simb_area_p,
+            cobter_massa_dagua_a,
+            constr_deposito_p,
+            constr_extracao_mineral_p,
+            constr_ocupacao_solo_p,
+            edicao_identificador_trecho_rod_p,
+            edicao_simb_torre_energia_p,
+            edicao_simb_direcao_corrente_p,
+            elemnat_ponto_cotado_p,
+            infra_elemento_energia_p,
+            infra_elemento_infraestrutura_p,
+            infra_pista_pouso_p,
+            constr_ocupacao_solo_l,
+            infra_pista_pouso_l,
+            constr_deposito_a,
+            constr_edificacao_a,
+            constr_extracao_mineral_a,
+            constr_ocupacao_solo_a,
+            infra_elemento_energia_a,
+            infra_elemento_infraestrutura_a,
+            infra_pista_pouso_a,
+            infra_elemento_viario_l,
+            elemnat_trecho_drenagem_l,
+            infra_ferrovia_l,
         ]
-        
+
         # Collect layers and check CRS
         projected_layers = []
         geographic_layers_exist = False
         output_crs = None
-        
+
         for layer in layerVars:
             if layer is not None:
                 # Set output_crs on first valid layer if not already set
                 if output_crs is None:
                     output_crs = layer.crs()
-                    
+
                 # Check if layer is geographic
                 if layer.crs().isGeographic():
                     geographic_layers_exist = True
                     # Reproject to Web Mercator (EPSG:3857)
                     projected_layer = self.reprojectLayer(
-                        layer, 
-                        QgsCoordinateReferenceSystem('EPSG:3857'), 
-                        context
+                        layer, QgsCoordinateReferenceSystem("EPSG:3857"), context
                     )
                     projected_layers.append(projected_layer)
                     allLayers.append(projected_layer)
@@ -517,37 +529,39 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
 
         # If any layer was geographic, use EPSG:3857 for output
         if geographic_layers_exist:
-            output_crs = QgsCoordinateReferenceSystem('EPSG:3857')
+            output_crs = QgsCoordinateReferenceSystem("EPSG:3857")
             if feedback:
-                feedback.pushInfo(self.tr(
-                    "Algumas camadas estavam em coordenadas geográficas. "
-                    "Todas foram reprojetadas para EPSG:3857 (Web Mercator) para processamento."
-                ))
-        
+                feedback.pushInfo(
+                    self.tr(
+                        "Algumas camadas estavam em coordenadas geográficas. "
+                        "Todas foram reprojetadas para EPSG:3857 (Web Mercator) para processamento."
+                    )
+                )
+
         # Reproject frame layer if it exists
         if frameLyrPre:
             if frameLyrPre.crs().isGeographic():
                 frameLyr = self.reprojectLayer(
-                    frameLyrPre, 
-                    QgsCoordinateReferenceSystem('EPSG:3857'), 
-                    context
+                    frameLyrPre, QgsCoordinateReferenceSystem("EPSG:3857"), context
                 )
             else:
                 frameLyr = frameLyrPre
         else:
             frameLyr = None
-        
+
         # If no layers or all layers are empty, return
         if len(allLayers) == 0:
             return
-        
+
         # If any layer is geographic, inform the user
         if geographic_layers_exist:
-            feedback.pushInfo(self.tr(
-                "Algumas camadas estavam em coordenadas geográficas. "
-                "Todas foram reprojetadas para EPSG:3857 (Web Mercator) para processamento."
-            ))
-        
+            feedback.pushInfo(
+                self.tr(
+                    "Algumas camadas estavam em coordenadas geográficas. "
+                    "Todas foram reprojetadas para EPSG:3857 (Web Mercator) para processamento."
+                )
+            )
+
         # Restore original exceptions using projected layers
         exceptions = [
             {infra_via_deslocamento_l, cobter_massa_dagua_a},
@@ -568,10 +582,10 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             {infra_ferrovia_l, edicao_simb_torre_energia_p},
             {infra_ferrovia_l, infra_ferrovia_l},
         ]
-        
+
         layersSet = self.generateLayerSet(projected_layers)
         verifyList = [layerSet for layerSet in layersSet if layerSet not in exceptions]
-        
+
         # Prepare output fields
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.String))
@@ -583,22 +597,22 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             context,
             fields,
             QgsWkbTypes.MultiPolygon,
-            output_crs or QgsCoordinateReferenceSystem('EPSG:3857')
+            output_crs or QgsCoordinateReferenceSystem("EPSG:3857"),
         )
-        
+
         multiStepFeedback.setCurrentStep(1)
         multiStepFeedback.pushInfo(self.tr("Calculando as interseções."))
-        
+
         # Calculate intersections in the projected CRS
         featSet = self.calculateIntersections(
             verifyList, scale, fields, context, feedback=multiStepFeedback
         )
-        
+
         multiStepFeedback.setCurrentStep(2)
         featSet = self.removeOutputFeatures(
             featSet, frameLyr, min_area, context, multiStepFeedback
         )
-        
+
         # Add features to the sink
         list(
             map(
@@ -625,29 +639,31 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-            
+
         try:
             for step, layerSet in enumerate(layersList):
                 if feedback is not None and feedback.isCanceled():
                     return featSet
-                    
+
                 layerList = list(layerSet)
                 if len(layerList) == 1:
                     a = b = layerList[0]
                 else:
                     a, b = layerList
-                    
+
                 if feedback is not None:
                     multiStepFeedback.setCurrentStep(step * 5)
-                    
+
                 # Keep references to prepared layers
                 layer_pre_a = self.prepareInputLayer(a, context, None)
-                
+
                 if feedback is not None:
                     multiStepFeedback.setCurrentStep(step * 5 + 1)
-                    
-                layer_a = self.polygonLayer(layer_pre_a, a, scale, context, feedback=None)
-                
+
+                layer_a = self.polygonLayer(
+                    layer_pre_a, a, scale, context, feedback=None
+                )
+
                 if a == b:
                     layer_pre_b = layer_pre_a
                     layer_b = layer_a
@@ -655,16 +671,16 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                     if feedback is not None:
                         multiStepFeedback.setCurrentStep(step * 5 + 2)
                     layer_pre_b = self.prepareInputLayer(b, context, feedback=None)
-                    
+
                     if feedback is not None:
                         multiStepFeedback.setCurrentStep(step * 5 + 3)
                     layer_b = self.polygonLayer(
                         layer_pre_b, b, scale, context, feedback=multiStepFeedback
                     )
-                    
+
                 if feedback is not None:
                     multiStepFeedback.setCurrentStep(step * 5 + 4)
-                    
+
                 # Process intersections with error handling
                 try:
                     featSet_a_b = self.getIntersectionsFeats(
@@ -679,14 +695,16 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                     featSet = featSet.union(featSet_a_b)
                 except Exception as e:
                     if feedback is not None:
-                        feedback.pushInfo(f"Error processing intersection for layers {a.name()} and {b.name()}: {str(e)}")
+                        feedback.pushInfo(
+                            f"Error processing intersection for layers {a.name()} and {b.name()}: {str(e)}"
+                        )
                     continue
-                    
+
         except Exception as e:
             if feedback is not None:
                 feedback.pushInfo(f"Error in calculateIntersections: {str(e)}")
             raise
-            
+
         return featSet
 
     def prepareInputLayer(self, lyr, context, feedback=None) -> QgsVectorLayer:
@@ -967,134 +985,134 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         layer.commitChanges()
 
     def getIntersectionsFeats(
-            self,
-            layer1: QgsVectorLayer,
-            layer1_pre: QgsVectorLayer,
-            layer2: QgsVectorLayer,
-            layer2_pre: QgsVectorLayer,
-            fields,
-            context,
-            frameLyr=None,
-            feedback=None,
-        ) -> Set[QgsFeature]:
+        self,
+        layer1: QgsVectorLayer,
+        layer1_pre: QgsVectorLayer,
+        layer2: QgsVectorLayer,
+        layer2_pre: QgsVectorLayer,
+        fields,
+        context,
+        frameLyr=None,
+        feedback=None,
+    ) -> Set[QgsFeature]:
         features = set()
         if feedback is not None:
             multiStepFeedback = QgsProcessingMultiStepFeedback(6, feedback)
             multiStepFeedback.setCurrentStep(0)
         else:
             multiStepFeedback = None
-            
+
         try:
             # Store references to cloned layers to prevent premature deletion
             newlayer1 = None
             newlayer2 = None
             interLayer = None
-            
+
             # Clone layers and add ID fields
             if layer1 is not None:
                 newlayer1 = layer1.clone()
                 newlayer1 = self.addIdField(newlayer1, "id_pol", context, None)
-            
+
             if feedback is not None:
                 multiStepFeedback.setCurrentStep(1)
-                
+
             if layer2 is not None:
                 newlayer2 = layer2.clone()
                 newlayer2 = self.addIdField(newlayer2, "id_pol", context, None)
-                
+
             if newlayer1 is None or newlayer2 is None:
                 return features
-                
+
             if feedback is not None:
                 multiStepFeedback.setCurrentStep(2)
-                
+
             # Create spatial indexes
             self.algRunner.runCreateSpatialIndex(newlayer1, context, None)
-            
+
             if feedback is not None:
                 multiStepFeedback.setCurrentStep(3)
-                
+
             self.algRunner.runCreateSpatialIndex(newlayer2, context, None)
-            
+
             if feedback is not None:
                 multiStepFeedback.setCurrentStep(4)
-                
+
             # Join attributes by location
             interLayer = self.algRunner.runJoinAttributesByLocation(
                 inputLyr=newlayer1, joinLyr=newlayer2, context=context
             )
-            
+
             if feedback is not None:
                 multiStepFeedback.setCurrentStep(5)
                 nSteps = interLayer.featureCount()
                 progressStep = 100 / nSteps if nSteps != 0 else 0
-                
+
             alreadyVerify = []
-            
+
             # Process features
             for step, feat in enumerate(interLayer.getFeatures()):
                 if feedback is not None and feedback.isCanceled():
                     return features
-                    
+
                 if {feat["id"], feat["id_2"]} in alreadyVerify:
                     continue
-                    
+
                 alreadyVerify.append({feat["id"], feat["id_2"]})
-                
+
                 if feat["id"] == feat["id_2"]:
                     continue
-                    
+
                 # Get original features
                 feat1_orig = layer1_pre.getFeature(feat["new_id"])
                 feat2_orig = layer2_pre.getFeature(feat["new_id_2"])
-                
+
                 if feat1_orig.geometry().intersects(feat2_orig.geometry()):
                     continue
-                    
+
                 feat1 = layer1.getFeature(feat["id_pol"])
                 feat2 = layer2.getFeature(feat["id_pol_2"])
-                
+
                 intersection = feat1.geometry().intersection(feat2.geometry())
-                
+
                 if intersection.isEmpty() or (
                     not intersection.wkbType() == QgsWkbTypes.Polygon
                     and not intersection.wkbType() == QgsWkbTypes.MultiPolygon
                 ):
                     continue
-                    
+
                 if frameLyr is not None:
                     if not self.geomInLayer(intersection, frameLyr, multiStepFeedback):
                         continue
-                        
+
                 intersection.convertToMultiType()
                 newFeat = QgsFeature(fields)
                 newFeat.setGeometry(intersection)
-                
+
                 id1 = feat["id"] if feat["id"] is not None else "NULL"
                 id2 = feat["id_2"] if feat["id_2"] is not None else "NULL"
                 newFeat["id"] = id1 + "_" + id2
                 newFeat["camada_1"] = feat1["nome_camada"]
                 newFeat["camada_2"] = feat2["nome_camada"]
-                
+
                 features.add(newFeat)
-                
+
                 if feedback is not None:
                     multiStepFeedback.setProgress(progressStep * step)
-                    
+
         except Exception as e:
             if feedback is not None:
                 feedback.pushInfo(f"Error in getIntersectionsFeats: {str(e)}")
             raise
-            
+
         finally:
             # Explicitly clear references to temporary layers
-            if 'newlayer1' in locals():
+            if "newlayer1" in locals():
                 newlayer1 = None
-            if 'newlayer2' in locals():
+            if "newlayer2" in locals():
                 newlayer2 = None
-            if 'interLayer' in locals():
+            if "interLayer" in locals():
                 interLayer = None
-                
+
         return features
 
     def removeNullGeometries(
@@ -1162,7 +1180,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
     def reprojectLayer(self, inputLayer, targetCrs, context, feedback=None):
         """
         Reprojects a layer to the target coordinate reference system using QGIS native processing
-        
+
         :param inputLayer: Input vector layer to be reprojected
         :param targetCrs: Target coordinate reference system
         :param context: QGIS processing context
@@ -1170,21 +1188,14 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         :return: Reprojected layer
         """
         # Use native QGIS reproject algorithm
-        parameters = {
-            'INPUT': inputLayer,
-            'TARGET_CRS': targetCrs,
-            'OUTPUT': 'memory:'
-        }
-        
+        parameters = {"INPUT": inputLayer, "TARGET_CRS": targetCrs, "OUTPUT": "memory:"}
+
         # Run the native reproject algorithm
         result = processing.run(
-            'native:reprojectlayer', 
-            parameters, 
-            context=context, 
-            feedback=feedback
+            "native:reprojectlayer", parameters, context=context, feedback=feedback
         )
-        
-        return result['OUTPUT']
+
+        return result["OUTPUT"]
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
@@ -1208,4 +1219,4 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

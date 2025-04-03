@@ -303,11 +303,25 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
             featsToAdd.append(featToAdd)
             attrNameLane = "nr_faixas"
             labelA = self.insertRoadLabel(
-                inputLyr, labelLyr, attrNameLane, a, featA, scale, productTypeName, crsString=crsString
+                inputLyr,
+                labelLyr,
+                attrNameLane,
+                a,
+                featA,
+                scale,
+                productTypeName,
+                crsString=crsString,
             )
             labels.add(labelA)
             labelB = self.insertRoadLabel(
-                inputLyr, labelLyr, attrNameLane, b, featB, scale, productTypeName, crsString=crsString
+                inputLyr,
+                labelLyr,
+                attrNameLane,
+                b,
+                featB,
+                scale,
+                productTypeName,
+                crsString=crsString,
             )
             labels.add(labelB)
             if feedback is not None:
@@ -593,9 +607,9 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
 
     def insertRoadLabel(
         self,
-        srcLyr: QgsVectorLayer, 
-        dstLyr: QgsVectorLayer, 
-        attrNameLane, 
+        srcLyr: QgsVectorLayer,
+        dstLyr: QgsVectorLayer,
+        attrNameLane,
         point: QgsFeature,
         feat: QgsFeature,
         scale,
@@ -612,7 +626,14 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         posGeom = QgsGeometry()
         posGeom = posGeom.fromPointXY(middlePoint)
         label = createLabelFromLayerAToLayerB(
-            posGeom, srcLyr, dstLyr, attrNameLane, scale, "createroadlabel", productTypeName, crsString="EPSG:3857"
+            posGeom,
+            srcLyr,
+            dstLyr,
+            attrNameLane,
+            scale,
+            "createroadlabel",
+            productTypeName,
+            crsString="EPSG:3857",
         )
         return label
 
@@ -670,5 +691,4 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
-
+        return help().helpUrl(self.name())

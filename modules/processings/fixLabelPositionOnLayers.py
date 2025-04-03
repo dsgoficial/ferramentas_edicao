@@ -65,7 +65,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
             QgsProcessingParameterBoolean(
                 self.OVERWRITE_LABELS,
                 self.tr("Substituir rótulos já fixados"),
-                defaultValue=False
+                defaultValue=False,
             )
         )
         self.scaleDict = {
@@ -79,10 +79,14 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layerList = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
-        geographicBoundaryLyr = self.parameterAsLayer(parameters, self.GEOGRAPHIC_BOUNDARY, context)
+        geographicBoundaryLyr = self.parameterAsLayer(
+            parameters, self.GEOGRAPHIC_BOUNDARY, context
+        )
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         scale = self.scaleDict[self.scales[scaleIdx]]
-        overwrite_labels = self.parameterAsBoolean(parameters, self.OVERWRITE_LABELS, context)
+        overwrite_labels = self.parameterAsBoolean(
+            parameters, self.OVERWRITE_LABELS, context
+        )
         lyrDict = {lyr.name(): lyr for lyr in layerList}
         nRegions = geographicBoundaryLyr.featureCount()
         nSteps = 2 + 2 * nRegions
@@ -136,15 +140,22 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         futures = set()
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
 
-        def compute(lyr:QgsVectorLayer, x_field_idx, y_field_idx, featid, point, overwrite_labels):
+        def compute(
+            lyr: QgsVectorLayer,
+            x_field_idx,
+            y_field_idx,
+            featid,
+            point,
+            overwrite_labels,
+        ):
             if multiStepFeedback.isCanceled():
                 return
             x = point.x()
             y = point.y()
             if not overwrite_labels:
                 feature = lyr.getFeature(featid)
-                x = feature[x_field_idx] if feature[x_field_idx]!=NULL else point.x()
-                y = feature[y_field_idx] if feature[y_field_idx]!=NULL else point.y()
+                x = feature[x_field_idx] if feature[x_field_idx] != NULL else point.x()
+                y = feature[y_field_idx] if feature[y_field_idx] != NULL else point.y()
             return lyr, {
                 featid: {
                     x_field_idx: x,
@@ -180,7 +191,7 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
                         fieldIdxDict["label_y"],
                         featid,
                         point,
-                        overwrite_labels
+                        overwrite_labels,
                     )
                 )
                 currentFeat += 1
@@ -230,4 +241,4 @@ class FixLabelPostionOnLayers(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

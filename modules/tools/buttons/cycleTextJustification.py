@@ -67,4 +67,3 @@ class CycleTextJustification(BaseTools):
                     else:
                         lyr.changeAttributeValue(feat.id(), fieldIdx, just % 3 + 1)
                 lyr.triggerRepaint()
-

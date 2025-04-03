@@ -23,6 +23,7 @@ import math
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
+
 class DamWidth(QgsProcessingAlgorithm):
 
     INPUT_DAM = "INPUT_DAM"
@@ -261,4 +262,4 @@ class DamWidth(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

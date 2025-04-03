@@ -62,7 +62,7 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
         simbAreaLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_SYMBOL_LAYER, context
         )
-        
+
         iterator = (
             inputLyr.getFeatures() if not onlySelected else inputLyr.selectedFeatures()
         )
@@ -78,26 +78,26 @@ class PlaceMineralExtractionSymbol(QgsProcessingAlgorithm):
         simbAreaLayer.startEditing()
         simbAreaLayer.beginEditCommand("Posicionando símbolos")
         newFeatList = []
-        
+
         for current, feat in enumerate(iterator):
             if feedback.isCanceled():
                 break
-                
+
             # Verifica se a feição está visível
             if feat[inputLyrVisibleField] != 1:
                 continue
-                
+
             geom = feat.geometry()
             innerPoint = geom.centroid()
             if not innerPoint.within(geom):
                 innerPoint = geom.pointOnSurface()
-                
+
             newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
             newFeat["tipo"] = 2 if feat["situacao_fisica"] == 3 else 3
             newFeatList.append(newFeat)
-            
+
             feedback.setProgress(current * stepSize)
-            
+
         simbAreaLayer.addFeatures(newFeatList)
         simbAreaLayer.endEditCommand()
         return {}

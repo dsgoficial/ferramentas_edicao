@@ -49,6 +49,7 @@ from processing.gui.wrappers import WidgetWrapper
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
+
 class PasswordWrapper(WidgetWrapper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -361,4 +362,4 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

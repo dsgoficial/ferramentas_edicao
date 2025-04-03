@@ -19,9 +19,9 @@ from qgis.core import (
 # as camadas ja predefinidas dependem da funcao chamada
 def createLabelFromLayerAToLayerB(
     pos: QgsGeometry,
-    srcLyr: QgsVectorLayer, 
-    dstLyr: QgsVectorLayer, 
-    attrNameLane, 
+    srcLyr: QgsVectorLayer,
+    dstLyr: QgsVectorLayer,
+    attrNameLane,
     scale: int,
     functionName: Literal["createroadlabel"],
     productTypeName: Literal["orto", "topo"],
@@ -35,12 +35,16 @@ def createLabelFromLayerAToLayerB(
     productTypeDict = {"orto": 0, "topo": 1}
     productType = productTypeDict[productTypeName]
     if functionName == "createroadlabel":
-        label = createRoadLabel(pos, srcLyr, dstLyr, attrNameLane, scale, productType, crsString)
+        label = createRoadLabel(
+            pos, srcLyr, dstLyr, attrNameLane, scale, productType, crsString
+        )
 
     return label
 
 
-def createRoadLabel(pos: QgsGeometry, srcLyr, dstLyr, attrNameLane, scale, productType, crsString) -> QgsFeature:
+def createRoadLabel(
+    pos: QgsGeometry, srcLyr, dstLyr, attrNameLane, scale, productType, crsString
+) -> QgsFeature:
     tolerance = getToleranceForLyr(srcLyr, scale, crsString)
     feat = getNearestFeat(pos, srcLyr, tolerance)
     attrNameLane = "nr_faixas"

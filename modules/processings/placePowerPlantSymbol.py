@@ -63,7 +63,7 @@ class PlacePowerPlantSymbol(QgsProcessingAlgorithm):
         simbAreaLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_SYMBOL_LAYER, context
         )
-        
+
         request = QgsFeatureRequest().setFilterExpression(
             '("tipo" - "tipo"%100)/100 in (18)'
         )
@@ -86,26 +86,26 @@ class PlacePowerPlantSymbol(QgsProcessingAlgorithm):
         simbAreaLayer.startEditing()
         simbAreaLayer.beginEditCommand("Posicionando símbolos")
         newFeatList = []
-        
+
         for current, feat in enumerate(iterator):
             if feedback.isCanceled():
                 break
-                
+
             # Verifica se a feição está visível
             if feat[inputLyrVisibleField] != 1:
                 continue
-                
+
             geom = feat.geometry()
             innerPoint = geom.centroid()
             if not innerPoint.within(geom):
                 innerPoint = geom.pointOnSurface()
-                
+
             newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, innerPoint)
             newFeat["tipo"] = 1
             newFeatList.append(newFeat)
-            
+
             feedback.setProgress(current * stepSize)
-            
+
         simbAreaLayer.addFeatures(newFeatList)
         simbAreaLayer.endEditCommand()
         return {}

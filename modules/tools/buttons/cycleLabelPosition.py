@@ -157,4 +157,3 @@ class CycleLabelPosition(BaseTools):
                     self.currentFeats.add(feat.id())
                 self.updateCurrentPos()
                 lyr.triggerRepaint()
-

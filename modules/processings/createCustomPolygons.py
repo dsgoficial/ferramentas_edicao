@@ -13,7 +13,7 @@ from qgis.core import (
     QgsProcessing,
     QgsWkbTypes,
     QgsFeatureSink,
-    QgsProcessingParameterNumber
+    QgsProcessingParameterNumber,
 )
 from qgis.PyQt.QtCore import QVariant, QCoreApplication
 
@@ -28,10 +28,10 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
 
     SCALE_OPTIONS = ["25.000", "50.000", "100.000", "250.000"]
     SIDE_LENGTH_MAP = {
-        0: 0.125,   # 25.000
-        1: 0.250,   # 50.000
-        2: 0.500,   # 100.000
-        3: 1.250    # 250.000
+        0: 0.125,  # 25.000
+        1: 0.250,  # 50.000
+        2: 0.500,  # 100.000
+        3: 1.250,  # 250.000
     }
 
     def initAlgorithm(self, config=None):
@@ -71,7 +71,9 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER, context)
         scale_index = self.parameterAsEnum(parameters, self.SCALE, context)
         side_length = self.SIDE_LENGTH_MAP[scale_index]
-        rounding_factor = self.parameterAsDouble(parameters, self.ROUNDING_FACTOR, context)
+        rounding_factor = self.parameterAsDouble(
+            parameters, self.ROUNDING_FACTOR, context
+        )
 
         (sink, dest_id) = self.parameterAsSink(
             parameters,
@@ -136,7 +138,7 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())
 
     def createInstance(self):
         return CreateCustomPolygons()

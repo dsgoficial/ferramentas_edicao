@@ -40,7 +40,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                     self.tr("1:100.000"),
                     self.tr("1:250.000"),
                 ],
-                defaultValue=2
+                defaultValue=2,
             )
         )
 
@@ -157,7 +157,11 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             processing_function = self.defaultTrechoDrenagem
         elif table_name in ["llp_localidade_p"]:
             processing_function = self.defaultllpLocalidade
-        elif table_name in ["constr_ocupacao_solo_p", "constr_ocupacao_solo_l", "constr_ocupacao_solo_a"]:
+        elif table_name in [
+            "constr_ocupacao_solo_p",
+            "constr_ocupacao_solo_l",
+            "constr_ocupacao_solo_a",
+        ]:
             processing_function = self.defaultOcupacaoSolo
         else:
             return
@@ -249,8 +253,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultIlhaA(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        if size>16:
-            size=16 #na MTM o tamanho maximo da fonte é 16
+        if size > 16:
+            size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size
         feature["visivel"] = 1
         if (
@@ -288,7 +292,10 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 feature["tamanho_txt"] = 7
         if "texto_edicao" in feature.fields().names():
             if feature["texto_edicao"] != NULL:
-                if isinstance(feature["texto_edicao"], str) and feature["texto_edicao"].strip():
+                if (
+                    isinstance(feature["texto_edicao"], str)
+                    and feature["texto_edicao"].strip()
+                ):
                     return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
@@ -299,7 +306,10 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 feature["tamanho_txt"] = 6
         if "texto_edicao" in feature.fields().names():
             if feature["texto_edicao"] != NULL:
-                if not isinstance(feature["texto_edicao"], str) and feature["texto_edicao"].strip():
+                if (
+                    not isinstance(feature["texto_edicao"], str)
+                    and feature["texto_edicao"].strip()
+                ):
                     return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
@@ -352,7 +362,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultFerrovia(self, feature, lyrCrs):
         feature["visivel"] = 1
         return feature
-    
+
     def defaultBarragem(self, feature, lyrCrs):
         feature["visivel"] = 1
         return feature
@@ -430,8 +440,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultMassaDagua(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        if size>16:
-            size=16 # na MTM o tamanho maximo da fonte é 16
+        if size > 16:
+            size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size
         if (
             "texto_edicao" in feature.fields().names()
@@ -451,7 +461,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             1: "Abandonada",
             2: "Destruída",
             3: "Construída",
-            4: "Em construção"
+            4: "Em construção",
         }
 
         feature["justificativa_txt"] = 2
@@ -469,7 +479,9 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             if feature["nome"] != NULL:
                 texto_edicao.append(feature["nome"])
             if feature["situacao_fisica"] != 3:
-                situacao = situacao_fisica_map.get(feature["situacao_fisica"], "Desconhecida")
+                situacao = situacao_fisica_map.get(
+                    feature["situacao_fisica"], "Desconhecida"
+                )
                 texto_edicao.append("(" + situacao.lower() + ")")
 
             if feature["revestimento"] == 1:
@@ -532,7 +544,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["situacao_em_poligono"] != 4 and feature["nome"] != NULL:
-                feature["texto_edicao"] = self.abreviaNomeTrechoDrenagem(feature["nome"])
+            feature["texto_edicao"] = self.abreviaNomeTrechoDrenagem(feature["nome"])
 
         return feature
 
@@ -584,7 +596,9 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["nome"] != NULL:
-            feature["texto_edicao"] = self.abreviaNomeEdif(feature["nome"], feature["tipo"])
+            feature["texto_edicao"] = self.abreviaNomeEdif(
+                feature["nome"], feature["tipo"]
+            )
 
         return feature
 
@@ -611,7 +625,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 1
         if feature["nome"] != NULL:
             feature["texto_edicao"] = self.abreviaNomeOcupacaoSolo(feature["nome"])
-        elif feature["tipo"] in (301,302,303,304,305,306,307):
+        elif feature["tipo"] in (301, 302, 303, 304, 305, 306, 307):
             tipo_ocupacao_map = {
                 301: "Pista de atletismo",
                 302: "Pista de ciclismo",
@@ -622,7 +636,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 307: "Pista de motocross",
             }
             feature["texto_edicao"] = tipo_ocupacao_map.get(feature["tipo"])
-        
+
         return feature
 
     def abreviaNomeEdif(self, nome, tipo):
@@ -630,8 +644,14 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             302: {"estação de tratamento de água": "ETA"},
             303: {"estação de bombeamento de água": "EBA"},
             405: {"estação de tratamento de esgoto": "ETE"},
-            518: {"escola municipal de ensino fundamental": "EMEF", "escola estadual de ensino fundamental": "EEEF"},
-            519: {"escola municipal de ensino médio": "EMEM", "escola estadual de ensino médio": "EEEM"},
+            518: {
+                "escola municipal de ensino fundamental": "EMEF",
+                "escola estadual de ensino fundamental": "EEEF",
+            },
+            519: {
+                "escola municipal de ensino médio": "EMEM",
+                "escola estadual de ensino médio": "EEEM",
+            },
             520: {"universidade": "Univ", "faculdade": "Fac"},
             521: {"universidade": "Univ", "faculdade": "Fac"},
             522: {"universidade": "Univ", "faculdade": "Fac"},
@@ -639,19 +659,32 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             712: {"monumento": "Mon"},
             810: {"biblioteca": "Bibl"},
             1098: {"fábrica": "Fab", "Indústria": "Ind"},
-            1212: {"fazenda": "Faz", "chácara": "Chac", "Estância": "Esta", "nossa senhora": "N Sra"},
+            1212: {
+                "fazenda": "Faz",
+                "chácara": "Chac",
+                "Estância": "Esta",
+                "nossa senhora": "N Sra",
+            },
             1308: {"câmara municipal": "CM"},
             1316: {"secretaria municipal": "SM"},
             1322: {"prefeitura": "Pref"},
             2025: {"hospital": "Hosp", "nossa senhora": "N Sra"},
             2026: {"policlínica": "Pclin", "Maternidade": "Mater"},
             2027: {"unidade básica de pronto atendimento": "UPA"},
-            2028: {"unidade básica de saúde": "UBS", "unidade básica da família": "UBF", "policlínica": "Pclin", "Posto de Saúde": "P Saúde"},
+            2028: {
+                "unidade básica de saúde": "UBS",
+                "unidade básica da família": "UBF",
+                "policlínica": "Pclin",
+                "Posto de Saúde": "P Saúde",
+            },
             3001: {"delegacia": "Del"},
             3004: {"polícia rodoviária federal": "PRF"},
             3005: {"polícia militar": "PM", "brigada militar": "BM"},
             3007: {"corpo de bombeiros militar": "CBM"},
-            3008: {"corpo de bombeiros voluntário": "CBV", "corpo de bombeiro civil": "CBC"}
+            3008: {
+                "corpo de bombeiros voluntário": "CBV",
+                "corpo de bombeiro civil": "CBC",
+            },
         }
 
         nome_lower = nome.lower()
@@ -672,7 +705,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             "córrego": "Corr",
             "igarapé": "Ig",
             "ribeirão": "Rib",
-            "arroio": "Arr"
+            "arroio": "Arr",
         }
 
         nome_lower = nome.lower()
@@ -684,11 +717,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return nome
 
     def abreviaNomeOcupacaoSolo(self, nome):
-        abreviations = {
-            "cemitério": "Cem",
-            "Parque": "Pq",
-            "nossa senhora": "N Sra"
-        }
+        abreviations = {"cemitério": "Cem", "Parque": "Pq", "nossa senhora": "N Sra"}
 
         nome_lower = nome.lower()
 
@@ -720,4 +749,4 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())

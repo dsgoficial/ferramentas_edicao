@@ -61,7 +61,7 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
             )
         )
         self.mappingDict = {
-            8: 1,   # rocha em agua
+            8: 1,  # rocha em agua
             18: 2,  # recife contiguo
             19: 2,  # recife afastado
         }
@@ -75,7 +75,9 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
         simbLineLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_SYMBOL_LAYER, context
         )
-        if (onlySelected and inputLyr.selectedFeatureCount() == 0) or inputLyr.featureCount() == 0:
+        if (
+            onlySelected and inputLyr.selectedFeatureCount() == 0
+        ) or inputLyr.featureCount() == 0:
             selectedText = "selecionadas " if onlySelected else ""
             feedback.pushInfo(f"Não há feições {selectedText}na camada de entrada")
             return {}
@@ -238,5 +240,4 @@ class PlaceBorderOfHydrographicElement(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
-
+        return help().helpUrl(self.name())

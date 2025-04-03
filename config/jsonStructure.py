@@ -2,7 +2,15 @@ import os
 import time
 from typing import List, Dict, Tuple
 from ..factories.mapBuilderUtils import MapBuilderUtils
-from qgis.core import QgsFileUtils, QgsRasterLayer, QgsVectorLayer, QgsCoordinateTransform, QgsCoordinateReferenceSystem, QgsProject, QgsRectangle
+from qgis.core import (
+    QgsFileUtils,
+    QgsRasterLayer,
+    QgsVectorLayer,
+    QgsCoordinateTransform,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsRectangle,
+)
 
 data_structure = {
     "Carta Ortoimagem": [
@@ -941,13 +949,20 @@ def validate_file_paths(input_dict: dict) -> str:
         return f'Há espaços no caminho do arquivo {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}. \nInforme outro caminho sem espaços e tente novamente.'
     return ""
 
+
 def validate_rasters_against_extents(frameLyr: QgsVectorLayer, input_dict: dict) -> str:
     mbUtils = MapBuilderUtils()
-    elevationDiagramImage = mbUtils.getRasterLayerByType(input_dict["mde_diagrama_elevacao"]["caminho_mde"]) if "mde_diagrama_elevacao" in input_dict else None
+    elevationDiagramImage = (
+        mbUtils.getRasterLayerByType(input_dict["mde_diagrama_elevacao"]["caminho_mde"])
+        if "mde_diagrama_elevacao" in input_dict
+        else None
+    )
     frameExtent = frameLyr.extent()
     if elevationDiagramImage is not None and not elevationDiagramImage.isValid():
         return f'A imagem do diagrama de elevação não existe ou não está acessível no caminho {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}.\n'
-    if elevationDiagramImage is not None and not frameExtent.intersects(elevationDiagramImage.extent()):
+    if elevationDiagramImage is not None and not frameExtent.intersects(
+        elevationDiagramImage.extent()
+    ):
         return f"A imagem do diagrama de elevação não intersecta a região de moldura informada. Verifique a moldura e o arquivo do diagrama.\n"
     for image_item in input_dict.get("imagens", []):
         file_path = image_item.get("caminho_imagem", None)
@@ -962,29 +977,28 @@ def validate_rasters_against_extents(frameLyr: QgsVectorLayer, input_dict: dict)
             return f"A imagem {file_path} não existe ou não está acessível\n"
         rasterExtent = rasterLyr.extent()
         if rasterLyr.crs() != frameLyr.crs():
-            rasterExtent = reproject_extent(rasterExtent, rasterLyr.crs(), frameLyr.crs())
+            rasterExtent = reproject_extent(
+                rasterExtent, rasterLyr.crs(), frameLyr.crs()
+            )
         if not frameExtent.intersects(rasterExtent):
             return f"A imagem {file_path} não intersecta a região da moldura informada. Verifique a moldura e a imagem.\n"
     return ""
+
 
 def reproject_extent(extent, source_crs, target_crs):
     # Create a coordinate transform
     transform = QgsCoordinateTransform(
         QgsCoordinateReferenceSystem(source_crs),
         QgsCoordinateReferenceSystem(target_crs),
-        QgsProject.instance()
+        QgsProject.instance(),
     )
-    
+
     # Create a QgsRectangle from the extent
     rect = QgsRectangle(
-        extent.xMinimum(),
-        extent.yMinimum(),
-        extent.xMaximum(),
-        extent.yMaximum()
+        extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum()
     )
-    
+
     # Transform the rectangle
     transformed_extent = transform.transformBoundingBox(rect)
-    
-    return transformed_extent
 
+    return transformed_extent

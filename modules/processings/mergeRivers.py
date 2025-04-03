@@ -21,6 +21,7 @@ from .processingUtils import ProcessingUtils
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
+
 class MergeRivers(QgsProcessingAlgorithm):
 
     INPUT_LAYER_L = "INPUT_LAYER_L"
@@ -208,7 +209,7 @@ class MergeRivers(QgsProcessingAlgorithm):
             if feature["nome"] not in features_by_name:
                 features_by_name[feature["nome"]] = []
             features_by_name[feature["nome"]].append((length, feature))
-        
+
         # Ordenar cada grupo por comprimento (decrescente)
         for nome in features_by_name:
             features_by_name[nome].sort(reverse=True)
@@ -216,11 +217,11 @@ class MergeRivers(QgsProcessingAlgorithm):
         # Processar features na ordem de tamanho
         total = sum(len(group) for group in features_by_name.values())
         current = 0
-        
+
         for nome, features in features_by_name.items():
             if feedback is not None and feedback.isCanceled():
                 break
-                
+
             for length, currentFeature in features:
                 newGeom = currentFeature.geometry()
                 # Buscar features já adicionadas que se intersectam
@@ -229,12 +230,16 @@ class MergeRivers(QgsProcessingAlgorithm):
                         QgsFeatureRequest().setFilterRect(newGeom.boundingBox())
                     )
                 )
-                
+
                 for currentFeature2 in featuresRequest:
-                    if currentFeature2["nome"] == nome and newGeom.intersects(currentFeature2.geometry()):
-                        newGeom = newGeom.combine(currentFeature2.geometry()).mergeLines()
+                    if currentFeature2["nome"] == nome and newGeom.intersects(
+                        currentFeature2.geometry()
+                    ):
+                        newGeom = newGeom.combine(
+                            currentFeature2.geometry()
+                        ).mergeLines()
                         newLayer.deleteFeature(currentFeature2.id())
-                
+
                 # Adicionar nova feature com atributos da maior
                 feat = QgsFeature()
                 feat.setFields(newLayer.fields())
@@ -244,7 +249,7 @@ class MergeRivers(QgsProcessingAlgorithm):
                     )
                 feat.setGeometry(newGeom)
                 newLayer.addFeatures([feat])
-                
+
                 if feedback is not None:
                     current += 1
                     feedback.setProgress(current * 100 / total)
@@ -253,9 +258,7 @@ class MergeRivers(QgsProcessingAlgorithm):
         return newLayer
 
     def condition(self, feat1, feat2):
-        return (
-            feat1["nome"] == feat2["nome"]
-        )
+        return feat1["nome"] == feat2["nome"]
 
     def clipLayer(self, layer, frame, context, feedback):
         r = processing.run(
@@ -293,4 +296,4 @@ class MergeRivers(QgsProcessingAlgorithm):
         return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return  help().helpUrl(self.name())
+        return help().helpUrl(self.name())
