@@ -31,7 +31,7 @@ from .buttons.toggleVisibility import ToggleVisibility
 
 
 class SetupButtons:
-    def __init__(self, toolbar, iface=None) -> None:
+    def __init__(self, toolbar, iface=None, essential_widget_names=None) -> None:
         self.iface = iface
         self.toolBar = toolbar
         self.mapCanvas = iface.mapCanvas()
@@ -40,6 +40,7 @@ class SetupButtons:
         self.mapToolsActions = list()
         self.collapseButton = None
         self.initializing = True  # Flag to prevent saving during initialization
+        self.essential_widget_names = essential_widget_names if essential_widget_names is not None else []
         QgsProject.instance().projectSaved.connect(self.saveStateOnProject)
         self.iface.projectRead.connect(self.loadStateFromProject)
 
@@ -54,8 +55,7 @@ class SetupButtons:
 
         # Now create the collapse button AFTER the first two buttons
         # but BEFORE all other widgets/buttons
-        self.collapseButton = CollapseToolbarButton(self.toolBar, self.iface)
-        self.collapseButton.setupUi()
+        self.collapseButton = CollapseToolbarButton(self.toolBar, self.iface, self.essential_widget_names)
 
         # Insert the collapse button as the THIRD button in the toolbar
         all_actions = self.toolBar.actions()
@@ -322,6 +322,7 @@ class SetupButtons:
             for i in self.toolBar.children()
             if i.__class__.__name__ in ["ScaleSelector", "ProductTypeSelector"]
         }
+        self.collapseButton.saveStateToProject()
         # Just set the variable - don't try to save the project
         QgsExpressionContextUtils.setProjectVariable(
             QgsProject.instance(),

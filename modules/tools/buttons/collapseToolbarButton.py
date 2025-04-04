@@ -7,18 +7,21 @@ from .baseTools import BaseTools
 
 
 class CollapseToolbarButton(BaseTools):
-    def __init__(self, toolBar, iface):
+    def __init__(self, toolBar, iface, essential_widget_names = None):
         super().__init__()
         self.toolBar = toolBar
         self.iface = iface
         self._action = None
-        self.collapsed = True  # Default to collapsed state
+        # self.collapsed = True  # Default to collapsed state
         self.visible_actions = []
-        self.essential_widget_names = []  # Widget types that should always be visible
+        self.essential_widget_names = essential_widget_names if essential_widget_names is not None else []  # Widget types that should always be visible
         self.essential_actions = (
             []
         )  # Actions (like main button and help button) that should remain visible
         self.initializing = True  # Flag to prevent saving during initialization
+        self.setEssentialWidgetTypes(self.essential_widget_names)
+        self.setupUi()
+        self.toggleToolbar(checked=False)
 
     def setupUi(self):
         # Create the collapse button action using your pattern
@@ -32,7 +35,7 @@ class CollapseToolbarButton(BaseTools):
             self.iface,
         )
         self._action.setCheckable(True)
-        self._action.setChecked(True)  # Start in checked (collapsed) state
+        self._action.setChecked(False)  # Start in checked (collapsed) state
 
         # Store the first two actions (main button and help button) as essential
         all_actions = self.toolBar.actions()
@@ -54,7 +57,7 @@ class CollapseToolbarButton(BaseTools):
         else:
             self.collapsed = checked
 
-        if self.collapsed:
+        if not self.collapsed:
             # Save and hide non-essential actions
             self.visible_actions = []
 
@@ -82,10 +85,6 @@ class CollapseToolbarButton(BaseTools):
             for action in self.visible_actions:
                 action.setVisible(True)
             self.visible_actions = []
-
-        # Only save state if not initializing
-        if not self.initializing:
-            self.saveStateToProject()
 
     def saveStateToProject(self):
         """Save collapse state to project variables WITHOUT triggering a project save"""
