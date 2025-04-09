@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+</head>
+<body lang="pt-BR" dir="ltr"><p>Help versão 1.0
+</p>
+<hr/>
+
+<h2 class="western">Descrição:</h2>
+<h4 class="western" align="center" style="border: none; padding: 0cm">
+O algoritmo copia feições específicas de rodovias, ferrovias, valas e trechos de drenagem para a camada de elemento viário, realizando o mapeamento de atributos de acordo com regras estabelecidas. As inserções não são commitadas na base de dados, apenas adicionadas à camada de destino.
+</h4>
+<hr/>
+
+<h2>Parâmetros:</h2>
+         <p>
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar camada de rodovias &rarr; Indicar a camada que contém as rodovias (padrão: infra_via_deslocamento_l). Feições com 'tipo_elemento_viario' diferente de 97 e 9999 serão copiadas para a camada de elemento viário.
+            </span>
+
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar camada de ferrovias &rarr; Indicar a camada que contém as ferrovias (padrão: infra_ferrovia_l). Feições com 'tipo_elemento_viario' diferente de 97 e 9999 serão copiadas para a camada de elemento viário.
+            </span>
+
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar camada de vala &rarr; Indicar a camada que contém as valas (padrão: infra_vala_l). Feições com 'em_galeria_bueiro' igual a 1 serão copiadas para a camada de elemento viário.
+            </span>
+
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar camada de trecho de drenagem &rarr; Indicar a camada que contém os trechos de drenagem (padrão: elemnat_trecho_drenagem_l). Feições com 'em_galeria_bueiro' igual a 1 serão copiadas para a camada de elemento viário.
+            </span>
+
+            <span style="margin-bottom: 10px;">
+                &#8226; Selecionar camada de elemento viário &rarr; Indicar a camada de destino onde as feições serão inseridas (padrão: infra_elemento_viario_l).
+            </span>
+         </p>
+
+<hr/>
+
+<h2 class="western">Exemplo de uso:
+</h2>
+<h4 class="western">Modelagem EDGV3.0_TOPO na escala de 1:25.000
+(EPSG):4674</h4>
+
+<p>
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecionar camada de rodovias &rarr; infra_via_deslocamento_l
+    </span>
+
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecionar camada de ferrovias &rarr; infra_ferrovia_l
+    </span>
+
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecionar camada de vala &rarr; infra_vala_l
+    </span>
+
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecionar camada de trecho de drenagem &rarr; elemnat_trecho_drenagem_l
+    </span>
+
+    <span style="margin-bottom: 10px;">
+        &#8226; Selecionar camada de elemento viário &rarr; infra_elemento_viario_l
+    </span>
+</p>
+<hr/>
+
+<h2>Mapeamento de atributos:</h2>
+<h3>Para Rodovias (infra_via_deslocamento_l):</h3>
+<p>
+    <span style="margin-bottom: 10px;">
+        &#8226; tipo_elemento_viario → tipo
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; nome_elemento_viario → nome
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; posicao_pista_elemento_viario → posicao_pista
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; material_construcao_elemento_viario → material_construcao
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; modal_uso = 4
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; situacao_fisica = 3
+    </span>
+</p>
+
+<h3>Para Ferrovias (infra_ferrovia_l):</h3>
+<p>
+    <span style="margin-bottom: 10px;">
+        &#8226; tipo_elemento_viario → tipo
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; nome_elemento_viario → nome
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; posicao_pista_elemento_viario → posicao_pista
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; material_construcao_elemento_viario → material_construcao
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; modal_uso = 5
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; situacao_fisica = 3
+    </span>
+</p>
+
+<h3>Para Valas e Trechos de Drenagem:</h3>
+<p>
+    <span style="margin-bottom: 10px;">
+        &#8226; tipo = 501
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; material_construcao = 0
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; modal_uso = 4
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; situacao_fisica = 3
+    </span><br>
+    <span style="margin-bottom: 10px;">
+        &#8226; posicao_pista = 97
+    </span>
+</p>
+
+<hr/>
+
+      <div>
+         <h2>Aplicação:</h2>
+         <p style="text-align: center; font-style: italic;">O algoritmo copia feições com base nos critérios especificados. As feições são adicionadas à camada de elemento viário com os atributos devidamente mapeados, sem realizar commit na base de dados.</p>
+         <hr/>
+      </div>
+   </body>
+
+</html>
