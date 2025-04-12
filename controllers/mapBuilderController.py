@@ -185,6 +185,7 @@ class MapBuildController(MapBuildControllerUtils):
                 "username",
                 "password",
                 "exportTiff",
+                "exportTiffWithoutGrid",
             ],
         )
         if isinstance(dlg, QDialog):
@@ -196,6 +197,7 @@ class MapBuildController(MapBuildControllerUtils):
                 dlg.username.text(),
                 dlg.password.text(),
                 dlg.checkBoxExportGeotiff.isChecked(),
+                dlg.checkBoxExportGeotiffWithoutGrid.isChecked(),
             )
         elif isinstance(dlg, Namespace):
             dlgCfg = _dlgCfg(
@@ -206,6 +208,7 @@ class MapBuildController(MapBuildControllerUtils):
                 dlg.username,
                 dlg.password,
                 dlg.exportTiff,
+                dlg.exportTiffWithoutGrid,
             )
         return dlgCfg
 
