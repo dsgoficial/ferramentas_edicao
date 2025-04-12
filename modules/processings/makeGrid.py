@@ -410,6 +410,24 @@ class MakeGrid(QgsProcessingAlgorithm):
         return layer
 
     def generateLatLonTicks(self, frameLayer, utm, scale, context, feedback):
+        # Dicionário que mapeia as escalas para intervalos em minutos
+        minute_intervals = {
+            5000: 1,  # Assumindo 1' para 1:5.000 (não especificado na tabela)
+            10000: 1,  # Assumindo 1' para 1:10.000 (não especificado na tabela)
+            25000: 2,  # 2' para 1:25.000
+            50000: 5,  # 5' para 1:50.000
+            100000: 10,  # 10' para 1:100.000
+            250000: 20,  # 20' para 1:250.000
+        }
+
+        # Obter o intervalo em minutos para a escala atual
+        minute_interval = minute_intervals.get(
+            scale, 1
+        )  # Padrão é 1' se a escala não for encontrada
+
+        # Converter o intervalo de minutos para graus (1 minuto = 1/60 graus)
+        degree_interval = minute_interval / 60.0
+
         layer = QgsVectorLayer(f"Point?crs=4674", "Points", "memory")
         layer.startEditing()
         layer.beginEditCommand("")
@@ -424,16 +442,30 @@ class MakeGrid(QgsProcessingAlgorithm):
             ymin = bbox.yMinimum()
             ymax = bbox.yMaximum()
 
-            xsize = abs(xmax - xmin) / 5
-            ysize = abs(ymax - ymin) / 5
+            # Calcular pontos iniciais (arredondando para o intervalo mais próximo)
+            x_start = math.ceil(xmin / degree_interval) * degree_interval
+            y_start = math.ceil(ymin / degree_interval) * degree_interval
 
-            xTicks = (xmin + i * xsize for i in range(6))
-            yTicks = (ymin + i * ysize for i in range(6))
-            for x, y in product(xTicks, yTicks):
+            # Gerar sequências de coordenadas x e y
+            x_coords = [
+                x_start + i * degree_interval
+                for i in range(int((xmax - x_start) / degree_interval) + 1)
+            ]
+            y_coords = [
+                y_start + i * degree_interval
+                for i in range(int((ymax - y_start) / degree_interval) + 1)
+            ]
+
+            # Usar product para criar o produto cartesiano de x e y
+            for x, y in product(x_coords, y_coords):
+                if x > xmax or y > ymax:  # Pular pontos fora dos limites
+                    continue
+
                 feat = QgsFeature()
                 geom = QgsGeometry(QgsPoint(x, y))
                 feat.setGeometry(geom)
                 layer.addFeature(feat)
+
         layer.endEditCommand()
 
         coordinateTransform = QgsCoordinateTransform(

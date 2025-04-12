@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.14
+
+Melhorias:
+
+- Refactor no código de geração do grid e adaptação com espaçamento do grid Lat Lon previsto na RDG e MTM;
+
 ## 1.3.13
 
 Melhorias:
