@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.3.14
+
+Correção de bug:
+
+- Corrigido a cor do estilo do grid de edição linha e ponto para Carta Topográfica 1.4;
+- Corrigido a exibição do label de edição em constr_edificacao_p e constr_edificacao_a
+
 ## 1.3.13
 
 Melhorias:
