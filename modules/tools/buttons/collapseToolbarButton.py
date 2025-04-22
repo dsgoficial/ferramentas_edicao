@@ -12,7 +12,7 @@ class CollapseToolbarButton(BaseTools):
         self.toolBar = toolBar
         self.iface = iface
         self._action = None
-        self.collapsed = True  # Default to collapsed state
+        self.collapsed = False  # Default to collapsed state
         self.visible_actions = []
         self.essential_widget_names = (
             essential_widget_names if essential_widget_names is not None else []
@@ -23,7 +23,7 @@ class CollapseToolbarButton(BaseTools):
         self.initializing = True  # Flag to prevent saving during initialization
         self.setEssentialWidgetTypes(self.essential_widget_names)
         self.setupUi()
-        self.toggleToolbar(checked=True)
+        self.toggleToolbar(checked=False)
 
     def setupUi(self):
         # Create the collapse button action using your pattern
@@ -71,7 +71,7 @@ class CollapseToolbarButton(BaseTools):
                 )  # Show when not collapsed, hide when collapsed
 
         # Fix the main logic - hide when collapsed, show when expanded
-        if self.collapsed:  # When collapsed
+        if not self.collapsed:  # When collapsed
             # Save and hide non-essential actions
             self.visible_actions = []
 
