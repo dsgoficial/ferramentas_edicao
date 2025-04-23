@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.15
+
+Melhorias:
+
+- Alterado a âncora de posicionamento de texto nas camadas llp_localidade_p e llp_localidade_p_250;
+
 ## 1.3.14
 
 Correção de bug:
