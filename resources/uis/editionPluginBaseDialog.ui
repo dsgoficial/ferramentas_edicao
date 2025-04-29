@@ -168,6 +168,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxExportGeotiffWithoutGrid">
+         <property name="text">
+          <string>Exportar Geotiff Sem Grid</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
