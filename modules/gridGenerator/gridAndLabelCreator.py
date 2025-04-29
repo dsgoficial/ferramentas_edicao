@@ -628,6 +628,123 @@ class GridSymbolGenerator:
                 grid_symb.appendSymbolLayer(symb_cross)
 
         return grid_symb
+    
+    def generate_geographic_grid_by_minutes(
+        self,
+        grid_symb: QgsFillSymbol,
+        extents_geo: Tuple[float, float, float, float],
+        minute_interval: int,
+        scale: float,
+        linwidth: float,
+        color: QColor,
+    ) -> QgsFillSymbol:
+        """Generate geographic grid symbols based on minute intervals.
+
+        Args:
+            grid_symb: The base symbol to append to
+            extents_geo: Geographic extents (xmin, ymin, xmax, ymax)
+            minute_interval: Interval in minutes (e.g., 2, 5, 10, 20)
+            scale: Map scale factor
+            linwidth: Line width
+            color: Line color
+
+        Returns:
+            QgsFillSymbol: Updated symbol with geographic grid
+        """
+        from math import floor, ceil
+        
+        # Convert minute interval to degrees for calculations
+        degree_interval = minute_interval / 60.0
+        
+        # Calculate grid spacing in x and y directions (in degrees)
+        px = degree_interval
+        py = degree_interval
+        
+        # Calculate starting points (round down to nearest minute_interval)
+        x_min, y_min, x_max, y_max = extents_geo
+        start_x = floor(x_min / degree_interval) * degree_interval
+        start_y = floor(y_min / degree_interval) * degree_interval
+        
+        # Calculate number of cells
+        geo_number_x = ceil((x_max - start_x) / degree_interval)
+        geo_number_y = ceil((y_max - start_y) / degree_interval)
+        
+        # Crossing lines with various offsets to create a grid pattern
+        offset_factor = 0.00002145 * scale
+
+        # Top-right to bottom-left crosses
+        for u in range(1, geo_number_x + 2):
+            for t in range(0, geo_number_y + 2):
+                symb_cross = self.geometry_helper.create_crossing_lines_geometry(
+                    self.transformer,
+                    start_x,
+                    start_y,
+                    px,
+                    py,
+                    u,
+                    t,
+                    -offset_factor,
+                    0,
+                    linwidth,
+                    color,
+                )
+                grid_symb.appendSymbolLayer(symb_cross)
+
+        # Bottom-left to top-right crosses
+        for u in range(0, geo_number_x + 2):
+            for t in range(1, geo_number_y + 2):
+                symb_cross = self.geometry_helper.create_crossing_lines_geometry(
+                    self.transformer,
+                    start_x,
+                    start_y,
+                    px,
+                    py,
+                    u,
+                    t,
+                    0,
+                    -offset_factor,
+                    linwidth,
+                    color,
+                )
+                grid_symb.appendSymbolLayer(symb_cross)
+
+        # Left-right crosses
+        for u in range(0, geo_number_x + 1):
+            for t in range(0, geo_number_y + 2):
+                symb_cross = self.geometry_helper.create_crossing_lines_geometry(
+                    self.transformer,
+                    start_x,
+                    start_y,
+                    px,
+                    py,
+                    u,
+                    t,
+                    offset_factor,
+                    0,
+                    linwidth,
+                    color,
+                )
+                grid_symb.appendSymbolLayer(symb_cross)
+
+        # Up-down crosses
+        for u in range(0, geo_number_x + 2):
+            for t in range(0, geo_number_y + 1):
+                symb_cross = self.geometry_helper.create_crossing_lines_geometry(
+                    self.transformer,
+                    start_x,
+                    start_y,
+                    px,
+                    py,
+                    u,
+                    t,
+                    0,
+                    offset_factor,
+                    linwidth,
+                    color,
+                )
+                grid_symb.appendSymbolLayer(symb_cross)
+
+        return grid_symb
 
 
 class LabelGenerator:
@@ -1086,13 +1203,8 @@ class LabelGenerator:
         layer_bound: QgsVectorLayer,
         discourage_placement: bool = False,
     ) -> QgsRuleBasedLabeling.Rule:
-        """Create a UTM grid label rule.
-
-        This is a complex method handling various cases of UTM grid labeling.
-
-        Returns:
-            QgsRuleBasedLabeling.Rule: Updated root rule with the new label rule
-        """
+        """Create a UTM grid label rule."""
+        
         x_min_test = geo_bb.xMinimum()
         x_max_test = geo_bb.xMaximum()
         y_min_test = geo_bb.yMinimum()
@@ -1132,25 +1244,16 @@ class LabelGenerator:
                 delta_d_neg = 0.0009
                 delta_d_pos = 0.0009
 
-            # Test for position adjustment
-            test_if = abs(
-                floor(
-                    abs(
-                        round(test.x(), 4)
-                        - (extents_geo[0] % px)
-                        - (delta_d_neg * (font_size / 1.5) * scale / 10)
-                    )
-                    / px
+            # Safely calculate the test values, preventing division by zero
+            if px != 0:
+                offset_neg = (test.x() - (extents_geo[0] % px) - (delta_d_neg * (font_size / 1.5) * scale / 10))
+                offset_pos = (test.x() - (extents_geo[0] % px) + (delta_d_pos * (font_size / 1.5) * scale / 10))
+                test_if = abs(
+                    floor(abs(round(offset_neg, 4)) / px)
+                    - floor(abs(round(offset_pos, 4)) / px)
                 )
-                - floor(
-                    abs(
-                        round(test.x(), 4)
-                        - (extents_geo[0] % px)
-                        + (delta_d_pos * (font_size / 1.5) * scale / 10)
-                    )
-                    / px
-                )
-            )
+            else:
+                test_if = 0  # Default to 0 when px is 0
 
             if test_if >= 1:
                 anc_y = QgsPoint(anc_y.x(), anc_y.y() + dy_o)
@@ -1202,33 +1305,27 @@ class LabelGenerator:
             )
             test = self.transformer.transform_point(test, to_utm=False)
 
-            # Test for position adjustment
-            test_if = abs(
-                floor(
-                    abs(
-                        round(test.y(), 4)
-                        - (extents_geo[1] % py)
-                        - (0.0004 * (font_size / 1.5) * scale / 10)
-                    )
-                    / py
+            # Safely calculate the test values, preventing division by zero
+            if py != 0:
+                offset_neg = (test.y() - (extents_geo[1] % py) - (0.0004 * (font_size / 1.5) * scale / 10))
+                offset_pos = (test.y() - (extents_geo[1] % py) + (0.0004 * (font_size / 1.5) * scale / 10))
+                
+                test_if = abs(
+                    floor(abs(round(offset_neg, 4)) / py)
+                    - floor(abs(round(test.y() - (extents_geo[1] % py), 4)) / py)
                 )
-                - floor(abs(round(test.y(), 4) - (extents_geo[1] % py)) / py)
-            )
+                
+                test_if2 = abs(
+                    floor(abs(round(test.y() - (extents_geo[1] % py), 4)) / py)
+                    - floor(abs(round(offset_pos, 4)) / py)
+                )
+            else:
+                test_if = 0
+                test_if2 = 0
 
             if test_if >= 1:
                 anc_y = QgsPoint(anc_y.x(), anc_y.y() + dy1)
             else:
-                test_if2 = abs(
-                    floor(abs(round(test.y(), 4) - (extents_geo[1] % py)) / py)
-                    - floor(
-                        abs(
-                            round(test.y(), 4)
-                            - (extents_geo[1] % py)
-                            + (0.0004 * (font_size / 1.5) * scale / 10)
-                        )
-                        / py
-                    )
-                )
                 if test_if2 >= 1:
                     anc_y = QgsPoint(anc_y.x(), anc_y.y() + dy_o)
                 else:
@@ -1420,6 +1517,71 @@ class LabelGenerator:
             if not (j == len(chars) - 5 or j == len(chars) - 4):
                 chars[j] = SUPERSCRIPT_CHARS[int(chars[j])]
         return "".join(chars)
+    
+    def create_geo_grid_labels_by_minutes(
+        self,
+        extents_geo: Tuple[float, float, float, float],
+        minute_interval: int,
+        dx: List[float],
+        dy: List[float],
+        font_size: float,
+        font: QFont,
+        color: QColor,
+        scale: float,
+        layer_bound: QgsVectorLayer,
+    ) -> QgsRuleBasedLabeling.Rule:
+        """Create labels for the geographic grid based on minute intervals.
+
+        Args:
+            extents_geo: Geographic extents (xmin, ymin, xmax, ymax)
+            minute_interval: Interval in minutes for grid lines
+            dx, dy: Label offsets
+            font_size: Font size
+            font: Font to use
+            color: Label color
+            scale: Map scale factor
+            layer_bound: The layer to place labels on
+
+        Returns:
+            QgsRuleBasedLabeling.Rule: Root rule with all grid labels
+        """
+        from math import floor, ceil
+        
+        # Convert minute interval to degrees
+        degree_interval = minute_interval / 60.0
+        
+        # Calculate starting and ending grid lines
+        x_min, y_min, x_max, y_max = extents_geo
+        start_x = floor(x_min / degree_interval) * degree_interval
+        start_y = floor(y_min / degree_interval) * degree_interval
+        
+        # Calculate number of grid cells and grid spacing
+        geo_number_x = ceil((x_max - start_x) / degree_interval)
+        geo_number_y = ceil((y_max - start_y) / degree_interval)
+        px = degree_interval
+        py = degree_interval
+        
+        # Adjust extents_geo to match the grid starting points
+        adjusted_extents = (start_x, start_y, start_x + geo_number_x * px, start_y + geo_number_y * py)
+        
+        # Use the existing method with calculated parameters
+        root_rule = self.create_geo_grid_labels(
+            adjusted_extents,
+            px,
+            py,
+            geo_number_x,
+            geo_number_y,
+            dx,
+            dy,
+            font_size,
+            font,
+            color,
+            scale,
+            layer_bound,
+        )
+        
+        return root_rule
+
 
 
 class MaskHelper:
@@ -1538,8 +1700,7 @@ class GridAndLabelCreator(QObject):
         utm_srid: int,
         id_attr: str,
         id_value: int,
-        map_scale: int,  # Map scale denominator (e.g., 25000 for 1:25,000)
-        utm_spacing: float,  # UTM grid spacing (can be determined from scale)
+        spacing: float,  # UTM grid spacing (can be determined from scale)
         scale: float,
         font_size: float,
         font: QFont,
@@ -1564,7 +1725,7 @@ class GridAndLabelCreator(QObject):
             id_attr: ID attribute field name for filtering features
             id_value: Value of the ID attribute to match
             map_scale: Map scale denominator (e.g., 25000 for 1:25,000)
-            utm_spacing: UTM grid spacing
+            spacing: UTM grid spacing
             scale: Map scale factor
             font_size: Font size for labels
             font, font_ll: Fonts to use for different label types
@@ -1578,7 +1739,7 @@ class GridAndLabelCreator(QObject):
         # Create configurations
         grid_config = GridConfig(
             utm_srid=utm_srid,
-            grid_spacing=utm_spacing,
+            grid_spacing=spacing,
             geo_number_x=0,  # Not used with minute-based grid
             geo_number_y=0,  # Not used with minute-based grid
             scale=scale,
@@ -1602,7 +1763,7 @@ class GridAndLabelCreator(QObject):
         )
 
         # Determine minute interval based on map scale
-        minute_interval = self.get_minute_interval_from_scale(map_scale)
+        minute_interval = self.get_minute_interval_from_scale(scale)
 
         # Create helpers
         transformer = TransformationHelper(utm_srid)

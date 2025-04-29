@@ -179,7 +179,7 @@ class Map(ComponentUtils, IComponent):
         gridGenerator.styleCreator(
             feature_geometry=gridGeometry,
             layer_bound=gridLayer,
-            utmSRID=srid,
+            utm_srid=srid,
             id_attr="id",
             id_value=1,
             scale=data.get("scale"),
