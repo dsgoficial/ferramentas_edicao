@@ -16,17 +16,17 @@ class MapScaleOM:
             text = "ESCALA 1:{}".format(scale)
             item.setText(text)
         if item := composition.itemById("scaleBarLabel1"):
-            text = str(round(scale / 10))
+            text = str(round(scale / 100))
             item.setText(text)
         if item := composition.itemById("scaleBarLabel2"):
-            text = str(round(2 * scale / 10))
+            text = str(round(2 * scale / 100))
             item.setText(text)
         if item := composition.itemById("scaleBarLabel3"):
-            text = str(round(4 * scale / 10))
+            text = str(round(4 * scale / 100))
             item.setText(text)
         if item := composition.itemById("scaleBarLabel4"):
-            text = str(round(6 * scale / 10))
+            text = str(round(6 * scale / 100))
             item.setText(text)
         if item := composition.itemById("scaleBarLabel5"):
-            text = "{} m".format(str(round(8 * scale / 10)))
+            text = "{} m".format(str(round(8 * scale / 100)))
             item.setText(text)

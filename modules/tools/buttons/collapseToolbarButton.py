@@ -7,14 +7,16 @@ from .baseTools import BaseTools
 
 
 class CollapseToolbarButton(BaseTools):
-    def __init__(self, toolBar, iface, essential_widget_names = None):
+    def __init__(self, toolBar, iface, essential_widget_names=None):
         super().__init__()
         self.toolBar = toolBar
         self.iface = iface
         self._action = None
-        # self.collapsed = True  # Default to collapsed state
+        self.collapsed = False  # Default to collapsed state
         self.visible_actions = []
-        self.essential_widget_names = essential_widget_names if essential_widget_names is not None else []  # Widget types that should always be visible
+        self.essential_widget_names = (
+            essential_widget_names if essential_widget_names is not None else []
+        )  # Widget types that should always be visible
         self.essential_actions = (
             []
         )  # Actions (like main button and help button) that should remain visible
@@ -50,14 +52,26 @@ class CollapseToolbarButton(BaseTools):
 
     def toggleToolbar(self, checked=None):
         """Toggle the visibility of non-essential toolbar actions and widgets"""
-        # If called from button press, checked will be None
+        # Update the collapsed state
         if checked is None:
             self.collapsed = not self.collapsed
             self._action.setChecked(self.collapsed)
         else:
             self.collapsed = checked
+            self._action.setChecked(self.collapsed)
 
-        if not self.collapsed:
+        # Fix the selector visibility - show when expanded, hide when collapsed
+        for widget in self.toolBar.children():
+            if isinstance(widget, QWidget) and widget.__class__.__name__ in [
+                "ScaleSelector",
+                "ProductTypeSelector",
+            ]:
+                widget.setVisible(
+                    not self.collapsed
+                )  # Show when not collapsed, hide when collapsed
+
+        # Fix the main logic - hide when collapsed, show when expanded
+        if not self.collapsed:  # When collapsed
             # Save and hide non-essential actions
             self.visible_actions = []
 
@@ -80,7 +94,7 @@ class CollapseToolbarButton(BaseTools):
                 if not is_essential and action.isVisible():
                     self.visible_actions.append(action)
                     action.setVisible(False)
-        else:
+        else:  # When expanded
             # Restore visibility
             for action in self.visible_actions:
                 action.setVisible(True)

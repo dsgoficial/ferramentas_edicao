@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## 1.3.14
+## 1.3.15
+
+Melhorias:
+
+- Alterado a âncora de posicionamento de texto nas camadas llp_localidade_p e llp_localidade_p_250;
 
 Novas Funcionalidades:
 
@@ -9,6 +13,11 @@ Novas Funcionalidades:
 Melhorias:
 
 - Refactor no código de geração do grid e adaptação com espaçamento do grid Lat Lon previsto na RDG e MTM;
+
+Correção de bug:
+
+- Corrigido a cor do estilo do grid de edição linha e ponto para Carta Topográfica 1.4;
+- Corrigido a exibição do label de edição em constr_edificacao_p e constr_edificacao_a
 
 ## 1.3.13
 
