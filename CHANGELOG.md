@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.3.16
+
+Correção de bug:
+
+- Corrige bug de visibilidade dos comboboxes ao esconder/colapsar a barra; 
+
+
 ## 1.3.15
 
 Melhorias:

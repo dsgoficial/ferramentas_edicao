@@ -206,10 +206,6 @@ class EditionPlugin:
         self.tools = SetupButtons(
             toolbar=self.toolBar,
             iface=self.iface,
-            essential_widget_names=[
-                self.tr("Ferramentas de Edição: Exportar produtos"),
-                self.tr("Clique aqui para obter ajuda"),
-            ]
         )
         self.tools.initToolBar()
         self.processingProvider = ProcessingProvider()
