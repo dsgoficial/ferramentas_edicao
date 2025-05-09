@@ -272,7 +272,7 @@ class Table(IComponent, ComponentUtils):
                 _tmp,
                 "td",
                 {"class": "right"},
-                tecnicalInfo.get("especificacao_representacao", "Norma da Especificação Técnica para Representação de Dados Geoespaciais versão 1.0 (EB80-N-72.006)"),
+                tecnicalInfo.get("especificacao_representacao", "MD33-C-01"),
             )
             _tmp = self.generateElement(firstTable, "tr")
             _ = self.generateElement(
