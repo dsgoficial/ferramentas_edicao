@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.17
+
+Melhorias:
+
+- Atualiza a norma de representação nas folhas modelo: alterado de MD33-C-01 para Norma da Especificação Técnica para Representação de Dados Geoespaciais versão 1.0 (EB80-N-72.006);
+
 ## 1.3.16
 
 Correção de bug:
