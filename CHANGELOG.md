@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.18
+
+Correção de bug:
+
+- Altera o nome do estilo da camada de área sem dados no diagrama de elevação para a Topo 1.4.
+
 ## 1.3.17
 
 Melhorias:
