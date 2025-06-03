@@ -149,6 +149,7 @@ class Localization(ComponentUtils, IComponent):
         if len(rectBounds) > 1:
             for stateBound in rectBounds[1:]:
                 bound.combineExtentWith(stateBound)
+        bound.grow(0.1)
         return bound
 
     def getExtent2(self, mapAreaFeature: QgsFeature):
