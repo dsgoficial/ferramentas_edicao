@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.19
+
+Melhorias:
+
+- Adiciona verificação de evitar exportação se o grid numérico não estiver gerado.
+
 ## 1.3.18
 
 Correção de bug:
