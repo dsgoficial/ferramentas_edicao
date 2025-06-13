@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.20
+
+Correções:
+
+- Correção dos estilos de infra_pista_pouso em ponto, linha e área em conformidade com a ET-RDG.
+
 ## 1.3.19
 
 Melhorias:
