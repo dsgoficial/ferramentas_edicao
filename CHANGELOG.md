@@ -1,10 +1,16 @@
 # CHANGELOG
 
+## 1.3.21
+
+Correções:
+
+- Correção dos estilos de infra_pista_pouso em ponto, linha e área em conformidade com a ET-RDG para Carta Topográfica.
+
 ## 1.3.20
 
 Correções:
 
-- Correção dos estilos de infra_pista_pouso em ponto, linha e área em conformidade com a ET-RDG.
+- Correção dos estilos de infra_pista_pouso em ponto, linha e área em conformidade com a ET-RDG para Carta Ortoimagem.
 
 ## 1.3.19
 
