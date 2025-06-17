@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ ferramentas_edicao
+                                 A QGIS plugin
+ Brazilian Army Cartographic Finishing Tools
+                              -------------------
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 from PyQt5.QtGui import QFont, QColor
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -98,10 +115,12 @@ class ConfigDefaults:
         default_factory=lambda: {
             "name": "Carta Topográfica",
             "grid": {
-                "font_size": 1.9,
+                "crossX": 4,
+                "crossY": 4,
+                "fontSize": 1.9,
                 "font": QFont("Noto Sans"),
-                "font_ll": QFont("Noto Sans"),
-                "ll_color": QColor("black"),
+                "fontLL": QFont("Noto Sans"),
+                "llcolor": QColor("black"),
                 "linwidth_geo": 0.07,
                 "linwidth_utm": 0.0,
                 "linwidth_buffer_geo": 0,
@@ -315,10 +334,12 @@ class ConfigDefaults:
                 },
             },
             "grid": {
-                "font_size": 1.9,
+                "crossX": 4,
+                "crossY": 4,
+                "fontSize": 1.9,
                 "font": QFont("Noto Sans"),
-                "font_ll": QFont("Noto Sans"),
-                "ll_color": QColor("black"),
+                "fontLL": QFont("Noto Sans"),
+                "llcolor": QColor("black"),
                 "linwidth_geo": 0.3,
                 "linwidth_utm": 0.0,
                 "linwidth_buffer_geo": 0.1,
@@ -526,10 +547,12 @@ class ConfigDefaults:
                 },
             },
             "grid": {
-                "font_size": 1.9,
+                "crossX": 4,
+                "crossY": 4,
+                "fontSize": 1.9,
                 "font": QFont("Noto Sans"),
-                "font_ll": QFont("Noto Sans"),
-                "ll_color": QColor("black"),
+                "fontLL": QFont("Noto Sans"),
+                "llcolor": QColor("black"),
                 "linwidth_geo": 0.3,
                 "linwidth_utm": 0.2,
                 "linwidth_buffer_geo": 0.1,
@@ -557,10 +580,12 @@ class ConfigDefaults:
             / "common"
             / "creditsDSG.qpt",
             "grid": {
-                "font_size": 1.9,
+                "crossX": 4,
+                "crossY": 4,
+                "fontSize": 1.9,
                 "font": QFont("Noto Sans"),
-                "font_ll": QFont("Noto Sans"),
-                "ll_color": QColor("black"),
+                "fontLL": QFont("Noto Sans"),
+                "llcolor": QColor("black"),
                 "linwidth_geo": 0.07,
                 "linwidth_utm": 0.05,
                 "linwidth_buffer_geo": 0,
