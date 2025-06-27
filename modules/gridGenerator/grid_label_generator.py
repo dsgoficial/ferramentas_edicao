@@ -382,7 +382,7 @@ class AbstractGrid(ABC):
     def resolve_overlaps(self, other_grid: Self, displacement_dict: Dict[GridTypes, DisplacementVector]):
         pass
 
-    def build_grid_label(self, grid_x: Union[float, UTM, DMS], grid_y: Union[float, UTM, DMS], desc, expression_str) -> QgsRuleBasedLabeling.Rule:
+    def build_grid_item_label(self, grid_x: Union[float, UTM, DMS], grid_y: Union[float, UTM, DMS], desc, expression_str) -> QgsRuleBasedLabeling.Rule:
         pgrid = QgsPoint(float(grid_x), float(grid_y))
         settings = QgsPalLayerSettings()
         settings.placement = (
@@ -473,7 +473,6 @@ class LatLonGrid(AbstractGrid):
 @dataclass
 class LabelEngine:
     feature_geometry: QgsGeometry
-    layer_bound: QgsVectorLayer
     scale_denominator: int
     config: GridConfig
     utm_crs: QgsCoordinateReferenceSystem
@@ -494,6 +493,9 @@ class LabelEngine:
             y_min=feature_bbox.yMinimum(),
             y_max=feature_bbox.yMaximum(),
         )
+    
+    def build_label_layer(self, layer_bound: QgsVectorLayer) -> None:
+        pass
     
 
 def create_outside_boundary_layer(layer_name: str) -> None:
