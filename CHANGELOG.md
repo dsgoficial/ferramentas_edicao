@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.22
+
+Correções:
+
+- Ajustado o nome para a camada de llp_area_sem_dados_a no Diagrama de Elevação.
+
 ## 1.3.21
 
 Correções:
