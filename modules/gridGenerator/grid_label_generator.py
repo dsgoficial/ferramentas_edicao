@@ -17,6 +17,7 @@
 """
 from abc import ABC, abstractmethod
 from builtins import abs, range, round, str
+from collections import defaultdict
 from dataclasses import dataclass
 from math import ceil, floor
 from typing import Dict, List, Self, Tuple, Type, Union
@@ -319,7 +320,10 @@ class GridLabelItem:
         # Update bounding rectangle after anchor point changes
         self.bounding_rectangle = self.get_bounding_rectangle()
     
-
+@dataclass
+class DisplacementVector:
+    dx: float
+    dy: float
 @dataclass
 class AbstractGrid(ABC):
     scale_denominator: int
@@ -329,19 +333,44 @@ class AbstractGrid(ABC):
     y_min: float
     x_max: float
     y_max: float
+    dpi: int
     
     def __post_init__(self):
         self.spacing_dict: Dict[int, Union[DMS, float]] = self.build_spacing_dict()
         self.grid_spacing = self.get_spacing()
-        self.coordinate_grid_dict: Dict[GridTypes, Union[DMS, UTM]] = self.build_coordinate_grid_list()
+        self.coordinate_grid_dict: Dict[GridTypes, Union[DMS, UTM]] = self.build_coordinate_grid_dict()
+        self.grid_label_dict: Dict[GridTypes, List[GridLabelItem]] = self.build_grid_label_dict()
+        self.displacement_vector: Dict[GridTypes, DisplacementVector] = self.get_displacement_dict()
     
     @abstractmethod
     def build_spacing_dict(self) -> Dict[int, Union[DMS, float]]:
         pass
     
     @abstractmethod
-    def coordinate_grid_dict(self) -> Dict[GridTypes,Union[DMS, UTM]]:
+    def build_coordinate_grid_dict(self) -> Dict[GridTypes, Union[DMS, UTM]]:
         pass
+    
+    @abstractmethod
+    def get_displacement_dict(self) -> Dict[GridTypes, DisplacementVector]:
+        pass
+    
+    def build_grid_label_dict(self) -> Dict[GridTypes, List[GridLabelItem]]:
+        return {
+            key: list(
+                map(
+                    lambda x: GridLabelItem(
+                        str(x),
+                        scale=self.scale_denominator,
+                        font=self.config.font,
+                        coordinates=x,
+                        crs=self.utm_crs,
+                        destination_crs=QgsCoordinateReferenceSystem("EPSG:4674"),
+                        dpi=self.dpi,
+                    ),
+                    coordinate_list
+                )
+            ) for key, coordinate_list in self.coordinate_grid_dict.items()
+        }
     
     def get_spacing(self):
         grid_spacing = self.spacing_dict.get(self.scale_denominator, None)
@@ -349,14 +378,62 @@ class AbstractGrid(ABC):
             return grid_spacing
         # scale not listed in systematic mapping
         return get_closest_value_key(self.spacing_dict, self.scale_denominator)
+    
+    def resolve_overlaps(self, other_grid: Self, displacement_dict: Dict[GridTypes, DisplacementVector]):
+        pass
+
+    def build_grid_label(self, grid_x: Union[float, UTM, DMS], grid_y: Union[float, UTM, DMS], desc, expression_str) -> QgsRuleBasedLabeling.Rule:
+        pgrid = QgsPoint(float(grid_x), float(grid_y))
+        settings = QgsPalLayerSettings()
+        settings.placement = (
+            1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
+        )
+        settings.isExpression = True
+        textprop = QgsTextFormat()
+        textprop.setColor(self.config.font.color)
+        textprop.setSizeUnit(
+            4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points
+        )
+        textprop.setSize(self.config.font.size * 2.8346)
+        textprop.setFont(self.config.font.name)
+        textprop.setLineHeight(1)
+        settings.setFormat(textprop)
+        settings.fieldName = expression_str
+
+        # Label Position
+        settings.geometryGeneratorEnabled = True
+        settings.geometryGenerator = "make_point({}, {})".format(pgrid.x(), pgrid.y())
+        datadefined = QgsPropertyCollection()
+        datadefined.property(20).setExpressionString("True")
+        datadefined.property(20).setActive(True)
+        datadefined.property(15).setExpressionString("True")
+        datadefined.property(15).setActive(True)
+        datadefined.property(77).setExpressionString("2")
+        datadefined.property(77).setActive(True)
+
+        # Creating and Activating Labeling Rule
+        settings.setDataDefinedProperties(datadefined)
+        rule = QgsRuleBasedLabeling.Rule(settings)
+        rule.setDescription(desc)
+        rule.setActive(True)
+
+        return rule
 
 @dataclass
 class UTMGrid(AbstractGrid):
     def build_spacing_dict(self):
         return {s: 400*s for s in [5, 10, 25, 50, 100, 250]}
     
-    def coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[DMS, UTM], Union[DMS, UTM]]]]:
+    def build_coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[DMS, UTM], Union[DMS, UTM]]]]:
         pass
+    
+    def get_displacement_dict(self) -> Dict[GridTypes, DisplacementVector]:
+        return {
+            GridTypes.TOP: DisplacementVector(0, 0),
+            GridTypes.BOTTOM: DisplacementVector(0, 0),
+            GridTypes.LEFT: DisplacementVector(0, 0),
+            GridTypes.RIGHT: DisplacementVector(0, 0),
+        }
 
 @dataclass
 class LatLonGrid(AbstractGrid):
@@ -370,7 +447,15 @@ class LatLonGrid(AbstractGrid):
             250: DMS(minutes=20),  # 20' para 1:250.000
         }
     
-    def coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[DMS, UTM], Union[DMS, UTM]]]]:
+    def get_displacement_dict(self) -> Dict[GridTypes, DisplacementVector]:
+        return {
+            GridTypes.TOP: DisplacementVector(0, 0),
+            GridTypes.BOTTOM: DisplacementVector(0, 0),
+            GridTypes.LEFT: DisplacementVector(0, 0),
+            GridTypes.RIGHT: DisplacementVector(0, 0),
+        }
+    
+    def build_coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[DMS, UTM], Union[DMS, UTM]]]]:
         top_grid, bottom_grid, left_grid, right_grid = [], [], [], []
         for coord in DMS.generate_range(self.x_min, self.x_max, self.grid_spacing, 'longitude'):
             top_grid.append((coord, DMS(self.y_max)))
@@ -384,6 +469,32 @@ class LatLonGrid(AbstractGrid):
             GridTypes.LEFT: left_grid,
             GridTypes.RIGHT: right_grid,
         }
+
+@dataclass
+class LabelEngine:
+    feature_geometry: QgsGeometry
+    layer_bound: QgsVectorLayer
+    scale_denominator: int
+    config: GridConfig
+    utm_crs: QgsCoordinateReferenceSystem
+    
+    def __post_init__(self):
+        self.coordinate_transformer = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+            self.utm_crs,
+            QgsProject.instance()
+        )
+        feature_bbox: QgsRectangle = self.feature_geometry.boundingBox()
+        self.lat_lon_grid: LatLonGrid = LatLonGrid(
+            scale_denominator=self.scale_denominator,
+            config=self.config,
+            utm_crs=self.utm_crs,
+            x_min=feature_bbox.xMinimum(),
+            x_max=feature_bbox.xMaximum(),
+            y_min=feature_bbox.yMinimum(),
+            y_max=feature_bbox.yMaximum(),
+        )
+    
 
 def create_outside_boundary_layer(layer_name: str) -> None:
     pass
