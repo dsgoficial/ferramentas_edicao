@@ -20,11 +20,15 @@ from builtins import abs, range, round, str
 from collections import defaultdict
 from dataclasses import dataclass
 from math import ceil, floor
-from typing import Dict, List, Self, Tuple, Type, Union
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+from typing import Dict, List, Tuple, Type, Union
 
-from modules.gridGenerator.lat_lon_coordinate_utils import DMS
-from modules.gridGenerator.utils import get_closest_value_key
-from modules.gridGenerator.utm_coordinate_utils import UTM
+from ferramentas_edicao.modules.gridGenerator.lat_lon_coordinate_utils import DMS
+from ferramentas_edicao.modules.gridGenerator.utils import get_closest_value_key
+from ferramentas_edicao.modules.gridGenerator.utm_coordinate_utils import UTM
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -79,7 +83,6 @@ class GridLineConfig:
 @dataclass
 class GridConfig:
     font: FontConfig
-    grid_line_config: GridLineConfig
     
 @dataclass
 class GridLabelItem:
@@ -105,7 +108,7 @@ class GridLabelItem:
         pgrid = QgsPoint(float(x), float(y))
         pgrid.transform(self.transform)
         if self.destination_crs.isGeographic() == True:
-            pgrid.transform(self.transform, direction=Qgis.TransformDirection.Reverse)
+            pgrid.transform(self.transform, Qgis.TransformDirection.Reverse)
         return pgrid
     
     def get_text_size_in_map_units(self) -> QSizeF:
@@ -320,6 +323,44 @@ class GridLabelItem:
         # Update bounding rectangle after anchor point changes
         self.bounding_rectangle = self.get_bounding_rectangle()
     
+    def build_grid_item_label(self, desc) -> QgsRuleBasedLabeling.Rule:
+        grid_x, grid_y = self.coordinates
+        pgrid = QgsPoint(float(grid_x), float(grid_y))
+        settings = QgsPalLayerSettings()
+        settings.placement = (
+            1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
+        )
+        settings.isExpression = True
+        textprop = QgsTextFormat()
+        textprop.setColor(self.font.color)
+        textprop.setSizeUnit(
+            4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points
+        )
+        textprop.setSize(self.font.size * 2.8346)
+        textprop.setFont(self.font.name)
+        textprop.setLineHeight(1)
+        settings.setFormat(textprop)
+        settings.fieldName = self.text
+
+        # Label Position
+        settings.geometryGeneratorEnabled = True
+        settings.geometryGenerator = "make_point({}, {})".format(pgrid.x(), pgrid.y())
+        datadefined = QgsPropertyCollection()
+        datadefined.property(20).setExpressionString("True")
+        datadefined.property(20).setActive(True)
+        datadefined.property(15).setExpressionString("True")
+        datadefined.property(15).setActive(True)
+        datadefined.property(77).setExpressionString("2")
+        datadefined.property(77).setActive(True)
+
+        # Creating and Activating Labeling Rule
+        settings.setDataDefinedProperties(datadefined)
+        rule = QgsRuleBasedLabeling.Rule(settings)
+        rule.setDescription(desc)
+        rule.setActive(True)
+
+        return rule
+    
 @dataclass
 class DisplacementVector:
     dx: float
@@ -354,6 +395,10 @@ class AbstractGrid(ABC):
     def get_displacement_dict(self) -> Dict[GridTypes, DisplacementVector]:
         pass
     
+    @abstractmethod
+    def build_rule_based_labelling(self) -> QgsRuleBasedLabeling.Rule:
+        pass
+    
     def build_grid_label_dict(self) -> Dict[GridTypes, List[GridLabelItem]]:
         return {
             key: list(
@@ -381,43 +426,6 @@ class AbstractGrid(ABC):
     
     def resolve_overlaps(self, other_grid: Self, displacement_dict: Dict[GridTypes, DisplacementVector]):
         pass
-
-    def build_grid_item_label(self, grid_x: Union[float, UTM, DMS], grid_y: Union[float, UTM, DMS], desc, expression_str) -> QgsRuleBasedLabeling.Rule:
-        pgrid = QgsPoint(float(grid_x), float(grid_y))
-        settings = QgsPalLayerSettings()
-        settings.placement = (
-            1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
-        )
-        settings.isExpression = True
-        textprop = QgsTextFormat()
-        textprop.setColor(self.config.font.color)
-        textprop.setSizeUnit(
-            4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points
-        )
-        textprop.setSize(self.config.font.size * 2.8346)
-        textprop.setFont(self.config.font.name)
-        textprop.setLineHeight(1)
-        settings.setFormat(textprop)
-        settings.fieldName = expression_str
-
-        # Label Position
-        settings.geometryGeneratorEnabled = True
-        settings.geometryGenerator = "make_point({}, {})".format(pgrid.x(), pgrid.y())
-        datadefined = QgsPropertyCollection()
-        datadefined.property(20).setExpressionString("True")
-        datadefined.property(20).setActive(True)
-        datadefined.property(15).setExpressionString("True")
-        datadefined.property(15).setActive(True)
-        datadefined.property(77).setExpressionString("2")
-        datadefined.property(77).setActive(True)
-
-        # Creating and Activating Labeling Rule
-        settings.setDataDefinedProperties(datadefined)
-        rule = QgsRuleBasedLabeling.Rule(settings)
-        rule.setDescription(desc)
-        rule.setActive(True)
-
-        return rule
 
 @dataclass
 class UTMGrid(AbstractGrid):
@@ -461,21 +469,38 @@ class LatLonGrid(AbstractGrid):
             top_grid.append((coord, DMS(self.y_max)))
             bottom_grid.append((coord, DMS(self.y_min)))
         for coord in DMS.generate_range(self.y_min, self.y_max, self.grid_spacing, 'latitude'):
-            left_grid.append(DMS(self.x_min), coord)
-            right_grid.append(DMS(self.x_max), coord)
+            left_grid.append((DMS(self.x_min), coord))
+            right_grid.append((DMS(self.x_max), coord))
         return {
             GridTypes.TOP: top_grid,
             GridTypes.BOTTOM: bottom_grid,
             GridTypes.LEFT: left_grid,
             GridTypes.RIGHT: right_grid,
         }
+    
+    def build_grid_label_dict(self) -> Dict[GridTypes, List[GridLabelItem]]:
+        output_dict = super().build_grid_label_dict()
+        output_dict[GridTypes.TOP][0].text += ". GREENWICH"
+        return output_dict
+
+    def build_rule_based_labelling(self) -> QgsRuleBasedLabeling.Rule:
+        root_rule = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
+        for grid_type, labelList in self.grid_label_dict.items():
+            for idx, grid_label_item in enumerate(labelList, start=1):
+                new_rule = grid_label_item.build_grid_item_label(
+                    desc=f"{grid_type} {idx}"
+                )
+                root_rule.appendChild(new_rule)
+        return root_rule
+        
 
 @dataclass
-class LabelEngine:
+class LabellingEngine:
     feature_geometry: QgsGeometry
     scale_denominator: int
     config: GridConfig
     utm_crs: QgsCoordinateReferenceSystem
+    dpi: int
     
     def __post_init__(self):
         self.coordinate_transformer = QgsCoordinateTransform(
@@ -483,20 +508,85 @@ class LabelEngine:
             self.utm_crs,
             QgsProject.instance()
         )
-        feature_bbox: QgsRectangle = self.feature_geometry.boundingBox()
+        geographic_bounds_in_lat_long = QgsGeometry(self.feature_geometry)
+        geographic_bounds_in_lat_long.transform(self.coordinate_transformer, Qgis.TransformDirection.Reverse)
+        geographic_bounds_in_lat_long_bbox: QgsRectangle = geographic_bounds_in_lat_long.boundingBox()
         self.lat_lon_grid: LatLonGrid = LatLonGrid(
             scale_denominator=self.scale_denominator,
             config=self.config,
             utm_crs=self.utm_crs,
-            x_min=feature_bbox.xMinimum(),
-            x_max=feature_bbox.xMaximum(),
-            y_min=feature_bbox.yMinimum(),
-            y_max=feature_bbox.yMaximum(),
+            x_min=geographic_bounds_in_lat_long_bbox.xMinimum(),
+            x_max=geographic_bounds_in_lat_long_bbox.xMaximum(),
+            y_min=geographic_bounds_in_lat_long_bbox.yMinimum(),
+            y_max=geographic_bounds_in_lat_long_bbox.yMaximum(),
+            dpi=self.dpi,
         )
     
-    def build_label_layer(self, layer_bound: QgsVectorLayer) -> None:
-        pass
+    def build_label_layer(self, geographic_boundary_layer: QgsVectorLayer) -> None:
+        properties = {"color": "black"}
+        grid_symb = QgsFillSymbol.createSimple(properties)
+        grid_symb.deleteSymbolLayer(0)
+        # Creating Rule Based Renderer (Rule For The Selected Feature, Root Rule)
+        symb_new = QgsRuleBasedRenderer.Rule(grid_symb)
+        symb_new.setFilterExpression('id = 1')
+        symb_new.setLabel("layer")
+
+        # Appending rules to symbol root rule
+        root_symbol_rule = QgsRuleBasedRenderer.Rule(None)
+        root_symbol_rule.setFilterExpression("")
+        root_symbol_rule.appendChild(symb_new)
+
+        # Applying New Renderer
+        render_base = QgsRuleBasedRenderer(root_symbol_rule)
+        geographic_boundary_layer.setRenderer(render_base)
+
+        """Rendering outside area"""
+        # Duplicating original layer
+        outside_bound_layer = get_outside_boundary_layer(geographic_boundary_layer)
+
+        # Creating Rule Based Renderer (Rule For The Other Features)
+        properties = {"color": "white"}
+        ext_grid_symb = QgsFillSymbol.createSimple(properties)
+        symb_out = QgsSimpleFillSymbolLayer()
+        symb_out.setFillColor(QColor("white"))
+        symb_out.setStrokeWidth(0)
+        ext_grid_symb.changeSymbolLayer(0, symb_out)
+        rule_out = QgsRuleBasedRenderer.Rule(ext_grid_symb)
+        rule_out.setFilterExpression('id = 1')
+        rule_out.setLabel("outside")
+
+        root_symbol_rule_out = QgsRuleBasedRenderer.Rule(None)
+        root_symbol_rule_out.appendChild(rule_out)
+
+        render_base_out = QgsRuleBasedRenderer(root_symbol_rule_out)
+        new_renderer = QgsInvertedPolygonRenderer.convertFromRenderer(render_base_out)
+        outside_bound_layer.setRenderer(new_renderer)
+        root_rule = self.lat_lon_grid.build_rule_based_labelling()
+        
+        rules = QgsRuleBasedLabeling(root_rule)
+        geographic_boundary_layer.setLabeling(rules)
+        geographic_boundary_layer.setLabelsEnabled(True)
+
+
+        geographic_boundary_layer.triggerRepaint()
     
 
-def create_outside_boundary_layer(layer_name: str) -> None:
-    pass
+def get_outside_boundary_layer(layer_bound: QgsVectorLayer) -> None:
+    layers_names = [i.name() for i in QgsProject.instance().mapLayers().values()]
+    if (layer_bound.name() + "_outside") not in layers_names:
+        outside_bound_layer = QgsVectorLayer(
+            layer_bound.source(),
+            layer_bound.name() + "_outside",
+            layer_bound.providerType(),
+        )
+        if layer_bound.providerType() == "memory":
+            feats = [feat for feat in layer_bound.getFeatures()]
+            outside_bound_layer_data = outside_bound_layer.dataProvider()
+            outside_bound_layer_data.addFeatures(feats)
+        QgsProject.instance().addMapLayer(outside_bound_layer)
+    else:
+        outside_bound_layer = QgsProject.instance().mapLayersByName(
+            layer_bound.name() + "_outside"
+        )[0]
+        
+    return outside_bound_layer
