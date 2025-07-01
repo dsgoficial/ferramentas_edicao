@@ -24,7 +24,7 @@ try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
-from typing import Dict, List, Tuple, Type, Union
+from typing import Dict, List, Optional, Tuple, Type, Union
 
 from ferramentas_edicao.modules.gridGenerator.lat_lon_coordinate_utils import DMS
 from ferramentas_edicao.modules.gridGenerator.utils import get_closest_value_key
@@ -509,8 +509,8 @@ class LatLonGrid(AbstractGrid):
         output_dict[GridTypes.TOP][0].text += ". GREENWICH"
         return output_dict
 
-    def build_rule_based_labelling(self) -> QgsRuleBasedLabeling.Rule:
-        root_rule = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings())
+    def build_rule_based_labelling(self, parent_rule: Optional[QgsRuleBasedLabeling.Rule] = None) -> QgsRuleBasedLabeling.Rule:
+        root_rule = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings()) if parent_rule is not None else parent_rule
         for grid_type, labelList in self.grid_label_dict.items():
             for idx, grid_label_item in enumerate(labelList, start=1):
                 new_rule = grid_label_item.build_grid_item_label(
