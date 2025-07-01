@@ -473,7 +473,7 @@ class UTMGrid(AbstractGrid):
 class LatLonGrid(AbstractGrid):
     def build_spacing_dict(self):
         return {
-            5: DMS(minutes=0.5),  # Assumindo 0.5' para 1:5.000 (não especificado na tabela)
+            5: DMS(seconds=30),  # Assumindo 30'' para 1:5.000 (não especificado na tabela)
             10: DMS(minutes=1),  # Assumindo 1' para 1:10.000 (não especificado na tabela)
             25: DMS(minutes=2),  # 2' para 1:25.000
             50: DMS(minutes=5),  # 5' para 1:50.000
