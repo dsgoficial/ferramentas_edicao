@@ -225,7 +225,7 @@ class DMS:
         return lat_in_bounds and lon_in_bounds
     
     @staticmethod
-    def generate_range(start, end, step, coordinate_type=None):
+    def generate_range(start, end, step, coordinate_type=None, include_end=False):
         """
         Generate a list of DMS objects within a specified range.
         
@@ -291,7 +291,11 @@ class DMS:
             while current > end_decimal:
                 result.append(DMS(current, coordinate_type=coordinate_type))
                 current += step_decimal
-        
+        if not include_end:
+            return result
+        end_point = DMS(end, coordinate_type=coordinate_type)
+        if end_point not in result:
+            result.append(end_point)
         return result
     
     @staticmethod
@@ -361,17 +365,17 @@ class DMS:
             # Handle case where degrees is 0 but coordinate is negative
             is_negative = self.to_decimal_degrees() < 0
             
-            base_str = f"{abs_degrees}°{abs_minutes}'{abs_seconds:.2f}\""
+            base_str = f"{abs_degrees}° {abs_minutes}\\' {str(round(abs_seconds)).rjust(2,'0')}\""
             
             if self.coordinate_type == 'latitude':
-                direction = 'S' if is_negative else 'N'
+                direction = ' S' if is_negative else ' N'
             else:  # longitude
-                direction = 'W' if is_negative else 'E'
+                direction = ' W' if is_negative else ' E'
             
             return f"{base_str}{direction}"
         else:
             # Standard format without directional indicators
-            return f"{self.degrees}°{self.minutes}'{self.seconds:.2f}\""
+            return f"{self.degrees}° {self.minutes}\\' {str(round(self.seconds)).rjust(2,'0')}\""
     
     def __repr__(self):
         """Return unambiguous string representation"""

@@ -93,21 +93,51 @@ class GridLabelItem:
     coordinates: Tuple[Union[DMS, UTM]]
     crs: QgsCoordinateReferenceSystem
     destination_crs: QgsCoordinateReferenceSystem
+    grid_item_type: GridTypes
+    is_first_item: bool = False
     dpi: float = 96.0
     
     def __post_init__(self):
         self.transform = QgsCoordinateTransform(
-            QgsCoordinateReferenceSystem("EPSG:4326"),
             self.crs,
+            self.destination_crs,
             QgsProject.instance(),
         )
+        self.anchor_displacement: DisplacementVector = self.get_anchor_displacement()
         self.anchor_point: QgsPoint = self.build_placement_anchor_point()
         self.bounding_rectangle: QgsRectangle = self.get_bounding_rectangle()
+    
+    def get_anchor_displacement(self) -> DisplacementVector:
+        """
+        Returns:
+            DisplacementVector: displacement vector in meters
+        """
+        dx = list(
+            map(
+                lambda i: i * self.scale * self.font_config.size / 1.5,
+                [2.0, -11.0, -8.0, -3.6]
+            )
+        )
+        dy = list(
+            map(
+                lambda i: i * self.scale * self.font_config.size / 1.5,
+                [1.7, -3.8, -0.8, -0.8]
+            )
+        )
+        displacement_dict = {
+            GridTypes.TOP: DisplacementVector(dx[3], dy[0]) if not self.is_first_item else DisplacementVector(dx[2], dy[0]),
+            GridTypes.BOTTOM: DisplacementVector(dx[3], dy[1]),
+            GridTypes.RIGHT: DisplacementVector(dx[0], dy[2]),
+            GridTypes.LEFT: DisplacementVector(dx[1], dy[3]),
+        }
+        return displacement_dict[self.grid_item_type]
+        
     
     def build_placement_anchor_point(self) -> QgsPoint:
         x, y = self.coordinates
         pgrid = QgsPoint(float(x), float(y))
         pgrid.transform(self.transform)
+        pgrid = QgsPoint(pgrid.x() + self.anchor_displacement.dx, pgrid.y() + self.anchor_displacement.dy)
         if self.destination_crs.isGeographic() == True:
             pgrid.transform(self.transform, Qgis.TransformDirection.Reverse)
         return pgrid
@@ -324,8 +354,6 @@ class GridLabelItem:
         self.bounding_rectangle = self.get_bounding_rectangle()
     
     def build_grid_item_label(self, desc) -> QgsRuleBasedLabeling.Rule:
-        grid_x, grid_y = self.coordinates
-        pgrid = QgsPoint(float(grid_x), float(grid_y))
         settings = QgsPalLayerSettings()
         settings.placement = (
             1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
@@ -340,11 +368,11 @@ class GridLabelItem:
         textprop.setFont(self.font_config.name)
         textprop.setLineHeight(1)
         settings.setFormat(textprop)
-        settings.fieldName = self.text
+        settings.fieldName = str("'") + fr"{self.text}".replace("'","\'") + str("'")
 
         # Label Position
         settings.geometryGeneratorEnabled = True
-        settings.geometryGenerator = "make_point({}, {})".format(pgrid.x(), pgrid.y())
+        settings.geometryGenerator = f"make_point({self.anchor_point.x()}, {self.anchor_point.y()})"
         datadefined = QgsPropertyCollection()
         datadefined.property(20).setExpressionString("True")
         datadefined.property(20).setActive(True)
@@ -400,15 +428,17 @@ class AbstractGrid(ABC):
             key: list(
                 map(
                     lambda x: GridLabelItem(
-                        str(x),
+                        str(x[1][0]) if key in [GridTypes.TOP, GridTypes.BOTTOM] else str(x[1][1]),
                         scale=self.scale_denominator,
-                        font_config=self.font_config.font,
-                        coordinates=x,
-                        crs=self.utm_crs,
-                        destination_crs=QgsCoordinateReferenceSystem("EPSG:4674"),
+                        font_config=self.font_config,
+                        coordinates=x[1],
+                        crs=QgsCoordinateReferenceSystem("EPSG:4674"),
+                        destination_crs=self.utm_crs,
                         dpi=self.dpi,
+                        grid_item_type=key,
+                        is_first_item=x[0]==0,
                     ),
-                    coordinate_list
+                    enumerate(coordinate_list)
                 )
             ) for key, coordinate_list in self.coordinate_grid_dict.items()
         }
@@ -461,10 +491,10 @@ class LatLonGrid(AbstractGrid):
     
     def build_coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[DMS, UTM], Union[DMS, UTM]]]]:
         top_grid, bottom_grid, left_grid, right_grid = [], [], [], []
-        for coord in DMS.generate_range(self.x_min, self.x_max, self.grid_spacing, 'longitude'):
+        for coord in DMS.generate_range(self.x_min, self.x_max, self.grid_spacing, 'longitude', include_end=True):
             top_grid.append((coord, DMS(self.y_max)))
             bottom_grid.append((coord, DMS(self.y_min)))
-        for coord in DMS.generate_range(self.y_min, self.y_max, self.grid_spacing, 'latitude'):
+        for coord in DMS.generate_range(self.y_min, self.y_max, self.grid_spacing, 'latitude', include_end=True):
             left_grid.append((DMS(self.x_min), coord))
             right_grid.append((DMS(self.x_max), coord))
         return {
@@ -492,7 +522,7 @@ class LatLonGrid(AbstractGrid):
 
 @dataclass
 class LabellingEngine:
-    feature_geometry: QgsGeometry
+    geographic_boundary_geometry: QgsGeometry
     scale_denominator: int
     font_config: FontConfig
     utm_crs: QgsCoordinateReferenceSystem
@@ -504,7 +534,7 @@ class LabellingEngine:
             self.utm_crs,
             QgsProject.instance()
         )
-        geographic_bounds_in_lat_long = QgsGeometry(self.feature_geometry)
+        geographic_bounds_in_lat_long = QgsGeometry(self.geographic_boundary_geometry)
         geographic_bounds_in_lat_long.transform(self.coordinate_transformer, Qgis.TransformDirection.Reverse)
         geographic_bounds_in_lat_long_bbox: QgsRectangle = geographic_bounds_in_lat_long.boundingBox()
         self.lat_lon_grid: LatLonGrid = LatLonGrid(
