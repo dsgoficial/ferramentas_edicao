@@ -81,14 +81,15 @@ class GridLineConfig:
     buffer_width: float
 
 @dataclass
-class GridConfig:
-    font: FontConfig
+class DisplacementVector:
+    dx: float
+    dy: float
     
 @dataclass
 class GridLabelItem:
     text: str
     scale: int
-    font: FontConfig
+    font_config: FontConfig
     coordinates: Tuple[Union[DMS, UTM]]
     crs: QgsCoordinateReferenceSystem
     destination_crs: QgsCoordinateReferenceSystem
@@ -119,8 +120,8 @@ class GridLabelItem:
             QSizeF: Width and height of the text in map units
         """
         # Create QFont object from FontConfig
-        font = QFont(self.font.name)
-        font.setPointSizeF(self.font.size)
+        font = QFont(self.font_config.name)
+        font.setPointSizeF(self.font_config.size)
         
         # Use QFontMetricsF to get text dimensions in pixels
         font_metrics = QFontMetricsF(font)
@@ -150,10 +151,10 @@ class GridLabelItem:
         """
         # Create a QgsTextFormat from FontConfig
         text_format = QgsTextFormat()
-        text_format.setFont(self.font.name)
-        text_format.setSize(self.font.size)
+        text_format.setFont(self.font_config.name)
+        text_format.setSize(self.font_config.size)
         text_format.setSizeUnit(Qgis.RenderUnit.Points)
-        text_format.setColor(self.font.color)
+        text_format.setColor(self.font_config.color)
         
         # Create a render context for calculations
         render_context = QgsRenderContext()
@@ -290,7 +291,7 @@ class GridLabelItem:
         """
         return self.overlaps_horizontally(other_label) and self.overlaps_vertically(other_label)
     
-    def resolve_overlap(self, label_list: List[Type[Self]], displacement_vector: Tuple[float, float]) -> None:
+    def resolve_overlap(self, label_list: List[Type[Self]], displacement_vector: DisplacementVector) -> None:
         """
         Resolve overlaps by applying displacement to anchor point.
         
@@ -298,25 +299,24 @@ class GridLabelItem:
             label_list (List[GridLabelItem]): List of other labels to check against
             displacement_vector (Tuple[float, float]): Displacement vector (x, y) to apply
         """
-        x_displacement, y_displacement = displacement_vector
-        if x_displacement == 0 and y_displacement == 0:
+        if displacement_vector.dx == 0 and displacement_vector.dy == 0:
             return
         
         # Check for vertical overlaps and apply y displacement
-        if y_displacement > 0:
+        if displacement_vector.dy > 0:
             for other_label in label_list:
                 if self.overlaps_vertically(other_label):
                     # Update y coordinate of anchor point
-                    new_y = self.anchor_point.y() + y_displacement
+                    new_y = self.anchor_point.y() + displacement_vector.dy
                     self.anchor_point = QgsPoint(self.anchor_point.x(), new_y)
                     break  # Apply displacement only once per direction
         
         # Check for horizontal overlaps and apply x displacement
-        if x_displacement > 0:
+        if displacement_vector.dx > 0:
             for other_label in label_list:
                 if self.overlaps_horizontally(other_label):
                     # Update x coordinate of anchor point
-                    new_x = self.anchor_point.x() + x_displacement
+                    new_x = self.anchor_point.x() + displacement_vector.dx
                     self.anchor_point = QgsPoint(new_x, self.anchor_point.y())
                     break  # Apply displacement only once per direction
         
@@ -332,12 +332,12 @@ class GridLabelItem:
         )
         settings.isExpression = True
         textprop = QgsTextFormat()
-        textprop.setColor(self.font.color)
+        textprop.setColor(self.font_config.color)
         textprop.setSizeUnit(
             4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points
         )
-        textprop.setSize(self.font.size * 2.8346)
-        textprop.setFont(self.font.name)
+        textprop.setSize(self.font_config.size * 2.8346)
+        textprop.setFont(self.font_config.name)
         textprop.setLineHeight(1)
         settings.setFormat(textprop)
         settings.fieldName = self.text
@@ -360,15 +360,11 @@ class GridLabelItem:
         rule.setActive(True)
 
         return rule
-    
-@dataclass
-class DisplacementVector:
-    dx: float
-    dy: float
+
 @dataclass
 class AbstractGrid(ABC):
     scale_denominator: int
-    config: GridConfig
+    font_config: FontConfig
     utm_crs: QgsCoordinateReferenceSystem
     x_min: float
     y_min: float
@@ -406,7 +402,7 @@ class AbstractGrid(ABC):
                     lambda x: GridLabelItem(
                         str(x),
                         scale=self.scale_denominator,
-                        font=self.config.font,
+                        font_config=self.font_config.font,
                         coordinates=x,
                         crs=self.utm_crs,
                         destination_crs=QgsCoordinateReferenceSystem("EPSG:4674"),
@@ -498,7 +494,7 @@ class LatLonGrid(AbstractGrid):
 class LabellingEngine:
     feature_geometry: QgsGeometry
     scale_denominator: int
-    config: GridConfig
+    font_config: FontConfig
     utm_crs: QgsCoordinateReferenceSystem
     dpi: int
     
@@ -513,7 +509,7 @@ class LabellingEngine:
         geographic_bounds_in_lat_long_bbox: QgsRectangle = geographic_bounds_in_lat_long.boundingBox()
         self.lat_lon_grid: LatLonGrid = LatLonGrid(
             scale_denominator=self.scale_denominator,
-            config=self.config,
+            font_config=self.font_config,
             utm_crs=self.utm_crs,
             x_min=geographic_bounds_in_lat_long_bbox.xMinimum(),
             x_max=geographic_bounds_in_lat_long_bbox.xMaximum(),
