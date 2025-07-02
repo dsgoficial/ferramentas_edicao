@@ -533,7 +533,7 @@ class MapBuildController(MapBuildControllerUtils):
                 if jsonData["tipo_produto"] != "Carta Ortoimagem OM"
                 else None
             )
-            if not self.validate_numeric_grid(connection):
+            if jsonData["tipo_produto"] != "Carta Ortoimagem OM" and not self.validate_numeric_grid(connection):
                 if is_headless:
                     print(
                         "A camada edicao_grid_numerico_p está vazia. Gere o grid numérico e tente novamente."

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.23
+
+Correção de bug:
+
+- Corrigido o bug de exportação de carta ortoimagem OM sem grid numérico (camada não prevista nesse tipo de produto);
+
 ## 1.3.22
 
 Correções:
