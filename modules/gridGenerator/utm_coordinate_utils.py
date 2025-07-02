@@ -39,7 +39,7 @@ class UTM:
         '9': '\u2079'
     }
     
-    def __init__(self, x, y, grid_spacing=1000, coord_display=None):
+    def __init__(self, x, y, grid_spacing=1000, coord_display=None, show_suffix=False):
         """
         Initialize UTM coordinate.
         
@@ -53,6 +53,7 @@ class UTM:
         self.y = float(y)
         self.grid_spacing = grid_spacing
         self.coord_display = coord_display
+        self.show_suffix = show_suffix
     
     def __str__(self):
         """
@@ -61,11 +62,8 @@ class UTM:
         Returns:
             str: Formatted coordinate string
         """
-        if self.coord_display is None:
-            # Basic format without suffix
-            return f"{int(self.x)}"
-        else:
-            return self.format_coordinate(self.coord_display, show_suffix=True, grid_spacing=self.grid_spacing)
+        return f"({self.x}, {self.y})" if self.coord_display is None \
+            else self.format_coordinate(self.coord_display, show_suffix=self.show_suffix, grid_spacing=self.grid_spacing)
     
     def __repr__(self):
         """
@@ -183,6 +181,64 @@ class UTM:
             tuple: (x, y) coordinates
         """
         return (self.x, self.y)
+    
+    @staticmethod
+    def generate_range(start, end, step, coord_type='x', fixed_coord=0, grid_spacing=1000, coord_display=None, apply_coord_display_only_to_first_element=True):
+        """
+        Generate a list of UTM coordinates within a range.
+        The first element will be the next value that is divisible by the step.
+        
+        Args:
+            start (float): Starting value for the range
+            end (float): Ending value for the range
+            step (float): Step size - the first coordinate will be divisible by this value
+            coord_type (str): Which coordinate to vary ('x' for easting, 'y' for northing)
+            fixed_coord (float): Value for the coordinate that doesn't vary (default: 0)
+            grid_spacing (int): Grid spacing for coordinate formatting (default: 1000)
+            coord_display (str): Display type for generated coordinates (default: None)
+            
+        Returns:
+            list: List of UTM coordinate objects
+            
+        Example:
+            # Generate easting coordinates from 1230 to 5000 with step 1000
+            # First coordinate will be 2000 (next divisible by 1000)
+            coords = UTM.generate_range(1230, 5000, 1000, 'x', 7234000)
+            # Returns UTM objects: [(2000, 7234000), (3000, 7234000), (4000, 7234000), (5000, 7234000)]
+        """
+        # Find the first value divisible by step that is >= start
+        if start % step == 0:
+            first_value = start
+        else:
+            first_value = start + (step - (start % step))
+        
+        coordinates = []
+        current = first_value
+        
+        while current <= end:
+            if coord_type.lower() == 'x':
+                utm = UTM(
+                    x=current,
+                    y=fixed_coord,
+                    grid_spacing=grid_spacing,
+                    coord_display=coord_display,
+                    show_suffix=(first_value == current and apply_coord_display_only_to_first_element),
+                )
+            elif coord_type.lower() == 'y':
+                utm = UTM(
+                    x=fixed_coord,
+                    y=current,
+                    grid_spacing=grid_spacing,
+                    coord_display=coord_display,
+                    show_suffix=(first_value == current and apply_coord_display_only_to_first_element),
+                )
+            else:
+                raise ValueError("coord_type must be 'x' or 'y'")
+                
+            coordinates.append(utm)
+            current += step
+        
+        return coordinates
 
 
 # Example usage and testing
@@ -236,3 +292,27 @@ if __name__ == "__main__":
     
     coord.coord_display = None
     print("Back to basic:", coord)
+    
+    # NEW: Testing the generate_range static method
+    print("\n=== Testing generate_range method ===")
+    
+    # Generate easting coordinates from 1230 to 5000 with step 1000
+    # First value will be 2000 (next divisible by 1000)
+    easting_coords = UTM.generate_range(1230, 5000, 1000, 'x', 7234000)
+    print("Easting range (1230-5000, step 1000):")
+    for coord in easting_coords:
+        print(f"  {coord.get_coordinates()}")
+    
+    # Generate northing coordinates from 500 to 2500 with step 500
+    # First value will be 500 (already divisible by 500)
+    northing_coords = UTM.generate_range(500, 2500, 500, 'y', 651000)
+    print("\nNorthing range (500-2500, step 500):")
+    for coord in northing_coords:
+        print(f"  {coord.get_coordinates()}")
+    
+    # Generate with display formatting
+    formatted_coords = UTM.generate_range(1000, 4000, 1000, 'x', 7234000, 
+                                        coord_display="easting")
+    print("\nFormatted easting coordinates:")
+    for coord in formatted_coords:
+        print(f"  {coord}")  # Will use the __str__ method with formatting

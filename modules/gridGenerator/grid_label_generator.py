@@ -56,6 +56,8 @@ from qgis.core import (
     QgsRectangle,
     QgsFontUtils,
     QgsTextRenderer,
+    QgsUnitTypes,
+    QgsFeature,
 )
 from qgis.PyQt.QtCore import QObject, QSizeF
 from qgis.PyQt.QtGui import QColor, QFont, QFontMetricsF
@@ -183,7 +185,7 @@ class GridLabelItem:
         text_format = QgsTextFormat()
         text_format.setFont(self.font_config.name)
         text_format.setSize(self.font_config.size)
-        text_format.setSizeUnit(Qgis.RenderUnit.Points)
+        text_format.setSizeUnit(QgsUnitTypes.RenderPoints)
         text_format.setColor(self.font_config.color)
         
         # Create a render context for calculations
@@ -389,6 +391,33 @@ class GridLabelItem:
 
         return rule
 
+class UTMGridLabelItem(GridLabelItem):
+    
+    def get_anchor_displacement(self) -> DisplacementVector:
+        """
+        Returns:
+            DisplacementVector: displacement vector in meters
+        """
+        dx = list(
+            map(
+                lambda i: i * self.scale * self.font_config.size / 1.5 * 3/5,
+                [-2.9, -2.9, -8.9, 2.0]
+            )
+        )
+        dy = list(
+            map(
+                lambda i: i * self.scale * self.font_config.size / 1.5 * 3/5,
+                [1.4, -4.6, -0.5, -1.5]
+            )
+        )
+        displacement_dict = {
+            GridTypes.TOP: DisplacementVector(dx[0], dy[0]),
+            GridTypes.BOTTOM: DisplacementVector(dx[0], dy[1]),
+            GridTypes.RIGHT: DisplacementVector(dx[3], dy[3]),
+            GridTypes.LEFT: DisplacementVector(dx[2], dy[3]),
+        }
+        return displacement_dict[self.grid_item_type]
+
 @dataclass
 class AbstractGrid(ABC):
     scale_denominator: int
@@ -420,7 +449,7 @@ class AbstractGrid(ABC):
         pass
     
     @abstractmethod
-    def build_rule_based_labelling(self) -> QgsRuleBasedLabeling.Rule:
+    def build_rule_based_labelling(self, parent_rule: Optional[QgsRuleBasedLabeling.Rule] = None) -> QgsRuleBasedLabeling.Rule:
         pass
     
     def build_grid_label_dict(self) -> Dict[GridTypes, List[GridLabelItem]]:
@@ -452,14 +481,115 @@ class AbstractGrid(ABC):
     
     def resolve_overlaps(self, other_grid: Self, displacement_dict: Dict[GridTypes, DisplacementVector]):
         pass
+    
+    def build_label_bounding_boxes_layer(self) -> None:
+        label_placement_bboxes_lyr = QgsVectorLayer(f"Polygon?crs={self.utm_crs.authid()}&field=coord:string(20)&index=yes", "labels_bboxes", "memory")
+        QgsProject.instance().addMapLayer(label_placement_bboxes_lyr)
+        label_placement_bboxes_lyr.startEditing()
+        label_placement_bboxes_lyr.beginEditCommand("adding feats")
+        fields = label_placement_bboxes_lyr.fields()
+        for key, label_list in self.grid_label_dict.items():
+            for label in label_list:
+                rect = label.get_bounding_rectangle()
+                geom = QgsGeometry.fromRect(rect)
+                feat = QgsFeature(fields)
+                feat.setGeometry(geom)
+                feat["coord"] = label
+        label_placement_bboxes_lyr.endEditCommand()
+        
+                
+        
+        
 
 @dataclass
 class UTMGrid(AbstractGrid):
+    geographic_boundary_in_utm: QgsGeometry
+    
+    def __post_init__(self):
+        self.geographic_boundary_line_in_utm = QgsGeometry(self.geographic_boundary_in_utm.constGet().boundary())
+        return super().__post_init__()
+
     def build_spacing_dict(self):
-        return {s: 400*s for s in [5, 10, 25, 50, 100, 250]}
+        return {s: 40*s for s in [5, 10, 25, 50, 100, 250]}
     
     def build_coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[DMS, UTM], Union[DMS, UTM]]]]:
-        pass
+        top_grid = UTM.generate_range(
+            start=self.x_min,
+            end=self.x_max,
+            step=self.grid_spacing,
+            grid_spacing=self.grid_spacing, 
+            coord_type='x',
+            fixed_coord=self.y_max,
+            coord_display='easting',
+        )
+        bottom_grid = UTM.generate_range(
+            start=self.x_min,
+            end=self.x_max,
+            step=self.grid_spacing,
+            grid_spacing=self.grid_spacing, 
+            coord_type='x',
+            fixed_coord=self.y_min,
+            coord_display='easting',
+        )
+        left_grid = UTM.generate_range(
+            start=self.y_min,
+            end=self.y_max,
+            step=self.grid_spacing,
+            grid_spacing=self.grid_spacing, 
+            coord_type='y',
+            fixed_coord=self.x_min,
+            coord_display='northing',
+        )
+        right_grid = UTM.generate_range(
+            start=self.y_min,
+            end=self.y_max,
+            step=self.grid_spacing,
+            grid_spacing=self.grid_spacing, 
+            coord_type='y',
+            fixed_coord=self.x_max,
+            coord_display='northing',
+        )
+        return {
+            GridTypes.TOP: top_grid,
+            GridTypes.BOTTOM: bottom_grid,
+            GridTypes.LEFT: left_grid,
+            GridTypes.RIGHT: right_grid,
+        }
+        
+    def get_coordinates_on_geographic_boundary_line(self, x, y):
+        point = QgsGeometry(QgsPoint(x, y))
+        return tuple(self.geographic_boundary_line_in_utm.nearestPoint(point).asPoint())
+            
+    
+    def build_grid_label_dict(self) -> Dict[GridTypes, List[GridLabelItem]]:
+        return {
+            key: list(
+                map(
+                    lambda x: UTMGridLabelItem(
+                        str(x[1]),
+                        scale=self.scale_denominator,
+                        font_config=self.font_config,
+                        coordinates=self.get_coordinates_on_geographic_boundary_line(*x[1].get_coordinates()),
+                        crs=self.utm_crs,
+                        destination_crs=self.utm_crs,
+                        dpi=self.dpi,
+                        grid_item_type=key,
+                        is_first_item=x[0]==0,
+                    ),
+                    enumerate(coordinate_list)
+                )
+            ) for key, coordinate_list in self.coordinate_grid_dict.items()
+        }
+    
+    def build_rule_based_labelling(self, parent_rule: Optional[QgsRuleBasedLabeling.Rule] = None) -> QgsRuleBasedLabeling.Rule:
+        root_rule = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings()) if parent_rule is None else parent_rule
+        for grid_type, labelList in self.grid_label_dict.items():
+            for idx, grid_label_item in enumerate(labelList, start=1):
+                new_rule = grid_label_item.build_grid_item_label(
+                    desc=f"UTM{grid_type} {idx}"
+                )
+                root_rule.appendChild(new_rule)
+        return root_rule
     
     def get_displacement_dict(self) -> Dict[GridTypes, DisplacementVector]:
         return {
@@ -473,7 +603,7 @@ class UTMGrid(AbstractGrid):
 class LatLonGrid(AbstractGrid):
     def build_spacing_dict(self):
         return {
-            5: DMS(seconds=30),  # Assumindo 30'' para 1:5.000 (não especificado na tabela)
+            5: DMS(minutes=1),  # Assumindo 30'' para 1:5.000 (não especificado na tabela)
             10: DMS(minutes=1),  # Assumindo 1' para 1:10.000 (não especificado na tabela)
             25: DMS(minutes=2),  # 2' para 1:25.000
             50: DMS(minutes=5),  # 5' para 1:50.000
@@ -510,7 +640,7 @@ class LatLonGrid(AbstractGrid):
         return output_dict
 
     def build_rule_based_labelling(self, parent_rule: Optional[QgsRuleBasedLabeling.Rule] = None) -> QgsRuleBasedLabeling.Rule:
-        root_rule = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings()) if parent_rule is not None else parent_rule
+        root_rule = QgsRuleBasedLabeling.Rule(QgsPalLayerSettings()) if parent_rule is None else parent_rule
         for grid_type, labelList in self.grid_label_dict.items():
             for idx, grid_label_item in enumerate(labelList, start=1):
                 new_rule = grid_label_item.build_grid_item_label(
@@ -547,11 +677,32 @@ class LabellingEngine:
             y_max=geographic_bounds_in_lat_long_bbox.yMaximum(),
             dpi=self.dpi,
         )
+        geographic_boundary_bbox = self.geographic_boundary_geometry.boundingBox()
+        self.utm_font_config = FontConfig(
+            name=self.font_config.name,
+            size=self.font_config.size * 5 / 3, # feito para manter a compatibilidade com o código do João Felipe
+            color=self.font_config.color,
+        )
+        self.utm_grid: UTMGrid = UTMGrid(
+            scale_denominator=self.scale_denominator,
+            font_config=self.utm_font_config,
+            utm_crs=self.utm_crs,
+            x_min=geographic_boundary_bbox.xMinimum(),
+            x_max=geographic_boundary_bbox.xMaximum(),
+            y_min=geographic_boundary_bbox.yMinimum(),
+            y_max=geographic_boundary_bbox.yMaximum(),
+            dpi=self.dpi,
+            geographic_boundary_in_utm=self.geographic_boundary_geometry,
+        )
     
     def build_label_layer(self, geographic_boundary_layer: QgsVectorLayer) -> None:
-        properties = {"color": "black"}
+        properties = {
+            "style": "no",             # No fill
+            "outline_color": "black",  # Optional: keep outline visible
+            "outline_width": "0.05"
+        }
         grid_symb = QgsFillSymbol.createSimple(properties)
-        grid_symb.deleteSymbolLayer(0)
+        # grid_symb.deleteSymbolLayer(0)
         # Creating Rule Based Renderer (Rule For The Selected Feature, Root Rule)
         symb_new = QgsRuleBasedRenderer.Rule(grid_symb)
         symb_new.setFilterExpression('id = 1')
@@ -588,6 +739,8 @@ class LabellingEngine:
         new_renderer = QgsInvertedPolygonRenderer.convertFromRenderer(render_base_out)
         outside_bound_layer.setRenderer(new_renderer)
         root_rule = self.lat_lon_grid.build_rule_based_labelling()
+        self.lat_lon_grid.build_label_bounding_boxes_layer()
+        self.utm_grid.build_rule_based_labelling(parent_rule=root_rule)
         
         rules = QgsRuleBasedLabeling(root_rule)
         geographic_boundary_layer.setLabeling(rules)
