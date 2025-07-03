@@ -58,7 +58,9 @@ from qgis.core import (
     QgsTextRenderer,
     QgsUnitTypes,
     QgsFeature,
+    QgsMapUnitScale,
 )
+from qgis.utils import iface
 from qgis.PyQt.QtCore import QObject, QSizeF
 from qgis.PyQt.QtGui import QColor, QFont, QFontMetricsF
 
@@ -105,6 +107,7 @@ class GridLabelItem:
             self.destination_crs,
             QgsProject.instance(),
         )
+        self.real_font_size = self.font_config.size * 2.8346
         self.anchor_displacement: DisplacementVector = self.get_anchor_displacement()
         self.anchor_point: QgsPoint = self.build_placement_anchor_point()
         self.bounding_rectangle: QgsRectangle = self.get_bounding_rectangle()
@@ -144,92 +147,58 @@ class GridLabelItem:
             pgrid.transform(self.transform, Qgis.TransformDirection.Reverse)
         return pgrid
     
-    def get_text_size_in_map_units(self) -> QSizeF:
-        """
-        Calculate the text size in map units based on font size and scale.
-        
-        Returns:
-            QSizeF: Width and height of the text in map units
-        """
-        # Create QFont object from FontConfig
-        font = QFont(self.font_config.name)
-        font.setPointSizeF(self.font_config.size)
-        
-        # Use QFontMetricsF to get text dimensions in pixels
-        font_metrics = QFontMetricsF(font)
-        text_width_pixels = font_metrics.horizontalAdvance(self.text)
-        text_height_pixels = font_metrics.height()
-        
-        # Convert pixels to map units using the label's DPI
-        # Standard conversion: 1 point = 1/72 inch
-        points_per_inch = 72.0
-        
-        # Convert pixels to map units using scale
-        # Map units per pixel = scale / (dpi * inches_per_meter)
-        inches_per_meter = 39.3701
-        map_units_per_pixel = self.scale / (self.dpi * inches_per_meter)
-        
-        text_width_map_units = text_width_pixels * map_units_per_pixel
-        text_height_map_units = text_height_pixels * map_units_per_pixel
-        
-        return QSizeF(text_width_map_units, text_height_map_units)
-    
-    def get_text_size_with_qgs_utils(self) -> QSizeF:
-        """
-        Alternative method using QGIS utilities for more accurate text sizing.
-        
-        Returns:
-            QSizeF: Width and height of the text in map units
-        """
-        # Create a QgsTextFormat from FontConfig
+    def get_text_size_in_terrain_units(self) -> QSizeF:
         text_format = QgsTextFormat()
         text_format.setFont(self.font_config.name)
-        text_format.setSize(self.font_config.size)
+        text_format.setSize(self.real_font_size * 1.7)
         text_format.setSizeUnit(QgsUnitTypes.RenderPoints)
-        text_format.setColor(self.font_config.color)
         
-        # Create a render context for calculations
-        render_context = QgsRenderContext()
-        render_context.setScaleFactor(1.0)
-        render_context.setRendererScale(self.scale)
+        map_settings = iface.mapCanvas().mapSettings()
+        render_context = QgsRenderContext.fromMapSettings(map_settings)
+        render_context.setScaleFactor(15)
+        render_context.setRendererScale(self.scale * 1000)  # Your scale to denominator
         
-        # Calculate text size using QgsTextRenderer
-        text_width = QgsTextRenderer.textWidth(render_context, text_format, [self.text])
-        text_height = QgsTextRenderer.textHeight(render_context, text_format, [self.text])
+        # 3. Let QGIS do the conversion (this is what actually renders)
+        width_render_units = QgsTextRenderer.textWidth(render_context, text_format, [self.text])
+        height_render_units = QgsTextRenderer.textHeight(render_context, text_format, [self.text])
         
-        return QSizeF(text_width, text_height)
+        # 4. Convert from render units to map units using QGIS's converter
+        width_map_units = render_context.convertToMapUnits(
+            width_render_units, 
+            QgsUnitTypes.RenderMetersInMapUnits,
+            QgsMapUnitScale(self.scale * 1000),
+        )
+        height_map_units = render_context.convertToMapUnits(
+            height_render_units, 
+            QgsUnitTypes.RenderMetersInMapUnits,
+            QgsMapUnitScale(self.scale * 1000),
+        )
+        
+        return QSizeF(width_map_units, height_map_units)
     
     def get_bounding_rectangle(self) -> QgsRectangle:
         """
         Create a bounding rectangle for the label based on text size and anchor point.
+        Anchored at lower-left corner as per QGIS label placement.
         
         Returns:
-            QgsRectangle: The bounding rectangle of the label
+            QgsRectangle: The bounding rectangle of the label in terrain units
         """
-        try:
-            # Try using QGIS utilities first (more accurate)
-            text_size = self.get_text_size_with_qgs_utils()
-        except:
-            # Fallback to manual calculation
-            text_size = self.get_text_size_in_map_units()
-        
+        text_size = self.get_text_size_in_terrain_units()
+        # Text dimensions in terrain units
         width = text_size.width()
         height = text_size.height()
         
-        # Get anchor point coordinates
+        # Get anchor point coordinates (already in terrain units)
         x = self.anchor_point.x()
         y = self.anchor_point.y()
         
-        # Create rectangle centered on anchor point
-        # You can adjust this based on your label placement strategy
-        half_width = width / 2.0
-        half_height = height / 2.0
-        
+        # Create rectangle with anchor at lower-left corner
         return QgsRectangle(
-            x - half_width,  # xmin
-            y - half_height,  # ymin
-            x + half_width,   # xmax
-            y + half_height   # ymax
+            x,           # xmin (left edge)
+            y,           # ymin (bottom edge) 
+            x + width,   # xmax (right edge)
+            y + height   # ymax (top edge)
         )
     
     def get_bounding_rectangle_with_placement(self, placement: str = 'center') -> QgsRectangle:
@@ -392,29 +361,22 @@ class GridLabelItem:
         return rule
 
 class UTMGridLabelItem(GridLabelItem):
-    
+
     def get_anchor_displacement(self) -> DisplacementVector:
         """
         Returns:
             DisplacementVector: displacement vector in meters
         """
-        dx = list(
-            map(
-                lambda i: i * self.scale * self.font_config.size / 1.5 * 3/5,
-                [-2.9, -2.9, -8.9, 2.0]
-            )
-        )
-        dy = list(
-            map(
-                lambda i: i * self.scale * self.font_config.size / 1.5 * 3/5,
-                [1.4, -4.6, -0.5, -1.5]
-            )
-        )
+        text_size = self.get_text_size_in_terrain_units()
+        # Text dimensions in terrain units
+        width = text_size.width()
+        height = text_size.height()
+        # conversion_factor = self.scale * self.font_config.size * 3/5 / 1.5
         displacement_dict = {
-            GridTypes.TOP: DisplacementVector(dx[0], dy[0]),
-            GridTypes.BOTTOM: DisplacementVector(dx[0], dy[1]),
-            GridTypes.RIGHT: DisplacementVector(dx[3], dy[3]),
-            GridTypes.LEFT: DisplacementVector(dx[2], dy[3]),
+            GridTypes.TOP: DisplacementVector(-width/2 + 1 * self.scale, 1 * self.scale),
+            GridTypes.BOTTOM: DisplacementVector(-width/2 + 1 * self.scale, - height - 1 * self.scale),
+            GridTypes.RIGHT: DisplacementVector(1 * self.scale, -height/2),
+            GridTypes.LEFT: DisplacementVector(- 1 * self.scale - width, -height/2),
         }
         return displacement_dict[self.grid_item_type]
 
@@ -482,8 +444,8 @@ class AbstractGrid(ABC):
     def resolve_overlaps(self, other_grid: Self, displacement_dict: Dict[GridTypes, DisplacementVector]):
         pass
     
-    def build_label_bounding_boxes_layer(self) -> None:
-        label_placement_bboxes_lyr = QgsVectorLayer(f"Polygon?crs={self.utm_crs.authid()}&field=coord:string(20)&index=yes", "labels_bboxes", "memory")
+    def build_label_bounding_boxes_layer(self, layer_name) -> None:
+        label_placement_bboxes_lyr = QgsVectorLayer(f"Polygon?crs={self.utm_crs.authid()}&field=coord:string(2000)&index=yes", layer_name, "memory")
         QgsProject.instance().addMapLayer(label_placement_bboxes_lyr)
         label_placement_bboxes_lyr.startEditing()
         label_placement_bboxes_lyr.beginEditCommand("adding feats")
@@ -494,8 +456,10 @@ class AbstractGrid(ABC):
                 geom = QgsGeometry.fromRect(rect)
                 feat = QgsFeature(fields)
                 feat.setGeometry(geom)
-                feat["coord"] = label
+                feat["coord"] = str(label)
+                label_placement_bboxes_lyr.addFeature(feat)
         label_placement_bboxes_lyr.endEditCommand()
+        label_placement_bboxes_lyr.commitChanges()
         
                 
         
@@ -739,8 +703,9 @@ class LabellingEngine:
         new_renderer = QgsInvertedPolygonRenderer.convertFromRenderer(render_base_out)
         outside_bound_layer.setRenderer(new_renderer)
         root_rule = self.lat_lon_grid.build_rule_based_labelling()
-        self.lat_lon_grid.build_label_bounding_boxes_layer()
+        # self.lat_lon_grid.build_label_bounding_boxes_layer("lat_long_boxes")
         self.utm_grid.build_rule_based_labelling(parent_rule=root_rule)
+        # self.utm_grid.build_label_bounding_boxes_layer("utm_boxes")
         
         rules = QgsRuleBasedLabeling(root_rule)
         geographic_boundary_layer.setLabeling(rules)
