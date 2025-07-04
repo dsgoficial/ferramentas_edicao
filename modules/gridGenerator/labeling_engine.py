@@ -126,7 +126,7 @@ class LabelingEngine:
         render_base_out = QgsRuleBasedRenderer(root_symbol_rule_out)
         new_renderer = QgsInvertedPolygonRenderer.convertFromRenderer(render_base_out)
         outside_bound_layer.setRenderer(new_renderer)
-        self.lat_lon_grid.resolve_inner_overlaps()
+        # self.lat_lon_grid.resolve_inner_overlaps()
         self.utm_grid.resolve_overlaps(self.lat_lon_grid)
         root_rule = self.lat_lon_grid.build_rule_based_labelling()
         # self.lat_lon_grid.build_label_bounding_boxes_layer("lat_long_boxes")

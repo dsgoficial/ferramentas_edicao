@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import math
 
 class DMS:
     """
@@ -23,7 +24,7 @@ class DMS:
     Supports geographic coordinates with directional indicators.
     """
     
-    def __init__(self, degrees=0, minutes=None, seconds=None, coordinate_type=None):
+    def __init__(self, degrees=0, minutes=None, seconds=None, coordinate_type=None, seconds_eps=1e-5):
         """
         Initialize DMS object.
         
@@ -48,6 +49,10 @@ class DMS:
             self.degrees = int(degrees)
             self.minutes = int(minutes or 0)
             self.seconds = float(seconds or 0)
+        if self.seconds - math.floor(self.seconds) < seconds_eps:
+            self.seconds = math.floor(self.seconds)
+        elif math.ceil(self.seconds) - self.seconds < seconds_eps:
+            self.seconds = math.ceil(self.seconds)
         self._normalize()
         
         self._validate_coordinate()
@@ -298,6 +303,77 @@ class DMS:
         if end_point not in result:
             result.append(end_point)
         return result
+    
+    @staticmethod
+    def generate_fixed_grid(start, end, step, fixed_coordinate, grid_type):
+        """
+        Generate a list of pairwise grid starting from the nearest multiple of step (for instance, minute grid)
+        """
+        new_start = DMS.get_nearest_item(start, step)
+        if grid_type == 'x':
+            return [
+                (x, DMS(fixed_coordinate, coordinate_type='longitude')) for x in DMS.generate_range(
+                    new_start, end, step, coordinate_type='latitude')
+            ]
+        if grid_type == 'y':
+            return [
+                (DMS(fixed_coordinate, coordinate_type='latitude'), y) for y in DMS.generate_range(
+                    new_start, end, step, coordinate_type='longitude')
+            ]
+        raise ValueError("invalid grid type")
+    
+    @staticmethod
+    def get_nearest_item(item, step):
+        """
+        Get the nearest item that is larger than the input item and respects the step.
+        
+        The method finds the next grid position that is strictly greater than the input item
+        and aligns with the step grid spacing.
+        
+        Args:
+            item (DMS): The input DMS object
+            step (DMS): The step size (grid spacing)
+        
+        Returns:
+            DMS: The nearest larger item that aligns with the step grid
+        
+        Examples:
+            >>> item = DMS(25, 30, 0)
+            >>> step = DMS(0, 1, 0)  # 1 minute step
+            >>> DMS.get_nearest_item(item, step)
+            DMS(25, 31, 0)
+            
+            >>> item = DMS(25, 31, 15)
+            >>> step = DMS(0, 1, 0)  # 1 minute step
+            >>> DMS.get_nearest_item(item, step)
+            DMS(25, 32, 0)
+            
+            >>> item = DMS(25, 30, 0)
+            >>> step = DMS(1, 0, 0)  # 1 degree step
+            >>> DMS.get_nearest_item(item, step)
+            DMS(26, 0, 0)
+        """
+        
+        # Convert to decimal degrees for easier calculation
+        item_decimal = item.to_decimal_degrees()
+        step_decimal = step.to_decimal_degrees()
+        
+        # Validate step
+        if step_decimal <= 0:
+            raise ValueError("Step must be positive")
+        
+        # Find the next multiple of step that is greater than item
+        # We divide item by step, take the ceiling, then multiply by step
+        steps_needed = math.ceil(item_decimal / step_decimal)
+        next_position = steps_needed * step_decimal
+        
+        # If the calculated position equals the item (within floating point precision),
+        # we need to go to the next step to ensure we get a strictly larger value
+        if abs(next_position - item_decimal) < 1e-10:
+            next_position = (steps_needed + 1) * step_decimal
+        
+        # Create and return the DMS object, preserving the coordinate type
+        return DMS.from_decimal_degrees(next_position, item.coordinate_type)
     
     @staticmethod
     def generate_grid(lat_range, lon_range, lat_step, lon_step):
@@ -683,6 +759,13 @@ if __name__ == "__main__":
     print(f"sin({angle_dms}) = sin({float(angle_dms)}°) = {math.sin(math.radians(float(angle_dms))):.4f}")
     print(f"cos({angle_dms}) = cos({float(angle_dms)}°) = {math.cos(math.radians(float(angle_dms))):.4f}")
     print()
+    
+    print("Nearest item:")
+    print("Nearest item:")
+    item = DMS(25, 30, 15)  # 25°30'15"
+    step = DMS(0, 1, 0)     # 1 second step
+    result = DMS.get_nearest_item(item, step)
+    print(result)  # DMS(25, 31, 0) - next minute boundary
     
     # Validation examples (uncomment to test)
     # try:

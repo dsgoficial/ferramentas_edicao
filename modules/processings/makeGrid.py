@@ -31,6 +31,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+from ...modules.gridGenerator.utils.lat_lon_coordinate_utils import DMS
 
 
 class MakeGrid(QgsProcessingAlgorithm):
@@ -224,7 +225,7 @@ class MakeGrid(QgsProcessingAlgorithm):
             currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
 
-            lineList = self.generateLatLonTicks(
+            lineList = self.getLatLonTicks(
                 frameLayer2,
                 scale=gridScale,
                 utm=utm,
@@ -238,14 +239,17 @@ class MakeGrid(QgsProcessingAlgorithm):
                 QgsProject.instance(),
             )
 
-            def createFeat(geom):
+            def createFeat(geom, coordinateTransform=None):
                 if coordinateTransform is not None:
                     geom.transform(coordinateTransform)
                 feat = QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=geom)
                 feat["tipo_grid"] = "cross"
                 return feat
 
-            self.sink.addFeatures(list(map(createFeat, lineList)))
+            self.sink.addFeatures(list(map(lambda x: createFeat(x, coordinateTransform=coordinateTransform), lineList)))
+            
+            tickList = self.generateMinuteTickOnFrame(frameLayer2, gridScale)
+            self.sink.addFeatures(list(map(lambda x: createFeat(x, coordinateTransform=coordinateTransform), tickList)))
 
         newLayer = self.outLayer(
             parameters, context, lineLayer, QgsWkbTypes.LineString, multiStepFeedback
@@ -409,7 +413,7 @@ class MakeGrid(QgsProcessingAlgorithm):
 
         return layer
 
-    def generateLatLonTicks(self, frameLayer, utm, scale, context, feedback):
+    def getLatLonTicks(self, frameLayer, utm, scale, context, feedback):
         # Dicionário que mapeia as escalas para intervalos em minutos
         minute_intervals = {
             5000: 1,  # Assumindo 1' para 1:5.000 (não especificado na tabela)
@@ -498,6 +502,59 @@ class MakeGrid(QgsProcessingAlgorithm):
             )
             lineList.append(vLine)
 
+        return lineList
+    
+    def generateMinuteTickOnFrame(self, frameLayer, scale):
+        step = DMS(0, 1, 0)
+        lineList = []
+        halfDistance = 5e-3 * scale / 2 * 1e-5
+        for feat in frameLayer.getFeatures():
+            geom = feat.geometry()
+            bbox = geom.boundingBox()
+            xmin = bbox.xMinimum()
+            xmax = bbox.xMaximum()
+            ymin = bbox.yMinimum()
+            ymax = bbox.yMaximum()
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(xmin), DMS.from_decimal_degrees(xmax), step, fixed_coordinate=ymin, grid_type='x'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees() + halfDistance)]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(xmin), DMS.from_decimal_degrees(xmax), step, fixed_coordinate=ymax, grid_type='x'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees() - halfDistance)]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(ymin), DMS.from_decimal_degrees(ymax), step, fixed_coordinate=xmin, grid_type='y'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees() + halfDistance, y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees())]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(ymin), DMS.from_decimal_degrees(ymax), step, fixed_coordinate=xmax, grid_type='y'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees() - halfDistance, y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees())]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
         return lineList
 
     def generateGridNumberPoints(self, frameLayer, utm, gridSize, context, feedback):

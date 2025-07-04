@@ -207,40 +207,6 @@ class GridLabelItem:
             
         return QgsRectangle(xmin, ymin, xmin + width, ymin + height)
     
-    def overlaps_vertically(self, other_label: Type[Self]) -> bool:
-        """
-        Tests if the other label overlaps vertically.
-
-        Args:
-            other_label (GridLabelItem): Tests if the other label overlaps vertically.
-
-        Returns:
-            bool: True if the other label overlaps vertically
-        """
-        rect1 = self.bounding_rectangle
-        rect2 = other_label.bounding_rectangle
-        
-        # Check if there's vertical overlap
-        # Rectangles overlap vertically if their Y ranges intersect
-        return not (rect1.yMaximum() < rect2.yMinimum() or rect2.yMaximum() < rect1.yMinimum())
-    
-    def overlaps_horizontally(self, other_label: 'GridLabelItem') -> bool:
-        """
-        Tests if the other label overlaps horizontally.
-
-        Args:
-            other_label (GridLabelItem): Tests if the other label overlaps horizontally.
-
-        Returns:
-            bool: True if the other label overlaps horizontally
-        """
-        rect1 = self.bounding_rectangle
-        rect2 = other_label.bounding_rectangle
-        
-        # Check if there's horizontal overlap
-        # Rectangles overlap horizontally if their X ranges intersect
-        return not (rect1.xMaximum() < rect2.xMinimum() or rect2.xMaximum() < rect1.xMinimum())
-    
     def overlaps(self, other_label: Type[Self]) -> bool:
         """
         Tests if the other label overlaps in any direction.
@@ -251,7 +217,9 @@ class GridLabelItem:
         Returns:
             bool: True if the labels overlap
         """
-        return self.overlaps_horizontally(other_label) and self.overlaps_vertically(other_label)
+        this_rectangle = self.get_bounding_rectangle()
+        other_rectangle = other_label.get_bounding_rectangle()
+        return this_rectangle.intersects(other_rectangle)
     
     def displace_item(self, displacement_vector: DisplacementVector) -> None:
         self.anchor_point = QgsPoint(
