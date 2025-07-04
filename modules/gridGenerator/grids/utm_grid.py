@@ -140,7 +140,7 @@ class UTMGrid(AbstractGrid):
         grid_type = base_grid_item.grid_item_type
         text_size = base_grid_item.get_text_size_in_terrain_units()
         meter_anchor_x = base_grid_item.anchor_point.x() + text_size.width()
-        meter_anchor_y = base_grid_item.anchor_point.y() + 0.6 * self.scale_denominator * base_grid_item.font_config.size
+        meter_anchor_y = base_grid_item.anchor_point.y() + 0.6 * base_grid_item.font_config.size * self.scale_denominator # (60% do tamanho da fonte na escala)
         meter_label = build_rule_label(
             text=str("m"),
             desc=f"UTM{grid_type} {idx} m",
@@ -155,7 +155,7 @@ class UTMGrid(AbstractGrid):
         easting_label  = build_rule_label(
             text=f"{easting_token}",
             desc=f"UTM{grid_type} {idx} {easting_token}",
-            anchor_x=meter_anchor_x + 0.45 * self.scale_denominator * self.font_config.size,
+            anchor_x=meter_anchor_x + 0.45 * self.font_config.size * self.scale_denominator, # (45% do tamanho da fonte na escala),
             anchor_y=base_grid_item.anchor_point.y(),
             font=base_grid_item.font_config.name,
             font_size=base_grid_item.font_config.size,

@@ -19,6 +19,7 @@ Abstract base class for grid implementations.
 """
 
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Union
 try:
@@ -127,5 +128,14 @@ class AbstractGrid(ABC):
         label_placement_bboxes_lyr.commitChanges()
     
     def resolve_inner_overlaps(self):
-        "If any label overlaps the corner, delete it"
-        pass
+        "If any label overlaps the corners, delete it"
+        items_to_delete_dict = defaultdict(list)
+        for key, label_list in self.grid_label_dict.items():
+            first_item, last_item = label_list[0], label_list[-1]
+            if label_list[-2].overlaps(last_item):
+                items_to_delete_dict[key].append(-2)
+            if label_list[0].overlaps(first_item):
+                items_to_delete_dict[key].append(1)
+        for key, label_list in items_to_delete_dict.items():
+            for idx in label_list:
+                self.grid_label_dict[key].pop(idx)
