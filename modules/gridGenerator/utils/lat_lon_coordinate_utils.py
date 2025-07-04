@@ -48,7 +48,7 @@ class DMS:
             self.degrees = int(degrees)
             self.minutes = int(minutes or 0)
             self.seconds = float(seconds or 0)
-            self._normalize()
+        self._normalize()
         
         self._validate_coordinate()
     
@@ -64,6 +64,7 @@ class DMS:
         
         if is_negative:
             self.degrees = -self.degrees
+        self._normalize()
     
     def _normalize(self):
         """Normalize the DMS values (e.g., 61 seconds becomes 1 minute 1 second)"""
@@ -358,14 +359,19 @@ class DMS:
         """Return formatted string with degree, minute, and second symbols"""
         if self.coordinate_type in ['latitude', 'longitude']:
             # Use absolute values for display with directional indicators
-            abs_degrees = abs(self.degrees)
-            abs_minutes = abs(self.minutes)
-            abs_seconds = abs(self.seconds)
+            rounded_dms = DMS(abs(self.degrees), abs(self.minutes), abs(self.seconds))
+            abs_degrees = rounded_dms.degrees
+            abs_minutes = rounded_dms.minutes
+            abs_seconds = rounded_dms.seconds
             
             # Handle case where degrees is 0 but coordinate is negative
             is_negative = self.to_decimal_degrees() < 0
+            seconds_string = str(round(abs_seconds)).rjust(2,'0')
+            if seconds_string == '60':
+                seconds_string = '00'
+                abs_minutes += 1
             
-            base_str = f"{abs_degrees}° {abs_minutes}\\' {str(round(abs_seconds)).rjust(2,'0')}\""
+            base_str = f"{abs_degrees}° {abs_minutes}\\' {seconds_string}\""
             
             if self.coordinate_type == 'latitude':
                 direction = ' S' if is_negative else ' N'

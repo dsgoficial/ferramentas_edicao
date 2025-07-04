@@ -39,7 +39,7 @@ class UTM:
         '9': '\u2079'
     }
     
-    def __init__(self, x, y, grid_spacing=1000, coord_display=None, show_suffix=False):
+    def __init__(self, x, y, grid_spacing=1000, coord_display=None):
         """
         Initialize UTM coordinate.
         
@@ -53,7 +53,6 @@ class UTM:
         self.y = float(y)
         self.grid_spacing = grid_spacing
         self.coord_display = coord_display
-        self.show_suffix = show_suffix
     
     def __str__(self):
         """
@@ -63,7 +62,7 @@ class UTM:
             str: Formatted coordinate string
         """
         return f"({self.x}, {self.y})" if self.coord_display is None \
-            else self.format_coordinate(self.coord_display, show_suffix=self.show_suffix, grid_spacing=self.grid_spacing)
+            else self.format_coordinate(self.coord_display, grid_spacing=self.grid_spacing)
     
     def __repr__(self):
         """
@@ -92,7 +91,7 @@ class UTM:
                 result += char
         return result
     
-    def format_easting(self, show_suffix=True, grid_spacing=1000):
+    def format_easting(self, grid_spacing=1000):
         """
         Format the easting coordinate with superscript styling and suffix.
         
@@ -116,14 +115,10 @@ class UTM:
                     if coord_list[i] in self.SUPERSCRIPT_CHARS:
                         coord_list[i] = self.SUPERSCRIPT_CHARS[coord_list[i]]
             formatted = "".join(coord_list)
-        
-        if show_suffix:
-            formatted += "\u1d50"  # Superscript 'm'
-            formatted += "E"       # Easting indicator
             
         return formatted
     
-    def format_northing(self, show_suffix=True, grid_spacing=1000):
+    def format_northing(self, grid_spacing=1000):
         """
         Format the northing coordinate with superscript styling and suffix.
         
@@ -147,14 +142,10 @@ class UTM:
                     if coord_list[i] in self.SUPERSCRIPT_CHARS:
                         coord_list[i] = self.SUPERSCRIPT_CHARS[coord_list[i]]
             formatted = "".join(coord_list)
-        
-        if show_suffix:
-            formatted += "\u1d50"  # Superscript 'm'
-            formatted += "N"       # Northing indicator
             
         return formatted
     
-    def format_coordinate(self, coord_type="easting", show_suffix=True, grid_spacing=1000):
+    def format_coordinate(self, coord_type="easting", grid_spacing=1000):
         """
         Format either easting or northing coordinate.
         
@@ -167,9 +158,9 @@ class UTM:
             str: Formatted coordinate
         """
         if coord_type.lower() == "easting":
-            return self.format_easting(show_suffix, grid_spacing)
+            return self.format_easting(grid_spacing)
         elif coord_type.lower() == "northing":
-            return self.format_northing(show_suffix, grid_spacing)
+            return self.format_northing(grid_spacing)
         else:
             raise ValueError("coord_type must be 'easting' or 'northing'")
     
@@ -183,7 +174,7 @@ class UTM:
         return (self.x, self.y)
     
     @staticmethod
-    def generate_range(start, end, step, coord_type='x', fixed_coord=0, grid_spacing=1000, coord_display=None, apply_coord_display_only_to_first_element=True):
+    def generate_range(start, end, step, coord_type='x', fixed_coord=0, grid_spacing=1000, coord_display=None):
         """
         Generate a list of UTM coordinates within a range.
         The first element will be the next value that is divisible by the step.
@@ -222,7 +213,6 @@ class UTM:
                     y=fixed_coord,
                     grid_spacing=grid_spacing,
                     coord_display=coord_display,
-                    show_suffix=(first_value == current and apply_coord_display_only_to_first_element),
                 )
             elif coord_type.lower() == 'y':
                 utm = UTM(
@@ -230,7 +220,6 @@ class UTM:
                     y=current,
                     grid_spacing=grid_spacing,
                     coord_display=coord_display,
-                    show_suffix=(first_value == current and apply_coord_display_only_to_first_element),
                 )
             else:
                 raise ValueError("coord_type must be 'x' or 'y'")

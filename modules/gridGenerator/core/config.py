@@ -14,18 +14,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+Configuration dataclasses for the grid generator module.
 """
 
-def get_closest_value_key(input_dict, target_value):
-    if not input_dict:
-        return None
-    closest_key = None
-    min_diff = float('inf')
-    for key, value in input_dict.items():
-        if not isinstance(value, (int, float)):
-            continue
-        diff = abs(value - target_value)
-        if diff < min_diff:
-            min_diff = diff
-            closest_key = key
-    return closest_key
+from dataclasses import dataclass
+from qgis.PyQt.QtGui import QColor, QFont
+
+@dataclass
+class FontConfig:
+    name: QFont
+    size: float
+    color: QColor
+
+@dataclass
+class GridLineConfig:
+    width: float
+    buffer_width: float
+
+@dataclass
+class DisplacementVector:
+    dx: float
+    dy: float
