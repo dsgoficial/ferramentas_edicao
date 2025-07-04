@@ -292,37 +292,92 @@ class GridLabelItem:
         """
         return self.overlaps_horizontally(other_label) and self.overlaps_vertically(other_label)
     
-    def resolve_overlap(self, label_list: List[Type[Self]], displacement_vector: DisplacementVector) -> None:
+    def resolve_overlap(self, label_list: List[Type[Self]]) -> None:
         """
-        Resolve overlaps by applying displacement to anchor point.
+        Resolve overlaps by automatically determining displacement direction and amount.
+        Top labels move upward, all others move downward.
         
         Args:
             label_list (List[GridLabelItem]): List of other labels to check against
-            displacement_vector (Tuple[float, float]): Displacement vector (x, y) to apply
         """
-        if displacement_vector.dx == 0 and displacement_vector.dy == 0:
+        # Check for overlaps with other labels
+        overlapping_labels = []
+        for other_label in label_list:
+            if self.overlaps(other_label):
+                overlapping_labels.append(other_label)
+        
+        # If no overlaps, no need to move
+        if not overlapping_labels:
             return
         
-        # Check for vertical overlaps and apply y displacement
-        if displacement_vector.dy > 0:
-            for other_label in label_list:
-                if self.overlaps_vertically(other_label):
-                    # Update y coordinate of anchor point
-                    new_y = self.anchor_point.y() + displacement_vector.dy
-                    self.anchor_point = QgsPoint(self.anchor_point.x(), new_y)
-                    break  # Apply displacement only once per direction
-        
-        # Check for horizontal overlaps and apply x displacement
-        if displacement_vector.dx > 0:
-            for other_label in label_list:
-                if self.overlaps_horizontally(other_label):
-                    # Update x coordinate of anchor point
-                    new_x = self.anchor_point.x() + displacement_vector.dx
-                    self.anchor_point = QgsPoint(new_x, self.anchor_point.y())
-                    break  # Apply displacement only once per direction
+        # Calculate displacement based on grid item type
+        if self.grid_item_type == GridTypes.TOP:
+            # TOP labels move upward
+            displacement_y = self._calculate_upward_displacement(overlapping_labels)
+            new_y = self.anchor_point.y() + displacement_y
+            self.anchor_point = QgsPoint(self.anchor_point.x(), new_y)
+        else:
+            # All other labels (BOTTOM, LEFT, RIGHT) move downward
+            displacement_y = self._calculate_downward_displacement(overlapping_labels)
+            new_y = self.anchor_point.y() - displacement_y
+            self.anchor_point = QgsPoint(self.anchor_point.x(), new_y)
         
         # Update bounding rectangle after anchor point changes
         self.bounding_rectangle = self.get_bounding_rectangle()
+
+    def _calculate_upward_displacement(self, overlapping_labels: List[Type[Self]]) -> float:
+        """
+        Calculate how much to move upward to clear all overlapping labels.
+        
+        Args:
+            overlapping_labels: List of labels that overlap with this one
+            
+        Returns:
+            float: Distance to move upward in terrain units
+        """
+        if not overlapping_labels:
+            return 0.0
+        
+        # Find the highest point of all overlapping labels
+        max_top = max(label.bounding_rectangle.yMaximum() for label in overlapping_labels)
+        
+        # Move this label so its bottom is above the highest overlapping label
+        # Add small padding to ensure clear separation
+        padding = self.get_text_size_in_terrain_units().height() * 0.01  # 10% of text height as padding
+        required_bottom = max_top + padding
+        
+        # Calculate displacement needed
+        current_bottom = self.bounding_rectangle.yMinimum()
+        displacement = required_bottom - current_bottom
+        
+        return max(0.0, displacement)
+
+    def _calculate_downward_displacement(self, overlapping_labels: List[Type[Self]]) -> float:
+        """
+        Calculate how much to move downward to clear all overlapping labels.
+        
+        Args:
+            overlapping_labels: List of labels that overlap with this one
+            
+        Returns:
+            float: Distance to move downward in terrain units
+        """
+        if not overlapping_labels:
+            return 0.0
+        
+        # Find the lowest point of all overlapping labels
+        min_bottom = min(label.bounding_rectangle.yMinimum() for label in overlapping_labels)
+        
+        # Move this label so its top is below the lowest overlapping label
+        # Add small padding to ensure clear separation
+        padding = self.get_text_size_in_terrain_units().height() * 0.01  # 10% of text height as padding
+        required_top = min_bottom - padding
+        
+        # Calculate displacement needed
+        current_top = self.bounding_rectangle.yMaximum()
+        displacement = current_top - required_top
+        
+        return max(0.0, displacement)
     
     def build_grid_item_label(self, desc) -> QgsRuleBasedLabeling.Rule:
         settings = QgsPalLayerSettings()
@@ -373,10 +428,10 @@ class UTMGridLabelItem(GridLabelItem):
         height = text_size.height()
         # conversion_factor = self.scale * self.font_config.size * 3/5 / 1.5
         displacement_dict = {
-            GridTypes.TOP: DisplacementVector(-width/2 + 1 * self.scale, 1 * self.scale),
-            GridTypes.BOTTOM: DisplacementVector(-width/2 + 1 * self.scale, - height - 1 * self.scale),
-            GridTypes.RIGHT: DisplacementVector(1 * self.scale, -height/2),
-            GridTypes.LEFT: DisplacementVector(- 1 * self.scale - width, -height/2),
+            GridTypes.TOP: DisplacementVector(-width/2 + 1 * self.scale, 1.8 * self.scale),
+            GridTypes.BOTTOM: DisplacementVector(-width/2 + 1.1 * self.scale, - height - 1.35 * self.scale),
+            GridTypes.RIGHT: DisplacementVector(2.5 * self.scale, -height/2),
+            GridTypes.LEFT: DisplacementVector(- 2 * self.scale - width, -height/2 + 0.5 * self.scale),
         }
         return displacement_dict[self.grid_item_type]
 
@@ -441,8 +496,10 @@ class AbstractGrid(ABC):
         # scale not listed in systematic mapping
         return get_closest_value_key(self.spacing_dict, self.scale_denominator)
     
-    def resolve_overlaps(self, other_grid: Self, displacement_dict: Dict[GridTypes, DisplacementVector]):
-        pass
+    def resolve_overlaps(self, other_grid: Self):
+        for key, label_list in self.grid_label_dict.items():
+            for label in label_list:
+                label.resolve_overlap(other_grid.grid_label_dict[key])
     
     def build_label_bounding_boxes_layer(self, layer_name) -> None:
         label_placement_bboxes_lyr = QgsVectorLayer(f"Polygon?crs={self.utm_crs.authid()}&field=coord:string(2000)&index=yes", layer_name, "memory")
@@ -702,6 +759,7 @@ class LabellingEngine:
         render_base_out = QgsRuleBasedRenderer(root_symbol_rule_out)
         new_renderer = QgsInvertedPolygonRenderer.convertFromRenderer(render_base_out)
         outside_bound_layer.setRenderer(new_renderer)
+        self.utm_grid.resolve_overlaps(self.lat_lon_grid)
         root_rule = self.lat_lon_grid.build_rule_based_labelling()
         # self.lat_lon_grid.build_label_bounding_boxes_layer("lat_long_boxes")
         self.utm_grid.build_rule_based_labelling(parent_rule=root_rule)
