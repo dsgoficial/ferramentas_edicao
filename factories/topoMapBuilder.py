@@ -11,7 +11,6 @@ from qgis.core import (
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
 from ..interfaces.iMapBuilder import IMapBuilder
-from ..modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
@@ -63,7 +62,6 @@ class TopoMapBuilder(IMapBuilder, MapBuilderUtils):
         )
         self.components.update({"table": self.componentFactory.getComponent("Table")})
         self.components.update({"qrcode": self.componentFactory.getComponent("Qrcode")})
-        self.grid = GridAndLabelCreator()
 
     def run(self, debugMode: bool = False):
         """Creates the necessary components for the TopoMap product and populates the composition.
@@ -107,7 +105,6 @@ class TopoMapBuilder(IMapBuilder, MapBuilderUtils):
                     self.mapAreaFeature,
                     self.mapAreaLayer,
                     mapLayers,
-                    self.grid,
                     debugMode,
                 )
             elif key == "elevationDiagram":

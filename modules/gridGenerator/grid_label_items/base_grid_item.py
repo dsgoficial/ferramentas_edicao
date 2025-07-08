@@ -59,6 +59,7 @@ class GridLabelItem:
     crs: QgsCoordinateReferenceSystem
     destination_crs: QgsCoordinateReferenceSystem
     grid_item_type: GridTypes
+    render_context: QgsRenderContext
     is_first_item: bool = False
     dpi: float = 96.0
     
@@ -103,7 +104,7 @@ class GridLabelItem:
         x, y = self.coordinates
         pgrid = QgsPoint(float(x), float(y))
         pgrid.transform(self.transform)
-        pgrid = QgsPoint(pgrid.x() + self.anchor_displacement.dx, pgrid.y() + self.anchor_displacement.dy)
+        pgrid = self.anchor_displacement.apply_displacement(pgrid)
         if self.destination_crs.isGeographic() == True:
             pgrid.transform(self.transform, Qgis.TransformDirection.Reverse)
         return pgrid
@@ -114,22 +115,17 @@ class GridLabelItem:
         text_format.setSize(self.real_font_size * 1.7)
         text_format.setSizeUnit(QgsUnitTypes.RenderPoints)
         
-        map_settings = iface.mapCanvas().mapSettings()
-        render_context = QgsRenderContext.fromMapSettings(map_settings)
-        render_context.setScaleFactor(15)
-        render_context.setRendererScale(self.scale * 1000)  # Your scale to denominator
-        
         # 3. Let QGIS do the conversion (this is what actually renders)
-        width_render_units = QgsTextRenderer.textWidth(render_context, text_format, [self.text])
-        height_render_units = QgsTextRenderer.textHeight(render_context, text_format, [self.text])
+        width_render_units = QgsTextRenderer.textWidth(self.render_context, text_format, [self.text])
+        height_render_units = QgsTextRenderer.textHeight(self.render_context, text_format, [self.text])
         
         # 4. Convert from render units to map units using QGIS's converter
-        width_map_units = render_context.convertToMapUnits(
+        width_map_units = self.render_context.convertToMapUnits(
             width_render_units, 
             QgsUnitTypes.RenderMetersInMapUnits,
             QgsMapUnitScale(self.scale * 1000),
         )
-        height_map_units = render_context.convertToMapUnits(
+        height_map_units = self.render_context.convertToMapUnits(
             height_render_units, 
             QgsUnitTypes.RenderMetersInMapUnits,
             QgsMapUnitScale(self.scale * 1000),
@@ -222,10 +218,7 @@ class GridLabelItem:
         return this_rectangle.intersects(other_rectangle)
     
     def displace_item(self, displacement_vector: DisplacementVector) -> None:
-        self.anchor_point = QgsPoint(
-            self.anchor_point.x() + displacement_vector.dx,
-            self.anchor_point.y() + displacement_vector.dy,
-        )
+        self.anchor_point = displacement_vector.apply_displacement(self.anchor_point)
         self.bounding_rectangle = self.get_bounding_rectangle()
     
     def resolve_overlap(self, label_list: List[Type[Self]]) -> None:

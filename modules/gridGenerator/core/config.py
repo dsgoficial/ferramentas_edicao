@@ -19,6 +19,7 @@ Configuration dataclasses for the grid generator module.
 """
 
 from dataclasses import dataclass
+from qgis.core import QgsPoint
 from qgis.PyQt.QtGui import QColor, QFont
 
 @dataclass
@@ -36,3 +37,6 @@ class GridLineConfig:
 class DisplacementVector:
     dx: float
     dy: float
+
+    def apply_displacement(self, point: QgsPoint) -> QgsPoint:
+        return QgsPoint(point.x() + self.dx, point.y() + self.dy)

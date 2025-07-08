@@ -447,7 +447,7 @@ class DMS:
                 seconds_string = '00'
                 abs_minutes += 1
             
-            base_str = f"{abs_degrees}° {abs_minutes}\\' {seconds_string}\""
+            base_str = f"{abs_degrees}° {abs_minutes:02}\\' {seconds_string}\""
             
             if self.coordinate_type == 'latitude':
                 direction = ' S' if is_negative else ' N'

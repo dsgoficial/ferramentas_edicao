@@ -32,9 +32,9 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsProject,
-    QgsRectangle,
     QgsRuleBasedLabeling,
     QgsVectorLayer,
+    QgsRenderContext,
 )
 
 from ferramentas_edicao.modules.gridGenerator.core.types import GridTypes
@@ -54,6 +54,7 @@ class AbstractGrid(ABC):
     x_max: float
     y_max: float
     dpi: int
+    render_context: QgsRenderContext
     
     def __post_init__(self):
         self.spacing_dict: Dict[int, Union[DMS, float]] = self.build_spacing_dict()
@@ -91,6 +92,7 @@ class AbstractGrid(ABC):
                         destination_crs=self.utm_crs,
                         dpi=self.dpi,
                         grid_item_type=key,
+                        render_context=self.render_context,
                         is_first_item=x[0]==0,
                     ),
                     enumerate(coordinate_list)

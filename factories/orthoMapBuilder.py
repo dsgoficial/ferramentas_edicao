@@ -79,7 +79,6 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
         )
         self.components.update({"table": self.componentFactory.getComponent("Table")})
         self.components.update({"qrcode": self.componentFactory.getComponent("Qrcode")})
-        self.grid = GridAndLabelCreator()
 
     def filterLayers(
         self,
@@ -182,7 +181,6 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
                     self.mapAreaFeature,
                     self.mapAreaLayer,
                     mapLayers,
-                    self.grid,
                     debugMode,
                 )
             elif key == "elevationDiagram":

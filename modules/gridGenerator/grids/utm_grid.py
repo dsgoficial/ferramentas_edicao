@@ -108,6 +108,7 @@ class UTMGrid(AbstractGrid):
                         destination_crs=self.utm_crs,
                         dpi=self.dpi,
                         grid_item_type=key,
+                        render_context=self.render_context,
                         is_first_item=x[0]==0,
                     ),
                     enumerate(coordinate_list)

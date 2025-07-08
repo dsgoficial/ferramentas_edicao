@@ -30,7 +30,9 @@ from qgis.core import (
     QgsRuleBasedRenderer,
     QgsSimpleFillSymbolLayer,
     QgsVectorLayer,
+    QgsRenderContext,
 )
+from qgis.utils import iface
 from qgis.PyQt.QtGui import QColor
 
 from ferramentas_edicao.modules.gridGenerator.core.config import FontConfig
@@ -55,6 +57,7 @@ class LabelingEngine:
         geographic_bounds_in_lat_long = QgsGeometry(self.geographic_boundary_geometry)
         geographic_bounds_in_lat_long.transform(self.coordinate_transformer, Qgis.TransformDirection.Reverse)
         geographic_bounds_in_lat_long_bbox: QgsRectangle = geographic_bounds_in_lat_long.boundingBox()
+        self.render_context = self.get_render_context()
         self.lat_lon_grid: LatLonGrid = LatLonGrid(
             scale_denominator=self.scale_denominator,
             font_config=self.font_config,
@@ -63,6 +66,7 @@ class LabelingEngine:
             x_max=geographic_bounds_in_lat_long_bbox.xMaximum(),
             y_min=geographic_bounds_in_lat_long_bbox.yMinimum(),
             y_max=geographic_bounds_in_lat_long_bbox.yMaximum(),
+            render_context=self.render_context,
             dpi=self.dpi,
         )
         geographic_boundary_bbox = self.geographic_boundary_geometry.boundingBox()
@@ -80,8 +84,24 @@ class LabelingEngine:
             y_min=geographic_boundary_bbox.yMinimum(),
             y_max=geographic_boundary_bbox.yMaximum(),
             dpi=self.dpi,
+            render_context=self.render_context,
             geographic_boundary_in_utm=self.geographic_boundary_geometry,
         )
+    
+    def get_render_context(self) -> QgsRenderContext:
+        scale_factor_dict = {
+            25: 15,
+            50: 2*15,
+            100: 4*15,
+            250: 6*4*15,
+        }
+        map_settings = iface.mapCanvas().mapSettings()
+        map_settings.setDestinationCrs(self.utm_crs)
+        map_settings.setOutputDpi(self.dpi)
+        render_context = QgsRenderContext.fromMapSettings(map_settings)
+        render_context.setScaleFactor(scale_factor_dict.get(self.scale_denominator, 15)) # 15 para 1:25.000
+        render_context.setRendererScale(self.scale_denominator * 1000)  # Your scale to denominator
+        return render_context
     
     def build_label_layer(self, geographic_boundary_layer: QgsVectorLayer) -> None:
         properties = {
