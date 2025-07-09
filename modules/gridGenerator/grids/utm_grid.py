@@ -24,7 +24,9 @@ from typing import Dict, List, Optional, Tuple, Union
 from qgis.core import (
     QgsGeometry,
     QgsPalLayerSettings,
+    QgsPointXY,
     QgsPoint,
+    QgsLineString,
     QgsRuleBasedLabeling,
 )
 
@@ -37,10 +39,22 @@ from .base import AbstractGrid
 
 @dataclass
 class UTMGrid(AbstractGrid):
-    geographic_boundary_in_utm: QgsGeometry
+    lower_left_corner: QgsPointXY
+    upper_left_corner: QgsPointXY
+    lower_right_corner: QgsPointXY
+    upper_right_corner: QgsPointXY
     
     def __post_init__(self):
-        self.geographic_boundary_line_in_utm = QgsGeometry(self.geographic_boundary_in_utm.constGet().boundary())
+        self.geographic_boundary_line_dict = {
+            GridTypes.BOTTOM: QgsGeometry(QgsLineString([self.lower_left_corner, self.lower_right_corner])),
+            GridTypes.TOP: QgsGeometry(QgsLineString([self.upper_left_corner, self.upper_right_corner])),
+            GridTypes.LEFT: QgsGeometry(QgsLineString([self.lower_left_corner, self.upper_left_corner])),
+            GridTypes.RIGHT: QgsGeometry(QgsLineString([self.lower_right_corner, self.upper_right_corner])),
+        }
+        self.x_min = min(self.lower_left_corner.x(), self.lower_right_corner.x())
+        self.y_min = min(self.lower_left_corner.y(), self.lower_right_corner.y())
+        self.x_max = max(self.upper_left_corner.x(), self.upper_right_corner.x())
+        self.y_max = max(self.upper_left_corner.y(), self.upper_right_corner.y())
         return super().__post_init__()
 
     def build_spacing_dict(self):
@@ -48,8 +62,8 @@ class UTMGrid(AbstractGrid):
     
     def build_coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[UTM], Union[UTM]]]]:
         top_grid = UTM.generate_range(
-            start=self.x_min,
-            end=self.x_max,
+            start=self.upper_left_corner.x(),
+            end=self.upper_right_corner.x(),
             step=self.grid_spacing,
             grid_spacing=self.grid_spacing, 
             coord_type='x',
@@ -57,8 +71,8 @@ class UTMGrid(AbstractGrid):
             coord_display='easting',
         )
         bottom_grid = UTM.generate_range(
-            start=self.x_min,
-            end=self.x_max,
+            start=self.lower_left_corner.x(),
+            end=self.lower_right_corner.x(),
             step=self.grid_spacing,
             grid_spacing=self.grid_spacing, 
             coord_type='x',
@@ -66,8 +80,8 @@ class UTMGrid(AbstractGrid):
             coord_display='easting',
         )
         left_grid = UTM.generate_range(
-            start=self.y_min,
-            end=self.y_max,
+            start=self.lower_left_corner.y(),
+            end=self.upper_right_corner.y(),
             step=self.grid_spacing,
             grid_spacing=self.grid_spacing, 
             coord_type='y',
@@ -75,8 +89,8 @@ class UTMGrid(AbstractGrid):
             coord_display='northing',
         )
         right_grid = UTM.generate_range(
-            start=self.y_min,
-            end=self.y_max,
+            start=self.lower_right_corner.y(),
+            end=self.upper_right_corner.y(),
             step=self.grid_spacing,
             grid_spacing=self.grid_spacing, 
             coord_type='y',
@@ -90,9 +104,9 @@ class UTMGrid(AbstractGrid):
             GridTypes.RIGHT: right_grid,
         }
         
-    def get_coordinates_on_geographic_boundary_line(self, x, y):
+    def get_coordinates_on_geographic_boundary_line(self, x: float, y: float, key: GridTypes) -> Tuple[float, float]:
         point = QgsGeometry(QgsPoint(x, y))
-        return tuple(self.geographic_boundary_line_in_utm.nearestPoint(point).asPoint())
+        return tuple(self.geographic_boundary_line_dict.get(key).nearestPoint(point).asPoint())
             
     
     def build_grid_label_dict(self) -> Dict[GridTypes, List[UTMGridLabelItem]]:
@@ -103,7 +117,7 @@ class UTMGrid(AbstractGrid):
                         str(x[1]),
                         scale=self.scale_denominator,
                         font_config=self.font_config,
-                        coordinates=self.get_coordinates_on_geographic_boundary_line(*x[1].get_coordinates()),
+                        coordinates=self.get_coordinates_on_geographic_boundary_line(*x[1].get_coordinates(), key),
                         crs=self.utm_crs,
                         destination_crs=self.utm_crs,
                         dpi=self.dpi,

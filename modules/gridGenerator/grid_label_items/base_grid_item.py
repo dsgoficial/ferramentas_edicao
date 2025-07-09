@@ -19,7 +19,7 @@ Base label item implementation for grid labeling.
 """
 
 from dataclasses import dataclass
-from typing import List, Tuple, Type, Union
+from typing import List, Optional, Tuple, Type, Union
 try:
     from typing import Self
 except ImportError:
@@ -221,7 +221,7 @@ class GridLabelItem:
         self.anchor_point = displacement_vector.apply_displacement(self.anchor_point)
         self.bounding_rectangle = self.get_bounding_rectangle()
     
-    def resolve_overlap(self, label_list: List[Type[Self]]) -> None:
+    def resolve_overlap(self, label_list: List[Type[Self]], current_idx: int) -> None:
         """
         Resolve overlaps by automatically determining displacement direction and amount.
         Top labels move upward, all others move downward.
@@ -240,7 +240,7 @@ class GridLabelItem:
             return
         
         # Calculate displacement based on grid item type
-        if self.grid_item_type == GridTypes.TOP:
+        if self.grid_item_type == GridTypes.TOP or (self.grid_item_type == GridTypes.RIGHT and current_idx == 0):
             # TOP labels move upward
             displacement_y = self._calculate_upward_displacement(overlapping_labels)
             new_y = self.anchor_point.y() + displacement_y

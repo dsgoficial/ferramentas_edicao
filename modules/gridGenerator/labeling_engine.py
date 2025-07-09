@@ -16,6 +16,8 @@
  ***************************************************************************/
 """
 from dataclasses import dataclass
+from itertools import product
+from typing import List, Tuple
 
 from qgis.core import (
     Qgis,
@@ -31,6 +33,8 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsVectorLayer,
     QgsRenderContext,
+    QgsPoint,
+    QgsPointXY,
 )
 from qgis.utils import iface
 from qgis.PyQt.QtGui import QColor
@@ -69,7 +73,7 @@ class LabelingEngine:
             render_context=self.render_context,
             dpi=self.dpi,
         )
-        geographic_boundary_bbox = self.geographic_boundary_geometry.boundingBox()
+        lower_left_corner, upper_left_corner, lower_right_corner, upper_right_corner = self.get_utm_bounds(geographic_bounds_in_lat_long_bbox)
         self.utm_font_config = FontConfig(
             name=self.font_config.name,
             size=self.font_config.size * 5 / 3, # feito para manter a compatibilidade com o código do João Felipe
@@ -79,14 +83,24 @@ class LabelingEngine:
             scale_denominator=self.scale_denominator,
             font_config=self.utm_font_config,
             utm_crs=self.utm_crs,
-            x_min=geographic_boundary_bbox.xMinimum(),
-            x_max=geographic_boundary_bbox.xMaximum(),
-            y_min=geographic_boundary_bbox.yMinimum(),
-            y_max=geographic_boundary_bbox.yMaximum(),
+            lower_left_corner=lower_left_corner,
+            upper_left_corner=upper_left_corner,
+            lower_right_corner=lower_right_corner,
+            upper_right_corner=upper_right_corner,
             dpi=self.dpi,
             render_context=self.render_context,
-            geographic_boundary_in_utm=self.geographic_boundary_geometry,
         )
+    
+    def get_utm_bounds(self, geographic_boundary_bbox: QgsGeometry) -> List[QgsPointXY]:
+        pointList = []
+        for x, y in product(
+            [geographic_boundary_bbox.xMinimum(), geographic_boundary_bbox.xMaximum()],
+            [geographic_boundary_bbox.yMinimum(), geographic_boundary_bbox.yMaximum()]
+        ):
+            geom = QgsGeometry(QgsPoint(x, y))
+            geom.transform(self.coordinate_transformer)
+            pointList.append(geom.asPoint())
+        return pointList
     
     def get_render_context(self) -> QgsRenderContext:
         scale_factor_dict = {

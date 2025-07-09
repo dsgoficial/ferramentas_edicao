@@ -35,6 +35,7 @@ from qgis.core import (
     QgsRuleBasedLabeling,
     QgsVectorLayer,
     QgsRenderContext,
+    QgsPoint,
 )
 
 from ferramentas_edicao.modules.gridGenerator.core.types import GridTypes
@@ -49,10 +50,6 @@ class AbstractGrid(ABC):
     scale_denominator: int
     font_config: FontConfig
     utm_crs: QgsCoordinateReferenceSystem
-    x_min: float
-    y_min: float
-    x_max: float
-    y_max: float
     dpi: int
     render_context: QgsRenderContext
     
@@ -109,8 +106,8 @@ class AbstractGrid(ABC):
     
     def resolve_overlaps(self, other_grid: Self):
         for key, label_list in self.grid_label_dict.items():
-            for label in label_list:
-                label.resolve_overlap(other_grid.grid_label_dict[key])
+            for idx, label in enumerate(label_list):
+                label.resolve_overlap(other_grid.grid_label_dict[key], current_idx=idx)
     
     def build_label_bounding_boxes_layer(self, layer_name) -> None:
         label_placement_bboxes_lyr = QgsVectorLayer(f"Polygon?crs={self.utm_crs.authid()}&field=coord:string(2000)&index=yes", layer_name, "memory")

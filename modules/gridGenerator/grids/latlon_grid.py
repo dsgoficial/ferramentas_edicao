@@ -33,6 +33,10 @@ from .base import AbstractGrid
 
 @dataclass
 class LatLonGrid(AbstractGrid):
+    x_min: float
+    y_min: float
+    x_max: float
+    y_max: float
     
     def build_spacing_dict(self):
         return {
