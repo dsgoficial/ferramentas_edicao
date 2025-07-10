@@ -133,7 +133,7 @@ class AbstractGrid(ABC):
             first_item, last_item = label_list[0], label_list[-1]
             if label_list[-2].overlaps(last_item):
                 items_to_delete_dict[key].append(-2)
-            if label_list[0].overlaps(first_item):
+            if label_list[1].overlaps(first_item):
                 items_to_delete_dict[key].append(1)
         for key, label_list in items_to_delete_dict.items():
             for idx in label_list:
