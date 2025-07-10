@@ -240,7 +240,7 @@ class GridLabelItem:
             return
         
         # Calculate displacement based on grid item type
-        if self.grid_item_type == GridTypes.TOP or (self.grid_item_type == GridTypes.RIGHT and current_idx == 0):
+        if self.grid_item_type == GridTypes.TOP or (self.grid_item_type in (GridTypes.RIGHT, GridTypes.LEFT) and current_idx == 0):
             # TOP labels move upward
             displacement_y = self._calculate_upward_displacement(overlapping_labels)
             new_y = self.anchor_point.y() + displacement_y
