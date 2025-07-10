@@ -452,11 +452,11 @@ class MakeGrid(QgsProcessingAlgorithm):
 
             # Gerar sequências de coordenadas x e y
             x_coords = [
-                x_start + i * degree_interval
+                xmin + i * degree_interval
                 for i in range(int((xmax - x_start) / degree_interval) + 1)
             ]
             y_coords = [
-                y_start + i * degree_interval
+                ymin + i * degree_interval
                 for i in range(int((ymax - y_start) / degree_interval) + 1)
             ]
 
