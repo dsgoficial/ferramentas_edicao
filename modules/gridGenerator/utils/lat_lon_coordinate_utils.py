@@ -328,7 +328,7 @@ class DMS:
             ]
         if grid_type == 'y':
             start = [] if not include_start else [(DMS(fixed_coordinate, coordinate_type='latitude'), start)]
-            return [
+            return start + [
                 (DMS(fixed_coordinate, coordinate_type='latitude'), y) for y in DMS.generate_range(
                     new_start, end, step, coordinate_type='longitude', include_end=include_end)
             ]
