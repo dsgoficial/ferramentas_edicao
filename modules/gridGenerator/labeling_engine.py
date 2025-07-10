@@ -107,7 +107,7 @@ class LabelingEngine:
             25: 15,
             50: 2*15,
             100: 4*15,
-            250: 6*4*15,
+            250: 12*15,
         }
         map_settings = iface.mapCanvas().mapSettings()
         map_settings.setDestinationCrs(self.utm_crs)
