@@ -81,7 +81,7 @@ class UTMGrid(AbstractGrid):
         )
         left_grid = UTM.generate_range(
             start=self.lower_left_corner.y(),
-            end=self.upper_right_corner.y(),
+            end=self.upper_left_corner.y(),
             step=self.grid_spacing,
             grid_spacing=self.grid_spacing, 
             coord_type='y',
