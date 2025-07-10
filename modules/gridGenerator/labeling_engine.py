@@ -17,7 +17,7 @@
 """
 from dataclasses import dataclass
 from itertools import product
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from qgis.core import (
     Qgis,
@@ -117,7 +117,8 @@ class LabelingEngine:
         render_context.setRendererScale(self.scale_denominator * 1000)  # Your scale to denominator
         return render_context
     
-    def build_label_layer(self, geographic_boundary_layer: QgsVectorLayer) -> None:
+    def build_label_layer(self, geographic_boundary_layer: QgsVectorLayer, id_field_name: Optional[str] = None, featid: Optional[int] = 1, parent_rule: Optional[QgsRuleBasedLabeling.Rule] = None) -> QgsRuleBasedLabeling.Rule:
+        id_field_name = 'id' if id_field_name is None else id_field_name
         properties = {
             "style": "no",             # No fill
             "outline_color": "black",  # Optional: keep outline visible
@@ -127,7 +128,7 @@ class LabelingEngine:
         # grid_symb.deleteSymbolLayer(0)
         # Creating Rule Based Renderer (Rule For The Selected Feature, Root Rule)
         symb_new = QgsRuleBasedRenderer.Rule(grid_symb)
-        symb_new.setFilterExpression('id = 1')
+        symb_new.setFilterExpression(f'{id_field_name} = {featid}')
         symb_new.setLabel("layer")
 
         # Appending rules to symbol root rule
@@ -151,7 +152,7 @@ class LabelingEngine:
         symb_out.setStrokeWidth(0)
         ext_grid_symb.changeSymbolLayer(0, symb_out)
         rule_out = QgsRuleBasedRenderer.Rule(ext_grid_symb)
-        rule_out.setFilterExpression('id = 1')
+        rule_out.setFilterExpression(f'{id_field_name} = {featid}')
         rule_out.setLabel("outside")
 
         root_symbol_rule_out = QgsRuleBasedRenderer.Rule(None)
@@ -162,7 +163,7 @@ class LabelingEngine:
         outside_bound_layer.setRenderer(new_renderer)
         self.lat_lon_grid.resolve_inner_overlaps()
         self.utm_grid.resolve_overlaps(self.lat_lon_grid)
-        root_rule = self.lat_lon_grid.build_rule_based_labelling()
+        root_rule = self.lat_lon_grid.build_rule_based_labelling(parent_rule=parent_rule)
         # self.lat_lon_grid.build_label_bounding_boxes_layer("lat_long_boxes")
         self.utm_grid.build_rule_based_labelling(parent_rule=root_rule)
         # self.utm_grid.build_label_bounding_boxes_layer("utm_boxes")
@@ -172,3 +173,5 @@ class LabelingEngine:
         geographic_boundary_layer.setLabelsEnabled(True)
 
         geographic_boundary_layer.triggerRepaint()
+        
+        return root_rule
