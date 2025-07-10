@@ -57,13 +57,17 @@ class LatLonGrid(AbstractGrid):
         }
     
     def build_coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[DMS], Union[DMS]]]]:
-        top_grid, bottom_grid, left_grid, right_grid = [], [], [], []
-        for coord in DMS.generate_range(self.x_min, self.x_max, self.grid_spacing, 'longitude', include_end=True):
-            top_grid.append((coord, DMS(self.y_max)))
-            bottom_grid.append((coord, DMS(self.y_min)))
-        for coord in DMS.generate_range(self.y_min, self.y_max, self.grid_spacing, 'latitude', include_end=True):
-            left_grid.append((DMS(self.x_min), coord))
-            right_grid.append((DMS(self.x_max), coord))
+        # top_grid, bottom_grid, left_grid, right_grid = [], [], [], []
+        top_grid = DMS.generate_fixed_grid(DMS(self.x_min), DMS(self.x_max), self.grid_spacing, self.y_max, 'x', include_start=True, include_end=True)
+        bottom_grid = DMS.generate_fixed_grid(DMS(self.x_min), DMS(self.x_max), self.grid_spacing, self.y_min, 'x', include_start=True, include_end=True)
+        left_grid = DMS.generate_fixed_grid(DMS(self.y_min), DMS(self.y_max), self.grid_spacing, self.x_min, 'y', include_start=True, include_end=True)
+        right_grid = DMS.generate_fixed_grid(DMS(self.y_min), DMS(self.y_max), self.grid_spacing, self.x_max, 'y', include_start=True, include_end=True)
+        # for coord in DMS.generate_range(self.x_min, self.x_max, self.grid_spacing, 'longitude', include_end=True):
+        #     top_grid.append((coord, DMS(self.y_max)))
+        #     bottom_grid.append((coord, DMS(self.y_min)))
+        # for coord in DMS.generate_range(self.y_min, self.y_max, self.grid_spacing, 'latitude', include_end=True):
+        #     left_grid.append((DMS(self.x_min), coord))
+        #     right_grid.append((DMS(self.x_max), coord))
         return {
             GridTypes.TOP: top_grid,
             GridTypes.BOTTOM: bottom_grid,

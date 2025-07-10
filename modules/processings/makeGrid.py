@@ -416,21 +416,18 @@ class MakeGrid(QgsProcessingAlgorithm):
     def getLatLonTicks(self, frameLayer, utm, scale, context, feedback):
         # Dicionário que mapeia as escalas para intervalos em minutos
         minute_intervals = {
-            5000: 1,  # Assumindo 1' para 1:5.000 (não especificado na tabela)
-            10000: 1,  # Assumindo 1' para 1:10.000 (não especificado na tabela)
-            25000: 2,  # 2' para 1:25.000
-            50000: 5,  # 5' para 1:50.000
-            100000: 10,  # 10' para 1:100.000
-            250000: 20,  # 20' para 1:250.000
+            5000: DMS(minutes=1),  # Assumindo 30'' para 1:5.000 (não especificado na tabela)
+            10000: DMS(minutes=1),  # Assumindo 1' para 1:10.000 (não especificado na tabela)
+            25000: DMS(minutes=2),  # 2' para 1:25.000
+            50000: DMS(minutes=5),  # 5' para 1:50.000
+            100000: DMS(minutes=10),  # 10' para 1:100.000
+            250000: DMS(minutes=20),  # 20' para 1:250.000
         }
 
         # Obter o intervalo em minutos para a escala atual
         minute_interval = minute_intervals.get(
-            scale, 1
+            scale, DMS(minutes=1)
         )  # Padrão é 1' se a escala não for encontrada
-
-        # Converter o intervalo de minutos para graus (1 minuto = 1/60 graus)
-        degree_interval = minute_interval / 60.0
 
         layer = QgsVectorLayer(f"Point?crs=4674", "Points", "memory")
         layer.startEditing()
@@ -445,23 +442,8 @@ class MakeGrid(QgsProcessingAlgorithm):
             xmax = bbox.xMaximum()
             ymin = bbox.yMinimum()
             ymax = bbox.yMaximum()
-
-            # Calcular pontos iniciais (arredondando para o intervalo mais próximo)
-            x_start = math.ceil(xmin / degree_interval) * degree_interval
-            y_start = math.ceil(ymin / degree_interval) * degree_interval
-
-            # Gerar sequências de coordenadas x e y
-            x_coords = [
-                xmin + i * degree_interval
-                for i in range(int((xmax - x_start) / degree_interval) + 1)
-            ]
-            y_coords = [
-                ymin + i * degree_interval
-                for i in range(int((ymax - y_start) / degree_interval) + 1)
-            ]
-
-            # Usar product para criar o produto cartesiano de x e y
-            for x, y in product(x_coords, y_coords):
+            
+            for x, y in DMS.generate_grid((DMS(xmin), DMS(xmax)), (DMS(ymin), DMS(ymax)), minute_interval, minute_interval, output_as_dms=False, fixed_grid=True):
                 if x > xmax or y > ymax:  # Pular pontos fora dos limites
                     continue
 

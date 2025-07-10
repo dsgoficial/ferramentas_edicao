@@ -315,20 +315,22 @@ class DMS:
         return result
     
     @staticmethod
-    def generate_fixed_grid(start, end, step, fixed_coordinate, grid_type):
+    def generate_fixed_grid(start, end, step, fixed_coordinate, grid_type, include_start=False, include_end=False):
         """
         Generate a list of pairwise grid starting from the nearest multiple of step (for instance, minute grid)
         """
         new_start = DMS.get_nearest_item(start, step)
         if grid_type == 'x':
-            return [
+            start = [] if not include_start else [(start, DMS(fixed_coordinate, coordinate_type='longitude'))]
+            return start + [
                 (x, DMS(fixed_coordinate, coordinate_type='longitude')) for x in DMS.generate_range(
-                    new_start, end, step, coordinate_type='latitude')
+                    new_start, end, step, coordinate_type='latitude', include_end=include_end)
             ]
         if grid_type == 'y':
+            start = [] if not include_start else [(DMS(fixed_coordinate, coordinate_type='latitude'), start)]
             return [
                 (DMS(fixed_coordinate, coordinate_type='latitude'), y) for y in DMS.generate_range(
-                    new_start, end, step, coordinate_type='longitude')
+                    new_start, end, step, coordinate_type='longitude', include_end=include_end)
             ]
         raise ValueError("invalid grid type")
     
@@ -386,37 +388,42 @@ class DMS:
         return DMS.from_decimal_degrees(next_position, item.coordinate_type)
     
     @staticmethod
-    def generate_grid(lat_range, lon_range, lat_step, lon_step):
+    def generate_grid(x_range, y_range, x_step, y_step, output_as_dms=True, fixed_grid=False):
         """
         Generate a grid of coordinate points within specified latitude and longitude ranges.
         
         Args:
-            lat_range (tuple): (start_lat, end_lat) in any supported format
-            lon_range (tuple): (start_lon, end_lon) in any supported format  
-            lat_step (DMS, float, tuple): Latitude step size
-            lon_step (DMS, float, tuple): Longitude step size
+            x_range (tuple): (start_x, end_x) in any supported format
+            y_range (tuple): (start_y, end_y) in any supported format  
+            x_step (DMS, float, tuple): x step size
+            y_step (DMS, float, tuple): y step size
         
         Returns:
             list: List of tuples containing (latitude_DMS, longitude_DMS) pairs
         
         Example:
             # Generate a 5x5 grid around NYC
-            lat_range = (40.5, 40.9)
-            lon_range = (-74.2, -73.8)
+            x_range = (40.5, 40.9)
+            y_range = (-74.2, -73.8)
             grid = DMS.generate_grid(lat_range, lon_range, 0.1, 0.1)
         """
-        start_lat, end_lat = lat_range
-        start_lon, end_lon = lon_range
+        start_x, end_x = x_range
+        if fixed_grid:
+            start_x = DMS.get_nearest_item(start_x, x_step)
+        start_y, end_y = y_range
+        if fixed_grid:
+            start_y = DMS.get_nearest_item(start_y, y_step)
         
         # Generate latitude and longitude lists
-        latitudes = DMS.generate_range(start_lat, end_lat, lat_step, 'latitude')
-        longitudes = DMS.generate_range(start_lon, end_lon, lon_step, 'longitude')
+        x_coordinate_list = DMS.generate_range(start_x, end_x, x_step, 'latitude')
+        y_coordinate_list = DMS.generate_range(start_y, end_y, y_step, 'longitude')
         
         # Create grid points
         grid_points = []
-        for lat in latitudes:
-            for lon in longitudes:
-                grid_points.append((lat, lon))
+        for x in x_coordinate_list:
+            for y in y_coordinate_list:
+                pair = (x, y) if output_as_dms else (x.to_decimal_degrees(), y.to_decimal_degrees())
+                grid_points.append(pair)
         
         return grid_points
     
