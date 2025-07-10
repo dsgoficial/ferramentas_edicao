@@ -24,7 +24,7 @@ class DMS:
     Supports geographic coordinates with directional indicators.
     """
     
-    def __init__(self, degrees=0, minutes=None, seconds=None, coordinate_type=None, seconds_eps=1e-5):
+    def __init__(self, degrees=0, minutes=None, seconds=None, coordinate_type=None, seconds_eps=1e-10):
         """
         Initialize DMS object.
         
@@ -62,10 +62,20 @@ class DMS:
         is_negative = decimal_degrees < 0
         decimal_degrees = abs(decimal_degrees)
         
-        self.degrees = int(decimal_degrees)
-        minutes_decimal = (decimal_degrees - self.degrees) * 60
-        self.minutes = int(minutes_decimal)
-        self.seconds = (minutes_decimal - self.minutes) * 60
+        # Use higher precision arithmetic to minimize floating point errors
+        total_seconds = round(decimal_degrees * 3600, 6)  # Convert to total seconds first
+        
+        # Extract degrees
+        degrees_in_seconds = int(total_seconds // 3600)
+        remaining_seconds = total_seconds - (degrees_in_seconds * 3600)
+        
+        # Extract minutes
+        minutes_in_seconds = int(remaining_seconds // 60)
+        final_seconds = remaining_seconds - (minutes_in_seconds * 60)
+        
+        self.degrees = degrees_in_seconds
+        self.minutes = minutes_in_seconds
+        self.seconds = final_seconds
         
         if is_negative:
             self.degrees = -self.degrees
@@ -766,6 +776,21 @@ if __name__ == "__main__":
     step = DMS(0, 1, 0)     # 1 second step
     result = DMS.get_nearest_item(item, step)
     print(result)  # DMS(25, 31, 0) - next minute boundary
+    test_values = [-24.999, -24.9999, -24.99999, 24.999, 24.9999, 24.99999]
+    
+    print("Testing problematic decimal values:")
+    print("=" * 50)
+    
+    for val in test_values:
+        # Create DMS object (this will use the fixed _from_decimal)
+        dms = DMS(val)
+        decimal_back = dms.to_decimal_degrees()
+        
+        print(f"Original: {val:10.6f}")
+        print(f"DMS:      {dms}")
+        print(f"Back to decimal: {decimal_back:10.6f}")
+        print(f"Difference: {abs(val - decimal_back):10.9f}")
+        print("-" * 30)
     
     # Validation examples (uncomment to test)
     # try:
