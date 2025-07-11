@@ -106,7 +106,6 @@ class MakeGrid(QgsProcessingAlgorithm):
         }
 
     def processAlgorithm(self, parameters, context, feedback):
-        inputFrameLayer = self.parameterAsSource(parameters, self.INPUT_FRAME, context)
         gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
         generateLatLonTicks = self.parameterAsBool(
             parameters, self.GENERATE_LAT_LON_TICKS, context
@@ -124,9 +123,8 @@ class MakeGrid(QgsProcessingAlgorithm):
 
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
-        frameLayer2 = self.runAddCount(parameters[self.INPUT_FRAME], context, feedback)
         frameLayer2 = self.reprojectLayer(
-            frameLayer2, QgsCoordinateReferenceSystem("EPSG:4674"), context, None
+            parameters[self.INPUT_FRAME], QgsCoordinateReferenceSystem("EPSG:4674"), context, multiStepFeedback
         )
         gridScale = self.gridScaleDict[gridScaleParam]
 
@@ -304,24 +302,6 @@ class MakeGrid(QgsProcessingAlgorithm):
         utmString = getSirgasAuthIdByPointLatLong(point.y(), point.x())
         utm = QgsCoordinateReferenceSystem(utmString)
         return utm
-
-    def runAddCount(self, inputLyr, context, feedback):
-        output = processing.run(
-            "native:addautoincrementalfield",
-            {
-                "INPUT": inputLyr,
-                "FIELD_NAME": "AUTO",
-                "START": 0,
-                "GROUP_FIELDS": [],
-                "SORT_EXPRESSION": "",
-                "SORT_ASCENDING": False,
-                "SORT_NULLS_FIRST": False,
-                "OUTPUT": "memory:",
-            },
-            context=context,
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
 
     def runCreateSpatialIndex(self, inputLyr, context, feedback):
         processing.run(
