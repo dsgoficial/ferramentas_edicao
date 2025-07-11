@@ -47,6 +47,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+from ...modules.gridGenerator.utils.lat_lon_coordinate_utils import DMS
 
 
 class MakeGrid(QgsProcessingAlgorithm):
@@ -121,7 +122,6 @@ class MakeGrid(QgsProcessingAlgorithm):
         }
 
     def processAlgorithm(self, parameters, context, feedback):
-        inputFrameLayer = self.parameterAsSource(parameters, self.INPUT_FRAME, context)
         gridScaleParam = self.parameterAsInt(parameters, self.INPUT_SCALE, context)
         generateLatLonTicks = self.parameterAsBool(
             parameters, self.GENERATE_LAT_LON_TICKS, context
@@ -139,9 +139,8 @@ class MakeGrid(QgsProcessingAlgorithm):
 
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
-        frameLayer2 = self.runAddCount(parameters[self.INPUT_FRAME], context, feedback)
         frameLayer2 = self.reprojectLayer(
-            frameLayer2, QgsCoordinateReferenceSystem("EPSG:4674"), context, None
+            parameters[self.INPUT_FRAME], QgsCoordinateReferenceSystem("EPSG:4674"), context, multiStepFeedback
         )
         gridScale = self.gridScaleDict[gridScaleParam]
 
@@ -240,7 +239,7 @@ class MakeGrid(QgsProcessingAlgorithm):
             currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
 
-            lineList = self.generateLatLonTicks(
+            lineList = self.getLatLonTicks(
                 frameLayer2,
                 scale=gridScale,
                 utm=utm,
@@ -254,14 +253,17 @@ class MakeGrid(QgsProcessingAlgorithm):
                 QgsProject.instance(),
             )
 
-            def createFeat(geom):
+            def createFeat(geom, coordinateTransform=None):
                 if coordinateTransform is not None:
                     geom.transform(coordinateTransform)
                 feat = QgsVectorLayerUtils.createFeature(layer=lineLayer, geometry=geom)
                 feat["tipo_grid"] = "cross"
                 return feat
 
-            self.sink.addFeatures(list(map(createFeat, lineList)))
+            self.sink.addFeatures(list(map(lambda x: createFeat(x, coordinateTransform=coordinateTransform), lineList)))
+            
+            tickList = self.generateMinuteTickOnFrame(frameLayer2, gridScale)
+            self.sink.addFeatures(list(map(lambda x: createFeat(x, coordinateTransform=coordinateTransform), tickList)))
 
         newLayer = self.outLayer(
             parameters, context, lineLayer, QgsWkbTypes.LineString, multiStepFeedback
@@ -316,24 +318,6 @@ class MakeGrid(QgsProcessingAlgorithm):
         utmString = getSirgasAuthIdByPointLatLong(point.y(), point.x())
         utm = QgsCoordinateReferenceSystem(utmString)
         return utm
-
-    def runAddCount(self, inputLyr, context, feedback):
-        output = processing.run(
-            "native:addautoincrementalfield",
-            {
-                "INPUT": inputLyr,
-                "FIELD_NAME": "AUTO",
-                "START": 0,
-                "GROUP_FIELDS": [],
-                "SORT_EXPRESSION": "",
-                "SORT_ASCENDING": False,
-                "SORT_NULLS_FIRST": False,
-                "OUTPUT": "memory:",
-            },
-            context=context,
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
 
     def runCreateSpatialIndex(self, inputLyr, context, feedback):
         processing.run(
@@ -425,7 +409,22 @@ class MakeGrid(QgsProcessingAlgorithm):
 
         return layer
 
-    def generateLatLonTicks(self, frameLayer, utm, scale, context, feedback):
+    def getLatLonTicks(self, frameLayer, utm, scale, context, feedback):
+        # Dicionário que mapeia as escalas para intervalos em minutos
+        minute_intervals = {
+            5000: DMS(minutes=1),  # Assumindo 30'' para 1:5.000 (não especificado na tabela)
+            10000: DMS(minutes=1),  # Assumindo 1' para 1:10.000 (não especificado na tabela)
+            25000: DMS(minutes=2),  # 2' para 1:25.000
+            50000: DMS(minutes=5),  # 5' para 1:50.000
+            100000: DMS(minutes=10),  # 10' para 1:100.000
+            250000: DMS(minutes=20),  # 20' para 1:250.000
+        }
+
+        # Obter o intervalo em minutos para a escala atual
+        minute_interval = minute_intervals.get(
+            scale, DMS(minutes=1)
+        )  # Padrão é 1' se a escala não for encontrada
+
         layer = QgsVectorLayer(f"Point?crs=4674", "Points", "memory")
         layer.startEditing()
         layer.beginEditCommand("")
@@ -439,17 +438,16 @@ class MakeGrid(QgsProcessingAlgorithm):
             xmax = bbox.xMaximum()
             ymin = bbox.yMinimum()
             ymax = bbox.yMaximum()
+            
+            for x, y in DMS.generate_grid((DMS(xmin), DMS(xmax)), (DMS(ymin), DMS(ymax)), minute_interval, minute_interval, output_as_dms=False, fixed_grid=True):
+                if x > xmax or y > ymax:  # Pular pontos fora dos limites
+                    continue
 
-            xsize = abs(xmax - xmin) / 5
-            ysize = abs(ymax - ymin) / 5
-
-            xTicks = (xmin + i * xsize for i in range(6))
-            yTicks = (ymin + i * ysize for i in range(6))
-            for x, y in product(xTicks, yTicks):
                 feat = QgsFeature()
                 geom = QgsGeometry(QgsPoint(x, y))
                 feat.setGeometry(geom)
                 layer.addFeature(feat)
+
         layer.endEditCommand()
 
         coordinateTransform = QgsCoordinateTransform(
@@ -482,6 +480,59 @@ class MakeGrid(QgsProcessingAlgorithm):
             )
             lineList.append(vLine)
 
+        return lineList
+    
+    def generateMinuteTickOnFrame(self, frameLayer, scale):
+        step = DMS(0, 1, 0)
+        lineList = []
+        halfDistance = 5e-3 * scale / 2 * 1e-5
+        for feat in frameLayer.getFeatures():
+            geom = feat.geometry()
+            bbox = geom.boundingBox()
+            xmin = bbox.xMinimum()
+            xmax = bbox.xMaximum()
+            ymin = bbox.yMinimum()
+            ymax = bbox.yMaximum()
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(xmin), DMS.from_decimal_degrees(xmax), step, fixed_coordinate=ymin, grid_type='x'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees() + halfDistance)]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(xmin), DMS.from_decimal_degrees(xmax), step, fixed_coordinate=ymax, grid_type='x'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees() - halfDistance)]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(ymin), DMS.from_decimal_degrees(ymax), step, fixed_coordinate=xmin, grid_type='y'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees() + halfDistance, y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees())]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
+            for (x, y) in DMS.generate_fixed_grid(
+                DMS.from_decimal_degrees(ymin), DMS.from_decimal_degrees(ymax), step, fixed_coordinate=xmax, grid_type='y'
+            ):
+                vLine = QgsGeometry(
+                    QgsLineString(
+                        [QgsPoint(x.to_decimal_degrees() - halfDistance, y.to_decimal_degrees()), QgsPoint(x.to_decimal_degrees(), y.to_decimal_degrees())]
+                    )
+                )
+                # vLine.transform(coordinateTransform)
+                lineList.append(vLine)
         return lineList
 
     def generateGridNumberPoints(self, frameLayer, utm, gridSize, context, feedback):

@@ -76,6 +76,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
     PROXY_USER = "PROXY_USER"
     PROXY_PASSWORD = "PROXY_PASSWORD"
     EXPORT_TIFF = "EXPORT_TIFF"
+    EXPORT_TIFF_WITHOUT_GRID = "EXPORT_TIFF_WITHOUT_GRID"
     OUTPUT_FOLDER = "OUTPUT_FOLDER"
 
     def initAlgorithm(self, config):
@@ -165,6 +166,11 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterBoolean(self.EXPORT_TIFF, self.tr("Exportar TIFF"))
         )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.EXPORT_TIFF_WITHOUT_GRID, self.tr("Exportar TIFF sem grid")
+            )
+        )
 
         self.addParameter(
             QgsProcessingParameterFolderDestination(
@@ -195,6 +201,9 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         proxyUser = self.parameterAsString(parameters, self.PROXY_USER, context)
         proxyPassword = self.parameterAsString(parameters, self.PROXY_PASSWORD, context)
         exportTiff = self.parameterAsBool(parameters, self.EXPORT_TIFF, context)
+        exportTiffWithoutGrid = self.parameterAsBool(
+            parameters, self.EXPORT_TIFF_WITHOUT_GRID, context
+        )
         self.outputFolder = self.parameterAsString(
             parameters, self.OUTPUT_FOLDER, context
         )
@@ -214,6 +223,7 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             "login": dbUser,
             "senha": dbPassword,
             "exportTiff": exportTiff,
+            "exportTiffWithoutGrid": exportTiffWithoutGrid,
         }
         if proxyHost != "":
             inputJSONData["proxyHost"] = proxyHost
@@ -286,9 +296,15 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
             )
         pdfUrl = responseData.get("sumario", {}).get("pdf", None)
         geotiffUrl = responseData.get("sumario", {}).get("geotiff", None)
-        multiStepFeedback = QgsProcessingMultiStepFeedback(
-            1 if geotiffUrl is None or geotiffUrl == "" else 2, feedback
+        geotiffWithoutGridUrl = responseData.get("sumario", {}).get(
+            "geotiff_sem_grid", None
         )
+        nSteps = (
+            1
+            + (geotiffUrl is not None and geotiffUrl != "")
+            + (geotiffWithoutGridUrl is not None and geotiffWithoutGridUrl != "")
+        )
+        multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         multiStepFeedback.setCurrentStep(0)
         self.downloadOutput(
             url=f"{server}/{pdfUrl}",
@@ -298,11 +314,19 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         if geotiffUrl is None or geotiffUrl == "":
             return {self.OUTPUT_FOLDER: self.outputFolder}
         multiStepFeedback.setCurrentStep(1)
-        self.downloadOutput(
-            url=f"{server}/{geotiffUrl}",
-            output=str(Path(self.outputFolder) / Path(geotiffUrl).name),
-            feedback=multiStepFeedback,
-        )
+        if geotiffUrl is not None and geotiffUrl != "":
+            self.downloadOutput(
+                url=f"{server}/{geotiffUrl}",
+                output=str(Path(self.outputFolder) / Path(geotiffUrl).name),
+                feedback=multiStepFeedback,
+            )
+        multiStepFeedback.setCurrentStep(2)
+        if geotiffWithoutGridUrl is not None and geotiffWithoutGridUrl != "":
+            self.downloadOutput(
+                url=f"{server}/{geotiffWithoutGridUrl}",
+                output=str(Path(self.outputFolder) / Path(geotiffWithoutGridUrl).name),
+                feedback=multiStepFeedback,
+            )
         return {self.OUTPUT_FOLDER: self.outputFolder}
 
     def downloadOutput(self, url, output, feedback):

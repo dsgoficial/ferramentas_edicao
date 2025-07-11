@@ -38,6 +38,8 @@ from qgis.core import (
 from ....config.configDefaults import ConfigDefaults
 from ....interfaces.iComponent import IComponent
 from ....modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
+from ....modules.gridGenerator.core.config import FontConfig
+from ....modules.gridGenerator.labeling_engine import LabelingEngine
 from .componentUtils import ComponentUtils
 
 
@@ -60,7 +62,6 @@ class Map(ComponentUtils, IComponent):
         mapAreaFeature: QgsFeature,
         mapAreaLayer: QgsVectorLayer,
         layers: list[QgsMapLayer],
-        gridGenerator: GridAndLabelCreator,
         showLayers: bool = False,
     ):
         """Builds the Map component Topo and Ortho maps. The building process follows the sequence:
@@ -89,7 +90,7 @@ class Map(ComponentUtils, IComponent):
         gridLayer, mapExtentsTransformed = self.createLayerForGrid(
             mapAreaLayer, mapAreaFeature, data
         )
-        self.applyStyleGridLayer(gridLayer, gridGenerator, defaults, data)
+        self.applyStyleGridLayer(gridLayer, defaults, data)
         instance.addMapLayer(gridLayer, False)
 
         # Setting up aux_label, which is reprojected to mapLayers
@@ -179,7 +180,6 @@ class Map(ComponentUtils, IComponent):
     def applyStyleGridLayer(
         self,
         gridLayer: QgsVectorLayer,
-        gridGenerator: GridAndLabelCreator,
         gridOpts: dict,
         data: dict,
     ) -> None:
@@ -190,19 +190,31 @@ class Map(ComponentUtils, IComponent):
             gridOpts (dict): holds the GridAndLabelCreator parameters
             data (dict): map info
         """
-        gridCrs = gridLayer.crs().authid()
-        srid = gridCrs.replace("EPSG:", "")
         gridGeometry = next(gridLayer.getFeatures()).geometry()
-        gridGenerator.styleCreator(
-            feature_geometry=gridGeometry,
-            layer_bound=gridLayer,
-            utmSRID=srid,
-            id_attr="id",
-            id_value=1,
-            scale=data.get("scale"),
-            spacing=data.get("scale") * 40,
-            **gridOpts,
+        font_config = FontConfig(
+            name=gridOpts["font"],
+            size=gridOpts["fontSize"],
+            color=gridOpts["llcolor"],
         )
+        engine = LabelingEngine(
+            geographic_boundary_geometry=gridGeometry,
+            scale_denominator=data.get("scale"),
+            font_config=font_config,
+            utm_crs=gridLayer.crs(),
+            dpi=600,
+        )
+        engine.build_label_layer(gridLayer)
+                
+        # gridGenerator.styleCreator(
+        #     feature_geometry=gridGeometry,
+        #     layer_bound=gridLayer,
+        #     utmSRID=srid,
+        #     id_attr="id",
+        #     id_value=1,
+        #     scale=data.get("scale"),
+        #     spacing=data.get("scale") * 40,
+        #     **gridOpts,
+        # )
         gridLayer.triggerRepaint()
 
     def createMaskLayer(self, mapExtents: QgsFeature) -> QgsVectorLayer:

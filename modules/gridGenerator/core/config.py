@@ -14,29 +14,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+Configuration dataclasses for the grid generator module.
 """
-from functools import partial
-from pathlib import Path
-from typing import Dict, List
-from qgis.core import (
-    QgsDataSourceUri,
-    QgsFeature,
-    QgsPrintLayout,
-    QgsVectorLayer,
-    QgsMapLayer,
-    QgsProject,
-)
 
-from ..config.configDefaults import ConfigDefaults
-from .mapBuilderUtils import MapBuilderUtils
-from ..interfaces.iMapBuilder import IMapBuilder
-from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
-from .topoMapBuilder import TopoMapBuilder
+from dataclasses import dataclass
+from qgis.core import QgsPoint
+from qgis.PyQt.QtGui import QColor, QFont
 
+@dataclass
+class FontConfig:
+    name: QFont
+    size: float
+    color: QColor
 
-class MilitaryTopoMapBuilder(TopoMapBuilder):
-    def __init__(self, componentFactory: ComponentFactory, versionFolder) -> None:
-        super(MilitaryTopoMapBuilder, self).__init__(componentFactory, versionFolder)
+@dataclass
+class GridLineConfig:
+    width: float
+    buffer_width: float
 
-    def run(self, debugMode: bool = False):
-        super().run(debugMode=debugMode)
+@dataclass
+class DisplacementVector:
+    dx: float
+    dy: float
+
+    def apply_displacement(self, point: QgsPoint) -> QgsPoint:
+        return QgsPoint(point.x() + self.dx, point.y() + self.dy)

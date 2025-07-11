@@ -19,7 +19,13 @@ import subprocess
 from pathlib import Path
 from typing import NamedTuple, Dict
 
-from qgis.core import QgsLayoutExporter, QgsPrintLayout, QgsRasterLayer, QgsProject
+from qgis.core import (
+    QgsLayoutExporter,
+    QgsPrintLayout,
+    QgsRasterLayer,
+    QgsProject,
+    QgsLayoutItemMap,
+)
 from qgis import utils
 
 
@@ -54,6 +60,7 @@ class ExporterSingleton:
         )
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
+        self.exportTiffWithoutGrid = dlg.exportTiffWithoutGrid
         self.debugMode = debugMode
         self.dpi = int(data.get("dpi", 300))
 
@@ -91,6 +98,17 @@ class ExporterSingleton:
             errorMessage += self.getErrorMessage(exportStatus)
         if self.exportTiff:
             tiffFilePath = Path(self.exportFolder, f"{self.basename}.tif")
+            tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
+            tiffExporterSettings.dpi = self.dpi
+            statusTiff = exporter.exportToImage(str(tiffFilePath), tiffExporterSettings)
+            errorMessage += self.getErrorMessage(exportStatus, fileType="tif")
+            exportStatus += statusTiff
+            self.reproject(tiffFilePath)
+            self.compress(tiffFilePath)
+            self.cleanup(tiffFilePath)
+        if self.exportTiffWithoutGrid:
+            tiffFilePath = Path(self.exportFolder, f"{self.basename}_sem_grid.tif")
+            self.removeGrid()
             tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
             tiffExporterSettings.dpi = self.dpi
             statusTiff = exporter.exportToImage(str(tiffFilePath), tiffExporterSettings)
@@ -170,6 +188,22 @@ class ExporterSingleton:
             shell=True,
         )
         p.wait()
+
+    def removeGrid(self):
+        """
+        Removes the grid from the map layout by unckecking the visibility of the item grid
+        """
+        project = QgsProject.instance()
+        for layerName in [
+            "aux_label",
+            "edicao_grid_edicao_l",
+            "edicao_grid_numerico_p",
+        ]:
+            layer = project.mapLayersByName(layerName)[0]
+            root = project.layerTreeRoot()
+            layer_node = root.findLayer(layer.id())
+            if layer_node:
+                layer_node.setItemVisibilityChecked(False)
 
     def cleanup(self, path: Path):
         """Unlink intermediate files (reproject and compress) created by reproject and compress functions.

@@ -30,7 +30,6 @@ from qgis.core import (
 from ..config.configDefaults import ConfigDefaults
 from .mapBuilderUtils import MapBuilderUtils
 from ..interfaces.iMapBuilder import IMapBuilder
-from ..modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 from .orthoMapBuilder import OrthoMapBuilder
 
