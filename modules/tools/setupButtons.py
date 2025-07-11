@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ ferramentas_edicao
+                                 A QGIS plugin
+ Brazilian Army Cartographic Finishing Tools
+                              -------------------
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 import json
 from pathlib import Path
 
@@ -31,7 +48,7 @@ from .buttons.toggleVisibility import ToggleVisibility
 
 
 class SetupButtons:
-    def __init__(self, toolbar, iface=None, essential_widget_names=None) -> None:
+    def __init__(self, toolbar, iface=None) -> None:
         self.iface = iface
         self.toolBar = toolbar
         self.mapCanvas = iface.mapCanvas()
@@ -40,7 +57,6 @@ class SetupButtons:
         self.mapToolsActions = list()
         self.collapseButton = None
         self.initializing = True  # Flag to prevent saving during initialization
-        self.essential_widget_names = essential_widget_names if essential_widget_names is not None else []
         QgsProject.instance().projectSaved.connect(self.saveStateOnProject)
         self.iface.projectRead.connect(self.loadStateFromProject)
 
@@ -55,7 +71,7 @@ class SetupButtons:
 
         # Now create the collapse button AFTER the first two buttons
         # but BEFORE all other widgets/buttons
-        self.collapseButton = CollapseToolbarButton(self.toolBar, self.iface, self.essential_widget_names)
+        self.collapseButton = CollapseToolbarButton(self.toolBar, self.iface)
 
         # Insert the collapse button as the THIRD button in the toolbar
         all_actions = self.toolBar.actions()

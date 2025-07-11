@@ -1,11 +1,8 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis styleCategories="Symbology|Labeling" version="3.24.3-Tisler" labelsEnabled="1">
   <renderer-v2 enableorderby="0" forceraster="0" symbollevels="0" referencescale="-1" type="RuleRenderer">
-    <rules key="{04b70aa9-e611-4a39-809c-69894ba20907}">
-      <rule filter="visivel = 1" key="{db754e17-021a-49b2-8064-af9ca9d0f6ce}">
-        <rule symbol="0" filter="tipo != 9999" key="{6be88ef9-81ab-461f-9129-79646bc5e27f}"/>
-        <rule symbol="1" filter="ELSE" key="{dfaec78e-81ed-4c19-b47c-5edd0810b1ed}"/>
-      </rule>
+    <rules key="{98312c8a-a7ab-461c-a20e-9167acb375f9}">
+      <rule symbol="0" filter="visivel = 1" key="{7047f196-ddaa-4579-9527-7036f3e71124}"/>
     </rules>
     <symbols>
       <symbol alpha="1" force_rhr="0" name="0" clip_to_extent="1" type="fill">
@@ -121,53 +118,11 @@
           </data_defined_properties>
         </layer>
       </symbol>
-      <symbol alpha="1" force_rhr="0" name="1" clip_to_extent="1" type="fill">
-        <data_defined_properties>
-          <Option type="Map">
-            <Option value="" name="name" type="QString"/>
-            <Option name="properties"/>
-            <Option value="collection" name="type" type="QString"/>
-          </Option>
-        </data_defined_properties>
-        <layer pass="0" locked="0" class="SimpleFill" enabled="1">
-          <Option type="Map">
-            <Option value="3x:0,0,0,0,0,0" name="border_width_map_unit_scale" type="QString"/>
-            <Option value="255,1,5,255" name="color" type="QString"/>
-            <Option value="bevel" name="joinstyle" type="QString"/>
-            <Option value="0,0" name="offset" type="QString"/>
-            <Option value="3x:0,0,0,0,0,0" name="offset_map_unit_scale" type="QString"/>
-            <Option value="MM" name="offset_unit" type="QString"/>
-            <Option value="0,0,0,255" name="outline_color" type="QString"/>
-            <Option value="solid" name="outline_style" type="QString"/>
-            <Option value="0.26" name="outline_width" type="QString"/>
-            <Option value="MM" name="outline_width_unit" type="QString"/>
-            <Option value="solid" name="style" type="QString"/>
-          </Option>
-          <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="color" v="255,1,5,255"/>
-          <prop k="joinstyle" v="bevel"/>
-          <prop k="offset" v="0,0"/>
-          <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-          <prop k="offset_unit" v="MM"/>
-          <prop k="outline_color" v="0,0,0,255"/>
-          <prop k="outline_style" v="solid"/>
-          <prop k="outline_width" v="0.26"/>
-          <prop k="outline_width_unit" v="MM"/>
-          <prop k="style" v="solid"/>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option value="" name="name" type="QString"/>
-              <Option name="properties"/>
-              <Option value="collection" name="type" type="QString"/>
-            </Option>
-          </data_defined_properties>
-        </layer>
-      </symbol>
     </symbols>
   </renderer-v2>
   <labeling type="rule-based">
-    <rules key="{d41e225a-15b8-45a8-8489-11c32bbcedad}">
-      <rule filter="&quot;visivel&quot; = 1" key="{f46730d1-b1a7-4259-874b-8a87d253f642}" description="Elemento infraestrutura">
+    <rules key="{c33daf71-e8f8-4c51-b210-77db6480362e}">
+      <rule filter="&quot;visivel&quot; = 1" key="{6827e496-707f-4b50-ad29-ecfd023dd923}" description="Área de uso específico">
         <settings calloutType="simple">
           <text-style legendString="Aa" fontWordSpacing="0" fontLetterSpacing="0" fontSize="6" fontSizeMapUnitScale="3x:0,0,0,0,0,0" capitalization="0" textOpacity="1" fontKerning="1" fontItalic="0" multilineHeight="0.80000000000000004" fontStrikeout="0" allowHtml="0" textColor="36,31,33,255" textOrientation="horizontal" fontSizeUnit="Point" fieldName="texto_edicao" fontWeight="50" blendMode="0" isExpression="0" fontUnderline="0" namedStyle="Condensed" useSubstitutions="0" previewBkgrdColor="255,255,255,255" fontFamily="Noto Sans">
             <families/>

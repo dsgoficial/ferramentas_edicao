@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ ferramentas_edicao
+                                 A QGIS plugin
+ Brazilian Army Cartographic Finishing Tools
+                              -------------------
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 from qgis.core import (
     QgsProcessing,
     QgsProcessingParameterMultipleLayers,
@@ -661,7 +678,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             1098: {"fábrica": "Fab", "Indústria": "Ind"},
             1212: {
                 "fazenda": "Faz",
-                "chácara": "Chac",
+                "chácara": "Chác",
                 "Estância": "Esta",
                 "nossa senhora": "N Sra",
             },

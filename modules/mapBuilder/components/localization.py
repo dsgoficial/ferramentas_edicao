@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ ferramentas_edicao
+                                 A QGIS plugin
+ Brazilian Army Cartographic Finishing Tools
+                              -------------------
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 from pathlib import Path
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -132,6 +149,7 @@ class Localization(ComponentUtils, IComponent):
         if len(rectBounds) > 1:
             for stateBound in rectBounds[1:]:
                 bound.combineExtentWith(stateBound)
+        bound.grow(0.1)
         return bound
 
     def getExtent2(self, mapAreaFeature: QgsFeature):
