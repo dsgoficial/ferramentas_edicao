@@ -105,9 +105,25 @@ class AbstractGrid(ABC):
         return get_closest_value_key(self.spacing_dict, self.scale_denominator)
     
     def resolve_overlaps(self, other_grid: Self):
+        buffer_width_dict = {
+            GridTypes.BOTTOM: {
+                0: 0.45 * self.font_config.size * self.scale_denominator * 2,
+            },
+            GridTypes.LEFT: {
+                0: 0.45 * self.font_config.size * self.scale_denominator * 2,
+            },
+            GridTypes.TOP: {
+                 0: 0.35 * self.font_config.size * self.scale_denominator * len(". GREENWICH"),
+            },
+        }
         for key, label_list in self.grid_label_dict.items():
             for idx, label in enumerate(label_list):
-                label.resolve_overlap(other_grid.grid_label_dict[key], current_idx=idx)
+                buffer_width = buffer_width_dict.get(key, {}).get(idx, 0)
+                label.resolve_overlap(
+                    other_grid.grid_label_dict[key],
+                    current_idx=idx,
+                    buffer_width=buffer_width,
+                )
     
     def build_label_bounding_boxes_layer(self, layer_name) -> None:
         label_placement_bboxes_lyr = QgsVectorLayer(f"Polygon?crs={self.utm_crs.authid()}&field=coord:string(2000)&index=yes", layer_name, "memory")

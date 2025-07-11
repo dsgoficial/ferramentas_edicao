@@ -158,52 +158,7 @@ class GridLabelItem:
             y + height   # ymax (top edge)
         )
     
-    def get_bounding_rectangle_with_placement(self, placement: str = 'center') -> QgsRectangle:
-        """
-        Create a bounding rectangle with specific label placement.
-        
-        Args:
-            placement: 'center', 'top-left', 'top-right', 'bottom-left', 'bottom-right', etc.
-            
-        Returns:
-            QgsRectangle: The bounding rectangle of the label
-        """
-        try:
-            text_size = self.get_text_size_with_qgs_utils()
-        except:
-            text_size = self.get_text_size_in_map_units()
-        
-        width = text_size.width()
-        height = text_size.height()
-        
-        x = self.anchor_point.x()
-        y = self.anchor_point.y()
-        
-        # Adjust rectangle based on placement
-        if placement == 'center':
-            xmin, ymin = x - width/2, y - height/2
-        elif placement == 'top-left':
-            xmin, ymin = x, y - height
-        elif placement == 'top-right':
-            xmin, ymin = x - width, y - height
-        elif placement == 'bottom-left':
-            xmin, ymin = x, y
-        elif placement == 'bottom-right':
-            xmin, ymin = x - width, y
-        elif placement == 'top-center':
-            xmin, ymin = x - width/2, y - height
-        elif placement == 'bottom-center':
-            xmin, ymin = x - width/2, y
-        elif placement == 'left-center':
-            xmin, ymin = x, y - height/2
-        elif placement == 'right-center':
-            xmin, ymin = x - width, y - height/2
-        else:  # default to center
-            xmin, ymin = x - width/2, y - height/2
-            
-        return QgsRectangle(xmin, ymin, xmin + width, ymin + height)
-    
-    def overlaps(self, other_label: Type[Self]) -> bool:
+    def overlaps(self, other_label: Type[Self], buffer_width: Optional[float] = 0, apply_buffer_to_other: Optional[bool] = False) -> bool:
         """
         Tests if the other label overlaps in any direction.
 
@@ -213,15 +168,29 @@ class GridLabelItem:
         Returns:
             bool: True if the labels overlap
         """
-        this_rectangle = self.get_bounding_rectangle()
-        other_rectangle = other_label.get_bounding_rectangle()
+        this_rectangle = self.bounding_rectangle
+        other_rectangle = other_label.bounding_rectangle
+        if buffer_width > 0 and not apply_buffer_to_other: # grows this label horizontaly to the right to compensate the extra 2 letters (m and E)
+            this_rectangle = QgsRectangle(
+                this_rectangle.xMinimum(),
+                this_rectangle.yMinimum(),
+                this_rectangle.xMaximum() + buffer_width,
+                this_rectangle.yMaximum(),
+            )
+        elif buffer_width > 0 and apply_buffer_to_other: # grows horizontaly the other rectangle to the right to compensate the extra text ". GREENWICH" on the LL label
+            other_rectangle = QgsRectangle(
+                other_rectangle.xMinimum(),
+                other_rectangle.yMinimum(),
+                other_rectangle.xMaximum() + buffer_width,
+                other_rectangle.yMaximum(),
+            )
         return this_rectangle.intersects(other_rectangle)
     
     def displace_item(self, displacement_vector: DisplacementVector) -> None:
         self.anchor_point = displacement_vector.apply_displacement(self.anchor_point)
         self.bounding_rectangle = self.get_bounding_rectangle()
     
-    def resolve_overlap(self, label_list: List[Type[Self]], current_idx: int) -> None:
+    def resolve_overlap(self, label_list: List[Type[Self]], current_idx: int, buffer_width: Optional[float] = 0) -> None:
         """
         Resolve overlaps by automatically determining displacement direction and amount.
         Top labels move upward, all others move downward.
@@ -232,7 +201,11 @@ class GridLabelItem:
         # Check for overlaps with other labels
         overlapping_labels = []
         for other_label in label_list:
-            if self.overlaps(other_label):
+            if self.overlaps(
+                other_label,
+                buffer_width=buffer_width,
+                apply_buffer_to_other=(self.grid_item_type == GridTypes.TOP and current_idx == 0)
+            ):
                 overlapping_labels.append(other_label)
         
         # If no overlaps, no need to move

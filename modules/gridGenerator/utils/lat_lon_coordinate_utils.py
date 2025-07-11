@@ -324,13 +324,13 @@ class DMS:
             start = [] if not include_start else [(start, DMS(fixed_coordinate, coordinate_type='longitude'))]
             return start + [
                 (x, DMS(fixed_coordinate, coordinate_type='longitude')) for x in DMS.generate_range(
-                    new_start, end, step, coordinate_type='latitude', include_end=include_end)
+                    new_start, end, step, coordinate_type='longitude', include_end=include_end)
             ]
         if grid_type == 'y':
             start = [] if not include_start else [(DMS(fixed_coordinate, coordinate_type='latitude'), start)]
             return start + [
                 (DMS(fixed_coordinate, coordinate_type='latitude'), y) for y in DMS.generate_range(
-                    new_start, end, step, coordinate_type='longitude', include_end=include_end)
+                    new_start, end, step, coordinate_type='latitude', include_end=include_end)
             ]
         raise ValueError("invalid grid type")
     
