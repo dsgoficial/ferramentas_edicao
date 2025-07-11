@@ -1,10 +1,6 @@
 # CHANGELOG
 
-## 1.3.15
-
-Melhorias:
-
-- Alterado a âncora de posicionamento de texto nas camadas llp_localidade_p e llp_localidade_p_250;
+## 1.3.24
 
 Novas Funcionalidades:
 
@@ -13,6 +9,63 @@ Novas Funcionalidades:
 Melhorias:
 
 - Refactor no código de geração do grid e adaptação com espaçamento do grid Lat Lon previsto na RDG e MTM;
+
+## 1.3.23
+
+Correção de bug:
+
+- Corrigido o bug de exportação de carta ortoimagem OM sem grid numérico (camada não prevista nesse tipo de produto);
+
+## 1.3.22
+
+Correções:
+
+- Ajustado o nome para a camada de llp_area_sem_dados_a no Diagrama de Elevação.
+
+## 1.3.21
+
+Correções:
+
+- Correção dos estilos de infra_pista_pouso em ponto, linha e área em conformidade com a ET-RDG para Carta Topográfica.
+
+## 1.3.20
+
+Correções:
+
+- Correção dos estilos de infra_pista_pouso em ponto, linha e área em conformidade com a ET-RDG para Carta Ortoimagem.
+
+## 1.3.19
+
+Melhorias:
+
+- Adiciona verificação de evitar exportação se o grid numérico não estiver gerado.
+
+## 1.3.18
+
+Correção de bug:
+
+- Altera o nome do estilo da camada de área sem dados no diagrama de elevação para a Topo 1.4.
+
+## 1.3.17
+
+Melhorias:
+
+- Atualiza a norma de representação nas folhas modelo: alterado de MD33-C-01 para Norma da Especificação Técnica para Representação de Dados Geoespaciais versão 1.0 (EB80-N-72.006);
+
+## 1.3.16
+
+Correção de bug:
+
+- Corrige bug de visibilidade dos comboboxes ao esconder/colapsar a barra; 
+
+
+## 1.3.15
+
+Melhorias:
+
+- Alterado a âncora de posicionamento de texto nas camadas llp_localidade_p e llp_localidade_p_250;
+
+## 1.3.14
 
 Correção de bug:
 
