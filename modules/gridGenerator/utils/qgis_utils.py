@@ -17,11 +17,6 @@
 """
 from qgis.core import QgsProject, QgsVectorLayer
 
-try:
-    from typing import Self
-except ImportError:
-    from typing_extensions import Self
-
 from qgis.core import (
     Qgis,
     QgsPalLayerSettings,
