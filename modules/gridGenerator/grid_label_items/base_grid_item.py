@@ -19,11 +19,7 @@ Base label item implementation for grid labeling.
 """
 
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Type, Union
-try:
-    from typing import Self
-except ImportError:
-    from typing_extensions import Self
+from typing import List, Optional, Tuple, Union
 
 from qgis.core import (
     Qgis,
@@ -158,7 +154,7 @@ class GridLabelItem:
             y + height   # ymax (top edge)
         )
     
-    def overlaps(self, other_label: Type[Self], buffer_width: Optional[float] = 0, apply_buffer_to_other: Optional[bool] = False) -> bool:
+    def overlaps(self, other_label: "GridLabelItem", buffer_width: Optional[float] = 0, apply_buffer_to_other: Optional[bool] = False) -> bool:
         """
         Tests if the other label overlaps in any direction.
 
@@ -190,7 +186,7 @@ class GridLabelItem:
         self.anchor_point = displacement_vector.apply_displacement(self.anchor_point)
         self.bounding_rectangle = self.get_bounding_rectangle()
     
-    def resolve_overlap(self, label_list: List[Type[Self]], current_idx: int, buffer_width: Optional[float] = 0) -> None:
+    def resolve_overlap(self, label_list: List["GridLabelItem"], current_idx: int, buffer_width: Optional[float] = 0) -> None:
         """
         Resolve overlaps by automatically determining displacement direction and amount.
         Top labels move upward, all others move downward.
@@ -227,7 +223,7 @@ class GridLabelItem:
         # Update bounding rectangle after anchor point changes
         self.bounding_rectangle = self.get_bounding_rectangle()
 
-    def _calculate_upward_displacement(self, overlapping_labels: List[Type[Self]]) -> float:
+    def _calculate_upward_displacement(self, overlapping_labels: List["GridLabelItem"]) -> float:
         """
         Calculate how much to move upward to clear all overlapping labels.
         
@@ -254,7 +250,7 @@ class GridLabelItem:
         
         return max(0.0, displacement)
 
-    def _calculate_downward_displacement(self, overlapping_labels: List[Type[Self]]) -> float:
+    def _calculate_downward_displacement(self, overlapping_labels: List["GridLabelItem"]) -> float:
         """
         Calculate how much to move downward to clear all overlapping labels.
         

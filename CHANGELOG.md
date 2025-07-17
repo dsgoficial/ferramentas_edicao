@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.25
+
+Correção de bug:
+
+- Corrige bug de import
+
 ## 1.3.24
 
 Novas Funcionalidades:

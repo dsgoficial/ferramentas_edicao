@@ -22,10 +22,6 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Union
-try:
-    from typing import Self
-except ImportError:
-    from typing_extensions import Self
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -104,7 +100,7 @@ class AbstractGrid(ABC):
         # scale not listed in systematic mapping
         return get_closest_value_key(self.spacing_dict, self.scale_denominator)
     
-    def resolve_overlaps(self, other_grid: Self):
+    def resolve_overlaps(self, other_grid):
         buffer_width_dict = {
             GridTypes.BOTTOM: {
                 0: 0.45 * self.font_config.size * self.scale_denominator * 2,

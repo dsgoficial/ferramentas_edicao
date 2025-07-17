@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from typing import NamedTuple, Dict
 
@@ -68,12 +70,24 @@ class ExporterSingleton:
         metadata = QgsProject.instance().metadata()
         dsgToolsVersion = utils.pluginMetadata("DsgTools", "version")
         FEVersion = utils.pluginMetadata("ferramentas_edicao", "version")
+        now = self.get_datetime()
+        metadata.setCreationDateTime(now)
         metadata.setAbstract(
-            f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; Produto: {self.productName} {self.productVersion}; {self.dpi} dpi"
+            f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; Produto: {self.productName} {self.productVersion}; {self.dpi} dpi; horário da exportação: {now:%A, %B %d, %Y} at {now:%I:%M %p}"
         )
         metadata.setAuthor("Diretoria de Serviço Geográfico")
         metadata.setTitle(f"{self.basename}")
         QgsProject.instance().setMetadata(metadata)
+
+    def get_datetime(self):
+        try:
+            import pytz
+            timezone_str = "America/Sao_Paulo"
+            tz = pytz.timezone(timezone_str)
+            return datetime.now(tz)
+        except:
+            return datetime.now()
+
 
     def export(self, composition: QgsPrintLayout) -> bool:
         """Creates a QgsLayoutExporter per composition to be exported
