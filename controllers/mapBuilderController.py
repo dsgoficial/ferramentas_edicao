@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ ferramentas_edicao
+                                 A QGIS plugin
+ Brazilian Army Cartographic Finishing Tools
+                              -------------------
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 import json
 import os
 from argparse import Namespace
@@ -12,6 +29,7 @@ from qgis.core import (
     QgsSymbolLayerUtils,
     QgsUserColorScheme,
     QgsVectorLayer,
+    QgsDataSourceUri,
 )
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
@@ -518,6 +536,19 @@ class MapBuildController(MapBuildControllerUtils):
                 if jsonData["tipo_produto"] != "Carta Ortoimagem OM"
                 else None
             )
+            if jsonData["tipo_produto"] != "Carta Ortoimagem OM" and not self.validate_numeric_grid(connection):
+                if is_headless:
+                    print(
+                        "A camada edicao_grid_numerico_p está vazia. Gere o grid numérico e tente novamente."
+                    )
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"A camada edicao_grid_numerico_p está vazia. Gere o grid numérico e tente novamente.",
+                    )
+                exportResult = False
+                continue
             # Build components
             builder.setParams(
                 jsonData,
@@ -581,3 +612,11 @@ class MapBuildController(MapBuildControllerUtils):
             password=dlgCfg.password,
         )
         return abstractDb
+
+    def validate_numeric_grid(self, uri: QgsDataSourceUri) -> bool:
+        uri = QgsDataSourceUri(uri)
+        numeric_grid_layer = MapBuilderUtils().getLayerFromPostgres(
+            uri,
+            {"table": "edicao_grid_numerico_p", "schema": "edgv"}
+        )
+        return not numeric_grid_layer.featureCount() == 0

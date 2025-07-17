@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ ferramentas_edicao
+                                 A QGIS plugin
+ Brazilian Army Cartographic Finishing Tools
+                              -------------------
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 import json
 import os
 import shutil
@@ -206,10 +223,6 @@ class EditionPlugin:
         self.tools = SetupButtons(
             toolbar=self.toolBar,
             iface=self.iface,
-            essential_widget_names=[
-                self.tr("Ferramentas de Edição: Exportar produtos"),
-                self.tr("Clique aqui para obter ajuda"),
-            ]
         )
         self.tools.initToolBar()
         self.processingProvider = ProcessingProvider()
