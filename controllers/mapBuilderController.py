@@ -24,6 +24,7 @@ from typing import Any, NamedTuple, Tuple, Union
 
 from PyQt5.QtCore import QFile, QFileInfo
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsFeature,
     QgsSymbolLayerUtils,
@@ -340,13 +341,24 @@ class MapBuildController(MapBuildControllerUtils):
         # TODO: better layers / composition cleanup
         """Runs the specified MapBuilder according to dlg / json preferences"""
         dlgCfg = self.setupDlgCfg(self.dlg)
-        MapBuilderUtils().cleanProject(self.debugMode)
         productType, productName, productVersion, versionFolder = self.getProductType(
             dlgCfg.productType
         )
         builder = None
         is_headless = dlgCfg.instance == "headless"
-
+        if (Qgis.QGIS_VERSION_INT - Qgis.QGIS_VERSION_INT % 100) / 100 != 324:
+            if is_headless:
+                print(
+                    "Exportação disponível apenas no QGIS 3.24. Abra o QGIS 3.24 e tente novamente."
+                )
+            else:
+                QMessageBox.warning(
+                    self.dlg,
+                    "Erro",
+                    f"Exportação disponível apenas no QGIS 3.24. Abra o QGIS 3.24 e tente novamente.",
+                )
+            return
+        MapBuilderUtils().cleanProject(self.debugMode)
         if dlgCfg.jsonFilePaths == []:
             if is_headless:
                 print(
