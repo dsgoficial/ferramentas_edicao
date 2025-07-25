@@ -118,6 +118,11 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
             ProcessingUtils.getWaterPolyLabelFontSize(feat, scale, self.lyrCrs),
         )
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+            if "tamanho_buffer" not in toInsert.attributeMap():
+                self.displayErrorMessage(
+                    self.tr("Campo 'tamanho_buffer' não encontrado. Verifique se o tipo de produto selecionado corresponde à modelagem utilizada.")
+                )
+                return None
             toInsert.setAttribute("tamanho_buffer", 1)
             toInsert.setAttribute("cor_buffer", "#00a0df")
         toInsertGeom = QgsGeometry.fromPointXY(self.currPos)

@@ -332,8 +332,14 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         )
 
         # 3. Split the 'name' into 2 label texts
+        texto_edicao = str(borderFeat.attribute("texto_edicao"))
+        if texto_edicao.count("|") != 1:
+            self.displayErrorMessage(
+                self.tr('O campo "texto_edicao" deve conter exatamente um separador "|" para dividir os textos das duas fronteiras.')
+            )
+            return None
 
-        labelTexts = borderFeat.attribute("texto_edicao").split("|")
+        labelTexts = texto_edicao.split("|")
 
         # 4. Add a border label for each point-text pair
 
@@ -422,6 +428,11 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         toInsert.setAttribute("tamanho_txt", fontSize)
         toInsertGeom = self.getLabelGeometry(border, point, fontSize * len(labelText))
         if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+            if "tamanho_buffer" not in toInsert.attributeMap():
+                self.displayErrorMessage(
+                    self.tr("Campo 'tamanho_buffer' não encontrado. Verifique se o tipo de produto selecionado corresponde à modelagem utilizada.")
+                )
+                return None
             toInsert.setAttribute("tamanho_buffer", 0.5)
             toInsert.setAttribute("cor_buffer", "#000000")
         toInsert.setGeometry(toInsertGeom)
@@ -517,16 +528,6 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
                 xCoords.append(point.x())
                 yCoords.append(point.y())
         return QgsLineString(xCoords, yCoords).curveSubstring(start, end)
-
-    def getCommonBorder(
-        self, polyA: core.QgsGeometry, polyB: core.QgsGeometry
-    ) -> core.QgsGeometry:
-        """Retorna a interseção das fronteiras de dois poligonos"""
-
-        if polyA.intersects(polyB) == False:
-            return None
-
-        return polyA.intersection(polyB)
 
     @staticmethod
     def versorFromLineGeometry(lineGeometry: QgsGeometry) -> tuple[float, float]:

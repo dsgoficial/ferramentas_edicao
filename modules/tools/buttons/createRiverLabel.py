@@ -131,9 +131,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
             if "tamanho_buffer" not in toInsert.attributeMap():
                 attributemap = toInsert.attributeMap()
                 self.displayErrorMessage(
-                    self.tr(
-                        "O campo tamanho_buffer não existe na modelagem em questão (só existe na modelagem de carta ortoimagem). Verifique a modelagem e o tipo de produto selecionado e tente novamente. Se você está editando carta topográfica, selecione carta topográfica na barra de ferramentas."
-                    )
+                    self.tr("Campo 'tamanho_buffer' não encontrado. Verifique se o tipo de produto selecionado corresponde à modelagem utilizada.")
                 )
                 return None, None
             toInsert.setAttribute("tamanho_buffer", 1)
