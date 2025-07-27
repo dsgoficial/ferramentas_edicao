@@ -36,6 +36,7 @@ from .identifyLabelsOutsideGeographicBoundary import (
     IdentifyLabelsOutsideGeographicBoundary,
 )
 from .identifyLabelOverlap import IdentifyLabelOverlap
+from .identifyLabelGridIntersection import IdentifyLabelsIntersectingGrid
 from .insertEnergyTower import InsertEnergyTower
 from .insertRoadMarker import InsertRoadMarker
 from .loadMasks import LoadMasks
@@ -115,6 +116,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(VerifySymbolOverlap())
         self.addAlgorithm(FixLabelPostionOnLayers())
         self.addAlgorithm(IdentifyLabelOverlap())
+        self.addAlgorithm(IdentifyLabelsIntersectingGrid())
         self.addAlgorithm(FixLabelPositionCRS())
         self.addAlgorithm(SizeLabelLarge())
         self.addAlgorithm(IdentifyLabelsOutsideGeographicBoundary())

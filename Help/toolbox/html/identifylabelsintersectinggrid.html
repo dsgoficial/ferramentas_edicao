@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title>Identifica Rótulos Intersectando Grid</title>
+</head>
+<body lang="pt-BR" dir="ltr">
+	<p>Help versão 1.0</p>
+	<hr/>
+
+	<h2 class="western">Descrição:</h2>
+	<h4 class="western" align="center" style="border: none; padding: 0cm">
+		O algoritmo identifica rótulos que intersectam com as linhas do grid da carta, sinalizando textos mal posicionados que prejudicam a legibilidade do produto cartográfico e devem ser reposicionados pelo operador.
+	</h4>
+	<hr/>
+
+	<h2>Parâmetros:</h2>
+	<p>
+		<span style="margin-bottom: 10px;">
+			&#8226; Selecionar camadas: &rarr; Indicar as camadas que serão utilizadas como entrada no processo.
+		</span>
+
+		<span style="margin-bottom: 10px;">
+			&#8226; Selecionar a Camada do Grid: &rarr; Indicar a camada multilinestring que contém o grid da carta.
+		</span>
+
+		<span style="margin-bottom: 10px;">
+			&#8226; Escala: &rarr; Indicar a escala do produto cartográfico.
+		</span>
+
+		<span style="margin-bottom: 10px;">
+			&#8226; Flags Rótulos Intersectando Grid: &rarr; Camada resultado do processo. Por padrão gera uma camada temporária. Caixa de seleção permite carregar a camada resultado no canvas Qgis.
+		</span>
+	</p>
+
+	<hr/>
+
+	<h2 class="western">Exemplo de uso:</h2>
+	<h4 class="western">Modelagem EDGV3.0_TOPO na escala de 1:25.000 (EPSG):4674</h4>
+
+	<p>
+		<span style="margin-bottom: 10px;">
+			&#8226; Selecionar camadas: &rarr; Todas as camadas com rótulos
+		</span>
+
+		<span style="margin-bottom: 10px;">
+			&#8226; Selecionar a Camada do Grid: &rarr; aux_grid_carta_l
+		</span>
+
+		<span style="margin-bottom: 10px;">
+			&#8226; Escala: &rarr; 1:25.000
+		</span>
+
+		<span style="margin-bottom: 10px;">
+			&#8226; Flags Rótulos Intersectando Grid: &rarr; [Create temporary layer]
+		</span>
+	</p>
+
+	<hr/>
+
+	<div>
+		<h2>Aplicação:</h2>
+		<p style="text-align: center; font-style: italic;">Rótulos que intersectam o grid da carta são identificados e sinalizados para reposicionamento.</p>
+		<hr/>
+	</div>
+</body>
+</html>
