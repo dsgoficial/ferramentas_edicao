@@ -18,6 +18,8 @@
 
 import processing
 
+from ..labelTools.label_size_calculator import get_label_size_calculator
+
 from qgis.core import (
     QgsField,
     QgsProcessing,
@@ -127,6 +129,7 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
         nSteps = 8
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
+        label_calculator = get_label_size_calculator(scale, dpi=300)
         
         # Extrair labels do extent do grid
         multiStepFeedback.setCurrentStep(currentStep)
@@ -171,8 +174,8 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
             return {self.OUTPUT: sink_id}
             
         # Converter labels em polígonos
-        multiStepFeedback.setProgressText(self.tr("Convertendo rótulos em polígonos"))
-        labelPolygonsLayer = self.getLabelPolygons(selectedLabelsLyr, multiStepFeedback)
+        multiStepFeedback.setProgressText(self.tr("Convertendo rótulos em polígonos com dimensões precisas"))
+        labelPolygonsLayer = label_calculator.get_improved_label_polygons_layer(selectedLabelsLyr)
         currentStep += 1
         
         multiStepFeedback.setCurrentStep(currentStep)
@@ -233,55 +236,6 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
         currentStep += 1
 
         return {self.OUTPUT: sink_id}
-
-    def getLabelPolygons(self, lyr, feedback):
-        fields = lyr.fields()
-        temp = QgsVectorLayer(
-            f"Polygon?crs={lyr.crs().authid()}",
-            "temp_label_lyr",
-            "memory",
-        )
-
-        temp.startEditing()
-
-        temp_data = temp.dataProvider()
-        temp_data.addAttributes(fields.toList())
-        temp.updateFields()
-
-        temp.beginEditCommand("Populating temp lyr")
-
-        nSteps = lyr.featureCount()
-        if nSteps == 0:
-            return temp
-        stepSize = 100 / nSteps
-        
-        for current, feat in enumerate(lyr.getFeatures()):
-            if feedback.isCanceled():
-                break
-            pointGeom = feat.geometry()
-            pointXY = pointGeom.asPoint()
-            height = feat["LabelHeight"]
-            width = feat["LabelWidth"] * 1.15
-            
-            geom = QgsGeometry.fromRect(
-                QgsRectangle.fromCenterAndSize(
-                    QgsPointXY(pointXY.x() + width / 2, pointXY.y() + height / 2),
-                    width,
-                    height,
-                )
-            )
-            newFeat = QgsFeature(fields)
-            for attr, value in feat.attributeMap().items():
-                newFeat[attr] = value
-            newFeat["LabelHeight"] = height
-            newFeat["LabelWidth"] = width
-            newFeat.setGeometry(geom)
-            temp.addFeature(newFeat)
-            feedback.setProgress(current * stepSize)
-
-        temp.endEditCommand()
-        temp.addExpressionField("$id", QgsField("featid", QVariant.Int))
-        return temp
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

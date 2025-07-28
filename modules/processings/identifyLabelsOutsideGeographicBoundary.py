@@ -18,6 +18,7 @@
 
 import processing
 
+from ..labelTools.label_size_calculator import get_label_size_calculator
 
 from qgis.core import (
     QgsField,
@@ -122,6 +123,8 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
         nSteps = 7 * nRegions
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
+        label_calculator = get_label_size_calculator(scale, dpi=300)
+        
         for feat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
                 return {self.OUTPUT: sink_id}
@@ -164,9 +167,8 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
             multiStepFeedback.setCurrentStep(currentStep)
             if selectedLabelsLyr.featureCount() == 0:
                 continue
-            labelPolygonsLayer = self.getLabelPolygons(
-                selectedLabelsLyr, multiStepFeedback
-            )
+            multiStepFeedback.setProgressText(self.tr("Criando polígonos de labels com dimensões precisas"))
+            labelPolygonsLayer = label_calculator.get_improved_label_polygons_layer(selectedLabelsLyr)
             currentStep += 1
             multiStepFeedback.setCurrentStep(currentStep)
             algRunner.runCreateSpatialIndex(
@@ -213,56 +215,6 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
                 sink.addFeature(newFlag)
 
         return {self.OUTPUT: sink_id}
-
-    def getLabelPolygons(self, lyr, feedback):
-        fields = lyr.fields()
-        temp = QgsVectorLayer(
-            f"Polygon?crs={lyr.crs().authid()}",
-            "temp_label_lyr",
-            "memory",
-        )
-
-        temp.startEditing()
-
-        temp_data = temp.dataProvider()
-        temp_data.addAttributes(fields.toList())
-        temp.updateFields()
-
-        temp.beginEditCommand("Populating temp lyr")
-
-        # tol = 25000 * 1.5
-        nSteps = lyr.featureCount()
-        if nSteps == 0:
-            return temp
-        stepSize = 100 / nSteps
-        for current, feat in enumerate(lyr.getFeatures()):
-            if feedback.isCanceled():
-                break
-            pointGeom = feat.geometry()
-            pointXY = pointGeom.asPoint()
-            # labelSize = feat["Size"]
-            height = feat["LabelHeight"]
-            width = feat["LabelWidth"] * 1.22
-            #    width = (feat["LabelWidth"] / max([len(i) for i in feat["LabelText"].split('\n')])) * tol
-            geom = QgsGeometry.fromRect(
-                QgsRectangle.fromCenterAndSize(
-                    QgsPointXY(pointXY.x() + width / 2, pointXY.y() + height / 2),
-                    width,
-                    height,
-                )
-            )
-            newFeat = QgsFeature(fields)
-            for attr, value in feat.attributeMap().items():
-                newFeat[attr] = value
-            newFeat["LabelHeight"] = height
-            newFeat["LabelWidth"] = width
-            newFeat.setGeometry(geom)
-            temp.addFeature(newFeat)
-            feedback.setProgress(current * stepSize)
-
-        temp.endEditCommand()
-        temp.addExpressionField("$id", QgsField("featid", QVariant.Int))
-        return temp
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

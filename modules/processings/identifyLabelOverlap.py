@@ -22,11 +22,7 @@ import concurrent.futures
 
 from collections import defaultdict
 from typing import Literal, Set
-from ..labelTools.labelHandler import (
-    createLabelFromLayerAToLayerB,
-    getLayerByName,
-    getToleranceForLyr,
-)
+from ..labelTools.label_size_calculator import get_label_size_calculator
 
 from qgis.core import (
     QgsField,
@@ -133,7 +129,7 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         nSteps = 5 + 2 * nRegions
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        labelDict = defaultdict(lambda: defaultdict(dict))
+        label_calculator = get_label_size_calculator(scale, dpi=300)
         selectedLabelLyrList = []
         for feat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
@@ -199,7 +195,8 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         multiStepFeedback.setCurrentStep(currentStep)
         if mergedWithFieldId.featureCount() == 0:
             return {self.OUTPUT: sink_id}
-        labelPolygonsLayer = self.getLabelPolygons(mergedWithFieldId, multiStepFeedback)
+        multiStepFeedback.setProgressText(self.tr("Criando polígonos de labels com dimensões precisas"))
+        labelPolygonsLayer = label_calculator.get_improved_label_polygons_layer(mergedWithFieldId)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         algRunner.runCreateSpatialIndex(
@@ -265,8 +262,6 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         for current, feat in enumerate(dissolvedLyr.getFeatures()):
             if multiStepFeedback.isCanceled():
                 break
-            # if feat["featid"] == feat["featid_2"]:
-            #     continue
             flagFeat = QgsFeature(fields)
             flagFeat["id"] = flagId
             flagFeat["texto"] = "Rótulos sobrepostos"
@@ -276,55 +271,6 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             flagId += 1
 
         return {self.OUTPUT: sink_id}
-
-    def getLabelPolygons(self, lyr, feedback):
-        fields = lyr.fields()
-        temp = QgsVectorLayer(
-            f"Polygon?crs={lyr.crs().authid()}",
-            "temp_label_lyr",
-            "memory",
-        )
-        isGeographic = lyr.crs().isGeographic()
-        temp.startEditing()
-
-        temp_data = temp.dataProvider()
-        temp_data.addAttributes(fields.toList())
-        temp.updateFields()
-
-        temp.beginEditCommand("Populating temp lyr")
-
-        # tol = 25000 * 1.5
-        nSteps = lyr.featureCount()
-        if nSteps == 0:
-            return temp
-        stepSize = 100 / nSteps
-        for current, feat in enumerate(lyr.getFeatures()):
-            if feedback.isCanceled():
-                break
-            pointGeom = feat.geometry()
-            pointXY = pointGeom.asPoint()
-            # labelSize = feat["Size"]
-            height = feat["LabelHeight"]
-            width = feat["LabelWidth"] * 1.15
-            #    width = (feat["LabelWidth"] / max([len(i) for i in feat["LabelText"].split('\n')])) * tol
-            geom = QgsGeometry.fromRect(
-                QgsRectangle.fromCenterAndSize(
-                    QgsPointXY(pointXY.x() + width / 2, pointXY.y() + height / 2),
-                    width,
-                    height,
-                )
-            )
-            newFeat = QgsFeature(fields)
-            for attr, value in feat.attributeMap().items():
-                newFeat[attr] = value
-            newFeat["LabelHeight"] = height
-            newFeat["LabelWidth"] = width
-            newFeat.setGeometry(geom)
-            temp.addFeature(newFeat)
-            feedback.setProgress(current * stepSize)
-
-        temp.endEditCommand()
-        return temp
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
