@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.3.26
+
+Correção de bug:
+
+- Corrige estilo de sítio arqueológico (constr_ocupacao_solo_a tipo=601);
+- Corrige bug na rotina de inserção de símbolo de ocupação do solo (caso estacionamento);
+
 ## 1.3.25
 
 Correção de bug:

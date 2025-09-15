@@ -157,10 +157,10 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
                 break
 
             # Verifica se a feição está visível
-            if feat[inputLyrVisibleField] != 1:
+            if int(feat[inputLyrVisibleField]) != 1:
                 continue
 
-            if feat["tipo"] not in self.mappingDict:
+            if int(feat["tipo"]) not in self.mappingDict:
                 continue
 
             geom = feat.geometry()
@@ -168,7 +168,7 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
             innerPoint = poi_geom.asPoint()
 
             # Verifica o tamanho apenas para tipos que mapeiam para 18 (Sports Ground)
-            if self.mappingDict[feat["tipo"]] == 18:
+            if self.mappingDict[int(feat["tipo"])] == 18:
                 width, height = self.get_sport_symbol_dimensions(
                     self.sizesDict[scaleIdx]
                 )
@@ -178,7 +178,7 @@ class PlacePointSymbolInsideArea(QgsProcessingAlgorithm):
 
             point_geom = QgsGeometry.fromPointXY(innerPoint)
             newFeat = QgsVectorLayerUtils.createFeature(simbAreaLayer, point_geom)
-            newFeat["tipo"] = self.mappingDict[feat["tipo"]]
+            newFeat["tipo"] = self.mappingDict[int(feat["tipo"])]
             newFeatList.append(newFeat)
 
             feedback.setProgress(current * stepSize)
