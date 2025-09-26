@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.27
+
+Correção de bug:
+
+- Inserção do estilo para Poço d'água e Poço artesiano em regime permanente para elemnat_elemento_hidrografico_p.
+
 ## 1.3.26
 
 Correção de bug:
