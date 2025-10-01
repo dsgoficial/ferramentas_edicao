@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.28
+
+Correção de bug:
+
+- Corrige bug no cria vetor de grade;
+
 ## 1.3.27
 
 Correção de bug:
