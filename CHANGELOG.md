@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.29
+
+Correção de bug:
+
+- Corrige bug no estilo de constr_ocupacao_solo_a (problema com carregamento de máscara);
+
 ## 1.3.28
 
 Correção de bug:
