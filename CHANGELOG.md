@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## 1.3.29
+
+Correção de bug:
+
+- Corrige bug no estilo de constr_ocupacao_solo_a (problema com carregamento de máscara);
+
+## 1.3.28
+
+Correção de bug:
+
+- Corrige bug no cria vetor de grade;
+
+## 1.3.27
+
+Correção de bug:
+
+- Inserção do estilo para Poço d'água e Poço artesiano em regime permanente para elemnat_elemento_hidrografico_p.
+
+## 1.3.26
+
+Correção de bug:
+
+- Corrige estilo de sítio arqueológico (constr_ocupacao_solo_a tipo=601);
+- Corrige bug na rotina de inserção de símbolo de ocupação do solo (caso estacionamento);
+
 ## 1.3.25
 
 Correção de bug:

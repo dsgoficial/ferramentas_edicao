@@ -293,7 +293,7 @@ class DMS:
         # Validate direction
         if (end_decimal > start_decimal and step_decimal < 0) or \
            (end_decimal < start_decimal and step_decimal > 0):
-            raise ValueError("Step direction doesn't match start-end direction")
+            start_decimal, end_decimal = end_decimal, start_decimal
         
         # Generate the range
         result = []
@@ -407,10 +407,12 @@ class DMS:
             y_range = (-74.2, -73.8)
             grid = DMS.generate_grid(lat_range, lon_range, 0.1, 0.1)
         """
-        start_x, end_x = x_range
+        start_x = min(x_range)
+        end_x = max(x_range)
         if fixed_grid:
             start_x = DMS.get_nearest_item(start_x, x_step)
-        start_y, end_y = y_range
+        start_y = min(y_range)
+        end_y = max(y_range)
         if fixed_grid:
             start_y = DMS.get_nearest_item(start_y, y_step)
         
