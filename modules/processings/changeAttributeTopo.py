@@ -678,7 +678,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             1098: {"fábrica": "Fab", "Indústria": "Ind"},
             1212: {
                 "fazenda": "Faz",
-                "chácara": "Chác",
+                "chácara": "Chac",
                 "Estância": "Esta",
                 "nossa senhora": "N Sra",
             },
