@@ -1,5 +1,12 @@
 # CHANGELOG
 
+
+## 1.3.30
+
+Correção de bug:
+
+- Adição de estilo para tipo = Corte em infra_alteracao_fisiografica_antropica_l para Carta Topográfica 1.4.
+
 ## 1.3.29
 
 Correção de bug:
