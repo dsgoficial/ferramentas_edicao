@@ -1,6 +1,12 @@
 # CHANGELOG
 
 
+## 1.3.31
+
+Correção de bug:
+
+- Correção do estilo de constr_ocupacao_solo_a.qml que usava o estilo de edição na impressão em algumas situações.
+
 ## 1.3.30
 
 Correção de bug:
