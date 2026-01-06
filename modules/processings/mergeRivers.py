@@ -229,7 +229,7 @@ class MergeRivers(QgsProcessingAlgorithm):
 
         # Ordenar cada grupo por comprimento (decrescente)
         for nome in features_by_name:
-            features_by_name[nome].sort(reverse=True)
+            features_by_name[nome].sort(key=lambda x: x[0], reverse=True)
 
         # Processar features na ordem de tamanho
         total = sum(len(group) for group in features_by_name.values())
