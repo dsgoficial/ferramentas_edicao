@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ConversaoDockWidget</class>
+ <widget class="QDockWidget" name="ConversaoDockWidget">
+  <property name="windowTitle">
+   <string>Conversão GeoTIFF / PDF</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    
+    <!-- TÍTULO -->
+    <item>
+     <widget class="QLabel" name="label_titulo">
+      <property name="text">
+       <string><b>Conversão GeoTIFF / PDF</b></string>
+      </property>
+     </widget>
+    </item>
+
+    <!-- LINHA DPI -->
+    <item>
+     <layout class="QHBoxLayout" name="layout_dpi">
+      <item>
+       <widget class="QLabel" name="label_dpi">
+        <property name="text">
+         <string>DPI:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spin_dpi">
+        <property name="minimum">
+         <number>30</number>
+        </property>
+        <property name="maximum">
+         <number>1200</number>
+        </property>
+        <property name="value">
+         <number>300</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+
+    <!-- BOTÃO PDF → TIFF -->
+    <item>
+     <widget class="QPushButton" name="btn_pdf_to_tiff">
+      <property name="text">
+       <string>PDF → GeoTIFF</string>
+      </property>
+     </widget>
+    </item>
+
+    <!-- BOTÃO TIFF → PDF -->
+    <item>
+     <widget class="QPushButton" name="btn_tiff_to_pdf">
+      <property name="text">
+       <string>GeoTIFF → PDF</string>
+      </property>
+     </widget>
+    </item>
+
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>200</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+
+   </layout>
+  </widget>
+ </widget>
+
+ <resources/>
+ <connections/>
+</ui>
