@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.3.32
+
+Melhorias:
+- Atualiza os limites municipais do IBGE para versão 2024
 
 ## 1.3.31
 

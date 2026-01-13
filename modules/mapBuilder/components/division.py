@@ -50,7 +50,7 @@ class Division(ComponentUtils, IComponent):
     def __init__(self, *args, **kwargs):
         self.itemname_tableMunicipios = "label_divisao_municipios"
         self.maxCountiesToDisplay = 27
-        self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2023"
+        self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2024"
         self.styleFolder = (
             Path(__file__).parent.parent / "resources" / "styles" / "division"
         )
@@ -159,27 +159,27 @@ class Division(ComponentUtils, IComponent):
         Layers with Limites suffix are used for displaying purposes only.
         """
 
-        uriPath = self.shpFolder / "Municipios_2023.shp"
+        uriPath = self.shpFolder / "Municipios_2024.shp"
         stylePath = self.styleFolder / "municipio.qml"
         layerCountyArea = self.loadShapeLayer(uriPath, stylePath, "counties")
 
-        uriPath = self.shpFolder / "Limites_Municipios_2023.shp"
+        uriPath = self.shpFolder / "Limites_Municipios_2024.shp"
         stylePath = self.styleFolder / "municipio_l.qml"
         layerCountyLine = self.loadShapeLayer(uriPath, stylePath, "countiesLimits")
 
-        uriPath = self.shpFolder / "Limites_Estados_2023.shp"
+        uriPath = self.shpFolder / "Limites_Estados_2024.shp"
         stylePath = self.styleFolder / "estados_l.qml"
         layerStateLine = self.loadShapeLayer(uriPath, stylePath, "statesLimits")
 
-        uriPath = self.shpFolder / "Paises_2023.shp"
+        uriPath = self.shpFolder / "Paises_2024.shp"
         stylePath = self.styleFolder / "paises.qml"
         layerCountryArea = self.loadShapeLayer(uriPath, stylePath, "countries")
 
-        uriPath = self.shpFolder / "Limites_Paises_2023.shp"
+        uriPath = self.shpFolder / "Limites_Paises_2024.shp"
         stylePath = self.styleFolder / "paises_l.qml"
         layerCountryLine = self.loadShapeLayer(uriPath, stylePath, "countriesLimits")
 
-        uriPath = self.shpFolder / "Oceano_2023.shp"
+        uriPath = self.shpFolder / "Oceano_2024.shp"
         stylePath = self.styleFolder / "oceano.qml"
         layerOcean = self.loadShapeLayer(uriPath, stylePath, "ocean")
 

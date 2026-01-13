@@ -44,7 +44,7 @@ from .componentUtils import ComponentUtils
 
 class DivisionOM(ComponentUtils, IComponent):
     def __init__(self, *args, **kwargs):
-        self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2023"
+        self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2024"
         self.styleFolder = (
             Path(__file__).parent.parent / "resources" / "styles" / "division"
         )
@@ -106,7 +106,7 @@ class DivisionOM(ComponentUtils, IComponent):
             countyLayer: a QgsVectorLayer holding the OM area
             countyLayerExtents: a QgsRectangle representing the component extents
         """
-        uriPath = self.shpFolder / "Municipios_2023.shp"
+        uriPath = self.shpFolder / "Municipios_2024.shp"
         stylePath = self.styleFolder / "municipio_l.qml"
         countyLayer = self.loadShapeLayer(uriPath, stylePath, "counties")
         countyFeatList, countyLayerExtents = self.getCountyLayerExtents(
