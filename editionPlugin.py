@@ -23,6 +23,7 @@ import ctypes
 
 from pathlib import Path
 
+from .factories.conversao_dock import ConversaoDockWidget
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator, Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt import QtWidgets, uic
@@ -218,6 +219,22 @@ class EditionPlugin:
             add_to_menu=False,
             add_to_toolbar=False,
         )
+
+        # ------------------------------------------------------
+        # 🔵 NOVO BOTÃO: Conversão GeoTIFF/PDF
+        # ------------------------------------------------------
+        icon_convert = Path(__file__).parent / "convert_icon.png"
+
+        self.add_action(
+            str(icon_convert),
+            text=self.tr("Conversão GeoTIFF/PDF"),
+            callback=self.openConversaoDock,
+            parentToolbar=self.toolBar,
+            add_to_toolbar=False,
+        )
+        # ------------------------------------------------------
+
+
 
         # Inicializando outras ferramentas
         self.tools = SetupButtons(
@@ -603,7 +620,6 @@ class EditionPlugin:
                 fontStyles,
             )
         )
-
     def run(self):
         """Run method that performs all the real work"""
         locale = QSettings().value("locale/userLocale")[0:2]
@@ -615,11 +631,29 @@ class EditionPlugin:
                 "Mude o idioma do QGIS em Configurações > Opções > Geral, reinicie o QGIS e tente novamente.",
             )
             return
+
         self.initialize()
         if not hasattr(self, "dlg"):
             return
         self.dlg.show()
         self.dlg.exec_()
+
+    def openConversaoDock(self):
+        """Abre o painel lateral de conversão PDF/GeoTIFF."""
+
+        # Se o dock já existe, só mostrar
+        try:
+            self.conversaoDock.show()
+            self.conversaoDock.raise_()
+            return
+        except:
+            pass
+
+        # Criar um novo dock
+        self.conversaoDock = ConversaoDockWidget(self.iface)
+        self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.conversaoDock)
+        self.conversaoDock.show()
+
 
     def open_json_form(self):
         """Exibe o formulário de entrada de dados para o arquivo JSON em uma nova janela com barra de rolagem."""
