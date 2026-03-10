@@ -17,7 +17,7 @@
 """
 import os
 
-from PyQt5 import QtWidgets
+from qgis.PyQt import QtWidgets
 from qgis import processing
 from processing.gui.wrappers import WidgetWrapper
 from qgis.core import (

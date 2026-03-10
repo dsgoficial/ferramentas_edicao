@@ -49,7 +49,7 @@ class SaveMasks(QgsProcessingAlgorithm):
         mask_dict = {}
         for layer in layers:
             layerName = layer.dataProvider().uri().table()
-            if not layer.type() == QgsMapLayer.VectorLayer:
+            if not layer.type() == QgsMapLayer.LayerType.VectorLayer:
                 continue
             labels = layer.labeling()
             if not labels:

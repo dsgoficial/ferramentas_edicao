@@ -22,7 +22,7 @@ from collections import namedtuple
 from pathlib import Path
 from typing import Any, NamedTuple, Tuple, Union
 
-from PyQt5.QtCore import QFile, QFileInfo
+from qgis.PyQt.QtCore import QFile, QFileInfo
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -177,11 +177,11 @@ class MapBuildController(MapBuildControllerUtils):
 
     def qptDlg(self):
         qptCheck = QMessageBox(self.dlg)
-        qptCheck.setIcon(QMessageBox.Question)
+        qptCheck.setIcon(QMessageBox.Icon.Question)
         qptCheck.setText("Deseja gerar o QPT para esse produto?")
-        qptCheck.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        result = qptCheck.exec_()
-        if result == QMessageBox.Yes:
+        qptCheck.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        result = qptCheck.exec()
+        if result == QMessageBox.StandardButton.Yes:
             self.debugMode = True
         else:
             self.debugMode = False

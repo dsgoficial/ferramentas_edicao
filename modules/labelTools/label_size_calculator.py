@@ -28,7 +28,7 @@ from qgis.core import (
     QgsField
 )
 from qgis.utils import iface
-from qgis.PyQt.QtCore import QSizeF, QVariant
+from qgis.PyQt.QtCore import QSizeF, QMetaType
 from qgis.PyQt.QtGui import QFont
 
 
@@ -258,7 +258,7 @@ class LabelSizeCalculator:
         temp_layer.commitChanges()
         
         # Add feature ID field
-        temp_layer.addExpressionField("$id", QgsField("featid", QVariant.Int))
+        temp_layer.addExpressionField("$id", QgsField("featid", QMetaType.Type.Int))
 
         return temp_layer
 

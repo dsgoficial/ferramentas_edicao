@@ -22,7 +22,7 @@ from qgis.core import (
     NULL,
 )
 from .baseTools import BaseTools
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 
 class CycleTextJustification(BaseTools):
@@ -52,7 +52,7 @@ class CycleTextJustification(BaseTools):
         if not (lyr := self.iface.activeLayer()):
             self.displayErrorMessage(self.tr("No selected layer"))
         else:
-            fieldIdx = lyr.dataProvider().fieldNameIndex("justificativa_txt")
+            fieldIdx = lyr.dataProvider().fields().lookupField("justificativa_txt")
             if fieldIdx == -1:
                 self.displayErrorMessage(
                     self.tr(
@@ -71,7 +71,7 @@ class CycleTextJustification(BaseTools):
                         self.iface.messageBar().pushMessage(
                             "Cancelado",
                             "ação cancelada pelo usuário",
-                            level=Qgis.Warning,
+                            level=Qgis.MessageLevel.Warning,
                             duration=5,
                         )
                         return

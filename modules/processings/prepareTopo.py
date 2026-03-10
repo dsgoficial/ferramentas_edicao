@@ -31,7 +31,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProcessingParameterFeatureSink,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -87,8 +87,8 @@ class PrepareTopo(QgsProcessingAlgorithm):
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
         fields = QgsFields()
-        fields.append(QgsField("id", QVariant.String))
-        fields.append(QgsField("descricao", QVariant.String))
+        fields.append(QgsField("id", QMetaType.Type.QString))
+        fields.append(QgsField("descricao", QMetaType.Type.QString))
         (feats_sink_l, feats_sink_l_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT_LINES,

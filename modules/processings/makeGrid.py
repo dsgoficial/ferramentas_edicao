@@ -45,7 +45,7 @@ from qgis.core import (
     QgsField,
     QgsFields,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 from ...modules.gridGenerator.utils.lat_lon_coordinate_utils import DMS
 
@@ -360,8 +360,8 @@ class MakeGrid(QgsProcessingAlgorithm):
         gridType=2,
     ):
         fields = QgsFields()
-        fields.append(QgsField("tipo_grid", QVariant.String))
-        fields.append(QgsField("direcao", QVariant.String))
+        fields.append(QgsField("tipo_grid", QMetaType.Type.QString))
+        fields.append(QgsField("direcao", QMetaType.Type.QString))
 
         layer = QgsVectorLayer(f"LineString?crs={CRS.authid()}", "grid", "memory")
         layer.dataProvider().addAttributes(fields)
@@ -537,8 +537,8 @@ class MakeGrid(QgsProcessingAlgorithm):
 
     def generateGridNumberPoints(self, frameLayer, utm, gridSize, context, feedback):
         fields = QgsFields()
-        fields.append(QgsField("numero", QVariant.String))
-        fields.append(QgsField("direcao", QVariant.String))
+        fields.append(QgsField("numero", QMetaType.Type.QString))
+        fields.append(QgsField("direcao", QMetaType.Type.QString))
 
         points = []
 

@@ -78,14 +78,14 @@ def getInstallationFolder() -> Path:
 def startNetwork(args):
     if all((args.proxyHost, args.proxyPort, args.proxyUser, args.proxyPassword)):
         proxy = QNetworkProxy(
-            QNetworkProxy.HttpProxy,
+            QNetworkProxy.ProxyType.HttpProxy,
             args.proxyHost,
             args.proxyPort,
             args.proxyUser,
             args.proxyPassword,
         )
     else:
-        proxy = QNetworkProxy(QNetworkProxy.NoProxy)
+        proxy = QNetworkProxy(QNetworkProxy.ProxyType.NoProxy)
     manager = QgsNetworkAccessManager().instance()
     manager.setFallbackProxyAndExcludes(proxy, [], [])
 

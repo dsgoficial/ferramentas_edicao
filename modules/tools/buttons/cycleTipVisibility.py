@@ -49,7 +49,7 @@ class CycleTipVisibility(BaseTools):
     def run(self):
         if not (lyr := self.iface.activeLayer()):
             self.displayErrorMessage(self.tr("No selected layer"))
-        fieldIdx = lyr.dataProvider().fieldNameIndex("exibir_ponta_simbologia")
+        fieldIdx = lyr.dataProvider().fields().lookupField("exibir_ponta_simbologia")
         if fieldIdx == -1:
             self.displayErrorMessage(
                 self.tr('Camada não tem o atributo "exibir_ponta_simbologia"')
@@ -66,7 +66,7 @@ class CycleTipVisibility(BaseTools):
                     self.iface.messageBar().pushMessage(
                         "Cancelado",
                         "ação cancelada pelo usuário",
-                        level=Qgis.Warning,
+                        level=Qgis.MessageLevel.Warning,
                         duration=5,
                     )
                     return

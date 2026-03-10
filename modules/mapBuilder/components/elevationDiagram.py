@@ -24,8 +24,8 @@ import numpy as np
 from uuid import uuid4
 from osgeo import gdal
 
-from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtGui import QFont, QColor
+from qgis.PyQt.QtCore import QMetaType
 from ...processings.makeGrid import getSirgasAuthIdByPointLatLong
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -322,9 +322,9 @@ class ElevationDiagram(ComponentUtils, IComponent):
         layer.startEditing()
         layerProvider = layer.dataProvider()
         fields = QgsFields()
-        fields.append(QgsField("class", QVariant.Int))
-        fields.append(QgsField("class_min", QVariant.Int))
-        fields.append(QgsField("class_max", QVariant.Int))
+        fields.append(QgsField("class", QMetaType.Type.Int))
+        fields.append(QgsField("class_min", QMetaType.Type.Int))
+        fields.append(QgsField("class_max", QMetaType.Type.Int))
         layerProvider.addAttributes(fields)
         layer.commitChanges()
         return layer

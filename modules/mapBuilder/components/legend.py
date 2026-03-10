@@ -20,8 +20,8 @@ from collections import OrderedDict
 from pathlib import Path
 
 from ....config.configDefaults import ConfigDefaults
-from PyQt5.QtCore import QPointF
-from PyQt5.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import QgsPrintLayout, QgsReadWriteContext
 
 

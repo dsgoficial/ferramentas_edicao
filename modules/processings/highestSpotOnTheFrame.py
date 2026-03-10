@@ -75,10 +75,10 @@ class HighestSpotOnTheFrame(QgsProcessingAlgorithm):
         spotLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_SPOT_LAYER, context
         )
-        spotField = self.parameterAsFields(parameters, self.INPUT_SPOT_FIELD, context)[
+        spotField = self.parameterAsStrings(parameters, self.INPUT_SPOT_FIELD, context)[
             0
         ]
-        highestSpotField = self.parameterAsFields(
+        highestSpotField = self.parameterAsStrings(
             parameters, self.INPUT_HIGHEST_SPOT_FIELD, context
         )[0]
         frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)

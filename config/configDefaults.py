@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtGui import QFont, QColor
+from qgis.PyQt.QtGui import QFont, QColor
 from dataclasses import dataclass, field
 from pathlib import Path
 

@@ -18,8 +18,8 @@
 import json
 from pathlib import Path
 
-from PyQt5.QtWidgets import QButtonGroup, QActionGroup
-from PyQt5.QtCore import QTimer
+from qgis.PyQt.QtWidgets import QButtonGroup, QActionGroup
+from qgis.PyQt.QtCore import QTimer
 from qgis.core import QgsExpressionContextUtils, QgsProject
 
 from .buttons.productTypeSelector import ProductTypeSelector

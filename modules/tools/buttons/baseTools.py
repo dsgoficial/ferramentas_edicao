@@ -19,11 +19,10 @@ from pathlib import Path
 
 from qgis.core import Qgis, QgsGeometry
 from qgis.PyQt.QtCore import QCoreApplication, Qt
-from PyQt5.QtWidgets import QAction, QPushButton
-from PyQt5.QtGui import QIcon, QKeyEvent
+from qgis.PyQt.QtWidgets import QPushButton, QMessageBox
+from qgis.PyQt.QtGui import QIcon, QKeyEvent, QAction
 from qgis.utils import iface
 from qgis.core import QgsProject, QgsCoordinateTransform
-from PyQt5.QtWidgets import QMessageBox
 
 
 class BaseTools:
@@ -52,7 +51,7 @@ class BaseTools:
 
     def displayErrorMessage(self, message, duration=5):
         iface = getattr(self, "iface")
-        iface.messageBar().pushMessage(message, Qgis.Critical, duration)
+        iface.messageBar().pushMessage(message, Qgis.MessageLevel.Critical, duration)
 
     def checkAttrIsEmpty(self, feat, attrName):
         if not feat.attribute(attrName):
@@ -69,7 +68,7 @@ class BaseTools:
 
     def keyPressEvent(self, event):
         activeTool = iface.mapCanvas().mapTool()
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             if not isinstance(activeTool, BaseTools):
                 return
             iface.mapCanvas().unsetMapTool(activeTool)
@@ -87,10 +86,10 @@ class BaseTools:
             iface.mainWindow(),
             "Continuar ?",
             "Há feições selecionadas fora do canvas. Deseja continuar ?",
-            QMessageBox.Yes,
-            QMessageBox.No,
+            QMessageBox.StandardButton.Yes,
+            QMessageBox.StandardButton.No,
         )
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             confirmation = True
         return confirmation
 

@@ -35,7 +35,7 @@ from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
-from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 
 
 class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):

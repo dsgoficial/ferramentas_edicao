@@ -38,7 +38,7 @@ from qgis.core import (
     QgsRectangle,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -104,9 +104,9 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
         scale = self.scaleDict[self.scales[scaleIdx]]
         
         fields = QgsFields()
-        fields.append(QgsField("id", QVariant.String))
-        fields.append(QgsField("texto", QVariant.String))
-        fields.append(QgsField("camada", QVariant.String))
+        fields.append(QgsField("id", QMetaType.Type.QString))
+        fields.append(QgsField("texto", QMetaType.Type.QString))
+        fields.append(QgsField("camada", QMetaType.Type.QString))
         
         if layerList == []:
             return {}

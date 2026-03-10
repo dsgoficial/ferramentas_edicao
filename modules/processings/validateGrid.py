@@ -35,7 +35,7 @@ from qgis.core import (
     QgsField,
     QgsProcessingFeatureSourceDefinition,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 
@@ -177,12 +177,12 @@ class ValidateGrid(QgsProcessingAlgorithm):
             raise QgsProcessingException(self.tr("Erro ao gerar grid de referência"))
 
         grid_fields = QgsFields()
-        grid_fields.append(QgsField("erro_tipo", QVariant.String))
+        grid_fields.append(QgsField("erro_tipo", QMetaType.Type.QString))
 
         point_fields = QgsFields()
-        point_fields.append(QgsField("erro_tipo", QVariant.String))
-        point_fields.append(QgsField("numero", QVariant.String))
-        point_fields.append(QgsField("direcao", QVariant.String))
+        point_fields.append(QgsField("erro_tipo", QMetaType.Type.QString))
+        point_fields.append(QgsField("numero", QMetaType.Type.QString))
+        point_fields.append(QgsField("direcao", QMetaType.Type.QString))
 
         (self.grid_sink, grid_sink_id) = self.parameterAsSink(
             parameters,

@@ -99,7 +99,7 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
         simbAreaLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_SYMBOL_LAYER, context
         )
-        rotationField = self.parameterAsFields(
+        rotationField = self.parameterAsStrings(
             parameters, self.INPUT_SYMBOL_LAYER_ROTATION_FIELD, context
         )[0]
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)

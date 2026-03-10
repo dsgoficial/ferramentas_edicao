@@ -21,7 +21,7 @@ from qgis.core import (
     QgsGeometry,
     Qgis,
 )
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 
 class AlternateBuildingFlag(BaseTools):
@@ -51,7 +51,7 @@ class AlternateBuildingFlag(BaseTools):
     def run(self):
         lyr = self.iface.activeLayer()
         fieldStr = "suprimir_bandeira"
-        fieldIdx = lyr.dataProvider().fieldNameIndex(fieldStr) if lyr else -1
+        fieldIdx = lyr.dataProvider().fields().lookupField(fieldStr) if lyr else -1
         if fieldIdx == -1:
             return self.displayErrorMessage(
                 self.tr(f"O atributo {fieldStr} não existe na camada selecionada")
@@ -67,7 +67,7 @@ class AlternateBuildingFlag(BaseTools):
                 self.iface.messageBar().pushMessage(
                     "Cancelado",
                     "ação cancelada pelo usuário",
-                    level=Qgis.Warning,
+                    level=Qgis.MessageLevel.Warning,
                     duration=5,
                 )
                 return

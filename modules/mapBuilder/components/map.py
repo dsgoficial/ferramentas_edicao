@@ -17,8 +17,8 @@
 """
 from pathlib import Path
 
-from PyQt5.QtCore import QVariant
-from PyQt5.QtGui import *
+from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtGui import *
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -159,7 +159,7 @@ class Map(ComponentUtils, IComponent):
         gridLayerDataProvider.addAttributes(baseLayer.fields())
 
         if "id" not in gridLayerFields:
-            gridLayerDataProvider.addAttributes([QgsField("id", QVariant.String)])
+            gridLayerDataProvider.addAttributes([QgsField("id", QMetaType.Type.QString)])
         gridLayer.updateFields()
 
         mapExtentsGeom = mapExtents.geometry()

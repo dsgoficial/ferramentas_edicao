@@ -33,8 +33,8 @@ from qgis.core import (
 from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
-from PyQt5.QtWidgets import QMenu
-from PyQt5.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QMenu
+from qgis.PyQt.QtGui import QCursor
 
 
 class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint, BaseTools):
@@ -82,7 +82,7 @@ class CreateRoadIdentifierSymbol(QgsMapToolEmitPoint, BaseTools):
                     if ";" in roadAbrev:
                         options = roadAbrev.split(";")
                         menu = self.createMenu(options, roadType)
-                        menu.exec_(QCursor.pos())
+                        menu.exec(QCursor.pos())
                     else:
                         self.createFeature(roadAbrev, roadType)
                 else:

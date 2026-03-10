@@ -24,8 +24,8 @@ from pathlib import Path
 from itertools import chain
 from typing import List, Tuple
 
-from PyQt5.QtCore import QVariant
-from PyQt5.QtGui import QColor
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,

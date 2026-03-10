@@ -21,7 +21,7 @@ from qgis.core import (
     QgsGeometry,
     Qgis,
 )
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 
 class AlternateTextVisibility(BaseTools):
@@ -46,13 +46,13 @@ class AlternateTextVisibility(BaseTools):
 
     def run(self):
         lyr = self.iface.activeLayer()
-        fieldIdx = lyr.dataProvider().fieldNameIndex("texto_edicao") if lyr else -1
+        fieldIdx = lyr.dataProvider().fields().lookupField("texto_edicao") if lyr else -1
         if fieldIdx == -1:
             return self.displayErrorMessage(
                 self.tr('O atributo "texto_edicao" não existe na camada selecionada')
             )
 
-        fieldNameIdx = lyr.dataProvider().fieldNameIndex("nome")
+        fieldNameIdx = lyr.dataProvider().fields().lookupField("nome")
         selectedFeature = lyr.getSelectedFeatures()
         if lyr.selectedFeatureCount() == 0:
             self.displayErrorMessage(self.tr("Não há feições selecionadas"))
@@ -64,7 +64,7 @@ class AlternateTextVisibility(BaseTools):
                 self.iface.messageBar().pushMessage(
                     "Cancelado",
                     "ação cancelada pelo usuário",
-                    level=Qgis.Warning,
+                    level=Qgis.MessageLevel.Warning,
                     duration=5,
                 )
                 return

@@ -157,7 +157,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         inputSource = self.parameterAsSource(parameters, self.INPUT, context)
-        heightField = self.parameterAsFields(parameters, self.HEIGHT_FIELD, context)[0]
+        heightField = self.parameterAsStrings(parameters, self.HEIGHT_FIELD, context)[0]
         layerList = self.parameterAsLayerList(parameters, self.MAP_LAYERS, context)
         geographicBoundaryLyr = self.parameterAsLayer(
             parameters, self.GEOGRAPHIC_BOUNDARY, context

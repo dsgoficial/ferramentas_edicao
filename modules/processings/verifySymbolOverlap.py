@@ -47,7 +47,7 @@ from qgis.core import (
     NULL,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -604,9 +604,9 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
 
         # Prepare output fields
         fields = QgsFields()
-        fields.append(QgsField("id", QVariant.String))
-        fields.append(QgsField("camada_1", QVariant.String))
-        fields.append(QgsField("camada_2", QVariant.String))
+        fields.append(QgsField("id", QMetaType.Type.QString))
+        fields.append(QgsField("camada_1", QMetaType.Type.QString))
+        fields.append(QgsField("camada_2", QMetaType.Type.QString))
         (feats_sink, feats_sink_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,
@@ -763,10 +763,10 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         lyr_xy.startEditing()
         lyr_xy.dataProvider().addAttributes(
             [
-                QgsField("height", QVariant.Double),
-                QgsField("width", QVariant.Double),
-                QgsField("offset_x", QVariant.Double),
-                QgsField("offset_y", QVariant.Double),
+                QgsField("height", QMetaType.Type.Double),
+                QgsField("width", QMetaType.Type.Double),
+                QgsField("offset_x", QMetaType.Type.Double),
+                QgsField("offset_y", QMetaType.Type.Double),
             ]
         )
         lyr_xy.updateFields()
@@ -807,7 +807,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         layerGeomType = layer.geometryType()
         if feedback is not None:
             multiStepFeedback.setCurrentStep(1)
-        if layerGeomType == QgsWkbTypes.PolygonGeometry:
+        if layerGeomType == QgsWkbTypes.GeometryType.PolygonGeometry:
             return layer
         if feedback is not None:
             multiStepFeedback.setCurrentStep(2)
@@ -816,7 +816,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         )
         if feedback is not None:
             multiStepFeedback.setCurrentStep(3)
-        if layerGeomType == QgsWkbTypes.PointGeometry:
+        if layerGeomType == QgsWkbTypes.GeometryType.PointGeometry:
             self.updateGeometries(layer_buffered, multiStepFeedback)
         return layer_buffered
 
@@ -874,10 +874,10 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             width_mm = 1e-13  # default, cannot be null (buffer)
             if len(symbolsFeat) == 0:
                 newAttributes = {
-                    feat.fieldNameIndex("width"): scale * (width_mm / 1000),
-                    feat.fieldNameIndex("height"): 0,
-                    feat.fieldNameIndex("offset_x"): 0,
-                    feat.fieldNameIndex("offset_y"): 0,
+                    feat.fields().lookupField("width"): scale * (width_mm / 1000),
+                    feat.fields().lookupField("height"): 0,
+                    feat.fields().lookupField("offset_x"): 0,
+                    feat.fields().lookupField("offset_y"): 0,
                 }
                 updateFeats[feat.id()] = newAttributes
                 continue
@@ -908,10 +908,10 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                         offset_x_mm, offset_y_mm = self.calcOffset(symbolLyr)
                 if not feat[id_field] in toDelete:
                     newAttributes = {
-                        feat.fieldNameIndex("width"): scale * ((width_mm) / 1000),
-                        feat.fieldNameIndex("height"): scale * ((height_mm) / 1000),
-                        feat.fieldNameIndex("offset_x"): scale * (offset_x_mm / 1000),
-                        feat.fieldNameIndex("offset_y"): scale * (offset_y_mm / 1000),
+                        feat.fields().lookupField("width"): scale * ((width_mm) / 1000),
+                        feat.fields().lookupField("height"): scale * ((height_mm) / 1000),
+                        feat.fields().lookupField("offset_x"): scale * (offset_x_mm / 1000),
+                        feat.fields().lookupField("offset_y"): scale * (offset_y_mm / 1000),
                     }
                     updateFeats[feat.id()] = newAttributes
             elif isinstance(symbolFeat, QgsLineSymbol):
@@ -926,7 +926,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                     newWidth = abs(offset) + strokeWidth / 2
                     width_mm = 2 * newWidth if 2 * newWidth > width_mm else width_mm
                 newAttributes = {
-                    feat.fieldNameIndex("width"): scale * ((width_mm) / 1000)
+                    feat.fields().lookupField("width"): scale * ((width_mm) / 1000)
                 }
                 updateFeats[feat.id()] = newAttributes
         if feedback is not None:

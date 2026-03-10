@@ -24,10 +24,9 @@ import ctypes
 from pathlib import Path
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator, Qt
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon, QAction
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import (
-    QAction,
     QMessageBox,
     QDialog,
     QTextBrowser,
@@ -619,7 +618,7 @@ class EditionPlugin:
         if not hasattr(self, "dlg"):
             return
         self.dlg.show()
-        self.dlg.exec_()
+        self.dlg.exec()
 
     def open_json_form(self):
         """Exibe o formulário de entrada de dados para o arquivo JSON em uma nova janela com barra de rolagem."""

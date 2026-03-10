@@ -138,7 +138,7 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
             )
         inputList = [pointLyr, lineLyr]
         inputList = list(filter(lambda x: x is not None, inputList))
-        inputLyrSizeTextField = self.parameterAsFields(
+        inputLyrSizeTextField = self.parameterAsStrings(
             parameters, self.SIZE_TEXT, context
         )[0]
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)

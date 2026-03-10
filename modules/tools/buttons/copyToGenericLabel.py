@@ -25,7 +25,7 @@ from qgis.core import (
     QgsGeometry,
     Qgis,
 )
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 
 class CopyToGenericLabel(BaseTools):
@@ -75,7 +75,7 @@ class CopyToGenericLabel(BaseTools):
         if not (lyr := self.iface.activeLayer()):
             self.displayErrorMessage(self.tr("Não há camada selecionada"))
         else:
-            fieldIdx = lyr.dataProvider().fieldNameIndex("nome")
+            fieldIdx = lyr.dataProvider().fields().lookupField("nome")
             if fieldIdx == -1:
                 self.displayErrorMessage(
                     self.tr('O atributo "nome" não existe na camada selecionada')
@@ -83,9 +83,9 @@ class CopyToGenericLabel(BaseTools):
             else:
                 instance = QgsProject().instance()
                 geomType = lyr.geometryType()
-                if geomType == QgsWkbTypes.PointGeometry:
+                if geomType == QgsWkbTypes.GeometryType.PointGeometry:
                     destLayerName = "edicao_texto_generico_p"
-                elif geomType == QgsWkbTypes.LineGeometry:
+                elif geomType == QgsWkbTypes.GeometryType.LineGeometry:
                     destLayerName = "edicao_texto_generico_l"
                 else:
                     destLayerName = None
@@ -111,7 +111,7 @@ class CopyToGenericLabel(BaseTools):
                             self.iface.messageBar().pushMessage(
                                 "Cancelado",
                                 "ação cancelada pelo usuário",
-                                level=Qgis.Warning,
+                                level=Qgis.MessageLevel.Warning,
                                 duration=5,
                             )
                             return
@@ -121,8 +121,8 @@ class CopyToGenericLabel(BaseTools):
                         if self.checkAttrIsEmpty(feat, "nome"):
                             break
                         destFeat = QgsFeature(destLayer.fields())
-                        if geomType == QgsWkbTypes.PointGeometry:
+                        if geomType == QgsWkbTypes.GeometryType.PointGeometry:
                             self.setPointFeatValues(feat, destFeat)
-                        elif geomType == QgsWkbTypes.LineGeometry:
+                        elif geomType == QgsWkbTypes.GeometryType.LineGeometry:
                             self.setLineFeatValues(feat, destFeat)
                         destLayer.addFeature(destFeat)

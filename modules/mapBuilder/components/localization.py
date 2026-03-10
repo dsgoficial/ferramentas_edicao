@@ -31,7 +31,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from ....interfaces.iComponent import IComponent
 from .componentUtils import ComponentUtils
 from .find_largest_rectangle_inside_polygon import RasterLabelPositioner
@@ -252,13 +252,13 @@ class Localization(ComponentUtils, IComponent):
                 
                 # Define campos dos atributos
                 fields = [
-                    QgsField('nome', QVariant.String, 'varchar', 100),
-                    QgsField('sigla', QVariant.String, 'varchar', 10),
-                    QgsField('texto_final', QVariant.String, 'varchar', 150),
-                    QgsField('tipo_texto', QVariant.String, 'varchar', 20),
-                    QgsField('linhas', QVariant.Int, 'integer'),
-                    QgsField('width_cells', QVariant.Int, 'integer'),
-                    QgsField('height_cells', QVariant.Int, 'integer')
+                    QgsField('nome', QMetaType.Type.QString, 'varchar', 100),
+                    QgsField('sigla', QMetaType.Type.QString, 'varchar', 10),
+                    QgsField('texto_final', QMetaType.Type.QString, 'varchar', 150),
+                    QgsField('tipo_texto', QMetaType.Type.QString, 'varchar', 20),
+                    QgsField('linhas', QMetaType.Type.Int, 'integer'),
+                    QgsField('width_cells', QMetaType.Type.Int, 'integer'),
+                    QgsField('height_cells', QMetaType.Type.Int, 'integer')
                 ]
                 
                 rect_layer.dataProvider().addAttributes(fields)
@@ -398,7 +398,7 @@ class Localization(ComponentUtils, IComponent):
                     # polygon = f.geometry()
                     geometry = feature.geometry()
                     
-                    if geometry.type() != QgsWkbTypes.PolygonGeometry:
+                    if geometry.type() != QgsWkbTypes.GeometryType.PolygonGeometry:
                         continue
                     
                     nome = feature['NOME'] if feature['NOME'] else ''
@@ -410,7 +410,7 @@ class Localization(ComponentUtils, IComponent):
                     # Clipa polígono com moldura
                     clipped_geometry = geometry.intersection(molduraGeometry)
                     
-                    if clipped_geometry.isEmpty() or clipped_geometry.type() != QgsWkbTypes.PolygonGeometry:
+                    if clipped_geometry.isEmpty() or clipped_geometry.type() != QgsWkbTypes.GeometryType.PolygonGeometry:
                         continue
                     
                     # Encontra melhor opção de posicionamento

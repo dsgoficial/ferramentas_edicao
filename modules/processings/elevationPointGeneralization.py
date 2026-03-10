@@ -132,10 +132,10 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         countourLayerpre = self.parameterAsVectorLayer(
             parameters, "INPUT_COUNTOUR_LINES", context
         )
-        isDepressionField = self.parameterAsFields(
+        isDepressionField = self.parameterAsStrings(
             parameters, "INPUT_IS_DEPRESSION_FIELD", context
         )[0]
-        isVisibleField = self.parameterAsFields(
+        isVisibleField = self.parameterAsStrings(
             parameters, "INPUT_IS_VISIBLE_FIELD", context
         )[0]
         geographicBoundaryLyr = self.parameterAsLayer(
@@ -298,7 +298,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
                 return
             pointLayer.changeAttributeValue(
                 point["featid"],
-                provider.fieldNameIndex(isVisibleField),
+                provider.fields().lookupField(isVisibleField),
                 attrValueFunc(point),
             )
             if feedback is not None:

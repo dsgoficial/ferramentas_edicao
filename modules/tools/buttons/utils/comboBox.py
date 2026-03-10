@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QComboBox
+from qgis.PyQt.QtGui import QCursor
 
 
 class ComboBox(QComboBox):

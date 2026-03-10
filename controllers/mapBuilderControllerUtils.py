@@ -29,7 +29,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsPoint,
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 from ..modules.mapBuilder.components.componentUtils import OBB
 from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
@@ -88,9 +88,9 @@ class MapBuildControllerUtils:
         else:
             provider = layer.dataProvider()
             fields = QgsFields()
-            fields.append(QgsField("inom", QVariant.String))
-            fields.append(QgsField("mi", QVariant.String))
-            fields.append(QgsField("id", QVariant.String))
+            fields.append(QgsField("inom", QMetaType.Type.QString))
+            fields.append(QgsField("mi", QMetaType.Type.QString))
+            fields.append(QgsField("id", QMetaType.Type.QString))
             provider.addAttributes(fields)
             layer.updateFields()
 

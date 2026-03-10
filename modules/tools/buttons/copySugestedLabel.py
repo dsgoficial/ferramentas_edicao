@@ -17,7 +17,7 @@
 """
 
 from pathlib import Path
-from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     QgsProject,
     QgsFeature,
@@ -220,7 +220,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
                 self.tr("Camada selecionada edicao_texto_generico_l, selecione outra.")
             )
             return
-        fieldIdx = self.srcLyr.dataProvider().fieldNameIndex("texto_edicao")
+        fieldIdx = self.srcLyr.dataProvider().fields().lookupField("texto_edicao")
         if fieldIdx == -1:
             self.displayErrorMessage(
                 self.tr('O atributo "texto_edicao" não existe na camada selecionada')
@@ -245,7 +245,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
                 continue
             feat = QgsFeature()
             featFields = QgsFields()
-            featFields.append(QgsField("labelText", QVariant.String))
+            featFields.append(QgsField("labelText", QMetaType.Type.QString))
             feat.setFields(featFields)
             feat.setGeometry(label.labelGeometry)
             feat["labelText"] = label.labelText

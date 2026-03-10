@@ -4,7 +4,7 @@ from qgis.core import (QgsGeometry, QgsPointXY, QgsWkbTypes, QgsRasterLayer,
                        QgsCoordinateReferenceSystem, QgsField)
 from qgis import processing
 from qgis.utils import iface
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 
 class RasterLabelPositioner:
     def __init__(self, moldura_geometry, polygon_individual, text_width_cells=5, text_height_cells=5):
@@ -318,13 +318,13 @@ def escolher_melhor_opcao(nome, sigla, moldura_geometry, polygon_geometry, layer
         
 #         # Define campos dos atributos
 #         fields = [
-#             QgsField('nome', QVariant.String, 'varchar', 100),
-#             QgsField('sigla', QVariant.String, 'varchar', 10),
-#             QgsField('texto_final', QVariant.String, 'varchar', 150),
-#             QgsField('tipo_texto', QVariant.String, 'varchar', 20),
-#             QgsField('linhas', QVariant.Int, 'integer'),
-#             QgsField('width_cells', QVariant.Int, 'integer'),
-#             QgsField('height_cells', QVariant.Int, 'integer')
+#             QgsField('nome', QMetaType.Type.QString, 'varchar', 100),
+#             QgsField('sigla', QMetaType.Type.QString, 'varchar', 10),
+#             QgsField('texto_final', QMetaType.Type.QString, 'varchar', 150),
+#             QgsField('tipo_texto', QMetaType.Type.QString, 'varchar', 20),
+#             QgsField('linhas', QMetaType.Type.Int, 'integer'),
+#             QgsField('width_cells', QMetaType.Type.Int, 'integer'),
+#             QgsField('height_cells', QMetaType.Type.Int, 'integer')
 #         ]
         
 #         rect_layer.dataProvider().addAttributes(fields)

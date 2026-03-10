@@ -200,13 +200,13 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
     def isPolygon(self) -> bool:
         # Método para testar se a camada atual é polígono
         # Parâmetro de retorno: isPolygon (Boleano)
-        isPolygon = self.getGeometryType() != core.QgsWkbTypes.LineGeometry
+        isPolygon = self.getGeometryType() != core.QgsWkbTypes.GeometryType.LineGeometry
         return isPolygon
 
     def keyPressEvent(self, event):
         # Método para receber os eventos do teclado
         # Parâmetro de entrada: event (Evento que chamou o método)
-        if event.key() == QtCore.Qt.Key_Escape:
+        if event.key() == QtCore.Qt.Key.Key_Escape:
             self.cancelEdition()
             event.ignore()
         BaseTools().keyPressEvent(event)
@@ -246,8 +246,8 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         # Método para iniciar o rubberBand da aquisição
         # Parâmetro de entrada: pointMap (Primeiro ponto da feição em aquisição), layer (Camada ativa)
         self.setDrawingState(True)
-        self.setGeometryType(core.QgsWkbTypes.LineGeometry)
-        rubberBand = gui.QgsRubberBand(self.getCanvas(), core.QgsWkbTypes.LineGeometry)
+        self.setGeometryType(core.QgsWkbTypes.GeometryType.LineGeometry)
+        rubberBand = gui.QgsRubberBand(self.getCanvas(), core.QgsWkbTypes.GeometryType.LineGeometry)
         rubberBand.setColor(QtGui.QColor(255, 0, 0, 150))
         rubberBand.setWidth(1)
         rubberBand.addPoint(pointMap)
@@ -279,7 +279,7 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
                 else rubberBand.asGeometry().asPolyline()
             )
             if self.isPolygon() and self.getRubberBand():
-                rubberBand.reset(geometryType=core.QgsWkbTypes.PolygonGeometry)
+                rubberBand.reset(geometryType=core.QgsWkbTypes.GeometryType.PolygonGeometry)
                 firstPoint = self.getRubberBand().asGeometry().asPolygon()[0][0]
                 secondPoint = self.getRubberBand().asGeometry().asPolygon()[0][-2]
                 rubberBand.addPoint(secondPoint)

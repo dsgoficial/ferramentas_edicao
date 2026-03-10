@@ -26,7 +26,7 @@ from qgis.core import (
     QgsGeometry,
 )
 from .baseTools import BaseTools
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 
 class CycleLabelPosition(BaseTools):
@@ -119,10 +119,10 @@ class CycleLabelPosition(BaseTools):
         if not (lyr := self.iface.activeLayer()):
             self.displayErrorMessage(self.tr("Nenhuma camada selecionada"))
         else:
-            fieldXIdx = lyr.dataProvider().fieldNameIndex("label_x")
-            fieldYIdx = lyr.dataProvider().fieldNameIndex("label_y")
-            fieldAncH = lyr.dataProvider().fieldNameIndex("ancora_horizontal")
-            fieldAncV = lyr.dataProvider().fieldNameIndex("ancora_vertical")
+            fieldXIdx = lyr.dataProvider().fields().lookupField("label_x")
+            fieldYIdx = lyr.dataProvider().fields().lookupField("label_y")
+            fieldAncH = lyr.dataProvider().fields().lookupField("ancora_horizontal")
+            fieldAncV = lyr.dataProvider().fields().lookupField("ancora_vertical")
             if any(
                 (fieldXIdx == -1, fieldYIdx == -1, fieldAncH == -1, fieldAncV == -1)
             ):
@@ -144,7 +144,7 @@ class CycleLabelPosition(BaseTools):
                         self.iface.messageBar().pushMessage(
                             "Cancelado",
                             "ação cancelada pelo usuário",
-                            level=Qgis.Warning,
+                            level=Qgis.MessageLevel.Warning,
                             duration=5,
                         )
                         return

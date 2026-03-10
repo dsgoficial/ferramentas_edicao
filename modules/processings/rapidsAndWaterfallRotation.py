@@ -83,7 +83,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
         pointLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_LAYER_P, context
         )
-        rotationField = self.parameterAsFields(
+        rotationField = self.parameterAsStrings(
             parameters, self.INPUT_FIELD_LAYER_P, context
         )[0]
         drainageLayer = self.parameterAsVectorLayer(
@@ -128,7 +128,7 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                 clippedGeometry = drainageFeatureGeometry.clipped(
                     layerGeometry.buffer(distance, 5).boundingBox()
                 )
-                if not (clippedGeometry.type() == core.QgsWkbTypes.LineGeometry):
+                if not (clippedGeometry.type() == core.QgsWkbTypes.GeometryType.LineGeometry):
                     continue
 
                 p1 = layerGeometry.asMultiPoint()[0]

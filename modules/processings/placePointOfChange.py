@@ -43,7 +43,7 @@ from qgis.core import (
     NULL,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -356,8 +356,8 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
         data = {}
         inputLyr.startEditing()
         inputLyr.beginEditCommand("start command")
-        inputLyr.dataProvider().addAttributes([QgsField(fieldToAdd, QVariant.Int)])
-        id_new_col = inputLyr.dataProvider().fieldNameIndex(fieldToAdd)
+        inputLyr.dataProvider().addAttributes([QgsField(fieldToAdd, QMetaType.Type.Int)])
+        id_new_col = inputLyr.dataProvider().fields().lookupField(fieldToAdd)
         for currentStep, feat in enumerate(inputLyr.getFeatures()):
             if feedback is not None and feedback.isCanceled():
                 return
@@ -371,7 +371,7 @@ class PlacePointOfChange(QgsProcessingAlgorithm):
 
     def addIdField(self, layer: QgsVectorLayer, fieldName):
         layer.startEditing()
-        field_type = QVariant.Int
+        field_type = QMetaType.Type.Int
         layer.dataProvider().addAttributes([QgsField(fieldName, field_type)])
         layer.updateFields()
         features = layer.getFeatures()

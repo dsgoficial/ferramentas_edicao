@@ -76,7 +76,7 @@ class DamWidth(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         damLayer = self.parameterAsVectorLayer(parameters, self.INPUT_DAM, context)
-        widthField = self.parameterAsFields(parameters, self.INPUT_FIELDS, context)[0]
+        widthField = self.parameterAsStrings(parameters, self.INPUT_FIELDS, context)[0]
         highwayLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_HIGHWAY, context
         )
@@ -88,7 +88,7 @@ class DamWidth(QgsProcessingAlgorithm):
                 if not (highwayFeatureGeometry.intersects(damGeometry)):
                     continue
                 intersections = highwayFeatureGeometry.intersection(damGeometry)
-                if not (intersections.type() == core.QgsWkbTypes.LineGeometry):
+                if not (intersections.type() == core.QgsWkbTypes.GeometryType.LineGeometry):
                     continue
                 damFeature[widthField] = self.getSymbolWidth(highwayFeature)
                 self.updateLayerFeature(damLayer, damFeature)

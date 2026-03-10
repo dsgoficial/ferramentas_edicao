@@ -39,7 +39,7 @@ from qgis.core import (
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from DsgTools.core.GeometricTools.layerHandler import LayerHandler
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -104,7 +104,7 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         scale = self.scaleDict[self.scales[scaleIdx]]
         fields = QgsFields()
-        fields.append(QgsField("flag", QVariant.String))
+        fields.append(QgsField("flag", QMetaType.Type.QString))
         if layerList == []:
             return {}
         (sink, sink_id) = self.parameterAsSink(

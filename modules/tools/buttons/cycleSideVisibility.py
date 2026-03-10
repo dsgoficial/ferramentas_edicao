@@ -21,7 +21,7 @@ from qgis.core import (
     QgsGeometry,
     Qgis,
 )
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 
 class CycleSideVisibility(BaseTools):
@@ -50,7 +50,7 @@ class CycleSideVisibility(BaseTools):
     def run(self):
         if not (lyr := self.iface.activeLayer()):
             self.displayErrorMessage(self.tr("No selected layer"))
-        fieldIdx = lyr.dataProvider().fieldNameIndex("exibir_lado_simbologia")
+        fieldIdx = lyr.dataProvider().fields().lookupField("exibir_lado_simbologia")
         if fieldIdx == -1:
             self.displayErrorMessage(
                 self.tr('A camada não tem o atributo "exibir_lado_simbologia"')
@@ -67,7 +67,7 @@ class CycleSideVisibility(BaseTools):
                     self.iface.messageBar().pushMessage(
                         "Cancelado",
                         "ação cancelada pelo usuário",
-                        level=Qgis.Warning,
+                        level=Qgis.MessageLevel.Warning,
                         duration=5,
                     )
                     return

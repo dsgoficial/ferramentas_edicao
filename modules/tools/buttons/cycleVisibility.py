@@ -21,7 +21,7 @@ from qgis.core import (
     QgsGeometry,
     Qgis,
 )
-from PyQt5.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 
 class CycleVisibility(BaseTools):
@@ -48,7 +48,7 @@ class CycleVisibility(BaseTools):
 
     def run(self):
         lyr = self.iface.activeLayer()
-        fieldIdx = lyr.dataProvider().fieldNameIndex("visivel") if lyr else -1
+        fieldIdx = lyr.dataProvider().fields().lookupField("visivel") if lyr else -1
         if fieldIdx == -1:
             self.displayErrorMessage(
                 self.tr('O atributo "visivel" não existe na camada selecionada')
@@ -65,7 +65,7 @@ class CycleVisibility(BaseTools):
                     self.iface.messageBar().pushMessage(
                         "Cancelado",
                         "ação cancelada pelo usuário",
-                        level=Qgis.Warning,
+                        level=Qgis.MessageLevel.Warning,
                         duration=5,
                     )
                     return

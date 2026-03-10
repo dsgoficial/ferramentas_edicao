@@ -127,7 +127,7 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         buildingsLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
-        rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD, context)[0]
+        rotationField = self.parameterAsStrings(parameters, self.INPUT_FIELD, context)[0]
         distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
         self.roadsLyr = self.parameterAsVectorLayer(
             parameters, self.INPUT_ROADS, context

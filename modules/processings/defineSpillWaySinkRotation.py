@@ -73,7 +73,7 @@ class DefineSpillWaySinkRotation(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
-        rotationField = self.parameterAsFields(parameters, self.INPUT_FIELD, context)[0]
+        rotationField = self.parameterAsStrings(parameters, self.INPUT_FIELD, context)[0]
         drainagesLyr = self.parameterAsVectorLayer(
             parameters, self.INPUT_DRAINAGES, context
         )

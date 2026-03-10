@@ -159,7 +159,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             for field in layer.fields():
                 if (
                     field.name() in ["sobreposto", "exibir_rotulo_aproximado"]
-                    or feature.fieldNameIndex(field.name()) == -1
+                    or feature.fields().lookupField(field.name()) == -1
                 ):
                     continue
                 feat[field.name()] = feature[field.name()]
@@ -175,7 +175,7 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             for field in layer.fields():
                 if (
                     field.name() in ["sobreposto", "exibir_rotulo_aproximado"]
-                    or feature.fieldNameIndex(field.name()) == -1
+                    or feature.fields().lookupField(field.name()) == -1
                 ):
                     continue
                 feat[field.name()] = feature[field.name()]

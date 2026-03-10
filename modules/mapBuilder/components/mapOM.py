@@ -18,7 +18,7 @@
 from pathlib import Path
 
 from qgis import processing
-from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -131,7 +131,7 @@ class MapOM(ComponentUtils, IComponent):
         gridLayerDataProvider.addAttributes(baseLayer.fields())
 
         if "id" not in gridLayerFields:
-            gridLayerDataProvider.addAttributes([QgsField("id", QVariant.String)])
+            gridLayerDataProvider.addAttributes([QgsField("id", QMetaType.Type.QString)])
         gridLayer.updateFields()
 
         mapAreaGeom = mapAreaFeature.geometry()

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtWidgets import QAction, QWidget
-from PyQt5.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtGui import QIcon, QAction
 from qgis.core import QgsExpressionContextUtils, QgsProject
 import json
 from pathlib import Path

@@ -23,8 +23,8 @@ from qgis.core import (
     Qgis,
     QgsProcessingException,
 )
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtCore import QVariant
 
 
 class AddNewLineCharToAttribute(BaseTools):
@@ -90,7 +90,7 @@ class AddNewLineCharToAttribute(BaseTools):
                 self.iface.messageBar().pushMessage(
                     "Cancelado",
                     "ação cancelada pelo usuário",
-                    level=Qgis.Warning,
+                    level=Qgis.MessageLevel.Warning,
                     duration=5,
                 )
                 return

@@ -46,7 +46,7 @@ from qgis.core import (
     QgsRectangle,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -112,8 +112,8 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         scale = self.scaleDict[self.scales[scaleIdx]]
         fields = QgsFields()
-        fields.append(QgsField("id", QVariant.String))
-        fields.append(QgsField("texto", QVariant.String))
+        fields.append(QgsField("id", QMetaType.Type.QString))
+        fields.append(QgsField("texto", QMetaType.Type.QString))
         (sink, sink_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,

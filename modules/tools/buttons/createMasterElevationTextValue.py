@@ -104,7 +104,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         Resets the tool
         """
         if self.rubberBand:
-            self.rubberBand.reset(QgsWkbTypes.LineGeometry)
+            self.rubberBand.reset(QgsWkbTypes.GeometryType.LineGeometry)
         self.isEmittingPoint = False
         self.defineRubberBand()
 
@@ -125,11 +125,11 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         Reimplementation to add a vertex to the rubber band or to finish the rubber band according to the button used
         """
         point = self.toMapCoordinates(e.pos())
-        if e.button() == Qt.RightButton:
+        if e.button() == Qt.MouseButton.RightButton:
             geom = self.rubberBand.asGeometry()
             self.reset()
             self.lineCreated.emit(geom)
-        elif e.button() == Qt.LeftButton:
+        elif e.button() == Qt.MouseButton.LeftButton:
             self.isEmittingPoint = True
 
         self.rubberBand.addPoint(point, True)

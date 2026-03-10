@@ -73,7 +73,7 @@ class PlacePowerPlantSymbol(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         inputLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
-        inputLyrVisibleField = self.parameterAsFields(
+        inputLyrVisibleField = self.parameterAsStrings(
             parameters, self.INPUT_VISIBLE_FIELD, context
         )[0]
         simbAreaLayer = self.parameterAsVectorLayer(

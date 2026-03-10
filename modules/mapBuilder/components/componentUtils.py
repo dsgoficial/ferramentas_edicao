@@ -31,8 +31,8 @@ from numpy import (
 )
 from numpy.linalg import eigh, norm
 from qgis import processing
-from PyQt5.QtCore import QPointF, QSettings
-from PyQt5.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QPointF, QSettings
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,

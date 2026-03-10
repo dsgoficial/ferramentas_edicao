@@ -89,7 +89,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         lineLayer = self.parameterAsVectorLayer(parameters, self.INPUT_LAYER_L, context)
         onlySelectedL = self.parameterAsBool(parameters, self.ONLY_SELECTED_L, context)
-        lineWidthField = self.parameterAsFields(
+        lineWidthField = self.parameterAsStrings(
             parameters, self.INPUT_FIELD_LAYER_L, context
         )[0]
         highwayLayer = self.parameterAsVectorLayer(
@@ -191,7 +191,7 @@ class BridgeAndManholeWidth(QgsProcessingAlgorithm):
         feature[widthField] = max_width
 
         # Se necessário, calcula e atualiza o comprimento
-        if check_length and layer.geometryType() == QgsWkbTypes.LineGeometry:
+        if check_length and layer.geometryType() == QgsWkbTypes.GeometryType.LineGeometry:
             length = distance_calculator.measureLength(feature_geometry)
             feature["config_comprimento_simb"] = 1 if length < 20 else 2
 

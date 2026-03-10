@@ -18,9 +18,9 @@
 from pathlib import Path
 import enum
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QPushButton, QComboBox
-from PyQt5.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QPushButton, QComboBox
+from qgis.PyQt.QtCore import Qt
 from qgis.core import (
     Qgis,
     QgsFeature,

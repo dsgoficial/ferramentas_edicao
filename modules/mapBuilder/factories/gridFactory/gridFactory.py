@@ -31,7 +31,7 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QObject, QVariant
+from qgis.PyQt.QtCore import QObject, QMetaType
 
 letters = [
     "A",
@@ -738,8 +738,8 @@ class GridFactory(QObject):
         else:
             provider = layer.dataProvider()
             fields = QgsFields()
-            fields.append(QgsField("inom", QVariant.String))
-            fields.append(QgsField("mi", QVariant.String))
+            fields.append(QgsField("inom", QMetaType.Type.QString))
+            fields.append(QgsField("mi", QMetaType.Type.QString))
             provider.addAttributes(fields)
             layer.updateFields()
             return layer, fields

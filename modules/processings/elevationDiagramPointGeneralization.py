@@ -106,7 +106,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
         inputPointsLyr = self.parameterAsVectorLayer(
             parameters, self.INPUT_ELEVATION_POINTS, context
         )
-        elevationField = self.parameterAsFields(
+        elevationField = self.parameterAsStrings(
             parameters, self.ELEVATION_FIELD, context
         )[0]
         gridScaleParam = self.parameterAsEnums(parameters, self.INPUT_SCALE, context)[0]
