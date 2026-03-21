@@ -33,10 +33,20 @@ from qgis import utils
 
 class ExporterSingleton:
 
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    @classmethod
+    def reset(cls):
+        cls._instance = None
+
     exportNameDict = {
         "orthoMap": "Carta_Ortoimagem",
         "topoMap": "Carta_Topografica",
-        "omMap": "Carta_Especial",
         "omMap": "Carta_Especial",
         "militaryOrthoMap": "Carta_Ortoimagem_Militar",
         "militaryTopoMap": "Carta_Topografica_Militar",

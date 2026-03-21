@@ -134,12 +134,6 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(passwordParameter)
         self.addParameter(
             QgsProcessingParameterString(
-                self.PROXY_HOST, self.tr("Proxy Host"), optional=True
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterString(
                 self.PROXY_HOST, self.tr("Endereço do Proxy"), optional=True
             )
         )

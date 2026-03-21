@@ -21,6 +21,7 @@ from pathlib import Path
 from qgis.core import QgsFeature, QgsPrintLayout
 
 from ...qrcode.main import make
+from .buildContext import BuildContext
 
 bdgexLayersIdMap = {
     "localidades": "963",
@@ -69,15 +70,14 @@ class Qrcode:
         img = make(urlPath)
         img.save(savePath)
 
-    def build(
-        self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
-    ):
+    def build(self, context: BuildContext):
         """Builds the qrcode icon and inserts it in the composition.
         Args:
-            composition (QgsPrintLayout): composition to be updated
-            data (dict): Python dictionary holding the map info
-            mapAreaFeature (QgsFeature): feature (in geographic coords) holding the map area
+            context: BuildContext holding composition, data, and mapAreaFeature
         """
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
         scale = data.get("scale")
         bdgexLayersToAdd = ["localidades"]
         if data.get("tipo_produto") == "Carta Ortoimagem" and str(scale) != "100":
@@ -90,6 +90,7 @@ class Qrcode:
         destPath = Path(destPath.name)
         self.createQRCode(destPath, latitude, longitude, bdgexLayersToAdd, scale)
         self.updateComposition(composition, destPath)
+        return []
 
     def updateComposition(self, composition: QgsPrintLayout, qrCodePath: Path):
         """Updates the qrcode path in the composition

@@ -32,7 +32,7 @@ from qgis.core import (
     QgsFeatureSink,
     QgsProcessingParameterNumber,
 )
-from qgis.PyQt.QtCore import QVariant, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 

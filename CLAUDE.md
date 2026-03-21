@@ -1,99 +1,81 @@
-# CLAUDE.md
+# CLAUDE.md - Ferramentas de Edição
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Overview
 
-## Project Overview
+Plugin QGIS para edição e geração de cartas topográficas e ortoimagens seguindo normas cartográficas brasileiras. Desenvolvido pelo 1º CGEO (Exército Brasileiro).
 
-**Ferramentas de Edição** — QGIS plugin for Brazilian Army (1o CGEO) cartographic map finishing. Generates and exports standardized maps (topographic, orthoimagery, military variants) following national cartographic specifications (ET-RDG). Written in Python 3 with PyQt5/PyQGIS. Requires QGIS >= 3.24.
+- **Versão atual:** 1.3.32
+- **QGIS mínimo:** 4.0 (Qt6)
+- **Repositório:** https://github.com/dsgoficial/ferramentas_edicao
+- **Branch principal:** master | **Branch desenvolvimento QGIS4:** qgis4
 
-Language: Portuguese (Brazilian). All user-facing strings, comments, and commit messages are in Portuguese.
-
-## Development Setup
-
-Symlink the plugin directory into QGIS plugins folder:
-```bat
-# Windows
-.dev\setup_dev_windows.bat
-# Creates: %APPDATA%\QGIS\QGIS3\profiles\default\python\plugins\ferramentas_edicao -> this repo
-```
-
-Debug mode activates when a `.env` file exists in the plugin root.
-
-## Formatting and Linting
-
-- **Black** (v22.6.0) via pre-commit hooks
-- Pre-commit also enforces: YAML validation, trailing whitespace removal, EOL fixing
-- Install hooks: `pre-commit install`
-
-## Standalone CLI Export
-
-Export maps without QGIS GUI via `setup_env.bat`:
-```bat
-setup_env.bat "C:\Program Files\QGIS 3.24.3" -t "Carta Topográfica 1.4" -j input.json -l user -s pass -ef output_dir
-```
-Product types: `Carta Topográfica 1.4`, `Carta Ortoimagem 2.5`, `Carta Ortoimagem OM 1.0`, `Carta Ortoimagem Militar 2.5`, `Carta Topográfica Militar 1.4`.
-
-## Architecture
-
-### Entry Point
-
-`__init__.py` → `classFactory(iface)` → `EditionPlugin` (in `editionPlugin.py`). This is the standard QGIS plugin entry point.
-
-### MVC + Factory Pattern
+## Estrutura do Projeto
 
 ```
-editionPlugin.py          # Main plugin class: GUI, toolbar, dialogs, processing provider registration
-controllers/
-  mapBuilderController.py # Central controller — orchestrates map building pipeline
-factories/
-  topoMapBuilder.py       # Topographic map builder
-  orthoMapBuilder.py      # Orthoimagery map builder
-  omMapbuilder.py         # OM orthoimagery builder
-  military*.py            # Military variants (wrap topo/ortho with military specifics)
-  mapBuilderUtils.py      # Shared builder utilities
-  *Singleton.py           # Composition, connection, exporter singletons
-interfaces/
-  iMapBuilder.py          # ABC interface — all builders implement `run()`
-  iComponent.py           # Component interface
+ferramentas_edicao/
+├── __init__.py              # Entry point (classFactory)
+├── editionPlugin.py         # Classe principal do plugin
+├── standalone.py            # Modo CLI
+├── config/                  # Configurações e defaults
+├── controllers/             # Orquestração (mapBuilderController)
+├── factories/               # Singletons e builders de mapas
+├── interfaces/              # Interfaces (IComponent, IMapBuilder)
+├── modules/
+│   ├── expressionFunctions/ # Extensões de expressões QGIS
+│   ├── gridGenerator/       # Grades UTM e Lat/Lon
+│   ├── labelTools/          # Posicionamento de rótulos
+│   ├── mapBuilder/          # Componentes de composição (20+)
+│   ├── processings/         # 52 algoritmos Processing
+│   ├── tools/               # Ferramentas de toolbar (25+)
+│   └── qrcode/              # Geração QR code
+├── resources/               # Diálogos e UI
+└── Help/                    # Sistema de ajuda HTML
 ```
 
-All map builders implement `IMapBuilder.run()`. The controller selects the correct factory based on product type.
+## Convenções de Código
 
-### Modules
+- **Classes:** PascalCase (`MapBuilderController`)
+- **Funções/métodos:** camelCase (`buildElevationDiagram()`)
+- **Métodos privados:** prefixo underscore (`_setupUI()`)
+- **Constantes:** UPPER_CASE
+- **Formatação:** Black (v22.6.0)
+- **Idioma do código:** inglês para nomes de classes/funções, português para strings de UI
 
-**`modules/mapBuilder/`** — Core map building engine. 22 component builders (Map, Grid, Legend, QRCode, Articulation, Division, ElevationDiagram, etc.) compose the final print layout. Product templates and QML styles live in `modules/mapBuilder/resources/products/` organized by product type (`topoMap/`, `orthoMap/`, `omMap/`, `common/`).
+## Padrões Arquiteturais
 
-**`modules/processings/`** — ~50 QGIS Processing algorithms registered via `Provider`. Covers: grid generation, label management, building/infrastructure symbols, river processing, rotation calculations, masking, style management. Each file is a self-contained `QgsProcessingAlgorithm` subclass.
+- **Singleton:** CompositionSingleton, ConnectionSingleton, ExporterSingleton
+- **Factory:** MapBuilder factories para cada tipo de produto
+- **Strategy:** Builders diferentes (TopoMapBuilder, OrthoMapBuilder, OmMapBuilder)
+- **Composition:** Componentes implementam IComponent (build(), updateComposition())
+- **Configuração via JSON:** Definições de produto em `modules/mapBuilder/resources/products/`
 
-**`modules/tools/`** — 25+ map editing buttons (toolbar tools). Each button in `buttons/` is a specialized tool for cartographic editing tasks (label cycling, symbol placement, visibility toggling, etc.).
+## Dependências
 
-**`modules/gridGenerator/`** — UTM and lat/lon grid generation with label formatting. Separate from Processing algorithms.
+- **QGIS API** (qgis.core, qgis.gui, qgis.PyQt)
+- **DsgTools** (plugin obrigatório - DbFactory, AlgRunner, LayerHandler)
+- **Python stdlib** (json, os, pathlib, dataclasses, abc)
 
-**`modules/expressionFunctions/`** — Custom QGIS expression functions (`longNumber`, `shortNumber`) for grid numbering.
+## Comandos Úteis
 
-**`modules/qrcode/`** — Embedded QR code generation library (has its own tests in `modules/qrcode/tests/`).
+```bash
+# Pre-commit hooks
+pre-commit run --all-files
 
-### Resources and Configuration
+# Formatar código
+black .
+```
 
-- `resources/` — UI dialogs (`.ui` files), icons
-- `config/configDefaults.py` — Default configuration values
-- `Help/` — HTML help pages for buttons and processing algorithms, linked via `links_dictionary.json`
-- Product configuration uses JSON files defining layer ordering, styles, and export parameters
-- QML style files in `modules/mapBuilder/resources/products/` define layer symbology per product type
+## Produtos Suportados
 
-### Key Dependencies
+| Produto | Versão | Diretório |
+|---------|--------|-----------|
+| Carta Topográfica | 1.4 | `modules/mapBuilder/resources/products/topoMap/1_4/` |
+| Carta Ortoimagem | 2.5 | `modules/mapBuilder/resources/products/orthoMap/2_5/` |
+| Carta OM | 1.0 | `modules/mapBuilder/resources/products/omMap/1_0/` |
 
-- **DsgTools** — Brazilian Army cartographic tools plugin (must be installed in QGIS)
-- **QGIS Processing framework** — For algorithm registration and execution
-- **PIL/Pillow** — Optional, for QR code image generation
+## Notas Importantes
 
-## Conventions
-
-- File naming: camelCase (e.g., `mapBuilderController.py`, `placeBuildingSymbol.py`)
-- Plugin version tracked in `metadata.txt` (`version=`) and `CHANGELOG.md`
-- Qt resources compiled to `resources.py` from `resources.qrc`
-- i18n translations in `i18n/` directory
-
-## QGIS 4 Migration
-
-The `.claude/` directory contains an agent (`qgis4-migrator`) and 3 phase skills for migrating this plugin to QGIS 4.0/Qt6. Use `/migrate-qgis4` to run the full migration pipeline. Phases: imports → enum qualification → deprecated API replacement.
+- Sem framework de testes automatizados
+- Sem CI/CD configurado
+- Recursos incluem limites municipais IBGE 2024, estilos QML, templates QPT
+- O plugin é instalado diretamente no diretório de plugins do QGIS

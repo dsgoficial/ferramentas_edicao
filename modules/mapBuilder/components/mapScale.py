@@ -17,12 +17,16 @@
 """
 from qgis.core import QgsPrintLayout
 
+from .buildContext import BuildContext
+
 
 class MapScale:
     def __init__(self, *args, **kwargs) -> None:
         pass
 
-    def build(self, composition: QgsPrintLayout, data: dict):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
         scale = data.get("scale") * 1000
         # label_direita
         id_label_direita = "label_escala_direita"
@@ -75,3 +79,4 @@ class MapScale:
         composition_label_e5 = composition.itemById(id_label_e5)
         if composition_label_e5 is not None:
             composition_label_e5.setText(text_label_e5)
+        return []

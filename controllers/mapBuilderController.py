@@ -22,6 +22,10 @@ from collections import namedtuple
 from pathlib import Path
 from typing import Any, NamedTuple, Tuple, Union
 
+from ..config.logging_setup import get_logger
+
+logger = get_logger(__name__)
+
 from qgis.PyQt.QtCore import QFile, QFileInfo
 from qgis.core import (
     Qgis,
@@ -101,10 +105,6 @@ class MapBuildController(MapBuildControllerUtils):
             currentScheme.setName(schemeName)
             currentScheme.setColors(importedColors[0])
             QgsApplication.colorSchemeRegistry().addColorScheme(currentScheme)
-
-    def checkJsonFiles(self):
-        """Verify consistency of JSON files"""
-        pass
 
     def readJson(self, jsonPath: Path) -> dict:
         """Reads the json file
@@ -264,10 +264,9 @@ class MapBuildController(MapBuildControllerUtils):
 
     def unload(self):
         """Unloads the Controller. It's called when the plugin is uninstalled or reloaded"""
-        self.conn.conn = None
-        self.compositions.compositions = dict()
-        self.compositions.previousQpts = {}
-        self.compositions.lastComposition = None
+        CompositionSingleton.reset()
+        ConnectionSingleton.reset()
+        ExporterSingleton.reset()
         self.builders = dict()
 
     def getProductBuilder(
@@ -348,7 +347,7 @@ class MapBuildController(MapBuildControllerUtils):
         is_headless = dlgCfg.instance == "headless"
         if (Qgis.QGIS_VERSION_INT - Qgis.QGIS_VERSION_INT % 100) / 100 != 324:
             if is_headless:
-                print(
+                logger.error(
                     "Exportação disponível apenas no QGIS 3.24. Abra o QGIS 3.24 e tente novamente."
                 )
             else:
@@ -361,7 +360,7 @@ class MapBuildController(MapBuildControllerUtils):
         MapBuilderUtils().cleanProject(self.debugMode)
         if dlgCfg.jsonFilePaths == []:
             if is_headless:
-                print(
+                logger.error(
                     "Não foi inserido um arquivo ou pasta de JSON para produto solicitado."
                 )
             else:
@@ -373,7 +372,7 @@ class MapBuildController(MapBuildControllerUtils):
             return
         if dlgCfg.exportFolder == "":
             if is_headless:
-                print("Não foi inserida uma pasta de saída para o produto solicitado.")
+                logger.error("Não foi inserida uma pasta de saída para o produto solicitado.")
             else:
                 QMessageBox.warning(
                     self.dlg,
@@ -388,7 +387,7 @@ class MapBuildController(MapBuildControllerUtils):
             jsonData = self.readJson(jsonPath)
             if "tipo_produto" not in jsonData:
                 if is_headless:
-                    print(
+                    logger.error(
                         "A chave tipo_produto não foi encontrada no json de entrada, ignorando produto."
                     )
                 else:
@@ -407,7 +406,7 @@ class MapBuildController(MapBuildControllerUtils):
                     "licenca_produto"
                 ] not in ["CC-BY-SA 4.0", "CC-BY-NC-SA 4.0"]:
                     if is_headless:
-                        print(
+                        logger.error(
                             """Licença inválida no json. Os únicos valores possíveis aceitos são "CC-BY-SA 4.0" ou "CC-BY-NC-SA 4.0" """
                         )
                     else:
@@ -422,8 +421,9 @@ class MapBuildController(MapBuildControllerUtils):
                 )
                 missingKeyText = ",".join(list(missingKeySet))
                 if is_headless:
-                    print(
-                        "Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: {missingKeyText}. "
+                    logger.error(
+                        "Há erros de validação no json de entrada. Faltam as seguintes chaves obrigatórias: %s.",
+                        missingKeyText,
                     )
                 else:
                     QMessageBox.warning(
@@ -437,7 +437,7 @@ class MapBuildController(MapBuildControllerUtils):
             filePathError = jsonStructure.validate_file_paths(jsonData)
             if filePathError != "":
                 if is_headless:
-                    print("Erro no arquivo do diagrama de elevação.")
+                    logger.error("Erro no arquivo do diagrama de elevação.")
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -451,8 +451,8 @@ class MapBuildController(MapBuildControllerUtils):
                 and productName != jsonData["tipo_produto"]
             ):
                 if is_headless:
-                    print(
-                        "O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. "
+                    logger.error(
+                        "O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto."
                     )
                 else:
                     QMessageBox.warning(
@@ -468,8 +468,8 @@ class MapBuildController(MapBuildControllerUtils):
                 and productVersion != jsonData["versao_produto"]
             ):
                 if is_headless:
-                    print(
-                        "O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto. "
+                    logger.error(
+                        "O tipo de produto escolhido na interface não corresponde à chave tipo_produto informada no arquivo json, ignorando produto."
                     )
                 else:
                     QMessageBox.warning(
@@ -494,7 +494,7 @@ class MapBuildController(MapBuildControllerUtils):
                     abstractDb = self.getAbstractDb(jsonData, dlgCfg)
                 except:
                     if is_headless:
-                        print(
+                        logger.error(
                             "Conexão inválida com o banco de dados. Verifique as configurações de conexão no json e as informações de usuário e senha."
                         )
                     else:
@@ -510,7 +510,7 @@ class MapBuildController(MapBuildControllerUtils):
                     abstractDb, jsonData
                 ):
                     if is_headless:
-                        print(
+                        logger.error(
                             "O tipo de produto em exportação não corresponde ao produto com a modelagem de banco de dados adequada."
                         )
                     else:
@@ -528,7 +528,7 @@ class MapBuildController(MapBuildControllerUtils):
             )
             if imageError != "":
                 if is_headless:
-                    print(f"Erro: {imageError}")
+                    logger.error("Erro: %s", imageError)
                 else:
                     QMessageBox.warning(
                         self.dlg,
@@ -550,7 +550,7 @@ class MapBuildController(MapBuildControllerUtils):
             )
             if jsonData["tipo_produto"] != "Carta Ortoimagem OM" and not self.validate_numeric_grid(connection):
                 if is_headless:
-                    print(
+                    logger.error(
                         "A camada edicao_grid_numerico_p está vazia. Gere o grid numérico e tente novamente."
                     )
                 else:
@@ -579,7 +579,7 @@ class MapBuildController(MapBuildControllerUtils):
         messageType = "Informação"
         if not builder:
             if dlgCfg.instance == "headless":
-                print("Não há cartas a serem exportadas")
+                logger.warning("Não há cartas a serem exportadas")
                 return
             QMessageBox.warning(
                 self.dlg, messageType, "Não há cartas a serem exportadas"
@@ -593,7 +593,7 @@ class MapBuildController(MapBuildControllerUtils):
             else f"Ocorreu um erro durante a exportação: {exportMessage}"
         )
         if dlgCfg.instance == "headless":
-            print(msg)
+            logger.info(msg)
             return
         QMessageBox.warning(self.dlg, messageType, msg)
 

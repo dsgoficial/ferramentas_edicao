@@ -17,17 +17,12 @@
 """
 from pathlib import Path
 
-from qgis.core import (
-    QgsDataSourceUri,
-    QgsFeature,
-    QgsPrintLayout,
-    QgsVectorLayer,
-    QgsProperty,
-)
+from qgis.core import QgsPrintLayout, QgsProperty
 from typing import Dict
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
 from ..interfaces.iMapBuilder import IMapBuilder
+from ..modules.mapBuilder.components.buildContext import BuildContext
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
@@ -118,7 +113,7 @@ class OmMapBuilder(IMapBuilder, MapBuilderUtils):
         composition.refresh()
 
     def run(self, debugMode: bool = False):
-        """Creates the necessary components for the OrthoMap product and populates the composition.
+        """Creates the necessary components for the OmMap product and populates the composition.
         Args:
             debugMode: Boolean value holding the debugMode status
         """
@@ -139,45 +134,22 @@ class OmMapBuilder(IMapBuilder, MapBuilderUtils):
             self.composition.setName(
                 f"Carta Ortoimagem OM {self.data.get('omTemplateType')}"
             )
-        # self.instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
-        for key, component in self.components.items():
-            self.deleteLayerTreeNode(key)
-            # TODO: Parallelize
-            if key == "map":
-                mapLayersIds = component.build(
-                    self.composition,
-                    self.data,
-                    self.defaults,
-                    self.mapAreaFeature,
-                    self.mapAreaLayer,
-                    mapLayers,
-                    debugMode,
-                )
-            elif key == "localization":
-                localizationLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode
-                )
-            elif key == "division":
-                divisionLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode
-                )
-            elif key == "subtitle":
-                component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == "mapScale":
-                component.build(self.composition, self.data)
-            elif key == "table":
-                component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == "qrcode":
-                component.build(self.composition, self.data, self.mapAreaFeature)
+
+        layersByGroup = {"map": mapLayers}
+        context = BuildContext(
+            composition=self.composition,
+            data=self.data,
+            defaults=self.defaults,
+            mapAreaFeature=self.mapAreaFeature,
+            mapAreaLayer=self.mapAreaLayer,
+            showLayers=debugMode,
+        )
+        allLayerIds = self.buildAllComponents(context, layersByGroup)
+
         self.handleMapRotation(self.data, self.composition)
         self.handleOmInfo(self.data, self.composition)
         self.layersIdsToBeRemoved.extend(
-            (
-                self.mapAreaLayer.id(),
-                *mapLayersIds,
-                *localizationLayersIds,
-                *divisionLayersIds,
-            )
+            [self.mapAreaLayer.id(), *allLayerIds]
         )
         self.groupsToBeRemoved.extend(
             ["map", "localization", "articulation", "division"]

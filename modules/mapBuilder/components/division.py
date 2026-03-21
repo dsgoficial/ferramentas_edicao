@@ -19,7 +19,6 @@ import math
 import os
 from pathlib import Path
 
-from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -42,6 +41,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
 from ....interfaces.iComponent import IComponent
 
@@ -62,13 +62,11 @@ class Division(ComponentUtils, IComponent):
         self.countyAttribute = "SIGLA_UF"
         self.countryAttribute = "SIGLA_PAIS"
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        data: dict,
-        mapAreaFeature: QgsFeature,
-        showLayers: bool = False,
-    ):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
+        showLayers = context.showLayers
 
         mapIDsToBeDisplayed = []
         instance = QgsProject.instance()
@@ -267,7 +265,7 @@ class Division(ComponentUtils, IComponent):
             county = countyFeature[self.countyAttribute]
             country = countyFeature[self.countryAttribute]
             countyGeometry = countyFeature.geometry()
-            if name and not isinstance(name, QVariant):
+            if name is not None and name != '':
                 # Does not display international counties if isInternational is False
                 if not isInternational and country != "BR":
                     continue
@@ -305,7 +303,7 @@ class Division(ComponentUtils, IComponent):
                 county = countyFeature[self.countyAttribute]
                 country = countyFeature[self.countryAttribute]
                 countyGeometry = countyFeature.geometry()
-                if name and not isinstance(name, QVariant):
+                if name is not None and name != '':
                     # Does not display international counties if isInternational is False
                     if not isInternational and country != "BR":
                         continue

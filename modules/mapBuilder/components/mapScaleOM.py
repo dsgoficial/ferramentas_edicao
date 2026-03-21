@@ -17,17 +17,20 @@
 """
 from qgis.core import QgsPrintLayout
 
+from .buildContext import BuildContext
+
 
 class MapScaleOM:
     def __init__(self, *args, **kwargs) -> None:
         pass
 
-    def build(self, composition: QgsPrintLayout, data: dict):
+    def build(self, context: BuildContext):
         """Sets the labels for scale and scale bar.
         Args:
-                composition: a QgsPrintLayout for the mapOm product
-                data: dict holding the map info
+                context: BuildContext holding composition and data
         """
+        composition = context.composition
+        data = context.data
         scale = int(data.get("scale"))
         if item := composition.itemById("scaleLabel"):
             text = "ESCALA 1:{}".format(scale)
@@ -47,3 +50,4 @@ class MapScaleOM:
         if item := composition.itemById("scaleBarLabel5"):
             text = "{} m".format(str(round(8 * scale / 100)))
             item.setText(text)
+        return []

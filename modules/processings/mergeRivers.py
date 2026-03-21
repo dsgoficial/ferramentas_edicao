@@ -32,7 +32,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFeatureSink,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 from .processingUtils import ProcessingUtils
 

@@ -49,6 +49,7 @@ from qgis.core import (
 )
 
 from ....interfaces.iComponent import IComponent
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
 
 
@@ -73,14 +74,12 @@ class ElevationDiagram(ComponentUtils, IComponent):
             250: 3,
         }
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        data: dict,
-        mapAreaFeature: QgsFeature,
-        layers: List[QgsMapLayer],
-        showLayers=False,
-    ):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
+        layers = context.layers
+        showLayers = context.showLayers
 
         mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()
         if not isinstance(layers, list):

@@ -26,6 +26,40 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
 )
 from qgis import processing
+import functools
+
+from ...config.logging_setup import get_logger
+
+logger = get_logger(__name__)
+
+# Centralized scale definitions used across processing algorithms
+SCALE_OPTIONS = [
+    "1:25.000",
+    "1:50.000",
+    "1:100.000",
+    "1:250.000",
+]
+SCALE_VALUES = {
+    0: 25000,
+    1: 50000,
+    2: 100000,
+    3: 250000,
+}
+
+
+def safe_process_algorithm(func):
+    """Decorator that wraps processAlgorithm with error handling and feedback reporting."""
+
+    @functools.wraps(func)
+    def wrapper(self, parameters, context, feedback):
+        try:
+            return func(self, parameters, context, feedback)
+        except Exception as e:
+            feedback.reportError(str(e), fatalError=True)
+            logger.error("Erro em %s: %s", type(self).__name__, e, exc_info=True)
+            return {}
+
+    return wrapper
 
 
 class ProcessingUtils:

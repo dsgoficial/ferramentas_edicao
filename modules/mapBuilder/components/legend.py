@@ -24,6 +24,8 @@ from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import QgsPrintLayout, QgsReadWriteContext
 
+from .buildContext import BuildContext
+
 
 class Legend:
 
@@ -171,12 +173,13 @@ class Legend:
             return 6, 283
         return 723, 14
 
-    def build(
-        self, composition: QgsPrintLayout, jsonData: dict, defaults: ConfigDefaults
-    ):
-        scale = jsonData.get("scale")
-        displayAuxContour = jsonData.get("exibirAuxiliar")
-        complementaryClasses = jsonData.get("classes_complementares", [])
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
+        defaults = context.defaults
+        scale = data.get("scale")
+        displayAuxContour = data.get("exibirAuxiliar")
+        complementaryClasses = data.get("classes_complementares", [])
         legendMappingData = self.legendMappingData.get(str(scale))
 
         if displayAuxContour == 1:
@@ -192,3 +195,4 @@ class Legend:
         )
         legendClassesOrdered = self.orderLegend(legendClassesGrouped)
         self.buildLegend(composition, legendClassesOrdered, self.getAnchor(scale))
+        return []

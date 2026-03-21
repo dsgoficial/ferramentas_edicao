@@ -18,6 +18,7 @@
 from pathlib import Path
 
 from ....interfaces.iComponent import IComponent
+from .buildContext import BuildContext
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLayerTreeGroup,
@@ -35,13 +36,11 @@ class Articulation(ComponentUtils, IComponent):
             Path(__file__).parent.parent / "resources" / "styles" / "articulation"
         )
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        data: dict,
-        mapAreaLayer: QgsVectorLayer,
-        showLayers: bool = False,
-    ):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
+        mapAreaLayer = context.mapAreaLayer
+        showLayers = context.showLayers
         # TODO: build mapAreaLayer with mapAreaFeat or just clone the layer
 
         mapIDsToBeDisplayed = []

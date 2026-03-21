@@ -56,7 +56,7 @@ from qgis.core import (
     QgsProperty,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 

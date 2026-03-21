@@ -40,7 +40,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProcessingMultiStepFeedback,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QCoreApplication
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 

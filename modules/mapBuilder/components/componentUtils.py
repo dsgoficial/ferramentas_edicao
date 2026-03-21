@@ -57,6 +57,18 @@ class ComponentUtils:
     def __init__(self, *args, **kwargs):
         pass
 
+    @staticmethod
+    def setCompositionItemText(composition, itemId, text):
+        """Sets text on a composition item by ID, with null safety."""
+        if item := composition.itemById(itemId):
+            item.setText(text)
+
+    @staticmethod
+    def setCompositionItemVisibility(composition, itemId, visible):
+        """Sets visibility on a composition item by ID, with null safety."""
+        if item := composition.itemById(itemId):
+            item.setVisibility(visible)
+
     def getPrintLayoutFromQptPath(self, path, newValue):
         """
         Returns a QgsPrintLayout from a template indicated by path.

@@ -1,35 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- ferramentas_edicao
-                                 A QGIS plugin
- Brazilian Army Cartographic Finishing Tools
-                              -------------------
- ***************************************************************************/
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-"""
 from qgis.core import (
     QgsProcessing,
     QgsFeature,
     QgsProcessingParameterVectorLayer,
-    QgsProcessingAlgorithm,
-    QgsVectorLayer,
-    QgsFields,
 )
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis import processing
 
-from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+from .baseSobreposition import BaseSobreposition
 
 
-class SetSobrepositionTopo(QgsProcessingAlgorithm):
+class SetSobrepositionTopo(BaseSobreposition):
     INPUT_LAYER_SOBREPOSITION = "INPUT_LAYER_SOBREPOSITION"
     INPUT_POLYGON = "INPUT_POLYGONS"
     INPUT_MOLDURA = "INPUT_MOLDURA"
@@ -46,7 +25,6 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
                 defaultValue="aux_moldura_a",
             )
         )
-
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_SOBREPOSITION,
@@ -89,7 +67,6 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, feedback):
-        # Camadas de entrada
         layer = self.parameterAsVectorLayer(
             parameters, self.INPUT_LAYER_SOBREPOSITION, context
         )
@@ -107,133 +84,26 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
             parameters, self.INPUT_LAYER_TO_CHECK_FER, context
         )
 
-        # Filtrar visivel e situacao em poligono para mergear
-        drenagem_filtrada = self.runExtractByExpression(
-            layer_dre, expression=""" "visivel" = 1 AND "situacao_em_poligono" = 1"""
-        )
-        via_deslocamento_filtrada = self.runExtractByExpression(
-            layer_via, expression=""" "visivel" = 1 """
-        )
-        ferrovia_filtrada = self.runExtractByExpression(
-            layer_fer, expression=""" "visivel" = 1 """
-        )
-        merged = self.runMergeLayer(
-            [drenagem_filtrada, via_deslocamento_filtrada, ferrovia_filtrada]
-        )
+        merged = self.filterAndMergeLayers(layer_dre, layer_via, layer_fer)
 
-        # Dissolver a moldura e clipar o poligono
-        moldura_merged = self.dissolve(moldura)
-        # layers_to_check = self.parameterAsLayerList(
-        #     parameters, self.INPUT_LAYER_TO_CHECK, context
-        # )
-
-        layer = self.parameterAsVectorLayer(
-            parameters, self.INPUT_LAYER_SOBREPOSITION, context
-        )
-        polygon_layer = self.parameterAsVectorLayer(
-            parameters, self.INPUT_POLYGON, context
-        )
-
-        # merged = self.mergelayer([layer_dre, layer_via, layer_fer])
-        polygon_layer = self.dissolve(polygon_layer)
+        moldura_merged = self.runDissolve(moldura)
+        polygon_layer = self.runDissolve(polygon_layer)
         polygon_cliped = self.runClip(polygon_layer, moldura_merged)
 
-        # Conveter a moldura em linha e realizar o difference
-        moldura_linha = self.polytoline(moldura_merged)
-        line_layer = self.difference(self.polytoline(polygon_cliped), moldura_linha)
+        moldura_linha = self.runPolyToLine(moldura_merged)
+        line_layer = self.runDifference(self.runPolyToLine(polygon_cliped), moldura_linha)
 
-        # Processo de edicao de camada
         layer.startEditing()
         layer.beginEditCommand("Iniciando edição.")
-        intersect = self.intersect(line_layer, merged)
-        difference = self.difference(line_layer, merged)
+        intersect = self.runIntersect(line_layer, merged)
+        difference = self.runDifference(line_layer, merged)
 
         layer.deleteFeatures([feat.id() for feat in layer.getFeatures()])
-
-        for feature in intersect.getFeatures():
-            feat = QgsFeature(layer.fields())
-            feat["sobreposto"] = 1
-            feat["exibir_rotulo_aproximado"] = 1
-            feat.setGeometry(feature.geometry())
-
-            for field in layer.fields():
-                if (
-                    field.name() in ["sobreposto", "exibir_rotulo_aproximado"]
-                    or feature.fields().lookupField(field.name()) == -1
-                ):
-                    continue
-                feat[field.name()] = feature[field.name()]
-
-            layer.addFeature(feat)
-
-        for feature in difference.getFeatures():
-            feat = QgsFeature(layer.fields())
-            feat["sobreposto"] = 2
-            feat["exibir_rotulo_aproximado"] = 1
-            feat.setGeometry(feature.geometry())
-
-            for field in layer.fields():
-                if (
-                    field.name() in ["sobreposto", "exibir_rotulo_aproximado"]
-                    or feature.fields().lookupField(field.name()) == -1
-                ):
-                    continue
-                feat[field.name()] = feature[field.name()]
-
-            layer.addFeature(feat)
+        self.populateLayerFromSobreposition(layer, intersect, sobreposto_value=1)
+        self.populateLayerFromSobreposition(layer, difference, sobreposto_value=2)
 
         layer.endEditCommand()
         return {}
-
-    def runClip(self, layer_entrada, clip):
-        clipado = processing.run(
-            "native:clip",
-            {"INPUT": layer_entrada, "OVERLAY": clip, "OUTPUT": "TEMPORARY_OUTPUT"},
-        )
-        return clipado["OUTPUT"]
-
-    def runMergeLayer(self, layers):
-        m = processing.run(
-            "native:mergevectorlayers", {"LAYERS": layers, "OUTPUT": "TEMPORARY_OUTPUT"}
-        )
-        return m["OUTPUT"]
-
-    def runExtractByExpression(self, layer, expression):
-        extractbyexpression = processing.run(
-            "native:extractbyexpression",
-            {"INPUT": layer, "EXPRESSION": expression, "OUTPUT": "TEMPORARY_OUTPUT"},
-        )
-        return extractbyexpression["OUTPUT"]
-
-    def dissolve(self, layer):
-        dissolve = processing.run(
-            "native:dissolve",
-            {"INPUT": layer, "FIELD": ["nome"], "OUTPUT": "TEMPORARY_OUTPUT"},
-        )
-        return dissolve["OUTPUT"]
-
-    def polytoline(self, layer):
-        line = processing.run(
-            "native:polygonstolines", {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"}
-        )
-        return line["OUTPUT"]
-
-    def intersect(self, layer, overlaylayer):
-        intersect = processing.run(
-            "native:intersection",
-            {"INPUT": layer, "OVERLAY": overlaylayer, "OUTPUT": "TEMPORARY_OUTPUT"},
-        )
-        return intersect["OUTPUT"]
-
-    def difference(self, layer, overlaylayer):
-        diff = processing.run(
-            "native:difference",
-            {"INPUT": layer, "OVERLAY": overlaylayer, "OUTPUT": "TEMPORARY_OUTPUT"},
-        )
-        return diff["OUTPUT"]
-
-    def tr(self, string):
-        return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
         return SetSobrepositionTopo()
@@ -243,15 +113,3 @@ class SetSobrepositionTopo(QgsProcessingAlgorithm):
 
     def displayName(self):
         return self.tr("Configura Sobreposição de Linhas Carta Topo")
-
-    def group(self):
-        return self.tr("Edição")
-
-    def groupId(self):
-        return "edicao"
-
-    def shortHelpString(self):
-        return help().shortHelpString(self.name())
-
-    def helpUrl(self):
-        return help().helpUrl(self.name())

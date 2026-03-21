@@ -22,7 +22,22 @@ from typing import Dict
 class ConnectionSingleton:
     """Singleton which handles the Postgres connection by using a QgsDataSourceUri"""
 
-    conn = None
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    @classmethod
+    def reset(cls):
+        cls._instance = None
+
+    def __init__(self):
+        if hasattr(self, "_initialized"):
+            return
+        self._initialized = True
+        self.conn = None
 
     def getConnection(
         self, connSettings: Dict, username: str, password: str

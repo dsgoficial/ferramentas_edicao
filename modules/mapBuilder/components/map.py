@@ -18,7 +18,6 @@
 from pathlib import Path
 
 from qgis.PyQt.QtCore import QMetaType
-from qgis.PyQt.QtGui import *
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -40,6 +39,7 @@ from ....interfaces.iComponent import IComponent
 from ....modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from ....modules.gridGenerator.core.config import FontConfig
 from ....modules.gridGenerator.labeling_engine import LabelingEngine
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
 
 
@@ -54,16 +54,7 @@ class Map(ComponentUtils, IComponent):
         )
         self.defaultMapSize = [(588, 588), (720, 490)]
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        data: dict,
-        defaults: ConfigDefaults,
-        mapAreaFeature: QgsFeature,
-        mapAreaLayer: QgsVectorLayer,
-        layers: list[QgsMapLayer],
-        showLayers: bool = False,
-    ):
+    def build(self, context: BuildContext):
         """Builds the Map component Topo and Ortho maps. The building process follows the sequence:
         1) Build the gridLayer (self.createLayerForGrid) in a layer called 'auxiliar_moldura'
         2) Builds the 'mascara_rotulo' layer, a donut (which the hole is mapAreaFeature) that blocks rendering of labels outside the map area
@@ -71,15 +62,15 @@ class Map(ComponentUtils, IComponent):
         4) Build the 'aux_label' layer to ???
         The aforementioned sequence is the layer insertion sequence (not the building one).
         Args:
-            composition (QgsPrintLayout): composition to be updated
-            data (dict): dictionary holding map info
-            defaults (ConfigDefaults): dataclass holding global plugin configurations
-            mapAreaFeature (QgsFeature): feature holding the map area
-            mapAreaLayer (QgsVectorLayer): layer holding a unique feature representing the map area
-            layers (list[QgsMapLayer]): ordered layers to be inserted in the map component
-            gridGenerator (GridAndLabelCreator): instance of the GridAndLabelCreator class
-            showLayers (bool): whether the plugin is running on debug mode or not
+            context (BuildContext): build context containing all parameters
         """
+        composition = context.composition
+        data = context.data
+        defaults = context.defaults
+        mapAreaFeature = context.mapAreaFeature
+        mapAreaLayer = context.mapAreaLayer
+        layers = context.layers
+        showLayers = context.showLayers
 
         instance = QgsProject.instance()
         mapIDsToBeDisplayed = []

@@ -24,7 +24,6 @@ from qgis.core import (
     QgsProcessingException,
 )
 from qgis.PyQt.QtWidgets import QMessageBox
-from qgis.PyQt.QtCore import QVariant
 
 
 class AddNewLineCharToAttribute(BaseTools):
@@ -48,7 +47,7 @@ class AddNewLineCharToAttribute(BaseTools):
 
     def run(self):
         def inserir_simbolo(texto):
-            if texto == QVariant(None):
+            if texto is None:
                 self.displayErrorMessage(
                     'O atributo "texto_edicao" da feição selecionada está vazio'
                 )

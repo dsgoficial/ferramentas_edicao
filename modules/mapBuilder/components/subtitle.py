@@ -20,6 +20,7 @@ from pathlib import Path
 from qgis.core import QgsFeature, QgsFeatureRequest, QgsPrintLayout, QgsVectorLayer
 
 from ....interfaces.iComponent import IComponent
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
 
 
@@ -27,15 +28,14 @@ class Subtitle(ComponentUtils, IComponent):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def build(
-        self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
-    ):
+    def build(self, context: BuildContext):
         """Populates the region label (and city/state for OM maps)
         Args:
-            composition (QgsPrintLayout): composition to be updated
-            data (dict): holds the map information
-            mapAreaFeature (QgsFeature): holds the map extents
+            context: BuildContext holding composition, data, and mapAreaFeature
         """
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
         if isInternational := bool(data.get("territorio_internacional")):
             pathShpCountries = (
                 Path(__file__).parent.parent
@@ -59,6 +59,7 @@ class Subtitle(ComponentUtils, IComponent):
             mapAreaFeature, layer, isInternational
         )
         self.updateComposition(composition, data, regionsIntersected, isInternational)
+        return []
 
     def getIntersections(
         self, mapAreaFeature: QgsFeature, layer: QgsVectorLayer, isInternational: bool

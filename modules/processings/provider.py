@@ -48,8 +48,6 @@ from .placeBuildingSymbol import PlaceBuildingSymbol
 from .placeMineralExtractionSymbol import PlaceMineralExtractionSymbol
 from .placePointSymbolInsideArea import PlacePointSymbolInsideArea
 from .placePowerPlantSymbol import PlacePowerPlantSymbol
-from .prepareOrtho import PrepareOrtho
-from .prepareTopo import PrepareTopo
 from .rapidsAndWaterfallRotation import RapidsAndWaterfallRotation
 from .saveLayerStylesToFile import SaveLayerStylesToFile
 from .saveMasks import SaveMasks
@@ -80,8 +78,6 @@ class Provider(QgsProcessingProvider):
     def loadAlgorithms(self, *args, **kwargs):
         self.addAlgorithm(OrderEditLayersAndAddStyle())
         self.addAlgorithm(MergeRivers())
-        # self.addAlgorithm(PrepareOrtho())
-        # self.addAlgorithm(PrepareTopo())
         self.addAlgorithm(InsertEnergyTower())
         self.addAlgorithm(InsertRoadMarker())
         self.addAlgorithm(HighestSpotOnTheFrame())

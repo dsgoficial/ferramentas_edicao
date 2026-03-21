@@ -24,7 +24,6 @@ from pathlib import Path
 from itertools import chain
 from typing import List, Tuple
 
-from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -47,6 +46,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
 from ....interfaces.iComponent import IComponent
 
@@ -61,14 +61,12 @@ class ImageArticulation(ComponentUtils, IComponent):
         )
         self.n_maxlines = 6
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        data: dict,
-        mapAreaFeature: QgsFeature,
-        layers: List[QgsVectorLayer],
-        showLayers: bool = False,
-    ):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
+        layers = context.layers
+        showLayers = context.showLayers
         if data.get("scale") == 250:
             self.n_maxlines = 4
         mapExtents = mapAreaFeature.geometry().convexHull().boundingBox()

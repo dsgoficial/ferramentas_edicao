@@ -16,11 +16,16 @@
  ***************************************************************************/
 """
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, List
+
+if TYPE_CHECKING:
+    from ..modules.mapBuilder.components.buildContext import BuildContext
 
 
 class IComponent(ABC):
     @abstractmethod
-    def build(self, *args, **kwargs):
+    def build(self, context: "BuildContext") -> List[str]:
+        """Build the component and return list of layer IDs to be removed later."""
         pass
 
     @abstractmethod

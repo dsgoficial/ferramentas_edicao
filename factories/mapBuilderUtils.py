@@ -36,6 +36,7 @@ from qgis.core import (
 )
 
 from ..config.configDefaults import ConfigDefaults
+from ..modules.mapBuilder.components.buildContext import BuildContext
 from qgis.utils import iface
 
 
@@ -345,6 +346,18 @@ class MapBuilderUtils:
             )
             geom.transform(transform)
         return geom
+
+    def buildAllComponents(self, context: BuildContext, layersByGroup: dict) -> list:
+        """Iterates through components, building each with the appropriate layers.
+        Returns list of all layer IDs produced by components."""
+        allLayerIds = []
+        for key, component in self.components.items():
+            self.deleteLayerTreeNode(key)
+            context.layers = layersByGroup.get(key, [])
+            result = component.build(context)
+            if result:
+                allLayerIds.extend(result)
+        return allLayerIds
 
     def setupMasks(self, productPath: Path, layers: List[QgsVectorLayer]):
         """Runs the "loadmasks" processing to setup the layers masks.

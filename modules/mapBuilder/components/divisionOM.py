@@ -39,6 +39,7 @@ from qgis.core import (
 )
 
 from ....interfaces.iComponent import IComponent
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
 
 
@@ -49,21 +50,16 @@ class DivisionOM(ComponentUtils, IComponent):
             Path(__file__).parent.parent / "resources" / "styles" / "division"
         )
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        data: dict,
-        mapAreaFeature: QgsFeature,
-        showLayers: bool = False,
-    ):
+    def build(self, context: BuildContext):
         """Builds the component and updates the composition. In this component (DivisionOM), we have two lawers:
         the mapArea (with default style) and the county layer (which rendering is adjusted by this component)
         Args:
-            composition: the map print layout (QgsPrintLayout)
-            data: dict with map parameters
-            mapAreaFeature: a QgsFeature holding the OM area
-            showLayers: debug flag
+            context (BuildContext): build context containing all parameters
         """
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
+        showLayers = context.showLayers
         mapIDsToBeDisplayed = []
         instance = QgsProject.instance()
 

@@ -29,13 +29,16 @@ from qgis.core import (
 
 from .angles.auxiliar.auxiliar import Auxiliar
 from .angles.geomag.geomag import GeoMag
+from .buildContext import BuildContext
 
 
 class AnglesHandler:
     def __init__(self, *args, **kwargs):
         self.auxiliar = Auxiliar()
 
-    def build(self, composition: QgsPrintLayout, mapAreaFeature):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        mapAreaFeature = context.mapAreaFeature
         point = None
 
         geom = mapAreaFeature.geometry()
@@ -61,6 +64,7 @@ class AnglesHandler:
         self.updateComposition(
             composition, convergencia, decl_today.dec, yearlydelta_declination
         )
+        return []
 
     def getWGSPoint(self, pt):
         crsSrc = QgsProject.instance().crs()

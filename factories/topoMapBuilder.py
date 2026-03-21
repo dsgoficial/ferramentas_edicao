@@ -17,17 +17,10 @@
 """
 from pathlib import Path
 
-from qgis.core import (
-    QgsDataSourceUri,
-    QgsFeature,
-    QgsPrintLayout,
-    QgsVectorLayer,
-    QgsMapLayer,
-)
-
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
 from ..interfaces.iMapBuilder import IMapBuilder
+from ..modules.mapBuilder.components.buildContext import BuildContext
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
@@ -110,59 +103,23 @@ class TopoMapBuilder(IMapBuilder, MapBuilderUtils):
             manager = self.instance.layoutManager()
             manager.addLayout(self.composition)
             self.composition.setName(self.data.get("productName"))
-        # self.instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
-        for key, component in self.components.items():
-            self.deleteLayerTreeNode(key)
-            # TODO: Parallelize
-            if key == "map":
-                mapLayersIds = component.build(
-                    self.composition,
-                    self.data,
-                    self.defaults,
-                    self.mapAreaFeature,
-                    self.mapAreaLayer,
-                    mapLayers,
-                    debugMode,
-                )
-            elif key == "elevationDiagram":
-                elevationDiagramLayersIds = component.build(
-                    self.composition,
-                    self.data,
-                    self.mapAreaFeature,
-                    elevationDiagramLayers,
-                    debugMode,
-                )
-            elif key == "localization":
-                localizationLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode
-                )
-            elif key == "articulation":
-                articulationLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaLayer, debugMode
-                )
-            elif key == "division":
-                divisionLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode
-                )
-            elif key == "subtitle":
-                component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == "mapScale":
-                component.build(self.composition, self.data)
-            elif key == "table":
-                component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == "anglesHandler":
-                component.build(self.composition, self.mapAreaFeature)
-            elif key == "qrcode":
-                component.build(self.composition, self.data, self.mapAreaFeature)
+
+        layersByGroup = {
+            "map": mapLayers,
+            "elevationDiagram": elevationDiagramLayers,
+        }
+        context = BuildContext(
+            composition=self.composition,
+            data=self.data,
+            defaults=self.defaults,
+            mapAreaFeature=self.mapAreaFeature,
+            mapAreaLayer=self.mapAreaLayer,
+            showLayers=debugMode,
+        )
+        allLayerIds = self.buildAllComponents(context, layersByGroup)
+
         self.layersIdsToBeRemoved.extend(
-            (
-                self.mapAreaLayer.id(),
-                *mapLayersIds,
-                *elevationDiagramLayersIds,
-                *localizationLayersIds,
-                *articulationLayersIds,
-                *divisionLayersIds,
-            )
+            [self.mapAreaLayer.id(), *allLayerIds]
         )
         self.groupsToBeRemoved.extend(
             ["map", "elevationDiagram", "localization", "articulation", "division"]

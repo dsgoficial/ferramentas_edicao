@@ -99,7 +99,7 @@ if __name__ == "__main__":
     prefixPath = p / "apps/qgis"
     qgs.setPrefixPath(str(prefixPath), True)
     pluginsFolder = Path(
-        "~\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins"
+        "~\\AppData\\Roaming\\QGIS\\QGIS4\\profiles\\default\\python\\plugins"
     ).expanduser()
     qgs.setPluginPath(str(pluginsFolder))
     sys.path.append(str(p / "apps/qgis/python/plugins"))

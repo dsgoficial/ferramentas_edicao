@@ -35,7 +35,6 @@ from qgis.gui import QgsMapToolEmitPoint
 
 from .baseTools import BaseTools
 from .utils.comboBox import ComboBox
-from qgis.PyQt.QtCore import QVariant
 
 
 class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
@@ -118,7 +117,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute("espacamento", 0)
         color = "#ffffff" if self.productTypeSelector.currentIndex() == 0 else "#00a0df"
         toInsert.setAttribute("cor", color)
-        if feat["tamanho_txt"] == QVariant(None):
+        if feat["tamanho_txt"] is None:
             self.displayErrorMessage(
                 'O atributo "tamanho_txt" do rio selecionado está vazio'
             )

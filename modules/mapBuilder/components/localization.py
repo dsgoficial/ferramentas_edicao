@@ -32,8 +32,12 @@ from qgis.core import (
 )
 
 from qgis.PyQt.QtCore import QMetaType
+from ....config.logging_setup import get_logger
 from ....interfaces.iComponent import IComponent
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
+
+logger = get_logger(__name__)
 from .find_largest_rectangle_inside_polygon import RasterLabelPositioner
 
 class Localization(ComponentUtils, IComponent):
@@ -44,13 +48,11 @@ class Localization(ComponentUtils, IComponent):
         self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2024"
         self.stateShpPath = self.shpFolder / "Estados_2024.shp"
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        data: dict,
-        mapAreaFeature: QgsFeature,
-        showLayers: bool = False,
-    ):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
+        showLayers = context.showLayers
         mapIDsToBeDisplayed = []
         instance = QgsProject.instance()
         isInternational = bool(data.get("territorio_internacional"))
@@ -282,120 +284,7 @@ class Localization(ComponentUtils, IComponent):
 
 
 
-
-
-
-                ################################################################### INICIO METODO ANTIGO ###################################################################
-                # intersectionGeometry = localization_extent.intersection(f.geometry())
-                # pointGeom, radius = intersectionGeometry.poleOfInaccessibility(0.0001)
-                # if pointGeom.isNull():
-                #     continue
-                # maxChar = 15
-                # height = (
-                #     (1.7 / 1000) * self.scale / 111000
-                # )  # altura para caber uma letra, 1.7mm, ajustar, ja tentado para 2 e 1.5
-                # if len(f["NOME"]) > maxChar:
-                #     height *= 2.5
-                # pointPoI = pointGeom.asPoint()
-                # radius_m = radius * 111000
-                # diam_mm = 2 * 1000 * radius_m / self.scale
-                # # pode haver limitacao vertical, mas o rotulo ainda caber horizontalmente, por isso, verificar maior retangulo interno
-                # # para simplificar foi procurado maior retangulo interno centrado em um ponto (PoI) e altura fixa
-                # maxRect = self.largestRectangleOnPoint(
-                #     height, pointPoI, intersectionGeometry, 5
-                # )  # 5 graus deve pegar todos os estados
-                # maxRectWidth_m = maxRect.width() * 111000
-                # maxRectWidth_mm = 1000 * maxRectWidth_m / self.scale
-                # # maxWordLen = max([self.text_size_six_pt_in_mm(word) for word in f["NOME"].split(' ')])
-                # nome_completo = self.truncate_string(f["NOME"], maxChar)
-                # maxWordLen = self.text_size_six_pt_in_mm(nome_completo)
-                # pointRect = maxRect.center()
-
-
-                # tolerancia_deslocamento_mm = (
-                #     200.2  # pode deslocar rotulo ate 2.2mm, valor empirico, arbitrario
-                # )
-                # distancia_pontos_mm = (
-                #     1000 * pointRect.distance(pointPoI) * 110000 / self.scale
-                # )
-
-
-                # # point = pointRect if maxRectWidth_mm>diam_mm else pointPoI
-                # # maxWidth_mm = maxRectWidth_mm if distancia_pontos_mm<tolerancia_deslocamento_mm else diam_mm
-                # # maxWidth_mm = max(diam_mm, maxRectWidth_mm)
-                # buffer_mm = 1  # margem de segurança em mm
-                # buffer_degrees = (buffer_mm / 1000) * self.scale / 111000
-            
-                # # Converte o retângulo do texto em geometria para verificar se está completamente dentro
-                # text_width_degrees = (maxWordLen / 1000) * self.scale / 111000
-                # text_height_degrees = height
-                
-                # # Adiciona o buffer ao retângulo do texto
-                # text_rect = QgsRectangle(
-                #     pointRect.x() - text_width_degrees / 2 - buffer_degrees,
-                #     pointRect.y() - text_height_degrees / 2,
-                #     pointRect.x() + text_width_degrees / 2 + buffer_degrees,
-                #     pointRect.y() + text_height_degrees / 2
-                # )
-                # text_geom = QgsGeometry.fromRect(text_rect)
-                # # print(f"analisando para o estado {f['NOME']}")
-                
-                # # Verifica se o texto está completamente dentro do polígono com margem
-                # is_text_inside = text_geom.within(intersectionGeometry)
-                # # print(f"tamanho do texto= L: {text_rect.width()} x A: {text_rect.height()}, is_text_inside={is_text_inside}")
-                
-                # # Calcula a margem de segurança considerando a proximidade das bordas
-                # safety_factor = 1.4
-
-
-                # maxWidth_mm = maxRectWidth_mm
-                # point = pointRect
-                # # if maxWidth_mm < maxWordLen * 1.2:  # checar se rotulo cabe no poligono
-                # # Primeira tentativa: nome completo
-                # if maxRectWidth_mm < maxWordLen * safety_factor or not is_text_inside:
-                #     # Segunda tentativa: usar sigla
-                #     nome_sigla = f["SIGLA_UF"] if not isInternational else f["SIGLA_UF"] + " - " + f["SIGLA_PAIS"] 
-                #     f["NOME"] = nome_sigla
-                #     height = ((2 / 1000) * self.scale / 111000)  # altura para caber uma letra, 2mm
-                #     maxRect = self.largestRectangleOnPoint(
-                #         height, pointPoI, intersectionGeometry, 5
-                #     )  # 5 graus deve pegar todos os estados
-                #     maxRectWidth_m = maxRect.width() * 111000
-                #     maxRectWidth_mm = 1000 * maxRectWidth_m / self.scale
-                #     maxWidth_mm = maxRectWidth_mm
-                #     pointRect = maxRect.center()
-                #     point = pointRect
-                #     # maxWordLen = max([self.text_size_six_pt_in_mm(word) for word in f["NOME"].split(' ')])
-                #     maxWordLen_sigla = self.text_size_six_pt_in_mm(nome_sigla)
-                #     # Verifica novamente se a sigla cabe com margem de segurança
-                #     text_width_degrees = (maxWordLen_sigla / 1000) * self.scale / 111000
-                #     text_rect = QgsRectangle(
-                #         point.x() - text_width_degrees / 2 - buffer_degrees,
-                #         point.y() - text_height_degrees / 2,
-                #         point.x() + text_width_degrees / 2 + buffer_degrees,
-                #         point.y() + text_height_degrees / 2
-                #     )
-                #     text_geom = QgsGeometry.fromRect(text_rect)
-                #     is_sigla_inside = text_geom.within(intersectionGeometry)
-                #     # print(f"{f['NOME']}: não coube")
-                #     # print(f"tamanho do texto= L: {text_rect.width()} x A: {text_rect.height()}, is_sigla_inside={is_sigla_inside}")
-                    
-                #     # Se nem a sigla cabe adequadamente, omitir
-                #     safety_factor_sigla = 1.1
-                #     if maxRectWidth_mm < maxWordLen_sigla * safety_factor_sigla or not is_sigla_inside:
-                #         # print(f"{f['NOME']}: omitindo")
-                #         f["NOME"] = ""
-                #         stateLayer.updateFeature(f)
-                #         continue
-                    ################################################################### FIM METODO ANTIGO ###################################################################
-
-
-
-
-                
-                ################################################################### INICIO METODO NOVO ###################################################################
                     molduraGeometry = QgsGeometry.fromRect(mapExtents)
-                    # polygon = f.geometry()
                     geometry = feature.geometry()
                     
                     if geometry.type() != QgsWkbTypes.GeometryType.PolygonGeometry:
@@ -450,28 +339,8 @@ class Localization(ComponentUtils, IComponent):
                         feature["NOME"] = ""
                         stateLayer.updateFeature(feature)
                 
-                # # Adiciona camadas ao projeto
-                # if rect_features:
-                #     rect_layer.dataProvider().addFeatures(rect_features)
-                #     rect_layer.updateExtents()
-                #     QgsProject.instance().addMapLayer(rect_layer)
-                
-                # if point_features:
-                #     point_layer.dataProvider().addFeatures(point_features)
-                #     point_layer.updateExtents()
-                #     QgsProject.instance().addMapLayer(point_layer)
-                
-                # print(f"Processed {len(rect_features)} polygons successfully")
-                        
             except Exception as e:
-                print(f"ERROR: {str(e)}")
-                import traceback
-                traceback.print_exc()
-
-
-
-
-                ################################################################### FIM METODO NOVO ###################################################################
+                logger.error("Erro no posicionamento de rótulos: %s", e, exc_info=True)
 
             stateLayer.commitChanges()
         stateLayer.triggerRepaint()

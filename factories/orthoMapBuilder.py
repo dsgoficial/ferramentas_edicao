@@ -18,19 +18,12 @@
 from functools import partial
 from pathlib import Path
 from typing import Dict, List
-from qgis.core import (
-    QgsDataSourceUri,
-    QgsFeature,
-    QgsPrintLayout,
-    QgsVectorLayer,
-    QgsMapLayer,
-    QgsProject,
-)
+from qgis.core import QgsProject
 
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
 from ..interfaces.iMapBuilder import IMapBuilder
-from ..modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
+from ..modules.mapBuilder.components.buildContext import BuildContext
 from ..modules.mapBuilder.factories.componentFactory import ComponentFactory
 
 
@@ -186,60 +179,21 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
             manager = self.instance.layoutManager()
             manager.addLayout(self.composition)
             self.composition.setName(self.data.get("productName"))
-        # self.instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4674'))
-        for key, component in self.components.items():
-            self.deleteLayerTreeNode(key)
-            # TODO: Parallelize
-            if key == "map":
-                mapLayersIds = component.build(
-                    self.composition,
-                    self.data,
-                    self.defaults,
-                    self.mapAreaFeature,
-                    self.mapAreaLayer,
-                    mapLayers,
-                    debugMode,
-                )
-            elif key == "elevationDiagram":
-                elevationDiagramLayersIds = component.build(
-                    self.composition,
-                    self.data,
-                    self.mapAreaFeature,
-                    elevationDiagramLayers,
-                    debugMode,
-                )
-            elif key == "imageArticulation":
-                imageArticulationIds = component.build(
-                    self.composition,
-                    self.data,
-                    self.mapAreaFeature,
-                    imageArticulationLayers,
-                    debugMode,
-                )
-            elif key == "localization":
-                localizationLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode
-                )
-            elif key == "articulation":
-                articulationLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaLayer, debugMode
-                )
-            elif key == "division":
-                divisionLayersIds = component.build(
-                    self.composition, self.data, self.mapAreaFeature, debugMode
-                )
-            elif key == "subtitle":
-                component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == "legend":
-                component.build(self.composition, self.data, self.defaults)
-            elif key == "mapScale":
-                component.build(self.composition, self.data)
-            elif key == "table":
-                component.build(self.composition, self.data, self.mapAreaFeature)
-            elif key == "anglesHandler":
-                component.build(self.composition, self.mapAreaFeature)
-            elif key == "qrcode":
-                component.build(self.composition, self.data, self.mapAreaFeature)
+
+        layersByGroup = {
+            "map": mapLayers,
+            "elevationDiagram": elevationDiagramLayers,
+            "imageArticulation": imageArticulationLayers,
+        }
+        context = BuildContext(
+            composition=self.composition,
+            data=self.data,
+            defaults=self.defaults,
+            mapAreaFeature=self.mapAreaFeature,
+            mapAreaLayer=self.mapAreaLayer,
+            showLayers=debugMode,
+        )
+        allLayerIds = self.buildAllComponents(context, layersByGroup)
 
         auxLayerIds = [
             lyr.id()
@@ -248,16 +202,7 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
         ]
 
         self.layersIdsToBeRemoved.extend(
-            (
-                self.mapAreaLayer.id(),
-                *mapLayersIds,
-                *elevationDiagramLayersIds,
-                *imageArticulationIds,
-                *localizationLayersIds,
-                *articulationLayersIds,
-                *divisionLayersIds,
-                *auxLayerIds,
-            )
+            [self.mapAreaLayer.id(), *allLayerIds, *auxLayerIds]
         )
         self.groupsToBeRemoved.extend(
             [

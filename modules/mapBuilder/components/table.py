@@ -30,6 +30,7 @@ from qgis.core import (
 )
 
 from ....interfaces.iComponent import IComponent
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
 
 
@@ -43,13 +44,15 @@ class Table(IComponent, ComponentUtils):
             / "Brasil_2024.shp"
         )
 
-    def build(
-        self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
-    ):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        data = context.data
+        mapAreaFeature = context.mapAreaFeature
         self.customEtapa(composition, data.get("fases", ()))
         self.customSensores(composition, data.get("sensores", ()))
         self.customTecnicalInfo(composition, data, mapAreaFeature)
         self.omInfoTable(composition, data, mapAreaFeature)
+        return []
 
     def updateComposition(self, *args, **kwargs):
         pass

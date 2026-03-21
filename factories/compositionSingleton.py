@@ -33,7 +33,21 @@ from ..config.configDefaults import ConfigDefaults
 
 
 class CompositionSingleton:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    @classmethod
+    def reset(cls):
+        cls._instance = None
+
     def __init__(self, config: ConfigDefaults) -> None:
+        if hasattr(self, "_initialized"):
+            return
+        self._initialized = True
         config = config if config is not None else ConfigDefaults()
         self.compositions = dict()
         self.config = config

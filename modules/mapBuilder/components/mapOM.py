@@ -38,6 +38,7 @@ from qgis.core import (
 
 from ....config.configDefaults import ConfigDefaults
 from ....interfaces.iComponent import IComponent
+from .buildContext import BuildContext
 from .componentUtils import ComponentUtils, OBB
 
 
@@ -56,16 +57,14 @@ class MapOM(ComponentUtils, IComponent):
             (550, 550),
         ]
 
-    def build(
-        self,
-        composition: QgsPrintLayout,
-        jsonData: dict,
-        defaults: ConfigDefaults,
-        mapAreaFeature: QgsFeature,
-        mapAreaLayer: QgsVectorLayer,
-        layers: list[QgsMapLayer],
-        showLayers: bool = False,
-    ):
+    def build(self, context: BuildContext):
+        composition = context.composition
+        jsonData = context.data
+        defaults = context.defaults
+        mapAreaFeature = context.mapAreaFeature
+        mapAreaLayer = context.mapAreaLayer
+        layers = context.layers
+        showLayers = context.showLayers
 
         instance = QgsProject.instance()
         mapIDsToBeDisplayed = []
