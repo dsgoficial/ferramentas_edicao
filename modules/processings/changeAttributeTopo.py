@@ -23,6 +23,8 @@ from qgis.core import (
     NULL,
     QgsProcessingMultiStepFeedback,
     QgsVectorLayer,
+    QgsSpatialIndex,
+    QgsRectangle,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from .processingUtils import ProcessingUtils
@@ -125,6 +127,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         elif table_name in ["elemnat_ilha_a"]:
             processing_function = self.defaultIlhaA
         elif table_name in ["constr_deposito_p", "constr_deposito_a"]:
+            self._siloLabelFeatureIds = self._clusterSilos(layer)
             processing_function = self.defaultDeposito
         elif table_name in ["constr_edificacao_p", "constr_edificacao_a"]:
             processing_function = self.defaultEdificacao
@@ -579,6 +582,79 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         feature["texto_edicao"] = feature["nome"]
         return feature
 
+    def _clusterSilos(self, layer):
+        """Agrupa silos (tipo=109) por proximidade espacial.
+        Retorna dict {feature_id: texto} onde apenas um silo por cluster
+        recebe rótulo ('Silo' se isolado, 'Silos' se agrupado).
+        Os demais recebem None (rótulo suprimido).
+        """
+        # Distância de agrupamento: 15mm na escala do mapa
+        clusterDist = self.scale * 0.015
+
+        silos = {}
+        for feat in layer.getFeatures():
+            if feat["tipo"] == 109:
+                # Pular silos que já têm texto_edicao definido
+                if "texto_edicao" in feat.fields().names() and feat["texto_edicao"] != NULL:
+                    if isinstance(feat["texto_edicao"], str) and feat["texto_edicao"].strip() != "":
+                        continue
+                if feat["nome"] != NULL:
+                    continue
+                silos[feat.id()] = feat.geometry()
+
+        if not silos:
+            return {}
+
+        # Union-Find
+        parent = {fid: fid for fid in silos}
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def union(a, b):
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[ra] = rb
+
+        # Índice espacial para busca eficiente
+        index = QgsSpatialIndex()
+        featMap = {}
+        for fid, geom in silos.items():
+            f = layer.getFeature(fid)
+            index.addFeature(f)
+            featMap[fid] = geom
+
+        # Agrupar silos próximos
+        for fid, geom in silos.items():
+            pt = geom.asPoint()
+            searchRect = QgsRectangle(
+                pt.x() - clusterDist, pt.y() - clusterDist,
+                pt.x() + clusterDist, pt.y() + clusterDist,
+            )
+            candidates = index.intersects(searchRect)
+            for cid in candidates:
+                if cid != fid and cid in silos:
+                    if geom.distance(silos[cid]) <= clusterDist:
+                        union(fid, cid)
+
+        # Montar clusters
+        clusters = {}
+        for fid in silos:
+            root = find(fid)
+            clusters.setdefault(root, []).append(fid)
+
+        # Definir rótulos: um por cluster
+        result = {}
+        for members in clusters.values():
+            label = "Silo" if len(members) == 1 else "Silos"
+            result[members[0]] = label
+            for fid in members[1:]:
+                result[fid] = None  # suprimir rótulo
+        return result
+
     def defaultDeposito(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
         feature["visivel"] = 1
@@ -592,7 +668,16 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             if feature["texto_edicao"].strip() != "":
                 return feature
         if feature["tipo"] in [109]:
-            feature["texto_edicao"] = "Silo"
+            fid = feature.id()
+            if fid in self._siloLabelFeatureIds:
+                label = self._siloLabelFeatureIds[fid]
+                if label is not None:
+                    feature["texto_edicao"] = label
+                else:
+                    feature["texto_edicao"] = ""
+                    feature["visivel"] = 2
+            else:
+                feature["texto_edicao"] = "Silo"
         if feature["nome"] != NULL:
             feature["texto_edicao"] = feature["nome"]
 

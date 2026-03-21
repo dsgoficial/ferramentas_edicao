@@ -16,13 +16,17 @@
  ***************************************************************************/
 """
 
-import os
 import processing
-import concurrent.futures
 
-from collections import defaultdict
-from typing import Literal, Set
-from ..labelTools.label_size_calculator import get_label_size_calculator
+from ..labelTools.label_size_calculator import (
+    is_generic_text_line_layer,
+    get_generic_text_polygons,
+)
+from ..labelTools.precise_label_polygons import (
+    render_and_create_precise_label_polygons,
+    build_font_info_cache,
+    _get_visible_layers,
+)
 
 from qgis.core import (
     QgsField,
@@ -30,20 +34,12 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
-    QgsGeometry,
     QgsFeature,
-    QgsPointXY,
-    QgsVectorLayer,
-    QgsFeatureSink,
     QgsProcessingParameterEnum,
     QgsFields,
-    QgsSpatialIndex,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterMultipleLayers,
-    NULL,
     QgsWkbTypes,
-    QgsRectangle,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QMetaType
@@ -123,80 +119,75 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             geographicBoundaryLyr.crs(),
         )
 
-        lyrNameSet = set(i.name() for i in layerList)
+        genericTextLayers = []
+        regularLayers = []
+        for l in layerList:
+            (genericTextLayers if is_generic_text_line_layer(l) else regularLayers).append(l)
+        lyrNameSet = set(i.name() for i in regularLayers)
         algRunner = AlgRunner()
         nRegions = geographicBoundaryLyr.featureCount()
-        nSteps = 5 + 2 * nRegions
+        nSteps = 7 + nRegions
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        label_calculator = get_label_size_calculator(scale, dpi=300)
-        selectedLabelLyrList = []
-        for feat in geographicBoundaryLyr.getFeatures():
-            if multiStepFeedback.isCanceled():
-                return {self.OUTPUT: sink_id}
-            geom = feat.geometry()
-            extent = geom.boundingBox()
-            multiStepFeedback.setCurrentStep(currentStep)
-            multiStepFeedback.setProgressText(
-                self.tr(f"Calculando posição dos textos para o extent {extent}")
+        polygonLayerList = []
+
+        # Process regular layers via precise render-based approach
+        if regularLayers:
+            project = context.project()
+            visible_layers = _get_visible_layers(project)
+            labeled_layers, font_cache = build_font_info_cache(
+                visible_layers, lyrNameSet, scale, 300
             )
-            outputLabelLyr = processing.run(
-                "native:extractlabels",
-                {
-                    "EXTENT": extent,
-                    "SCALE": scale,
-                    "MAP_THEME": None,
-                    "INCLUDE_UNPLACED": False,
-                    "DPI": 300,
-                    "OUTPUT": "memory:",
-                },
-                context=context,
-                feedback=multiStepFeedback,
-            )["OUTPUT"]
-            currentStep += 1
-            multiStepFeedback.setCurrentStep(currentStep)
-            multiStepFeedback.setProgressText(
-                self.tr(
-                    f"Adicionando dados calculados do extent {extent} às estruturas auxiliares"
+            seen = set()
+            for feat in geographicBoundaryLyr.getFeatures():
+                if multiStepFeedback.isCanceled():
+                    return {self.OUTPUT: sink_id}
+                extent = feat.geometry().boundingBox()
+                multiStepFeedback.setCurrentStep(currentStep)
+                multiStepFeedback.setProgressText(
+                    self.tr(f"Renderizando e extraindo rótulos precisos para o extent {extent}")
                 )
+                precisePolygons = render_and_create_precise_label_polygons(
+                    extent=extent,
+                    scale=scale,
+                    project=project,
+                    layer_name_filter=lyrNameSet,
+                    dpi=300,
+                    seen=seen,
+                    visible_layers=visible_layers,
+                    labeled_layers=labeled_layers,
+                    font_info_cache=font_cache,
+                )
+                if precisePolygons is not None:
+                    polygonLayerList.append(precisePolygons)
+                currentStep += 1
+
+        # Process generic text line layers via flat-cap buffer
+        if genericTextLayers:
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(
+                self.tr("Criando polígonos para texto genérico de edição")
             )
-            nFeats = outputLabelLyr.featureCount()
-            if nFeats == 0:
-                continue
-            selectedLabelsLyr = algRunner.runFilterExpression(
-                inputLyr=outputLabelLyr,
-                context=context,
-                expression=f"Layer in {tuple(lyrNameSet)}".replace(",)", ")"),
-                feedback=multiStepFeedback,
+            genericPolygons = get_generic_text_polygons(
+                genericTextLayers, scale, algRunner, context, multiStepFeedback
             )
+            if genericPolygons is not None:
+                polygonLayerList.append(genericPolygons)
             currentStep += 1
-            if selectedLabelsLyr.featureCount() == 0:
-                continue
-            selectedLabelLyrList.append(selectedLabelsLyr)
 
-        if selectedLabelLyrList == [] or multiStepFeedback.isCanceled():
+        if not polygonLayerList or multiStepFeedback.isCanceled():
             return {self.OUTPUT: sink_id}
 
-        mergedLyr = algRunner.runMergeVectorLayers(
-            selectedLabelLyrList, context, feedback=multiStepFeedback
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        mergedWithFieldId = algRunner.runCreateFieldWithExpression(
-            inputLyr=mergedLyr,
-            expression="$id",
-            fieldType=1,
-            fieldName="featid",
-            feedback=multiStepFeedback,
-            context=context,
-            is_child_algorithm=False,
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        if mergedWithFieldId.featureCount() == 0:
-            return {self.OUTPUT: sink_id}
-        multiStepFeedback.setProgressText(self.tr("Criando polígonos de labels com dimensões precisas"))
-        labelPolygonsLayer = label_calculator.get_improved_label_polygons_layer(mergedWithFieldId)
+        # Merge all polygon layers
+        if len(polygonLayerList) > 1:
+            labelPolygonsLayer = algRunner.runMergeVectorLayers(
+                polygonLayerList, context, feedback=multiStepFeedback
+            )
+            labelPolygonsLayer.addExpressionField(
+                "$id", QgsField("featid", QMetaType.Type.Int)
+            )
+        else:
+            labelPolygonsLayer = polygonLayerList[0]
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         algRunner.runCreateSpatialIndex(

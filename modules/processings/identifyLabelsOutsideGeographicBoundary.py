@@ -16,9 +16,15 @@
  ***************************************************************************/
 """
 
-import processing
-
-from ..labelTools.label_size_calculator import get_label_size_calculator
+from ..labelTools.label_size_calculator import (
+    is_generic_text_line_layer,
+    get_generic_text_polygons,
+)
+from ..labelTools.precise_label_polygons import (
+    render_and_create_precise_label_polygons,
+    build_font_info_cache,
+    _get_visible_layers,
+)
 
 from qgis.core import (
     QgsField,
@@ -26,19 +32,14 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
-    QgsGeometry,
     QgsFeature,
-    QgsPointXY,
-    QgsVectorLayer,
     QgsProcessingParameterEnum,
     QgsFields,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterMultipleLayers,
     QgsWkbTypes,
-    QgsRectangle,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-from DsgTools.core.GeometricTools.layerHandler import LayerHandler
 from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
@@ -116,102 +117,97 @@ class IdentifyLabelsOutsideGeographicBoundary(QgsProcessingAlgorithm):
             geographicBoundaryLyr.crs(),
         )
 
-        lyrNameSet = set(i.name() for i in layerList)
+        genericTextLayers = []
+        regularLayers = []
+        for l in layerList:
+            (genericTextLayers if is_generic_text_line_layer(l) else regularLayers).append(l)
+        lyrNameSet = set(i.name() for i in regularLayers)
         algRunner = AlgRunner()
-        layerHandler = LayerHandler()
-        nRegions = geographicBoundaryLyr.featureCount()
-        nSteps = 7 * nRegions
+        nSteps = 6
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        label_calculator = get_label_size_calculator(scale, dpi=300)
-        
-        for feat in geographicBoundaryLyr.getFeatures():
-            if multiStepFeedback.isCanceled():
-                return {self.OUTPUT: sink_id}
-            geom = feat.geometry()
-            extent = geom.boundingBox()
+        polygonLayerList = []
+
+        # Process regular layers — single render over full boundary extent
+        if regularLayers:
+            project = context.project()
+            visible_layers = _get_visible_layers(project)
+            labeled_layers, font_cache = build_font_info_cache(
+                visible_layers, lyrNameSet, scale, 300
+            )
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.setProgressText(
-                self.tr(f"Calculando posição dos textos para o extent {extent}")
+                self.tr("Renderizando e extraindo rótulos precisos")
             )
-            outputLabelLyr = processing.run(
-                "native:extractlabels",
-                {
-                    "EXTENT": extent,
-                    "SCALE": scale,
-                    "MAP_THEME": None,
-                    "INCLUDE_UNPLACED": False,
-                    "DPI": 300,
-                    "OUTPUT": "memory:",
-                },
-                context=context,
-                feedback=multiStepFeedback,
-            )["OUTPUT"]
+            precisePolygons = render_and_create_precise_label_polygons(
+                extent=geographicBoundaryLyr.extent(),
+                scale=scale,
+                project=project,
+                layer_name_filter=lyrNameSet,
+                dpi=300,
+                visible_layers=visible_layers,
+                labeled_layers=labeled_layers,
+                font_info_cache=font_cache,
+            )
+            if precisePolygons is not None:
+                polygonLayerList.append(precisePolygons)
             currentStep += 1
+
+        # Process generic text line layers via flat-cap buffer
+        if genericTextLayers:
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.setProgressText(
-                self.tr(
-                    f"Adicionando dados calculados do extent {extent} às estruturas auxiliares"
-                )
+                self.tr("Criando polígonos para texto genérico de edição")
             )
-            nFeats = outputLabelLyr.featureCount()
-            if nFeats == 0:
-                continue
-            selectedLabelsLyr = algRunner.runFilterExpression(
-                inputLyr=outputLabelLyr,
-                context=context,
-                expression=f"Layer in {tuple(lyrNameSet)}".replace(",)", ")"),
-                feedback=multiStepFeedback,
+            genericPolygons = get_generic_text_polygons(
+                genericTextLayers, scale, algRunner, context, multiStepFeedback
             )
+            if genericPolygons is not None:
+                polygonLayerList.append(genericPolygons)
             currentStep += 1
-            multiStepFeedback.setCurrentStep(currentStep)
-            if selectedLabelsLyr.featureCount() == 0:
-                continue
-            multiStepFeedback.setProgressText(self.tr("Criando polígonos de labels com dimensões precisas"))
-            labelPolygonsLayer = label_calculator.get_improved_label_polygons_layer(selectedLabelsLyr)
-            currentStep += 1
-            multiStepFeedback.setCurrentStep(currentStep)
-            algRunner.runCreateSpatialIndex(
-                labelPolygonsLayer,
-                context,
-                feedback=multiStepFeedback,
-                is_child_algorithm=True,
+
+        if not polygonLayerList or multiStepFeedback.isCanceled():
+            return {self.OUTPUT: sink_id}
+
+        # Merge all polygon layers
+        if len(polygonLayerList) > 1:
+            labelPolygonsLayer = algRunner.runMergeVectorLayers(
+                polygonLayerList, context, feedback=multiStepFeedback
             )
-            currentStep += 1
-            multiStepFeedback.setCurrentStep(currentStep)
-            boundsLyr = layerHandler.createMemoryLayerWithFeature(
-                layer=geographicBoundaryLyr,
-                feat=feat,
-                context=context,
-            )
-            featsWithin = algRunner.runExtractByLocation(
-                inputLyr=labelPolygonsLayer,
-                intersectLyr=boundsLyr,
-                context=context,
-                predicate=[AlgRunner.Within],
-                feedback=multiStepFeedback,
-            )
-            currentStep += 1
-            multiStepFeedback.setCurrentStep(currentStep)
-            if featsWithin.featureCount() == 0:
-                continue
-            featsWithinIdList = [feat["featid"] for feat in featsWithin.getFeatures()]
-            candidateFlagsLyr = algRunner.runFilterExpression(
-                inputLyr=labelPolygonsLayer,
-                context=context,
-                expression=f"featid not in {tuple(featsWithinIdList)}".replace(
-                    ",)", ")"
-                ),
-                feedback=multiStepFeedback,
-            )
-            currentStep += 1
-            multiStepFeedback.setCurrentStep(currentStep)
-            if candidateFlagsLyr.featureCount() == 0:
-                continue
-            for flagFeat in candidateFlagsLyr.getFeatures():
+        else:
+            labelPolygonsLayer = polygonLayerList[0]
+        currentStep += 1
+
+        # Check which polygons are outside the boundary (against full boundary)
+        multiStepFeedback.setCurrentStep(currentStep)
+        algRunner.runCreateSpatialIndex(
+            labelPolygonsLayer,
+            context,
+            feedback=multiStepFeedback,
+            is_child_algorithm=True,
+        )
+        currentStep += 1
+
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.setProgressText(
+            self.tr("Identificando rótulos fora da moldura")
+        )
+        featsOutside = algRunner.runExtractByLocation(
+            inputLyr=labelPolygonsLayer,
+            intersectLyr=geographicBoundaryLyr,
+            context=context,
+            predicate=[AlgRunner.Within],
+            feedback=multiStepFeedback,
+        )
+        # Invert: get features NOT within the boundary
+        withinIds = set()
+        for f in featsOutside.getFeatures():
+            withinIds.add(f.id())
+        for f in labelPolygonsLayer.getFeatures():
+            if f.id() not in withinIds:
                 newFlag = QgsFeature(fields)
                 newFlag["flag"] = "Rótulo fora da moldura"
-                newFlag.setGeometry(flagFeat.geometry())
+                newFlag.setGeometry(f.geometry())
                 sink.addFeature(newFlag)
 
         return {self.OUTPUT: sink_id}

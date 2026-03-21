@@ -16,9 +16,13 @@
  ***************************************************************************/
 """
 
-import processing
-
-from ..labelTools.label_size_calculator import get_label_size_calculator
+from ..labelTools.label_size_calculator import (
+    is_generic_text_line_layer,
+    get_generic_text_polygons,
+)
+from ..labelTools.precise_label_polygons import (
+    render_and_create_precise_label_polygons,
+)
 
 from qgis.core import (
     QgsField,
@@ -26,16 +30,12 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
-    QgsGeometry,
     QgsFeature,
-    QgsPointXY,
-    QgsVectorLayer,
     QgsProcessingParameterEnum,
     QgsFields,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterMultipleLayers,
     QgsWkbTypes,
-    QgsRectangle,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QMetaType
@@ -120,62 +120,62 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
             gridLyr.crs(),
         )
 
-        lyrNameSet = set(i.name() for i in layerList)
+        genericTextLayers = []
+        regularLayers = []
+        for l in layerList:
+            (genericTextLayers if is_generic_text_line_layer(l) else regularLayers).append(l)
+        lyrNameSet = set(i.name() for i in regularLayers)
         algRunner = AlgRunner()
-        
+
         # Obter extent do grid para extrair labels
         gridExtent = gridLyr.extent()
-        
+
         nSteps = 8
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        label_calculator = get_label_size_calculator(scale, dpi=300)
-        
-        # Extrair labels do extent do grid
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.setProgressText(
-            self.tr(f"Calculando posição dos textos para o extent {gridExtent}")
-        )
-        outputLabelLyr = processing.run(
-            "native:extractlabels",
-            {
-                "EXTENT": gridExtent,
-                "SCALE": scale,
-                "MAP_THEME": None,
-                "INCLUDE_UNPLACED": False,
-                "DPI": 300,
-                "OUTPUT": "memory:",
-            },
-            context=context,
-            feedback=multiStepFeedback,
-        )["OUTPUT"]
-        currentStep += 1
-        
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.setProgressText(
-            self.tr("Filtrando labels das camadas selecionadas")
-        )
-        nFeats = outputLabelLyr.featureCount()
-        if nFeats == 0:
+        polygonLayerList = []
+
+        # Process regular layers via precise render-based approach
+        if regularLayers:
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(
+                self.tr("Renderizando e extraindo rótulos precisos")
+            )
+            precisePolygons = render_and_create_precise_label_polygons(
+                extent=gridExtent,
+                scale=scale,
+                project=context.project(),
+                layer_name_filter=lyrNameSet,
+                dpi=300,
+            )
+            if precisePolygons is not None:
+                polygonLayerList.append(precisePolygons)
+            currentStep += 1
+
+        # Process generic text line layers via flat-cap buffer
+        if genericTextLayers:
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(
+                self.tr("Criando polígonos para texto genérico de edição")
+            )
+            genericPolygons = get_generic_text_polygons(
+                genericTextLayers, scale, algRunner, context, multiStepFeedback
+            )
+            if genericPolygons is not None:
+                polygonLayerList.append(genericPolygons)
+            currentStep += 1
+
+        if not polygonLayerList:
             multiStepFeedback.pushInfo(self.tr("Nenhum rótulo encontrado"))
             return {self.OUTPUT: sink_id}
-            
-        selectedLabelsLyr = algRunner.runFilterExpression(
-            inputLyr=outputLabelLyr,
-            context=context,
-            expression=f"Layer in {tuple(lyrNameSet)}".replace(",)", ")"),
-            feedback=multiStepFeedback,
-        )
-        currentStep += 1
-        
-        multiStepFeedback.setCurrentStep(currentStep)
-        if selectedLabelsLyr.featureCount() == 0:
-            multiStepFeedback.pushInfo(self.tr("Nenhum rótulo das camadas selecionadas encontrado"))
-            return {self.OUTPUT: sink_id}
-            
-        # Converter labels em polígonos
-        multiStepFeedback.setProgressText(self.tr("Convertendo rótulos em polígonos com dimensões precisas"))
-        labelPolygonsLayer = label_calculator.get_improved_label_polygons_layer(selectedLabelsLyr)
+
+        # Merge all polygon layers
+        if len(polygonLayerList) > 1:
+            labelPolygonsLayer = algRunner.runMergeVectorLayers(
+                polygonLayerList, context, feedback=multiStepFeedback
+            )
+        else:
+            labelPolygonsLayer = polygonLayerList[0]
         currentStep += 1
         
         multiStepFeedback.setCurrentStep(currentStep)
@@ -219,15 +219,16 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
         multiStepFeedback.setProgressText(self.tr("Criando flags dos rótulos problemáticos"))
         stepSize = 100 / nProblems
         flagId = 0
-        
+        hasLayerField = intersectedLyr.fields().lookupField("Layer") != -1
+
         for current, feat in enumerate(intersectedLyr.getFeatures()):
             if multiStepFeedback.isCanceled():
                 break
-                
+
             flagFeat = QgsFeature(fields)
             flagFeat["id"] = str(flagId)
             flagFeat["texto"] = "Rótulo intersecta grid"
-            flagFeat["camada"] = feat["Layer"] if "Layer" in feat.fields().names() else ""
+            flagFeat["camada"] = feat["Layer"] if hasLayerField else ""
             flagFeat.setGeometry(feat.geometry())
             sink.addFeature(flagFeat)
             
