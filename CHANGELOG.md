@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.33
+
+Correção de bug:
+- Corrige pista de pouso ponto nas legendas
+
+
 ## 1.3.32
 
 Melhorias:
