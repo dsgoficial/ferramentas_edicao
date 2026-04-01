@@ -122,7 +122,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             self.parameterAsDouble(parameters, self.MIN_DISTANCE_FROM_FRAME, context)
             / 1000
         )
-        multiStepFeedback = QgsProcessingMultiStepFeedback(17, feedback)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(16, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Preparando estrutura auxiliar"))
@@ -149,15 +149,12 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        lyr = self.runAddCount(lyr, feedback=multiStepFeedback)
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
         self.runCreateSpatialIndex(lyr, feedback=multiStepFeedback)
 
         multiStepFeedback.pushInfo(self.tr("Unindo linhas"))
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5, feedback=multiStepFeedback)
+        energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5, context=context, feedback=multiStepFeedback)
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         self.runCreateSpatialIndex(energyLyrBeforeClip, feedback=multiStepFeedback)
@@ -195,7 +192,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Removendo pontos próximos à moldura"))
         self.removePointsNextToFrame(
-            frameLinesLayer, tower, distanceNextToFrame, feedback=multiStepFeedback
+            frameLinesLayer, tower, distanceNextToFrame, context=context, feedback=multiStepFeedback
         )
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
@@ -203,10 +200,11 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
         return {}
 
-    def mergeEnergyLines(self, lyr, limit, feedback):
+    def mergeEnergyLines(self, lyr, limit, context, feedback):
         r = processing.run(
             "ferramentasedicao:mergelinesbyangle",
             {"INPUT": lyr, "MAX_ITERATION": limit, "OUTPUT": "TEMPORARY_OUTPUT"},
+            context=context,
             feedback=feedback,
         )
         return r["OUTPUT"]
@@ -328,11 +326,10 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         )
         return output["OUTPUT"]
 
-    def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance, feedback):
+    def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance, context, feedback):
         algRunner = AlgRunner()
         multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
         toBeRemoved = set()
-        context = QgsProcessingContext()
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
         cacheLyr = algRunner.runCreateFieldWithExpression(
