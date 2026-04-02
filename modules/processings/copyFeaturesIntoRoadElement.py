@@ -185,6 +185,11 @@ class CopyFeaturesIntoRoadElement(QgsProcessingAlgorithm):
                 # Definir valores fixos
                 new_feature["modal_uso"] = 4
                 new_feature["situacao_fisica"] = 3
+                new_feature["visivel"] = 1
+                new_feature["justificativa_txt"] = 1
+                new_feature["exibir_lado_simbologia"] = 1
+                new_feature["exibir_ponta_simbologia"] = 1
+                new_feature["config_comprimento_simb"] = 2
 
                 new_features.append(new_feature)
 
@@ -255,6 +260,11 @@ class CopyFeaturesIntoRoadElement(QgsProcessingAlgorithm):
                 # Definir valores fixos
                 new_feature["modal_uso"] = 5
                 new_feature["situacao_fisica"] = 3
+                new_feature["visivel"] = 1
+                new_feature["justificativa_txt"] = 1
+                new_feature["exibir_lado_simbologia"] = 1
+                new_feature["exibir_ponta_simbologia"] = 1
+                new_feature["config_comprimento_simb"] = 2
 
                 new_features.append(new_feature)
 
@@ -307,6 +317,11 @@ class CopyFeaturesIntoRoadElement(QgsProcessingAlgorithm):
                 new_feature["modal_uso"] = 4
                 new_feature["situacao_fisica"] = 3
                 new_feature["posicao_pista"] = 97
+                new_feature["visivel"] = 1
+                new_feature["justificativa_txt"] = 1
+                new_feature["exibir_lado_simbologia"] = 1
+                new_feature["exibir_ponta_simbologia"] = 1
+                new_feature["config_comprimento_simb"] = 2
 
                 new_features.append(new_feature)
 
@@ -363,6 +378,11 @@ class CopyFeaturesIntoRoadElement(QgsProcessingAlgorithm):
                 new_feature["modal_uso"] = 4
                 new_feature["situacao_fisica"] = 3
                 new_feature["posicao_pista"] = 97
+                new_feature["visivel"] = 1
+                new_feature["justificativa_txt"] = 1
+                new_feature["exibir_lado_simbologia"] = 1
+                new_feature["exibir_ponta_simbologia"] = 1
+                new_feature["config_comprimento_simb"] = 2
 
                 new_features.append(new_feature)
 
