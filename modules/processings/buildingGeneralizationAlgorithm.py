@@ -22,10 +22,13 @@
 """
 
 import math
+import processing
 import random
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -37,17 +40,19 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingMultiStepFeedback,
-    QgsProcessingParameterDistance,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterExpression,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterField,
     QgsProcessingParameterNumber,
     QgsProcessingParameterVectorLayer,
+    QgsProject,
     QgsRectangle,
     QgsSpatialIndex,
 )
 
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
+from .makeGrid import getSirgasAuthIdByPointLatLong
 from .processingUtils import safe_process_algorithm
 
 
@@ -67,6 +72,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
     ROAD_SYMBOL_WIDTH = "ROAD_SYMBOL_WIDTH"
     MAX_DISPLACEMENT = "MAX_DISPLACEMENT"
     MAX_ITERATIONS = "MAX_ITERATIONS"
+    ENABLE_DISPLACEMENT = "ENABLE_DISPLACEMENT"
     GENERIC_EXPRESSION = "GENERIC_EXPRESSION"
     FLAGS = "FLAGS"
 
@@ -81,7 +87,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         return "buildinggeneralizationalgorithm"
 
     def displayName(self):
-        return self.tr("Building Generalization")
+        return self.tr("Generalização de Edificações")
 
     def group(self):
         return self.tr("Edição")
@@ -99,105 +105,111 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "Generalizes building point features with axis-aligned square symbols.\n\n"
-            "Resolves spatial conflicts (building-building, building-road, "
-            "building-water border) by displacement and, when impossible, by "
-            "hiding generic buildings (setting visibility field to 2).\n\n"
-            "Non-generic buildings with unresolvable conflicts are output to "
-            "a FLAGS layer for manual review.\n\n"
-            "Parameters:\n"
-            "- Building layer: edited in-place (geometry displaced, visibility updated)\n"
-            "- Road layer: line layer for road symbol buffers\n"
-            "- Water body layer (optional): polygon layer (only border used)\n"
-            "- Moldura layer (optional): only buildings inside are processed\n"
-            "- Visibility field: existing field (value 2 = not visible)\n"
-            "- Symbol size: side length of building square symbol\n"
-            "- Minimum gap: minimum spacing between symbols\n"
-            "- Road symbol width: width of road symbol at target scale\n"
-            "- Maximum displacement: max distance a building can be moved\n"
-            "- Generic expression: identifies low-priority buildings for hiding"
+            "Generaliza feições pontuais de edificações com símbolos quadrados alinhados aos eixos.\n\n"
+            "Resolve conflitos espaciais (edificação-edificação, edificação-via, "
+            "edificação-borda de massa d'água) por deslocamento e, quando impossível, "
+            "ocultando edificações genéricas (campo de visibilidade = 2).\n\n"
+            "Edificações não genéricas com conflitos irresolvíveis são enviadas para "
+            "a camada de FLAGS para revisão manual.\n\n"
+            "Modo apenas densidade: desabilita deslocamento e considera apenas "
+            "conflitos entre edificações (ignora vias e massa d'água). "
+            "Resolve sobreposições somente ocultando edificações genéricas.\n\n"
+            "Funciona com dados em coordenadas geográficas (lat/long) e projetadas."
         )
 
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_BUILDINGS,
-                self.tr("Building layer (edited in-place)"),
+                self.tr("Camada de edificações (editada in-place)"),
                 [QgsProcessing.TypeVectorPoint],
+                defaultValue="constr_edificacao_p",
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_ROADS,
-                self.tr("Road layer"),
+                self.tr("Camada de vias"),
                 [QgsProcessing.TypeVectorLine],
+                defaultValue="infra_via_deslocamento_l",
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_WATER,
-                self.tr("Water body layer (optional)"),
+                self.tr("Camada de massa d'água (opcional)"),
                 [QgsProcessing.TypeVectorPolygon],
                 optional=True,
+                defaultValue="cobter_massa_dagua_a",
             )
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_MOLDURA,
-                self.tr("Moldura layer (optional)"),
+                self.tr("Camada de moldura (opcional)"),
                 [QgsProcessing.TypeVectorPolygon],
                 optional=True,
+                defaultValue="aux_moldura_a",
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.ENABLE_DISPLACEMENT,
+                self.tr(
+                    "Habilitar deslocamento (desmarque para apenas reduzir densidade)"
+                ),
+                defaultValue=True,
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
                 self.VISIBILITY_FIELD,
-                self.tr("Visibility field (value 2 = not visible)"),
-                None,
-                self.INPUT_BUILDINGS,
-                QgsProcessingParameterField.Any,
+                self.tr("Campo de visibilidade (valor 2 = não visível)"),
+                defaultValue="visivel",
+                parentLayerParameterName=self.INPUT_BUILDINGS,
+                type=QgsProcessingParameterField.Any,
             )
         )
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.SYMBOL_SIZE,
-                self.tr("Symbol size (square side length)"),
-                defaultValue=10.0,
-                parentParameterName=self.INPUT_BUILDINGS,
+                self.tr("Tamanho do símbolo - lado do quadrado (metros)"),
+                QgsProcessingParameterNumber.Double,
+                defaultValue=25.0,
                 minValue=0.01,
             )
         )
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.MIN_GAP,
-                self.tr("Minimum gap between symbols"),
+                self.tr("Espaçamento mínimo entre símbolos (metros)"),
+                QgsProcessingParameterNumber.Double,
                 defaultValue=2.0,
-                parentParameterName=self.INPUT_BUILDINGS,
                 minValue=0.0,
             )
         )
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.ROAD_SYMBOL_WIDTH,
-                self.tr("Road symbol width"),
-                defaultValue=8.0,
-                parentParameterName=self.INPUT_BUILDINGS,
+                self.tr("Largura do símbolo de via (metros)"),
+                QgsProcessingParameterNumber.Double,
+                defaultValue=35.0,
                 minValue=0.01,
             )
         )
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.MAX_DISPLACEMENT,
-                self.tr("Maximum displacement"),
+                self.tr("Deslocamento máximo (metros)"),
+                QgsProcessingParameterNumber.Double,
                 defaultValue=50.0,
-                parentParameterName=self.INPUT_BUILDINGS,
                 minValue=0.01,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.MAX_ITERATIONS,
-                self.tr("Maximum iterations"),
+                self.tr("Número máximo de iterações"),
                 QgsProcessingParameterNumber.Integer,
                 defaultValue=50,
                 minValue=1,
@@ -207,7 +219,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterExpression(
                 self.GENERIC_EXPRESSION,
-                self.tr("Expression for generic (low-priority) buildings"),
+                self.tr("Expressão para edificações genéricas (baixa prioridade)"),
                 defaultValue='"tipo" in (0, 9999)',
                 parentLayerParameterName=self.INPUT_BUILDINGS,
                 optional=False,
@@ -216,7 +228,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.FLAGS,
-                self.tr("Non-generic buildings with unresolvable conflicts (flags)"),
+                self.tr("Edificações não genéricas com conflitos irresolvíveis (flags)"),
             )
         )
 
@@ -233,6 +245,9 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         )
         molduraLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_MOLDURA, context
+        )
+        enableDisplacement = self.parameterAsBoolean(
+            parameters, self.ENABLE_DISPLACEMENT, context
         )
         visibilityField = self.parameterAsString(
             parameters, self.VISIBILITY_FIELD, context
@@ -254,7 +269,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         if visFieldIdx < 0:
             raise QgsProcessingException(
                 self.tr(
-                    f'Visibility field "{visibilityField}" not found in building layer.'
+                    f'Campo de visibilidade "{visibilityField}" não encontrado na camada de edificações.'
                 )
             )
 
@@ -267,69 +282,132 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             buildingLayer.sourceCrs(),
         )
 
-        multiFeedback = QgsProcessingMultiStepFeedback(6, feedback)
+        # Handle geographic CRS: reproject to SIRGAS 2000 UTM for metric calculations
+        sourceCrs = buildingLayer.sourceCrs()
+        inverseTransform = None
+        forwardTransform = None
+        if sourceCrs.isGeographic():
+            extent = buildingLayer.sourceExtent()
+            centLat = extent.center().y()
+            centLon = extent.center().x()
+            epsgStr = getSirgasAuthIdByPointLatLong(centLat, centLon)
+            if not epsgStr:
+                raise QgsProcessingException(
+                    self.tr("Não foi possível determinar o fuso UTM para os dados.")
+                )
+            targetCrs = QgsCoordinateReferenceSystem(epsgStr)
+            feedback.pushInfo(
+                self.tr(f"CRS geográfico detectado. Reprojetando para {epsgStr}.")
+            )
+            forwardTransform = QgsCoordinateTransform(
+                sourceCrs, targetCrs, QgsProject.instance()
+            )
+            inverseTransform = QgsCoordinateTransform(
+                targetCrs, sourceCrs, QgsProject.instance()
+            )
+            if enableDisplacement:
+                roadLayer = self._reprojectLayer(roadLayer, targetCrs, feedback)
+                if waterLayer is not None:
+                    waterLayer = self._reprojectLayer(waterLayer, targetCrs, feedback)
+            if molduraLayer is not None:
+                molduraLayer = self._reprojectLayer(molduraLayer, targetCrs, feedback)
+
+        if enableDisplacement:
+            nSteps = 6
+        else:
+            nSteps = 4
+            feedback.pushInfo(
+                self.tr(
+                    "Modo apenas densidade: deslocamento desabilitado, "
+                    "apenas conflitos entre edificações serão considerados."
+                )
+            )
+
+        multiFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         algRunner = AlgRunner()
         halfSize = (symbolSize + gap) / 2.0
+        currentStep = 0
 
         # Phase 1: Data preparation
-        multiFeedback.setCurrentStep(0)
-        multiFeedback.pushInfo(self.tr("Phase 1: Data preparation"))
+        multiFeedback.setCurrentStep(currentStep)
+        currentStep += 1
+        multiFeedback.pushInfo(self.tr("Fase 1: Preparação dos dados"))
         if multiFeedback.isCanceled():
             return {self.FLAGS: flagDestId}
-        prepData = self.prepareData(
-            buildingLayer, roadLayer, waterLayer, molduraLayer,
-            symbolSize, gap, roadWidth, maxDisplacement,
-            visFieldIdx, genericExpression,
-            context, multiFeedback, algRunner,
-        )
-        buildings = prepData["buildings"]
-        forbiddenGeom = prepData["forbiddenGeom"]
-        blocks = prepData["blocks"]
+        if enableDisplacement:
+            prepData = self.prepareData(
+                buildingLayer, roadLayer, waterLayer, molduraLayer,
+                symbolSize, gap, roadWidth, maxDisplacement,
+                visFieldIdx, genericExpression,
+                context, multiFeedback, algRunner,
+                forwardTransform=forwardTransform,
+            )
+            buildings = prepData["buildings"]
+            forbiddenGeom = prepData["forbiddenGeom"]
+            blocks = prepData["blocks"]
+        else:
+            prepData = self.prepareDataDensityOnly(
+                buildingLayer, molduraLayer,
+                visFieldIdx, genericExpression,
+                multiFeedback,
+                forwardTransform=forwardTransform,
+            )
+            buildings = prepData["buildings"]
 
         if not buildings:
-            multiFeedback.pushInfo(self.tr("No buildings to process."))
+            multiFeedback.pushInfo(self.tr("Nenhuma edificação para processar."))
             return {self.FLAGS: flagDestId}
 
         # Phase 2: Conflict detection
-        multiFeedback.setCurrentStep(1)
-        multiFeedback.pushInfo(self.tr("Phase 2: Conflict detection"))
+        multiFeedback.setCurrentStep(currentStep)
+        currentStep += 1
+        multiFeedback.pushInfo(self.tr("Fase 2: Detecção de conflitos"))
         if multiFeedback.isCanceled():
             return {self.FLAGS: flagDestId}
-        forbiddenEngine = self._makeForbiddenEngine(forbiddenGeom)
         spatialIndex = self.rebuildSpatialIndex(buildings, halfSize)
-        conflicts = self.detectConflicts(
-            buildings, halfSize, spatialIndex,
-            forbiddenEngine=forbiddenEngine,
-        )
+        if enableDisplacement:
+            forbiddenEngine = self._makeForbiddenEngine(forbiddenGeom)
+            conflicts = self.detectConflicts(
+                buildings, halfSize, spatialIndex,
+                forbiddenEngine=forbiddenEngine,
+            )
+        else:
+            conflicts = self.detectConflicts(
+                buildings, halfSize, spatialIndex,
+            )
         initialConflictCount = sum(1 for s in conflicts.values() if s)
         multiFeedback.pushInfo(
-            self.tr(f"Detected {initialConflictCount} buildings with conflicts")
+            self.tr(f"Detectados {initialConflictCount} edificações com conflitos")
         )
 
-        # Phase 3: Iterative displacement
-        multiFeedback.setCurrentStep(2)
-        multiFeedback.pushInfo(self.tr("Phase 3: Iterative displacement"))
-        if multiFeedback.isCanceled():
-            return {self.FLAGS: flagDestId}
-        self.iterativeDisplacement(
-            buildings, conflicts, forbiddenGeom, forbiddenEngine, blocks,
-            halfSize, maxDisplacement, maxIterations,
-            multiFeedback,
-        )
+        if enableDisplacement:
+            # Phase 3: Iterative displacement
+            multiFeedback.setCurrentStep(currentStep)
+            currentStep += 1
+            multiFeedback.pushInfo(self.tr("Fase 3: Deslocamento iterativo"))
+            if multiFeedback.isCanceled():
+                return {self.FLAGS: flagDestId}
+            self.iterativeDisplacement(
+                buildings, conflicts, forbiddenGeom, forbiddenEngine, blocks,
+                halfSize, maxDisplacement, maxIterations,
+                multiFeedback,
+            )
 
-        # Phase 4: No-space detection
-        multiFeedback.setCurrentStep(3)
-        multiFeedback.pushInfo(self.tr("Phase 4: No-space detection"))
-        if multiFeedback.isCanceled():
-            return {self.FLAGS: flagDestId}
-        self.detectNoSpace(
-            buildings, conflicts, forbiddenEngine, blocks,
-            halfSize, maxDisplacement, multiFeedback,
-        )
+            # Phase 4: No-space detection
+            multiFeedback.setCurrentStep(currentStep)
+            currentStep += 1
+            multiFeedback.pushInfo(self.tr("Fase 4: Detecção de espaço insuficiente"))
+            if multiFeedback.isCanceled():
+                return {self.FLAGS: flagDestId}
+            self.detectNoSpace(
+                buildings, conflicts, forbiddenEngine, blocks,
+                halfSize, maxDisplacement, multiFeedback,
+            )
 
-        # Phase 5: Visibility resolution
-        multiFeedback.setCurrentStep(4)
-        multiFeedback.pushInfo(self.tr("Phase 5: Visibility resolution"))
+        # Phase: Visibility resolution
+        multiFeedback.setCurrentStep(currentStep)
+        currentStep += 1
+        multiFeedback.pushInfo(self.tr("Resolução de visibilidade"))
         if multiFeedback.isCanceled():
             return {self.FLAGS: flagDestId}
         idsToHide, idsToFlag = self.resolveVisibility(
@@ -337,19 +415,20 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         )
         multiFeedback.pushInfo(
             self.tr(
-                f"Hiding {len(idsToHide)} generic buildings, "
-                f"flagging {len(idsToFlag)} non-generic buildings"
+                f"Ocultando {len(idsToHide)} edificações genéricas, "
+                f"sinalizando {len(idsToFlag)} edificações não genéricas"
             )
         )
 
-        # Phase 6: Apply results
-        multiFeedback.setCurrentStep(5)
-        multiFeedback.pushInfo(self.tr("Phase 6: Applying results"))
+        # Phase: Apply results
+        multiFeedback.setCurrentStep(currentStep)
+        multiFeedback.pushInfo(self.tr("Aplicando resultados"))
         if multiFeedback.isCanceled():
             return {self.FLAGS: flagDestId}
         self.applyResults(
             buildingLayer, buildings, idsToHide, idsToFlag,
             visFieldIdx, flagSink, multiFeedback,
+            inverseTransform=inverseTransform if enableDisplacement else None,
         )
 
         # Stats
@@ -360,20 +439,29 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         )
         multiFeedback.pushInfo(
             self.tr(
-                f"Complete: {displacedCount} displaced, "
-                f"{len(idsToHide)} hidden, {len(idsToFlag)} flagged"
+                f"Concluído: {displacedCount} deslocadas, "
+                f"{len(idsToHide)} ocultas, {len(idsToFlag)} sinalizadas"
             )
         )
 
         return {self.FLAGS: flagDestId}
 
-    def prepareData(
-        self, buildingLayer, roadLayer, waterLayer, molduraLayer,
-        symbolSize, gap, roadWidth, maxDisplacement,
+    @staticmethod
+    def _reprojectLayer(layer, targetCrs, feedback=None):
+        result = processing.run(
+            "native:reprojectlayer",
+            {"INPUT": layer, "TARGET_CRS": targetCrs, "OUTPUT": "TEMPORARY_OUTPUT"},
+            feedback=feedback,
+        )
+        return result["OUTPUT"]
+
+    def prepareDataDensityOnly(
+        self, buildingLayer, molduraLayer,
         visFieldIdx, genericExpression,
-        context, feedback, algRunner,
+        feedback,
+        forwardTransform=None,
     ):
-        molduraGeom = QgsGeometry()
+        """Preparação simplificada para modo apenas densidade (sem vias/água)."""
         molduraEngine = None
         if molduraLayer is not None:
             geomList = [
@@ -381,20 +469,21 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
                 if not f.geometry().isNull() and not f.geometry().isEmpty()
             ]
             molduraGeom = QgsGeometry.unaryUnion(geomList) if geomList else QgsGeometry()
-            if molduraGeom.isNull() or molduraGeom.isEmpty():
-                feedback.pushInfo(
-                    self.tr("Moldura layer has no valid geometries. No buildings to process.")
+            if not molduraGeom.isNull() and not molduraGeom.isEmpty():
+                molduraEngine = QgsGeometry.createGeometryEngine(
+                    molduraGeom.constGet()
                 )
-                return {"buildings": [], "forbiddenGeom": QgsGeometry(), "blocks": []}
-            molduraEngine = QgsGeometry.createGeometryEngine(
-                molduraGeom.constGet()
-            )
-            molduraEngine.prepareGeometry()
+                molduraEngine.prepareGeometry()
+            else:
+                feedback.pushInfo(
+                    self.tr("Camada de moldura sem geometrias válidas. Nenhuma edificação a processar.")
+                )
+                return {"buildings": []}
 
         expr = QgsExpression(genericExpression)
         if expr.hasParserError():
             raise QgsProcessingException(
-                self.tr(f"Invalid generic expression: {expr.parserErrorString()}")
+                self.tr(f"Expressão genérica inválida: {expr.parserErrorString()}")
             )
         expressionContext = QgsExpressionContext()
         expressionContext.appendScopes(
@@ -402,12 +491,9 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         )
 
         buildings = []
-
         for feat in buildingLayer.getFeatures():
             geom = feat.geometry()
             if geom.isNull() or geom.isEmpty():
-                continue
-            if molduraEngine is not None and not molduraEngine.contains(geom.constGet()):
                 continue
             visValue = feat.attribute(visFieldIdx)
             if visValue == 2:
@@ -415,6 +501,12 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
 
             point = geom.asPoint()
             qgsPoint = QgsPointXY(point.x(), point.y())
+            if forwardTransform is not None:
+                qgsPoint = forwardTransform.transform(qgsPoint)
+            if molduraEngine is not None:
+                ptGeom = QgsGeometry.fromPointXY(qgsPoint)
+                if not molduraEngine.contains(ptGeom.constGet()):
+                    continue
             expressionContext.setFeature(feat)
             isGeneric = bool(expr.evaluate(expressionContext))
 
@@ -429,7 +521,78 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             })
 
         feedback.pushInfo(
-            self.tr(f"Loaded {len(buildings)} buildings to process")
+            self.tr(f"Carregadas {len(buildings)} edificações para processar (modo densidade)")
+        )
+        return {"buildings": buildings}
+
+    def prepareData(
+        self, buildingLayer, roadLayer, waterLayer, molduraLayer,
+        symbolSize, gap, roadWidth, maxDisplacement,
+        visFieldIdx, genericExpression,
+        context, feedback, algRunner,
+        forwardTransform=None,
+    ):
+        molduraGeom = QgsGeometry()
+        molduraEngine = None
+        if molduraLayer is not None:
+            geomList = [
+                f.geometry() for f in molduraLayer.getFeatures()
+                if not f.geometry().isNull() and not f.geometry().isEmpty()
+            ]
+            molduraGeom = QgsGeometry.unaryUnion(geomList) if geomList else QgsGeometry()
+            if molduraGeom.isNull() or molduraGeom.isEmpty():
+                feedback.pushInfo(
+                    self.tr("Camada de moldura sem geometrias válidas. Nenhuma edificação a processar.")
+                )
+                return {"buildings": [], "forbiddenGeom": QgsGeometry(), "blocks": []}
+            molduraEngine = QgsGeometry.createGeometryEngine(
+                molduraGeom.constGet()
+            )
+            molduraEngine.prepareGeometry()
+
+        expr = QgsExpression(genericExpression)
+        if expr.hasParserError():
+            raise QgsProcessingException(
+                self.tr(f"Expressão genérica inválida: {expr.parserErrorString()}")
+            )
+        expressionContext = QgsExpressionContext()
+        expressionContext.appendScopes(
+            QgsExpressionContextUtils.globalProjectLayerScopes(buildingLayer)
+        )
+
+        buildings = []
+
+        for feat in buildingLayer.getFeatures():
+            geom = feat.geometry()
+            if geom.isNull() or geom.isEmpty():
+                continue
+            visValue = feat.attribute(visFieldIdx)
+            if visValue == 2:
+                continue
+
+            point = geom.asPoint()
+            qgsPoint = QgsPointXY(point.x(), point.y())
+            if forwardTransform is not None:
+                qgsPoint = forwardTransform.transform(qgsPoint)
+            if molduraEngine is not None:
+                ptGeom = QgsGeometry.fromPointXY(qgsPoint)
+                if not molduraEngine.contains(ptGeom.constGet()):
+                    continue
+            expressionContext.setFeature(feat)
+            isGeneric = bool(expr.evaluate(expressionContext))
+
+            buildings.append({
+                "featId": feat.id(),
+                "origPoint": qgsPoint,
+                "curPoint": QgsPointXY(qgsPoint.x(), qgsPoint.y()),
+                "isGeneric": isGeneric,
+                "blockIdx": None,
+                "conflictsWithForbidden": False,
+                "noSpace": False,
+            })
+
+        feedback.pushInfo(
+            self.tr(f"Carregadas {len(buildings)} edificações para processar")
         )
 
         # Build forbidden zone from road buffers + water borders
@@ -473,7 +636,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         )
 
         feedback.pushInfo(
-            self.tr("Built forbidden zone from road/water buffers")
+            self.tr("Zona proibida construída a partir dos buffers de vias/água")
         )
 
         # Build blocks (complement of forbidden zone within extent)
@@ -481,7 +644,12 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             extentGeom = molduraGeom
         else:
             # Use buildings bbox expanded by maxDisplacement
-            extent = buildingLayer.sourceExtent()
+            if buildings:
+                xs = [b["origPoint"].x() for b in buildings]
+                ys = [b["origPoint"].y() for b in buildings]
+                extent = QgsRectangle(min(xs), min(ys), max(xs), max(ys))
+            else:
+                extent = buildingLayer.sourceExtent()
             extent = extent.buffered(maxDisplacement + symbolSize)
             extentGeom = QgsGeometry.fromRect(extent)
 
@@ -494,7 +662,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
                     if not part.isNull() and not part.isEmpty() and part.area() > 0:
                         blocks.append(part)
 
-        feedback.pushInfo(self.tr(f"Created {len(blocks)} blocks"))
+        feedback.pushInfo(self.tr(f"Criados {len(blocks)} blocos"))
 
         # Assign buildings to blocks
         if blocks:
@@ -744,28 +912,28 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             if iteration % 10 == 0:
                 feedback.pushInfo(
                     self.tr(
-                        f"  Iteration {iteration}: {currentConflictCount} conflicts, "
-                        f"max movement: {maxMovement:.6f}"
+                        f"  Iteração {iteration}: {currentConflictCount} conflitos, "
+                        f"movimento máximo: {maxMovement:.6f}"
                     )
                 )
 
             if currentConflictCount == 0:
                 feedback.pushInfo(
-                    self.tr(f"  All conflicts resolved at iteration {iteration}")
+                    self.tr(f"  Todos os conflitos resolvidos na iteração {iteration}")
                 )
                 break
             if maxMovement < convergenceThreshold and iteration > 5:
                 feedback.pushInfo(
                     self.tr(
-                        f"  Converged at iteration {iteration} "
-                        f"(max movement: {maxMovement:.6f})"
+                        f"  Convergiu na iteração {iteration} "
+                        f"(movimento máximo: {maxMovement:.6f})"
                     )
                 )
                 break
 
         finalConflicts = sum(1 for s in conflicts.values() if s)
         feedback.pushInfo(
-            self.tr(f"Displacement complete: {finalConflicts} buildings still in conflict")
+            self.tr(f"Deslocamento concluído: {finalConflicts} edificações ainda em conflito")
         )
 
     def detectNoSpace(
@@ -785,7 +953,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
 
         feedback.pushInfo(
             self.tr(
-                f"Testing {len(conflictedIndices)} buildings for available space"
+                f"Testando {len(conflictedIndices)} edificações para espaço disponível"
             )
         )
 
@@ -878,8 +1046,8 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         noSpaceCount = sum(1 for b in buildings if b["noSpace"])
         feedback.pushInfo(
             self.tr(
-                f"No-space detection: {resolved} resolved, "
-                f"{noSpaceCount} without valid position"
+                f"Detecção de espaço: {resolved} resolvidas, "
+                f"{noSpaceCount} sem posição válida"
             )
         )
 
@@ -933,7 +1101,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
 
     def applyResults(
         self, buildingLayer, buildings, idsToHide, idsToFlag,
-        visFieldIdx, flagSink, feedback,
+        visFieldIdx, flagSink, feedback, inverseTransform=None,
     ):
         # Write flagged features to FLAGS sink (re-read from layer)
         flagFeatIds = {buildings[idx]["featId"] for idx in idsToFlag}
@@ -951,21 +1119,22 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             if i in hideIdxSet:
                 continue
             if building["curPoint"] != building["origPoint"]:
-                displacements[building["featId"]] = QgsGeometry.fromPointXY(
-                    building["curPoint"]
-                )
+                pt = building["curPoint"]
+                if inverseTransform is not None:
+                    pt = inverseTransform.transform(pt)
+                displacements[building["featId"]] = QgsGeometry.fromPointXY(pt)
 
         # Apply in-place edits
         if not displacements and not hideIds:
-            feedback.pushInfo(self.tr("No changes to apply."))
+            feedback.pushInfo(self.tr("Nenhuma alteração a aplicar."))
             return
 
         if not buildingLayer.supportsEditing():
             raise QgsProcessingException(
-                self.tr("Building layer does not support editing.")
+                self.tr("Camada de edificações não suporta edição.")
             )
         buildingLayer.startEditing()
-        buildingLayer.beginEditCommand("Building Generalization")
+        buildingLayer.beginEditCommand("Generalização de Edificações")
 
         for featId, newGeom in displacements.items():
             buildingLayer.changeGeometry(featId, newGeom, skipDefaultValue=True)
@@ -977,7 +1146,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
 
         feedback.pushInfo(
             self.tr(
-                f"Applied {len(displacements)} geometry changes "
-                f"and {len(hideIds)} visibility changes in-place"
+                f"Aplicadas {len(displacements)} alterações de geometria "
+                f"e {len(hideIds)} alterações de visibilidade in-place"
             )
         )
