@@ -22,8 +22,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsMapSettings,
     QgsMapRendererSequentialJob,
-    QgsUnitTypes,
-    QgsPalLayerSettings,
+    Qgis,
 )
 from qgis.PyQt.QtCore import QSize, QMetaType
 from qgis.PyQt.QtGui import QFont, QFontMetricsF
@@ -35,6 +34,18 @@ MAX_PX_PER_SIDE = 16384
 class LabelFontInfo:
     """Extracts all relevant text properties from a layer's labeling settings."""
 
+    @staticmethod
+    def _findFirstRuleSettings(rule):
+        """Recursively find the first rule with valid settings."""
+        s = rule.settings()
+        if s is not None:
+            return s
+        for child in rule.children():
+            result = LabelFontInfo._findFirstRuleSettings(child)
+            if result is not None:
+                return result
+        return None
+
     def __init__(self, layer, mu_per_px, dpi):
         self.valid = False
         self.font = QFont("Sans Serif", 10)
@@ -42,6 +53,7 @@ class LabelFontInfo:
         self.word_spacing = 0.0
         self.buffer_size_mu = 0.0
         self.is_curved = False
+        self.is_horizontal = True
         self.placement = None
         self.wrap_char = ""
         self.auto_wrap_length = 0
@@ -53,8 +65,16 @@ class LabelFontInfo:
         if labeling is None:
             return
         try:
-            settings = labeling.settings()
+            from qgis.core import QgsRuleBasedLabeling
+            if isinstance(labeling, QgsRuleBasedLabeling):
+                settings = self._findFirstRuleSettings(labeling.rootRule())
+                if settings is None:
+                    return
+            else:
+                settings = labeling.settings()
         except Exception:
+            return
+        if settings is None:
             return
 
         text_format = settings.format()
@@ -63,8 +83,16 @@ class LabelFontInfo:
         try:
             self.placement = settings.placement
             self.is_curved = self.placement in (
-                QgsPalLayerSettings.Curved,
-                QgsPalLayerSettings.PerimeterCurved,
+                Qgis.LabelPlacement.Curved,
+                Qgis.LabelPlacement.PerimeterCurved,
+            )
+            self.is_horizontal = self.placement in (
+                Qgis.LabelPlacement.AroundPoint,
+                Qgis.LabelPlacement.OverPoint,
+                Qgis.LabelPlacement.Horizontal,
+                Qgis.LabelPlacement.Free,
+                Qgis.LabelPlacement.OrderedPositionsAroundPoint,
+                Qgis.LabelPlacement.OutsidePolygons,
             )
         except Exception:
             pass
@@ -88,13 +116,13 @@ class LabelFontInfo:
         font_size = text_format.size()
         size_unit = text_format.sizeUnit()
 
-        if size_unit == QgsUnitTypes.RenderPoints:
+        if size_unit == Qgis.RenderUnit.Points:
             font_size_px = font_size * dpi / 72.0
-        elif size_unit == QgsUnitTypes.RenderMillimeters:
+        elif size_unit == Qgis.RenderUnit.Millimeters:
             font_size_px = font_size * dpi / 25.4
-        elif size_unit == QgsUnitTypes.RenderPixels:
+        elif size_unit == Qgis.RenderUnit.Pixels:
             font_size_px = font_size
-        elif size_unit == QgsUnitTypes.RenderMapUnits:
+        elif size_unit == Qgis.RenderUnit.MapUnits:
             font_size_px = font_size / mu_per_px if mu_per_px > 0 else font_size
         else:
             font_size_px = font_size * dpi / 72.0
@@ -118,7 +146,7 @@ class LabelFontInfo:
 
         letter_sp = base_font.letterSpacing()
         ls_type = base_font.letterSpacingType()
-        if ls_type == QFont.PercentageSpacing:
+        if ls_type == QFont.SpacingType.PercentageSpacing:
             fm_temp = QFontMetricsF(f)
             avg_w = fm_temp.averageCharWidth()
             letter_sp_abs = avg_w * (letter_sp - 100.0) / 100.0
@@ -126,7 +154,7 @@ class LabelFontInfo:
             letter_sp_abs = letter_sp
 
         word_sp = base_font.wordSpacing()
-        f.setLetterSpacing(QFont.AbsoluteSpacing, letter_sp_abs)
+        f.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, letter_sp_abs)
         f.setWordSpacing(word_sp)
 
         self.font = f
@@ -138,13 +166,13 @@ class LabelFontInfo:
         if buf.enabled():
             buf_size = buf.size()
             buf_unit = buf.sizeUnit()
-            if buf_unit == QgsUnitTypes.RenderMillimeters:
+            if buf_unit == Qgis.RenderUnit.Millimeters:
                 buf_px = buf_size * dpi / 25.4
-            elif buf_unit == QgsUnitTypes.RenderPoints:
+            elif buf_unit == Qgis.RenderUnit.Points:
                 buf_px = buf_size * dpi / 72.0
-            elif buf_unit == QgsUnitTypes.RenderPixels:
+            elif buf_unit == Qgis.RenderUnit.Pixels:
                 buf_px = buf_size
-            elif buf_unit == QgsUnitTypes.RenderMapUnits:
+            elif buf_unit == Qgis.RenderUnit.MapUnits:
                 buf_px = buf_size / mu_per_px if mu_per_px > 0 else buf_size
             else:
                 buf_px = buf_size * dpi / 25.4
@@ -259,11 +287,11 @@ def _create_horizontal_char_polygons(label_geom, label_text, fi):
     cap = fi.font.capitalization()
 
     def display_transform(t):
-        if cap == QFont.AllUppercase:
+        if cap == QFont.Capitalization.AllUppercase:
             return t.upper()
-        elif cap == QFont.AllLowercase:
+        elif cap == QFont.Capitalization.AllLowercase:
             return t.lower()
-        elif cap == QFont.Capitalize:
+        elif cap == QFont.Capitalization.Capitalize:
             return t.title()
         return t
 
@@ -408,8 +436,8 @@ def _render_labels(extent, scale, project_crs, visible_layers, dpi):
     settings.setDestinationCrs(project_crs)
     settings.setExtent(extent)
     settings.setLayers(visible_layers)
-    settings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
-    settings.setFlag(QgsMapSettings.DrawLabeling, True)
+    settings.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, True)
+    settings.setFlag(QgsMapSettings.Flag.DrawLabeling, True)
 
     job = QgsMapRendererSequentialJob(settings)
     job.start()
@@ -510,7 +538,9 @@ def render_and_create_precise_label_polygons(
     dp.addAttributes(
         [
             QgsField("Layer", QMetaType.Type.QString),
+            QgsField("LayerID", QMetaType.Type.QString),
             QgsField("LabelText", QMetaType.Type.QString),
+            QgsField("srcFeatId", QMetaType.Type.LongLong),
             QgsField("featid", QMetaType.Type.Int),
         ]
     )
@@ -540,8 +570,12 @@ def render_and_create_precise_label_polygons(
         layer_name = labeled_layers[layer_id].name()
         fi = font_info_cache.get(layer_id)
 
+        # Skip non-horizontal labels (line-following, curved)
+        if fi is not None and not fi.is_horizontal:
+            continue
+
         # Create precise polygons for horizontal labels
-        if fi is not None and fi.valid and not fi.is_curved:
+        if fi is not None and fi.valid:
             char_geoms = _create_horizontal_char_polygons(
                 label_geom, label_text, fi
             )
@@ -561,7 +595,9 @@ def render_and_create_precise_label_polygons(
         feat = QgsFeature(output_layer.fields())
         feat.setGeometry(combined)
         feat["Layer"] = layer_name
+        feat["LayerID"] = layer_id
         feat["LabelText"] = label_text
+        feat["srcFeatId"] = lbl_pos.featureId
         feat["featid"] = feat_id
         output_layer.addFeature(feat)
         feat_id += 1

@@ -31,7 +31,7 @@ from qgis.core import (
     QgsLineString,
     QgsProject,
     QgsSpatialIndex,
-    QgsUnitTypes,
+    Qgis,
 )
 
 
@@ -163,13 +163,13 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         measure = convertLength.measureLength(feat.geometry())
         return convertLength.convertLengthMeasurement(
-            measure, QgsUnitTypes.DistanceMeters
+            measure, Qgis.DistanceUnit.Meters
         )
 
     def convertLengthToDegrees(self, d):
         convertLength = QgsDistanceArea()
         convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
-        return convertLength.convertLengthMeasurement(d, QgsUnitTypes.DistanceDegrees)
+        return convertLength.convertLengthMeasurement(d, Qgis.DistanceUnit.Degrees)
 
     # Verificar se existe o atributo "nr_faixas"
     @staticmethod
@@ -251,7 +251,7 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
                 QgsCoordinateTransformContext(),
             )
             self.tolerance = d.convertLengthMeasurement(
-                self.getScale() * 0.003, QgsUnitTypes.DistanceDegrees
+                self.getScale() * 0.003, Qgis.DistanceUnit.Degrees
             )
         else:
             self.tolerance = self.getScale() * 0.003

@@ -29,7 +29,7 @@ from qgis.core import (
     QgsLineString,
     QgsProject,
     QgsSpatialIndex,
-    QgsUnitTypes,
+    Qgis,
     QgsPointXY,
 )
 from qgis.gui import QgsMapToolEmitPoint
@@ -169,7 +169,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         measure = convertLength.measureLength(feat.geometry())
         return convertLength.convertLengthMeasurement(
-            measure, QgsUnitTypes.DistanceMeters
+            measure, Qgis.DistanceUnit.Meters
         )
 
     @staticmethod
@@ -284,7 +284,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
                 QgsCoordinateTransformContext(),
             )
             self.tolerance = d.convertLengthMeasurement(
-                self.getScale() * 0.005, QgsUnitTypes.DistanceDegrees
+                self.getScale() * 0.005, Qgis.DistanceUnit.Degrees
             )
         else:
             self.tolerance = self.getScale() * 0.005

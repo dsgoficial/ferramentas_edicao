@@ -28,7 +28,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterField,
     QgsProcessingParameterVectorLayer,
-    QgsWkbTypes,
+    Qgis,
     QgsFields,
     QgsVectorLayerUtils,
     QgsDistanceArea,
@@ -119,7 +119,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             self.OUTPUT_POINTS,
             context,
             inputPointsLyr.fields(),
-            QgsWkbTypes.Point,
+            Qgis.WkbType.Point,
             QgsCoordinateReferenceSystem("EPSG:4326"),
         )
         (self.grid_sink, self.grid_sink_id) = self.parameterAsSink(
@@ -127,7 +127,7 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             self.OUTPUT_GRID,
             context,
             QgsFields(),
-            QgsWkbTypes.Polygon,
+            Qgis.WkbType.Polygon,
             geographicBoundaryLyr.sourceCrs(),
         )
 

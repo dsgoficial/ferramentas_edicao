@@ -16,7 +16,7 @@
  ***************************************************************************/
 """
 from qgis.core import (
-    QgsUnitTypes,
+    Qgis,
     QgsFeature,
     QgsDistanceArea,
     QgsVectorLayer,
@@ -148,14 +148,14 @@ class ProcessingUtils:
             areaPolygon = (
                 1e6
                 * convertForMili.convertAreaMeasurement(
-                    areaPolygon, QgsUnitTypes.AreaSquareMeters
+                    areaPolygon, Qgis.AreaUnit.SquareMeters
                 )
                 / (scale**2)
             )
             diamCircle = (
                 1e3
                 * convertForMili.convertLengthMeasurement(
-                    diamCircle, QgsUnitTypes.DistanceMeters
+                    diamCircle, Qgis.DistanceUnit.Meters
                 )
                 / (scale)
             )
@@ -189,7 +189,7 @@ class ProcessingUtils:
             convertLength.setEllipsoid(lyrCrs.ellipsoidAcronym())
             measure = convertLength.measureLength(feat.geometry())
             length = convertLength.convertLengthMeasurement(
-                measure, QgsUnitTypes.DistanceMeters
+                measure, Qgis.DistanceUnit.Meters
             )
         else:
             length = feat.geometry().length()
@@ -212,7 +212,7 @@ class ProcessingUtils:
             convertLength.setEllipsoid(lyrCrs.ellipsoidAcronym())
             measure = convertLength.measureLength(feat.geometry())
             length = convertLength.convertLengthMeasurement(
-                measure, QgsUnitTypes.DistanceMeters
+                measure, Qgis.DistanceUnit.Meters
             )
         else:
             length = feat.geometry().length()
@@ -241,7 +241,7 @@ class ProcessingUtils:
             convertArea.setEllipsoid(lyrCrs.ellipsoidAcronym())
             measure = convertArea.measureArea(feat.geometry())
             area = convertArea.convertAreaMeasurement(
-                measure, QgsUnitTypes.AreaSquareMeters
+                measure, Qgis.AreaUnit.SquareMeters
             )
         else:
             area = feat.geometry().area()

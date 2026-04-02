@@ -17,11 +17,12 @@
 """
 
 from ..labelTools.label_size_calculator import (
-    is_generic_text_line_layer,
     get_generic_text_polygons,
 )
 from ..labelTools.precise_label_polygons import (
     render_and_create_precise_label_polygons,
+    build_font_info_cache,
+    _get_visible_layers,
 )
 
 from qgis.core import (
@@ -31,11 +32,14 @@ from qgis.core import (
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
     QgsFeature,
+    QgsFeatureRequest,
     QgsProcessingParameterEnum,
     QgsFields,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterMultipleLayers,
-    QgsWkbTypes,
+    QgsGeometry,
+    QgsSpatialIndex,
+    Qgis,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QMetaType
@@ -46,6 +50,8 @@ from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
 
     INPUT_LAYERS = "INPUT_LAYERS"
+    INPUT_GENERIC_TEXT = "INPUT_GENERIC_TEXT"
+    GEOGRAPHIC_BOUNDARY = "GEOGRAPHIC_BOUNDARY"
     GRID_LAYER = "GRID_LAYER"
     SCALE = "SCALE"
     OUTPUT = "OUTPUT"
@@ -56,6 +62,22 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
                 self.INPUT_LAYERS,
                 self.tr("Selecionar camadas:"),
                 QgsProcessing.TypeVectorAnyGeometry,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_GENERIC_TEXT,
+                self.tr("Selecionar camada de texto genérico de edição"),
+                [QgsProcessing.TypeVectorLine],
+                optional=True,
+                defaultValue="edicao_texto_generico_l",
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.GEOGRAPHIC_BOUNDARY,
+                self.tr("Selecionar a Camada de Moldura"),
+                [QgsProcessing.TypeVectorPolygon],
             )
         )
         self.addParameter(
@@ -97,144 +119,141 @@ class IdentifyLabelsIntersectingGrid(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layerList = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
+        genericTextLyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT_GENERIC_TEXT, context
+        )
+        geographicBoundaryLyr = self.parameterAsVectorLayer(
+            parameters, self.GEOGRAPHIC_BOUNDARY, context
+        )
         gridLyr = self.parameterAsVectorLayer(
             parameters, self.GRID_LAYER, context
         )
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         scale = self.scaleDict[self.scales[scaleIdx]]
-        
+
         fields = QgsFields()
         fields.append(QgsField("id", QMetaType.Type.QString))
         fields.append(QgsField("texto", QMetaType.Type.QString))
         fields.append(QgsField("camada", QMetaType.Type.QString))
-        
-        if layerList == []:
-            return {}
-            
+
         (sink, sink_id) = self.parameterAsSink(
             parameters,
             self.OUTPUT,
             context,
             fields,
-            QgsWkbTypes.Polygon,
+            Qgis.WkbType.Polygon,
             gridLyr.crs(),
         )
+        if not layerList and genericTextLyr is None:
+            return {self.OUTPUT: sink_id}
 
-        genericTextLayers = []
-        regularLayers = []
-        for l in layerList:
-            (genericTextLayers if is_generic_text_line_layer(l) else regularLayers).append(l)
-        lyrNameSet = set(i.name() for i in regularLayers)
         algRunner = AlgRunner()
-
-        # Obter extent do grid para extrair labels
-        gridExtent = gridLyr.extent()
-
-        nSteps = 8
+        nFrames = geographicBoundaryLyr.featureCount()
+        nSteps = 2 + nFrames * 2
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        polygonLayerList = []
 
-        # Process regular layers via precise render-based approach
-        if regularLayers:
-            multiStepFeedback.setCurrentStep(currentStep)
-            multiStepFeedback.setProgressText(
-                self.tr("Renderizando e extraindo rótulos precisos")
-            )
-            precisePolygons = render_and_create_precise_label_polygons(
-                extent=gridExtent,
-                scale=scale,
-                project=context.project(),
-                layer_name_filter=lyrNameSet,
-                dpi=300,
-            )
-            if precisePolygons is not None:
-                polygonLayerList.append(precisePolygons)
-            currentStep += 1
+        lyrNameSet = set(i.name() for i in layerList)
 
-        # Process generic text line layers via flat-cap buffer
-        if genericTextLayers:
+        # Build font cache once
+        project = context.project()
+        visible_layers = None
+        labeled_layers = None
+        font_cache = None
+        if layerList:
+            visible_layers = _get_visible_layers(project)
+            labeled_layers, font_cache = build_font_info_cache(
+                visible_layers, lyrNameSet, scale, 300
+            )
+
+        # Build spatial index on grid for efficient intersection tests
+        gridIndex = QgsSpatialIndex()
+        gridGeomDict = {}
+        for gridFeat in gridLyr.getFeatures():
+            g = gridFeat.geometry()
+            if not g.isEmpty():
+                gridGeomDict[gridFeat.id()] = g
+                gridIndex.addFeature(gridFeat)
+
+        # Process generic text line layer via flat-cap buffer (once)
+        genericPolygonsLayer = None
+        if genericTextLyr is not None and genericTextLyr.featureCount() > 0:
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.setProgressText(
                 self.tr("Criando polígonos para texto genérico de edição")
             )
-            genericPolygons = get_generic_text_polygons(
-                genericTextLayers, scale, algRunner, context, multiStepFeedback
+            genericPolygonsLayer = get_generic_text_polygons(
+                [genericTextLyr], scale, algRunner, context, multiStepFeedback
             )
-            if genericPolygons is not None:
-                polygonLayerList.append(genericPolygons)
-            currentStep += 1
+            if genericPolygonsLayer is not None:
+                algRunner.runCreateSpatialIndex(
+                    genericPolygonsLayer, context,
+                    feedback=multiStepFeedback, is_child_algorithm=True,
+                )
+        currentStep += 1
 
-        if not polygonLayerList:
-            multiStepFeedback.pushInfo(self.tr("Nenhum rótulo encontrado"))
-            return {self.OUTPUT: sink_id}
-
-        # Merge all polygon layers
-        if len(polygonLayerList) > 1:
-            labelPolygonsLayer = algRunner.runMergeVectorLayers(
-                polygonLayerList, context, feedback=multiStepFeedback
-            )
-        else:
-            labelPolygonsLayer = polygonLayerList[0]
-        currentStep += 1
-        
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.setProgressText(self.tr("Criando índice espacial"))
-        algRunner.runCreateSpatialIndex(
-            labelPolygonsLayer,
-            context,
-            feedback=multiStepFeedback,
-            is_child_algorithm=True,
-        )
-        currentStep += 1
-        
-        multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(
-            gridLyr,
-            context,
-            feedback=multiStepFeedback,
-            is_child_algorithm=True,
-        )
-        currentStep += 1
-        
-        # Encontrar intersecções entre labels e grid
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.setProgressText(self.tr("Identificando rótulos que intersectam o grid"))
-        intersectedLyr = algRunner.runExtractByLocation(
-            inputLyr=labelPolygonsLayer,
-            intersectLyr=gridLyr,
-            context=context,
-            predicate=[AlgRunner.Intersects],
-            feedback=multiStepFeedback,
-        )
-        currentStep += 1
-        
-        multiStepFeedback.setCurrentStep(currentStep)
-        nProblems = intersectedLyr.featureCount()
-        if nProblems == 0:
-            multiStepFeedback.pushInfo(self.tr("Não há rótulos intersectando o grid"))
-            return {self.OUTPUT: sink_id}
-            
-        # Criar flags para os rótulos que intersectam o grid
-        multiStepFeedback.setProgressText(self.tr("Criando flags dos rótulos problemáticos"))
-        stepSize = 100 / nProblems
+        # For each frame: render labels, then check intersection with grid
         flagId = 0
-        hasLayerField = intersectedLyr.fields().lookupField("Layer") != -1
-
-        for current, feat in enumerate(intersectedLyr.getFeatures()):
+        for frameFeat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
                 break
 
-            flagFeat = QgsFeature(fields)
-            flagFeat["id"] = str(flagId)
-            flagFeat["texto"] = "Rótulo intersecta grid"
-            flagFeat["camada"] = feat["Layer"] if hasLayerField else ""
-            flagFeat.setGeometry(feat.geometry())
-            sink.addFeature(flagFeat)
-            
-            multiStepFeedback.setProgress(current * stepSize)
-            flagId += 1
-        currentStep += 1
+            frameBbox = frameFeat.geometry().boundingBox()
+
+            # Render labels for this frame
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(
+                self.tr("Renderizando rótulos da moldura")
+            )
+            labelPolygonsLayer = None
+            if layerList:
+                labelPolygonsLayer = render_and_create_precise_label_polygons(
+                    extent=frameBbox,
+                    scale=scale,
+                    project=project,
+                    layer_name_filter=lyrNameSet,
+                    dpi=300,
+                    visible_layers=visible_layers,
+                    labeled_layers=labeled_layers,
+                    font_info_cache=font_cache,
+                )
+            currentStep += 1
+
+            # Check intersection with grid
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(
+                self.tr("Identificando rótulos que intersectam o grid")
+            )
+
+            # Collect all label polygons for this frame (precise + generic)
+            labelFeats = list(labelPolygonsLayer.getFeatures()) if labelPolygonsLayer is not None else []
+            if genericPolygonsLayer is not None:
+                request = QgsFeatureRequest().setFilterRect(frameBbox)
+                labelFeats.extend(genericPolygonsLayer.getFeatures(request))
+
+            for labelFeat in labelFeats:
+                if multiStepFeedback.isCanceled():
+                    break
+                labelGeom = labelFeat.geometry()
+                if labelGeom.isEmpty():
+                    continue
+                hasLayerField = labelFeat.fields().lookupField("Layer") != -1
+                candidates = gridIndex.intersects(labelGeom.boundingBox())
+                if not candidates:
+                    continue
+                labelEngine = QgsGeometry.createGeometryEngine(labelGeom.constGet())
+                labelEngine.prepareGeometry()
+                for gridId in candidates:
+                    if labelEngine.intersects(gridGeomDict[gridId].constGet()):
+                        flagFeat = QgsFeature(fields)
+                        flagFeat["id"] = str(flagId)
+                        flagFeat["texto"] = "Rótulo intersecta grid"
+                        flagFeat["camada"] = labelFeat["Layer"] if hasLayerField else ""
+                        flagFeat.setGeometry(labelGeom)
+                        sink.addFeature(flagFeat)
+                        flagId += 1
+                        break
+            currentStep += 1
 
         return {self.OUTPUT: sink_id}
 

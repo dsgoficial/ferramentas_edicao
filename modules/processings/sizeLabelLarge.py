@@ -31,7 +31,7 @@ from qgis.core import (
     QgsProcessingParameterMultipleLayers,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
-    QgsUnitTypes,
+    Qgis,
     QgsGeometry,
     QgsProcessingException,
 )
@@ -277,7 +277,7 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
             ),  # encontra o fuso e reprojeta
             QgsCoordinateTransformContext(),
         )
-        return d.convertLengthMeasurement(d_meters, QgsUnitTypes.DistanceDegrees)
+        return d.convertLengthMeasurement(d_meters, Qgis.DistanceUnit.Degrees)
 
     def sizeOfText(self, inputPolygonLyr, geomNearstPolygon, gridScaleParam):
         # Verificando se a medida está em ângulo ou em metros
@@ -292,14 +292,14 @@ class SizeLabelLarge(QgsProcessingAlgorithm):
             areaPolygon = (
                 1e6
                 * convertForMili.convertAreaMeasurement(
-                    areaPolygon, QgsUnitTypes.AreaSquareMeters
+                    areaPolygon, Qgis.AreaUnit.SquareMeters
                 )
                 / (scale**2)
             )
             diamCircle = (
                 1e3
                 * convertForMili.convertLengthMeasurement(
-                    diamCircle, QgsUnitTypes.DistanceMeters
+                    diamCircle, Qgis.DistanceUnit.Meters
                 )
                 / (scale)
             )

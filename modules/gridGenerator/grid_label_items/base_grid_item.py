@@ -35,7 +35,6 @@ from qgis.core import (
     QgsRuleBasedLabeling,
     QgsTextFormat,
     QgsTextRenderer,
-    QgsUnitTypes,
 )
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QSizeF
@@ -109,7 +108,7 @@ class GridLabelItem:
         text_format = QgsTextFormat()
         text_format.setFont(self.font_config.name)
         text_format.setSize(self.real_font_size * 1.7)
-        text_format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        text_format.setSizeUnit(Qgis.RenderUnit.Points)
         
         # 3. Let QGIS do the conversion (this is what actually renders)
         width_render_units = QgsTextRenderer.textWidth(self.render_context, text_format, [self.text])
@@ -118,12 +117,12 @@ class GridLabelItem:
         # 4. Convert from render units to map units using QGIS's converter
         width_map_units = self.render_context.convertToMapUnits(
             width_render_units, 
-            QgsUnitTypes.RenderMetersInMapUnits,
+            Qgis.RenderUnit.MetersInMapUnits,
             QgsMapUnitScale(self.scale * 1000),
         )
         height_map_units = self.render_context.convertToMapUnits(
-            height_render_units, 
-            QgsUnitTypes.RenderMetersInMapUnits,
+            height_render_units,
+            Qgis.RenderUnit.MetersInMapUnits,
             QgsMapUnitScale(self.scale * 1000),
         )
         

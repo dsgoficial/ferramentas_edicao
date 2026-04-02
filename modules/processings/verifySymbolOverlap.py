@@ -19,6 +19,7 @@
 from typing import Set
 import processing
 from qgis.core import (
+    Qgis,
     QgsField,
     QgsProcessing,
     QgsProcessingAlgorithm,
@@ -612,7 +613,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             self.OUTPUT,
             context,
             fields,
-            QgsWkbTypes.MultiPolygon,
+            Qgis.WkbType.MultiPolygon,
             output_crs or QgsCoordinateReferenceSystem("EPSG:3857"),
         )
 
@@ -1091,8 +1092,8 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                 intersection = feat1.geometry().intersection(feat2.geometry())
 
                 if intersection.isEmpty() or (
-                    not intersection.wkbType() == QgsWkbTypes.Polygon
-                    and not intersection.wkbType() == QgsWkbTypes.MultiPolygon
+                    not intersection.wkbType() == Qgis.WkbType.Polygon
+                    and not intersection.wkbType() == Qgis.WkbType.MultiPolygon
                 ):
                     continue
 

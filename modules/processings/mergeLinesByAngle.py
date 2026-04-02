@@ -33,7 +33,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterNumber,
-    QgsWkbTypes,
+    Qgis,
     QgsProcessingMultiStepFeedback,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -282,7 +282,7 @@ class MergeLinesByAngle(QgsProcessingAlgorithm):
             self.OUTPUT,
             context,
             newFields,
-            QgsWkbTypes.MultiLineString,
+            Qgis.WkbType.MultiLineString,
             layer.sourceCrs(),
         )
 

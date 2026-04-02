@@ -30,7 +30,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsVectorLayer,
     QgsFeatureSink,
-    QgsWkbTypes,
+    Qgis,
     QgsFields,
     QgsField,
     QgsProcessingFeatureSourceDefinition,
@@ -189,7 +189,7 @@ class ValidateGrid(QgsProcessingAlgorithm):
             self.OUTPUT_GRID_ERRORS,
             context,
             grid_fields,
-            QgsWkbTypes.LineString,
+            Qgis.WkbType.LineString,
             referenceGrid.crs(),
         )
 
@@ -198,7 +198,7 @@ class ValidateGrid(QgsProcessingAlgorithm):
             self.OUTPUT_POINT_ERRORS,
             context,
             point_fields,
-            QgsWkbTypes.Point,
+            Qgis.WkbType.Point,
             referenceGrid.crs(),
         )
 

@@ -29,7 +29,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsGeometry,
     QgsProcessingParameterVectorLayer,
-    QgsWkbTypes,
+    Qgis,
     QgsFeatureSink,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -127,7 +127,7 @@ class MergeRivers(QgsProcessingAlgorithm):
             self.OUTPUT_LAYER_L,
             context,
             drainageLayer.fields(),
-            QgsWkbTypes.MultiLineString,
+            Qgis.WkbType.MultiLineString,
             drainageLayer.sourceCrs(),
         )
         steps = 8

@@ -28,7 +28,7 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingParameterVectorLayer,
-    QgsUnitTypes,
+    Qgis,
     QgsProcessingParameterEnum,
     QgsProcessingParameterDistance,
     QgsProcessingMultiStepFeedback,
@@ -218,7 +218,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 QgsCoordinateReferenceSystem("EPSG:3857"),
                 QgsCoordinateTransformContext(),
             )
-            return d.convertLengthMeasurement(distance, QgsUnitTypes.DistanceDegrees)
+            return d.convertLengthMeasurement(distance, Qgis.DistanceUnit.Degrees)
         else:
             return distance
 

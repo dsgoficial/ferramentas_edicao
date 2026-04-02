@@ -26,7 +26,7 @@ from qgis.core import (
     QgsGeometry,
     QgsProject,
     QgsSpatialIndex,
-    QgsUnitTypes,
+    Qgis,
 )
 from qgis.gui import QgsMapToolEmitPoint
 
@@ -162,7 +162,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
                 QgsCoordinateTransformContext(),
             )
             self.tolerance = d.convertLengthMeasurement(
-                self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees
+                self.getScale() * 0.01, Qgis.DistanceUnit.Degrees
             )
         else:
             self.tolerance = self.getScale() * 0.01

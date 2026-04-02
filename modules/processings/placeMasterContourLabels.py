@@ -43,7 +43,7 @@ from qgis.core import (
     QgsFields,
     QgsSpatialIndex,
     QgsProcessingParameterNumber,
-    QgsUnitTypes,
+    Qgis,
     QgsProcessingParameterMultipleLayers,
     NULL,
     QgsDistanceArea,
@@ -562,7 +562,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
         convertLength = QgsDistanceArea()
         # convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         return convertLength.convertLengthMeasurement(
-            measure, QgsUnitTypes.DistanceMeters
+            measure, Qgis.DistanceUnit.Meters
         )
 
     def populateLineSymbolLayer(

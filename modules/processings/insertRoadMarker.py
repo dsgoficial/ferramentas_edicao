@@ -33,7 +33,7 @@ from qgis.core import (
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterVectorLayer,
     NULL,
-    QgsUnitTypes,
+    Qgis,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
     QgsFeatureSink,
@@ -133,7 +133,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                     QgsCoordinateReferenceSystem("EPSG:3857"),
                     QgsCoordinateTransformContext(),
                 )
-                return d.convertLengthMeasurement(dist, QgsUnitTypes.DistanceDegrees)
+                return d.convertLengthMeasurement(dist, Qgis.DistanceUnit.Degrees)
             return dist
 
         # Calcular distâncias baseadas na escala

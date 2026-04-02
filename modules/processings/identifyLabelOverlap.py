@@ -16,10 +16,7 @@
  ***************************************************************************/
 """
 
-import processing
-
 from ..labelTools.label_size_calculator import (
-    is_generic_text_line_layer,
     get_generic_text_polygons,
 )
 from ..labelTools.precise_label_polygons import (
@@ -35,11 +32,14 @@ from qgis.core import (
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
     QgsFeature,
+    QgsFeatureRequest,
     QgsProcessingParameterEnum,
     QgsFields,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterMultipleLayers,
-    QgsWkbTypes,
+    QgsGeometry,
+    QgsSpatialIndex,
+    Qgis,
 )
 from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
 from qgis.PyQt.QtCore import QCoreApplication, QMetaType
@@ -50,6 +50,7 @@ from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 class IdentifyLabelOverlap(QgsProcessingAlgorithm):
 
     INPUT_LAYERS = "INPUT_LAYERS"
+    INPUT_GENERIC_TEXT = "INPUT_GENERIC_TEXT"
     GEOGRAPHIC_BOUNDARY = "GEOGRAPHIC_BOUNDARY"
     SCALE = "SCALE"
     OUTPUT = "OUTPUT"
@@ -64,10 +65,18 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
-                self.GEOGRAPHIC_BOUNDARY,
-                self.tr("Limite geográfico"),
-                [QgsProcessing.TypeVectorPolygon],
+                self.INPUT_GENERIC_TEXT,
+                self.tr("Selecionar camada de texto genérico de edição"),
+                [QgsProcessing.TypeVectorLine],
                 optional=True,
+                defaultValue="edicao_texto_generico_l",
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.GEOGRAPHIC_BOUNDARY,
+                self.tr("Selecionar a Camada de Moldura"),
+                [QgsProcessing.TypeVectorPolygon],
             )
         )
         self.scales = [
@@ -102,7 +111,10 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layerList = self.parameterAsLayerList(parameters, self.INPUT_LAYERS, context)
-        geographicBoundaryLyr = self.parameterAsLayer(
+        genericTextLyr = self.parameterAsVectorLayer(
+            parameters, self.INPUT_GENERIC_TEXT, context
+        )
+        geographicBoundaryLyr = self.parameterAsVectorLayer(
             parameters, self.GEOGRAPHIC_BOUNDARY, context
         )
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
@@ -115,151 +127,131 @@ class IdentifyLabelOverlap(QgsProcessingAlgorithm):
             self.OUTPUT,
             context,
             fields,
-            QgsWkbTypes.Polygon,
+            Qgis.WkbType.Polygon,
             geographicBoundaryLyr.crs(),
         )
+        if not layerList and genericTextLyr is None:
+            return {self.OUTPUT: sink_id}
 
-        genericTextLayers = []
-        regularLayers = []
-        for l in layerList:
-            (genericTextLayers if is_generic_text_line_layer(l) else regularLayers).append(l)
-        lyrNameSet = set(i.name() for i in regularLayers)
         algRunner = AlgRunner()
-        nRegions = geographicBoundaryLyr.featureCount()
-        nSteps = 7 + nRegions
+        nFrames = geographicBoundaryLyr.featureCount()
+        nSteps = 2 + nFrames * 2
         multiStepFeedback = QgsProcessingMultiStepFeedback(nSteps, feedback)
         currentStep = 0
-        polygonLayerList = []
 
-        # Process regular layers via precise render-based approach
-        if regularLayers:
-            project = context.project()
+        lyrNameSet = set(i.name() for i in layerList)
+
+        # Build font cache once
+        project = context.project()
+        visible_layers = None
+        labeled_layers = None
+        font_cache = None
+        if layerList:
             visible_layers = _get_visible_layers(project)
             labeled_layers, font_cache = build_font_info_cache(
                 visible_layers, lyrNameSet, scale, 300
             )
-            seen = set()
-            for feat in geographicBoundaryLyr.getFeatures():
-                if multiStepFeedback.isCanceled():
-                    return {self.OUTPUT: sink_id}
-                extent = feat.geometry().boundingBox()
-                multiStepFeedback.setCurrentStep(currentStep)
-                multiStepFeedback.setProgressText(
-                    self.tr(f"Renderizando e extraindo rótulos precisos para o extent {extent}")
-                )
-                precisePolygons = render_and_create_precise_label_polygons(
-                    extent=extent,
-                    scale=scale,
-                    project=project,
-                    layer_name_filter=lyrNameSet,
-                    dpi=300,
-                    seen=seen,
-                    visible_layers=visible_layers,
-                    labeled_layers=labeled_layers,
-                    font_info_cache=font_cache,
-                )
-                if precisePolygons is not None:
-                    polygonLayerList.append(precisePolygons)
-                currentStep += 1
 
-        # Process generic text line layers via flat-cap buffer
-        if genericTextLayers:
+        # Process generic text line layer via flat-cap buffer (once)
+        genericPolygonsLayer = None
+        if genericTextLyr is not None and genericTextLyr.featureCount() > 0:
             multiStepFeedback.setCurrentStep(currentStep)
             multiStepFeedback.setProgressText(
                 self.tr("Criando polígonos para texto genérico de edição")
             )
-            genericPolygons = get_generic_text_polygons(
-                genericTextLayers, scale, algRunner, context, multiStepFeedback
+            genericPolygonsLayer = get_generic_text_polygons(
+                [genericTextLyr], scale, algRunner, context, multiStepFeedback
             )
-            if genericPolygons is not None:
-                polygonLayerList.append(genericPolygons)
-            currentStep += 1
+            if genericPolygonsLayer is not None:
+                algRunner.runCreateSpatialIndex(
+                    genericPolygonsLayer, context,
+                    feedback=multiStepFeedback, is_child_algorithm=True,
+                )
+        currentStep += 1
 
-        if not polygonLayerList or multiStepFeedback.isCanceled():
-            return {self.OUTPUT: sink_id}
-
-        # Merge all polygon layers
-        if len(polygonLayerList) > 1:
-            labelPolygonsLayer = algRunner.runMergeVectorLayers(
-                polygonLayerList, context, feedback=multiStepFeedback
-            )
-            labelPolygonsLayer.addExpressionField(
-                "$id", QgsField("featid", QMetaType.Type.Int)
-            )
-        else:
-            labelPolygonsLayer = polygonLayerList[0]
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(
-            labelPolygonsLayer,
-            context,
-            feedback=multiStepFeedback,
-            is_child_algorithm=True,
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.setProgressText(self.tr("Calculando overlaps"))
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        intersectedLyr = algRunner.runIntersection(
-            labelPolygonsLayer,
-            context,
-            inputFields=["featid"],
-            overlayFields=["featid"],
-            overlayLyr=labelPolygonsLayer,
-            feedback=multiStepFeedback,
-        )
-        nProblems = intersectedLyr.featureCount()
-        if nProblems == 0:
-            return {self.OUTPUT: sink_id}
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        dissolvedLyr = algRunner.runDissolve(
-            inputLyr=intersectedLyr,
-            context=context,
-            feedback=multiStepFeedback,
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runDeaggregate(
-            inputLyr=dissolvedLyr,
-            context=context,
-            feedback=multiStepFeedback,
-        )
-        dissolvedLyr = processing.run(
-            "native:joinattributesbylocation",
-            {
-                "INPUT": dissolvedLyr,
-                "PREDICATE": [2],  # equal
-                "JOIN": labelPolygonsLayer,
-                "JOIN_FIELDS": [],
-                "METHOD": 0,
-                "DISCARD_NONMATCHING": False,
-                "PREFIX": "",
-                "NON_MATCHING": "memory:",
-            },
-            context=context,
-            feedback=multiStepFeedback,
-            is_child_algorithm=False,
-        )["NON_MATCHING"]
-        nProblems = dissolvedLyr.featureCount()
-        if nProblems == 0:
-            multiStepFeedback.pushInfo(self.tr("Não há rótulos sobrepostos"))
-            return {self.OUTPUT: sink_id}
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        stepSize = 100 / nProblems
+        # For each frame: render labels, then check overlaps
         flagId = 0
-        for current, feat in enumerate(dissolvedLyr.getFeatures()):
+        for frameFeat in geographicBoundaryLyr.getFeatures():
             if multiStepFeedback.isCanceled():
                 break
-            flagFeat = QgsFeature(fields)
-            flagFeat["id"] = flagId
-            flagFeat["texto"] = "Rótulos sobrepostos"
-            flagFeat.setGeometry(feat.geometry())
-            sink.addFeature(flagFeat)
-            multiStepFeedback.setProgress(current * stepSize)
-            flagId += 1
+
+            frameBbox = frameFeat.geometry().boundingBox()
+
+            # Render labels for this frame
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(
+                self.tr("Renderizando rótulos da moldura")
+            )
+            labelPolygonsLayer = None
+            if layerList:
+                labelPolygonsLayer = render_and_create_precise_label_polygons(
+                    extent=frameBbox,
+                    scale=scale,
+                    project=project,
+                    layer_name_filter=lyrNameSet,
+                    dpi=300,
+                    visible_layers=visible_layers,
+                    labeled_layers=labeled_layers,
+                    font_info_cache=font_cache,
+                )
+            currentStep += 1
+
+            # Collect all label features for this frame
+            multiStepFeedback.setCurrentStep(currentStep)
+            multiStepFeedback.setProgressText(
+                self.tr("Calculando sobreposições")
+            )
+            allLabelFeats = list(labelPolygonsLayer.getFeatures()) if labelPolygonsLayer is not None else []
+            if genericPolygonsLayer is not None:
+                request = QgsFeatureRequest().setFilterRect(frameBbox)
+                allLabelFeats.extend(genericPolygonsLayer.getFeatures(request))
+
+            if len(allLabelFeats) < 2:
+                currentStep += 1
+                continue
+
+            # Build spatial index for overlap detection
+            spatialIndex = QgsSpatialIndex()
+            geomDict = {}
+            for idx, feat in enumerate(allLabelFeats):
+                geom = feat.geometry()
+                if geom.isEmpty():
+                    continue
+                indexFeat = QgsFeature()
+                indexFeat.setId(idx)
+                indexFeat.setGeometry(geom)
+                spatialIndex.addFeature(indexFeat)
+                geomDict[idx] = geom
+
+            # Find pairwise overlaps
+            checkedPairs = set()
+            for idx, geom in geomDict.items():
+                if multiStepFeedback.isCanceled():
+                    break
+                candidates = spatialIndex.intersects(geom.boundingBox())
+                engine = QgsGeometry.createGeometryEngine(geom.constGet())
+                engine.prepareGeometry()
+                for candidateIdx in candidates:
+                    if candidateIdx == idx:
+                        continue
+                    pair = (min(idx, candidateIdx), max(idx, candidateIdx))
+                    if pair in checkedPairs:
+                        continue
+                    checkedPairs.add(pair)
+                    candidateGeom = geomDict[candidateIdx]
+                    if engine.intersects(candidateGeom.constGet()):
+                        intersection = geom.intersection(candidateGeom)
+                        if not intersection.isEmpty() and intersection.area() > 0:
+                            flagFeat = QgsFeature(fields)
+                            flagFeat["id"] = str(flagId)
+                            flagFeat["texto"] = "Rótulos sobrepostos"
+                            flagFeat.setGeometry(intersection)
+                            sink.addFeature(flagFeat)
+                            flagId += 1
+            currentStep += 1
+
+        if flagId == 0:
+            multiStepFeedback.pushInfo(self.tr("Não há rótulos sobrepostos"))
 
         return {self.OUTPUT: sink_id}
 

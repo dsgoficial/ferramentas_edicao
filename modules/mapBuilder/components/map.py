@@ -30,7 +30,7 @@ from qgis.core import (
     QgsPrintLayout,
     QgsProject,
     QgsRectangle,
-    QgsUnitTypes,
+    Qgis,
     QgsVectorLayer,
 )
 
@@ -254,7 +254,7 @@ class Map(ComponentUtils, IComponent):
             else:
                 mapWidth, mapHeight = self.defaultMapSize[0]
             mapItem.attemptResize(
-                QgsLayoutSize(mapWidth, mapHeight, QgsUnitTypes.LayoutMillimeters)
+                QgsLayoutSize(mapWidth, mapHeight, Qgis.LayoutUnit.Millimeters)
             )
             mapItem.setScale(scale)
             mapItem.refresh()

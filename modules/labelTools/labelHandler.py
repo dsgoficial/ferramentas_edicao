@@ -29,7 +29,7 @@ from qgis.core import (
     QgsMapLayer,
     QgsDistanceArea,
     QgsCoordinateTransformContext,
-    QgsUnitTypes,
+    Qgis,
 )
 
 # Captura a feição da camada de entrada mais próxima da posicao e cria a feição na camada de destino,
@@ -118,7 +118,7 @@ def getToleranceForLyr(lyr: QgsMapLayer, scale, crsString="EPSG:3857", distance=
             QgsCoordinateTransformContext(),
         )
         tolerance = d.convertLengthMeasurement(
-            scale * distance, QgsUnitTypes.DistanceDegrees
+            scale * distance, Qgis.DistanceUnit.Degrees
         )
     else:
         tolerance = scale * distance
@@ -167,13 +167,13 @@ def convertLengthToMeters(feat: QgsFeature, crs: QgsCoordinateReferenceSystem):
     distanceArea = QgsDistanceArea()
     distanceArea.setEllipsoid(crs.ellipsoidAcronym())
     measure = distanceArea.measureLength(feat.geometry())
-    return distanceArea.convertLengthMeasurement(measure, QgsUnitTypes.DistanceMeters)
+    return distanceArea.convertLengthMeasurement(measure, Qgis.DistanceUnit.Meters)
 
 
 def convertLengthToDegrees(d, crs):
     convertLength = QgsDistanceArea()
     convertLength.setEllipsoid(crs.ellipsoidAcronym())
-    return convertLength.convertLengthMeasurement(d, QgsUnitTypes.DistanceDegrees)
+    return convertLength.convertLengthMeasurement(d, Qgis.DistanceUnit.Degrees)
 
 
 # Posicionar o texto

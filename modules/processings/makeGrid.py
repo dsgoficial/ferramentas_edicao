@@ -32,7 +32,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingMultiStepFeedback,
     QgsProcessingException,
-    QgsWkbTypes,
+    Qgis,
     QgsProcessingParameterBoolean,
     QgsVectorLayer,
     QgsFeature,
@@ -266,7 +266,7 @@ class MakeGrid(QgsProcessingAlgorithm):
             self.sink.addFeatures(list(map(lambda x: createFeat(x, coordinateTransform=coordinateTransform), tickList)))
 
         newLayer = self.outLayer(
-            parameters, context, lineLayer, QgsWkbTypes.LineString, multiStepFeedback
+            parameters, context, lineLayer, Qgis.WkbType.LineString, multiStepFeedback
         )
 
         if generateGridNumbers:
@@ -279,7 +279,7 @@ class MakeGrid(QgsProcessingAlgorithm):
                 self.OUTPUT_GRID_NUMBERS,
                 context,
                 gridNumberPoints[0].fields() if gridNumberPoints else QgsFields(),
-                QgsWkbTypes.Point,
+                Qgis.WkbType.Point,
                 utm,
             )
 
@@ -467,7 +467,7 @@ class MakeGrid(QgsProcessingAlgorithm):
                 )
             )
             hLine.transform(
-                coordinateTransform, QgsCoordinateTransform.ReverseTransform
+                coordinateTransform, Qgis.TransformDirection.Reverse
             )
             lineList.append(hLine)
             vLine = QgsGeometry(
@@ -476,7 +476,7 @@ class MakeGrid(QgsProcessingAlgorithm):
                 )
             )
             vLine.transform(
-                coordinateTransform, QgsCoordinateTransform.ReverseTransform
+                coordinateTransform, Qgis.TransformDirection.Reverse
             )
             lineList.append(vLine)
 

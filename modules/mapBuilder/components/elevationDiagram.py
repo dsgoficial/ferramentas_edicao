@@ -38,7 +38,7 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
     QgsTextFormat,
-    QgsUnitTypes,
+    Qgis,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsVectorLayer,
@@ -486,7 +486,7 @@ class ElevationDiagram(ComponentUtils, IComponent):
     def getTextFormat():
         textprop = QgsTextFormat()
         textprop.setColor(QColor("black"))
-        textprop.setSizeUnit(QgsUnitTypes.RenderPoints)
+        textprop.setSizeUnit(Qgis.RenderUnit.Points)
         textprop.setSize(8.9762)
         textprop.setFont(QFont("Noto Sans"))
         return textprop
@@ -499,11 +499,11 @@ class ElevationDiagram(ComponentUtils, IComponent):
         crs: QgsCoordinateReferenceSystem,
     ) -> QgsLayoutItemMapGrid:
         gridLayoutItem = QgsLayoutItemMapGrid("x-grid", parentLayoutItem)
-        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.Solid)
+        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.GridStyle.Solid)
         gridLayoutItem.setIntervalX(gridIntervalX)
         gridLayoutItem.setIntervalY(gridIntervalY)
         gridLayoutItem.lineSymbol().setWidth(0.1)
-        gridLayoutItem.setAnnotationFormat(QgsLayoutItemMapGrid.CustomFormat)
+        gridLayoutItem.setAnnotationFormat(QgsLayoutItemMapGrid.AnnotationFormat.CustomFormat)
         gridLayoutItem.setAnnotationExpression(
             """if(left(right( @grid_number , 3),1) = 0,
                 if( @grid_axis = 'x', substr(longNumber( @grid_number ), 0, 3), ''),
@@ -511,16 +511,16 @@ class ElevationDiagram(ComponentUtils, IComponent):
         )
         gridLayoutItem.setAnnotationTextFormat(self.getTextFormat())
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Right
         )
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.ShowAll, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         gridLayoutItem.setCrs(crs)
         gridLayoutItem.setAnnotationPrecision(0)
@@ -536,11 +536,11 @@ class ElevationDiagram(ComponentUtils, IComponent):
         crs: QgsCoordinateReferenceSystem,
     ) -> QgsLayoutItemMapGrid:
         gridLayoutItem = QgsLayoutItemMapGrid("y-grid", parentLayoutItem)
-        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.Solid)
+        gridLayoutItem.setStyle(QgsLayoutItemMapGrid.GridStyle.Solid)
         gridLayoutItem.setIntervalX(gridIntervalX)
         gridLayoutItem.setIntervalY(gridIntervalY)
         gridLayoutItem.lineSymbol().setWidth(0.1)
-        gridLayoutItem.setAnnotationFormat(QgsLayoutItemMapGrid.CustomFormat)
+        gridLayoutItem.setAnnotationFormat(QgsLayoutItemMapGrid.AnnotationFormat.CustomFormat)
         gridLayoutItem.setAnnotationExpression(
             """ with_variable(
             'casas',
@@ -552,16 +552,16 @@ class ElevationDiagram(ComponentUtils, IComponent):
         )
         gridLayoutItem.setAnnotationTextFormat(self.getTextFormat())
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.ShowAll, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll, QgsLayoutItemMapGrid.BorderSide.Right
         )
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         gridLayoutItem.setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         gridLayoutItem.setCrs(crs)
         gridLayoutItem.setAnnotationPrecision(0)

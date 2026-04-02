@@ -28,7 +28,7 @@ from qgis.core import (
     QgsFields,
     QgsProject,
     QgsProcessing,
-    QgsWkbTypes,
+    Qgis,
     QgsFeatureSink,
     QgsProcessingParameterNumber,
 )
@@ -97,7 +97,7 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
             self.OUTPUT_LAYER,
             context,
             input_layer.fields(),
-            QgsWkbTypes.Polygon,
+            Qgis.WkbType.Polygon,
             input_layer.sourceCrs(),
         )
 

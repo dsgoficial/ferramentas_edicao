@@ -33,7 +33,7 @@ from qgis.core import (
     QgsPoint,
     QgsPointXY,
     QgsProject,
-    QgsUnitTypes,
+    Qgis,
     QgsVectorLayer,
     QgsWkbTypes,
     NULL,
@@ -253,7 +253,7 @@ class CreateMasterElevationTextValue(gui.QgsMapTool, BaseTools):
         convertLength = QgsDistanceArea()
         # convertLength.setEllipsoid(self.lyrCrs.ellipsoidAcronym())
         return convertLength.convertLengthMeasurement(
-            measure, QgsUnitTypes.DistanceMeters
+            measure, Qgis.DistanceUnit.Meters
         )
 
     def getLayers(self):

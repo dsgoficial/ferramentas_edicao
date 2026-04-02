@@ -38,7 +38,7 @@ from qgis.core import (
     QgsCoordinateTransformContext,
     QgsSpatialIndex,
     QgsDistanceArea,
-    QgsUnitTypes,
+    Qgis,
     NULL,
 )
 from qgis.gui import QgsMapToolEmitPoint
@@ -234,7 +234,7 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
                 QgsCoordinateTransformContext(),
             )
             self.tolerance = d.convertLengthMeasurement(
-                self.getScale() * 0.01, QgsUnitTypes.DistanceDegrees
+                self.getScale() * 0.01, Qgis.DistanceUnit.Degrees
             )
         else:
             self.tolerance = self.getScale() * 0.01

@@ -31,7 +31,7 @@ from qgis.core import (
     QgsPrintLayout,
     QgsProject,
     QgsRectangle,
-    QgsUnitTypes,
+    Qgis,
     QgsVectorLayer,
     QgsCoordinateTransformContext,
 )
@@ -195,7 +195,7 @@ class MapOM(ComponentUtils, IComponent):
             mapItem.setExtent(mapAreaExtentsAfterRotation)
             mapItem.setMapRotation(90 - angle)
             mapItem.attemptResize(
-                QgsLayoutSize(mapWidth, mapHeight, QgsUnitTypes.LayoutMillimeters)
+                QgsLayoutSize(mapWidth, mapHeight, Qgis.LayoutUnit.Millimeters)
             )
             mapItem.setScale(scale)
             mapItem.refresh()
