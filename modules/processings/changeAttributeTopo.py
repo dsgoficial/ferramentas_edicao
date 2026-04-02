@@ -598,8 +598,6 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 if "texto_edicao" in feat.fields().names() and feat["texto_edicao"] != NULL:
                     if isinstance(feat["texto_edicao"], str) and feat["texto_edicao"].strip() != "":
                         continue
-                if feat["nome"] != NULL:
-                    continue
                 silos[feat.id()] = feat.geometry()
 
         if not silos:
@@ -621,11 +619,9 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
         # Índice espacial para busca eficiente
         index = QgsSpatialIndex()
-        featMap = {}
         for fid, geom in silos.items():
             f = layer.getFeature(fid)
             index.addFeature(f)
-            featMap[fid] = geom
 
         # Agrupar silos próximos
         for fid, geom in silos.items():
@@ -674,11 +670,11 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 if label is not None:
                     feature["texto_edicao"] = label
                 else:
-                    feature["texto_edicao"] = ""
+                    feature["texto_edicao"] = NULL
                     feature["visivel"] = 2
             else:
                 feature["texto_edicao"] = "Silo"
-        if feature["nome"] != NULL:
+        elif feature["nome"] != NULL:
             feature["texto_edicao"] = feature["nome"]
 
         return feature
