@@ -23,6 +23,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from .bridgeAndManholeWidth import BridgeAndManholeWidth
 from .buildElevationDiagram import BuildElevationDiagram
+from .buildingGeneralizationAlgorithm import BuildingGeneralizationAlgorithm
 from .damWidth import DamWidth
 from .defineBuildingRotation import DefineBuildingRotation
 from .defineSpillWaySinkRotation import DefineSpillWaySinkRotation
@@ -122,6 +123,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(CreateCustomPolygons())
         self.addAlgorithm(CopyFeaturesIntoRoadElement())
         self.addAlgorithm(LayoutItemsToCanvasAlgorithm())
+        self.addAlgorithm(BuildingGeneralizationAlgorithm())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
