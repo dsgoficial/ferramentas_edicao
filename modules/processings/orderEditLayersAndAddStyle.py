@@ -55,7 +55,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     PRINT_STYLE = "PRINT_STYLE"
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading
 
     def initAlgorithm(self, config=None):
 
@@ -114,7 +114,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             optional=True,
             type=QgsProcessingParameterNumber.Integer,
         )
-        param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(param)
 
         param = QgsProcessingParameterBoolean(
@@ -122,7 +122,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             self.tr("Utilizar estilo de impressão"),
             defaultValue=False,
         )
-        param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(param)
 
     def parameterAsGroup(self, parameters, name, context):
@@ -207,9 +207,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             group = project.layerTreeRoot().findGroup(groupInput)
             if not group:
                 raise Exception("Grupo não encontrado!")
-            layers = [layerTree.layer() for layerTree in group.findLayers()]
+            layerTreeNodes = group.findLayers()
         else:
-            layers = project.instance().mapLayers().values()
+            layerTreeNodes = project.layerTreeRoot().findLayers()
+        layers = [node.layer() for node in layerTreeNodes if node.layer()]
         if mapType in [0]:
             carta = "topoMap"
         elif mapType in [1]:
@@ -269,7 +270,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         layerNames[:0] = ["aux_moldura_a", "edicao_grid_edicao_l", "aux_grid_revisao_a"]
         visibleLayers, invisibleLayers = self.changeVisibility(
             layerNames=layerNames,
-            layers=layers,
+            layerTreeNodes=layerTreeNodes,
             qmlDict=qmlDict,
             feedback=multiStepFeedback,
         )
@@ -334,24 +335,24 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         return
 
-    def changeVisibility(self, layerNames, layers, qmlDict, feedback):
-        listSize = len(layers)
+    def changeVisibility(self, layerNames, layerTreeNodes, qmlDict, feedback):
+        listSize = len(layerTreeNodes)
         progressStep = 100 / (listSize + 1) if listSize else 0
         invisibleLayers = []
         layersOk = []
-        for step, layer in enumerate(layers):
+        for step, node in enumerate(layerTreeNodes):
             if feedback.isCanceled():
-                return
+                return layersOk, invisibleLayers
+            layer = node.layer()
+            if layer is None:
+                continue
             layerName = layer.dataProvider().uri().table()
             feedback.setProgress(step * progressStep)
-            node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
             if not (layerName in layerNames) or not layerName in qmlDict:
                 invisibleLayers.append(layer)
-                if node:
-                    node.setItemVisibilityChecked(False)
+                node.setItemVisibilityChecked(False)
             else:
-                if node:
-                    node.setItemVisibilityChecked(True)
+                node.setItemVisibilityChecked(True)
                 layersOk.append(layer)
 
         return layersOk, invisibleLayers

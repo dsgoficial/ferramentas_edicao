@@ -404,11 +404,11 @@ def _get_visible_layers(project):
     """Get all visible spatial layers from the project."""
     root = project.layerTreeRoot()
     visible = []
-    for layer in project.mapLayers().values():
-        if not layer.isSpatial():
+    for node in root.findLayers():
+        if not node.isVisible():
             continue
-        tree_layer = root.findLayer(layer.id())
-        if tree_layer is None or not tree_layer.isVisible():
+        layer = node.layer()
+        if layer is None or not layer.isSpatial():
             continue
         visible.append(layer)
     return visible

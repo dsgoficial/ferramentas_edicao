@@ -218,16 +218,12 @@ class ExporterSingleton:
         Removes the grid from the map layout by unckecking the visibility of the item grid
         """
         project = QgsProject.instance()
-        for layerName in [
-            "aux_label",
-            "edicao_grid_edicao_l",
-            "edicao_grid_numerico_p",
-        ]:
-            layer = project.mapLayersByName(layerName)[0]
-            root = project.layerTreeRoot()
-            layer_node = root.findLayer(layer.id())
-            if layer_node:
-                layer_node.setItemVisibilityChecked(False)
+        root = project.layerTreeRoot()
+        hiddenNames = {"aux_label", "edicao_grid_edicao_l", "edicao_grid_numerico_p"}
+        for node in root.findLayers():
+            layer = node.layer()
+            if layer and layer.name() in hiddenNames:
+                node.setItemVisibilityChecked(False)
 
     def cleanup(self, path: Path):
         """Unlink intermediate files (reproject and compress) created by reproject and compress functions.
