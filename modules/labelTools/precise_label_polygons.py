@@ -127,22 +127,10 @@ class LabelFontInfo:
         else:
             font_size_px = font_size * dpi / 72.0
 
-        f = QFont(base_font.family())
+        # Copy QFont directly — preserves exact font identity as resolved by QGIS.
+        # QFont(family) + setStyleName() can resolve to wrong variant on Windows.
+        f = QFont(base_font)
         f.setPixelSize(max(1, int(round(font_size_px))))
-        f.setBold(base_font.bold())
-        f.setItalic(base_font.italic())
-        f.setWeight(base_font.weight())
-
-        if hasattr(base_font, "styleName") and base_font.styleName():
-            f.setStyleName(base_font.styleName())
-
-        stretch = base_font.stretch()
-        if stretch > 0:
-            f.setStretch(stretch)
-
-        f.setCapitalization(base_font.capitalization())
-        f.setStrikeOut(base_font.strikeOut())
-        f.setUnderline(base_font.underline())
 
         letter_sp = base_font.letterSpacing()
         ls_type = base_font.letterSpacingType()
@@ -183,7 +171,12 @@ class LabelFontInfo:
 
 
 def _decompose_label_geometry(corners):
-    """Decompose label bounding polygon into origin + directional vectors."""
+    """Decompose label bounding polygon into origin + directional vectors.
+
+    Text direction is determined by which edge is more horizontal (larger
+    delta-x), not by which is longer. This correctly handles short labels
+    (e.g. "29") whose bounding box is taller than wide.
+    """
     if len(corners) < 4:
         return None
     p0, p1, p2, p3 = corners[0], corners[1], corners[2], corners[3]
@@ -191,7 +184,12 @@ def _decompose_label_geometry(corners):
     s01 = math.hypot(p1.x() - p0.x(), p1.y() - p0.y())
     s12 = math.hypot(p2.x() - p1.x(), p2.y() - p1.y())
 
-    if s01 >= s12:
+    # The more horizontal edge is the text direction
+    dx01 = abs(p1.x() - p0.x())
+    dx12 = abs(p2.x() - p1.x())
+    edge01_is_text = dx01 >= dx12
+
+    if edge01_is_text:
         origin = p0
         ux = (p1.x() - p0.x()) / s01 if s01 > 0 else 1.0
         uy = (p1.y() - p0.y()) / s01 if s01 > 0 else 0.0
@@ -257,12 +255,17 @@ def _split_label_into_lines(text, fi):
     return lines if lines else [text]
 
 
-def _create_horizontal_char_polygons(label_geom, label_text, fi):
+def _create_horizontal_char_polygons(label_geom, label_text, fi,
+                                     label_font=None):
     """
     Create precise character-level polygons for a horizontal label.
 
     Decomposes the label bounding polygon, then uses QFontMetricsF with
     tightBoundingRect to create a tight polygon per character.
+
+    label_font: if provided, QFont from QgsLabelPosition.labelFont — the exact
+    font QGIS used for this specific label (correct for rule-based labeling).
+    Falls back to fi.font if not provided.
 
     Returns list of QgsGeometry (one polygon per non-space character).
     """
@@ -281,10 +284,11 @@ def _create_horizontal_char_polygons(label_geom, label_text, fi):
     total_width = geo_info["width"]
     total_height = geo_info["height"]
 
-    if not fi.valid:
+    if label_font is None and (fi is None or not fi.valid):
         return [label_geom]
 
-    cap = fi.font.capitalization()
+    font = label_font if label_font is not None else fi.font
+    cap = font.capitalization()
 
     def display_transform(t):
         if cap == QFont.Capitalization.AllUppercase:
@@ -295,7 +299,7 @@ def _create_horizontal_char_polygons(label_geom, label_text, fi):
             return t.title()
         return t
 
-    fm = fi.fm
+    fm = QFontMetricsF(font) if label_font is not None else fi.fm
 
     # Split into lines
     lines = _split_label_into_lines(label_text, fi)
@@ -307,10 +311,7 @@ def _create_horizontal_char_polygons(label_geom, label_text, fi):
         disp = display_transform(line)
         advances = []
         for ch in disp:
-            try:
-                adv = fm.horizontalAdvance(ch)
-            except AttributeError:
-                adv = fm.width(ch)
+            adv = fm.horizontalAdvance(ch)
             advances.append(max(adv, 0.001))
         total = sum(advances)
         line_data.append((line, disp, advances, total))
@@ -416,14 +417,17 @@ def _get_visible_layers(project):
 
 def _render_labels(extent, scale, project_crs, visible_layers, dpi):
     """Render off-screen and return list of QgsLabelPosition, or empty list."""
-    mu_per_px = scale * 0.0254 / dpi
+    from qgis.core import QgsScaleCalculator
+
     ext_w = extent.width()
     ext_h = extent.height()
     if ext_w <= 0 or ext_h <= 0:
         return []
 
-    px_w = max(64, int(math.ceil(ext_w / mu_per_px)))
-    px_h = max(64, int(math.ceil(ext_h / mu_per_px)))
+    sc = QgsScaleCalculator(dpi, project_crs.mapUnits())
+    img_size = sc.calculateImageSize(extent, scale)
+    px_w = max(64, int(math.ceil(img_size.width())))
+    px_h = max(64, int(math.ceil(img_size.height())))
 
     if px_w > MAX_PX_PER_SIDE or px_h > MAX_PX_PER_SIDE:
         ratio = min(MAX_PX_PER_SIDE / px_w, MAX_PX_PER_SIDE / px_h)
@@ -545,8 +549,8 @@ def render_and_create_precise_label_polygons(
         ]
     )
     output_layer.updateFields()
-    output_layer.beginEditCommand("Creating precise label polygons")
 
+    features_to_add = []
     feat_id = 0
 
     for lbl_pos in label_positions:
@@ -570,14 +574,14 @@ def render_and_create_precise_label_polygons(
         layer_name = labeled_layers[layer_id].name()
         fi = font_info_cache.get(layer_id)
 
-        # Skip non-horizontal labels (line-following, curved)
         if fi is not None and not fi.is_horizontal:
             continue
 
-        # Create precise polygons for horizontal labels
-        if fi is not None and fi.valid:
+        label_font = lbl_pos.labelFont
+
+        if fi is not None and fi.valid or label_font is not None:
             char_geoms = _create_horizontal_char_polygons(
-                label_geom, label_text, fi
+                label_geom, label_text, fi, label_font=label_font
             )
             if len(char_geoms) > 1:
                 combined = QgsGeometry.collectGeometry(char_geoms)
@@ -586,7 +590,6 @@ def render_and_create_precise_label_polygons(
             else:
                 combined = label_geom
         else:
-            # Fallback for curved labels or missing font info
             combined = label_geom
 
         if combined.isEmpty():
@@ -599,13 +602,13 @@ def render_and_create_precise_label_polygons(
         feat["LabelText"] = label_text
         feat["srcFeatId"] = lbl_pos.featureId
         feat["featid"] = feat_id
-        output_layer.addFeature(feat)
+        features_to_add.append(feat)
         feat_id += 1
 
-    output_layer.endEditCommand()
-    output_layer.commitChanges()
-
-    if feat_id == 0:
+    if not features_to_add:
         return None
+
+    dp.addFeatures(features_to_add)
+    output_layer.commitChanges()
 
     return output_layer
