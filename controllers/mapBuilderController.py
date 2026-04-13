@@ -205,6 +205,7 @@ class MapBuildController(MapBuildControllerUtils):
                 "password",
                 "exportTiff",
                 "exportTiffWithoutGrid",
+                "disableAdditionalMasks",
             ],
         )
         if isinstance(dlg, QDialog):
@@ -217,6 +218,7 @@ class MapBuildController(MapBuildControllerUtils):
                 dlg.password.text(),
                 dlg.checkBoxExportGeotiff.isChecked(),
                 dlg.checkBoxExportGeotiffWithoutGrid.isChecked(),
+                dlg.checkBoxDisableAdditionalMasks.isChecked(),
             )
         elif isinstance(dlg, Namespace):
             dlgCfg = _dlgCfg(
@@ -228,6 +230,7 @@ class MapBuildController(MapBuildControllerUtils):
                 dlg.password,
                 dlg.exportTiff,
                 dlg.exportTiffWithoutGrid,
+                getattr(dlg, "disableAdditionalMasks", False),
             )
         return dlgCfg
 
@@ -570,6 +573,7 @@ class MapBuildController(MapBuildControllerUtils):
                 mapExtentsFeat,
                 mapExtentsLyr,
             )
+            builder.disableAdditionalMasks = dlgCfg.disableAdditionalMasks
             try:
                 builder.run(self.debugMode)
                 exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)

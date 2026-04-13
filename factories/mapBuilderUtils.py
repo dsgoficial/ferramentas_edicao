@@ -362,6 +362,8 @@ class MapBuilderUtils:
                 allLayerIds.extend(result)
         return allLayerIds
 
+    ESSENTIAL_MASK_KEYS = ("elemnat_curva_nivel_l", "edicao_simb_cota_mestra_l")
+
     def setupMasks(self, productPath: Path, layers: List[QgsVectorLayer]):
         """Runs the "loadmasks" processing to setup the layers masks.
         Args:
@@ -369,8 +371,24 @@ class MapBuilderUtils:
             layers: list of vector layers which masks will be modified
         """
         pathJson = productPath / "masks.json"
-        if pathJson.exists():
+        if not pathJson.exists():
+            return
+        jsonFileArg = str(pathJson)
+        if getattr(self, "disableAdditionalMasks", False):
+            with open(pathJson, encoding="utf-8") as fh:
+                fullMasks = json.load(fh)
+            filteredMasks = {
+                k: v for k, v in fullMasks.items() if k in self.ESSENTIAL_MASK_KEYS
+            }
+            tmpPath = productPath / "masks_filtered.json"
+            with open(tmpPath, "w", encoding="utf-8") as fh:
+                json.dump(filteredMasks, fh)
+            jsonFileArg = str(tmpPath)
+        try:
             processing.run(
                 "ferramentasedicao:loadmasks",
-                {"JSON_FILE": str(pathJson), "INPUT_LAYERS": layers},
+                {"JSON_FILE": jsonFileArg, "INPUT_LAYERS": layers},
             )
+        finally:
+            if getattr(self, "disableAdditionalMasks", False):
+                Path(jsonFileArg).unlink(missing_ok=True)

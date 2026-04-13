@@ -65,6 +65,7 @@ def setupArgparser():
     parser.add_argument("-ef", "--exportFolder", required=True)
     parser.add_argument("-et", "--exportTiff", action="store_true")
     parser.add_argument("-etwg", "--exportTiffWithoutGrid", action="store_true")
+    parser.add_argument("-dam", "--disableAdditionalMasks", action="store_true")
     return parser.parse_args()
 
 
