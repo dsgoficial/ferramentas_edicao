@@ -57,7 +57,7 @@ class PasswordWrapper(WidgetWrapper):
 
     def createWidget(self):
         self._lineedit = QLineEdit()
-        self._lineedit.setEchoMode(QLineEdit.Password)
+        self._lineedit.setEchoMode(QLineEdit.EchoMode.Password)
         return self._lineedit
 
     def value(self):

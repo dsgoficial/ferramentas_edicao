@@ -123,8 +123,11 @@ class CompositionSingleton:
         with open(compositionPath, encoding="utf-8") as template:
             templateContent = template.read()
         doc = QDomDocument()
-        doc.setContent(templateContent)
-        layout.loadFromTemplate(doc, QgsReadWriteContext())
+        if not doc.setContent(templateContent):
+            raise ValueError(f"Template QPT inválido: {compositionPath}")
+        # QGIS 4: clearExisting=True força a página ser criada a partir do template.
+        # Com False, layout ficava sem pages e exportToPdf falhava com PrintError.
+        layout.loadFromTemplate(doc, QgsReadWriteContext(), True)
         layout.setCustomProperty("variableNames", ["productFolder", "commonFolder"])
         layout.setCustomProperty(
             "variableValues", [str(productFolder), str(commonFolder)]
@@ -208,7 +211,8 @@ class CompositionSingleton:
             with open(qpt.get("path"), encoding="utf-8") as fp:
                 template = fp.read()
             doc = QDomDocument()
-            doc.setContent(template)
+            if not doc.setContent(template):
+                raise ValueError(f"Template QPT inválido: {qpt.get('path')}")
             layoutItems, sucess = layout.loadFromTemplate(
                 doc, QgsReadWriteContext(), False
             )
@@ -216,7 +220,7 @@ class CompositionSingleton:
                 continue
             for layoutItem in layoutItems:
                 refPoint = layoutItem.referencePoint()
-                layoutItem.setReferencePoint(QgsLayoutItem.UpperLeft)
+                layoutItem.setReferencePoint(QgsLayoutItem.ReferencePoint.UpperLeft)
                 x = layoutItem.pagePos().x() + qpt.get("x_0")
                 y = layoutItem.pagePos().y() + qpt.get("y_0")
                 _tmpDoc = QDomDocument("_tmpDoc")

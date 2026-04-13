@@ -354,7 +354,10 @@ class MapBuilderUtils:
         for key, component in self.components.items():
             self.deleteLayerTreeNode(key)
             context.layers = layersByGroup.get(key, [])
-            result = component.build(context)
+            try:
+                result = component.build(context)
+            except Exception as e:
+                raise RuntimeError(f"Componente '{key}' falhou: {e}") from e
             if result:
                 allLayerIds.extend(result)
         return allLayerIds

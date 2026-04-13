@@ -47,6 +47,13 @@ from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtGui import QColor, QFont
 
 
+def _iterAllRules(rule):
+    """Yields all descendants of `rule` (excluding the root), depth-first."""
+    for child in rule.children():
+        yield child
+        yield from _iterAllRules(child)
+
+
 class GridAndLabelCreator(QObject):
     def __init__(self, parent=None):
         super(GridAndLabelCreator, self).__init__()
@@ -424,15 +431,11 @@ class GridAndLabelCreator(QObject):
             pgrid.transform(trUTMLL)
         # Label Format Settings
         settings = QgsPalLayerSettings()
-        settings.placement = (
-            1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
-        )
+        settings.placement = Qgis.LabelPlacement.OverPoint
         settings.isExpression = True
         textprop = QgsTextFormat()
         textprop.setColor(llcolor)
-        textprop.setSizeUnit(
-            4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points
-        )
+        textprop.setSizeUnit(Qgis.RenderUnit.Points)
         textprop.setSize(fSize * 2.8346)
         textprop.setFont(QFont(fontType))
         textprop.setLineHeight(1)
@@ -1323,12 +1326,13 @@ class GridAndLabelCreator(QObject):
         symbol_list = renderer.symbols(QgsRenderContext())
         symbol_layer_list = symbol_list[0].symbolLayers()
         for smb in range(1, len(symbol_layer_list)):
-            idx_list = []
-            idx_list.append(smb)
-            idx_list.append(0)
-            symbol_id = QgsSymbolLayerId(grid_symbol_rule_id, idx_list)
-            temp = QgsSymbolLayerReference(layer_id, symbol_id)
-            grid_symbol_ref_list.append(temp)
+            sl = symbol_layer_list[smb]
+            try:
+                ref = QgsSymbolLayerReference(layer_id, sl.id())
+            except (TypeError, AttributeError):
+                symbol_id = QgsSymbolLayerId(grid_symbol_rule_id, [smb, 0])
+                ref = QgsSymbolLayerReference(layer_id, symbol_id)
+            grid_symbol_ref_list.append(ref)
 
         # Listing available label masks
         for layer in layers:
@@ -1341,7 +1345,7 @@ class GridAndLabelCreator(QObject):
             if isinstance(labels, QgsVectorLayerSimpleLabeling):
                 providers.append("--SINGLE--RULE--")
             if isinstance(labels, QgsRuleBasedLabeling):
-                providers = [x.ruleKey() for x in labels.rootRule().children()]
+                providers = [x.ruleKey() for x in _iterAllRules(labels.rootRule())]
 
             for provider in providers:
                 if provider == "--SINGLE--RULE--":

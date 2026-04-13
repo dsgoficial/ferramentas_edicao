@@ -70,8 +70,8 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         # Adicionando botões de controle de janela (minimizar, maximizar, fechar)
         self.help_dialog.setWindowFlags(
             self.help_dialog.windowFlags()
-            | Qt.WindowMinMaxButtonsHint
-            | Qt.WindowCloseButtonHint
+            | Qt.WindowType.WindowMinMaxButtonsHint
+            | Qt.WindowType.WindowCloseButtonHint
         )
 
         # Criando um widget de navegador de texto para exibir o conteúdo HTML

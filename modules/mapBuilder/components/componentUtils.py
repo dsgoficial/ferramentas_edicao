@@ -81,11 +81,11 @@ class ComponentUtils:
         with open(path) as template:
             templateContent = template.read()
         doc = QDomDocument()
-        doc.setContent(templateContent)
+        if not doc.setContent(templateContent):
+            raise ValueError(f"Template QPT inválido: {path}")
 
         # adding to existing items
-        # items, ok = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
-        layout.loadFromTemplate(doc, QgsReadWriteContext())
+        layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
         self.updateQptVariables(layout, str(newValue))
         return layout
 
@@ -310,7 +310,7 @@ class ComponentUtils:
 
 def cloneItem(item, composition_dest, x_0, y_0):
     ref_point = item.referencePoint()
-    item.setReferencePoint(QgsLayoutItem.UpperLeft)
+    item.setReferencePoint(QgsLayoutItem.ReferencePoint.UpperLeft)
     original_x = item.pagePos().x()
     original_y = item.pagePos().y()
     final_x = original_x + x_0
@@ -335,7 +335,8 @@ def copyQptToCompositor(composition_dest, qptDict):
     with open(qptDict["caminho"], "rt") as myTemplateFile:
         myTemplateContent = myTemplateFile.read()
     doc = QDomDocument()
-    doc.setContent(myTemplateContent)
+    if not doc.setContent(myTemplateContent):
+        raise ValueError(f"Template QPT inválido: {qptDict['caminho']}")
 
     items, sucess = layout.loadFromTemplate(doc, QgsReadWriteContext(), False)
     if sucess:

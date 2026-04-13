@@ -185,7 +185,6 @@ class ElevationDiagram(ComponentUtils, IComponent):
             )
 
         mapIDsToBeDisplayed = [x.id() for x in layers]
-
         return mapIDsToBeDisplayed
 
     def getElevationSlicing(
@@ -460,6 +459,8 @@ class ElevationDiagram(ComponentUtils, IComponent):
                 "OUTPUT": "memory:",
             },
         )["OUTPUT"]
+        # Register in project to get stable layer ID resolvable from any context
+        QgsProject.instance().addMapLayer(bufferedBounds, False)
         processing.run(
             "dsgtools:generalizenetworkedgeswithlengthalgorithm",
             {
@@ -476,7 +477,6 @@ class ElevationDiagram(ComponentUtils, IComponent):
                 "GROUP_BY_SPATIAL_PARTITION": False,
                 "METHOD": 0,
             },
-            context=QgsProcessingContext(),
             feedback=QgsProcessingFeedback(),
         )
         drainageLyr.commitChanges()

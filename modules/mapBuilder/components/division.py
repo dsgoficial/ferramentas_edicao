@@ -73,8 +73,6 @@ class Division(ComponentUtils, IComponent):
 
         isInternational = data.get("territorio_internacional")
 
-        # Inserting necessary layers
-
         (
             layerCountyArea,
             layerCountyLine,
@@ -94,13 +92,10 @@ class Division(ComponentUtils, IComponent):
             ]
         )
 
-        # Getting map extents
         gridBound = mapAreaFeature.geometry().boundingBox()
         gridRectangleLayer = self.createGridRectangle(gridBound, "divisionMapArea")
         mapIDsToBeDisplayed.append(gridRectangleLayer.id())
 
-        # Get map extent for intersections
-        # TODO: Check possible refactor on getExtent
         outerExtents = self.getExtent(gridBound, mapAreaFeature, data)
         if (mapItem := composition.itemById("map_divisao")) is not None:
             mapItem.setExtent(outerExtents)
@@ -112,22 +107,18 @@ class Division(ComponentUtils, IComponent):
             orderedCountiesNamesByArea,
         ) = self.getIntersections(layerCountyArea, outerExtents, mapAreaFeature, data)
 
-        # Labeling counties
         self.setLabels(
             layerCountyArea,
             orderedCountiesByCentroidDistance,
             orderedCountiesNamesByArea,
         )
 
-        # Inserting counties table
         html_tabledata = self.customCreateHtmlTableData(orderedCountiesNamesByArea)
         self.setMunicipiosTable(composition, html_tabledata)
 
         if not isInternational:
             self.hideInternationalCouties(layerCountryArea)
-            # self.unsetLabel(layerCountry)
 
-        # Update map in correct sequence
         layersToShow = (
             gridRectangleLayer,
             layerCountryLine,
@@ -254,7 +245,6 @@ class Division(ComponentUtils, IComponent):
         isInternational = data.get("territorio_internacional")
         d = QgsDistanceArea()
         outerExtentsGeometry = QgsGeometry.fromRect(outerExtents)
-        # contourOuterExtents = self.convertPolygonToMultilineGeometry(outerExtentsGeometry)
         countiesToDisplay = []
         mapAreaCentroid = mapAreaFeature.geometry().centroid().asPoint()
         request = QgsFeatureRequest().setFilterRect(outerExtents)
@@ -334,7 +324,6 @@ class Division(ComponentUtils, IComponent):
             selectedFeature["SELECT"] = 1
             selectedFeature["SOLO"] = 1
             layerCounty.updateFeature(selectedFeature)
-
         layerCounty.commitChanges()
         layerCounty.triggerRepaint()
         orderedCountiesByCentroidDistance = sorted(

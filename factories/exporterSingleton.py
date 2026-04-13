@@ -106,8 +106,9 @@ class ExporterSingleton:
         Returns:
             The export status
         """
+        composition.refresh()
         exporter = QgsLayoutExporter(composition)
-        exportStatus = 0
+        hasError = False
         errorMessage = ""
         self.setMetadata()
         if not self.debugMode:
@@ -118,47 +119,49 @@ class ExporterSingleton:
             pdfExportSettings.appendGeoreference = True
             pdfExportSettings.exportMetadata = True
             pdfExportSettings.dpi = self.dpi
-            exportStatus += exporter.exportToPdf(str(pdfFilePath), pdfExportSettings)
-            errorMessage += self.getErrorMessage(exportStatus)
+            statusPdf = exporter.exportToPdf(str(pdfFilePath), pdfExportSettings)
+            if statusPdf != QgsLayoutExporter.ExportResult.Success:
+                hasError = True
+                errorMessage += self.getErrorMessage(statusPdf)
         if self.exportTiff:
             tiffFilePath = Path(self.exportFolder, f"{self.basename}.tif")
-            tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
-            tiffExporterSettings.dpi = self.dpi
-            statusTiff = exporter.exportToImage(str(tiffFilePath), tiffExporterSettings)
-            errorMessage += self.getErrorMessage(exportStatus, fileType="tif")
-            exportStatus += statusTiff
-            self.reproject(tiffFilePath)
-            self.compress(tiffFilePath)
-            self.cleanup(tiffFilePath)
+            failed, msg = self._exportTiff(exporter, tiffFilePath)
+            hasError = hasError or failed
+            errorMessage += msg
         if self.exportTiffWithoutGrid:
             tiffFilePath = Path(self.exportFolder, f"{self.basename}_sem_grid.tif")
             self.removeGrid()
-            tiffExporterSettings = QgsLayoutExporter.ImageExportSettings()
-            tiffExporterSettings.dpi = self.dpi
-            statusTiff = exporter.exportToImage(str(tiffFilePath), tiffExporterSettings)
-            errorMessage += self.getErrorMessage(exportStatus, fileType="tif")
-            exportStatus += statusTiff
-            self.reproject(tiffFilePath)
-            self.compress(tiffFilePath)
-            self.cleanup(tiffFilePath)
-        # del exporter
-        return not bool(exportStatus), errorMessage
+            failed, msg = self._exportTiff(exporter, tiffFilePath)
+            hasError = hasError or failed
+            errorMessage += msg
+        return not hasError, errorMessage
+
+    def _exportTiff(self, exporter: QgsLayoutExporter, tiffFilePath: Path):
+        settings = QgsLayoutExporter.ImageExportSettings()
+        settings.dpi = self.dpi
+        status = exporter.exportToImage(str(tiffFilePath), settings)
+        if status != QgsLayoutExporter.ExportResult.Success:
+            return True, self.getErrorMessage(status, fileType="tif")
+        self.reproject(tiffFilePath)
+        self.compress(tiffFilePath)
+        self.cleanup(tiffFilePath)
+        return False, ""
 
     def getErrorMessage(self, exportStatus, fileType=None):
         fileType = "pdf" if fileType is None else fileType
-        if exportStatus == QgsLayoutExporter.Success:
+        if exportStatus == QgsLayoutExporter.ExportResult.Success:
             return ""
-        elif exportStatus == QgsLayoutExporter.Canceled:
+        elif exportStatus == QgsLayoutExporter.ExportResult.Canceled:
             return "Processo cancelado pelo usuário.\n"
-        elif exportStatus == QgsLayoutExporter.MemoryError:
+        elif exportStatus == QgsLayoutExporter.ExportResult.MemoryError:
             return "Erro de memória. Não foi possível alocar a memória necessária para a exportação.\n"
-        elif exportStatus == QgsLayoutExporter.FileError:
+        elif exportStatus == QgsLayoutExporter.ExportResult.FileError:
             return f"Não foi possível escrever no arquivo de destino. Provavelmente o arquivo {fileType} está aberto por outro programa. Feche o arquivo e tente novamente.\n"
-        elif exportStatus == QgsLayoutExporter.PrintError:
+        elif exportStatus == QgsLayoutExporter.ExportResult.PrintError:
             return "Não foi possível iniciar a impressão no dispositivo escolhido.\n"
-        elif exportStatus == QgsLayoutExporter.SvgLayerError:
+        elif exportStatus == QgsLayoutExporter.ExportResult.SvgLayerError:
             return "Não foi possível criar o arquivo SVG de destino.\n"
-        elif exportStatus == QgsLayoutExporter.IteratorError:
+        elif exportStatus == QgsLayoutExporter.ExportResult.IteratorError:
             return "Erro ao iterar sobre o layout.\n"
         else:
             return "Erro desconhecido.\n"

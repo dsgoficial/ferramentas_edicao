@@ -164,7 +164,8 @@ class Legend:
     def loadQDomComponent(self, path):
         doc = QDomDocument()
         with open(path) as content:
-            doc.setContent(content.read())
+            if not doc.setContent(content.read()):
+                raise ValueError(f"Template QPT inválido: {path}")
         return doc
 
     @staticmethod

@@ -73,15 +73,11 @@ def get_outside_boundary_layer(layer_bound: QgsVectorLayer) -> QgsVectorLayer:
 
 def build_rule_label(text: str, desc: str, anchor_x: float, anchor_y: float, font_size: float, font: QFont, font_color: QColor) -> QgsRuleBasedLabeling.Rule:
     settings = QgsPalLayerSettings()
-    settings.placement = (
-        1 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.LabelPlacement.OverPoint
-    )
+    settings.placement = Qgis.LabelPlacement.OverPoint
     settings.isExpression = True
     textprop = QgsTextFormat()
     textprop.setColor(font_color)
-    textprop.setSizeUnit(
-        4 if Qgis.QGIS_VERSION_INT <= 32600 else Qgis.RenderUnit.Points
-    )
+    textprop.setSizeUnit(Qgis.RenderUnit.Points)
     textprop.setSize(font_size * 2.8346)
     textprop.setFont(font)
     textprop.setLineHeight(1)

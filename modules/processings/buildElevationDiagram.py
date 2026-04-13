@@ -31,6 +31,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
+    QgsProcessingException,
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterNumber,
@@ -321,6 +322,12 @@ class BuildElevationDiagram(QgsProcessingAlgorithm):
         uniqueValues, uniqueCount = np.unique(
             npRaster_without_nodata, return_counts=True
         )
+        if len(uniqueValues) < 2:
+            raise QgsProcessingException(
+                "O MDE informado não tem variação de altitude suficiente para gerar o "
+                "diagrama de elevação (encontrado apenas 1 valor único). "
+                "Use um MDE real com variação topográfica."
+            )
         cumulativePercentage = np.cumsum(uniqueCount) / (
             npRaster.shape[0] * npRaster.shape[1] - nodataRasterPixelCount
         )

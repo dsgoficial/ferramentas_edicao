@@ -345,16 +345,16 @@ class MapBuildController(MapBuildControllerUtils):
         )
         builder = None
         is_headless = dlgCfg.instance == "headless"
-        if (Qgis.QGIS_VERSION_INT - Qgis.QGIS_VERSION_INT % 100) / 100 != 324:
+        if Qgis.QGIS_VERSION_INT < 40000:
             if is_headless:
                 logger.error(
-                    "Exportação disponível apenas no QGIS 3.24. Abra o QGIS 3.24 e tente novamente."
+                    "Exportação disponível apenas no QGIS 4.0 ou superior."
                 )
             else:
                 QMessageBox.warning(
                     self.dlg,
                     "Erro",
-                    f"Exportação disponível apenas no QGIS 3.24. Abra o QGIS 3.24 e tente novamente.",
+                    "Exportação disponível apenas no QGIS 4.0 ou superior.",
                 )
             return
         MapBuilderUtils().cleanProject(self.debugMode)
@@ -570,11 +570,16 @@ class MapBuildController(MapBuildControllerUtils):
                 mapExtentsFeat,
                 mapExtentsLyr,
             )
-            builder.run(self.debugMode)
-            # Export
-            exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
-            exportResult, exportMessage = exporter.export(composition)
-            builder.removeLayers(self.debugMode)
+            try:
+                builder.run(self.debugMode)
+                exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
+                exportResult, exportMessage = exporter.export(composition)
+            except Exception as e:
+                exportResult = False
+                exportMessage = f"{type(e).__name__}: {e}"
+                logger.exception("[export] falha ao construir ou exportar carta")
+            finally:
+                builder.removeLayers(self.debugMode)
 
         messageType = "Informação"
         if not builder:

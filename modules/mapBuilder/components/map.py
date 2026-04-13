@@ -266,9 +266,9 @@ class Map(ComponentUtils, IComponent):
             composition (QgsPrintLayout): composition to be updated
         """
         if mapReservedArea := composition.itemById("area_reservada_carta"):
-            mapReservedArea.setReferencePoint(QgsLayoutItem.Middle)
+            mapReservedArea.setReferencePoint(QgsLayoutItem.ReferencePoint.Middle)
             mapReservedArea.refresh()
             positionMapReservedArea = mapReservedArea.positionWithUnits()
         if mapItem := composition.itemById("map"):
-            mapItem.setReferencePoint(QgsLayoutItem.Middle)
+            mapItem.setReferencePoint(QgsLayoutItem.ReferencePoint.Middle)
             mapItem.attemptMove(positionMapReservedArea)

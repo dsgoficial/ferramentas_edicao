@@ -209,9 +209,9 @@ class MapOM(ComponentUtils, IComponent):
         if (
             mapReservedArea := composition.itemById("area_reservada_carta")
         ) is not None:
-            mapReservedArea.setReferencePoint(QgsLayoutItem.Middle)
+            mapReservedArea.setReferencePoint(QgsLayoutItem.ReferencePoint.Middle)
             mapReservedArea.refresh()
             positionMapReservedArea = mapReservedArea.positionWithUnits()
         if (mapItem := composition.itemById("map")) is not None:
-            mapItem.setReferencePoint(QgsLayoutItem.Middle)
+            mapItem.setReferencePoint(QgsLayoutItem.ReferencePoint.Middle)
             mapItem.attemptMove(positionMapReservedArea)

@@ -61,7 +61,7 @@ class ConnectionSingleton:
             )
         ):
             uri = QgsDataSourceUri()
-            uri.setConnection(server, port, database, username, password)
+            uri.setConnection(server, str(port), database, username, password)
             uri.setDatabase(database)
             connInfo = uri.connectionInfo()
             instance = QgsCredentials.instance()

@@ -30,6 +30,13 @@ from qgis.PyQt.QtCore import QCoreApplication
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
 
+def _iterAllRules(rule):
+    """Yields all descendants of `rule` (excluding the root), depth-first."""
+    for child in rule.children():
+        yield child
+        yield from _iterAllRules(child)
+
+
 class SaveMasks(QgsProcessingAlgorithm):
 
     FOLDER_OUTPUT = "FOLDER_OUTPUT"
@@ -45,12 +52,15 @@ class SaveMasks(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         fileOutput = self.parameterAsFileOutput(parameters, self.FOLDER_OUTPUT, context)
-        layers = QgsProject.instance().mapLayers().values()
+        project = QgsProject.instance()
+        layers = project.mapLayers().values()
         mask_dict = {}
+        totalSaved = 0
+        totalSkipped = 0
         for layer in layers:
-            layerName = layer.dataProvider().uri().table()
             if not layer.type() == QgsMapLayer.LayerType.VectorLayer:
                 continue
+            layerName = layer.dataProvider().uri().table()
             labels = layer.labeling()
             if not labels:
                 continue
@@ -59,10 +69,9 @@ class SaveMasks(QgsProcessingAlgorithm):
                 providers.append("--SINGLE--RULE--")
                 providerMap = {"--SINGLE--RULE--": "--SINGLE--RULE--"}
             if isinstance(labels, QgsRuleBasedLabeling):
-                providers = [x.ruleKey() for x in labels.rootRule().children()]
-                providerMap = {
-                    x.ruleKey(): x.description() for x in labels.rootRule().children()
-                }
+                allRules = list(_iterAllRules(labels.rootRule()))
+                providers = [x.ruleKey() for x in allRules]
+                providerMap = {x.ruleKey(): x.description() for x in allRules}
 
             for provider in providers:
                 if provider == "--SINGLE--RULE--":
@@ -71,23 +80,50 @@ class SaveMasks(QgsProcessingAlgorithm):
                     label_settings = labels.settings(provider)
                 label_format = label_settings.format()
                 masks = label_format.mask()
-                if masks.enabled():
-                    symbols = masks.maskedSymbolLayers()
-                    for symbol in symbols:
-                        if not layerName in mask_dict:
-                            mask_dict[layerName] = {}
-                        if not providerMap[provider] in mask_dict[layerName]:
-                            mask_dict[layerName][providerMap[provider]] = []
-                        mask_dict[layerName][providerMap[provider]].append(
-                            [
-                                symbol.layerId()[:-37],
-                                symbol.symbolLayerId().symbolKey(),
-                                symbol.symbolLayerId().symbolLayerIndexPath(),
-                            ]
+                if not masks.enabled():
+                    continue
+                for symbol in masks.maskedSymbolLayers():
+                    maskedTable = self._resolveLayerTable(project, symbol.layerId())
+                    if maskedTable is None:
+                        feedback.pushWarning(
+                            f"[máscaras] {layerName}: layer mascarado {symbol.layerId()} não encontrado no projeto."
                         )
-        with open("{0}".format(fileOutput), "w") as f:
+                        totalSkipped += 1
+                        continue
+                    try:
+                        slId = symbol.symbolLayerId()
+                        entry = [
+                            maskedTable,
+                            slId.symbolKey(),
+                            slId.symbolLayerIndexPath(),
+                        ]
+                    except AttributeError:
+                        feedback.pushWarning(
+                            f"[máscaras] {layerName}: referência sem QgsSymbolLayerId (API nova não suportada ainda)."
+                        )
+                        totalSkipped += 1
+                        continue
+                    mask_dict.setdefault(layerName, {}).setdefault(
+                        providerMap[provider], []
+                    ).append(entry)
+                    totalSaved += 1
+        with open(fileOutput, "w") as f:
             json.dump(mask_dict, f)
+        feedback.pushInfo(
+            f"[máscaras] Total salvas: {totalSaved}, ignoradas: {totalSkipped}"
+        )
         return {}
+
+    @staticmethod
+    def _resolveLayerTable(project, mapLayerId):
+        layer = project.mapLayer(mapLayerId)
+        if layer is None:
+            # Fallback: hack histórico — QGIS anexa "_{uuid}" (37 chars) a IDs de layer.
+            return mapLayerId[:-37] if len(mapLayerId) > 37 else None
+        try:
+            return layer.dataProvider().uri().table()
+        except AttributeError:
+            return None
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
