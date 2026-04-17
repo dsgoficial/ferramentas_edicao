@@ -20,6 +20,8 @@ import os
 import xml.etree.ElementTree as et
 from pathlib import Path
 
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QFont
 from qgis.core import (
     QgsFeature,
     QgsPrintLayout,
@@ -27,6 +29,10 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsGeometry,
+    QgsLayoutItemManualTable,
+    QgsLayoutTable,
+    QgsTableCell,
+    QgsTextFormat,
 )
 
 from ....interfaces.iComponent import IComponent
@@ -70,49 +76,66 @@ class Table(IComponent, ComponentUtils):
         return element
 
     def customEtapa(self, composition, etapas=[]):
-        label_tabela_etapas = composition.itemById("label_tabela_etapas")
-        if label_tabela_etapas is not None:
-            pathEtapasHtml = (
-                Path(__file__).parent.parent / "htmlBarebone" / "etapas_auto.html"
-            )
-            with open(pathEtapasHtml) as fp:
-                base_html = fp.read()
-            rows = []
-            for etapa in etapas:
-                # Dados Etapa
-                row = []
-                nome = etapa["nome"]
-                subetapas = etapa["executantes"]
-                n_subetapas = len(subetapas)
-                for i_subetapa, subetapa in enumerate(subetapas):
-                    row.append("<tr>")
-                    if i_subetapa == 0:
-                        col_nome = self.replaceStr(
-                            '<td class = "lef" rowspan="{n_subetapas}">{nome}</td>',
-                            {"{n_subetapas}": n_subetapas, "{nome}": nome},
-                        )
-                        row.append(col_nome)
-                    responsavel = subetapa["nome"]
-                    col_responsavel = self.replaceStr(
-                        '<td class = "mid" >{responsavel}</td>',
-                        {"{responsavel}": responsavel},
-                    )
-                    row.append(col_responsavel)
-                    ano = subetapa["ano"]
-                    col_ano = self.replaceStr(
-                        '<td class = "rig" >{ano}</td>', {"{ano}": ano}
-                    )
-                    row.append(col_ano)
-                    row.append("</tr>")
-                # Criando a linha
-                rows.append("\n\t".join(row))
+        frame = composition.itemById("label_tabela_etapas")
+        if frame is None:
+            return
+        manualTable = frame.multiFrame()
+        if not isinstance(manualTable, QgsLayoutItemManualTable):
+            return
 
-            str_etapas = "\n".join(rows)
-            dados_data = {
-                "{etapas}": str_etapas,
-            }
-            edited = self.replaceStr(base_html, dados_data)
-            label_tabela_etapas.setText(edited)
+        title_fmt = QgsTextFormat()
+        title_fmt.setFont(QFont("Noto Sans"))
+        title_fmt.setSize(7)
+        title_fmt.setForcedBold(True)
+
+        data_fmt = QgsTextFormat()
+        data_fmt.setFont(QFont("Noto Sans"))
+        data_fmt.setSize(7)
+
+        def mc(text, fmt, align=Qt.AlignmentFlag.AlignLeft, col_span=1, row_span=1):
+            c = QgsTableCell(str(text) if text is not None else "")
+            c.setTextFormat(fmt)
+            c.setHorizontalAlignment(align)
+            if col_span != 1 or row_span != 1:
+                c.setSpan(row_span, col_span)
+            return c
+
+        rows = []
+
+        # Title row spanning 3 columns
+        rows.append([
+            mc("FASES DA PRODUÇÃO", title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=3),
+            mc("", title_fmt),
+            mc("", title_fmt),
+        ])
+
+        # Column headers row
+        rows.append([
+            mc("FASES", title_fmt, Qt.AlignmentFlag.AlignCenter),
+            mc("EXECUTANTES", title_fmt, Qt.AlignmentFlag.AlignCenter),
+            mc("DATAS", title_fmt, Qt.AlignmentFlag.AlignCenter),
+        ])
+
+        for etapa in etapas:
+            nome = etapa["nome"]
+            subetapas = etapa["executantes"]
+            n = len(subetapas)
+            for i, subetapa in enumerate(subetapas):
+                row = []
+                if i == 0:
+                    row.append(mc(nome, data_fmt, row_span=n))
+                else:
+                    row.append(mc("", data_fmt))
+                row.append(mc(subetapa["nome"], data_fmt))
+                row.append(mc(str(subetapa["ano"]), data_fmt, Qt.AlignmentFlag.AlignCenter))
+                rows.append(row)
+
+        manualTable.setTableContents(rows)
+        manualTable.setColumnWidths([45.1, 52.8, 12.1])
+        manualTable.setIncludeTableHeader(False)
+        manualTable.setShowGrid(True)
+        manualTable.setCellMargin(0.5)
+        manualTable.refresh()
 
     def customSensores(self, composition: QgsPrintLayout, sensors: dict):
         if layoutItem := composition.itemById("label_tabela_info_ortoimagem"):
@@ -162,8 +185,13 @@ class Table(IComponent, ComponentUtils):
     def customTecnicalInfo(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
     ):
-        label = composition.itemById("label_tabela_info_carta")
-        scale = data.get("scale")
+        frame = composition.itemById("label_tabela_info_carta")
+        if frame is None:
+            return
+        manualTable = frame.multiFrame()
+        if not isinstance(manualTable, QgsLayoutItemManualTable):
+            return
+
         equidistancia = data.get("equidistancia")
         displayAuxContour = data.get("exibirAuxiliar")
         hemisphere = data.get("hemisphere")
@@ -171,223 +199,107 @@ class Table(IComponent, ComponentUtils):
         tecnicalInfo: dict = data.get("info_tecnica")
         isInternational = data.get("territorio_internacional")
         isOmMap = bool(data.get("poligono"))
-        if label:
-            hemisphere = "Norte" if hemisphere == "N" else "Sul"
-            falseNorth = "+ 0" if hemisphere == "Norte" else "+ 10.000"
-            centralMeridian = -180 + (int(timeZone) - 1) * 6 + 3
 
-            curveData = [
-                int(equidistancia / 2),
-                int(equidistancia),
-                int(equidistancia) * 5,
-            ]
+        hemisphere_str = "Norte" if hemisphere == "N" else "Sul"
+        falseNorth = "+ 0" if hemisphere_str == "Norte" else "+ 10.000"
+        centralMeridian = -180 + (int(timeZone) - 1) * 6 + 3
+        curveData = [int(equidistancia / 2), int(equidistancia), int(equidistancia) * 5]
+        position = "W" if centralMeridian < 0 else "E"
+        thirdPartyData = tecnicalInfo.get("dados_terceiros", ())
+        lenThirdData = 3 + len(thirdPartyData)
+        nContourInTable = 3 if displayAuxContour == 1 else 2
+        intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
 
-            position = "W" if centralMeridian < 0 else "E"
-            thirdPartyData = tecnicalInfo.get("dados_terceiros", ())
-            lenThirdData = 3 + len(thirdPartyData)
-            nContourInTable = "3" if displayAuxContour == 1 else "2"
+        title_fmt = QgsTextFormat()
+        title_fmt.setFont(QFont("Noto Sans"))
+        title_fmt.setSize(7)
+        title_fmt.setForcedBold(True)
 
-            intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
+        main_fmt = QgsTextFormat()
+        main_fmt.setFont(QFont("Noto Sans"))
+        main_fmt.setSize(7)
 
-            htmlPath = (
-                Path(__file__).parent.parent
-                / "htmlBarebone"
-                / "technicalInfoBarebone.html"
-            )
-            htmlData = et.parse(str(htmlPath))
-            root = htmlData.getroot()
-            tables = root.iter("table")
+        obs_fmt = QgsTextFormat()
+        obs_fmt.setFont(QFont("Noto Sans"))
+        obs_fmt.setSize(6)
 
-            firstTable = next(tables)
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Projeção")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "right"}, "Universal Transversa de Mercator"
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "left", "rowspan": "2"}, "Origem UTM"
-            )
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                f"Hemisfério {hemisphere}. Equador: {falseNorth} Km",
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                f"Zona {timeZone}. Meridiano Central {centralMeridian} º {position} Gr.: + 500 Km",
-            )
-            if tecnicalInfo.get("datum_vertical"):
-                _tmp = self.generateElement(firstTable, "tr")
-                _ = self.generateElement(
-                    _tmp, "td", {"class": "left"}, "Datum vertical"
-                )
-                _ = self.generateElement(
-                    _tmp, "td", {"class": "right"}, tecnicalInfo.get("datum_vertical")
-                )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Datum horizontal")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "right"}, "SIRGAS2000 (Época 2000.4)"
-            )
-            if not isOmMap:
-                _tmp = self.generateElement(firstTable, "tr")
-                _ = self.generateElement(
-                    _tmp,
-                    "td",
-                    {"class": "left", "rowspan": nContourInTable},
-                    "Equidistância das curvas de nível",
-                )
-                texto_equidistancia = (
-                    f"Mestra: {curveData[2]} m; Normal: {curveData[1]} m"
-                )
-                if displayAuxContour == 1:
-                    texto_equidistancia += f"; Auxiliar:  {curveData[0]} m"
-                _ = self.generateElement(
-                    _tmp, "td", {"class": "right"}, texto_equidistancia
-                )
-                _tmp = self.generateElement(firstTable, "tr")
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Criação")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "right"}, tecnicalInfo.get("data_criacao")
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Edição")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "right"}, self.getDataEdicao()
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Erro gráfico")
-            _ = self.generateElement(_tmp, "td", {"class": "right"}, "0,2 mm na escala")
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "left", "rowspan": "2"},
-                "Padrão de Exatidão Cartográfica (PEC)",
-            )
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                f'PEC Planimétrico: {tecnicalInfo.get("pec_planimetrico")}',
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}',
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "left"}, "Especificação técnica de representação"
-            )
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                tecnicalInfo.get(
-                    "especificacao_representacao",
-                    "Norma da Especificação Técnica para Representação de Dados Geoespaciais versão 1.0 (EB80-N-72.006)",
-                ),
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "left"}, "Origem dos dados altimétricos"
-            )
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                tecnicalInfo.get("origem_dados_altimetricos"),
-            )
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "left", "rowspan": f"{lenThirdData}"},
-                "Origem dos dados geoespaciais fornecidos por terceiros",
-            )
-            if isInternational:
-                if intersectionStatus in ("inside", "intersects"):
-                    _ = self.generateElement(
-                        _tmp,
-                        "td",
-                        {"class": "right"},
-                        "Limites internacionais: CBDL* e GADM 4.1",
-                    )
-                    _tmp = self.generateElement(_tmp, "tr")
-                    _ = self.generateElement(
-                        _tmp,
-                        "td",
-                        {"class": "right"},
-                        "Limites estaduais e municipais: IBGE* / 2024 e GADM 4.1",
-                    )
-                else:
-                    _ = self.generateElement(
-                        _tmp,
-                        "td",
-                        {"class": "right"},
-                        "Limites internacionais: GADM 4.1",
-                    )
-                    _tmp = self.generateElement(_tmp, "tr")
-                    _ = self.generateElement(
-                        _tmp,
-                        "td",
-                        {"class": "right"},
-                        "Limites estaduais e municipais: GADM 4.1",
-                    )
+        def mc(text, fmt, align=Qt.AlignmentFlag.AlignLeft, col_span=1, row_span=1):
+            c = QgsTableCell(str(text) if text is not None else "")
+            c.setTextFormat(fmt)
+            c.setHorizontalAlignment(align)
+            if col_span != 1 or row_span != 1:
+                c.setSpan(row_span, col_span)
+            return c
+
+        def ec(fmt=None):
+            return mc("", fmt or main_fmt)
+
+        rows = []
+
+        # Title spanning 2 columns
+        rows.append([
+            mc("INFORMAÇÕES TÉCNICAS DO PRODUTO", title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=2),
+            ec(title_fmt),
+        ])
+
+        rows.append([mc("Projeção", main_fmt), mc("Universal Transversa de Mercator", main_fmt)])
+
+        rows.append([mc("Origem UTM", main_fmt, row_span=2), mc(f"Hemisfério {hemisphere_str}. Equador: {falseNorth} Km", main_fmt)])
+        rows.append([ec(), mc(f"Zona {timeZone}. Meridiano Central {centralMeridian} º {position} Gr.: + 500 Km", main_fmt)])
+
+        if tecnicalInfo.get("datum_vertical"):
+            rows.append([mc("Datum vertical", main_fmt), mc(tecnicalInfo.get("datum_vertical"), main_fmt)])
+
+        rows.append([mc("Datum horizontal", main_fmt), mc("SIRGAS2000 (Época 2000.4)", main_fmt)])
+
+        if not isOmMap:
+            texto_equidistancia = f"Mestra: {curveData[2]} m; Normal: {curveData[1]} m"
+            if displayAuxContour == 1:
+                texto_equidistancia += f"; Auxiliar: {curveData[0]} m"
+            rows.append([mc("Equidistância das curvas de nível", main_fmt, row_span=nContourInTable), mc(texto_equidistancia, main_fmt)])
+            for _ in range(nContourInTable - 1):
+                rows.append([ec(), ec()])
+
+        rows.append([mc("Data de Criação", main_fmt), mc(tecnicalInfo.get("data_criacao"), main_fmt)])
+        rows.append([mc("Data de Edição", main_fmt), mc(self.getDataEdicao(), main_fmt)])
+        rows.append([mc("Erro gráfico", main_fmt), mc("0,2 mm na escala", main_fmt)])
+
+        rows.append([mc("Padrão de Exatidão Cartográfica (PEC)", main_fmt, row_span=2), mc(f'PEC Planimétrico: {tecnicalInfo.get("pec_planimetrico")}', main_fmt)])
+        rows.append([ec(), mc(f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}', main_fmt)])
+
+        rows.append([mc("Especificação técnica de representação", main_fmt), mc(tecnicalInfo.get("especificacao_representacao", "Norma da Especificação Técnica para Representação de Dados Geoespaciais versão 1.0 (EB80-N-72.006)"), main_fmt)])
+        rows.append([mc("Origem dos dados altimétricos", main_fmt), mc(tecnicalInfo.get("origem_dados_altimetricos"), main_fmt)])
+
+        if isInternational:
+            if intersectionStatus in ("inside", "intersects"):
+                limites_int = "Limites internacionais: CBDL* e GADM 4.1"
+                limites_est = "Limites estaduais e municipais: IBGE* / 2024 e GADM 4.1"
             else:
-                _ = self.generateElement(
-                    _tmp, "td", {"class": "right"}, "Limites internacionais: CBDL*"
-                )
-                _tmp = self.generateElement(_tmp, "tr")
-                _ = self.generateElement(
-                    _tmp,
-                    "td",
-                    {"class": "right"},
-                    "Limites estaduais e municipais: IBGE* / 2024",
-                )
-            for info in thirdPartyData:
-                _tmp = self.generateElement(firstTable, "tr")
-                _ = self.generateElement(_tmp, "td", {"class": "right"}, info)
-            _tmp = self.generateElement(firstTable, "tr")
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                "Declinação magnética: NOAA (WMM 2025-2029)",
-            )
+                limites_int = "Limites internacionais: GADM 4.1"
+                limites_est = "Limites estaduais e municipais: GADM 4.1"
+        else:
+            limites_int = "Limites internacionais: CBDL*"
+            limites_est = "Limites estaduais e municipais: IBGE* / 2024"
 
-            secondTable = next(tables)
-            if tecnicalInfo.get("observacao_homologacao", True):
-                obsList = data.get("info_tecnica", {}).get(
-                    "observacoes",
-                    ["* Limites sujeitos à homologação do referido órgão."],
-                )
-                for obsText in obsList:
-                    _tmp = self.generateElement(secondTable, "tr")
-                    _ = self.generateElement(
-                        _tmp,
-                        "td",
-                        {"class": "phases"},
-                        obsText,
-                    )
-            _tmp = self.generateElement(secondTable, "tr")
-            _ = self.generateElement(
-                _tmp,
-                "td",
-                {"class": "phases"},
-                "Para mais informações, consulte o arquivo de metadados.",
-            )
+        rows.append([mc("Origem dos dados geoespaciais fornecidos por terceiros", main_fmt, row_span=lenThirdData), mc(limites_int, main_fmt)])
+        rows.append([ec(), mc(limites_est, main_fmt)])
+        for info in thirdPartyData:
+            rows.append([ec(), mc(str(info), main_fmt)])
+        rows.append([ec(), mc("Declinação magnética: NOAA (WMM 2025-2029)", main_fmt)])
 
-            label.setText(et.tostring(root, encoding="unicode", method="html"))
+        if tecnicalInfo.get("observacao_homologacao", True):
+            obsList = data.get("info_tecnica", {}).get("observacoes", ["* Limites sujeitos à homologação do referido órgão."])
+            for obsText in obsList:
+                rows.append([mc(obsText, obs_fmt, col_span=2), ec(obs_fmt)])
+
+        rows.append([mc("Para mais informações, consulte o arquivo de metadados.", obs_fmt, col_span=2), ec(obs_fmt)])
+
+        manualTable.setTableContents(rows)
+        manualTable.setColumnWidths([44.0, 66.0])
+        manualTable.setIncludeTableHeader(False)
+        manualTable.setShowGrid(True)
+        manualTable.setCellMargin(0.5)
+        manualTable.refresh()
 
     def getDataEdicao(self):
         now = datetime.datetime.now()
