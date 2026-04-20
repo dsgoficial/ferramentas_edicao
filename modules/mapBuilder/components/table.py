@@ -29,8 +29,12 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsGeometry,
+    QgsLayoutItemLabel,
     QgsLayoutItemManualTable,
+    QgsLayoutPoint,
+    QgsLayoutSize,
     QgsLayoutTable,
+    QgsRenderContext,
     QgsTableCell,
     QgsTextFormat,
 )
@@ -83,6 +87,11 @@ class Table(IComponent, ComponentUtils):
         if not isinstance(manualTable, QgsLayoutItemManualTable):
             return
 
+        main_title_fmt = QgsTextFormat()
+        main_title_fmt.setFont(QFont("Noto Sans"))
+        main_title_fmt.setSize(10)
+        main_title_fmt.setForcedBold(True)
+
         title_fmt = QgsTextFormat()
         title_fmt.setFont(QFont("Noto Sans"))
         title_fmt.setSize(7)
@@ -104,9 +113,9 @@ class Table(IComponent, ComponentUtils):
 
         # Title row spanning 3 columns
         rows.append([
-            mc("FASES DA PRODUÇÃO", title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=3),
-            mc("", title_fmt),
-            mc("", title_fmt),
+            mc("FASES DA PRODUÇÃO", main_title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=3),
+            mc("", main_title_fmt),
+            mc("", main_title_fmt),
         ])
 
         # Column headers row
@@ -134,53 +143,103 @@ class Table(IComponent, ComponentUtils):
         manualTable.setColumnWidths([45.1, 52.8, 12.1])
         manualTable.setIncludeTableHeader(False)
         manualTable.setShowGrid(True)
+        manualTable.setGridStrokeWidth(0.1)
         manualTable.setCellMargin(0.5)
+        manualTable.setWrapBehavior(QgsLayoutTable.WrapBehavior.WrapText)
         manualTable.refresh()
 
     def customSensores(self, composition: QgsPrintLayout, sensors: dict):
-        if layoutItem := composition.itemById("label_tabela_info_ortoimagem"):
-            edited = ""
-            nSensors = len(sensors)
-            rows = []
-            if nSensors == 1:
-                htmlBarebone = (
-                    Path(__file__).parent.parent
-                    / "htmlBarebone"
-                    / "singleSensorBarebone.html"
-                )
-            else:
-                htmlBarebone = (
-                    Path(__file__).parent.parent
-                    / "htmlBarebone"
-                    / "multipleSensorsBarebone.html"
-                )
-            with open(htmlBarebone, "r") as fp:
-                htmlData = fp.read()
-            for sensor in sensors:
-                sensorData = {
-                    "{tipo}": sensor["tipo"],
-                    "{plataforma}": sensor["plataforma"],
-                    "{nome}": sensor["nome"],
-                    "{resolucao}": sensor["resolucao"],
-                    "{bandas}": sensor["bandas"],
-                    "{nivel_do_produto}": sensor["nivel_produto"],
-                }
-                if nSensors == 1:
-                    edited = self.replaceStr(htmlData, sensorData)
-                elif 1 < nSensors < 4:
-                    multipleSensorData = "<tr >\
-                        <td>{nome}</td>\
-                        <td>{tipo}</td>\
-                        <td>{plataforma}</td>\
-                        <td>{resolucao}</td>\
-                        <td>{bandas}</td>\
-                        <td>{nivel_do_produto}</td>\
-                    </tr>"
-                    rows.append(self.replaceStr(multipleSensorData, sensorData))
-            if 1 < nSensors < 4:
-                str_sensores = "\n".join(rows)
-                edited = self.replaceStr(htmlData, {"{sensores}": str_sensores})
-            layoutItem.setText(edited)
+        frame = composition.itemById("label_tabela_info_ortoimagem")
+        if frame is None:
+            return
+        manualTable = frame.multiFrame()
+        if not isinstance(manualTable, QgsLayoutItemManualTable):
+            return
+
+        nSensors = len(sensors)
+
+        main_title_fmt = QgsTextFormat()
+        main_title_fmt.setFont(QFont("Noto Sans"))
+        main_title_fmt.setSize(10)
+        main_title_fmt.setForcedBold(True)
+
+        header_fmt = QgsTextFormat()
+        header_fmt.setFont(QFont("Noto Sans"))
+        header_fmt.setSize(7)
+        header_fmt.setForcedBold(True)
+
+        data_fmt = QgsTextFormat()
+        data_fmt.setFont(QFont("Noto Sans"))
+        data_fmt.setSize(7)
+
+        def mc(text, fmt, align=Qt.AlignmentFlag.AlignLeft, col_span=1, row_span=1):
+            c = QgsTableCell(str(text) if text is not None else "")
+            c.setTextFormat(fmt)
+            c.setHorizontalAlignment(align)
+            if col_span != 1 or row_span != 1:
+                c.setSpan(row_span, col_span)
+            return c
+
+        rows = []
+
+        if nSensors == 1:
+            sensor = sensors[0]
+            rows.append([
+                mc("INFORMAÇÕES TÉCNICAS DA ORTOIMAGEM", main_title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=2),
+                mc("", main_title_fmt),
+            ])
+            rows.append([
+                mc("Sistema sensor", data_fmt, row_span=3),
+                mc(f"Tipo de sensor: {sensor['tipo']}", data_fmt),
+            ])
+            rows.append([mc("", data_fmt), mc(f"Tipo de plataforma: {sensor['plataforma']}", data_fmt)])
+            rows.append([mc("", data_fmt), mc(f"Nome: {sensor['nome']}", data_fmt)])
+            rows.append([
+                mc("Características da imagem", data_fmt, row_span=3),
+                mc(f"Resolução espacial: {sensor['resolucao']}", data_fmt),
+            ])
+            rows.append([mc("", data_fmt), mc(f"Bandas utilizadas: {sensor['bandas']}", data_fmt)])
+            rows.append([mc("", data_fmt), mc(f"Nível do produto: {sensor['nivel_produto']}", data_fmt)])
+            manualTable.setColumnWidths([44.0, 66.0])
+        else:
+            n_cols = 6
+            rows.append(
+                [mc("INFORMAÇÕES TÉCNICAS DA ORTOIMAGEM", main_title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=n_cols)]
+                + [mc("", main_title_fmt)] * (n_cols - 1)
+            )
+            rows.append([
+                mc("Sistema sensor", header_fmt, Qt.AlignmentFlag.AlignCenter, col_span=3),
+                mc("", header_fmt), mc("", header_fmt),
+                mc("Imagem", header_fmt, Qt.AlignmentFlag.AlignCenter, col_span=3),
+                mc("", header_fmt), mc("", header_fmt),
+            ])
+            rows.append([
+                mc("Nome", header_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc("Tipo", header_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc("Plataforma", header_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc("Res. espacial", header_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc("Bandas", header_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc("Nível do produto", header_fmt, Qt.AlignmentFlag.AlignCenter),
+            ])
+            for sensor in sensors[:3]:
+                rows.append([
+                    mc(sensor["nome"], data_fmt, Qt.AlignmentFlag.AlignCenter),
+                    mc(sensor["tipo"], data_fmt, Qt.AlignmentFlag.AlignCenter),
+                    mc(sensor["plataforma"], data_fmt, Qt.AlignmentFlag.AlignCenter),
+                    mc(sensor["resolucao"], data_fmt, Qt.AlignmentFlag.AlignCenter),
+                    mc(sensor["bandas"], data_fmt, Qt.AlignmentFlag.AlignCenter),
+                    mc(sensor["nivel_produto"], data_fmt, Qt.AlignmentFlag.AlignCenter),
+                ])
+            col_w = round(110.0 / n_cols, 2)
+            manualTable.setColumnWidths([col_w] * n_cols)
+
+        manualTable.setTableContents(rows)
+        manualTable.setIncludeTableHeader(False)
+        manualTable.setShowGrid(True)
+        manualTable.setGridStrokeWidth(0.1)
+        manualTable.setCellMargin(0.5)
+        manualTable.setWrapBehavior(QgsLayoutTable.WrapBehavior.WrapText)
+        manualTable.refresh()
 
     def customTecnicalInfo(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
@@ -207,8 +266,12 @@ class Table(IComponent, ComponentUtils):
         position = "W" if centralMeridian < 0 else "E"
         thirdPartyData = tecnicalInfo.get("dados_terceiros", ())
         lenThirdData = 3 + len(thirdPartyData)
-        nContourInTable = 3 if displayAuxContour == 1 else 2
         intersectionStatus = self.getIntersectionStatus(mapAreaFeature)
+
+        main_title_fmt = QgsTextFormat()
+        main_title_fmt.setFont(QFont("Noto Sans"))
+        main_title_fmt.setSize(10)
+        main_title_fmt.setForcedBold(True)
 
         title_fmt = QgsTextFormat()
         title_fmt.setFont(QFont("Noto Sans"))
@@ -238,8 +301,8 @@ class Table(IComponent, ComponentUtils):
 
         # Title spanning 2 columns
         rows.append([
-            mc("INFORMAÇÕES TÉCNICAS DO PRODUTO", title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=2),
-            ec(title_fmt),
+            mc("INFORMAÇÕES TÉCNICAS DO PRODUTO", main_title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=2),
+            ec(main_title_fmt),
         ])
 
         rows.append([mc("Projeção", main_fmt), mc("Universal Transversa de Mercator", main_fmt)])
@@ -256,9 +319,7 @@ class Table(IComponent, ComponentUtils):
             texto_equidistancia = f"Mestra: {curveData[2]} m; Normal: {curveData[1]} m"
             if displayAuxContour == 1:
                 texto_equidistancia += f"; Auxiliar: {curveData[0]} m"
-            rows.append([mc("Equidistância das curvas de nível", main_fmt, row_span=nContourInTable), mc(texto_equidistancia, main_fmt)])
-            for _ in range(nContourInTable - 1):
-                rows.append([ec(), ec()])
+            rows.append([mc("Equidistância das curvas de nível", main_fmt), mc(texto_equidistancia, main_fmt)])
 
         rows.append([mc("Data de Criação", main_fmt), mc(tecnicalInfo.get("data_criacao"), main_fmt)])
         rows.append([mc("Data de Edição", main_fmt), mc(self.getDataEdicao(), main_fmt)])
@@ -287,19 +348,42 @@ class Table(IComponent, ComponentUtils):
             rows.append([ec(), mc(str(info), main_fmt)])
         rows.append([ec(), mc("Declinação magnética: NOAA (WMM 2025-2029)", main_fmt)])
 
+        obs_lines = []
         if tecnicalInfo.get("observacao_homologacao", True):
-            obsList = data.get("info_tecnica", {}).get("observacoes", ["* Limites sujeitos à homologação do referido órgão."])
-            for obsText in obsList:
-                rows.append([mc(obsText, obs_fmt, col_span=2), ec(obs_fmt)])
-
-        rows.append([mc("Para mais informações, consulte o arquivo de metadados.", obs_fmt, col_span=2), ec(obs_fmt)])
+            obs_lines.extend(data.get("info_tecnica", {}).get("observacoes", ["* Limites sujeitos à homologação do referido órgão."]))
+        obs_lines.append("Para mais informações, consulte o arquivo de metadados.")
 
         manualTable.setTableContents(rows)
         manualTable.setColumnWidths([44.0, 66.0])
         manualTable.setIncludeTableHeader(False)
         manualTable.setShowGrid(True)
+        manualTable.setGridStrokeWidth(0.1)
         manualTable.setCellMargin(0.5)
+        manualTable.setWrapBehavior(QgsLayoutTable.WrapBehavior.WrapText)
+
+        frame_size = frame.sizeWithUnits()
+        frame_pos = frame.positionWithUnits()
+        frame.attemptResize(QgsLayoutSize(frame_size.width(), 9999))
         manualTable.refresh()
+
+        n_rows = len(rows)
+        rc = QgsRenderContext()
+        lo, hi = 1.0, 500.0
+        for _ in range(30):
+            mid = (lo + hi) / 2.0
+            if manualTable.rowsVisible(rc, mid, 0, False, True) >= n_rows:
+                hi = mid
+            else:
+                lo = mid
+        content_height = hi
+
+        frame.attemptResize(QgsLayoutSize(frame_size.width(), content_height))
+
+        obsLabel = composition.itemById("label_obs_info_carta")
+        if isinstance(obsLabel, QgsLayoutItemLabel):
+            obsLabel.attemptMove(QgsLayoutPoint(frame_pos.x(), frame_pos.y() + content_height + 1.0))
+            obsLabel.setHAlign(Qt.AlignmentFlag.AlignLeft)
+            obsLabel.setText("\n".join(obs_lines))
 
     def getDataEdicao(self):
         now = datetime.datetime.now()
@@ -308,133 +392,70 @@ class Table(IComponent, ComponentUtils):
     def omInfoTable(
         self, composition: QgsPrintLayout, data: dict, mapAreaFeature: QgsFeature
     ):
-        """Creates the OM info table dinamically.
-        Args:
-            composition: the QgsPrintLayout to be updated
-            data: dict holding the map info
-            mapAreaFeature: a QgsFeature covering the OM area
-        """
-        if tableComp := composition.itemById("omInfoTable"):
-            # Coordinate transform to UTM
-            omPoint = mapAreaFeature.geometry().centroid().asPoint()
-            transformer = QgsCoordinateTransform(
-                QgsCoordinateReferenceSystem("EPSG:4674"),
-                QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}'),
-                QgsProject.instance(),
-            )
-            omUTMGeom = QgsGeometry(mapAreaFeature.geometry())
-            omUTMGeom.transform(transformer)
-            omUTMPoint = omUTMGeom.centroid().asPoint()
-            # Filling the table
-            htmlPath = (
-                Path(__file__).parent.parent / "htmlBarebone" / "omInfoBarebone.html"
-            )
-            htmlData = et.parse(str(htmlPath))
-            root = htmlData.getroot()
-            table = next(root.iter("table"))
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp, "td", {"class": "left"}, "Endereço da Organização Militar"
-            )
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, data.get("endereco", "")
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "left", "rowspan": "3"},
-                "Coordenadas geográficas da Organização Militar",
-            )
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                "Sistema de Referência: SIRGAS 2000 (Época 2000.4)",
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, f"Latitude: {omPoint.y():.3f}º"
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, f"Longitude: {omPoint.x():.3f}º"
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "left", "rowspan": "3"},
-                "Coordenadas UTM da Organização Militar",
-            )
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                f"Zona: {data.get('timeZone', '')} {data.get('hemisphere', '')}, \
-                Meridiano Central: {-180+(int(data.get('timeZone', 22))-1)*6 + 3}, \
-                Gr.: + 500 km, Equador: {'+ 0' if data.get('hemisphere') == 'N' else '+ 10.000'} km",
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, f"X: {omUTMPoint.x():.3f} m"
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, f"Y: {omUTMPoint.y():.3f} m"
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp, "td", {"class": "left"}, "Subordinação da Organização Militar"
-            )
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                data.get("subordinacao2") or data.get("subordinacao1"),
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "left"},
-                "Altitude aproximada da Organização Militar",
-            )
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, data.get("altitude", 0)
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp, "td", {"class": "left"}, "Área aproximada da Organização Militar"
-            )
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, f"{omUTMGeom.area():.3f} m²"
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "left"},
-                "Perímetro aproximado da Organização Militar",
-            )
-            self.generateElement(
-                _tmp, "td", {"class": "right"}, f"{omUTMGeom.length():.3f} m"
-            )
-            _tmp = self.generateElement(table, "tr")
-            self.generateElement(_tmp, "td", {"class": "left"}, "Data de Criação")
-            self.generateElement(
-                _tmp,
-                "td",
-                {"class": "right"},
-                data.get("info_tecnica").get("data_criacao"),
-            )
-            _tmp = self.generateElement(table, "tr")
-            _ = self.generateElement(_tmp, "td", {"class": "left"}, "Data de Edição")
-            _ = self.generateElement(
-                _tmp, "td", {"class": "right"}, self.getDataEdicao()
-            )
+        frame = composition.itemById("omInfoTable")
+        if frame is None:
+            return
+        manualTable = frame.multiFrame()
+        if not isinstance(manualTable, QgsLayoutItemManualTable):
+            return
 
-            tableComp.setText(et.tostring(root, encoding="unicode", method="html"))
+        omPoint = mapAreaFeature.geometry().centroid().asPoint()
+        transformer = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4674"),
+            QgsCoordinateReferenceSystem(f'EPSG:{data.get("epsg")}'),
+            QgsProject.instance(),
+        )
+        omUTMGeom = QgsGeometry(mapAreaFeature.geometry())
+        omUTMGeom.transform(transformer)
+        omUTMPoint = omUTMGeom.centroid().asPoint()
+
+        tz = data.get("timeZone", "")
+        hemi = data.get("hemisphere", "")
+        centralMeridian = -180 + (int(tz) - 1) * 6 + 3
+        falseNorth = "+ 0" if hemi == "N" else "+ 10.000"
+
+        main_title_fmt = QgsTextFormat()
+        main_title_fmt.setFont(QFont("Noto Sans"))
+        main_title_fmt.setSize(10)
+        main_title_fmt.setForcedBold(True)
+
+        data_fmt = QgsTextFormat()
+        data_fmt.setFont(QFont("Noto Sans"))
+        data_fmt.setSize(7)
+
+        def mc(text, fmt, align=Qt.AlignmentFlag.AlignLeft, col_span=1, row_span=1):
+            c = QgsTableCell(str(text) if text is not None else "")
+            c.setTextFormat(fmt)
+            c.setHorizontalAlignment(align)
+            if col_span != 1 or row_span != 1:
+                c.setSpan(row_span, col_span)
+            return c
+
+        rows = [
+            [mc("INFORMAÇÕES DO PRODUTO", main_title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=2), mc("", main_title_fmt)],
+            [mc("Endereço da Organização Militar", data_fmt), mc(data.get("endereco", ""), data_fmt)],
+            [mc("Coordenadas geográficas da Organização Militar", data_fmt, row_span=3), mc("Sistema de Referência: SIRGAS 2000 (Época 2000.4)", data_fmt)],
+            [mc("", data_fmt), mc(f"Latitude: {omPoint.y():.3f}º", data_fmt)],
+            [mc("", data_fmt), mc(f"Longitude: {omPoint.x():.3f}º", data_fmt)],
+            [mc("Coordenadas UTM da Organização Militar", data_fmt, row_span=3), mc(f"Zona: {tz} {hemi}, Meridiano Central: {centralMeridian}, Gr.: + 500 km, Equador: {falseNorth} km", data_fmt)],
+            [mc("", data_fmt), mc(f"X: {omUTMPoint.x():.3f} m", data_fmt)],
+            [mc("", data_fmt), mc(f"Y: {omUTMPoint.y():.3f} m", data_fmt)],
+            [mc("Subordinação da Organização Militar", data_fmt), mc(data.get("subordinacao2") or data.get("subordinacao1", ""), data_fmt)],
+            [mc("Altitude aproximada da Organização Militar", data_fmt), mc(str(data.get("altitude", 0)), data_fmt)],
+            [mc("Área aproximada da Organização Militar", data_fmt), mc(f"{omUTMGeom.area():.3f} m²", data_fmt)],
+            [mc("Perímetro aproximado da Organização Militar", data_fmt), mc(f"{omUTMGeom.length():.3f} m", data_fmt)],
+            [mc("Data de Criação", data_fmt), mc(data.get("info_tecnica", {}).get("data_criacao", ""), data_fmt)],
+            [mc("Data de Edição", data_fmt), mc(self.getDataEdicao(), data_fmt)],
+        ]
+
+        manualTable.setTableContents(rows)
+        manualTable.setColumnWidths([41.6, 62.4])
+        manualTable.setIncludeTableHeader(False)
+        manualTable.setShowGrid(True)
+        manualTable.setGridStrokeWidth(0.1)
+        manualTable.setCellMargin(0.5)
+        manualTable.setWrapBehavior(QgsLayoutTable.WrapBehavior.WrapText)
+        manualTable.refresh()
 
     def getIntersectionStatus(self, mapAreaFeature):
         _brazilLayer = self.loadShapeLayer(self.pathBrazilLayer, "", "_tmp")

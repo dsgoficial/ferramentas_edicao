@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2.0.1
+
+Melhorias:
+- Mudança do suporte dos QPT de HTML para tabelas nativas do QGIS, afetando a exportação dos seguintes produtos: Carta Topográfica, Carta Ortoimagem, Produtos Especiais.
+
+Correção de bug:
+- Quando total de municípios for maior que 27, apenas estes serão rótulados e os demais serão otimidos para melhor enquadramento na folha modelo.
+
+## 2.0
+
+Update de Versão:
+- Versões >= 2.X.X. serão voltadas para o QGIS 4.0.
+
+Melhorias:
+- Implementação do suporte ao QGIS 4.0
+- Adição da opção de desabilitar máscaras adicionais
+
 ## 1.3.32
 
 Melhorias:
