@@ -211,7 +211,7 @@ class ConfigDefaults:
                     },
                     "reproductionRights": {
                         "x_0": 721,
-                        "y_0": 552,
+                        "y_0": 550,
                         "width": 110,
                         "height": 20,
                     },
@@ -676,7 +676,7 @@ class ConfigDefaults:
                     },
                     "reproductionRights": {
                         "x_0": 721,
-                        "y_0": 561,
+                        "y_0": 556,
                         "width": 110,
                         "height": 20,
                     },

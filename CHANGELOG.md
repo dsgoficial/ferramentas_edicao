@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.2
+
+Melhorias:
+- Finalizado a conversão dos QPTs de exportação para não dependência de HTML e usando as ferramentas de tabelas nativas do QGIS.
+
 ## 2.0.1
 
 Melhorias:

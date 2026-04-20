@@ -56,9 +56,6 @@ class ImageArticulation(ComponentUtils, IComponent):
         self.stylesFolder = (
             Path(__file__).parent.parent / "resources" / "styles" / "imageArticulation"
         )
-        self.htmlTablePath = (
-            Path(__file__).parent.parent / "htmlBarebone" / "imageArticulation.html"
-        )
         self.n_maxlines = 6
 
     def build(self, context: BuildContext):
@@ -148,9 +145,7 @@ class ImageArticulation(ComponentUtils, IComponent):
         )
         self.setStyle(imageArticulationLayer, orderedFeaturesByDateAndSensor)
 
-        # Inserting counties table
-        html_tabledata = self.customCreateHtmlTableData(orderedFeaturesByDateAndSensor)
-        self.setImageArticulationTableContents(composition, html_tabledata)
+        self.setImageArticulationTableContents(composition, orderedFeaturesByDateAndSensor)
 
         if showLayers:
             imageArticulationGroupNode = QgsLayerTreeGroup("imageArticulation")
@@ -306,66 +301,36 @@ class ImageArticulation(ComponentUtils, IComponent):
         else:
             return False
 
-    def customCreateHtmlTableData(self, sortedFeatures: List[QgsFeature]):
-        noneFeats = list(
-            filter(
-                lambda x: x["nome_sensor"] is None and x["data"] is None, sortedFeatures
-            )
-        )
-        sortedFeatures = list(
-            filter(
-                lambda x: x["nome_sensor"] is not None and x["data"] is not None,
-                sortedFeatures,
-            ),
-        )
-        fontSize = "0.6"
-        with open(self.htmlTablePath, "r") as f:
-            baseHtml = f.read()
-        if len(noneFeats) > 0:
-            if len(sortedFeatures) == 0:  # apenas o enquadramento sem imagem
-                tableContent = '<td class = "mid" >1 - Data e hora da coleta das imagens indisponíveis.</td>\n'
-                edited = baseHtml.format(font_size=fontSize, table_data=tableContent)
-                return edited
-            sortedFeatures.append(noneFeats[0])
-        nImages = len(sortedFeatures)
-        nColumns = math.ceil(nImages / self.n_maxlines)
-        nColumns = 1 if nColumns == 0 else nColumns
-
-        nColumns, nColumn1, nColumn2, nColumn3 = self.getNumberOfColumns(nImages)
-
-        baserows_str = "<tr {style}> {}</tr>"
-        style_str = 'style="width: {value}%;"'.replace(
-            "{value}", str(round(100 / nColumns, 2))
-        )
-        baserows_str = baserows_str.replace("{style}", style_str)
-        basecolumn_str = '<td class = "mid" >{}</td>'
-
-        tableColumns = []
-        tableRows = []
-        for feat_index, feat in enumerate(sortedFeatures):
-            cell_str = (
-                f"{feat_index + 1} - {feat['nome_sensor']} ({feat['data']})"
-                if feat["nome_sensor"] is not None and feat["data"] is not None
-                else f"{feat_index + 1} - Área sem imagem"
-            )
-            tableColumn = basecolumn_str.format(cell_str)
-            tableColumns.append(tableColumn)
-            if self.goToNextColumn(feat_index, nColumn1, nColumn2, nColumn3):
-                tablerow = baserows_str.format("\n".join(tableColumns))
-                tableRows.append(tablerow)
-                tableColumns = []
-        tableContent = "\n".join(tableRows)
-        edited = baseHtml.format(font_size=fontSize, table_data=tableContent)
-        return edited
-
     def setImageArticulationTableContents(
-        self, composition: QgsPrintLayout, html_tabledata: str
+        self, composition: QgsPrintLayout, sortedFeatures: List[QgsFeature]
     ):
         compositionItem = composition.itemById("tabela_articulacao_imagens")
         if compositionItem is None:
             return
-        compositionItem.setText(html_tabledata)
-        compositionItem.setMode(QgsLayoutItemLabel.ModeHtml)
+
+        none_feats = [
+            f for f in sortedFeatures if f["nome_sensor"] is None and f["data"] is None
+        ]
+        valid_feats = [
+            f
+            for f in sortedFeatures
+            if f["nome_sensor"] is not None and f["data"] is not None
+        ]
+
+        if none_feats and not valid_feats:
+            text = "1 - Data e hora da coleta das imagens indisponíveis."
+        else:
+            if none_feats:
+                valid_feats = valid_feats + [none_feats[0]]
+            lines = []
+            for i, feat in enumerate(valid_feats):
+                if feat["nome_sensor"] is not None and feat["data"] is not None:
+                    lines.append(f"{i + 1} - {feat['nome_sensor']} ({feat['data']})")
+                else:
+                    lines.append(f"{i + 1} - Área sem imagem")
+            text = "\n".join(lines)
+
+        compositionItem.setText(text)
         compositionItem.refresh()
 
     def createRule(self, label: str, expression: str):

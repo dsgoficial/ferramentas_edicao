@@ -155,23 +155,12 @@ class MapBuilderUtils:
         return QgsVectorLayer(uri.uri(False), table, "postgres")
 
     def classifiedMapHandler(self, composition: QgsPrintLayout, data: Dict):
-        """Switches the visibility status of QgsLayoutItems that are influentiated by the "acesso_restrito" json key
+        """Switches the visibility status of QgsLayoutItems based on the product type.
         Args:
             composition: QgsPrintLayout
             data: Dict holding the map info
         """
-        if data.get("acesso_restrito"):
-            if item := composition.itemById("label_bdgexQR"):
-                item.setVisibility(False)
-            if item := composition.itemById("label_bdgexWeb"):
-                item.setVisibility(False)
-            if item := composition.itemById("symbol_QRCODE"):
-                item.setVisibility(False)
-            if item := composition.itemById("label_classified"):
-                item.setVisibility(True)
-            if item := composition.itemById("label_militar"):
-                item.setVisibility(False)
-        elif data.get("tipo_produto") in (
+        if data.get("tipo_produto") in (
             "Carta Topográfica Militar",
             "Carta Ortoimagem Militar",
         ):
@@ -181,9 +170,9 @@ class MapBuilderUtils:
                 item.setVisibility(False)
             if item := composition.itemById("symbol_QRCODE"):
                 item.setVisibility(False)
-            if item := composition.itemById("label_classified"):
-                item.setVisibility(False)
             if item := composition.itemById("label_militar"):
+                item.setVisibility(True)
+            if item := composition.itemById("label_militar_titulo"):
                 item.setVisibility(True)
         else:
             if item := composition.itemById("label_bdgexQR"):
@@ -192,9 +181,9 @@ class MapBuilderUtils:
                 item.setVisibility(True)
             if item := composition.itemById("symbol_QRCODE"):
                 item.setVisibility(True)
-            if item := composition.itemById("label_classified"):
-                item.setVisibility(False)
             if item := composition.itemById("label_militar"):
+                item.setVisibility(False)
+            if item := composition.itemById("label_militar_titulo"):
                 item.setVisibility(False)
 
     def getStylePath(
