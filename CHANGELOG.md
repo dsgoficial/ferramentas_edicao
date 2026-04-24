@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.3
+
+Correção de bug:
+- Correção de mesnsagem de Warning em página do Help do Plugin.
+
 ## 2.0.2
 
 Melhorias:
