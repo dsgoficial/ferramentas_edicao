@@ -60,13 +60,13 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
 
         self.map = [
-            self.tr("Carta Topográfica 1.4"),
-            self.tr("Carta Ortoimagem 2.5"),
+            self.tr("Carta Topográfica 2.0"),
+            self.tr("Carta Ortoimagem 3.0"),
         ]
 
         self.folderDict = {
-            0: "1_4",
-            1: "2_5",
+            0: "2_0",
+            1: "3_0",
         }
 
         self.addParameter(

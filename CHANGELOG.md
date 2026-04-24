@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.5
+
+Melhorias:
+- Definido apenas suporte para EDGV Topo >= 2.0 e EDGV Orto >= 3.0
+
 ## 2.0.4
 
 Melhorias:
