@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.4
+
+Melhorias:
+- Adição do Menu Radial com contexto para edição dos produtos.
+
 ## 2.0.3
 
 Correção de bug:

@@ -45,6 +45,7 @@ from .buttons.alternateBuildingFlag import AlternateBuildingFlag
 from .buttons.cycleSideVisibility import CycleSideVisibility
 from .buttons.cycleTipVisibility import CycleTipVisibility
 from .buttons.toggleVisibility import ToggleVisibility
+from .radialMenu.radialMenu import RadialMenuTrigger
 
 
 class SetupButtons:
@@ -236,6 +237,36 @@ class SetupButtons:
 
         self.actionGroup = self.setupActionGroup(*self.mapTools)
 
+        allToolActions = [
+            cycleVisibilityButton._action,
+            cycleTextJustificationButton._action,
+            copyToGenericLabelButton._action,
+            cycleLabelPositionButton._action,
+            alternateTextVisibilityButton._action,
+            addNewLineButton._action,
+            alternateBuildingFlag._action,
+            cycleSideVisibilityButton._action,
+            cycleTipVisibilityButton._action,
+            createToogleVisibility._action,
+            createVegetationSymbol._action,
+            createRoadIdentifierSymbol._action,
+            createLakeLabel._action,
+            copySugestedLabelButton._action,
+            createRiverLabel._action,
+            drawFlowDirection._action,
+            createBorderLabel._action,
+            createMasterElevationTextValueTool._action,
+            createRoadLabel._action,
+            createAproximateLabel._action,
+        ]
+        actionsMap = {a.text(): a for a in allToolActions}
+        configPath = Path(__file__).parent / "radialMenu" / "config.json"
+        self.radialMenuTrigger = RadialMenuTrigger(
+            self.iface, actionsMap, configPath,
+            product_selector=productTypeSelector,
+            scale_selector=scaleSelector,
+        )
+
         productTypeSelector.currentIndexChanged.connect(
             lambda idx, compareIdx=[
                 1
@@ -322,6 +353,8 @@ class SetupButtons:
 
     def unload(self):
         # TODO: unregisterMapToolHandler for MapTools
+        if hasattr(self, "radialMenuTrigger"):
+            self.radialMenuTrigger.unload()
         QgsProject.instance().projectSaved.disconnect(self.saveStateOnProject)
         self.iface.projectRead.disconnect(self.loadStateFromProject)
         self.toolBar.clear()
@@ -338,6 +371,9 @@ class SetupButtons:
             for i in self.toolBar.children()
             if i.__class__.__name__ in ["ScaleSelector", "ProductTypeSelector"]
         }
+        for i in self.toolBar.children():
+            if i.__class__.__name__ in ["ScaleSelector", "ProductTypeSelector"]:
+                comboBoxesStateDict[f"{i.__class__.__name__}_configured"] = getattr(i, "isConfigured", False)
         self.collapseButton.saveStateToProject()
         # Just set the variable - don't try to save the project
         QgsExpressionContextUtils.setProjectVariable(
@@ -345,10 +381,6 @@ class SetupButtons:
             "ferramentas_edicao_state",
             json.dumps(comboBoxesStateDict),
         )
-        # The following lines have been removed to prevent triggering a project save:
-        # QgsProject.instance().projectSaved.disconnect(self.saveStateOnProject)
-        # QgsProject.instance().write()
-        # QgsProject.instance().projectSaved.connect(self.saveStateOnProject)
 
     def loadStateFromProject(self):
         """Load saved state from project"""
@@ -373,6 +405,9 @@ class SetupButtons:
         for comboBoxName, idx in state.items():
             if comboBoxName in comboBoxesDict:
                 comboBoxesDict[comboBoxName].setCurrentIndex(idx)
+        for i in self.toolBar.children():
+            if i.__class__.__name__ in ["ScaleSelector", "ProductTypeSelector"]:
+                i.isConfigured = state.get(f"{i.__class__.__name__}_configured", False)
 
         # Allow a short delay before enabling state saving
         QTimer.singleShot(100, lambda: setattr(self, "initializing", False))

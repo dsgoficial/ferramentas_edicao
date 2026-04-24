@@ -39,7 +39,12 @@ class ProductTypeSelector(QComboBox):
         super().__init__(iface.mainWindow())
         self.iface = iface
         self.toolBar = toolBar
+        self.isConfigured = False
 
     def setupUi(self):
         self.insertItems(-1, [x for x in self.options.keys()])
         self.toolBar.addWidget(self)
+        self.currentIndexChanged.connect(self._onChanged)
+
+    def _onChanged(self):
+        self.isConfigured = True
