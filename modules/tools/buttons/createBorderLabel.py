@@ -415,9 +415,9 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         toInsert.setAttribute("texto_edicao", labelText.upper())
         toInsert.setAttribute("estilo_fonte", "Condensed Bold")
         toInsert.setAttribute("espacamento", 0)
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             toInsert.setAttribute("cor", "#ffffff")
-        elif self.productTypeSelector.currentIndex() == 1:  # Topografica
+        elif self.productTypeSelector.currentIndex() == 2:  # Topografica
             toInsert.setAttribute("cor", "#241F21")
         else:
             toInsert.setAttribute("cor", "#241F21")
@@ -427,7 +427,7 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         fontSize = 10 if borderType == 1 else 8
         toInsert.setAttribute("tamanho_txt", fontSize)
         toInsertGeom = self.getLabelGeometry(border, point, fontSize * len(labelText))
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
                 self.displayErrorMessage(
                     self.tr("Campo 'tamanho_buffer' não encontrado. Verifique se o tipo de produto selecionado corresponde à modelagem utilizada.")

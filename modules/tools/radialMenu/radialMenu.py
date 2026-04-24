@@ -16,11 +16,11 @@ _ICON_SIZE = 22    # icon pixels
 _GAP_DEG   = 1.5   # gap between sectors (degrees)
 
 # Colors — default (generic) actions
-_COL_DEF_FILL = QColor(215, 222, 235)
+_COL_DEF_FILL = QColor(255, 255, 255)
 _COL_DEF_BAND = QColor(35, 105, 210)
 
 # Colors — specific (layer-contextual) actions
-_COL_SPC_FILL = QColor(252, 232, 200)
+_COL_SPC_FILL = QColor(255, 255, 255)
 _COL_SPC_BAND = QColor(165, 88, 22)
 
 
@@ -47,7 +47,7 @@ def _sector_path(cx, cy, r1, r2, start_deg, span_deg):
 
 class RadialMenu(QWidget):
     def __init__(self, default_actions, specific_actions=None, parent=None):
-        super().__init__(parent, Qt.WindowType.Popup | Qt.WindowType.FramelessWindowHint)
+        super().__init__(parent, Qt.WindowType.Popup | Qt.WindowType.FramelessWindowHint | Qt.WindowType.NoDropShadowWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self._default  = list(default_actions)
         self._specific = list(specific_actions or [])
@@ -198,9 +198,9 @@ class RadialMenuTrigger(QObject):
         if not canvas.rect().contains(canvas.mapFromGlobal(QCursor.pos())):
             return
         not_configured = (
-            self._product_selector is not None and not self._product_selector.isConfigured
+            self._product_selector is not None and self._product_selector.currentIndex() == 0
         ) or (
-            self._scale_selector is not None and not self._scale_selector.isConfigured
+            self._scale_selector is not None and self._scale_selector.currentIndex() == 0
         )
         if not_configured:
             self._iface.messageBar().pushMessage(

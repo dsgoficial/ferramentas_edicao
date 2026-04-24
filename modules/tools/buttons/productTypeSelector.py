@@ -33,7 +33,7 @@ from qgis.core import (
 
 class ProductTypeSelector(QComboBox):
 
-    options = {"Carta Ortoimagem": 0, "Carta Topográfica": 1}
+    options = {"Produto": 0, "Carta Ortoimagem": 1, "Carta Topográfica": 2}
 
     def __init__(self, iface, toolBar):
         super().__init__(iface.mainWindow())
@@ -46,5 +46,5 @@ class ProductTypeSelector(QComboBox):
         self.toolBar.addWidget(self)
         self.currentIndexChanged.connect(self._onChanged)
 
-    def _onChanged(self):
-        self.isConfigured = True
+    def _onChanged(self, idx):
+        self.isConfigured = idx != 0

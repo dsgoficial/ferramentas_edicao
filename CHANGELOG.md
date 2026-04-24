@@ -1,9 +1,16 @@
 # CHANGELOG
 
+## 2.0.7
+
+Melhorias:
+- Corrigido o estilo Noto Sans Condensed Light Italic para constr_edificacao_p e constr_edificacao_a;
+- Refinado o Menu Radial contextual;
+
+
 ## 2.0.6
 
 Melhorias:
-- Adiconado novos estilos em conformidade com a EDGV Topo >= 2.0
+- Adicionado novos estilos em conformidade com a EDGV Topo >= 2.0
 
 ## 2.0.5
 

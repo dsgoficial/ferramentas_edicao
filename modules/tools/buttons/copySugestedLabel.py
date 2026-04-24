@@ -372,7 +372,9 @@ class CopySugestedLabel(QgsMapToolEmitPoint, BaseTools):
         self.dstLyrL = destLayerL[0]
         self.dstLyrP = destLayerP[0]
         lastExtent = self.mapCanvas.extent()
-        self.mapCanvas.zoomScale(self.getScale())
+        scale = self.getScale()
+        if scale:
+            self.mapCanvas.zoomScale(scale)
         self.mapCanvas.setScaleLocked(True)
         self.mapCanvas.setExtent(lastExtent, True)
         # self.mapCanvas.setMagnificationFactor(1.0)

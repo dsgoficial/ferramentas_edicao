@@ -124,7 +124,7 @@ class SetupButtons:
         )
         createVegetationSymbol.setupUi()
 
-        if not productTypeSelector.currentIndex() == 1:
+        if not productTypeSelector.currentIndex() == 2:
             createVegetationSymbol._action.setEnabled(False)
 
         createRoadIdentifierSymbol = CreateRoadIdentifierSymbol(
@@ -147,7 +147,7 @@ class SetupButtons:
         )
         drawFlowDirection.setupUi()
 
-        if not productTypeSelector.currentIndex() == 1:
+        if not productTypeSelector.currentIndex() == 2:
             drawFlowDirection._action.setEnabled(False)
 
         createBorderLabel = CreateBorderLabel(
@@ -269,7 +269,7 @@ class SetupButtons:
 
         productTypeSelector.currentIndexChanged.connect(
             lambda idx, compareIdx=[
-                1
+                2
             ], btn=createVegetationSymbol._action: self.disableAction(
                 idx, compareIdx, btn
             )
@@ -277,7 +277,7 @@ class SetupButtons:
 
         productTypeSelector.currentIndexChanged.connect(
             lambda idx, compareIdx=[
-                1
+                2
             ], btn=alternateBuildingFlag._action: self.disableAction(
                 idx, compareIdx, btn
             )
@@ -285,7 +285,7 @@ class SetupButtons:
 
         productTypeSelector.currentIndexChanged.connect(
             lambda idx, compareIdx=[
-                1
+                2
             ], btn=drawFlowDirection._action: self.disableAction(idx, compareIdx, btn)
         )
 
