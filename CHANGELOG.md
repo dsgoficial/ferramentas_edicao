@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.6
+
+Melhorias:
+- Adiconado novos estilos em conformidade com a EDGV Topo >= 2.0
+
 ## 2.0.5
 
 Melhorias:
