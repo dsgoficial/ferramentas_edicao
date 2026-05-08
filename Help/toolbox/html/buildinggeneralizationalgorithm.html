@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+
+<body lang="pt-BR" dir="ltr">
+    <p>Help v. 2.0
+    </p>
+    <hr />
+    <h2 class="western">Descrição</h2>
+    <h4 class="western" align="center" style="border: none; padding: 0cm">
+        O algoritmo generaliza feições pontuais de edificações com símbolos quadrados alinhados aos eixos, resolvendo conflitos espaciais (edificação-edificação, edificação-via e edificação-borda de massa d'água) por deslocamento iterativo. Quando o deslocamento não é suficiente, edificações genéricas são ocultadas (campo de visibilidade = 2) e edificações não genéricas com conflitos irresolvíveis são enviadas para a camada de flags para revisão manual.
+        <span style="color:#ff0000; font-weight: bold;"><u>Atenção</u>: O algoritmo edita a camada de edificações in-place. As alterações de geometria e visibilidade são aplicadas diretamente na camada de entrada.
+        </span>
+    </h4>
+    <hr />
+    <h2>Parâmetros</h2>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de edificações &rarr; Indicar a camada de edificações com geometria do tipo ponto que será editada in-place.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de vias &rarr; Indicar a camada que contém as vias de deslocamento. Usada para construir a zona proibida.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de massa d'água (opcional) &rarr; Indicar a camada de massa d'água. As bordas serão usadas como zona proibida adicional.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de moldura (opcional) &rarr; Indicar a moldura do produto. Edificações fora da moldura são ignoradas.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Habilitar deslocamento &rarr; Quando marcado, aplica deslocamento iterativo para resolver conflitos. Quando desmarcado, opera apenas em modo de redução de densidade (somente conflitos entre edificações são considerados).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo de visibilidade &rarr; Atributo da camada de edificações que controla a visibilidade. Edificações com valor 2 são ignoradas; edificações genéricas com conflitos irresolvíveis recebem valor 2.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Tamanho do símbolo - lado do quadrado (metros) &rarr; Dimensão do símbolo de edificação em metros no terreno.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Espaçamento mínimo entre símbolos (metros) &rarr; Distância mínima de separação entre dois símbolos adjacentes.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Largura do símbolo de via (metros) &rarr; Largura da simbologia de via em metros, usada para calcular o buffer de zona proibida.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Deslocamento máximo (metros) &rarr; Distância máxima que uma edificação pode ser deslocada em relação à sua posição original.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Número máximo de iterações &rarr; Limite de iterações do processo de deslocamento.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Expressão para edificações genéricas &rarr; Expressão QGIS que identifica edificações de baixa prioridade (genéricas), que serão ocultadas preferencialmente em caso de conflito irresolvível.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Edificações não genéricas com conflitos irresolvíveis (flags) &rarr; Camada de saída com as edificações que não puderam ser resolvidas por deslocamento nem ocultação. Por padrão gera camada temporária.
+        </span>
+    </p>
+    <hr />
+    <h2 class="western">Exemplo</h2>
+    <h4 class="western">Modelagem EDGV 3.0 Topo na escala de 1:25.000</h4>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de edificações &rarr; constr_edificacao_p
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de vias &rarr; infra_via_deslocamento_l
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de massa d'água (opcional) &rarr; cobter_massa_dagua_a
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada de moldura (opcional) &rarr; aux_moldura_a
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Habilitar deslocamento &rarr; Marcado
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo de visibilidade &rarr; visivel
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Tamanho do símbolo - lado do quadrado (metros) &rarr; 25,0
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Espaçamento mínimo entre símbolos (metros) &rarr; 2,0
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Largura do símbolo de via (metros) &rarr; 35,0
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Deslocamento máximo (metros) &rarr; 50,0
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Número máximo de iterações &rarr; 50
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Expressão para edificações genéricas &rarr; "tipo" in (0, 9999)
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Edificações não genéricas com conflitos irresolvíveis (flags) &rarr; Criar camada temporária
+        </span>
+    </p>
+    <hr />
+    <div>
+        <h2>Aplicação</h2>
+        <center><img src="{}"></center>
+        <p style="text-align: center; font-style: italic;">Edificações deslocadas e/ou ocultadas para eliminar conflitos com vias e entre si.</p>
+        <hr />
+    </div>
+</body>
+
+</html>

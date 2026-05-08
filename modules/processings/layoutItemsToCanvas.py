@@ -18,6 +18,7 @@
 from qgis.PyQt.QtCore import QCoreApplication, QPointF
 import processing
 import os
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
@@ -60,9 +61,10 @@ class LayoutItemsToCanvasAlgorithm(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return self.tr(
-            "Cria uma camada vetorial com o limite de elementos de um layout de interesse"
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return help().helpUrl(self.name())
 
     def initAlgorithm(self, config=None):
         self.addParameter(

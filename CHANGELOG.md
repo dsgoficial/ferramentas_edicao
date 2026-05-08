@@ -1,11 +1,17 @@
 # CHANGELOG
 
+## 2.0.8
+
+Melhorias:
+- Padronização dos helpers para cada processing do Ferramentas de Edição;
+- Correção da regra de rótulo de Silos para constr_edificacao_a;
+- Organização do sizeTextRiverLine.
+
 ## 2.0.7
 
 Melhorias:
 - Corrigido o estilo Noto Sans Condensed Light Italic para constr_edificacao_p e constr_edificacao_a;
 - Refinado o Menu Radial contextual;
-
 
 ## 2.0.6
 

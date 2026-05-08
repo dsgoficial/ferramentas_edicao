@@ -46,6 +46,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 self.INPUT_LAYER_L,
                 self.tr("Selecionar camada de drenagem"),
                 [QgsProcessing.TypeVectorLine],
+                defaultValue="elemnat_trecho_drenagem_l",
             )
         )
         self.addParameter(
@@ -105,7 +106,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         )
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         self.productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
-        buffer = self.parameterAsDouble(parameters, self.BUFFER, context)
+        buffer = self.parameterAsDouble(parameters, self.BUFFER, context)  # TODO: usar buffer para expandir a moldura antes de clipar em getMergedRiver, preservando comprimento real de rios que cruzam a borda
         self.scaleDict = {
             0: 5000,
             1: 10000,
@@ -196,6 +197,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
             feedback.setProgress(current * stepSize)
         return id_to_tamanho
 
+    # TODO: chamar bufferRiver com a moldura e passar o resultado para getMergedRiver
     def bufferRiver(self, inputLyr, buffer):
         bufferRiver = processing.run(
             "native:buffer",
@@ -212,6 +214,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         )
         return bufferRiver["OUTPUT"]
 
+    # TODO: chamar joinAttribute para propagar tamanho_txt calculado nos rios mesclados de volta ao layer original
     def joinAttribute(self, inputLyr, bufferLyr):
         joinLayer = processing.run(
             "native:joinattributesbylocation",
@@ -262,7 +265,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         return "sizetextriverline"
 
     def displayName(self):
-        return self.tr("Definir o tamanho do texto de acordo com o comprimento")
+        return self.tr("Definir tamanho do texto de drenagem de acordo com o comprimento")
 
     def group(self):
         return self.tr("Edição")
