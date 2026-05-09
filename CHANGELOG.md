@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.0.10
+
+Melhorias:
+- Inserção de processing para ajuste de curva mestra
+- Inserção da opção de Quebra Linha no elemnat_elemento_hidrografico_p para o Menu Radial
+
 ## 2.0.9
 
 Melhorias:

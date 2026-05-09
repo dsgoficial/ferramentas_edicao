@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+
+<body lang="pt-BR" dir="ltr">
+    <p>Help v. 2.0
+    </p>
+    <hr />
+    <h2 class="western">Descrição</h2>
+    <h4 class="western" align="center" style="border: none; padding: 0cm">
+        O algoritmo ajusta o atributo <i>indice</i> da camada <b>elemnat_curva_nivel_l</b> de acordo com a equidistância informada.
+        Curvas cuja cota é múltipla de 5 vezes a equidistância recebem <i>indice</i> = 1 (curva mestra); as demais recebem <i>indice</i> = 2 (curva normal).
+        Esse ajuste garante que a simbologia de curva mestra seja renderizada corretamente quando a variável de camada <b>@equidistancia</b> não estiver definida no projeto.
+    </h4>
+    <hr />
+    <h2>Parâmetros</h2>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; Selecionar camada de curva de nível &rarr; Indicar a camada <b>elemnat_curva_nivel_l</b> a ser processada.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Equidistância (metros) &rarr; Valor da equidistância da carta em metros. Padrão por escala: 1:25.000 = 10 m, 1:50.000 = 20 m, 1:100.000 = 40 m, 1:250.000 = 100 m.
+        </span>
+        <span style="color:#ff0000; font-weight: bold;"><u>Atenção</u>: Feições com o campo <i>cota</i> nulo são ignoradas. Certifique-se de que o campo <i>cota</i> está preenchido corretamente antes de executar a rotina.
+        </span>
+    </p>
+    <hr />
+    <h2 class="western">Exemplo</h2>
+    <h4 class="western">Modelagem EDGV 3.0 Topo na escala de 1:25.000 (equidistância 10 m)</h4>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; Selecionar camada de curva de nível &rarr; elemnat_curva_nivel_l
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Equidistância (metros) &rarr; 10
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Resultado: curvas com cota múltipla de 50 m (ex: 50, 100, 150...) recebem <i>indice</i> = 1; as demais recebem <i>indice</i> = 2.
+        </span>
+    </p>
+    <hr />
+    <div>
+        <h2>Aplicação</h2>
+        <center><img src="{}"></center>
+        <p style="text-align: center; font-style: italic;">Camada elemnat_curva_nivel_l com o atributo índice ajustado conforme a equidistância informada.</p>
+        <hr />
+    </div>
+</body>
+
+</html>

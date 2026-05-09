@@ -59,6 +59,7 @@ from .changeAttributeOrtho import ChangeAttributeOrtho
 from .changeAttributeTopo import ChangeAttributeTopo
 from .sizeTextRiverLine import SizeTextRiverLine
 from .setCurveOrientation import SetCurveOrientation
+from .setContourIndex import SetContourIndex
 from .setSobrepositionLegalBoundary import SetSobrepositionLegalBoundary
 from .placePointOfChange import PlacePointOfChange
 from .verifySymbolOverlap import VerifySymbolOverlap
@@ -107,6 +108,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ChangeAttributeTopo())
         self.addAlgorithm(SizeTextRiverLine())
         self.addAlgorithm(SetCurveOrientation())
+        self.addAlgorithm(SetContourIndex())
         self.addAlgorithm(DefineSpillWaySinkRotation())
         self.addAlgorithm(PlaceVegetationSymbol())
         self.addAlgorithm(PlaceBorderOfHydrographicElement())
