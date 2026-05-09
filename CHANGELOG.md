@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.9
+
+Melhorias:
+- Inserção de duas ferramentas para geração de JSON para Ortoimagem de OM, ambas aparecem no painel de Processings, na aba Ortoimagem de OM, permite a exportação do JSON de uma OM individual ou em lote.
+
 ## 2.0.8
 
 Melhorias:

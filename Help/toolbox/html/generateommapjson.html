@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+
+<body lang="pt-BR" dir="ltr">
+    <p>Help v. 2.0
+    </p>
+    <hr />
+    <h2 class="western">Descrição</h2>
+    <h4 class="western" align="center" style="border: none; padding: 0cm">
+        Gera o arquivo JSON de entrada para exportação individual da Carta Ortoimagem OM.
+        O polígono da OM é extraído automaticamente da feição selecionada e reprojetado para EPSG:4326.
+        Cada atributo pode ser preenchido manualmente ou mapeado a partir de um campo da tabela de atributos da camada.
+    </h4>
+    <hr />
+    <h2>Parâmetros</h2>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada com o polígono da OM &rarr; Camada vetorial de polígonos. Use "Feições selecionadas" para processar apenas uma feição específica.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Nome da OM / ↳ ou campo &rarr; Nome completo da Organização Militar. Pode ser digitado ou mapeado de um campo da camada (o campo tem prioridade).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Imagem do brasão da OM &rarr; Caminho do arquivo PNG/JPG do brasão da OM (suporta caminhos de rede UNC).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Imagem do brasão da subordinação &rarr; Caminho do arquivo PNG/JPG do brasão da subordinação.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Subordinação 1 / Subordinação 2 &rarr; Cadeia de subordinação da OM (opcionais).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Altitude &rarr; Altitude da OM em metros (ex: 9 m).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Endereço da OM &rarr; Endereço completo da OM.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; URL da imagem de fundo &rarr; URL do serviço XYZ de imagem de fundo (padrão: Bing Aerial).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Ortoimagem (.tif) &rarr; Caminho do arquivo raster da ortoimagem gerada por RPA.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; EPSG da ortoimagem &rarr; Código EPSG do SRC da ortoimagem (padrão: 4326).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Nome do executor das fases &rarr; Nome da organização executora (padrão: 1º CGEO).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Ano do Imageamento / PDI / Edição &rarr; Anos de execução de cada fase.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Sensores (JSON) &rarr; Lista de sensores em formato JSON. Padrão: WorldView-2 + CMOS RPA.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Data de criação &rarr; Data de criação do produto no formato DD/MM/AAAA.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; PEC Planimétrico / Altimétrico &rarr; Padrão de Exatidão Cartográfica (ex: A***).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Datum vertical &rarr; Datum vertical utilizado (padrão: Imbituba - Santa Catarina).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Origem dos dados altimétricos &rarr; Fonte dos dados altimétricos (padrão: GLO-30).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Dados de terceiros &rarr; Lista JSON de fontes de dados de terceiros.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Arquivo JSON de saída &rarr; Caminho onde o arquivo JSON será salvo.
+        </span>
+    </p>
+    <hr />
+    <h2 class="western">Exemplo</h2>
+    <h4 class="western">Carta Ortoimagem OM - 63º Batalhão de Infantaria</h4>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada com o polígono da OM &rarr; om_poligonos (feição do 63BI selecionada)
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Nome da OM &rarr; 63º Batalhão de Infantaria
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Imagem da OM &rarr; \\servidor\brasoes\63BI.png
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Ortoimagem &rarr; \\servidor\dronedb\63bi_florianopolis.tif
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Arquivo JSON de saída &rarr; C:\json\63bi_florianopolis.json
+        </span>
+    </p>
+    <hr />
+    <div>
+        <h2>Aplicação</h2>
+        <center><img src="{}"></center>
+        <p style="text-align: center; font-style: italic;">JSON gerado pronto para uso no serviço de exportação da Carta Ortoimagem OM.</p>
+        <hr />
+    </div>
+</body>
+
+</html>

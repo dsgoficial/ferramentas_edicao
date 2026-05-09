@@ -70,6 +70,8 @@ from .reprojectAttributes import ReprojectAttributesAlgorithm
 from .createCustomPolygons import CreateCustomPolygons
 from .copyFeaturesIntoRoadElement import CopyFeaturesIntoRoadElement
 from .layoutItemsToCanvas import LayoutItemsToCanvasAlgorithm
+from .generateOmMapJson import GenerateOmMapJson
+from .batchGenerateOmMapJson import BatchGenerateOmMapJson
 
 
 class Provider(QgsProcessingProvider):
@@ -124,6 +126,8 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(CopyFeaturesIntoRoadElement())
         self.addAlgorithm(LayoutItemsToCanvasAlgorithm())
         self.addAlgorithm(BuildingGeneralizationAlgorithm())
+        self.addAlgorithm(GenerateOmMapJson())
+        self.addAlgorithm(BatchGenerateOmMapJson())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
