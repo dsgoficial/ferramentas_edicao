@@ -77,5 +77,5 @@ black .
 
 - Sem framework de testes automatizados
 - Sem CI/CD configurado
-- Recursos incluem limites municipais IBGE 2024, estilos QML, templates QPT
+- Recursos incluem limites municipais IBGE 2025, estilos QML, templates QPT
 - O plugin é instalado diretamente no diretório de plugins do QGIS

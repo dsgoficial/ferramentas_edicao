@@ -40,8 +40,8 @@ class Table(IComponent, ComponentUtils):
             Path(__file__).parent.parent
             / "resources"
             / "limits"
-            / "2024"
-            / "Brasil_2024.shp"
+            / "2025"
+            / "Brasil_2025.shp"
         )
 
     def build(self, context: BuildContext):
@@ -327,7 +327,7 @@ class Table(IComponent, ComponentUtils):
                         _tmp,
                         "td",
                         {"class": "right"},
-                        "Limites estaduais e municipais: IBGE* / 2024 e GADM 4.1",
+                        "Limites estaduais e municipais: IBGE* / 2025 e GADM 4.1",
                     )
                 else:
                     _ = self.generateElement(
@@ -352,7 +352,7 @@ class Table(IComponent, ComponentUtils):
                     _tmp,
                     "td",
                     {"class": "right"},
-                    "Limites estaduais e municipais: IBGE* / 2024",
+                    "Limites estaduais e municipais: IBGE* / 2025",
                 )
             for info in thirdPartyData:
                 _tmp = self.generateElement(firstTable, "tr")
