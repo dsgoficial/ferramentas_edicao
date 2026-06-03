@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+
+<body lang="pt-BR" dir="ltr">
+    <p>Help v. 2.0
+    </p>
+    <hr />
+    <h2 class="western">Descrição</h2>
+    <h4 class="western" align="center" style="border: none; padding: 0cm">
+        Gera em lote os arquivos JSON de entrada para exportação da Carta Ortoimagem OM.
+        Cada feição da camada gera um arquivo JSON separado. Os atributos individuais de cada OM
+        (nome, imagens, endereço, etc.) são lidos obrigatoriamente de campos da tabela de atributos.
+        Os dados comuns a todas as OMs (fases, sensores, informações técnicas) são configurados
+        uma única vez e aplicados a todos os JSONs gerados.
+    </h4>
+    <hr />
+    <h2>Parâmetros</h2>
+    <p>
+        <b>Dados por feição (campos da camada):</b><br/>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada com os polígonos das OMs &rarr; Camada vetorial de polígonos com uma feição por OM. Use "Feições selecionadas" para processar um subconjunto.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Nome do arquivo de saída &rarr; Campo usado para nomear cada JSON gerado (ex: campo "sigla" → "63bi.json").
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Nome da OM &rarr; Campo com o nome completo de cada OM.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Imagem do brasão da OM &rarr; Campo com o caminho do arquivo PNG do brasão de cada OM.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Imagem do brasão da subordinação &rarr; Campo com o caminho do arquivo PNG da subordinação.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Subordinação 1 / 2 &rarr; Campos com a cadeia de subordinação (opcionais).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Altitude &rarr; Campo com a altitude de cada OM (ex: "9 m").
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Endereço &rarr; Campo com o endereço de cada OM.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Ortoimagem &rarr; Campo com o caminho do arquivo TIF da ortoimagem de cada OM.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: EPSG da ortoimagem &rarr; Campo com o EPSG da ortoimagem (opcional; se vazio, usa o valor padrão configurado abaixo).
+        </span><br/>
+        <b>Dados comuns a todas as OMs:</b><br/>
+        <span style="margin-bottom: 10px;">
+            &#8226; URL da imagem de fundo &rarr; URL do serviço XYZ (padrão: Bing Aerial).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; EPSG padrão da ortoimagem &rarr; Usado quando o campo de EPSG não for mapeado (padrão: 4326).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Nome do executor das fases &rarr; Nome da organização executora (padrão: 1º CGEO).
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Ano do Imageamento / PDI / Edição &rarr; Anos de execução de cada fase.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Sensores (JSON) &rarr; Lista de sensores em formato JSON aplicada a todas as OMs.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Data de criação &rarr; Data de criação no formato DD/MM/AAAA.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; PEC Planimétrico / Altimétrico, Datum vertical, Origem altimétrica, Dados de terceiros &rarr; Informações técnicas aplicadas a todas as OMs.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Pasta de saída &rarr; Diretório onde os arquivos JSON serão salvos.
+        </span>
+    </p>
+    <hr />
+    <h2 class="western">Exemplo</h2>
+    <h4 class="western">Lote da 14ª Brigada de Infantaria Motorizada</h4>
+    <p>
+        <span style="margin-bottom: 10px;">
+            &#8226; Camada &rarr; om_14bda (13 feições, uma por OM)
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Nome do arquivo &rarr; "sigla" (ex: 63bi → 63bi.json)
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Nome da OM &rarr; "nome_completo"
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Imagem da OM &rarr; "caminho_brasao"
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Campo: Ortoimagem &rarr; "caminho_orto"
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Pasta de saída &rarr; C:\json\14bda\
+        </span>
+    </p>
+    <hr />
+    <div>
+        <h2>Aplicação</h2>
+        <center><img src="{}"></center>
+        <p style="text-align: center; font-style: italic;">JSONs gerados em lote para todas as OMs da camada, prontos para uso no serviço de exportação.</p>
+        <hr />
+    </div>
+</body>
+
+</html>

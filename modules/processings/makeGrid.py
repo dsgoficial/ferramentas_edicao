@@ -62,7 +62,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT_FRAME,
-                self.tr("Selecione a camada de moldura"),
+                self.tr("Selecione a camada de moldura:"),
                 types=[QgsProcessing.TypeVectorPolygon],
             )
         )
@@ -85,7 +85,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterBoolean(
                 self.GENERATE_LAT_LON_TICKS,
-                self.tr("Gerar cruzetas de lat lon"),
+                self.tr("Gerar cruzetas de lat lon?"),
                 defaultValue=True,
             )
         )
@@ -93,7 +93,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterBoolean(
                 self.GENERATE_GRID_NUMBERS,
-                self.tr("Gerar pontos de número do grid"),
+                self.tr("Gerar pontos de número do grid?"),
                 defaultValue=True,
             )
         )
@@ -635,7 +635,7 @@ class MakeGrid(QgsProcessingAlgorithm):
         return "makegrid"
 
     def displayName(self):
-        return self.tr("Gera Vetor de Grade")
+        return self.tr("Gerar Vetor de Grade")
 
     def group(self):
         return self.tr("Preparo de Edição")

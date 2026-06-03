@@ -141,13 +141,13 @@ class CreateRoadLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute("texto_edicao", texto_edicao)
         toInsert.setAttribute("estilo_fonte", "Condensed Italic")
         toInsert.setAttribute("espacamento", 0)
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             color = "#ffffff"
         else:
             color = "#241f21"
         toInsert.setAttribute("cor", color)
         toInsert.setAttribute("tamanho_txt", 6)
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
                 self.displayErrorMessage(
                     self.tr("Campo 'tamanho_buffer' não encontrado. Verifique se o tipo de produto selecionado corresponde à modelagem utilizada.")

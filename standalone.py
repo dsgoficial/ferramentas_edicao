@@ -45,13 +45,13 @@ def setupArgparser():
     parser.add_argument(
         "-t",
         "--tipo",
-        default="Carta Topográfica 1.4",
+        default="Carta Topográfica 2.0",
         choices=(
-            "Carta Topográfica 1.4",
-            "Carta Ortoimagem 2.5",
+            "Carta Topográfica 2.0",
+            "Carta Ortoimagem 3.0",
             "Carta Ortoimagem OM 1.0",
-            "Carta Ortoimagem Militar 2.5",
-            "Carta Topográfica Militar 1.4",
+            "Carta Ortoimagem Militar 3.0",
+            "Carta Topográfica Militar 2.0",
         ),
         type=str,
     )
@@ -65,6 +65,7 @@ def setupArgparser():
     parser.add_argument("-ef", "--exportFolder", required=True)
     parser.add_argument("-et", "--exportTiff", action="store_true")
     parser.add_argument("-etwg", "--exportTiffWithoutGrid", action="store_true")
+    parser.add_argument("-dam", "--disableAdditionalMasks", action="store_true")
     return parser.parse_args()
 
 

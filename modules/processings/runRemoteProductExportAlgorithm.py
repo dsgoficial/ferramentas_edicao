@@ -104,11 +104,11 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         )
 
         self.product_type_value_list = [
-            self.tr("Carta Topográfica 1.4"),
-            self.tr("Carta Ortoimagem 2.5"),
+            self.tr("Carta Topográfica 2.0"),
+            self.tr("Carta Ortoimagem 3.0"),
             self.tr("Carta Ortoimagem OM 1.0"),
-            self.tr("Carta Ortoimagem Militar 2.5"),
-            self.tr("Carta Topográfica Militar 1.4"),
+            self.tr("Carta Ortoimagem Militar 3.0"),
+            self.tr("Carta Topográfica Militar 2.0"),
         ]
 
         self.addParameter(

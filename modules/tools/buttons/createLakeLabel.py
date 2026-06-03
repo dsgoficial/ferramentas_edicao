@@ -103,9 +103,9 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute("estilo_fonte", "Condensed Italic")
         toInsert.setAttribute("justificativa_txt", 2)
         toInsert.setAttribute("espacamento", 0)
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             toInsert.setAttribute("cor", "#ffffff")
-        elif self.productTypeSelector.currentIndex() == 1:  # Topografica
+        elif self.productTypeSelector.currentIndex() == 2:  # Topografica
             toInsert.setAttribute("cor", "#00a0df")
         else:
             toInsert.setAttribute("cor", "#00a0df")
@@ -117,7 +117,7 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
             "tamanho_txt",
             ProcessingUtils.getWaterPolyLabelFontSize(feat, scale, self.lyrCrs),
         )
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
                 self.displayErrorMessage(
                     self.tr("Campo 'tamanho_buffer' não encontrado. Verifique se o tipo de produto selecionado corresponde à modelagem utilizada.")
@@ -133,8 +133,10 @@ class CreateLakeLabel(QgsMapToolEmitPoint, BaseTools):
 
     def getScale(self):
         scale = self.scaleSelector.currentText()
-        scale = scale.split(":")[1]
-        scale = scale.replace(".", "")
+        parts = scale.split(":")
+        if len(parts) < 2:
+            return 0
+        scale = parts[1].replace(".", "")
         return int(scale)
 
     def getLayers(self):

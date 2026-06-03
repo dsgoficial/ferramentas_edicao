@@ -304,7 +304,6 @@ class HelpBrowser:
         territorio_internacional = (
             form_dialog.input_territorio_internacional.currentText() == "True"
         )
-        acesso_restrito = form_dialog.input_acesso_restrito.currentText() == "True"
         tipo_produto = form_dialog.input_produto.currentText() == "Carta Topográfica"
         caminho_mde = form_dialog.input_mde_diagrama.text().strip().replace("/", "\\")
         epsg = form_dialog.input_epsg.text().strip()
@@ -318,7 +317,6 @@ class HelpBrowser:
         json_object = {
             "nome": nome,
             "territorio_internacional": territorio_internacional,
-            "acesso_restrito": acesso_restrito,
             "tipo_produto": tipo_produto,
             "mde_diagrama_elevacao": {"caminho_mde": caminho_mde, "epsg": epsg},
             "banco": {},

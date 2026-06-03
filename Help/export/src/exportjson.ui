@@ -199,27 +199,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_acesso_restrito">
-     <property name="text">
-      <string>Acesso Restrito (Opcional) - Selecione &quot;True&quot; ou &quot;False&quot;</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="input_acesso_restrito">
-     <item>
-      <property name="text">
-       <string>True</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>False</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="label_info_tecnica">
      <property name="text">
       <string>Informações Técnicas:</string>

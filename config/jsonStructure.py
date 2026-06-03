@@ -298,7 +298,6 @@ data_structure = {
             "children": None,
             "required": False,
         },
-        {"key": "acesso_restrito", "type": str, "children": None, "required": False},
         {
             "key": "territorio_internacional",
             "type": bool,
@@ -562,7 +561,6 @@ data_structure = {
             "required": False,
         },
         {"key": "acesso_informacao", "type": str, "children": None, "required": False},
-        {"key": "acesso_restrito", "type": str, "children": None, "required": False},
         {
             "key": "territorio_internacional",
             "type": bool,
@@ -766,7 +764,6 @@ data_structure = {
             "children": None,
             "required": False,
         },
-        {"key": "acesso_restrito", "type": str, "children": None, "required": False},
         {
             "key": "territorio_internacional",
             "type": bool,

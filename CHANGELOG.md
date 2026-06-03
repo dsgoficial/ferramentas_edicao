@@ -1,5 +1,71 @@
 # CHANGELOG
 
+## 2.0.10
+
+Melhorias:
+- Inserção de processing para ajuste de curva mestra
+- Inserção da opção de Quebra Linha no elemnat_elemento_hidrografico_p para o Menu Radial
+
+## 2.0.9
+
+Melhorias:
+- Inserção de duas ferramentas para geração de JSON para Ortoimagem de OM, ambas aparecem no painel de Processings, na aba Ortoimagem de OM, permite a exportação do JSON de uma OM individual ou em lote.
+
+## 2.0.8
+
+Melhorias:
+- Padronização dos helpers para cada processing do Ferramentas de Edição;
+- Correção da regra de rótulo de Silos para constr_edificacao_a;
+- Organização do sizeTextRiverLine.
+
+## 2.0.7
+
+Melhorias:
+- Corrigido o estilo Noto Sans Condensed Light Italic para constr_edificacao_p e constr_edificacao_a;
+- Refinado o Menu Radial contextual;
+
+## 2.0.6
+
+Melhorias:
+- Adicionado novos estilos em conformidade com a EDGV Topo >= 2.0
+
+## 2.0.5
+
+Melhorias:
+- Definido apenas suporte para EDGV Topo >= 2.0 e EDGV Orto >= 3.0
+
+## 2.0.4
+
+Melhorias:
+- Adição do Menu Radial com contexto para edição dos produtos.
+
+## 2.0.3
+
+Correção de bug:
+- Correção de mesnsagem de Warning em página do Help do Plugin.
+
+## 2.0.2
+
+Melhorias:
+- Finalizado a conversão dos QPTs de exportação para não dependência de HTML e usando as ferramentas de tabelas nativas do QGIS.
+
+## 2.0.1
+
+Melhorias:
+- Mudança do suporte dos QPT de HTML para tabelas nativas do QGIS, afetando a exportação dos seguintes produtos: Carta Topográfica, Carta Ortoimagem, Produtos Especiais.
+
+Correção de bug:
+- Quando total de municípios for maior que 27, apenas estes serão rótulados e os demais serão otimidos para melhor enquadramento na folha modelo.
+
+## 2.0
+
+Update de Versão:
+- Versões >= 2.X.X. serão voltadas para o QGIS 4.0.
+
+Melhorias:
+- Implementação do suporte ao QGIS 4.0
+- Adição da opção de desabilitar máscaras adicionais
+
 ## 1.3.32
 
 Melhorias:

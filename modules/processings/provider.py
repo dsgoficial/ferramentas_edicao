@@ -59,6 +59,7 @@ from .changeAttributeOrtho import ChangeAttributeOrtho
 from .changeAttributeTopo import ChangeAttributeTopo
 from .sizeTextRiverLine import SizeTextRiverLine
 from .setCurveOrientation import SetCurveOrientation
+from .setContourIndex import SetContourIndex
 from .setSobrepositionLegalBoundary import SetSobrepositionLegalBoundary
 from .placePointOfChange import PlacePointOfChange
 from .verifySymbolOverlap import VerifySymbolOverlap
@@ -70,6 +71,8 @@ from .reprojectAttributes import ReprojectAttributesAlgorithm
 from .createCustomPolygons import CreateCustomPolygons
 from .copyFeaturesIntoRoadElement import CopyFeaturesIntoRoadElement
 from .layoutItemsToCanvas import LayoutItemsToCanvasAlgorithm
+from .generateOmMapJson import GenerateOmMapJson
+from .batchGenerateOmMapJson import BatchGenerateOmMapJson
 
 
 class Provider(QgsProcessingProvider):
@@ -105,6 +108,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(ChangeAttributeTopo())
         self.addAlgorithm(SizeTextRiverLine())
         self.addAlgorithm(SetCurveOrientation())
+        self.addAlgorithm(SetContourIndex())
         self.addAlgorithm(DefineSpillWaySinkRotation())
         self.addAlgorithm(PlaceVegetationSymbol())
         self.addAlgorithm(PlaceBorderOfHydrographicElement())
@@ -124,6 +128,8 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(CopyFeaturesIntoRoadElement())
         self.addAlgorithm(LayoutItemsToCanvasAlgorithm())
         self.addAlgorithm(BuildingGeneralizationAlgorithm())
+        self.addAlgorithm(GenerateOmMapJson())
+        self.addAlgorithm(BatchGenerateOmMapJson())
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()

@@ -155,23 +155,12 @@ class MapBuilderUtils:
         return QgsVectorLayer(uri.uri(False), table, "postgres")
 
     def classifiedMapHandler(self, composition: QgsPrintLayout, data: Dict):
-        """Switches the visibility status of QgsLayoutItems that are influentiated by the "acesso_restrito" json key
+        """Switches the visibility status of QgsLayoutItems based on the product type.
         Args:
             composition: QgsPrintLayout
             data: Dict holding the map info
         """
-        if data.get("acesso_restrito"):
-            if item := composition.itemById("label_bdgexQR"):
-                item.setVisibility(False)
-            if item := composition.itemById("label_bdgexWeb"):
-                item.setVisibility(False)
-            if item := composition.itemById("symbol_QRCODE"):
-                item.setVisibility(False)
-            if item := composition.itemById("label_classified"):
-                item.setVisibility(True)
-            if item := composition.itemById("label_militar"):
-                item.setVisibility(False)
-        elif data.get("tipo_produto") in (
+        if data.get("tipo_produto") in (
             "Carta Topográfica Militar",
             "Carta Ortoimagem Militar",
         ):
@@ -181,9 +170,9 @@ class MapBuilderUtils:
                 item.setVisibility(False)
             if item := composition.itemById("symbol_QRCODE"):
                 item.setVisibility(False)
-            if item := composition.itemById("label_classified"):
-                item.setVisibility(False)
             if item := composition.itemById("label_militar"):
+                item.setVisibility(True)
+            if item := composition.itemById("label_militar_titulo"):
                 item.setVisibility(True)
         else:
             if item := composition.itemById("label_bdgexQR"):
@@ -192,9 +181,9 @@ class MapBuilderUtils:
                 item.setVisibility(True)
             if item := composition.itemById("symbol_QRCODE"):
                 item.setVisibility(True)
-            if item := composition.itemById("label_classified"):
-                item.setVisibility(False)
             if item := composition.itemById("label_militar"):
+                item.setVisibility(False)
+            if item := composition.itemById("label_militar_titulo"):
                 item.setVisibility(False)
 
     def getStylePath(
@@ -362,6 +351,8 @@ class MapBuilderUtils:
                 allLayerIds.extend(result)
         return allLayerIds
 
+    ESSENTIAL_MASK_KEYS = ("elemnat_curva_nivel_l", "edicao_simb_cota_mestra_l")
+
     def setupMasks(self, productPath: Path, layers: List[QgsVectorLayer]):
         """Runs the "loadmasks" processing to setup the layers masks.
         Args:
@@ -369,8 +360,24 @@ class MapBuilderUtils:
             layers: list of vector layers which masks will be modified
         """
         pathJson = productPath / "masks.json"
-        if pathJson.exists():
+        if not pathJson.exists():
+            return
+        jsonFileArg = str(pathJson)
+        if getattr(self, "disableAdditionalMasks", False):
+            with open(pathJson, encoding="utf-8") as fh:
+                fullMasks = json.load(fh)
+            filteredMasks = {
+                k: v for k, v in fullMasks.items() if k in self.ESSENTIAL_MASK_KEYS
+            }
+            tmpPath = productPath / "masks_filtered.json"
+            with open(tmpPath, "w", encoding="utf-8") as fh:
+                json.dump(filteredMasks, fh)
+            jsonFileArg = str(tmpPath)
+        try:
             processing.run(
                 "ferramentasedicao:loadmasks",
-                {"JSON_FILE": str(pathJson), "INPUT_LAYERS": layers},
+                {"JSON_FILE": jsonFileArg, "INPUT_LAYERS": layers},
             )
+        finally:
+            if getattr(self, "disableAdditionalMasks", False):
+                Path(jsonFileArg).unlink(missing_ok=True)

@@ -43,8 +43,8 @@ class HTMLHelpCreator(object):
         image_path = "{}/{}.png".format(self.image_repository, algorithm_name)
         html_path = "{}/{}.html".format(self.html_repository, algorithm_name)
 
-        html_file = open(html_path, "r")
-        html_string = html_file.read()
+        with open(html_path, "r", encoding="utf-8") as html_file:
+            html_string = html_file.read()
 
         return html_string.format(image_path)
 

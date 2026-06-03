@@ -70,7 +70,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
     def mouseClick(self, pos, btn):
         if not (self.isActive() and self.dstLyr):
             return
-        if self.productTypeSelector.currentIndex() == 1:
+        if self.productTypeSelector.currentIndex() == 2:
             closestSpatialID = self.spatialIndexLegal.nearestNeighbor(
                 pos, maxDistance=2 * self.tolerance
             )
@@ -93,7 +93,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             feat = next(closestFeat)
             self.createFeature(feat, pos)
 
-        if self.productTypeSelector.currentIndex() == 0:
+        if self.productTypeSelector.currentIndex() == 1:
             closestSpatialID = self.spatialIndexLegal.nearestNeighbor(
                 pos, maxDistance=2 * self.tolerance
             )
@@ -154,7 +154,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute("cor", color)
         labelSize = 6
         toInsert.setAttribute("tamanho_txt", labelSize)
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
                 self.displayErrorMessage(
                     self.tr("Campo 'tamanho_buffer' não encontrado. Verifique se o tipo de produto selecionado corresponde à modelagem utilizada.")
@@ -290,7 +290,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
             self.tolerance = self.getScale() * 0.005
         srcLyr_legal = QgsProject.instance().mapLayersByName("llp_limite_legal_l")
 
-        if self.productTypeSelector.currentIndex() == 1:
+        if self.productTypeSelector.currentIndex() == 2:
             srcLyr_especial = QgsProject.instance().mapLayersByName(
                 "edicao_limite_especial_l"
             )
@@ -316,7 +316,7 @@ class CreateAproximateLabel(QgsMapToolEmitPoint, BaseTools):
                     self.srcLyrEspecial.getFeatures(),
                     flags=QgsSpatialIndex.FlagStoreFeatureGeometries,
                 )
-        if self.productTypeSelector.currentIndex() == 0:
+        if self.productTypeSelector.currentIndex() == 1:
             srcLyr_area_pub_militar = QgsProject.instance().mapLayersByName(
                 "edicao_area_pub_militar_l"
             )

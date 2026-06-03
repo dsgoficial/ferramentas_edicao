@@ -115,7 +115,7 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
         toInsert.setAttribute("texto_edicao", texto_edicao)
         toInsert.setAttribute("estilo_fonte", "Condensed Italic")
         toInsert.setAttribute("espacamento", 0)
-        color = "#ffffff" if self.productTypeSelector.currentIndex() == 0 else "#00a0df"
+        color = "#ffffff" if self.productTypeSelector.currentIndex() == 1 else "#00a0df"
         toInsert.setAttribute("cor", color)
         if feat["tamanho_txt"] is None:
             self.displayErrorMessage(
@@ -123,10 +123,10 @@ class CreateRiverLabel(QgsMapToolEmitPoint, BaseTools):
             )
             return None, None
         labelSize = feat["tamanho_txt"]
-        if self.productTypeSelector.currentIndex() == 0:
+        if self.productTypeSelector.currentIndex() == 1:
             labelSize = labelSize if labelSize > 6 else 7
         toInsert.setAttribute("tamanho_txt", labelSize)
-        if self.productTypeSelector.currentIndex() == 0:  # Ortoimagem
+        if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
                 attributemap = toInsert.attributeMap()
                 self.displayErrorMessage(

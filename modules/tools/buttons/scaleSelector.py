@@ -34,17 +34,23 @@ from qgis.core import (
 class ScaleSelector(QComboBox):
 
     options = {
-        "1:25.000": 0,
-        "1:50.000": 1,
-        "1:100.000": 2,
-        "1:250.000": 3,
+        "Escala": 0,
+        "1:25.000": 1,
+        "1:50.000": 2,
+        "1:100.000": 3,
+        "1:250.000": 4,
     }
 
     def __init__(self, iface, toolBar):
         super().__init__(iface.mainWindow())
         self.iface = iface
         self.toolBar = toolBar
+        self.isConfigured = False
 
     def setupUi(self):
         self.insertItems(-1, [x for x in self.options.keys()])
         self.toolBar.addWidget(self)
+        self.currentIndexChanged.connect(self._onChanged)
+
+    def _onChanged(self, idx):
+        self.isConfigured = idx != 0

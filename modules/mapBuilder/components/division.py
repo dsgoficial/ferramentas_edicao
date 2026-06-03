@@ -19,7 +19,8 @@ import math
 import os
 from pathlib import Path
 
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor, QFont
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -27,12 +28,13 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsGeometry,
     QgsLayerTreeGroup,
-    QgsLayoutItemLabel,
+    QgsLayoutItemManualTable,
     QgsPointXY,
     QgsPalLayerSettings,
     QgsProject,
     QgsRectangle,
     QgsRuleBasedLabeling,
+    QgsTableCell,
     QgsTextBufferSettings,
     QgsTextFormat,
     QgsPrintLayout,
@@ -49,6 +51,8 @@ from ....interfaces.iComponent import IComponent
 class Division(ComponentUtils, IComponent):
     def __init__(self, *args, **kwargs):
         self.itemname_tableMunicipios = "label_divisao_municipios"
+        self.tableWidthMm = 74.0
+        self.tableHeightMm = 28.0
         self.maxCountiesToDisplay = 27
         self.shpFolder = Path(__file__).parent.parent / "resources" / "limits" / "2025"
         self.styleFolder = (
@@ -113,8 +117,7 @@ class Division(ComponentUtils, IComponent):
             orderedCountiesNamesByArea,
         )
 
-        html_tabledata = self.customCreateHtmlTableData(orderedCountiesNamesByArea)
-        self.setMunicipiosTable(composition, html_tabledata)
+        self.setMunicipiosTable(composition, orderedCountiesNamesByArea)
 
         if not isInternational:
             self.hideInternationalCouties(layerCountryArea)
@@ -424,12 +427,64 @@ class Division(ComponentUtils, IComponent):
         edited = baseHtml.format(font_size=fontSize, table_data=tableContent)
         return edited
 
-    def setMunicipiosTable(self, composition, html_tabledata):
-        compositionItem = composition.itemById(self.itemname_tableMunicipios)
-        if compositionItem is not None:
-            compositionItem.setText(html_tabledata)
-            compositionItem.setMode(QgsLayoutItemLabel.ModeHtml)
-            compositionItem.refresh()
+    def setMunicipiosTable(self, composition, sortedCounties):
+        frame = composition.itemById(self.itemname_tableMunicipios)
+        if frame is None:
+            return
+        manualTable = frame.multiFrame()
+        if not isinstance(manualTable, QgsLayoutItemManualTable):
+            return
+        nCounties = len(sortedCounties)
+        if nCounties == 0:
+            return
+
+        # em values from customCreateHtmlTableData (0.6/0.5/0.4) applied to 14.6991px base,
+        # rendered by WebKit at ~125 DPI: 14.6991px * em / 125 * 25.4mm / 0.352778 pt/mm
+        if 6 < nCounties < 13:
+            fontSizePt = 5.1
+        elif 12 < nCounties:
+            fontSizePt = 4.0
+        else:
+            fontSizePt = 6.2
+
+        textFormat = QgsTextFormat()
+        textFormat.setFont(QFont("Noto Sans"))
+        textFormat.setSize(fontSizePt)
+
+        nColumns, nColumn1, nColumn2, nColumn3 = self.getNColums(nCounties)
+        # HTML uses float:left on <tr> so each <tr> is a visual column;
+        # each <td> inside is one municipality in that column.
+        # ManualTable row = horizontal slice: row[col_idx] = municipality of that column.
+        col_sizes = [nColumn1, nColumn2, nColumn3][:nColumns]
+        nRows = max(col_sizes)
+
+        columns = []
+        start = 0
+        for col_size in col_sizes:
+            col = [
+                f"{start + i + 1} - {sortedCounties[start + i].upper()}"
+                for i in range(col_size)
+            ]
+            columns.append(col)
+            start += col_size
+
+        rows = []
+        for row_idx in range(nRows):
+            row = []
+            for col_idx in range(nColumns):
+                text = columns[col_idx][row_idx] if row_idx < len(columns[col_idx]) else ""
+                cell = QgsTableCell(text)
+                cell.setHorizontalAlignment(Qt.AlignmentFlag.AlignLeft)
+                row.append(cell)
+            rows.append(row)
+
+        manualTable.setTableContents(rows)
+        manualTable.setColumnWidths([self.tableWidthMm / nColumns] * nColumns)
+        manualTable.setContentTextFormat(textFormat)
+        manualTable.setIncludeTableHeader(False)
+        manualTable.setShowGrid(False)
+        manualTable.setCellMargin(0.5)
+        manualTable.refresh()
 
     def createRules(self, label, expression):
         """

@@ -63,8 +63,10 @@ class BaseTools:
     def getScale(self):
         if hasattr(self, "scaleSelector"):
             scale = self.scaleSelector.currentText()
-            scale = scale.replace(".", "").split(":")[1]
-            return int(scale)
+            parts = scale.split(":")
+            if len(parts) < 2:
+                return 0
+            return int(parts[1].replace(".", ""))
 
     def keyPressEvent(self, event):
         activeTool = iface.mapCanvas().mapTool()

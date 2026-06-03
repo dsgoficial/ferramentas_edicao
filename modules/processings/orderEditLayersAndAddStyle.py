@@ -60,19 +60,19 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
 
         self.map = [
-            self.tr("Carta Topográfica 1.4"),
-            self.tr("Carta Ortoimagem 2.5"),
+            self.tr("Carta Topográfica 2.0"),
+            self.tr("Carta Ortoimagem 3.0"),
         ]
 
         self.folderDict = {
-            0: "1_4",
-            1: "2_5",
+            0: "2_0",
+            1: "3_0",
         }
 
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.MAP_TYPE,
-                self.tr("Tipo da carta"),
+                self.tr("Selecione o tipo de produto:"),
                 options=self.map,
             )
         )
@@ -95,7 +95,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
-        self.addParameter(ParameterGroup(self.GROUP, description="Grupo"))
+        self.addParameter(ParameterGroup(self.GROUP, description="Grupo:"))
 
         self.exibir_auxiliar_domain = [self.tr("Não"), self.tr("Sim")]
 
@@ -110,7 +110,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         param = QgsProcessingParameterNumber(
             self.EQUIDISTANCIA,
-            self.tr("Definir equidistância fora do padrão"),
+            self.tr("Definir equidistância fora do padrão?"),
             optional=True,
             type=QgsProcessingParameterNumber.Integer,
         )
@@ -119,7 +119,7 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
 
         param = QgsProcessingParameterBoolean(
             self.PRINT_STYLE,
-            self.tr("Utilizar estilo de impressão"),
+            self.tr("Utilizar estilo de impressão?"),
             defaultValue=False,
         )
         param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)

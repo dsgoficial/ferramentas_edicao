@@ -339,7 +339,7 @@ class ValidateGrid(QgsProcessingAlgorithm):
         return "auxiliar"
 
     def shortHelpString(self):
-        return ""
+        return help().shortHelpString(self.name())
 
     def helpUrl(self):
-        return ""
+        return help().helpUrl(self.name())

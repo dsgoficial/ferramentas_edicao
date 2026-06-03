@@ -345,7 +345,10 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 return feature
             if feature["texto_edicao"].strip() != "":
                 return feature
-        feature["texto_edicao"] = "Subestação"
+        if feature["tipo"] == 1401:
+            feature["texto_edicao"] = NULL
+        else:
+            feature["texto_edicao"] = "Subestação"
         return feature
 
     def defaultInfraElemEnergL(self, feature, lyrCrs):
@@ -625,7 +628,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
         # Agrupar silos próximos
         for fid, geom in silos.items():
-            pt = geom.asPoint()
+            pt = geom.centroid().asPoint()
             searchRect = QgsRectangle(
                 pt.x() - clusterDist, pt.y() - clusterDist,
                 pt.x() + clusterDist, pt.y() + clusterDist,

@@ -235,7 +235,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem marginY="0" position="16.5,10.9585,mm" positionOnPage="16.5,10.9585,mm" opacity="1" htmlState="0" visibility="1" type="65641" positionLock="false" marginX="0" frame="false" outlineWidthM="0.3,mm" id="labelCreditContact" referencePoint="0" zValue="1" blendMode="0" halign="4" background="false" valign="32" frameJoinStyle="miter" size="77,3.04691,mm" templateUuid="{c3640626-5ecc-454f-bdd0-eb5c91cdf70b}" labelText="www.dsg.eb.mil.br" uuid="{c3640626-5ecc-454f-bdd0-eb5c91cdf70b}" excludeFromExports="0" groupUuid="" itemRotation="0">
+ <LayoutItem marginY="0" position="16.5,9.9585,mm" positionOnPage="16.5,9.9585,mm" opacity="1" htmlState="0" visibility="1" type="65641" positionLock="false" marginX="0" frame="false" outlineWidthM="0.3,mm" id="labelCreditContact" referencePoint="0" zValue="1" blendMode="0" halign="4" background="false" valign="32" frameJoinStyle="miter" size="77,3.04691,mm" templateUuid="{c3640626-5ecc-454f-bdd0-eb5c91cdf70b}" labelText="www.dsg.eb.mil.br" uuid="{c3640626-5ecc-454f-bdd0-eb5c91cdf70b}" excludeFromExports="0" groupUuid="" itemRotation="0">
   <FrameColor red="0" blue="0" alpha="255" green="0"/>
   <BackgroundColor red="255" blue="255" alpha="255" green="255"/>
   <LayoutObject>

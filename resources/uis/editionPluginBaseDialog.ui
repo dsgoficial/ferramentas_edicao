@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Ferramentas de Edição. v 1.3.32</string>
+   <string>Ferramentas de Edição. v 2.0.10</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
@@ -27,12 +27,12 @@
       <widget class="QComboBox" name="productType">
        <item>
         <property name="text">
-         <string>Carta Topográfica 1.4</string>
+         <string>Carta Topográfica 2.0</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Carta Ortoimagem 2.5</string>
+         <string>Carta Ortoimagem 3.0</string>
         </property>
        </item>
        <item>
@@ -42,12 +42,12 @@
        </item>
        <item>
         <property name="text">
-         <string>Carta Ortoimagem Militar 2.5</string>
+         <string>Carta Ortoimagem Militar 3.0</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Carta Topográfica Militar 1.4</string>
+         <string>Carta Topográfica Militar 2.0</string>
         </property>
        </item>
       </widget>
@@ -172,6 +172,17 @@
         <widget class="QCheckBox" name="checkBoxExportGeotiffWithoutGrid">
          <property name="text">
           <string>Exportar Geotiff Sem Grid</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QCheckBox" name="checkBoxDisableAdditionalMasks">
+         <property name="text">
+          <string>Desabilitar máscaras adicionais</string>
          </property>
         </widget>
        </item>

@@ -26,6 +26,7 @@ import processing
 import random
 
 from qgis.PyQt.QtCore import QCoreApplication
+from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -104,18 +105,10 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         return BuildingGeneralizationAlgorithm()
 
     def shortHelpString(self):
-        return self.tr(
-            "Generaliza feições pontuais de edificações com símbolos quadrados alinhados aos eixos.\n\n"
-            "Resolve conflitos espaciais (edificação-edificação, edificação-via, "
-            "edificação-borda de massa d'água) por deslocamento e, quando impossível, "
-            "ocultando edificações genéricas (campo de visibilidade = 2).\n\n"
-            "Edificações não genéricas com conflitos irresolvíveis são enviadas para "
-            "a camada de FLAGS para revisão manual.\n\n"
-            "Modo apenas densidade: desabilita deslocamento e considera apenas "
-            "conflitos entre edificações (ignora vias e massa d'água). "
-            "Resolve sobreposições somente ocultando edificações genéricas.\n\n"
-            "Funciona com dados em coordenadas geográficas (lat/long) e projetadas."
-        )
+        return help().shortHelpString(self.name())
+
+    def helpUrl(self):
+        return help().helpUrl(self.name())
 
     def initAlgorithm(self, config=None):
         self.addParameter(
