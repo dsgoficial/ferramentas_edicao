@@ -348,6 +348,10 @@ class MapBuildController(MapBuildControllerUtils):
         )
         builder = None
         is_headless = dlgCfg.instance == "headless"
+        if self.debugMode:
+            logger.warning(
+                "debugMode ligado (há um arquivo .env na raiz do plugin): a validação do JSON e a exportação de PDF/GeoTIFF serão PULADAS (modo de geração de QPT)."
+            )
         if Qgis.QGIS_VERSION_INT < 40000:
             if is_headless:
                 logger.error(
@@ -383,8 +387,10 @@ class MapBuildController(MapBuildControllerUtils):
                     f"Não foi inserida uma pasta de saída para o produto solicitado.",
                 )
             return
-        if "Carta Ortoimagem OM" in dlgCfg.productType:
+        if not is_headless and "Carta Ortoimagem OM" in dlgCfg.productType:
             self.qptDlg()
+        exportResult, exportMessage = False, ""
+        successCount = 0
         for jsonPath in dlgCfg.jsonFilePaths:
             self.setColorPalette()
             jsonData = self.readJson(jsonPath)
@@ -495,7 +501,7 @@ class MapBuildController(MapBuildControllerUtils):
             if productType != "omMap":
                 try:
                     abstractDb = self.getAbstractDb(jsonData, dlgCfg)
-                except:
+                except Exception:
                     if is_headless:
                         logger.error(
                             "Conexão inválida com o banco de dados. Verifique as configurações de conexão no json e as informações de usuário e senha."
@@ -578,6 +584,8 @@ class MapBuildController(MapBuildControllerUtils):
                 builder.run(self.debugMode)
                 exporter = self.getExporter(dlgCfg, jsonData, self.debugMode)
                 exportResult, exportMessage = exporter.export(composition)
+                if exportResult:
+                    successCount += 1
             except Exception as e:
                 exportResult = False
                 exportMessage = f"{type(e).__name__}: {e}"
@@ -595,14 +603,14 @@ class MapBuildController(MapBuildControllerUtils):
             )
             return
         builder.cleanProject(self.debugMode)
-        messageType = "Informação" if exportResult == True else "Erro"
-        msg = (
-            "A exportação foi concluída com sucesso."
-            if exportResult == True
-            else f"Ocorreu um erro durante a exportação: {exportMessage}"
-        )
+        total = len(dlgCfg.jsonFilePaths)
+        allOk = successCount == total
+        messageType = "Informação" if allOk else "Erro"
+        msg = f"Exportação finalizada: {successCount}/{total} produto(s) com sucesso."
+        if not allOk and exportMessage:
+            msg += f" Último erro: {exportMessage}"
         if dlgCfg.instance == "headless":
-            logger.info(msg)
+            (logger.info if allOk else logger.warning)(msg)
             return
         QMessageBox.warning(self.dlg, messageType, msg)
 

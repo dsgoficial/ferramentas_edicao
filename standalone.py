@@ -71,20 +71,22 @@ def setupArgparser():
 
 def getInstallationFolder() -> Path:
     if sys.platform == "win32":
-        return next(Path("C:\\Program Files\\").glob("QGIS*"))
-    elif sys.platform == "linux":
-        pass
+        matches = sorted(Path("C:\\Program Files\\").glob("QGIS*"))
+        return matches[-1] if matches else None
+    return None
 
 
 def startNetwork(args):
-    if all((args.proxyHost, args.proxyPort, args.proxyUser, args.proxyPassword)):
+    if args.proxyHost and args.proxyPort:
         proxy = QNetworkProxy(
             QNetworkProxy.ProxyType.HttpProxy,
             args.proxyHost,
             args.proxyPort,
-            args.proxyUser,
-            args.proxyPassword,
         )
+        if args.proxyUser:
+            proxy.setUser(args.proxyUser)
+        if args.proxyPassword:
+            proxy.setPassword(args.proxyPassword)
     else:
         proxy = QNetworkProxy(QNetworkProxy.ProxyType.NoProxy)
     manager = QgsNetworkAccessManager().instance()
@@ -95,10 +97,10 @@ if __name__ == "__main__":
     args = setupArgparser()
     print(f"Iniciando a exportação do produto {args.tipo} de json {args.json}")
     qgs = QgsApplication([], True, profileFolder="default")
-    qgs.initQgis()
     p = Path(args.pathQgis)
     prefixPath = p / "apps/qgis"
     qgs.setPrefixPath(str(prefixPath), True)
+    qgs.initQgis()
     pluginsFolder = Path(
         "~\\AppData\\Roaming\\QGIS\\QGIS4\\profiles\\default\\python\\plugins"
     ).expanduser()

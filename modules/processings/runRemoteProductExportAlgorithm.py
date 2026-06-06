@@ -256,7 +256,9 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
         url_to_status = f"{server}/api/execucoes/{uuid}"
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
-        while True:
+        maxAttempts = 360  # teto de ~2 h com intervalo de 20 s entre as consultas
+        responseData = {"status_id": "erro", "log": "Cancelado pelo usuário."}
+        for _ in range(maxAttempts):
             if multiStepFeedback.isCanceled():
                 multiStepFeedback.pushInfo(self.tr("Cancelado pelo usuário.\n"))
                 break
@@ -271,6 +273,10 @@ class RunRemoteProductExportAlgorithm(QgsProcessingAlgorithm):
                 responseData = {"status_id": "erro", "log": f"Erro no plugin!\n{e}"}
             if responseData["status_id"] in [2, 3, "erro"]:
                 break
+        else:
+            raise QgsProcessingException(
+                self.tr("Tempo de espera do serviço de exportação esgotado.")
+            )
         multiStepFeedback.setCurrentStep(1)
         return self.handleOutputs(server, responseData, multiStepFeedback)
 

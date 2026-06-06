@@ -65,6 +65,6 @@ class ConnectionSingleton:
             uri.setDatabase(database)
             connInfo = uri.connectionInfo()
             instance = QgsCredentials.instance()
-            instance.put(connInfo, username, username)
+            instance.put(connInfo, username, password)
             self.conn = uri
         return self.conn

@@ -70,11 +70,19 @@ class ExporterSingleton:
             if self.basename != "Especial"
             else f"{self.exportNameDict.get(data.get('productType'))}_{self.basename}_{data.get('scale')}k_{data.get('nome')}"
         )
+        self.basename = self._sanitizeFilename(self.basename)
         self.exportFolder = dlg.exportFolder
         self.exportTiff = dlg.exportTiff
         self.exportTiffWithoutGrid = dlg.exportTiffWithoutGrid
         self.debugMode = debugMode
         self.dpi = int(data.get("dpi", 300))
+
+    @staticmethod
+    def _sanitizeFilename(name: str) -> str:
+        """Replaces characters invalid in file names (Windows) with underscore."""
+        for ch in '<>:"/\\|?*':
+            name = name.replace(ch, "_")
+        return name.strip()
 
     def setMetadata(self):
         metadata = QgsProject.instance().metadata()
@@ -142,9 +150,15 @@ class ExporterSingleton:
         status = exporter.exportToImage(str(tiffFilePath), settings)
         if status != QgsLayoutExporter.ExportResult.Success:
             return True, self.getErrorMessage(status, fileType="tif")
-        self.reproject(tiffFilePath)
-        self.compress(tiffFilePath)
-        self.cleanup(tiffFilePath)
+        try:
+            self.reproject(tiffFilePath)
+            self.compress(tiffFilePath)
+            self.cleanup(tiffFilePath)
+        except Exception as e:
+            return (
+                True,
+                f"Falha no pós-processamento do GeoTIFF {tiffFilePath.name}: {e}\n",
+            )
         return False, ""
 
     def getErrorMessage(self, exportStatus, fileType=None):
@@ -172,7 +186,11 @@ class ExporterSingleton:
             path: Path instance of original exported tiff file
         """
         srcEpsg = QgsRasterLayer(str(path), "tmp").crs().postgisSrid()
-        p = subprocess.Popen(
+        if not srcEpsg:
+            raise RuntimeError(
+                f"Não foi possível determinar o EPSG de origem do TIFF {path.name}."
+            )
+        result = subprocess.run(
             [
                 "gdalwarp",
                 "-overwrite",
@@ -182,19 +200,21 @@ class ExporterSingleton:
                 "EPSG:4674",
                 "-of",
                 "GTiff",
-                path,
-                path.with_stem("reproject"),
+                str(path),
+                str(path.with_stem("reproject")),
             ],
-            shell=True,
+            capture_output=True,
+            text=True,
         )
-        p.wait()
+        if result.returncode != 0:
+            raise RuntimeError(f"gdalwarp falhou: {result.stderr.strip()}")
 
     def compress(self, path: Path):
         """Calls gdal_translate to use JPEG compression on a tiff file
         Args:
             path: Path instance of original exported tiff file
         """
-        p = subprocess.Popen(
+        result = subprocess.run(
             [
                 "gdal_translate",
                 "-b",
@@ -209,12 +229,14 @@ class ExporterSingleton:
                 "TILED=YES",
                 "-co",
                 "PHOTOMETRIC=YCBCR",
-                path.with_stem("reproject"),
-                path.with_stem("compress"),
+                str(path.with_stem("reproject")),
+                str(path.with_stem("compress")),
             ],
-            shell=True,
+            capture_output=True,
+            text=True,
         )
-        p.wait()
+        if result.returncode != 0:
+            raise RuntimeError(f"gdal_translate falhou: {result.stderr.strip()}")
 
     def removeGrid(self):
         """
