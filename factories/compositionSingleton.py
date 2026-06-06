@@ -100,12 +100,12 @@ class CompositionSingleton:
         elif productType in ("orthoMap", "militaryOrthoMap"):
             qptNameText = "orthoMap"
             compositionRootPath = (
-                self.resourcesPath / "orthoMap" / jsonData.get("versionFolder", "2_4")
+                self.resourcesPath / "orthoMap" / jsonData.get("versionFolder", "3_0")
             )
         elif productType in ("topoMap", "militaryTopoMap"):
             qptNameText = "topoMap"
             compositionRootPath = (
-                self.resourcesPath / "topoMap" / jsonData.get("versionFolder", "1_3")
+                self.resourcesPath / "topoMap" / jsonData.get("versionFolder", "2_0")
             )
         else:
             qptNameText = f"{productType}"

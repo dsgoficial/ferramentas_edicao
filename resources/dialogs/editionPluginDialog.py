@@ -30,6 +30,12 @@ from qgis.PyQt.QtWidgets import (
 from qgis.PyQt.QtCore import Qt
 import json
 import shutil  # Importação para operações de arquivos
+from ...config.exportJsonBuilder import (
+    build_export_json,
+    validate_fields,
+    collect_export_form_fields,
+    wire_export_form,
+)
 
 # Carregar o arquivo UI principal
 FORM_CLASS, _ = uic.loadUiType(
@@ -398,41 +404,17 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         layout = QVBoxLayout(self.json_form_dialog)
         layout.addWidget(scroll_area)
 
-        # Preencher automaticamente os campos para teste
-        form_content.input_licenciamento.setText("CC-BY-NC-SA 4.0")
-        form_content.input_edicao.setText("1 - DSG")
+        # Valores padrão
+        form_content.input_licenciamento.setText("CC-BY-SA 4.0")
+        form_content.input_edicao.setText("1-DSG")
 
-        # Conectar os botões de seleção de arquivos
-        form_content.browse_mde_button.clicked.connect(
-            lambda: self.select_file(form_content.input_mde_diagrama)
-        )
-        form_content.browse_project_button.clicked.connect(
-            lambda: self.select_file(form_content.input_creditos)
-        )
-
-        # Conectar o botão de adicionar fase
-        form_content.add_fase_button.clicked.connect(
-            lambda: self.add_fase(form_content)
-        )
-
-        # Conectar o botão de adicionar dado de terceiros
-        form_content.add_dado_terceiro_button.clicked.connect(
-            lambda: self.add_dado_terceiro(form_content)
-        )
-
-        # Conectar o botão de remover fase
-        form_content.rm_fase_button.clicked.connect(
-            lambda: self.remove_selected_row(form_content.fasesTable)
-        )
-
-        # Conectar o botão de remover dado de terceiro
-        form_content.rm_dado_terceiro_button.clicked.connect(
-            lambda: self.remove_selected_row(form_content.dadosTerceirosTable)
-        )
-
-        # Conectar o botão de geração de JSON ao método
-        form_content.generate_button.clicked.connect(
-            lambda: self.generate_json(form_content)
+        # Conecta os botões do formulário e ajusta a visibilidade por produto
+        wire_export_form(
+            form_content,
+            on_browse_file=self.select_file,
+            on_add_row=self.add_table_row,
+            on_remove_row=self.remove_selected_row,
+            on_generate=lambda: self.generate_json(form_content),
         )
 
         # Exibir a janela como modal para impedir sobreposição
@@ -454,6 +436,13 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         for index in sorted(selected_rows, reverse=True):
             table_widget.removeRow(index.row())
 
+    def add_table_row(self, table_widget):
+        """Adiciona uma linha vazia em qualquer QTableWidget do formulário."""
+        row = table_widget.rowCount()
+        table_widget.insertRow(row)
+        for col in range(table_widget.columnCount()):
+            table_widget.setItem(row, col, QTableWidgetItem(""))
+
     def select_file(self, line_edit):
         """Abre um diálogo de seleção de arquivo e insere o caminho no campo fornecido."""
         file_path, _ = QFileDialog.getOpenFileName(
@@ -463,164 +452,21 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
             corrected_path = file_path.replace("/", "\\")
             line_edit.setText(corrected_path)
 
-    def add_fase(self, form_dialog):
-        """Adiciona uma nova fase ao formulário."""
-        # Insere uma nova linha vazia na tabela de fases
-        row_position = form_dialog.fasesTable.rowCount()
-        form_dialog.fasesTable.insertRow(row_position)
-
-        # Adiciona células vazias para nova fase
-        for col in range(form_dialog.fasesTable.columnCount()):
-            form_dialog.fasesTable.setItem(row_position, col, QTableWidgetItem(""))
-
-    def add_dado_terceiro(self, form_dialog):
-        """Adiciona um novo dado de terceiro ao formulário."""
-        # Insere uma nova linha vazia na tabela de dados de terceiros
-        row_position = form_dialog.dadosTerceirosTable.rowCount()
-        form_dialog.dadosTerceirosTable.insertRow(row_position)
-
-        # Adiciona células vazias para novo dado de terceiro
-        for col in range(form_dialog.dadosTerceirosTable.columnCount()):
-            form_dialog.dadosTerceirosTable.setItem(
-                row_position, col, QTableWidgetItem("")
-            )
-
     def generate_json(self, form_dialog):
-        """Gera o arquivo JSON baseado nas entradas do formulário."""
-
-        def add_if_not_empty(dictionary, key, value):
-            """Adiciona a chave e o valor ao dicionário se o valor não estiver vazio ou None."""
-            if value not in ("", None):
-                dictionary[key] = value
-
-        # Coleta dados obrigatórios e opcionais
-        nome = form_dialog.input_nome.text().strip()
-        territorio_internacional = (
-            form_dialog.input_territorio_internacional.currentText() == "True"
-        )
-        tipo_produto = form_dialog.input_produto.currentText() == "Carta Topográfica"
-        caminho_mde = form_dialog.input_mde_diagrama.text().strip().replace("/", "\\")
-        epsg = form_dialog.input_epsg.text().strip()
-
-        # Verifica se os campos obrigatórios estão preenchidos
-        if not tipo_produto or not nome or not caminho_mde or not epsg:
-            QMessageBox.critical(self, "Erro", "Preencha todos os campos obrigatórios!")
+        """Gera o arquivo JSON a partir do formulário, delegando ao builder."""
+        fields = collect_export_form_fields(form_dialog)
+        ok, missing = validate_fields(fields)
+        if not ok:
+            QMessageBox.critical(
+                self,
+                "Erro",
+                "Preencha os campos obrigatórios:\n- " + "\n- ".join(missing),
+            )
             return
 
-        # Cria o objeto JSON principal
-        json_object = {
-            "nome": nome,
-            "territorio_internacional": territorio_internacional,
-            "tipo_produto": tipo_produto,
-            "mde_diagrama_elevacao": {"caminho_mde": caminho_mde, "epsg": epsg},
-            "banco": {},
-            "fases": [],
-            "info_tecnica": {"dados_terceiros": []},
-        }
-
-        # Adiciona campos não obrigatórios ao JSON na ordem original
-        add_if_not_empty(json_object, "inom", form_dialog.input_inom.text().strip())
-        add_if_not_empty(
-            json_object,
-            "licenciamento_produto",
-            form_dialog.input_licenciamento.text().strip(),
-        )
-        add_if_not_empty(
-            json_object, "edicao_produto", form_dialog.input_edicao.text().strip()
-        )
-        add_if_not_empty(json_object, "escala", form_dialog.input_escala.text().strip())
-        add_if_not_empty(
-            json_object, "centro_carta", form_dialog.input_centro_carta.text().strip()
-        )
-        add_if_not_empty(
-            json_object, "projeto", form_dialog.input_creditos.text().strip()
-        )
-
-        # Adiciona informações técnicas
-        info_tecnica = json_object["info_tecnica"]
-        add_if_not_empty(
-            info_tecnica, "data_criacao", form_dialog.input_data_criacao.text().strip()
-        )
-        add_if_not_empty(
-            info_tecnica,
-            "datum_vertical",
-            form_dialog.input_datum_vertical.text().strip(),
-        )
-        add_if_not_empty(
-            info_tecnica,
-            "origem_dados_altimetricos",
-            form_dialog.input_origem_dados_altimetricos.text().strip(),
-        )
-        add_if_not_empty(
-            info_tecnica,
-            "pec_planimetrico",
-            form_dialog.input_pec_planimetrico.text().strip(),
-        )
-        add_if_not_empty(
-            info_tecnica,
-            "pec_altimetrico",
-            form_dialog.input_pec_altimetrico.text().strip(),
-        )
-
-        # Captura informações de configuração do banco de dados
-        banco = json_object["banco"]
-        add_if_not_empty(
-            banco,
-            "servidor",
-            form_dialog.bancoTable.item(0, 0).text().strip()
-            if form_dialog.bancoTable.item(0, 0)
-            else "",
-        )
-        add_if_not_empty(
-            banco,
-            "porta",
-            form_dialog.bancoTable.item(0, 1).text().strip()
-            if form_dialog.bancoTable.item(0, 1)
-            else "",
-        )
-        add_if_not_empty(
-            banco,
-            "nome",
-            form_dialog.bancoTable.item(0, 2).text().strip()
-            if form_dialog.bancoTable.item(0, 2)
-            else "",
-        )
-
-        # Adiciona fases se houver
-        for row in range(form_dialog.fasesTable.rowCount()):
-            fase_nome = form_dialog.fasesTable.item(row, 0)
-            executante_nome = form_dialog.fasesTable.item(row, 1)
-            executante_ano = form_dialog.fasesTable.item(row, 2)
-
-            if fase_nome and executante_nome and executante_ano:
-                fase_nome_text = fase_nome.text().strip()
-                executante_nome_text = executante_nome.text().strip()
-                executante_ano_text = executante_ano.text().strip()
-
-                if fase_nome_text and executante_nome_text and executante_ano_text:
-                    executantes = [
-                        {"nome": executante_nome_text, "ano": executante_ano_text}
-                    ]
-                    json_object["fases"].append(
-                        {"nome": fase_nome_text, "executantes": executantes}
-                    )
-
-        # Adiciona dados de terceiros
-        for row in range(form_dialog.dadosTerceirosTable.rowCount()):
-            nome_terceiro = form_dialog.dadosTerceirosTable.item(row, 0)
-            sigla_terceiro = form_dialog.dadosTerceirosTable.item(row, 1)
-            if nome_terceiro and sigla_terceiro:
-                nome_terceiro_text = nome_terceiro.text().strip()
-                sigla_terceiro_text = sigla_terceiro.text().strip()
-                if nome_terceiro_text and sigla_terceiro_text:
-                    json_object["info_tecnica"]["dados_terceiros"].append(
-                        f"{nome_terceiro_text}: {sigla_terceiro_text}"
-                    )
-
-        # Salvar o arquivo JSON gerado
+        json_object = build_export_json(fields)
         json_str = json.dumps(json_object, indent=4, ensure_ascii=False)
 
-        # Ao salvar o arquivo, especifique a codificação utf-8
         save_file_dialog = QFileDialog()
         save_file_path, _ = save_file_dialog.getSaveFileName(
             self, "Salvar Arquivo JSON", "", "JSON Files (*.json)"

@@ -16,6 +16,12 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from .fontInstaller import install_fonts
+from ..config.exportJsonBuilder import (
+    build_export_json,
+    validate_fields,
+    collect_export_form_fields,
+    wire_export_form,
+)
 
 
 class HelpBrowser:
@@ -243,29 +249,15 @@ class HelpBrowser:
         layout = QVBoxLayout(json_form_dialog)
         layout.addWidget(scroll_area)
 
-        form_content.input_licenciamento.setText("CC-BY-NC-SA 4.0")
-        form_content.input_edicao.setText("1 - DSG")
+        form_content.input_licenciamento.setText("CC-BY-SA 4.0")
+        form_content.input_edicao.setText("1-DSG")
 
-        form_content.browse_mde_button.clicked.connect(
-            lambda: self._select_file(form_content.input_mde_diagrama)
-        )
-        form_content.browse_project_button.clicked.connect(
-            lambda: self._select_file(form_content.input_creditos)
-        )
-        form_content.add_fase_button.clicked.connect(
-            lambda: self._add_table_row(form_content.fasesTable)
-        )
-        form_content.add_dado_terceiro_button.clicked.connect(
-            lambda: self._add_table_row(form_content.dadosTerceirosTable)
-        )
-        form_content.rm_fase_button.clicked.connect(
-            lambda: self._remove_selected_row(form_content.fasesTable)
-        )
-        form_content.rm_dado_terceiro_button.clicked.connect(
-            lambda: self._remove_selected_row(form_content.dadosTerceirosTable)
-        )
-        form_content.generate_button.clicked.connect(
-            lambda: self._generate_json(form_content)
+        wire_export_form(
+            form_content,
+            on_browse_file=self._select_file,
+            on_add_row=self._add_table_row,
+            on_remove_row=self._remove_selected_row,
+            on_generate=lambda: self._generate_json(form_content),
         )
 
         json_form_dialog.finished.connect(self.restore_help_content)
@@ -296,70 +288,17 @@ class HelpBrowser:
             table_widget.removeRow(index.row())
 
     def _generate_json(self, form_dialog):
-        def add_if_not_empty(dictionary, key, value):
-            if value not in ("", None):
-                dictionary[key] = value
-
-        nome = form_dialog.input_nome.text().strip()
-        territorio_internacional = (
-            form_dialog.input_territorio_internacional.currentText() == "True"
-        )
-        tipo_produto = form_dialog.input_produto.currentText() == "Carta Topográfica"
-        caminho_mde = form_dialog.input_mde_diagrama.text().strip().replace("/", "\\")
-        epsg = form_dialog.input_epsg.text().strip()
-
-        if not tipo_produto or not nome or not caminho_mde or not epsg:
+        fields = collect_export_form_fields(form_dialog)
+        ok, missing = validate_fields(fields)
+        if not ok:
             QMessageBox.critical(
-                form_dialog, "Erro", "Preencha todos os campos obrigatórios!"
+                form_dialog,
+                "Erro",
+                "Preencha os campos obrigatórios:\n- " + "\n- ".join(missing),
             )
             return
 
-        json_object = {
-            "nome": nome,
-            "territorio_internacional": territorio_internacional,
-            "tipo_produto": tipo_produto,
-            "mde_diagrama_elevacao": {"caminho_mde": caminho_mde, "epsg": epsg},
-            "banco": {},
-            "fases": [],
-            "info_tecnica": {"dados_terceiros": []},
-        }
-
-        add_if_not_empty(json_object, "inom", form_dialog.input_inom.text().strip())
-        add_if_not_empty(json_object, "licenciamento_produto", form_dialog.input_licenciamento.text().strip())
-        add_if_not_empty(json_object, "edicao_produto", form_dialog.input_edicao.text().strip())
-        add_if_not_empty(json_object, "escala", form_dialog.input_escala.text().strip())
-        add_if_not_empty(json_object, "centro_carta", form_dialog.input_centro_carta.text().strip())
-        add_if_not_empty(json_object, "projeto", form_dialog.input_creditos.text().strip())
-
-        info_tecnica = json_object["info_tecnica"]
-        add_if_not_empty(info_tecnica, "data_criacao", form_dialog.input_data_criacao.text().strip())
-        add_if_not_empty(info_tecnica, "datum_vertical", form_dialog.input_datum_vertical.text().strip())
-        add_if_not_empty(info_tecnica, "origem_dados_altimetricos", form_dialog.input_origem_dados_altimetricos.text().strip())
-        add_if_not_empty(info_tecnica, "pec_planimetrico", form_dialog.input_pec_planimetrico.text().strip())
-        add_if_not_empty(info_tecnica, "pec_altimetrico", form_dialog.input_pec_altimetrico.text().strip())
-
-        banco = json_object["banco"]
-        add_if_not_empty(banco, "servidor", form_dialog.bancoTable.item(0, 0).text().strip() if form_dialog.bancoTable.item(0, 0) else "")
-        add_if_not_empty(banco, "porta", form_dialog.bancoTable.item(0, 1).text().strip() if form_dialog.bancoTable.item(0, 1) else "")
-        add_if_not_empty(banco, "nome", form_dialog.bancoTable.item(0, 2).text().strip() if form_dialog.bancoTable.item(0, 2) else "")
-
-        for row in range(form_dialog.fasesTable.rowCount()):
-            fase_nome = form_dialog.fasesTable.item(row, 0)
-            executante_nome = form_dialog.fasesTable.item(row, 1)
-            executante_ano = form_dialog.fasesTable.item(row, 2)
-            if fase_nome and executante_nome and executante_ano:
-                fn, en, ea = fase_nome.text().strip(), executante_nome.text().strip(), executante_ano.text().strip()
-                if fn and en and ea:
-                    json_object["fases"].append({"nome": fn, "executantes": [{"nome": en, "ano": ea}]})
-
-        for row in range(form_dialog.dadosTerceirosTable.rowCount()):
-            nome_t = form_dialog.dadosTerceirosTable.item(row, 0)
-            sigla_t = form_dialog.dadosTerceirosTable.item(row, 1)
-            if nome_t and sigla_t:
-                nt, st = nome_t.text().strip(), sigla_t.text().strip()
-                if nt and st:
-                    json_object["info_tecnica"]["dados_terceiros"].append(f"{nt}: {st}")
-
+        json_object = build_export_json(fields)
         json_str = json.dumps(json_object, indent=4, ensure_ascii=False)
         save_file_path, _ = QFileDialog.getSaveFileName(
             form_dialog, "Salvar Arquivo JSON", "", "JSON Files (*.json)"
@@ -368,9 +307,13 @@ class HelpBrowser:
             try:
                 with open(save_file_path, "w", encoding="utf-8") as json_file:
                     json_file.write(json_str)
-                QMessageBox.information(form_dialog, "Sucesso", f"Arquivo JSON salvo em: {save_file_path}")
+                QMessageBox.information(
+                    form_dialog, "Sucesso", f"Arquivo JSON salvo em: {save_file_path}"
+                )
             except Exception as e:
-                QMessageBox.critical(form_dialog, "Erro", f"Falha ao salvar o arquivo: {e}")
+                QMessageBox.critical(
+                    form_dialog, "Erro", f"Falha ao salvar o arquivo: {e}"
+                )
 
     # --- QPT dialogs ---
 
