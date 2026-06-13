@@ -1,90 +1,94 @@
 # -*- coding: utf-8 -*-
 import os
-import platform
-import shutil
-import ctypes
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtCore import QUrl
 
 
-def _installFontWindows(caminho_fonte, arquivo):
-    """Instala uma fonte permanentemente no Windows (copia + registra no registry)."""
-    import winreg
+def _alreadyInstalled(font_manager):
+    """Retorna o conjunto de nomes de arquivos de fonte já instalados no perfil."""
+    try:
+        return {
+            os.path.basename(caminho)
+            for caminho in font_manager.userFontToFamilyMap().keys()
+        }
+    except Exception:
+        return set()
 
-    fonts_dir = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
-    destino = os.path.join(fonts_dir, arquivo)
-    if not os.path.exists(destino):
-        shutil.copy2(caminho_fonte, destino)
-    nome_registro = os.path.splitext(arquivo)[0] + " (TrueType)"
-    with winreg.OpenKey(
-        winreg.HKEY_LOCAL_MACHINE,
-        r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts",
-        0,
-        winreg.KEY_SET_VALUE,
-    ) as key:
-        winreg.SetValueEx(key, nome_registro, 0, winreg.REG_SZ, arquivo)
-    ctypes.windll.gdi32.AddFontResourceW(destino)
+
+def _installFontData(font_manager, caminho_fonte, arquivo):
+    """Instala uma fonte a partir dos bytes do .ttf via QgsFontManager.
+
+    Grava o arquivo no diretório de fontes do perfil do QGIS e registra a fonte
+    na sessão atual (sem exigir admin nem reinício). Retorna (ok, mensagem_erro).
+    """
+    with open(caminho_fonte, "rb") as f:
+        data = f.read()
+    resultado = font_manager.installFontsFromData(data, filename=arquivo)
+    # Desempacota defensivamente: a API retorna (ok, erro, familias, licenca).
+    if isinstance(resultado, (tuple, list)):
+        ok = bool(resultado[0])
+        erro = resultado[1] if len(resultado) > 1 else ""
+    else:
+        ok, erro = bool(resultado), ""
+    return ok, erro
 
 
 def install_fonts(plugin_dir, parent_window):
-    """Instala as fontes Noto Sans no sistema."""
+    """Instala as fontes Noto Sans no diretório de fontes do perfil do QGIS.
+
+    Usa QgsFontManager.installFontsFromData (QGIS >= 3.28), que grava os .ttf em
+    ``<perfil>/fonts`` e os registra na sessão atual via QFontDatabase, sem
+    necessidade de privilégios de administrador nem de reiniciar o QGIS.
+
+    Retorna ``True`` se todas as fontes foram instaladas com sucesso.
+    """
     pasta_fontes = os.path.join(plugin_dir, "Help", "button", "fonts")
     if not os.path.exists(pasta_fontes):
         QMessageBox.warning(parent_window, "Erro", "Pasta de fontes não encontrada.")
-        return
+        return False
 
-    if platform.system() == "Windows":
+    font_manager = QgsApplication.fontManager()
+    instaladas = _alreadyInstalled(font_manager)
+
+    sucessos = 0
+    falhas = []
+    for arquivo in sorted(os.listdir(pasta_fontes)):
+        if not arquivo.lower().endswith(".ttf"):
+            continue
+        if arquivo in instaladas:
+            sucessos += 1
+            continue
         try:
-            for arquivo in os.listdir(pasta_fontes):
-                if not arquivo.endswith(".ttf"):
-                    continue
-                _installFontWindows(os.path.join(pasta_fontes, arquivo), arquivo)
-            QMessageBox.information(
-                parent_window,
-                "Sucesso",
-                "Fontes instaladas com sucesso! Reinicie o QGIS para aplicar as mudanças.",
+            ok, erro = _installFontData(
+                font_manager, os.path.join(pasta_fontes, arquivo), arquivo
             )
-        except PermissionError:
-            resp = QMessageBox.warning(
-                parent_window,
-                "Permissão negada",
-                "A instalação automática requer que o QGIS seja executado como Administrador.\n\n"
-                "Você pode:\n"
-                "1. Fechar o QGIS, clicar com botão direito no ícone do QGIS e selecionar "
-                '"Executar como administrador", depois tentar novamente.\n'
-                "2. Instalar manualmente: clique em 'Abrir pasta' para acessar os arquivos "
-                "de fonte, selecione todos os .ttf, clique com botão direito e escolha "
-                '"Instalar para todos os usuários".',
-                QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Cancel,
-            )
-            if resp == QMessageBox.StandardButton.Open:
-                QDesktopServices.openUrl(QUrl.fromLocalFile(pasta_fontes))
-        except Exception as e:
-            QMessageBox.warning(
-                parent_window, "Erro", f"Erro ao instalar fontes: {str(e)}"
-            )
-    else:
-        try:
-            pasta_destino = (
-                "/Library/Fonts/"
-                if platform.system() == "Darwin"
-                else os.path.expanduser("~/.local/share/fonts/")
-            )
-            for arquivo in os.listdir(pasta_fontes):
-                if not arquivo.endswith(".ttf"):
-                    continue
-                shutil.copy(os.path.join(pasta_fontes, arquivo), pasta_destino)
-            if platform.system() == "Linux":
-                import subprocess
-                subprocess.run(["fc-cache", "-f", "-v"], check=False)
-            QMessageBox.information(
-                parent_window,
-                "Sucesso",
-                "Fontes instaladas com sucesso! Reinicie o QGIS para aplicar as mudanças.",
-            )
-        except Exception as e:
-            QMessageBox.warning(
-                parent_window, "Erro", f"Erro ao instalar fontes: {str(e)}"
-            )
+        except Exception as e:  # noqa: BLE001
+            ok, erro = False, str(e)
+        if ok:
+            sucessos += 1
+        else:
+            falhas.append(f"{arquivo}: {erro}" if erro else arquivo)
+
+    if not falhas:
+        QMessageBox.information(
+            parent_window,
+            "Sucesso",
+            f"{sucessos} fontes Noto Sans instaladas no perfil do QGIS.",
+        )
+        return True
+
+    resp = QMessageBox.warning(
+        parent_window,
+        "Atenção",
+        "Algumas fontes não puderam ser instaladas automaticamente:\n"
+        + "\n".join(falhas)
+        + "\n\nClique em 'Abrir pasta' para instalá-las manualmente: copie os "
+        "arquivos .ttf para a pasta 'fonts' do seu perfil do QGIS.",
+        QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Cancel,
+    )
+    if resp == QMessageBox.StandardButton.Open:
+        QDesktopServices.openUrl(QUrl.fromLocalFile(pasta_fontes))
+    return False

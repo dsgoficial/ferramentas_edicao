@@ -4,7 +4,7 @@
 
 Plugin QGIS para edição e geração de cartas topográficas e ortoimagens seguindo normas cartográficas brasileiras. Desenvolvido pelo 1º CGEO (Exército Brasileiro).
 
-- **Versão atual:** 1.3.32
+- **Versão atual:** 2.0.11
 - **QGIS mínimo:** 4.0 (Qt6)
 - **Repositório:** https://github.com/dsgoficial/ferramentas_edicao
 - **Branch principal:** master | **Branch desenvolvimento QGIS4:** qgis4

@@ -162,7 +162,7 @@ class EditionPlugin:
                 self.iface.mainWindow(),
                 "Erro",
                 f"Erro na instalação das fontes: {errorMsg}.\n"
-                "Feche o QGIS, corrija a instalação, reinicie o QGIS e tente novamente.",
+                "Use o menu 'Instalar Fontes Noto Sans' e tente novamente.",
             )
             return
         if "grassprovider" not in active_plugins:

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.11
+
+Melhorias:
+- Instalação das fontes Noto Sans via QgsFontManager (diretório de fontes do perfil do QGIS), sem exigir privilégios de administrador nem reinício do QGIS; corrige o não reconhecimento das fontes no QGIS 4.x.
+
 ## 2.0.10
 
 Melhorias:
