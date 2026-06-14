@@ -455,6 +455,18 @@ class MapBuildController(MapBuildControllerUtils):
                     )
                 exportResult = False
                 continue
+            internationalError = jsonStructure.validate_international_territory(jsonData)
+            if internationalError != "":
+                if is_headless:
+                    logger.error("Erro: %s", internationalError)
+                else:
+                    QMessageBox.warning(
+                        self.dlg,
+                        "Erro",
+                        f"Erro: {internationalError}",
+                    )
+                exportResult = False
+                continue
             if (
                 productName != "Carta Especial"
                 and productName != jsonData["tipo_produto"]

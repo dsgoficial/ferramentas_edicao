@@ -954,6 +954,32 @@ def file_exists(path: str, timeout=5) -> bool:
     return f_exists
 
 
+# Produtos do SCN que, por doutrina, são sempre de território nacional.
+# Só as versões Militares podem englobar território internacional.
+PRODUCTS_NATIONAL_ONLY = ("Carta Topográfica", "Carta Ortoimagem")
+
+
+def validate_international_territory(input_dict: dict) -> str:
+    """Aplica a regra de doutrina do território internacional.
+
+    Produto normal (Carta Topográfica e Carta Ortoimagem) é sempre nacional, ou seja,
+    territorio_internacional deve ser ausente ou false. Apenas as versões Militares
+    (Carta Topográfica Militar e Carta Ortoimagem Militar) podem ser internacionais.
+    Retorna uma string de erro (vazia quando válido).
+    """
+    product_type = input_dict.get("tipo_produto")
+    if product_type in PRODUCTS_NATIONAL_ONLY and bool(
+        input_dict.get("territorio_internacional", False)
+    ):
+        return (
+            f'O produto "{product_type}" não pode ter territorio_internacional = true. '
+            "Apenas a Carta Topográfica Militar e a Carta Ortoimagem Militar podem englobar "
+            "território internacional. Corrija o json (use a versão Militar ou defina "
+            "territorio_internacional = false) e tente novamente."
+        )
+    return ""
+
+
 def validate_file_paths(input_dict: dict) -> str:
     if "mde_diagrama_elevacao" not in input_dict:
         return ""
