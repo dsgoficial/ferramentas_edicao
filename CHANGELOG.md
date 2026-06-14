@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.0.12
+
+Melhorias:
+- Atualização da inferface helper ao instalar fontes via QgsFontManager usando o Helper do Ferramenta de Edição.
+
 ## 2.0.11
 
 Melhorias:

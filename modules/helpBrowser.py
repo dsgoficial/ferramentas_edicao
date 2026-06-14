@@ -172,16 +172,21 @@ class HelpBrowser:
         if page_name == "install_fonts":
             ok = install_fonts(self.plugin_dir, self.iface.mainWindow())
             if ok:
-                self.help_text.setHtml(
+                result_html = (
                     "<h2>Fontes instaladas!</h2><p>As fontes Noto Sans já estão "
                     "disponíveis no QGIS.</p>"
                 )
             else:
-                self.help_text.setHtml(
+                result_html = (
                     "<h2>Instalação incompleta</h2><p>Algumas fontes não puderam ser "
                     "instaladas automaticamente. Copie os arquivos .ttf para a pasta "
                     "'fonts' do seu perfil do QGIS.</p>"
                 )
+            self.history.append((self.current_page, self.current_html_content))
+            self.current_page = "install_fonts_result"
+            self.current_html_content = result_html
+            self.help_text.setHtml(result_html)
+            self.back_button.setEnabled(True)
             return
 
         if page_name in [
