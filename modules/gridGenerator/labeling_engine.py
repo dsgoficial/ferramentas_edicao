@@ -33,6 +33,7 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsVectorLayer,
     QgsRenderContext,
+    QgsMapSettings,
     QgsPoint,
     QgsPointXY,
 )
@@ -109,7 +110,15 @@ class LabelingEngine:
             100: 4*15,
             250: 10*15,
         }
-        map_settings = iface.mapCanvas().mapSettings()
+        canvas = iface.mapCanvas() if iface is not None else None
+        if canvas is not None:
+            map_settings = canvas.mapSettings()
+        else:
+            # headless (standalone.py): nao ha iface/canvas. Um QgsMapSettings novo
+            # e equivalente aqui: o destino e UTM (metros), entao convertToMapUnits
+            # com MetersInMapUnits nao depende do extent; scaleFactor e rendererScale
+            # sao fixados abaixo de forma explicita.
+            map_settings = QgsMapSettings()
         map_settings.setDestinationCrs(self.utm_crs)
         map_settings.setOutputDpi(self.dpi)
         render_context = QgsRenderContext.fromMapSettings(map_settings)
