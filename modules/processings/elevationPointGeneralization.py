@@ -174,6 +174,9 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
                 feedback=multiStepFeedback,
             )
             currentStep += 1
+            if pointWithOriginalIdField.featureCount() == 0:
+                feedback.pushInfo("Nenhum ponto cotado dentro da moldura.")
+                return {}
 
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(currentStep)
@@ -308,13 +311,7 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
         pointLayer.endEditCommand()
 
     def getExtentGeom(self, gridScaleParam, pointLayer, gridScale):
-        ptLyrExt = pointLayer.extent()
-        xmin = ptLyrExt.xMinimum()
-        xmax = ptLyrExt.xMaximum()
-        ymin = ptLyrExt.yMinimum()
-        ymax = ptLyrExt.yMaximum()
-        xmin, xmax, ymin, ymax = self.processExtent(xmin, xmax, ymin, ymax, gridScale)
-        extentGeom = QgsGeometry().fromRect(ptLyrExt)
+        extentGeom = QgsGeometry().fromRect(pointLayer.extent())
         return extentGeom
 
     def processExtent(self, xmin, xmax, ymin, ymax, gridScale):
