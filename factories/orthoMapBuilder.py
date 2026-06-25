@@ -144,6 +144,14 @@ class OrthoMapBuilder(IMapBuilder, MapBuilderUtils):
                     0, {"table": "edicao_unidade_conservacao_l", "schema": "edgv"}
                 )
 
+        # As camadas de linha/símbolo acima entram via insert(0, ...) apenas para
+        # serem INCLUÍDAS (não estão no filtro _toDisplay), mas o topo fixo ignora a
+        # posição delas no camadas.json e faz, p.ex., llp_limite_legal_l e
+        # edicao_area_pub_militar_l renderizarem por cima do grid. Reordena pela ordem
+        # do camadas.json (mapLayers); o que não estiver no json mantém o topo (-1).
+        order = {x.get("table"): i for i, x in enumerate(mapLayers)}
+        layersToDisplay.sort(key=lambda x: order.get(x.get("table"), -1))
+
         return layersToDisplay
 
     def run(self, debugMode: bool = False):
