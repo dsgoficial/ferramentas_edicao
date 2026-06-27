@@ -351,7 +351,16 @@ class MapBuilderUtils:
                 allLayerIds.extend(result)
         return allLayerIds
 
-    ESSENTIAL_MASK_KEYS = ("elemnat_curva_nivel_l", "edicao_simb_cota_mestra_l")
+    # Máscaras mantidas mesmo com "Desabilitar máscaras adicionais": recortes
+    # cartograficamente indispensáveis e de custo baixo (cada um mascara poucas
+    # camadas). Curva de nível e cota mestra; e o grid numérico, cujos números
+    # de coordenada precisam recortar as linhas do grid (edicao_grid_edicao_l)
+    # para continuarem legíveis — vale para carta topográfica e ortoimagem.
+    ESSENTIAL_MASK_KEYS = (
+        "elemnat_curva_nivel_l",
+        "edicao_simb_cota_mestra_l",
+        "edicao_grid_numerico_p",
+    )
 
     def setupMasks(self, productPath: Path, layers: List[QgsVectorLayer]):
         """Runs the "loadmasks" processing to setup the layers masks.
