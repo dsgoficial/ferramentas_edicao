@@ -16,12 +16,12 @@
  ***************************************************************************/
 """
 import math
-import os
 
 from qgis import processing
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
-    QgsField,
+    QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsDistanceArea,
     QgsFeature,
@@ -29,16 +29,11 @@ from qgis.core import (
     QgsGeometry,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProperty,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterVectorLayer,
-    NULL,
-    Qgis,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterFeatureSink,
-    QgsFeatureSink,
-    QgsVectorLayer,
     QgsProcessingMultiStepFeedback,
+    QgsProcessingOutputNumber,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -51,17 +46,27 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
     SCALE = "SCALE"
     ROAD = "ROAD"
     MARKER = "MARKER"
+    MIN_SEPARATION = "MIN_SEPARATION"
+    INSERTED = "INSERTED"
+    REMOVED = "REMOVED"
+    DISPLACED = "DISPLACED"
+    SKIPPED = "SKIPPED"
 
-    # Constantes de configuração
+    # Constantes de configuração (fatores x escala = metros no terreno;
+    # em mm de carta: fator x 1000)
     NEAR_START_PERCENTAGE = 0.15  # 15% do comprimento
     NEAR_END_PERCENTAGE = 0.85  # 85% do comprimento
-    FRAME_DISTANCE_FACTOR = 0.006  # Distância mínima da moldura
-    SIGLA_OFFSET_FACTOR = 0.008  # Deslocamento entre siglas
-    MIN_LENGTH_FACTOR = 0.01  # Comprimento mínimo para inserir identificador
-    SMALL_LENGTH_FACTOR = 0.2  # X = 20% da escala
-    MEDIUM_LENGTH_FACTOR = 0.3  # Y = 30% da escala
-    LARGE_LENGTH_FACTOR = 0.5  # Z = 40% da escala
-    VERY_LARGE_LENGTH_FACTOR = 0.6  # W = 50% da escala
+    FRAME_DISTANCE_FACTOR = 0.006  # 6 mm: distância mínima da moldura
+    SIGLA_OFFSET_FACTOR = 0.008  # 8 mm: deslocamento entre siglas do mesmo ponto
+    MIN_LENGTH_FACTOR = 0.01  # 10 mm: comprimento mínimo para inserir (normativo)
+    SMALL_LENGTH_FACTOR = 0.2  # 200 mm: 1 identificador (normativo)
+    MEDIUM_LENGTH_FACTOR = 0.3  # 300 mm: 2 identificadores (normativo)
+    LARGE_LENGTH_FACTOR = 0.5  # 500 mm: 3 identificadores (normativo)
+    VERY_LARGE_LENGTH_FACTOR = 0.6  # 600 mm: 4 identificadores; acima, 5 (normativo)
+    # Filtro de rotatórias/alças de trevo: trechos CURTOS e CURVOS (o
+    # mergelines quebra nos nós de grau >= 3, isolando os arcos do anel)
+    CURLY_MAX_LENGTH_FACTOR = 0.05  # 50 mm
+    CURLY_SINUOSITY = 1.4  # comprimento / corda
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -94,6 +99,16 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterNumber(
+                self.MIN_SEPARATION,
+                self.tr("Separação mínima (em mm) entre identificadores"),
+                type=QgsProcessingParameterNumber.Double,
+                minValue=0.0,
+                defaultValue=8,
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterEnum(
                 self.SCALE,
                 self.tr("Selecione a escala de edição:"),
@@ -109,10 +124,35 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             )
         )
 
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.INSERTED, self.tr("Identificadores inseridos")
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.REMOVED, self.tr("Identificadores pré-existentes removidos")
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.DISPLACED,
+                self.tr("Identificadores deslocados ao longo da via (conflito)"),
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.SKIPPED,
+                self.tr("Posições descartadas (moldura/separação/sigla inválida)"),
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         layer_road = self.parameterAsVectorLayer(parameters, self.ROAD, context)
         layer_marker = self.parameterAsVectorLayer(parameters, self.MARKER, context)
+        frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
+        sepMm = self.parameterAsDouble(parameters, self.MIN_SEPARATION, context)
         self.gridScaleDict = {
             0: 5000,
             1: 10000,
@@ -123,11 +163,9 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         }
         scale = self.gridScaleDict[gridScaleParam]
 
-        # Converter distâncias baseadas na escala e CRS
-        is_geographic = layer_road.crs().isGeographic()
-
-        def convert_distance(dist):
-            if is_geographic:
+        def convert_distance(dist, layer):
+            """Metros no terreno -> unidade do CRS da camada"""
+            if layer.crs().isGeographic():
                 d = QgsDistanceArea()
                 d.setSourceCrs(
                     QgsCoordinateReferenceSystem("EPSG:3857"),
@@ -136,289 +174,409 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 return d.convertLengthMeasurement(dist, Qgis.DistanceUnit.Degrees)
             return dist
 
-        # Calcular distâncias baseadas na escala
-        frame_distance = convert_distance(scale * self.FRAME_DISTANCE_FACTOR)
-        sigla_offset = convert_distance(scale * self.SIGLA_OFFSET_FACTOR)
-
-        # Limiares de comprimento
-        min_length = convert_distance(scale * self.MIN_LENGTH_FACTOR)
-        small_length = convert_distance(scale * self.SMALL_LENGTH_FACTOR)
-        medium_length = convert_distance(scale * self.MEDIUM_LENGTH_FACTOR)
-        large_length = convert_distance(scale * self.LARGE_LENGTH_FACTOR)
-        very_large_length = convert_distance(scale * self.VERY_LARGE_LENGTH_FACTOR)
-
-        frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-        frameLayer = self.runAddCount(frameLayer, feedback=feedback)
-        self.runCreateSpatialIndex(frameLayer, feedback=feedback)
-
-        frameLinesLayer = self.convertPolygonToLines(frameLayer)
-        self.runCreateSpatialIndex(frameLinesLayer, feedback=feedback)
-
-        # Filtrar rodovias com sigla não nula e mesclar por sigla
-        layer_road = self.runAddCount(layer_road, feedback=feedback)
-        notNullRoads = self.filterNotNullRoads(layer_road)
-        mergedRoads = self.mergeRoads(notNullRoads)
-        self.runCreateSpatialIndex(mergedRoads, feedback=feedback)
-
-        # Clipa rodovias dentro da moldura
-        clippedRoads = self.clipRoads(mergedRoads, frameLayer)
-        self.runCreateSpatialIndex(clippedRoads, feedback=feedback)
-
-        # Intersectar rodovias entre si
-        intersectedRoads = self.intersectRoads(clippedRoads, feedback=feedback)
-        self.runCreateSpatialIndex(intersectedRoads, feedback=feedback)
-
-        # Intersectar rodovias com a moldura
-        intersectedRoadsFrame = self.clipLines(
-            intersectedRoads, frameLinesLayer, feedback=feedback
+        frame_distance = convert_distance(scale * self.FRAME_DISTANCE_FACTOR, layer_road)
+        sigla_offset = convert_distance(scale * self.SIGLA_OFFSET_FACTOR, layer_road)
+        min_length = convert_distance(scale * self.MIN_LENGTH_FACTOR, layer_road)
+        small_length = convert_distance(scale * self.SMALL_LENGTH_FACTOR, layer_road)
+        medium_length = convert_distance(scale * self.MEDIUM_LENGTH_FACTOR, layer_road)
+        large_length = convert_distance(scale * self.LARGE_LENGTH_FACTOR, layer_road)
+        very_large_length = convert_distance(
+            scale * self.VERY_LARGE_LENGTH_FACTOR, layer_road
         )
-        self.runCreateSpatialIndex(intersectedRoadsFrame, feedback=feedback)
-
-        # Para cada segmento, criar pontos baseado no comprimento
-        points = self.createPoints(
-            intersectedRoadsFrame,
-            {
-                "min_length": min_length,
-                "small_length": small_length,
-                "medium_length": medium_length,
-                "large_length": large_length,
-                "very_large_length": very_large_length,
-                "near_start": self.NEAR_START_PERCENTAGE,
-                "near_end": self.NEAR_END_PERCENTAGE,
-            },
+        sep_distance = convert_distance(scale * sepMm / 1000, layer_road)
+        slide_step = convert_distance(scale * 0.0005, layer_road)  # 0.5 mm
+        curly_max_length = convert_distance(
+            scale * self.CURLY_MAX_LENGTH_FACTOR, layer_road
         )
 
-        # Remover pontos próximos à moldura
-        points = self.removePointsNearFrame(points, frameLinesLayer, frame_distance)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(6, feedback)
+        currentStep = 0
 
-        # Criar identificadores para múltiplas siglas
-        self.createMultipleMarkers(layer_marker, points, sigla_offset)
-
-        return {}
-
-    def filterNotNullRoads(self, layer):
-        """Filtra rodovias com sigla não nula"""
-        return processing.run(
-            "native:extractbyattribute",
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Filtrando vias com sigla visíveis"))
+        roads = processing.run(
+            "native:extractbyexpression",
             {
-                "INPUT": layer,
-                "FIELD": "sigla",
-                "OPERATOR": 9,  # is not null
-                "VALUE": "",
+                "INPUT": layer_road,
+                "EXPRESSION": "\"sigla\" is not null and trim(\"sigla\") <> '' "
+                              "and \"visivel\" = 1",
                 "OUTPUT": "memory:",
             },
+            context=context,
+            feedback=multiStepFeedback,
         )["OUTPUT"]
+        if roads.featureCount() == 0:
+            return self._results(0, 0, 0, 0)
 
-    def mergeRoads(self, layer):
-        """Mescla rodovias por sigla"""
-        return processing.run(
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Montando trechos contínuos por sigla"))
+        # dissolve NAO funde linhas encostadas (so coleciona partes); o
+        # mergelines e quem monta as cadeias continuas — e quebra nos nos de
+        # grau >= 3 (entroncamentos/rotatorias), isolando arcos de anel.
+        dissolved = processing.run(
             "native:dissolve",
-            {
-                "INPUT": layer,
-                "FIELD": ["sigla", "tipo"],
-                "OUTPUT": "memory:",
-            },
+            {"INPUT": roads, "FIELD": ["sigla", "tipo"], "OUTPUT": "memory:"},
+            context=context,
+            feedback=multiStepFeedback,
+        )["OUTPUT"]
+        merged = processing.run(
+            "native:mergelines",
+            {"INPUT": dissolved, "OUTPUT": "memory:"},
+            context=context,
+            feedback=multiStepFeedback,
         )["OUTPUT"]
 
-    def clipRoads(self, roads, frame):
-        """Intersecta rodovias com moldura"""
-        return processing.run(
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Clipando e cortando nos entroncamentos"))
+        clipped = processing.run(
             "native:clip",
-            {
-                "INPUT": roads,
-                "OVERLAY": frame,
-                "OUTPUT": "memory:",
-            },
+            {"INPUT": merged, "OVERLAY": frameLayer, "OUTPUT": "memory:"},
+            context=context,
+            feedback=multiStepFeedback,
+        )["OUTPUT"]
+        singleParts = processing.run(
+            "native:multiparttosingleparts",
+            {"INPUT": clipped, "OUTPUT": "memory:"},
+            context=context,
+            feedback=multiStepFeedback,
+        )["OUTPUT"]
+        # corta nos entroncamentos entre rodovias COM sigla (vias sem sigla
+        # nao delimitam trecho)
+        trechosLyr = processing.run(
+            "native:splitwithlines",
+            {"INPUT": singleParts, "LINES": singleParts, "OUTPUT": "memory:"},
+            context=context,
+            feedback=multiStepFeedback,
         )["OUTPUT"]
 
-    def createPoints(self, layer, params):
-        """Cria pontos ao longo dos segmentos baseado no comprimento"""
-        points = []
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Preparando restrições"))
+        frameEngines = self._prepareFrameEngines(
+            frameLayer, layer_road.crs(), context, multiStepFeedback
+        )
 
-        for feat in layer.getFeatures():
-            length = feat.geometry().length()
-            sigla = feat.attribute("sigla")
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Posicionando identificadores"))
+        # Trechos longos primeiro: os principais fixam seus identificadores e
+        # os fragmentos de entroncamento e que se ajustam ou sao descartados.
+        trechos = sorted(
+            trechosLyr.getFeatures(),
+            key=lambda f: f.geometry().length() if f.geometry() else 0,
+            reverse=True,
+        )
+        accepted = []  # (QgsPointXY, groupId)
+        markersOut = []  # (QgsPointXY, sigla_num, jurisdicao, tipo)
+        nDisplaced = 0
+        nSkipped = 0
+        nCurly = 0
+        groupId = 0
+        trechoGeoms = []
+        stepSize = 100 / len(trechos) if trechos else 100
 
-            if length < params["min_length"]:
+        for current, feat in enumerate(trechos):
+            if multiStepFeedback.isCanceled():
+                return self._results(0, 0, 0, 0)
+            geom = feat.geometry()
+            if geom is None or geom.isEmpty():
+                continue
+            length = geom.length()
+            if length < min_length:
+                continue
+            trechoGeoms.append(geom)
+
+            # Rotatorias e alcas de trevo: trecho curto e curvo (corda muito
+            # menor que o comprimento). Nao delimita trecho rodoviario.
+            if length < curly_max_length and self._sinuosity(geom) > self.CURLY_SINUOSITY:
+                nCurly += 1
                 continue
 
-            if length <= params["small_length"]:
-                # Um ponto no centro
-                points.append(self.createPointAtDistance(feat, 0.5, sigla))
+            siglas = self._parseSiglas(feat)
+            if not siglas:
+                nSkipped += 1
+                continue
 
-            elif length <= params["medium_length"]:
-                # Dois pontos em 1/4 e 3/4
-                points.append(self.createPointAtDistance(feat, 0.25, sigla))
-                points.append(self.createPointAtDistance(feat, 0.75, sigla))
+            fractions = self._fractionsForLength(
+                length, small_length, medium_length, large_length, very_large_length
+            )
 
-            elif length <= params["large_length"]:
-                # Três pontos: próximo início, centro e próximo fim
-                points.append(
-                    self.createPointAtDistance(feat, params["near_start"], sigla)
+            for frac in fractions:
+                groupId += 1
+                placed = self._placeGroup(
+                    geom,
+                    length,
+                    length * frac,
+                    siglas,
+                    sigla_offset,
+                    slide_step,
+                    sep_distance,
+                    frame_distance,
+                    frameEngines,
+                    accepted,
+                    groupId,
                 )
-                points.append(self.createPointAtDistance(feat, 0.5, sigla))
-                points.append(
-                    self.createPointAtDistance(feat, params["near_end"], sigla)
-                )
-
-            elif length <= params["very_large_length"]:
-                # Quatro pontos: início, 2/5, 3/5 e fim
-                points.append(
-                    self.createPointAtDistance(feat, params["near_start"], sigla)
-                )
-                points.append(self.createPointAtDistance(feat, 0.4, sigla))
-                points.append(self.createPointAtDistance(feat, 0.6, sigla))
-                points.append(
-                    self.createPointAtDistance(feat, params["near_end"], sigla)
-                )
-
-            else:
-                # Cinco pontos: início, 1/3, meio, 2/3 e fim
-                points.append(
-                    self.createPointAtDistance(feat, params["near_start"], sigla)
-                )
-                points.append(self.createPointAtDistance(feat, 0.33, sigla))
-                points.append(self.createPointAtDistance(feat, 0.5, sigla))
-                points.append(self.createPointAtDistance(feat, 0.67, sigla))
-                points.append(
-                    self.createPointAtDistance(feat, params["near_end"], sigla)
-                )
-
-        return points
-
-    def createPointAtDistance(self, feature, distance_fraction, sigla):
-        """Cria um ponto a uma fração específica do comprimento da linha"""
-        geom = feature.geometry()
-        length = geom.length()
-        point = geom.interpolate(length * distance_fraction)
-        tipo = feature.attribute("tipo")
-        return {"point": point, "sigla": sigla, "line_geom": geom, "tipo": tipo}
-
-    def removePointsNearFrame(self, points, frame_lines, min_distance):
-        """Remove pontos muito próximos da moldura"""
-        filtered_points = []
-
-        for point in points:
-            is_far_enough = True
-            for line in frame_lines.getFeatures():
-                if point["point"].distance(line.geometry()) < min_distance:
-                    is_far_enough = False
-                    break
-            if is_far_enough:
-                filtered_points.append(point)
-
-        return filtered_points
-
-    def createMultipleMarkers(self, layer_marker, points, offset):
-        """Cria identificadores para cada sigla com offset ao longo da linha"""
-        layer_marker.startEditing()
-        layer_marker.beginEditCommand("Criando pontos")
-
-        for point in points:
-            siglas = point["sigla"].split(";")
-            num_siglas = len(siglas)
-
-            # Calcular distâncias de offset para cada lado do ponto original
-            total_offset = offset * (num_siglas - 1)
-            start_offset = -total_offset / 2
-
-            line_geom = point["line_geom"]
-
-            for i, sigla in enumerate(siglas):
-                feat = QgsFeature(layer_marker.fields())
-
-                # Calcular posição com offset
-                current_offset = start_offset + (i * offset)
-
-                if i == 0:
-                    # Primeiro ponto usa a geometria original
-                    new_point = QgsGeometry(point["point"])
-                else:
-                    # Para pontos adicionais, encontrar o ponto mais próximo na linha
-                    # a uma distância current_offset do ponto original
-                    distance = line_geom.lineLocatePoint(point["point"])
-                    new_point = QgsGeometry(
-                        line_geom.interpolate(distance + current_offset)
-                    )
-
-                feat.setGeometry(new_point)
-
-                # Definir atributos
-                try:
-                    name = sigla.split("-")[1]
-                    feat.setAttribute("sigla", name)
-
-                    # Definir jurisdição
-                    if sigla.split("-")[0] == "BR":
-                        jurisdicao = 1
-                    else:
-                        jurisdicao = 2
-                    feat.setAttribute("jurisdicao", jurisdicao)
-
-                    feat.setAttribute("visivel", 1)
-
-                    feat.setAttribute("tipo", point["tipo"])
-
-                except IndexError:
+                if placed is None:
+                    nSkipped += len(siglas)
                     continue
+                positions, offsetApplied = placed
+                for pos, (siglaNum, jurisdicao) in zip(positions, siglas):
+                    accepted.append((pos, groupId))
+                    markersOut.append(
+                        (pos, siglaNum, jurisdicao, feat.attribute("tipo"))
+                    )
+                if offsetApplied != 0:
+                    nDisplaced += len(siglas)
+            multiStepFeedback.setProgress(current * stepSize)
 
-                layer_marker.addFeature(feat)
+        if nCurly:
+            multiStepFeedback.pushInfo(
+                self.tr(
+                    "Trechos curtos e sinuosos ignorados (rotatórias/alças): {0}"
+                ).format(nCurly)
+            )
 
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Gravando saída"))
+
+        markerTransform = None
+        if layer_road.crs() != layer_marker.crs():
+            markerTransform = QgsCoordinateTransform(
+                layer_road.crs(), layer_marker.crs(), context.transformContext()
+            )
+        corridor = convert_distance(scale * sepMm / 1000, layer_marker)
+        idsToRemove = self._findMarkersInCorridor(
+            layer_marker, trechoGeoms, corridor, markerTransform
+        )
+
+        fields = layer_marker.fields()
+        newFeats = []
+        for pos, siglaNum, jurisdicao, tipo in markersOut:
+            pointGeom = QgsGeometry.fromPointXY(pos)
+            if markerTransform is not None:
+                pointGeom.transform(markerTransform)
+            feat = QgsFeature(fields)
+            feat.setGeometry(pointGeom)
+            feat.setAttribute("sigla", siglaNum)
+            feat.setAttribute("jurisdicao", jurisdicao)
+            feat.setAttribute("tipo", tipo)
+            feat.setAttribute("visivel", 1)
+            newFeats.append(feat)
+
+        layer_marker.startEditing()
+        layer_marker.beginEditCommand("Criando identificadores de trecho rodoviário")
+        if idsToRemove:
+            layer_marker.deleteFeatures(idsToRemove)
+        layer_marker.addFeatures(newFeats)
         layer_marker.endEditCommand()
 
-    def convertPolygonToLines(self, inputLayer):
-        """Converte polígono em linhas"""
-        output = processing.run(
+        multiStepFeedback.pushInfo(
+            self.tr(
+                "Identificadores inseridos: {0} | removidos (rodadas anteriores): "
+                "{1} | deslocados por conflito: {2} | descartados: {3}"
+            ).format(len(newFeats), len(idsToRemove), nDisplaced, nSkipped)
+        )
+        return self._results(len(newFeats), len(idsToRemove), nDisplaced, nSkipped)
+
+    def _results(self, inserted, removed, displaced, skipped):
+        return {
+            self.INSERTED: inserted,
+            self.REMOVED: removed,
+            self.DISPLACED: displaced,
+            self.SKIPPED: skipped,
+        }
+
+    @staticmethod
+    def _sinuosity(geom):
+        """Comprimento / corda (distancia entre extremos). Aneis fechados
+        tem corda ~0 -> sinuosidade enorme."""
+        length = geom.length()
+        try:
+            v0 = geom.vertexAt(0)
+            vn = geom.vertexAt(geom.constGet().nCoordinates() - 1)
+            chord = math.hypot(vn.x() - v0.x(), vn.y() - v0.y())
+        except Exception:
+            return 1.0
+        if chord <= 0:
+            return float("inf")
+        return length / chord
+
+    def _parseSiglas(self, feat):
+        """'BR-101;SC-401' -> [('101', 1), ('401', 2)].
+
+        Jurisdicao: para sigla unica usa o atributo da via quando valido
+        (fonte autoritativa — cobre Municipal/Particular); para multiplas
+        siglas (ou atributo invalido) deriva do prefixo (BR=federal(1),
+        demais=estadual(2))."""
+        raw = feat.attribute("sigla")
+        if raw is None:
+            return []
+        parts = [s.strip() for s in str(raw).split(";") if s.strip()]
+        viaJurisdicao = None
+        try:
+            v = int(feat.attribute("jurisdicao"))
+            if v in (1, 2, 3, 6):
+                viaJurisdicao = v
+        except (TypeError, ValueError):
+            pass
+        result = []
+        for sigla in parts:
+            if "-" not in sigla:
+                continue
+            prefix, _, num = sigla.partition("-")
+            if not num:
+                continue
+            if len(parts) == 1 and viaJurisdicao is not None:
+                jurisdicao = viaJurisdicao
+            else:
+                jurisdicao = 1 if prefix.upper() == "BR" else 2
+            result.append((num, jurisdicao))
+        return result
+
+    def _fractionsForLength(self, length, small, medium, large, very_large):
+        """Faixas normativas: quantidade de identificadores por comprimento."""
+        if length <= small:
+            return [0.5]
+        if length <= medium:
+            return [0.25, 0.75]
+        if length <= large:
+            return [self.NEAR_START_PERCENTAGE, 0.5, self.NEAR_END_PERCENTAGE]
+        if length <= very_large:
+            return [self.NEAR_START_PERCENTAGE, 0.4, 0.6, self.NEAR_END_PERCENTAGE]
+        return [
+            self.NEAR_START_PERCENTAGE,
+            0.33,
+            0.5,
+            0.67,
+            self.NEAR_END_PERCENTAGE,
+        ]
+
+    def _placeGroup(
+        self,
+        geom,
+        length,
+        baseDist,
+        siglas,
+        siglaOffset,
+        slideStep,
+        sepDistance,
+        frameDistance,
+        frameEngines,
+        accepted,
+        groupId,
+    ):
+        """Posiciona o grupo de escudos (uma posicao por sigla, centrados no
+        ponto-base e espacados `siglaOffset` ao longo da via). Se alguma
+        posicao viola moldura ou separacao minima com outros grupos, o grupo
+        inteiro desliza ao longo da via em passos de 0.5 mm ate +-separacao;
+        sem solucao, descarta. Retorna (posicoes, offset aplicado) ou None."""
+        n = len(siglas)
+        startOffset = -siglaOffset * (n - 1) / 2
+        maxSlide = sepDistance if sepDistance > 0 else siglaOffset
+        nSteps = int(maxSlide / slideStep) if slideStep > 0 else 0
+        offsets = [0.0]
+        for i in range(1, nSteps + 1):
+            offsets.append(i * slideStep)
+            offsets.append(-i * slideStep)
+
+        for slide in offsets:
+            positions = []
+            ok = True
+            for i in range(n):
+                d = baseDist + slide + startOffset + i * siglaOffset
+                if d <= 0 or d >= length:
+                    ok = False
+                    break
+                pointGeom = geom.interpolate(d)
+                if pointGeom.isEmpty():
+                    ok = False
+                    break
+                point = pointGeom.asPoint()
+                constPoint = pointGeom.constGet()
+                if any(
+                    eng.distance(constPoint) < frameDistance
+                    for eng, _g in frameEngines
+                ):
+                    ok = False
+                    break
+                conflict = False
+                for accPoint, accGroup in accepted:
+                    if accGroup == groupId:
+                        continue
+                    if (
+                        math.hypot(accPoint.x() - point.x(), accPoint.y() - point.y())
+                        < sepDistance
+                    ):
+                        conflict = True
+                        break
+                if conflict:
+                    ok = False
+                    break
+                positions.append(point)
+            if ok:
+                return positions, slide
+        return None
+
+    def _prepareFrameEngines(self, frameLayer, targetCrs, context, feedback):
+        """Bordas da moldura como geometry engines preparados (CRS das vias)."""
+        frameLines = processing.run(
             "native:polygonstolines",
-            {"INPUT": inputLayer, "OUTPUT": "TEMPORARY_OUTPUT"},
-        )
-        return output["OUTPUT"]
-
-    def intersectRoads(self, roads, feedback):
-        """Intersecta as rodovias entre si para obter os segmentos"""
-        # Primeiro, explodir linhas multi-parte em single-parte
-        single_parts = processing.run(
-            "native:multiparttosingleparts", {"INPUT": roads, "OUTPUT": "memory:"}
-        )["OUTPUT"]
-        self.runCreateSpatialIndex(single_parts, feedback=feedback)
-
-        # Intersectar linhas
-        split_lines = processing.run(
-            "native:splitwithlines",
-            {"INPUT": single_parts, "LINES": single_parts, "OUTPUT": "memory:"},
-        )["OUTPUT"]
-
-        return split_lines
-
-    def clipLines(self, inputLayer, segmentLayer, feedback):
-        output = processing.run(
-            "native:splitwithlines",
-            {"INPUT": inputLayer, "LINES": segmentLayer, "OUTPUT": "TEMPORARY_OUTPUT"},
+            {"INPUT": frameLayer, "OUTPUT": "TEMPORARY_OUTPUT"},
+            context=context,
             feedback=feedback,
-        )
-        return output["OUTPUT"]
+        )["OUTPUT"]
+        transform = None
+        if frameLines.crs() != targetCrs:
+            transform = QgsCoordinateTransform(
+                frameLines.crs(), targetCrs, context.transformContext()
+            )
+        engines = []
+        for feat in frameLines.getFeatures():
+            geom = QgsGeometry(feat.geometry())
+            if geom is None or geom.isEmpty():
+                continue
+            if transform is not None:
+                geom.transform(transform)
+            engine = QgsGeometry.createGeometryEngine(geom.constGet())
+            engine.prepareGeometry()
+            # a QgsGeometry acompanha o engine para manter a geometria viva
+            engines.append((engine, geom))
+        return engines
 
-    def runAddCount(self, inputLyr, feedback):
-        output = processing.run(
-            "native:addautoincrementalfield",
-            {
-                "INPUT": inputLyr,
-                "FIELD_NAME": "AUTO",
-                "START": 0,
-                "GROUP_FIELDS": [],
-                "SORT_EXPRESSION": "",
-                "SORT_ASCENDING": False,
-                "SORT_NULLS_FIRST": False,
-                "OUTPUT": "TEMPORARY_OUTPUT",
-            },
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
-
-    def runCreateSpatialIndex(self, inputLyr, feedback):
-        processing.run(
-            "native:createspatialindex", {"INPUT": inputLyr}, feedback=feedback
-        )
+    @staticmethod
+    def _findMarkersInCorridor(markerLayer, trechoGeoms, corridorDist, markerTransform):
+        """Ids dos identificadores existentes a menos de `corridorDist` dos
+        trechos processados (identificadores gerados ficam sobre a via)."""
+        if not trechoGeoms:
+            return []
+        engines = []
+        extent = None
+        for geom in trechoGeoms:
+            g = QgsGeometry(geom)
+            if markerTransform is not None:
+                g.transform(markerTransform)
+            engine = QgsGeometry.createGeometryEngine(g.constGet())
+            engine.prepareGeometry()
+            engines.append((engine, g))
+            bbox = g.boundingBox()
+            if extent is None:
+                extent = bbox
+            else:
+                extent.combineExtentWith(bbox)
+        extent.grow(corridorDist * 2)
+        ids = []
+        request = QgsFeatureRequest().setFilterRect(extent)
+        for feat in markerLayer.getFeatures(request):
+            geom = feat.geometry()
+            if geom is None or geom.isEmpty():
+                continue
+            constGeom = geom.constGet()
+            if any(eng.distance(constGeom) < corridorDist for eng, _g in engines):
+                ids.append(feat.id())
+        return ids
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

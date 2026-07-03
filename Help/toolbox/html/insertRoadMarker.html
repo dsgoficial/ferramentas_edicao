@@ -12,7 +12,7 @@
     <hr />
     <h2 class="western">Descrição</h2>
     <h4 class="western" align="center" style="border: none; padding: 0cm">
-        O algoritmo insere os identificadores de trecho rodoviário utilizando as informações dos atributos da camada infra_via_deslocamento_l.
+        O algoritmo insere os identificadores de trecho rodoviário utilizando as informações dos atributos da camada infra_via_deslocamento_l. As vias visíveis com sigla são fundidas em cadeias contínuas por sigla e cortadas nos entroncamentos entre rodovias com sigla; cada trecho recebe a quantidade normativa de identificadores conforme o comprimento. Trechos curtos e sinuosos (arcos de rotatória e alças de trevo) são ignorados. Identificadores respeitam a distância à moldura e a separação mínima entre si — em conflito, o identificador desliza ao longo da via; siglas múltiplas (separadas por ponto e vírgula) geram escudos lado a lado. A jurisdição vem do atributo da via (sigla única) ou do prefixo da sigla (siglas múltiplas). Identificadores de execuções anteriores sobre as vias processadas são removidos antes da inserção (reexecutável sem duplicar).
     </h4>
     <hr />
     <h2>Parâmetros</h2>
@@ -22,6 +22,9 @@
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar camada de identificador trecho rodoviário &rarr; Indicar a camada de edição que contém os pontos identificadores de trecho rodoviário.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Separação mínima (em mm) entre identificadores &rarr; Distância mínima entre escudos; conflitos são resolvidos deslocando o escudo ao longo da via.
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar a camada de moldura &rarr; Indicar a camada que contém a moldura do projeto.
