@@ -238,6 +238,27 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         layer.endEditCommand()
         return nFeats
 
+    # Tamanho por tipo de toponimo fisiografico (anexo H: Serra 12-18,
+    # Pico/Montanha 8-10, Morro/Chapada/Macico/Planalto/Planicie 7-10;
+    # Praia mantem 6 — sem faixa normativa)
+    FISIO_SIZES = {1: 12, 3: 8, 17: 8, 2: 7, 4: 7, 5: 7, 6: 7, 7: 7, 12: 6}
+
+    # Texto por tipo de elemento de energia (a versao antiga rotulava TUDO
+    # que nao era torre como "Subestação" — aerogerador e usinas saiam errados)
+    ENERGY_TEXT = {
+        1801: "Subestação",
+        1802: "Subestação",
+        1701: "Aerogerador",
+        1702: "Aerogeradores",
+        501: "Casa de Força",
+        405: "Usina Eólica",
+        406: "Usina Solar",
+        407: "Usina Maré-motriz",
+        408: "Usina Hidrelétrica",
+        409: "Usina Termelétrica",
+        498: "Usina",
+    }
+
     def defaultExtMineral(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
         feature["visivel"] = 1
@@ -260,7 +281,19 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         if self._hasManualText(feature):
             return feature
         if self._isBlank(feature["nome"]):
-            if feature["tipo"] == 9:
+            if feature["tipo"] == 1:
+                feature["texto_edicao"] = "Poço"
+            elif feature["tipo"] == 2:
+                feature["texto_edicao"] = "Poço artesiano"
+            elif feature["tipo"] in (3, 4):
+                feature["texto_edicao"] = "Olho d'água"
+            elif feature["tipo"] == 8:
+                feature["texto_edicao"] = "Rocha"
+            elif feature["tipo"] in (14, 15, 16, 17):
+                feature["texto_edicao"] = "Areia"
+            elif feature["tipo"] in (18, 19):
+                feature["texto_edicao"] = "Recife"
+            elif feature["tipo"] == 9:
                 feature["texto_edicao"] = "Cachoeira"
             elif feature["tipo"] == 10:
                 feature["texto_edicao"] = "Salto"
@@ -307,7 +340,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         feature["visivel"] = 1
         feature["ancora_vertical"] = 1
         feature["ancora_horizontal"] = 1
-        feature["suprimir_simbologia"] = 1
+        feature["suprimir_simbologia"] = 2  # Não: suprimir só em interseções
         if self._hasManualText(feature):
             return feature
         return feature
@@ -315,10 +348,9 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
         if "nome" in feature.fields().names() and feature["nome"] != NULL:
-            if feature["tipo"] in [4, 12]:
-                feature["tamanho_txt"] = 6
-            elif feature["tipo"] in [7, 6]:
-                feature["tamanho_txt"] = 7
+            size = self.FISIO_SIZES.get(feature["tipo"])
+            if size is not None:
+                feature["tamanho_txt"] = size
         if self._hasManualText(feature):
             return feature
         feature["texto_edicao"] = feature["nome"]
@@ -326,8 +358,9 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
 
     def defaultElemnatTopoFisioL(self, feature, lyrCrs):
         if "nome" in feature.fields().names() and feature["nome"] != NULL:
-            if feature["tipo"] in [12]:
-                feature["tamanho_txt"] = 6
+            size = self.FISIO_SIZES.get(feature["tipo"])
+            if size is not None:
+                feature["tamanho_txt"] = size
         if self._hasManualText(feature):
             return feature
         feature["texto_edicao"] = feature["nome"]
@@ -340,8 +373,8 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
             return feature
         if feature["tipo"] == 1401:
             feature["texto_edicao"] = NULL
-        else:
-            feature["texto_edicao"] = "Subestação"
+        elif feature["tipo"] in self.ENERGY_TEXT:
+            feature["texto_edicao"] = self.ENERGY_TEXT[feature["tipo"]]
         return feature
 
     def defaultInfraElemEnergL(self, feature, lyrCrs):
@@ -432,12 +465,15 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
     def defaultMassaDagua(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        if size > 16:
+        if feature["tipo"] == 3:
+            # oceano: 8 a 18 pt (anexo H)
+            size = min(max(size, 8), 18)
+        elif size > 16:
             size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size
         if self._hasManualText(feature):
             return feature
-        if feature["tipo"] in [3, 4, 5, 6, 7, 11]:
+        if feature["tipo"] in [3, 4, 5, 6, 7, 9, 10, 11]:
             feature["texto_edicao"] = feature["nome"]
         return feature
 
@@ -465,11 +501,11 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 texto_edicao.append("(" + situacao.lower() + ")")
 
             if feature["revestimento"] == 1:
-                texto_edicao.append("Revestimento natural")
+                texto_edicao.append("Rev nat")
             elif feature["revestimento"] == 2:
-                texto_edicao.append("Revestimento primário")
+                texto_edicao.append("Rev prim")
             elif feature["revestimento"] in [0, 9999]:
-                texto_edicao.append("Revestimento desconhecido")
+                texto_edicao.append("Rev desc")
 
             if feature["altitude"] != NULL:
                 texto_edicao.append(round(feature["altitude"]))
@@ -662,7 +698,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 1
         if feature["nome"] != NULL:
             feature["texto_edicao"] = self.abreviaNomeOcupacaoSolo(feature["nome"])
-        elif feature["tipo"] in (301, 302, 303, 304, 305, 306, 307):
+        elif feature["tipo"] in (301, 302, 303, 304, 305, 306, 307, 398):
             tipo_ocupacao_map = {
                 301: "Pista de atletismo",
                 302: "Pista de ciclismo",
@@ -671,6 +707,7 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
                 305: "Pista de corrida de cavalos",
                 306: "Pista de bicicross",
                 307: "Pista de motocross",
+                398: "Pista de competição",
             }
             feature["texto_edicao"] = tipo_ocupacao_map.get(feature["tipo"])
 
@@ -680,7 +717,10 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         abreviacoes = {
             302: {"estação de tratamento de água": "ETA"},
             303: {"estação de bombeamento de água": "EBA"},
-            405: {"estação de tratamento de esgoto": "ETE"},
+            405: {
+                "estação de tratamento de esgoto": "ETE",
+                "tratamento de efluentes": "Trat Efluentes",
+            },
             518: {
                 "escola municipal de ensino fundamental": "EMEF",
                 "escola estadual de ensino fundamental": "EEEF",

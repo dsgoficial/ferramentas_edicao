@@ -202,6 +202,25 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         layer.endEditCommand()
         return nFeats
 
+    # Tamanho por tipo de toponimo fisiografico (anexo H; minimo 7 na orto)
+    FISIO_SIZES = {1: 12, 3: 8, 17: 8, 2: 7, 4: 7, 5: 7, 6: 7, 7: 7, 12: 7}
+
+    # Texto por tipo de elemento de energia (a versao antiga rotulava TUDO
+    # que nao era torre como "Subestação" — aerogerador e usinas saiam errados)
+    ENERGY_TEXT = {
+        1801: "Subestação",
+        1802: "Subestação",
+        1701: "Aerogerador",
+        1702: "Aerogeradores",
+        501: "Casa de Força",
+        405: "Usina Eólica",
+        406: "Usina Solar",
+        407: "Usina Maré-motriz",
+        408: "Usina Hidrelétrica",
+        409: "Usina Termelétrica",
+        498: "Usina",
+    }
+
     def defaultExtMineral(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
         feature["visivel"] = 1
@@ -224,7 +243,19 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         if self._hasManualText(feature):
             return feature
         if self._isBlank(feature["nome"]):
-            if feature["tipo"] == 9:
+            if feature["tipo"] == 1:
+                feature["texto_edicao"] = "Poço"
+            elif feature["tipo"] == 2:
+                feature["texto_edicao"] = "Poço artesiano"
+            elif feature["tipo"] in (3, 4):
+                feature["texto_edicao"] = "Olho d'água"
+            elif feature["tipo"] == 8:
+                feature["texto_edicao"] = "Rocha"
+            elif feature["tipo"] in (14, 15, 16, 17):
+                feature["texto_edicao"] = "Areia"
+            elif feature["tipo"] in (18, 19):
+                feature["texto_edicao"] = "Recife"
+            elif feature["tipo"] == 9:
                 feature["texto_edicao"] = "Cachoeira"
             elif feature["tipo"] == 10:
                 feature["texto_edicao"] = "Salto"
@@ -277,6 +308,10 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
         feature["visivel"] = 1
+        if feature["nome"] != NULL:
+            size = self.FISIO_SIZES.get(feature["tipo"])
+            if size is not None:
+                feature["tamanho_txt"] = size
         feature["justificativa_txt"] = 1
         if self._hasManualText(feature):
             return feature
@@ -285,6 +320,10 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultElemnatTopoFisioL(self, feature, lyrCrs):
         feature["visivel"] = 1
+        if feature["nome"] != NULL:
+            size = self.FISIO_SIZES.get(feature["tipo"])
+            if size is not None:
+                feature["tamanho_txt"] = size
         if self._hasManualText(feature):
             return feature
         feature["texto_edicao"] = feature["nome"]
@@ -303,7 +342,10 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 1
         if self._hasManualText(feature):
             return feature
-        feature["texto_edicao"] = "Subestação"
+        if feature["tipo"] == 1401:
+            feature["texto_edicao"] = NULL
+        elif feature["tipo"] in self.ENERGY_TEXT:
+            feature["texto_edicao"] = self.ENERGY_TEXT[feature["tipo"]]
         return feature
 
     def defaultInfraElemEnergL(self, feature, lyrCrs):
@@ -319,7 +361,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         return feature
 
     def defaultEdicao(self, feature, lyrCrs):
-        feature["visivel"] = 1
+        if "visivel" in feature.fields().names():
+            feature["visivel"] = 1  # campo removido no Orto 3.0
         feature["exibir_rotulo_aproximado"] = 1
         return feature
 
@@ -345,14 +388,18 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultMassaDagua(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
-        feature["apresentar_simbologia"] = 2
+        if "apresentar_simbologia" in feature.fields().names():
+            feature["apresentar_simbologia"] = 2  # campo removido no Orto 3.0
         size = ProcessingUtils.getWaterPolyLabelFontSize(feature, self.scale, lyrCrs)
-        if size > 16:
+        if feature["tipo"] == 3:
+            # oceano: 8 a 18 pt (anexo H)
+            size = min(max(size, 8), 18)
+        elif size > 16:
             size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size if size > 6 else 7
         if self._hasManualText(feature):
             return feature
-        if feature["tipo"] in [3, 4, 5, 6, 7, 11]:
+        if feature["tipo"] in [3, 4, 5, 6, 7, 9, 10, 11]:
             feature["texto_edicao"] = feature["nome"]
         return feature
 
@@ -380,11 +427,11 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
                 texto_edicao.append("(" + situacao.lower() + ")")
 
             if feature["revestimento"] == 1:
-                texto_edicao.append("Revestimento natural")
+                texto_edicao.append("Rev nat")
             elif feature["revestimento"] == 2:
-                texto_edicao.append("Revestimento primário")
+                texto_edicao.append("Rev prim")
             elif feature["revestimento"] in [0, 9999]:
-                texto_edicao.append("Revestimento desconhecido")
+                texto_edicao.append("Rev desc")
 
             if feature["altitude"] != NULL:
                 texto_edicao.append(round(feature["altitude"]))
