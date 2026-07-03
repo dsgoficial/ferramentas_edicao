@@ -12,7 +12,7 @@
     <hr />
     <h2 class="western">Descrição</h2>
     <h4 class="western" align="center" style="border: none; padding: 0cm">
-        O algoritmo insere símbolos de torre de energia ao longo das linhas de transmissão de energia.
+        O algoritmo insere símbolos de torre de energia ao longo das linhas de transmissão de energia visíveis (tipo 303), com distribuição centrada em cada trecho contínuo. Cada torre respeita a distância mínima à moldura, evita massas d'água e mantém separação mínima das demais torres — quando uma posição viola alguma restrição, a torre é deslocada ao longo da própria linha em pequenos passos (até meio espaçamento) antes de ser descartada. Torres de execuções anteriores no corredor das linhas processadas são removidas antes da inserção (a rotina pode ser reexecutada sem duplicar; torres manuais fora do corredor são preservadas).
     </h4>
     <hr />
     <h2>Parâmetros</h2>
@@ -24,13 +24,22 @@
             &#8226; Selecionar camada de edição de torre de energia &rarr; Indicar a camada que contém a simbologia de torre de energia.
         </span>
         <span style="margin-bottom: 10px;">
+            &#8226; Espaçamento entre torres (em mm) &rarr; Distância ao longo da linha entre torres consecutivas.
+        </span>
+        <span style="margin-bottom: 10px;">
             &#8226; Distância mínima (em mm) com relação à moldura &rarr; Indicar a distância mínima que uma torre pode ser inserida em relação à moldura.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Separação mínima (em mm) entre torres &rarr; Distância mínima entre símbolos de torre (resolve conflito entre linhas próximas deslocando a torre ao longo da linha).
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecione a escala de edição &rarr; Indicar a escala do produto cartográfico.
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar camada de moldura &rarr; Selecionar a camada que contém a moldura do projeto.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Selecionar camada de massa d'água &rarr; Opcional; torres que caem dentro de massa d'água são deslocadas ou descartadas.
         </span>
     </p>
     <hr />
@@ -44,13 +53,22 @@
             &#8226; Selecionar camada de edição de torre de energia &rarr; edicao_simb_torre_energia_p
         </span>
         <span style="margin-bottom: 10px;">
+            &#8226; Espaçamento entre torres (em mm) &rarr; 20,0
+        </span>
+        <span style="margin-bottom: 10px;">
             &#8226; Distância mínima (em mm) com relação à moldura &rarr; 3,0
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Separação mínima (em mm) entre torres &rarr; 3,0
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecione a escala de edição &rarr; 1:25.000
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar camada de moldura &rarr; aux_moldura_a
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Selecionar camada de massa d'água &rarr; cobter_massa_dagua_a
         </span>
     </p>
     <hr />

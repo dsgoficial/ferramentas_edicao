@@ -19,7 +19,9 @@ import math
 
 from qgis import processing
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsDistanceArea,
     QgsFeature,
@@ -27,18 +29,19 @@ from qgis.core import (
     QgsGeometry,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterVectorLayer,
-    Qgis,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterDistance,
     QgsProcessingMultiStepFeedback,
-    QgsProcessingContext,
+    QgsProcessingOutputNumber,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
+# Somente linha de transmissao de energia (303) leva torre; linhas invisiveis
+# nao recebem simbolo.
+LINE_FILTER = '"tipo" = 303 and "visivel" = 1'
 
 
 class InsertEnergyTower(QgsProcessingAlgorithm):
@@ -46,8 +49,15 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
     INPUT_ENERGY = "INPUT_ENERGY"
     INPUT_TOWER = "INPUT_TOWER"
     INPUT_FRAME = "INPUT_FRAME"
+    INPUT_WATER = "INPUT_WATER"
     MIN_DISTANCE_FROM_FRAME = "MIN_DISTANCE_FROM_FRAME"
+    TOWER_SPACING = "TOWER_SPACING"
+    MIN_TOWER_SEPARATION = "MIN_TOWER_SEPARATION"
     SCALE = "SCALE"
+    INSERTED = "INSERTED"
+    REMOVED = "REMOVED"
+    DISPLACED = "DISPLACED"
+    SKIPPED = "SKIPPED"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -69,9 +79,30 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
+                self.TOWER_SPACING,
+                self.tr("Espaçamento entre torres (em mm)"),
+                type=QgsProcessingParameterNumber.Double,
+                minValue=1.0,
+                defaultValue=20,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
                 self.MIN_DISTANCE_FROM_FRAME,
                 self.tr("Distância mínima (em mm) com relação à moldura"),
+                type=QgsProcessingParameterNumber.Double,
+                minValue=0.0,
+                defaultValue=3,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.MIN_TOWER_SEPARATION,
+                self.tr("Separação mínima (em mm) entre torres"),
+                type=QgsProcessingParameterNumber.Double,
                 minValue=0.0,
                 defaultValue=3,
             )
@@ -102,11 +133,43 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_WATER,
+                self.tr("Selecionar camada de massa d'água (torres dentro são evitadas)"),
+                [QgsProcessing.TypeVectorPolygon],
+                defaultValue="cobter_massa_dagua_a",
+                optional=True,
+            )
+        )
+
+        self.addOutput(
+            QgsProcessingOutputNumber(self.INSERTED, self.tr("Torres inseridas"))
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.REMOVED, self.tr("Torres pré-existentes removidas")
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.DISPLACED,
+                self.tr("Torres deslocadas ao longo da linha (conflito resolvido)"),
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.SKIPPED,
+                self.tr("Posições descartadas (moldura/água/separação sem solução)"),
+            )
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
-        algRunner = AlgRunner()
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         lyr = self.parameterAsVectorLayer(parameters, self.INPUT_ENERGY, context)
         tower = self.parameterAsVectorLayer(parameters, self.INPUT_TOWER, context)
+        frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
+        waterLayer = self.parameterAsVectorLayer(parameters, self.INPUT_WATER, context)
         self.gridScaleDict = {
             0: 5000,
             1: 10000,
@@ -116,89 +179,302 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             5: 250000,
         }
         scale = self.gridScaleDict[gridScaleParam]
-
-        frameLayer = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-        distanceFromFrame = (
-            self.parameterAsDouble(parameters, self.MIN_DISTANCE_FROM_FRAME, context)
-            / 1000
+        spacingMm = self.parameterAsDouble(parameters, self.TOWER_SPACING, context)
+        frameMm = self.parameterAsDouble(
+            parameters, self.MIN_DISTANCE_FROM_FRAME, context
         )
-        multiStepFeedback = QgsProcessingMultiStepFeedback(16, feedback)
+        sepMm = self.parameterAsDouble(parameters, self.MIN_TOWER_SEPARATION, context)
+
+        multiStepFeedback = QgsProcessingMultiStepFeedback(6, feedback)
         currentStep = 0
+
         multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.pushInfo(self.tr("Preparando estrutura auxiliar"))
-        frameLayer = self.runAddCount(frameLayer, feedback=multiStepFeedback)
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        self.runCreateSpatialIndex(frameLayer, feedback=feedback)
+        multiStepFeedback.pushInfo(self.tr("Filtrando linhas de transmissão visíveis"))
+        filteredLyr = processing.run(
+            "native:extractbyexpression",
+            {"INPUT": lyr, "EXPRESSION": LINE_FILTER, "OUTPUT": "TEMPORARY_OUTPUT"},
+            context=context,
+            feedback=multiStepFeedback,
+        )["OUTPUT"]
+        if filteredLyr.featureCount() == 0:
+            return self._results(0, 0, 0, 0)
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        frameLinesLayer = self.convertPolygonToLines(
-            frameLayer, feedback=multiStepFeedback
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        frameLinesLayer = algRunner.runExplodeLines(
-            inputLyr=frameLinesLayer, context=context, feedback=multiStepFeedback
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        self.runCreateSpatialIndex(
-            frameLinesLayer, feedback=multiStepFeedback, is_child_algorithm=True
-        )
-
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        self.runCreateSpatialIndex(lyr, feedback=multiStepFeedback)
-
         multiStepFeedback.pushInfo(self.tr("Unindo linhas"))
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        energyLyrBeforeClip = self.mergeEnergyLines(lyr, 5, context=context, feedback=multiStepFeedback)
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        self.runCreateSpatialIndex(energyLyrBeforeClip, feedback=multiStepFeedback)
+        mergedLyr = self.mergeEnergyLines(
+            filteredLyr, 5, context=context, feedback=multiStepFeedback
+        )
+
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Clipando com a área"))
-        energyLyr = self.clipLayer(
-            energyLyrBeforeClip, frameLayer, feedback=multiStepFeedback
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        self.runCreateSpatialIndex(energyLyr, feedback=multiStepFeedback)
+        energyLyr = self.clipLayer(mergedLyr, frameLayer, feedback=multiStepFeedback)
+
+        # Distancias no CRS das linhas (mm de carta -> terreno -> unidade do CRS)
+        spacingDist = self.getChopDistance(energyLyr, scale * spacingMm / 1000)
+        frameDist = self.getChopDistance(energyLyr, scale * frameMm / 1000)
+        sepDist = self.getChopDistance(energyLyr, scale * sepMm / 1000)
+        slideStep = self.getChopDistance(energyLyr, scale * 0.0005)  # 0.5 mm
+        endMargin = spacingDist / 4  # deslize nunca chega nas pontas da linha
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        distance = self.getChopDistance(energyLyr, scale * 0.02)
+        multiStepFeedback.pushInfo(self.tr("Preparando restrições (moldura e água)"))
+        frameEngines = self._prepareFrameEngines(
+            frameLayer, energyLyr.crs(), context, multiStepFeedback
+        )
+        waterEngines = self._prepareWaterEngines(waterLayer, energyLyr, context)
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.pushInfo(self.tr("Cortando as linhas"))
-        pointsAndAngles = self.chopLineLayer(
-            energyLyr, distance, feedback=multiStepFeedback
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.pushInfo(self.tr("Gravando saida"))
-        self.populateEnergyTowerSymbolLayer(
-            tower, pointsAndAngles, feedback=multiStepFeedback
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.pushInfo(self.tr("Avaliando elementos perto da moldura"))
-        distanceNextToFrame = self.getChopDistance(energyLyr, scale * distanceFromFrame)
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        multiStepFeedback.pushInfo(self.tr("Removendo pontos próximos à moldura"))
-        self.removePointsNextToFrame(
-            frameLinesLayer, tower, distanceNextToFrame, context=context, feedback=multiStepFeedback
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        distanceToRemoveEnergySymbol = self.getChopDistance(tower, scale * 0.003)
+        multiStepFeedback.pushInfo(self.tr("Posicionando torres"))
+        accepted = []  # (QgsPointXY, angulo)
+        nDisplaced = 0
+        nSkipped = 0
+        lineGeoms = []
+        nFeats = energyLyr.featureCount()
+        stepSize = 100 / nFeats if nFeats else 100
 
-        return {}
+        for current, feat in enumerate(energyLyr.getFeatures()):
+            if multiStepFeedback.isCanceled():
+                return self._results(0, 0, 0, 0)
+            geom = feat.geometry()
+            if geom is None or geom.isEmpty():
+                continue
+            lineGeoms.append(geom)
+            parts = (
+                geom.asGeometryCollection() if geom.isMultipart() else [geom]
+            )
+            for part in parts:
+                length = part.length()
+                if length <= 0 or length < spacingDist:
+                    continue
+                n = int(length // spacingDist)
+                # Distribuicao centrada: a sobra da divisao fica meio a meio
+                # nas pontas (margem em [spacing/2, spacing)).
+                margin = (length - (n - 1) * spacingDist) / 2
+                for k in range(n):
+                    dist = margin + k * spacingDist
+                    placed = self._placeWithConstraints(
+                        part,
+                        dist,
+                        length,
+                        endMargin,
+                        slideStep,
+                        spacingDist / 2,
+                        sepDist,
+                        frameDist,
+                        frameEngines,
+                        waterEngines,
+                        accepted,
+                    )
+                    if placed is None:
+                        nSkipped += 1
+                        continue
+                    point, angle, offset = placed
+                    accepted.append((point, angle))
+                    if offset != 0:
+                        nDisplaced += 1
+            multiStepFeedback.setProgress(current * stepSize)
+
+        currentStep += 1
+        multiStepFeedback.setCurrentStep(currentStep)
+        multiStepFeedback.pushInfo(self.tr("Gravando saída"))
+
+        # Idempotencia: remove as torres existentes no corredor das linhas
+        # processadas antes de inserir (mesmo edit command — um unico undo
+        # restaura o estado anterior).
+        towerTransform = None
+        if energyLyr.crs() != tower.crs():
+            towerTransform = QgsCoordinateTransform(
+                energyLyr.crs(), tower.crs(), context.transformContext()
+            )
+        # corredor no CRS da camada de torres (pode divergir do CRS das linhas)
+        corridorDist = self.getChopDistance(tower, scale * sepMm / 1000)
+        idsToRemove = self._findTowersInCorridor(
+            tower, lineGeoms, corridorDist, towerTransform
+        )
+
+        fields = tower.fields()
+        newFeats = []
+        for point, angle in accepted:
+            pointGeom = QgsGeometry.fromPointXY(point)
+            if towerTransform is not None:
+                pointGeom.transform(towerTransform)
+            feat = QgsFeature(fields)
+            feat.setGeometry(pointGeom)
+            feat.setAttribute("simb_rot", angle)
+            feat.setAttribute("visivel", 1)
+            newFeats.append(feat)
+
+        tower.startEditing()
+        tower.beginEditCommand("Posicionando torres de energia")
+        if idsToRemove:
+            tower.deleteFeatures(idsToRemove)
+        tower.addFeatures(newFeats)
+        tower.endEditCommand()
+
+        multiStepFeedback.pushInfo(
+            self.tr(
+                "Torres inseridas: {0} | removidas (rodadas anteriores): {1} | "
+                "deslocadas por conflito: {2} | posições descartadas: {3}"
+            ).format(len(newFeats), len(idsToRemove), nDisplaced, nSkipped)
+        )
+        return self._results(len(newFeats), len(idsToRemove), nDisplaced, nSkipped)
+
+    def _results(self, inserted, removed, displaced, skipped):
+        return {
+            self.INSERTED: inserted,
+            self.REMOVED: removed,
+            self.DISPLACED: displaced,
+            self.SKIPPED: skipped,
+        }
+
+    def _placeWithConstraints(
+        self,
+        part,
+        dist,
+        length,
+        endMargin,
+        slideStep,
+        maxSlide,
+        sepDist,
+        frameDist,
+        frameEngines,
+        waterEngines,
+        accepted,
+    ):
+        """Tenta posicionar uma torre em `dist`; se violar moldura, água ou
+        separação mínima, desliza ao longo da própria linha em passos de
+        0.5 mm (até ± meio espaçamento) — replica o ajuste manual do editor.
+        Retorna (ponto, ângulo, offset aplicado) ou None se nenhuma posição
+        da janela atende às restrições."""
+        nSteps = int(maxSlide / slideStep) if slideStep > 0 else 0
+        offsets = [0.0]
+        for i in range(1, nSteps + 1):
+            offsets.append(i * slideStep)
+            offsets.append(-i * slideStep)
+        for offset in offsets:
+            d = dist + offset
+            if d < endMargin or d > length - endMargin:
+                continue
+            pointGeom = part.interpolate(d)
+            if pointGeom.isEmpty():
+                continue
+            point = pointGeom.asPoint()
+            constPoint = pointGeom.constGet()
+            if any(eng.distance(constPoint) < frameDist for eng, _g in frameEngines):
+                continue
+            if any(eng.intersects(constPoint) for eng, _g in waterEngines):
+                continue
+            if any(
+                math.hypot(p.x() - point.x(), p.y() - point.y()) < sepDist
+                for p, _a in accepted
+            ):
+                continue
+            angle = self._towerAngle(part, d)
+            return point, angle, offset
+        return None
+
+    @staticmethod
+    def _towerAngle(part, dist):
+        """Rotação do símbolo: perpendicular à linha, normalizada para não
+        ficar de cabeça para baixo (mesma convenção da versão anterior)."""
+        angle = (part.interpolateAngle(dist) + (math.pi / 2)) * 180 / math.pi
+        if angle > 360:
+            angle = angle - 360
+        if angle > 90 and angle < 270:
+            angle = angle - 180
+        return angle
+
+    def _prepareFrameEngines(self, frameLayer, targetCrs, context, feedback):
+        """Bordas da moldura como geometry engines preparados (no CRS das linhas)."""
+        frameLines = self.convertPolygonToLines(frameLayer, feedback=feedback)
+        transform = None
+        if frameLines.crs() != targetCrs:
+            transform = QgsCoordinateTransform(
+                frameLines.crs(), targetCrs, context.transformContext()
+            )
+        engines = []
+        for feat in frameLines.getFeatures():
+            geom = QgsGeometry(feat.geometry())
+            if geom is None or geom.isEmpty():
+                continue
+            if transform is not None:
+                geom.transform(transform)
+            engine = QgsGeometry.createGeometryEngine(geom.constGet())
+            engine.prepareGeometry()
+            # a QgsGeometry acompanha o engine para manter a geometria viva
+            engines.append((engine, geom))
+        return engines
+
+    def _prepareWaterEngines(self, waterLayer, energyLyr, context):
+        """Massas d'água (visíveis, na área das linhas) como engines preparados."""
+        if waterLayer is None:
+            return []
+        transform = None
+        extent = energyLyr.extent()
+        if waterLayer.crs() != energyLyr.crs():
+            transform = QgsCoordinateTransform(
+                waterLayer.crs(), energyLyr.crs(), context.transformContext()
+            )
+            toWater = QgsCoordinateTransform(
+                energyLyr.crs(), waterLayer.crs(), context.transformContext()
+            )
+            extent = toWater.transformBoundingBox(extent)
+        hasVisivel = waterLayer.fields().lookupField("visivel") >= 0
+        engines = []
+        request = QgsFeatureRequest().setFilterRect(extent)
+        for feat in waterLayer.getFeatures(request):
+            if hasVisivel:
+                try:
+                    if int(feat["visivel"]) != 1:
+                        continue
+                except (TypeError, ValueError):
+                    pass
+            geom = QgsGeometry(feat.geometry())
+            if geom is None or geom.isEmpty():
+                continue
+            if transform is not None:
+                geom.transform(transform)
+            engine = QgsGeometry.createGeometryEngine(geom.constGet())
+            engine.prepareGeometry()
+            engines.append((engine, geom))
+        return engines
+
+    @staticmethod
+    def _findTowersInCorridor(towerLayer, lineGeoms, corridorDist, towerTransform):
+        """Ids das torres existentes a menos de `corridorDist` das linhas
+        processadas (torres geradas ficam sobre a linha; o corredor cobre
+        também as deslocadas)."""
+        if not lineGeoms:
+            return []
+        engines = []
+        extent = None
+        for geom in lineGeoms:
+            g = QgsGeometry(geom)
+            if towerTransform is not None:
+                g.transform(towerTransform)
+            engine = QgsGeometry.createGeometryEngine(g.constGet())
+            engine.prepareGeometry()
+            engines.append((engine, g))
+            bbox = g.boundingBox()
+            if extent is None:
+                extent = bbox
+            else:
+                extent.combineExtentWith(bbox)
+        extent.grow(corridorDist * 2)
+        ids = []
+        request = QgsFeatureRequest().setFilterRect(extent)
+        for feat in towerLayer.getFeatures(request):
+            geom = feat.geometry()
+            if geom is None or geom.isEmpty():
+                continue
+            constGeom = geom.constGet()
+            if any(eng.distance(constGeom) < corridorDist for eng, _g in engines):
+                ids.append(feat.id())
+        return ids
 
     def mergeEnergyLines(self, lyr, limit, context, feedback):
         r = processing.run(
@@ -222,89 +498,6 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
         else:
             return distance
 
-    @staticmethod
-    def chopLineLayer(layer, cutDistance, feedback, requiredAttrs=None):
-        """Chops layer using cutDistance, returning initial points of chopped features and its angles.
-        If the point touches the initial/final point of any original feature the point is discarded.
-        If requiredAttrs is provided, the mapping {attr:feat[attr] for attr in requiredAttrs} is also returned
-        """
-        attributeMapping = {}
-        pointsAndAngles = []
-        multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
-        currentStep = 0
-        multiStepFeedback.setCurrentStep(currentStep)
-        output = processing.run(
-            "native:splitlinesbylength",
-            {"INPUT": layer, "LENGTH": cutDistance, "OUTPUT": "TEMPORARY_OUTPUT"},
-            feedback=multiStepFeedback,
-        )["OUTPUT"]
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        bounds = processing.run(
-            "native:boundary",
-            {"INPUT": layer, "OUTPUT": "TEMPORARY_OUTPUT"},
-            feedback=multiStepFeedback,
-        )["OUTPUT"]
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        nFeats = output.featureCount()
-        if nFeats == 0:
-            return pointsAndAngles
-        stepSize = 100 / nFeats
-        for current, feat in enumerate(output.getFeatures()):
-            if multiStepFeedback.isCanceled():
-                break
-            if (
-                requiredAttrs
-                and all((x in layer.fields().names() for x in requiredAttrs))
-                and all((feat.attribute(x) for x in requiredAttrs))
-            ):
-                attributeMapping = {x: feat.attribute(x) for x in requiredAttrs}
-            isBoundVertex = False
-            geom = feat.geometry()
-            bbox = geom.boundingBox()
-            request = QgsFeatureRequest().setFilterRect(bbox)
-            geomEngine = QgsGeometry.createGeometryEngine(geom.constGet())
-            geomEngine.prepareGeometry()
-            for featBound in bounds.getFeatures(request):
-                if multiStepFeedback.isCanceled():
-                    break
-                featGeom = featBound.geometry()
-                if geomEngine.touches(featGeom.constGet()):
-                    isBoundVertex = True
-                    break
-            if not isBoundVertex:
-                geom = feat.geometry()
-                point = geom.vertexAt(0)
-                angle = (geom.angleAtVertex(0) + (math.pi / 2)) * 180 / math.pi
-                if angle > 360:
-                    angle = angle - 360
-                if angle > 90 and angle < 270:
-                    angle = angle - 180
-                pointsAndAngles.append((point, angle, attributeMapping))
-            multiStepFeedback.setProgress(current * stepSize)
-        return pointsAndAngles
-
-    @staticmethod
-    def populateEnergyTowerSymbolLayer(layer, pointsAndAngles, feedback):
-        """Populates the layer edicao_simb_torre_energia_p"""
-        fields = layer.fields()
-        layer.startEditing()
-        layer.beginEditCommand("Criando pontos")
-        feats = []
-        for point, angle, _ in pointsAndAngles:
-            if feedback.isCanceled():
-                return
-            feat = QgsFeature(fields)
-            geom = QgsGeometry.fromWkt(point.asWkt())
-            feat.setGeometry(geom)
-            feat.setAttribute("simb_rot", angle)
-            feat.setAttribute("visivel", 1)
-            feats.append(feat)
-
-        layer.addFeatures(feats)
-        layer.endEditCommand()
-
     def clipLayer(self, layer, frame, feedback):
         r = processing.run(
             "native:clip",
@@ -325,79 +518,6 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             feedback=feedback,
         )
         return output["OUTPUT"]
-
-    def removePointsNextToFrame(self, frameLinesLayer, pointsLayer, distance, context, feedback):
-        algRunner = AlgRunner()
-        multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
-        toBeRemoved = set()
-        currentStep = 0
-        multiStepFeedback.setCurrentStep(currentStep)
-        cacheLyr = algRunner.runCreateFieldWithExpression(
-            inputLyr=pointsLayer,
-            expression="$id",
-            fieldName="featid",
-            fieldType=1,
-            context=context,
-            feedback=multiStepFeedback,
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(
-            cacheLyr, context, feedback=multiStepFeedback, is_child_algorithm=True
-        )
-        buffer = algRunner.runBuffer(
-            frameLinesLayer, distance=distance, context=context, is_child_algorithm=True
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        algRunner.runCreateSpatialIndex(
-            buffer, context, feedback=multiStepFeedback, is_child_algorithm=True
-        )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        pointsToDeleteLyr = algRunner.runExtractByLocation(
-            cacheLyr,
-            buffer,
-            context,
-            predicate=[AlgRunner.Intersects],
-            feedback=multiStepFeedback,
-        )
-        if pointsToDeleteLyr.featureCount() == 0:
-            return
-        expression = f""" "featid" in {tuple(feat["featid"] for feat in pointsToDeleteLyr.getFeatures())}"""
-        request = QgsFeatureRequest().setFilterExpression(expression)
-        featIdList = [feat["featid"] for feat in pointsToDeleteLyr.getFeatures(request)]
-        if len(featIdList) == 0:
-            return
-        pointsLayer.startEditing()
-        pointsLayer.beginEditCommand("Removendo próximo a moldura")
-        pointsLayer.deleteFeatures(featIdList)
-        pointsLayer.endEditCommand()
-
-    def runAddCount(self, inputLyr, feedback):
-        output = processing.run(
-            "native:addautoincrementalfield",
-            {
-                "INPUT": inputLyr,
-                "FIELD_NAME": "AUTO",
-                "START": 0,
-                "GROUP_FIELDS": [],
-                "SORT_EXPRESSION": "",
-                "SORT_ASCENDING": False,
-                "SORT_NULLS_FIRST": False,
-                "OUTPUT": "TEMPORARY_OUTPUT",
-            },
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
-
-    def runCreateSpatialIndex(self, inputLyr, feedback, is_child_algorithm=True):
-        processing.run(
-            "native:createspatialindex",
-            {"INPUT": inputLyr},
-            feedback=feedback,
-            is_child_algorithm=is_child_algorithm,
-        )
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
