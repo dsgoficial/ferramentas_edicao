@@ -261,7 +261,11 @@ def _create_horizontal_char_polygons(label_geom, label_text, fi,
     Create precise character-level polygons for a horizontal label.
 
     Decomposes the label bounding polygon, then uses QFontMetricsF with
-    tightBoundingRect to create a tight polygon per character.
+    tightBoundingRect to create a tight polygon per character — in BOTH
+    axes: the box covers only the ink (side bearings stay outside), so
+    adjacent character boxes have the real inter-letter gap between them
+    and overhangs (italic, 'V') are fully covered. The pen still advances
+    by horizontalAdvance. Space characters produce no polygon.
 
     label_font: if provided, QFont from QgsLabelPosition.labelFont — the exact
     font QGIS used for this specific label (correct for rule-based labeling).
@@ -377,12 +381,19 @@ def _create_horizontal_char_polygons(label_geom, label_text, fi,
                 char_offset += char_w
                 continue
 
+            # Horizontal ink bounds: tight.x() is the left side bearing
+            # relative to the pen (negative on overhangs), tight.width() the
+            # ink width. scale_factor converts font px to map units.
+            ink_left_mu = tight.x() * scale_factor
+            ink_w_mu = max(tight.width(), 0.001) * scale_factor
+
             extra_left = buf / 2 if ch_idx == 0 else 0.0
             extra_right = buf / 2 if ch_idx == n_chars_line - 1 else 0.0
-            final_w = char_w + extra_left + extra_right
+            final_w = ink_w_mu + extra_left + extra_right
 
-            cx = line_ox + (char_offset - extra_left) * ux + char_v_bottom * vx
-            cy = line_oy + (char_offset - extra_left) * uy + char_v_bottom * vy
+            start_mu = char_offset + ink_left_mu - extra_left
+            cx = line_ox + start_mu * ux + char_v_bottom * vx
+            cy = line_oy + start_mu * uy + char_v_bottom * vy
 
             c0 = QgsPointXY(cx, cy)
             c1 = QgsPointXY(cx + final_w * ux, cy + final_w * uy)
