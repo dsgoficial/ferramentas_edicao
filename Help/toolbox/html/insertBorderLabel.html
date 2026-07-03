@@ -12,7 +12,7 @@
     <hr />
     <h2 class="western">Descrição</h2>
     <h4 class="western" align="center" style="border: none; padding: 0cm">
-        O algoritmo insere automaticamente os rótulos de fronteira (nomes dos países e das unidades da federação) em edicao_texto_generico_l: um par de rótulos (um de cada lado) por moldura (MI), para cada limite internacional ou estadual distinto presente na moldura. O nome de cada lado é identificado pelos polígonos de país (limite internacional, 10 pt) ou de unidade da federação (limite estadual, 8 pt). A linha do rótulo segue o limite de forma generalizada, com o comprimento da medida real do texto (pouca folga), como curva paralela afastada do limite. Rótulos de fronteira de execuções anteriores nas mesmas fronteiras são substituídos (reexecutável sem duplicar); demais textos genéricos não são tocados. A mesma construção de linha é usada pela ferramenta manual "Rótulo Fronteira".
+        O algoritmo insere automaticamente os rótulos de fronteira em edicao_texto_generico_l: um par de rótulos (um de cada lado) por moldura (MI), para cada limite internacional (10 pt) ou estadual (8 pt) distinto presente na moldura. Os nomes dos dois lados vêm do atributo texto_edicao da própria linha do limite, no formato "NOME A|NOME B" — o PRIMEIRO texto é colocado à ESQUERDA do sentido de digitalização do limite (inverta a ordem no atributo para trocar os lados), a mesma convenção da ferramenta manual "Rótulo Fronteira". A linha do rótulo segue o limite de forma generalizada, com o comprimento da medida real do texto (pouca folga), como curva paralela afastada do limite. Rótulos de fronteira de execuções anteriores nas mesmas fronteiras são substituídos (reexecutável sem duplicar); demais textos genéricos não são tocados. Limites com texto_edicao inválido (sem exatamente um "|") são pulados e contados no resultado.
     </h4>
     <hr />
     <h2>Parâmetros</h2>
@@ -22,9 +22,6 @@
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar camada de moldura &rarr; aux_moldura_a.
-        </span>
-        <span style="margin-bottom: 10px;">
-            &#8226; Selecionar camada de países / unidades da federação &rarr; llp_pais_a e llp_unidade_federacao_a, usadas para identificar o nome de cada lado.
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar camada de texto genérico linha &rarr; edicao_texto_generico_l.

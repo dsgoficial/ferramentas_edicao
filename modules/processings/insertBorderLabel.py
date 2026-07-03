@@ -33,8 +33,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from ..labelTools import borderLabelLine
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
-# tipo_limite_legal: 1 = Internacional (10 pt, nomes de pais),
-#                    2 = Estadual (8 pt, nomes de UF)
+# tipo_limite_legal: 1 = Internacional (10 pt), 2 = Estadual (8 pt)
 BORDER_FONT_SIZES = {1: 10, 2: 8}
 
 
@@ -42,8 +41,6 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
 
     INPUT_BOUNDARY = "INPUT_BOUNDARY"
     INPUT_FRAME = "INPUT_FRAME"
-    INPUT_COUNTRY = "INPUT_COUNTRY"
-    INPUT_STATE = "INPUT_STATE"
     INPUT_TEXT_LAYER = "INPUT_TEXT_LAYER"
     SCALE = "SCALE"
     PRODUCT = "PRODUCT"
@@ -67,24 +64,6 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
                 self.tr("Selecionar camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
                 defaultValue="aux_moldura_a",
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterVectorLayer(
-                self.INPUT_COUNTRY,
-                self.tr("Selecionar camada de países"),
-                [QgsProcessing.TypeVectorPolygon],
-                defaultValue="llp_pais_a",
-                optional=True,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterVectorLayer(
-                self.INPUT_STATE,
-                self.tr("Selecionar camada de unidades da federação"),
-                [QgsProcessing.TypeVectorPolygon],
-                defaultValue="llp_unidade_federacao_a",
-                optional=True,
             )
         )
         self.addParameter(
@@ -146,7 +125,7 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
         self.addOutput(
             QgsProcessingOutputNumber(
                 self.SKIPPED,
-                self.tr("Fronteiras puladas (lado não identificado/sem espaço)"),
+                self.tr("Fronteiras puladas (texto_edicao inválido/sem espaço)"),
             )
         )
 
@@ -155,10 +134,6 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
             parameters, self.INPUT_BOUNDARY, context
         )
         frameLyr = self.parameterAsVectorLayer(parameters, self.INPUT_FRAME, context)
-        countryLyr = self.parameterAsVectorLayer(
-            parameters, self.INPUT_COUNTRY, context
-        )
-        stateLyr = self.parameterAsVectorLayer(parameters, self.INPUT_STATE, context)
         textLyr = self.parameterAsVectorLayer(
             parameters, self.INPUT_TEXT_LAYER, context
         )
@@ -168,7 +143,6 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
 
         crs = boundaryLyr.crs()
         offsetMu = borderLabelLine.mmToMapUnits(offsetMm, scale, crs)
-        sideLayers = {1: countryLyr, 2: stateLyr}
 
         multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
         multiStepFeedback.setCurrentStep(0)
@@ -186,7 +160,9 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
                 return self._results(0, 0, 0)
             frameGeom = frame.geometry()
             request = QgsFeatureRequest().setFilterRect(frameGeom.boundingBox())
-            byType = {}
+            # fronteira DISTINTA = (tipo, texto_edicao "A|B") — mesma convenção
+            # da ferramenta manual "Rótulo Fronteira"
+            byKey = {}
             for feat in boundaryLyr.getFeatures(request):
                 try:
                     tipo = int(feat["tipo"])
@@ -194,62 +170,51 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
                     continue
                 if tipo not in BORDER_FONT_SIZES:
                     continue
+                texto = feat["texto_edicao"]
+                if texto == NULL or str(texto).count("|") != 1:
+                    nSkipped += 1
+                    continue
+                names = [p.strip() for p in str(texto).split("|")]
+                if not names[0] or not names[1]:
+                    nSkipped += 1
+                    continue
                 clipped = feat.geometry().intersection(frameGeom)
                 if clipped is None or clipped.isEmpty():
                     continue
-                byType.setdefault(tipo, []).append(clipped)
+                key = (tipo, names[0].upper(), names[1].upper())
+                entry = byKey.setdefault(key, {"pieces": [], "sources": []})
+                entry["pieces"].append(clipped)
+                entry["sources"].append(QgsGeometry(feat.geometry()))
 
-            for tipo, pieces in byType.items():
-                combined = QgsGeometry.collectGeometry(pieces).mergeLines()
+            for (tipo, nameLeft, nameRight), entry in byKey.items():
+                combined = QgsGeometry.collectGeometry(entry["pieces"]).mergeLines()
                 chains = (
                     combined.asGeometryCollection()
                     if combined.isMultipart()
                     else [combined]
                 )
-                # UMA insercao por fronteira DISTINTA (par de lados) na moldura:
-                # cadeia mais longa de cada par vence
-                byPair = {}
-                for chain in chains:
-                    if chain.length() <= 0:
-                        continue
-                    names = self._sideNames(chain, tipo, sideLayers, offsetMu)
-                    if names is None:
-                        nSkipped += 1
-                        continue
-                    key = (tipo, frozenset(n for n, _s in names))
-                    if key not in byPair or chain.length() > byPair[key][0].length():
-                        byPair[key] = (chain, names)
-
-                for (tipo_, _pair), (chain, names) in byPair.items():
-                    fontSize = BORDER_FONT_SIZES[tipo_]
-                    ok = False
-                    for name, sign in names:
-                        textLen = borderLabelLine.measureTextWidthMapUnits(
-                            name, fontSize, scale, crs
-                        )
-                        center = chain.length() / 2.0
-                        base = borderLabelLine.buildBorderLabelLine(
-                            chain, center, textLen, scale, crs, extraMargin=1.4
-                        )
-                        if base is None:
-                            continue
-                        lineGeom = borderLabelLine.offsetSide(base, offsetMu, sign)
-                        if lineGeom is None or lineGeom.isEmpty():
-                            continue
-                        lineGeom = borderLabelLine.trimToLength(
-                            lineGeom, textLen * borderLabelLine.DEFAULT_SLACK
-                        )
-                        newFeats.append(
-                            self._makeTextFeature(
-                                textLyr, lineGeom, name, fontSize, productParam
-                            )
-                        )
-                        usedNames.add(name)
-                        ok = True
-                    if ok:
-                        processedChains.append(chain)
-                    else:
-                        nSkipped += 1
+                chains = [c for c in chains if c.length() > 0]
+                if not chains:
+                    continue
+                # UMA inserção por fronteira distinta na moldura: cadeia mais longa
+                chain = max(chains, key=lambda c: c.length())
+                placed = self._placePair(
+                    chain,
+                    entry["sources"],
+                    (nameLeft, nameRight),
+                    BORDER_FONT_SIZES[tipo],
+                    offsetMu,
+                    scale,
+                    crs,
+                    textLyr,
+                    productParam,
+                )
+                if placed:
+                    newFeats.extend(placed)
+                    processedChains.append(chain)
+                    usedNames.update((nameLeft, nameRight))
+                else:
+                    nSkipped += 1
             multiStepFeedback.setProgress(current * stepSize)
 
         multiStepFeedback.setCurrentStep(1)
@@ -288,41 +253,51 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
             self.SKIPPED: skipped,
         }
 
-    def _sideNames(self, chain, tipo, sideLayers, offsetMu):
-        """[(nome, sinal do lado)] consultando os polígonos de país (tipo 1)
-        ou UF (tipo 2) em pontos-sonda perpendiculares ao meio da cadeia.
-        None se algum lado não for identificado."""
-        lyr = sideLayers.get(tipo)
-        if lyr is None:
-            return None
-        mid = chain.length() / 2.0
-        window = min(chain.length(), offsetMu * 4)
+    def _placePair(self, chain, sources, names, fontSize, offsetMu, scale, crs,
+                   textLyr, productParam):
+        """Constrói o par de rótulos. O PRIMEIRO texto do "A|B" fica à
+        ESQUERDA do sentido de digitalização do limite ORIGINAL (o clip/merge
+        pode inverter a cadeia — o lado é ancorado na feição de origem;
+        inverter a ordem no atributo troca os lados)."""
+        center = chain.length() / 2.0
+        # sonda: para onde aponta o lado +1 DA CADEIA, em relação ao original?
+        window = min(chain.length(), max(offsetMu * 4, chain.length() * 0.1))
         piece = borderLabelLine._substring(
-            chain, max(0.0, mid - window / 2.0), min(chain.length(), mid + window / 2.0)
+            chain,
+            max(0.0, center - window / 2.0),
+            min(chain.length(), center + window / 2.0),
         )
-        result = []
-        for sign in (1, -1):
-            probeLine = borderLabelLine.offsetSide(piece, offsetMu, sign)
-            if probeLine is None or probeLine.isEmpty():
-                return None
-            probe = probeLine.interpolate(probeLine.length() / 2.0)
-            name = self._nameAt(lyr, probe)
-            if name is None:
-                return None
-            result.append((name.upper(), sign))
-        if result[0][0] == result[1][0]:
-            return None  # mesmo nome dos dois lados: sonda caiu no mesmo poligono
-        return result
+        probeLine = borderLabelLine.offsetSide(piece, offsetMu, 1)
+        if probeLine is None or probeLine.isEmpty():
+            return None
+        probe = probeLine.interpolate(probeLine.length() / 2.0).asPoint()
+        source = min(sources, key=lambda g: g.distance(QgsGeometry.fromPointXY(probe)))
+        origSign = borderLabelLine.sideSignForPoint(source, probe)
+        # origSign == +1: o lado +1 da cadeia é a esquerda do original
+        signs = (1, -1) if origSign == 1 else (-1, 1)
 
-    @staticmethod
-    def _nameAt(lyr, pointGeom):
-        request = QgsFeatureRequest().setFilterRect(pointGeom.boundingBox())
-        for feat in lyr.getFeatures(request):
-            if feat.geometry().intersects(pointGeom):
-                name = feat["nome"]
-                if name != NULL and str(name).strip():
-                    return str(name).strip()
-        return None
+        feats = []
+        for name, sign in zip(names, signs):
+            textLen = borderLabelLine.measureTextWidthMapUnits(
+                name.upper(), fontSize, scale, crs
+            )
+            base = borderLabelLine.buildBorderLabelLine(
+                chain, center, textLen, scale, crs, extraMargin=1.4
+            )
+            if base is None:
+                return None
+            lineGeom = borderLabelLine.offsetSide(base, offsetMu, sign)
+            if lineGeom is None or lineGeom.isEmpty():
+                return None
+            lineGeom = borderLabelLine.trimToLength(
+                lineGeom, textLen * borderLabelLine.DEFAULT_SLACK
+            )
+            feats.append(
+                self._makeTextFeature(
+                    textLyr, lineGeom, name.upper(), fontSize, productParam
+                )
+            )
+        return feats
 
     @staticmethod
     def _makeTextFeature(textLyr, geom, name, fontSize, productParam):
