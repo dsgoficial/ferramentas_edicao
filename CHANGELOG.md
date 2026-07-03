@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2.1.0
+
+Melhorias:
+- Caixa por letra pela tinta real (tightBoundingRect nos dois eixos) nos processings de rótulo: linha do grid entre duas letras deixa de ser acusada; afeta identifyLabelOverlap, identifyLabelGridIntersection e identifyLabelsOutsideGeographicBoundary.
+- Modo CLI headless (ferramentas_edicao_cli) sobre o qgis_process, com list/describe/run/doctor e redirecionamento automático para o perfil do QGIS 4; hasProcessingProvider=yes e initProcessing() para carga headless.
+- Símbolos de extração mineral, elemento de energia e edificação: posição no ponto mais interior (polylabel), verificação de caber na escala, idempotência (reexecutar não duplica), transform de CRS e contagens no resultado; símbolo de edificação corrigido para multipolígonos (arestas fantasmas entre partes).
+- Torre de energia: só linhas de transmissão (tipo 303) visíveis, distribuição centrada, espaçamento e separação mínima como parâmetros, evita massa d'água e resolve conflito entre linhas próximas deslocando a torre ao longo da linha; idempotente.
+- Identificador de trecho rodoviário: montagem correta dos trechos contínuos por sigla (mergelines), descarte de arcos de rotatória/alças de trevo, separação mínima entre escudos com deslocamento ao longo da via, siglas múltiplas centradas e jurisdição pelo atributo da via; idempotente.
+- Rotação de corredeira/queda d'água e de sumidouro pela tangente local do trecho de drenagem (extremidade correta no sumidouro), tolerância em metros e escolha determinística em confluências; rotação de edificações sem threads inseguras e com prioridade documentada de referências.
+- Configura Atributos de Edição (Topo/Orto): correção de crashes (cota negativa, guards de texto), abreviações case-insensitive sem amputar nomes, texto de energia por tipo (aerogerador, usinas, casa de força), oceano 8-18 pt, laguna e represa com fluxo nomeadas, revestimento de pista abreviado (Rev nat/Rev prim/Rev desc), tamanhos de topônimo fisiográfico por tipo, silos com agrupamento correto em CRS geográfico e rótulo no silo central, travessia hidroviária ligada ao dispatcher.
+- Tamanho do texto de drenagem propagado a todos os trechos do rio (antes só o trecho mais comprido recebia o tamanho calculado); parâmetro morto removido.
+- Sobreposição de limites (legal/especial topo/orto): substituição segura das feições (falha não deixa a camada pela metade), bordas internas entre folhas preservadas, orto sem duplicação em reexecução, contagens no resultado.
+
+Remoções:
+- Processing "Definir tamanho da fonte pela largura" (inoperante; função coberta pelo Configura Atributos de Edição).
+
+
 ## 2.0.12
 
 Melhorias:
