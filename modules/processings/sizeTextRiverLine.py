@@ -16,29 +16,34 @@
  ***************************************************************************/
 """
 from qgis.core import (
-    QgsProcessing,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingAlgorithm,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterDistance,
-    QgsProcessingMultiStepFeedback,
     NULL,
-    QgsProcessingException,
+    QgsGeometry,
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingOutputNumber,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
-from .processingUtils import ProcessingUtils
 
+from .processingUtils import ProcessingUtils
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
+# situacao_em_poligono: 2/3/4 = dentro de poligono; 1 (fora), NULL e 9999
+# caem na tabela "fora" (mais conservadora)
+IN_POLYGON_VALUES = (2, 3, 4)
 
 
 class SizeTextRiverLine(QgsProcessingAlgorithm):
 
     INPUT_LAYER_L = "INPUT_LAYER_L"
     INPUT_FRAME_A = "INPUT_FRAME_A"
-    BUFFER = "BUFFER"
     SCALE = "SCALE"
     PRODUCT = "PRODUCT"
+    UPDATED = "UPDATED"
+    UNMATCHED = "UNMATCHED"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -54,15 +59,7 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 self.INPUT_FRAME_A,
                 self.tr("Selecionar camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterDistance(
-                self.BUFFER,
-                self.tr(
-                    "Digite a distância que 'passa' da moldura"
-                ),  # valor para ser considerado no buffer para englobar as partes clipadas dos rios que passam da moldura
-                parentParameterName=self.INPUT_FRAME_A,
+                defaultValue="aux_moldura_a",
             )
         )
         self.addParameter(
@@ -87,17 +84,19 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 options=[self.tr("Carta Ortoimagem"), self.tr("Carta Topográfica")],
             )
         )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.UPDATED, self.tr("Trechos com tamanho atualizado")
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.UNMATCHED,
+                self.tr("Trechos nomeados sem rio fundido correspondente"),
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
-        try:
-            from DsgTools.core.DSGToolsProcessingAlgs.algRunner import AlgRunner
-        except ImportError:
-            raise QgsProcessingException(
-                self.tr(
-                    "This algorithm requires the plugin DSGTools. Please install this plugin and try again."
-                )
-            )
-
         drainageLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_LAYER_L, context
         )
@@ -106,7 +105,6 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         )
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         self.productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
-        buffer = self.parameterAsDouble(parameters, self.BUFFER, context)  # TODO: usar buffer para expandir a moldura antes de clipar em getMergedRiver, preservando comprimento real de rios que cruzam a borda
         self.scaleDict = {
             0: 5000,
             1: 10000,
@@ -116,52 +114,73 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
             5: 250000,
         }
         self.scale = self.scaleDict[gridScaleParam]
-        algRunner = AlgRunner()
-        multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
+
+        multiStepFeedback = QgsProcessingMultiStepFeedback(3, feedback)
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
-        lines = algRunner.runCreateFieldWithExpression(
-            inputLyr=parameters[self.INPUT_LAYER_L],
-            expression="$id",
-            fieldName="featid",
-            fieldType=1,
-            context=context,
-            feedback=multiStepFeedback,
+        multiStepFeedback.pushInfo(self.tr("Mesclando rios"))
+        merged = self.getMergedRiver(
+            drainageLayer, frameLayer, context, feedback=multiStepFeedback
         )
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        self.runCreateSpatialIndex(lines, feedback=multiStepFeedback)
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        merged = self.getMergedRiver(lines, frameLayer, feedback=multiStepFeedback)
+        multiStepFeedback.pushInfo(self.tr("Calculando tamanhos"))
+        # nome -> lista de (engine preparado, geometria, tamanho); um rio
+        # fundido por componente conexa — homonimos desconexos ficam separados
+        sizesByName = self.sizeText(merged, feedback=multiStepFeedback)
+        if sizesByName is None:
+            return {self.UPDATED: 0, self.UNMATCHED: 0}
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
-        id_to_tamanho = self.sizeText(merged, feedback=multiStepFeedback)
-
-        currentStep += 1
-        multiStepFeedback.setCurrentStep(currentStep)
-        drainageLayer.startEditing()
-        drainageLayer.beginEditCommand("Atualizando atributos")
+        multiStepFeedback.pushInfo(self.tr("Atualizando atributos"))
+        fieldIdx = drainageLayer.fields().lookupField("tamanho_txt")
         nFeats = drainageLayer.featureCount()
-        if feedback is not None:
-            if nFeats == 0:
-                return {}
-            stepSize = 100 / nFeats
+        if nFeats == 0:
+            return {self.UPDATED: 0, self.UNMATCHED: 0}
+        stepSize = 100 / nFeats
+
+        updates = {}
+        nUnmatched = 0
         for current, feature in enumerate(drainageLayer.getFeatures()):
             if multiStepFeedback.isCanceled():
-                break
+                return {self.UPDATED: 0, self.UNMATCHED: 0}
             if feature["nome"] == NULL:
                 continue
-            feature["tamanho_txt"] = id_to_tamanho.get(feature.id(), 7)
-            drainageLayer.updateFeature(feature)
+            geom = feature.geometry()
+            if geom is None or geom.isEmpty():
+                continue
+            # Propaga o tamanho do rio fundido para TODOS os trechos que o
+            # compoem (mesmo nome + intersecao geometrica). Trecho que cruza
+            # a moldura casa pela parte interna; trecho totalmente fora da
+            # moldura nao casa e fica intocado (contado).
+            size = None
+            constGeom = geom.constGet()
+            for engine, _g, componentSize in sizesByName.get(str(feature["nome"]), []):
+                if engine.intersects(constGeom):
+                    size = componentSize if size is None else max(size, componentSize)
+            if size is None:
+                nUnmatched += 1
+                continue
+            updates[feature.id()] = size
             multiStepFeedback.setProgress(current * stepSize)
+
+        drainageLayer.startEditing()
+        drainageLayer.beginEditCommand("Atualizando atributos")
+        for fid, size in updates.items():
+            drainageLayer.changeAttributeValue(fid, fieldIdx, size)
         drainageLayer.endEditCommand()
 
-        return {}
+        multiStepFeedback.pushInfo(
+            self.tr(
+                "Trechos atualizados: {0} | nomeados sem correspondência "
+                "(fora da moldura): {1}"
+            ).format(len(updates), nUnmatched)
+        )
+        return {self.UPDATED: len(updates), self.UNMATCHED: nUnmatched}
 
-    def getMergedRiver(self, layer, frame, feedback):
+    def getMergedRiver(self, layer, frame, context, feedback):
         merged = processing.run(
             "ferramentasedicao:mergerivers",
             {
@@ -169,91 +188,50 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 "INPUT_FRAME_A": frame,
                 "OUTPUT_LAYER_L": "TEMPORARY_OUTPUT",
             },
+            context=context,
             feedback=feedback,
         )
         return merged["OUTPUT_LAYER_L"]
 
     def sizeText(self, layer, feedback):
+        """Tamanho da fonte por rio fundido (tabelas MTM), agrupado por nome.
+        Retorna {nome: [(engine, geometria, tamanho), ...]} ou None se
+        cancelado."""
         lyrCrs = layer.dataProvider().crs()
         nFeatures = layer.featureCount()
+        sizesByName = {}
         if nFeatures == 0:
-            return
+            return sizesByName
         stepSize = 100 / nFeatures
-        id_to_tamanho = dict()
         for current, feature in enumerate(layer.getFeatures()):
             if feedback.isCanceled():
-                return
-            if feature["situacao_em_poligono"] == 1:
-                size = ProcessingUtils.getRiverOutPolyLabelFontSize(
+                return None
+            try:
+                situacao = int(feature["situacao_em_poligono"])
+            except (TypeError, ValueError):
+                situacao = None
+            if situacao in IN_POLYGON_VALUES:
+                size = ProcessingUtils.getRiverInPolyLabelFontSize(
                     feature, self.scale, lyrCrs
                 )
             else:
-                size = ProcessingUtils.getRiverInPolyLabelFontSize(
+                # fora de poligono (1) e NULL/9999: tabela "fora"
+                size = ProcessingUtils.getRiverOutPolyLabelFontSize(
                     feature, self.scale, lyrCrs
                 )
             if self.productParam == 0:  # Para carta ortoimagem o tamanho mínimo é 7
                 size = size if size > 6 else 7
-            id_to_tamanho[feature["featid"]] = size
+            geom = QgsGeometry(feature.geometry())
+            if geom is None or geom.isEmpty():
+                continue
+            engine = QgsGeometry.createGeometryEngine(geom.constGet())
+            engine.prepareGeometry()
+            # a QgsGeometry acompanha o engine para manter a geometria viva
+            sizesByName.setdefault(str(feature["nome"]), []).append(
+                (engine, geom, size)
+            )
             feedback.setProgress(current * stepSize)
-        return id_to_tamanho
-
-    # TODO: chamar bufferRiver com a moldura e passar o resultado para getMergedRiver
-    def bufferRiver(self, inputLyr, buffer):
-        bufferRiver = processing.run(
-            "native:buffer",
-            {
-                "INPUT": inputLyr,
-                "DISTANCE": buffer,
-                "SEGMENTS": 5,
-                "END_CAP_STYLE": 0,
-                "JOIN_STYLE": 0,
-                "MITER_LIMIT": 2.0,
-                "DISSOLVE": False,
-                "OUTPUT": "TEMPORARY_OUTPUT",
-            },
-        )
-        return bufferRiver["OUTPUT"]
-
-    # TODO: chamar joinAttribute para propagar tamanho_txt calculado nos rios mesclados de volta ao layer original
-    def joinAttribute(self, inputLyr, bufferLyr):
-        joinLayer = processing.run(
-            "native:joinattributesbylocation",
-            {
-                "INPUT": inputLyr,
-                "PREDICATE": [5],
-                "JOIN": bufferLyr,
-                "JOIN_FIELDS": ["tamanho_txt"],
-                "METHOD": 0,
-                "DISCARD_NONMATCHING": False,
-                "PREFIX": "join_",
-                "OUTPUT": "TEMPORARY_OUTPUT",
-            },
-        )
-        return joinLayer["OUTPUT"]
-
-    def runAddCount(self, inputLyr, feedback):
-        output = processing.run(
-            "native:addautoincrementalfield",
-            {
-                "INPUT": inputLyr,
-                "FIELD_NAME": "AUTO",
-                "START": 0,
-                "GROUP_FIELDS": [],
-                "SORT_EXPRESSION": "",
-                "SORT_ASCENDING": False,
-                "SORT_NULLS_FIRST": False,
-                "OUTPUT": "TEMPORARY_OUTPUT",
-            },
-        )
-        return output["OUTPUT"]
-
-    def runCreateSpatialIndex(self, inputLyr, feedback):
-        processing.run(
-            "native:createspatialindex",
-            {"INPUT": inputLyr},
-            is_child_algorithm=True,
-            feedback=feedback,
-        )
+        return sizesByName
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)

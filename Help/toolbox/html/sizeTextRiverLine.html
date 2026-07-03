@@ -12,8 +12,7 @@
     <hr />
     <h2 class="western">Descrição</h2>
     <h4 class="western" align="center" style="border: none; padding: 0cm">
-        O algoritmo mescla os trechos de drenagem e os corta de acordo com a moldura, definindo assim o tamanho do rio para em seguida definir o atributo "tamanho_txt" da camada "elemnat_trecho_drenagem_l".
-    </h4>
+        O algoritmo define o atributo tamanho_txt dos trechos de drenagem nomeados conforme as tabelas do MTM, usando o comprimento TOTAL do rio dentro da moldura (trechos que se tocam e têm o mesmo nome são fundidos; homônimos desconexos são rios distintos). O tamanho calculado é propagado a TODOS os trechos que compõem o rio. Trechos com situação em polígono 2/3/4 usam a tabela de dentro de massa d'água; situação 1, nula ou a preencher usa a tabela de fora. Para Carta Ortoimagem o tamanho mínimo é 7. Trechos nomeados totalmente fora da moldura não são alterados e são contados no resultado. </h4>
     <hr />
     <h2>Parâmetros</h2>
     <p>
@@ -22,9 +21,6 @@
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar a camada de moldura &rarr; Indicar a camada que contém a(s) moldura(s) do projeto.
-        </span>
-        <span style="margin-bottom: 10px;">
-            &#8226; Digite a distância que 'passa' da moldura &rarr; Indicar o tamanho que será considerado no buffer utilizado para cortar os vetores de drenagem em relação à moldura.
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecione a escala de edição &rarr; Indicar a escala da Carta Topográfica.
@@ -42,9 +38,6 @@
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar a camada de moldura &rarr; aux_moldura_a
-        </span>
-        <span style="margin-bottom: 10px;">
-            &#8226; Digite a distância que 'passa' da moldura &rarr; 50m
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecione a escala de edição &rarr; 1:25.000

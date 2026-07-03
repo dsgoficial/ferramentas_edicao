@@ -33,7 +33,6 @@ from qgis.core import (
     QgsFeatureSink,
 )
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.utils import iface
 from .processingUtils import ProcessingUtils
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
@@ -69,24 +68,6 @@ class MergeRivers(QgsProcessingAlgorithm):
                 self.OUTPUT_LAYER_L, self.tr("elemnat_trecho_drenagem_l_merged")
             )
         )
-
-    def runAddCount(self, inputLyr, context, feedback):
-        output = processing.run(
-            "native:addautoincrementalfield",
-            {
-                "INPUT": inputLyr,
-                "FIELD_NAME": "AUTO",
-                "START": 0,
-                "GROUP_FIELDS": [],
-                "SORT_EXPRESSION": "",
-                "SORT_ASCENDING": False,
-                "SORT_NULLS_FIRST": False,
-                "OUTPUT": "TEMPORARY_OUTPUT",
-            },
-            context=context,
-            feedback=feedback,
-        )
-        return output["OUTPUT"]
 
     def runCreateSpatialIndex(self, inputLyr, context, feedback):
         processing.run(
@@ -130,7 +111,7 @@ class MergeRivers(QgsProcessingAlgorithm):
             Qgis.WkbType.MultiLineString,
             drainageLayer.sourceCrs(),
         )
-        steps = 8
+        steps = 6
 
         multiStepFeedback = (
             QgsProcessingMultiStepFeedback(steps, feedback)
@@ -139,17 +120,6 @@ class MergeRivers(QgsProcessingAlgorithm):
         )
         if multiStepFeedback is not None:
             multiStepFeedback.setCurrentStep(0)
-            multiStepFeedback.pushInfo(self.tr("Creating count field on river layer."))
-        drainageLayer = self.runAddCount(
-            drainageLayer, context, feedback=multiStepFeedback
-        )
-        if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(1)
-            multiStepFeedback.pushInfo(self.tr("Creating spatial index river layer."))
-        self.runCreateSpatialIndex(drainageLayer, context, feedback=multiStepFeedback)
-
-        if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(2)
             multiStepFeedback.pushInfo(self.tr("Dissolving frame layer"))
 
         dissolvedGeographicBoundaryLyr = processing.run(
@@ -160,7 +130,7 @@ class MergeRivers(QgsProcessingAlgorithm):
         )["OUTPUT"]
 
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(3)
+            multiStepFeedback.setCurrentStep(1)
             multiStepFeedback.pushInfo(self.tr("Clipping on frame layer."))
 
         drainageLayer = self.clipLayer(
@@ -171,14 +141,14 @@ class MergeRivers(QgsProcessingAlgorithm):
         )
 
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(4)
+            multiStepFeedback.setCurrentStep(2)
             multiStepFeedback.pushInfo(self.tr("Merging lines."))
         drainageLayer = self.mergeLinesFeatures(
             drainageLayer, feedback=multiStepFeedback
         )
 
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(5)
+            multiStepFeedback.setCurrentStep(3)
             multiStepFeedback.pushInfo(self.tr("Converting frame to lines"))
 
         frameLinesLayer = self.convertPolygonToLines(
@@ -186,14 +156,14 @@ class MergeRivers(QgsProcessingAlgorithm):
         )
 
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(6)
+            multiStepFeedback.setCurrentStep(4)
             multiStepFeedback.pushInfo(self.tr("Clipping lines for each frame."))
         drainageLayer = self.clipLines(
             drainageLayer, frameLinesLayer, context, feedback=multiStepFeedback
         )
 
         if multiStepFeedback is not None:
-            multiStepFeedback.setCurrentStep(7)
+            multiStepFeedback.setCurrentStep(5)
             multiStepFeedback.pushInfo(self.tr("Adding features to output layer."))
 
         for feature in drainageLayer.getFeatures():
