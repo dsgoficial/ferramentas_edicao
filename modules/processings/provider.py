@@ -40,6 +40,7 @@ from .identifyLabelOverlap import IdentifyLabelOverlap
 from .identifyLabelGridIntersection import IdentifyLabelsIntersectingGrid
 from .insertEnergyTower import InsertEnergyTower
 from .insertRoadMarker import InsertRoadMarker
+from .insertBorderLabel import InsertBorderLabel
 from .loadMasks import LoadMasks
 from .makeGrid import MakeGrid
 from .mergeLinesByAngle import MergeLinesByAngle
@@ -83,6 +84,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(MergeRivers())
         self.addAlgorithm(InsertEnergyTower())
         self.addAlgorithm(InsertRoadMarker())
+        self.addAlgorithm(InsertBorderLabel())
         self.addAlgorithm(HighestSpotOnTheFrame())
         self.addAlgorithm(MergeLinesByAngle())
         self.addAlgorithm(LoadMasks())

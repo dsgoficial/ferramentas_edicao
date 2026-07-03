@@ -18,7 +18,6 @@
 """
 
 from pathlib import Path
-import numpy as np
 
 from qgis.PyQt import QtCore, QtGui, QtWidgets
 from qgis import core, gui
@@ -39,6 +38,7 @@ from qgis.core import (
 )
 
 from .baseTools import BaseTools
+from ...labelTools import borderLabelLine
 
 
 class CreateBorderLabel(gui.QgsMapTool, BaseTools):
@@ -426,7 +426,12 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
             )
         fontSize = 10 if borderType == 1 else 8
         toInsert.setAttribute("tamanho_txt", fontSize)
-        toInsertGeom = self.getLabelGeometry(border, point, fontSize * len(labelText))
+        toInsertGeom = self.getLabelGeometry(border, point, labelText, fontSize)
+        if toInsertGeom is None or toInsertGeom.isEmpty():
+            self.displayErrorMessage(
+                self.tr("Não foi possível construir a linha do rótulo.")
+            )
+            return None
         if self.productTypeSelector.currentIndex() == 1:  # Ortoimagem
             if "tamanho_buffer" not in toInsert.attributeMap():
                 self.displayErrorMessage(
@@ -441,93 +446,30 @@ class CreateBorderLabel(gui.QgsMapTool, BaseTools):
         self.dstLyr.triggerRepaint()
 
     def getLabelGeometry(
-        self, geom: core.QgsGeometry, clickPos: core.QgsPointXY, labelSize: float
+        self, geom: core.QgsGeometry, clickPos, labelText: str, fontSize: int
     ):
-        interpolateSize = labelSize * self.tolerance / 15
-        clickPosGeom = QgsGeometry.fromWkt(clickPos.asWkt())
-        posClosestV = geom.lineLocatePoint(clickPosGeom)
-        start = posClosestV - interpolateSize / 2
-        end = posClosestV + interpolateSize / 2
-        if interpolateSize > geom.length():
-            toExtend = interpolateSize - geom.length()
-            geom = geom.extendLine(toExtend / 2, toExtend / 2)
-        elif posClosestV + interpolateSize / 2 > geom.length():
-            diff = (posClosestV + interpolateSize / 2) - geom.length()
-            geom = geom.extendLine(0, diff)
-            end = geom.length()
-        elif posClosestV - interpolateSize / 2 < 0:
-            diff = interpolateSize / 2 - posClosestV
-            geom = geom.extendLine(diff, 0)
-            start = 0
-            end += diff
-        closestV = geom.interpolate(posClosestV)
-        start, end = self.adjustGeomLength(geom, start, end)
-        toInsertGeom = QgsGeometry(self.buildLineFromGeomDist(start, end, geom))
-        toInsertGeom = self.polynomialFit(toInsertGeom)
-        toInsertGeom.translate(*self.getTransformParams(closestV, clickPos))
-        return toInsertGeom
-
-    def adjustGeomLength(
-        self, geom: QgsGeometry, start: float, end: float
-    ) -> tuple[float, float]:
-        if geom.interpolate(start) and geom.interpolate(end):
-            firstV = geom.interpolate(start).asPoint()
-            lastV = geom.interpolate(end).asPoint()
-            realLength = (
-                (firstV.x() - lastV.x()) ** 2 + (firstV.y() - lastV.y()) ** 2
-            ) ** 0.5
-            observedLength = end - start
-            maxCount = 0
-            while (observedLength / realLength) > 1.2 and maxCount < 10:
-                start, end = start - self.tolerance, end + self.tolerance
-                start = max(start, 0)
-                end = min(end, geom.length())
-                firstV = geom.interpolate(start).asPoint()
-                lastV = geom.interpolate(end).asPoint()
-                realLength = (
-                    (firstV.x() - lastV.x()) ** 2 + (firstV.y() - lastV.y()) ** 2
-                ) ** 0.5
-                maxCount += 1
-        return start, end
-
-    def polynomialFit(self, geom):
-        orientedGeom, area, angle, w, h = geom.orientedMinimumBoundingBox()
-        firstPoint = QgsPointXY(geom.vertexAt(0))
-        geom.rotate(90 - angle, firstPoint)
-        xVert = [p.x() for p in geom.vertices()]
-        yVert = [p.y() for p in geom.vertices()]
-        f = np.poly1d(np.polyfit(xVert, yVert, 2))
-        xVert = sorted(xVert)
-        newYVert = f(xVert)
-        rotatedParabola = QgsGeometry(QgsLineString(xVert, newYVert.tolist()))
-        rotatedParabola.rotate(270 + angle, firstPoint)
-        rotatedParabola = rotatedParabola.simplify(self.tolerance / 10)
-        return rotatedParabola
-
-    def getTransformParams(self, ref, clickPos):
-        ref = ref.asPoint()
-        xTranslate = clickPos.x() - ref.x()
-        yTranslate = clickPos.y() - ref.y()
-        xTranslate, yTranslate = self.scaleTransform(xTranslate, yTranslate)
-        return xTranslate, yTranslate
-
-    def scaleTransform(self, x, y):
-        d = self.tolerance * 0.9
-        scaleFactor = (d**2 / ((x**2 + y**2))) ** 0.5
-        return scaleFactor * x, scaleFactor * y
-
-    def buildLineFromGeomDist(self, start, end, geom):
-        xCoords = []
-        yCoords = []
-        if geom.isMultipart():
-            for point in geom.asMultiPolyline()[0]:
-                xCoords.append(point.x())
-                yCoords.append(point.y())
-        else:
-            for point in geom.asPolyline():
-                xCoords.append(point.x())
-                yCoords.append(point.y())
-        return QgsLineString(xCoords, yCoords).curveSubstring(start, end)
+        """Linha do rótulo: trecho GENERALIZADO do limite com o comprimento
+        da MEDIDA REAL do texto (pouca folga), como curva paralela no lado
+        clicado — via modulo compartilhado borderLabelLine (o ajuste antigo
+        por parabola e comprimento estimado por numero de caracteres foi
+        substituido)."""
+        scale = self.getScale()
+        textLen = borderLabelLine.measureTextWidthMapUnits(
+            labelText, fontSize, scale, self.lyrCrs
+        )
+        clickXY = QgsPointXY(clickPos.x(), clickPos.y())
+        clickGeom = QgsGeometry.fromPointXY(clickXY)
+        center = geom.lineLocatePoint(clickGeom)
+        base = borderLabelLine.buildBorderLabelLine(
+            geom, center, textLen, scale, self.lyrCrs, extraMargin=1.4
+        )
+        if base is None:
+            return None
+        sign = borderLabelLine.sideSignForPoint(base, clickXY)
+        offset = borderLabelLine.offsetSide(base, self.tolerance * 0.9, sign)
+        return borderLabelLine.trimToLength(
+            offset, textLen * borderLabelLine.DEFAULT_SLACK
+        )
 
     @staticmethod
     def versorFromLineGeometry(lineGeometry: QgsGeometry) -> tuple[float, float]:
