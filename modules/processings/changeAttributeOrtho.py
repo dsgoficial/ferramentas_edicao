@@ -26,8 +26,6 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from .processingUtils import ProcessingUtils
-import concurrent.futures
-import os
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -76,32 +74,53 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         }
         self.scale = self.gridScaleDict[gridScaleParam]
 
-        stepSize = 100 / (len(layer_list))
-        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
-        multiStepFeedback.setCurrentStep(0)
-        # multiStepFeedback.setProgressText("Submetendo tarefas para as threads")
-        # futures = set()
-        # pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
+        if not layer_list:
+            return {}
+        stepSize = 100 / len(layer_list)
 
         for current, layer in enumerate(layer_list):
-            if multiStepFeedback.isCanceled():
+            if feedback.isCanceled():
                 return {}
-            self.process_layer(layer)
-            # futures.add(pool.submit(self.process_layer, layer))
-            multiStepFeedback.setProgress(current * stepSize)
-
-        multiStepFeedback.setCurrentStep(1)
-        multiStepFeedback.setProgressText("Avaliando os resultados")
-        # for current, future in enumerate(concurrent.futures.as_completed(futures)):
-        #     if multiStepFeedback.isCanceled():
-        #         return {}
-        #     multiStepFeedback.setProgress(current * stepSize)
+            processed = self.process_layer(layer, feedback)
+            if processed is None:
+                feedback.pushInfo(
+                    self.tr("Camada sem regra de edição, ignorada: {0}").format(
+                        layer.name()
+                    )
+                )
+            else:
+                feedback.pushInfo(
+                    self.tr("{0}: {1} feições configuradas").format(
+                        layer.name(), processed
+                    )
+                )
+            feedback.setProgress(current * stepSize)
 
         return {}
 
-    def process_layer(self, layer: QgsVectorLayer):
+    @staticmethod
+    def _hasManualText(feature):
+        """texto_edicao preenchido manualmente e preservado."""
+        if "texto_edicao" not in feature.fields().names():
+            return False
+        value = feature["texto_edicao"]
+        if value == NULL:
+            return False
+        if not isinstance(value, str):
+            return True
+        return value.strip() != ""
 
-        table_name = layer.dataProvider().uri().table()
+    @staticmethod
+    def _isBlank(value):
+        """NULL ou string vazia/espacos."""
+        return value == NULL or str(value).strip() == ""
+
+    def process_layer(self, layer: QgsVectorLayer, feedback=None):
+        """Retorna o numero de feições configuradas, ou None se a camada nao
+        tem regra de edição."""
+        # fallback para o nome da camada: fontes nao-PostGIS (gpkg, memory)
+        # nao expõem table() no uri
+        table_name = layer.dataProvider().uri().table() or layer.name()
 
         if table_name in ["constr_extracao_mineral_p", "constr_extracao_mineral_a"]:
             processing_function = self.defaultExtMineral
@@ -169,26 +188,25 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         ]:
             processing_function = self.defaultllpLocalidade
         else:
-            return
+            return None
 
         layer.startEditing()
         layer.beginEditCommand("Atualizando atributos")
         lyrCrs = layer.dataProvider().crs()
-        update_func = lambda x: layer.updateFeature(processing_function(x, lyrCrs))
-        list(map(update_func, layer.getFeatures()))
+        nFeats = 0
+        for feature in layer.getFeatures():
+            if feedback is not None and feedback.isCanceled():
+                break
+            layer.updateFeature(processing_function(feature, lyrCrs))
+            nFeats += 1
         layer.endEditCommand()
+        return nFeats
 
     def defaultExtMineral(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
         feature["visivel"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         if feature["tipo"] == 1:
             feature["texto_edicao"] = "Poço"
         elif feature["tipo"] == 4:
@@ -203,17 +221,11 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultElemnatElemHidPL(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
-        if feature["nome"] == "":
+        if self._hasManualText(feature):
+            return feature
+        if self._isBlank(feature["nome"]):
             if feature["tipo"] == 9:
-                feature["texto_edicao"] = "Cachoreira"
+                feature["texto_edicao"] = "Cachoeira"
             elif feature["tipo"] == 10:
                 feature["texto_edicao"] = "Salto"
             elif feature["tipo"] == 11:
@@ -226,15 +238,9 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultElemnatElemHidA(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
-        if feature["nome"] == "":
+        if self._hasManualText(feature):
+            return feature
+        if self._isBlank(feature["nome"]):
             feature["texto_edicao"] = "Corredeira"
         else:
             feature["texto_edicao"] = feature["nome"]
@@ -243,14 +249,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultIlhaP(self, feature, lyrCrs):
         feature["tamanho_txt"] = 7
         feature["justificativa_txt"] = 2
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
@@ -260,14 +260,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         if size > 16:
             size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size if size > 6 else 7
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
@@ -284,55 +278,31 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultElemnatTopoFisioP(self, feature, lyrCrs):
         feature["visivel"] = 1
         feature["justificativa_txt"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
     def defaultElemnatTopoFisioL(self, feature, lyrCrs):
         feature["visivel"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
     def defaultElemnatTopoFisioA(self, feature, lyrCrs):
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
     def defaultInfraElemEnergPA(self, feature, lyrCrs):
         feature["visivel"] = 1
         feature["justificativa_txt"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = "Subestação"
         return feature
 
@@ -343,14 +313,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
     def defaultInfraElemInfra(self, feature, lyrCrs):
         feature["justificativa_txt"] = 1
         feature["visivel"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = "Atracadouro"
         return feature
 
@@ -361,18 +325,12 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
 
     def defaultCurvaNivel(self, feature, lyrCrs):
         feature["visivel"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         if feature["cota"] == 0:
             feature["texto_edicao"] = "ZERO"
         elif feature["cota"] < 0:
-            feature["texto_edicao"] = "MENOS " + feature["cota"]
+            feature["texto_edicao"] = "MENOS " + str(abs(feature["cota"]))
         else:
             feature["texto_edicao"] = feature["cota"]
         return feature
@@ -392,14 +350,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         if size > 16:
             size = 16  # na MTM o tamanho maximo da fonte é 16
         feature["tamanho_txt"] = size if size > 6 else 7
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         if feature["tipo"] in [3, 4, 5, 6, 7, 11]:
             feature["texto_edicao"] = feature["nome"]
         return feature
@@ -416,10 +368,7 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         if feature["tipo"] != 10:
             feature["visivel"] = 1
-            if (
-                feature["texto_edicao"] != NULL
-                and feature["texto_edicao"].strip() != ""
-            ):
+            if self._hasManualText(feature):
                 return feature
             texto_edicao = []
             if feature["nome"] != NULL:
@@ -450,14 +399,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
@@ -465,14 +408,8 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 2
         size = ProcessingUtils.getEditPolyLabelFontSize(feature, self.scale, lyrCrs)
         feature["tamanho_txt"] = size if size > 6 else 7
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = "DADOS INCOMPLETOS"
         return feature
 
@@ -483,29 +420,17 @@ class ChangeAttributeOrtho(QgsProcessingAlgorithm):
             feature["posicao_rotulo"] = 1
         elif feature["situacao_em_poligono"] in [1]:
             feature["posicao_rotulo"] = 2
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
-        if feature["situacao_em_poligono"] != 4 or feature["situacao_em_poligono"] != 3:
+        if self._hasManualText(feature):
+            return feature
+        if feature["situacao_em_poligono"] not in (3, 4):
             feature["texto_edicao"] = feature["nome"]
         return feature
 
     def defaultllpLocalidade(self, feature, lyrCrs):
         feature["justificativa_txt"] = 2
         feature["visivel"] = 1
-        if (
-            "texto_edicao" in feature.fields().names()
-            and feature["texto_edicao"] != NULL
-        ):
-            if not isinstance(feature["texto_edicao"], str):
-                return feature
-            if feature["texto_edicao"].strip() != "":
-                return feature
+        if self._hasManualText(feature):
+            return feature
         feature["texto_edicao"] = feature["nome"]
         return feature
 
