@@ -1,0 +1,29 @@
+{
+  "ferramentasedicao:identifylabeloverlap": {
+    "description": "Renderiza o mapa off-screen, decompoe cada rotulo horizontal em caixas por LETRA (tinta real via tightBoundingRect: espaco nao gera caixa; side bearings ficam fora, entao ha vao entre letras) e aponta flags onde rotulos se sobrepoem.",
+    "constraints": [
+      "Depende do projeto aberto (simbologia e labeling das camadas): rode com --project ARQ.qgz.",
+      "INPUT_LAYERS sao as camadas cujos rotulos serao verificados; o texto generico de edicao (edicao_texto_generico_l) entra como corredor bufferizado.",
+      "SCALE e um indice de enum — use `describe` para ver as opcoes.",
+      "Rotulos que se intercalam nos vaos entre letras um do outro NAO sao acusados (tinta nao toca tinta)."
+    ],
+    "example": "python ferramentas_edicao_cli.py run identifylabeloverlap --project carta.qgz --params params.json"
+  },
+  "ferramentasedicao:identifylabelsintersectinggrid": {
+    "description": "Aponta rotulos cuja TINTA e atravessada por linhas do grid. A caixa por letra e a tinta real: linha de grid passando ENTRE duas letras (pratica cartografica comum) ou sob um espaco NAO gera flag.",
+    "constraints": [
+      "Depende do projeto aberto: rode com --project ARQ.qgz.",
+      "GRID_LAYER e a camada de grade (linhas).",
+      "SCALE e um indice de enum — use `describe` para ver as opcoes."
+    ],
+    "example": "python ferramentas_edicao_cli.py run identifylabelsintersectinggrid --project carta.qgz --params params.json"
+  },
+  "ferramentasedicao:identifylabelsoutsidegeographicboundary": {
+    "description": "Aponta rotulos com tinta total ou parcialmente fora da moldura (GEOGRAPHIC_BOUNDARY). Caixas por letra pela tinta real — bearings fora da moldura nao contam.",
+    "constraints": [
+      "Depende do projeto aberto: rode com --project ARQ.qgz.",
+      "SCALE e um indice de enum — use `describe` para ver as opcoes."
+    ],
+    "example": "python ferramentas_edicao_cli.py run identifylabelsoutsidegeographicboundary --project carta.qgz --params params.json"
+  }
+}

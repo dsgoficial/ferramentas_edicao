@@ -45,11 +45,12 @@ class EditionPlugin:
         self.debugMode = (Path(__file__).parent / ".env").exists()
         self.plugin_dir = os.path.dirname(__file__)
 
-        locale = QSettings().value("locale/userLocale")[0:2]
+        # locale/userLocale e None em modo headless (qgis_process)
+        locale = str(QSettings().value("locale/userLocale") or "")[0:2]
         locale_path = os.path.join(
             self.plugin_dir, "i18n", "EditionPlugin_{}.qm".format(locale)
         )
-        if os.path.exists(locale_path):
+        if locale and os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
             QCoreApplication.installTranslator(self.translator)
@@ -129,9 +130,20 @@ class EditionPlugin:
 
         self.tools = SetupButtons(toolbar=self.toolBar, iface=self.iface)
         self.tools.initToolBar()
-        self.processingProvider = ProcessingProvider()
-        self.processingProvider.initProcessing()
+        self.initProcessing()
         loadExpressionFunctions()
+
+    def initProcessing(self):
+        """Registra o provider de Processing.
+
+        Chamado pelo initGui() (QGIS Desktop) e DIRETAMENTE pelo QGIS em modo
+        headless (qgis_process / ferramentas_edicao_cli), que nunca chama
+        initGui(). Requer hasProcessingProvider=yes no metadata.txt e este
+        nome exato de metodo. Idempotente: seguro chamar dos dois caminhos.
+        """
+        if getattr(self, "processingProvider", None) is None:
+            self.processingProvider = ProcessingProvider()
+            self.processingProvider.initProcessing()
 
     def unload(self):
         if hasattr(self, "tools"):

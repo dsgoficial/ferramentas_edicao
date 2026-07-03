@@ -13,7 +13,7 @@ repository=https://github.com/dsgoficial/ferramentas_edicao
 
 # Recommended items:
 
-hasProcessingProvider=no
+hasProcessingProvider=yes
 # changelog=
 tags=python
 homepage=https://github.com/dsgoficial/ferramentas_edicao
