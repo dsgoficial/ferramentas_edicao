@@ -12,9 +12,7 @@
     <hr />
     <h2 class="western">Descrição</h2>
     <h4 class="western" align="center" style="border: none; padding: 0cm">
-        O algoritmo define a rotação da simbologia do elemento hidrográfico a fim de ajustar tal feição à posição perpendicular em relação ao trecho de drenagem.
-        Para o perfeito funcionamento da rotina é necessário que o vértice do elemento hidrográfico seja coincidente com o vértice do trecho de drenagem.
-    </h4>
+        O algoritmo define a rotação da simbologia do elemento hidrográfico (cachoeira, salto, catarata e corredeira) perpendicular ao trecho de drenagem, usando a tangente local do trecho mais próximo no ponto (símbolo simétrico: ângulo normalizado entre -90° e 90°). Em confluências, o trecho mais próximo do ponto é usado. A tolerância é informada em metros no terreno e convertida automaticamente para o CRS da camada. Pontos sem drenagem dentro da tolerância são contados no resultado para conferência. </h4>
     <hr />
     <h2>Parâmetros</h2>
     <p>
@@ -25,8 +23,7 @@
             &#8226; Selecionar o atributo de rotação &rarr; Indicar o atributo da camada acima que contém a informação da rotação da simbologia.
         </span>
         <span style="margin-bottom: 10px;">
-            &#8226; Tolerância da distância &rarr; Indicar a distância a ser utilizada no subprocesso de buffer para enquadrar a tolerância da rotina.
-        </span>
+            &#8226; Tolerância da distância (em metros) &rarr; Distância máxima entre o ponto e o trecho de drenagem de referência. </span>
         <span style="color:#ff0000; font-weight: bold;"><u>Atenção</u>: A depender do sistema de referência utilizado, será necessário a indicação da tolerância em graus, para um sistema geográfico, ou em metros, no caso de um sistema projetado.
         </span>
         <span style="margin-bottom: 10px;">

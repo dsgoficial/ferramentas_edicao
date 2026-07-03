@@ -15,18 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-    QgsProcessing,
-    QgsProcessingAlgorithm,
-    QgsProcessingParameterVectorLayer,
-    QgsFeatureRequest,
-    QgsProcessingParameterDistance,
-)
-from qgis import core
 import math
 
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsDistanceArea,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingOutputNumber,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterVectorLayer,
+)
+from qgis import core
+
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+
+# Tipos rotacionados (dominio tipo do elemento hidrografico):
+# 9 Cachoeira, 10 Salto, 11 Catarata, 12 Corredeira
+ROTATED_TYPES = (9, 10, 11, 12)
 
 
 class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
@@ -35,9 +47,10 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
     INPUT_FIELD_LAYER_P = "INPUT_FIELD_LAYER_P"
     INPUT_DRAINAGE = "INPUT_DRAINAGE"
     INPUT_MIN_DIST = "INPUT_MIN_DIST"
+    ROTATED = "ROTATED"
+    NO_DRAINAGE = "NO_DRAINAGE"
 
     def initAlgorithm(self, config=None):
-        # Define the necessary input parameters of the algorithm.
         # Camada de pontos a ter elementos rotacionados
         self.addParameter(
             QgsProcessingParameterVectorLayer(
@@ -58,14 +71,15 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                 defaultValue="simb_rot",
             )
         )
-        # Tolerência da distância
+        # Tolerância: distância máxima ponto-drenagem, em metros no terreno
+        # (convertida para a unidade do CRS da camada automaticamente)
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.INPUT_MIN_DIST,
-                self.tr("Tolerância da distância"),
-                parentParameterName=self.INPUT_LAYER_P,
-                minValue=0,
-                defaultValue=0.00001,
+                self.tr("Tolerância da distância (em metros)"),
+                type=QgsProcessingParameterNumber.Double,
+                minValue=0.0,
+                defaultValue=1.0,
             )
         )
         # Camada de drenagem que serve de referência para a rotação
@@ -77,9 +91,17 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
                 defaultValue="elemnat_trecho_drenagem_l",
             )
         )
+        self.addOutput(
+            QgsProcessingOutputNumber(self.ROTATED, self.tr("Pontos rotacionados"))
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.NO_DRAINAGE,
+                self.tr("Pontos sem drenagem dentro da tolerância"),
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
-        # Process the algorithm.
         pointLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_LAYER_P, context
         )
@@ -89,78 +111,119 @@ class RapidsAndWaterfallRotation(QgsProcessingAlgorithm):
         drainageLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_DRAINAGE, context
         )
-        distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
-
-        self.setRotationFieldOnLayer(
-            pointLayer,
-            rotationField,
-            drainageLayer,
-            distance,
-            [9, 10, 11, 12],
-            feedback,
+        toleranceMeters = self.parameterAsDouble(
+            parameters, self.INPUT_MIN_DIST, context
         )
 
-        return {}
-
-    def setRotationFieldOnLayer(
-        self, pointLayer, rotationField, drainageLayer, distance, filterType, feedback
-    ):
-        for layerFeature in pointLayer.getFeatures():
-            # Excluir pontos que não são previsto serem rotacionados
-            if not (layerFeature["tipo"] in filterType):
-                feedback.pushInfo(
-                    f"Tipo não previsto para ser rotacionado, ignorado: {layerFeature['tipo']}"
-                )
-                continue
-            # Receber a camada de pontos
-            layerGeometry = layerFeature.geometry()
-            # Criar um buffer da geometria do ponto
-            layerGeometryBuffered = layerGeometry.buffer(distance, 5)
-            # Verificar se o buffer se intersecta com a camada de drenagem e rotacionar de acordo com a direção de interseção
-            request = QgsFeatureRequest().setFilterRect(
-                layerGeometryBuffered.boundingBox()
+        # metros no terreno -> unidade do CRS da camada de pontos
+        if pointLayer.crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(
+                QgsCoordinateReferenceSystem("EPSG:3857"),
+                QgsCoordinateTransformContext(),
             )
-            for drainageFeature in drainageLayer.getFeatures(request):
-                drainageFeatureGeometry = drainageFeature.geometry()
-                if not (drainageFeatureGeometry.intersects(layerGeometryBuffered)):
-                    feedback.pushInfo("Geometria não se intersecta")
-                    continue
-                clippedGeometry = drainageFeatureGeometry.clipped(
-                    layerGeometry.buffer(distance, 5).boundingBox()
-                )
-                if not (clippedGeometry.type() == core.QgsWkbTypes.GeometryType.LineGeometry):
-                    continue
+            tolerance = d.convertLengthMeasurement(
+                toleranceMeters, Qgis.DistanceUnit.Degrees
+            )
+        else:
+            tolerance = toleranceMeters
 
-                p1 = layerGeometry.asMultiPoint()[0]
-                p2 = self.getPointWithMaxY(list(clippedGeometry.vertices()))
+        transform = None
+        if drainageLayer.crs() != pointLayer.crs():
+            transform = QgsCoordinateTransform(
+                drainageLayer.crs(), pointLayer.crs(), context.transformContext()
+            )
 
-                if (p2.y() - p1.y()) == 0:
-                    angleDegrees = 0
-                else:
-                    angleRadian = (
-                        math.atan2(p2.x() - p1.x(), p2.y() - p1.y()) - math.pi / 2
-                    )
-                    if angleRadian >= math.pi:
-                        angleRadian -= math.pi
-                    elif angleRadian <= -math.pi:
-                        angleRadian += math.pi
-                    angleDegrees = round(math.degrees(angleRadian))
-                layerFeature[rotationField] = angleDegrees
-                self.updateLayerFeature(pointLayer, layerFeature)
+        fieldIdx = pointLayer.fields().lookupField(rotationField)
+        nRotated = 0
+        nNoDrainage = 0
+        nFeats = pointLayer.featureCount()
+        stepSize = 100 / nFeats if nFeats else 100
 
-    def getPointWithMaxY(self, points):
-        pointMaxY = None
-        maxY = None
-        for point in points:
-            if maxY and maxY > point.y():
+        rotations = {}  # fid -> graus
+        for current, feat in enumerate(pointLayer.getFeatures()):
+            if feedback.isCanceled():
+                return {self.ROTATED: 0, self.NO_DRAINAGE: 0}
+            try:
+                tipo = int(feat["tipo"])
+            except (TypeError, ValueError):
                 continue
-            pointMaxY = point
-            maxY = point.y()
-        return pointMaxY
+            if tipo not in ROTATED_TYPES:
+                continue
 
-    def updateLayerFeature(self, layer, feature):
-        layer.startEditing()
-        layer.updateFeature(feature)
+            geom = feat.geometry()
+            if geom is None or geom.isEmpty():
+                continue
+            # Point ou MultiPoint
+            vertex = geom.vertexAt(0)
+            pointGeom = QgsGeometry.fromPointXY(
+                core.QgsPointXY(vertex.x(), vertex.y())
+            )
+
+            nearest = self._nearestDrainage(
+                drainageLayer, pointGeom, tolerance, transform
+            )
+            if nearest is None:
+                nNoDrainage += 1
+                continue
+
+            # Tangente local no ponto do trecho mais proximo; simbolo
+            # SIMETRICO e PERPENDICULAR ao trecho: azimute - 90, normalizado
+            # para [-90, 90).
+            dist = nearest.lineLocatePoint(pointGeom)
+            azimuth = math.degrees(nearest.interpolateAngle(dist))
+            angle = ((azimuth - 90.0 + 90.0) % 180.0) - 90.0
+            rotations[feat.id()] = round(angle)
+            nRotated += 1
+            feedback.setProgress(current * stepSize)
+
+        pointLayer.startEditing()
+        pointLayer.beginEditCommand("Definindo rotação de corredeira e queda d'água")
+        for fid, angle in rotations.items():
+            pointLayer.changeAttributeValue(fid, fieldIdx, angle)
+        pointLayer.endEditCommand()
+
+        feedback.pushInfo(
+            self.tr(
+                "Pontos rotacionados: {0} | sem drenagem a menos de {1} m: {2}"
+            ).format(nRotated, toleranceMeters, nNoDrainage)
+        )
+        return {self.ROTATED: nRotated, self.NO_DRAINAGE: nNoDrainage}
+
+    @staticmethod
+    def _nearestDrainage(drainageLayer, pointGeom, tolerance, transform):
+        """Geometria do trecho de drenagem mais proximo dentro da tolerancia
+        (no CRS da camada de pontos). Escolha deterministica em confluencias:
+        menor distancia; empate resolvido pelo menor fid."""
+        rect = pointGeom.boundingBox()
+        rect.grow(tolerance)
+        searchRect = rect
+        if transform is not None:
+            searchRect = transform.transformBoundingBox(
+                rect, Qgis.TransformDirection.Reverse
+            )
+        request = QgsFeatureRequest().setFilterRect(searchRect)
+        best = None
+        bestDist = None
+        bestFid = None
+        for feat in drainageLayer.getFeatures(request):
+            geom = QgsGeometry(feat.geometry())
+            if geom is None or geom.isEmpty():
+                continue
+            if transform is not None:
+                geom.transform(transform)
+            dist = geom.distance(pointGeom)
+            if dist > tolerance:
+                continue
+            if (
+                best is None
+                or dist < bestDist - 1e-12
+                or (abs(dist - bestDist) <= 1e-12 and feat.id() < bestFid)
+            ):
+                best = geom
+                bestDist = dist
+                bestFid = feat.id()
+        return best
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
