@@ -16,19 +16,23 @@
  ***************************************************************************/
 """
 
-import itertools
-import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsDistanceArea,
+    QgsFeatureRequest,
+    QgsGeometry,
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterDistance,
+    QgsProcessingOutputNumber,
     QgsProcessingParameterBoolean,
-    QgsProcessingMultiStepFeedback,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterVectorLayer,
 )
 from qgis import core
-import concurrent.futures
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 
@@ -36,6 +40,7 @@ from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 class DefineBuildingRotation(QgsProcessingAlgorithm):
 
     INPUT = "INPUT"
+    # valor historico com typo, mantido por compatibilidade com modelos salvos
     ONLY_SELECTED = "ONLU_SELECTED"
     INPUT_MIN_DIST = "INPUT_MIN_DIST"
     INPUT_FIELD = "INPUT_FIELD"
@@ -44,7 +49,8 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
     INPUT_DRAINAGES = "INPUT_DRAINAGES"
     INPUT_WATER_BODIES = "INPUT_WATER_BODIES"
     INPUT_BUILT_UP_AREAS = "INPUT_BUILT_UP_AREAS"
-    OUTPUT = "OUTPUT"
+    ROTATED = "ROTATED"
+    NO_REFERENCE = "NO_REFERENCE"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -71,12 +77,16 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
                 defaultValue="simb_rot",
             )
         )
+        # Distância máxima até a feição de referência, em metros no terreno
+        # (o parâmetro antigo era em unidades da camada e SEM default — nada
+        # era rotacionado até o operador digitar um valor)
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.INPUT_MIN_DIST,
-                self.tr("Tolerância da distância"),
-                parentParameterName=self.INPUT,
-                minValue=0,
+                self.tr("Tolerância da distância (em metros)"),
+                type=QgsProcessingParameterNumber.Double,
+                minValue=0.0,
+                defaultValue=50.0,
             )
         )
         self.addParameter(
@@ -123,27 +133,56 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
                 defaultValue="cobter_area_edificada_a",
             )
         )
+        self.addOutput(
+            QgsProcessingOutputNumber(self.ROTATED, self.tr("Pontos rotacionados"))
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.NO_REFERENCE,
+                self.tr("Pontos sem referência dentro da tolerância"),
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         buildingsLyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         onlySelected = self.parameterAsBool(parameters, self.ONLY_SELECTED, context)
         rotationField = self.parameterAsStrings(parameters, self.INPUT_FIELD, context)[0]
-        distance = self.parameterAsDouble(parameters, self.INPUT_MIN_DIST, context)
-        self.roadsLyr = self.parameterAsVectorLayer(
-            parameters, self.INPUT_ROADS, context
+        toleranceMeters = self.parameterAsDouble(
+            parameters, self.INPUT_MIN_DIST, context
         )
-        self.railwaysLyr = self.parameterAsVectorLayer(
-            parameters, self.INPUT_RAILWAYS, context
-        )
-        self.drainagesLyr = self.parameterAsVectorLayer(
-            parameters, self.INPUT_DRAINAGES, context
-        )
-        self.waterBodiesLyr = self.parameterAsVectorLayer(
-            parameters, self.INPUT_WATER_BODIES, context
-        )
-        self.builtUpAreasLyr = self.parameterAsVectorLayer(
-            parameters, self.INPUT_BUILT_UP_AREAS, context
-        )
+
+        # metros no terreno -> unidade do CRS da camada de edificações
+        if buildingsLyr.crs().isGeographic():
+            d = QgsDistanceArea()
+            d.setSourceCrs(
+                QgsCoordinateReferenceSystem("EPSG:3857"),
+                QgsCoordinateTransformContext(),
+            )
+            distance = d.convertLengthMeasurement(
+                toleranceMeters, Qgis.DistanceUnit.Degrees
+            )
+        else:
+            distance = toleranceMeters
+
+        # Ordem = PRIORIDADE cartográfica: a edificação orienta-se à rodovia
+        # se houver uma na tolerância; senão ferrovia; e assim por diante.
+        self.referenceLayers = []
+        for paramName in (
+            self.INPUT_ROADS,
+            self.INPUT_RAILWAYS,
+            self.INPUT_DRAINAGES,
+            self.INPUT_WATER_BODIES,
+            self.INPUT_BUILT_UP_AREAS,
+        ):
+            layer = self.parameterAsVectorLayer(parameters, paramName, context)
+            if layer is None:
+                continue
+            transform = None
+            if layer.crs() != buildingsLyr.crs():
+                transform = QgsCoordinateTransform(
+                    layer.crs(), buildingsLyr.crs(), context.transformContext()
+                )
+            self.referenceLayers.append((layer, transform))
 
         iterator = (
             buildingsLyr.getFeatures()
@@ -156,80 +195,77 @@ class DefineBuildingRotation(QgsProcessingAlgorithm):
             else buildingsLyr.selectedFeatureCount()
         )
         if nFeats == 0:
-            return {}
+            return {self.ROTATED: 0, self.NO_REFERENCE: 0}
         stepSize = 100 / nFeats
-        multiStepFeedback = QgsProcessingMultiStepFeedback(2, feedback)
-        multiStepFeedback.setCurrentStep(0)
-        multiStepFeedback.setProgressText("Submetendo tarefas para as threads")
-        futures = set()
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() - 1)
 
-        def evaluate(pointFeature):
-            if feedback.isCanceled():
-                return None, None
-            pointGeometry = pointFeature.geometry()
-            point = pointGeometry.asMultiPoint()[0]
-            nearestGeometry = self.getNearestGeometry(distance, pointGeometry)
-            if not nearestGeometry:
-                return None, None
-            projectedPoint = core.QgsGeometryUtils.closestPoint(
-                nearestGeometry.constGet(), core.QgsPoint(point.x(), point.y())
-            )
-            angle = core.QgsPoint(point.x(), point.y()).azimuth(projectedPoint) + 180
-            return pointFeature, angle
+        fieldIdx = buildingsLyr.fields().lookupField(rotationField)
+        rotations = {}
+        nNoReference = 0
 
         for current, pointFeature in enumerate(iterator):
-            if multiStepFeedback.isCanceled():
-                return {}
-            futures.add(pool.submit(evaluate, pointFeature))
-            multiStepFeedback.setProgress(current * stepSize)
+            if feedback.isCanceled():
+                return {self.ROTATED: 0, self.NO_REFERENCE: 0}
+            pointGeometry = pointFeature.geometry()
+            if pointGeometry is None or pointGeometry.isEmpty():
+                continue
+            vertex = pointGeometry.vertexAt(0)
+            point = core.QgsPoint(vertex.x(), vertex.y())
+            pointGeom = QgsGeometry.fromPointXY(core.QgsPointXY(vertex.x(), vertex.y()))
 
-        multiStepFeedback.setCurrentStep(1)
-        multiStepFeedback.setProgressText("Rotacionando símbolos")
+            nearestGeometry = self.getNearestGeometry(distance, pointGeom)
+            if nearestGeometry is None:
+                nNoReference += 1
+                continue
+            projectedPoint = core.QgsGeometryUtils.closestPoint(
+                nearestGeometry.constGet(), point
+            )
+            angle = point.azimuth(projectedPoint) + 180
+            rotations[pointFeature.id()] = angle
+            feedback.setProgress(current * stepSize)
+
         buildingsLyr.startEditing()
         buildingsLyr.beginEditCommand("Rotacionando simbolos")
-        for current, future in enumerate(concurrent.futures.as_completed(futures)):
-            if multiStepFeedback.isCanceled():
-                break
-            pointFeature, angle = future.result()
-            if pointFeature is None or pointFeature[rotationField] == angle:
-                continue
-            pointFeature[rotationField] = angle
-            buildingsLyr.updateFeature(pointFeature)
-            multiStepFeedback.setProgress(current * stepSize)
-
+        for fid, angle in rotations.items():
+            buildingsLyr.changeAttributeValue(fid, fieldIdx, angle)
         buildingsLyr.endEditCommand()
 
-        return {}
+        feedback.pushInfo(
+            self.tr(
+                "Pontos rotacionados: {0} | sem referência a menos de {1} m: {2}"
+            ).format(len(rotations), toleranceMeters, nNoReference)
+        )
+        return {self.ROTATED: len(rotations), self.NO_REFERENCE: nNoReference}
 
     def getNearestGeometry(self, distance, pointGeometry):
-        nearestGeometry = None
-        shortestDistance = None
-        buffer = pointGeometry.buffer(distance, -1)
-        bbox = buffer.boundingBox()
-
-        for layer in itertools.chain(
-            [
-                self.roadsLyr,
-                self.railwaysLyr,
-                self.drainagesLyr,
-                self.waterBodiesLyr,
-                self.builtUpAreasLyr,
-            ]
-        ):
-            for feature in layer.getFeatures(bbox):
-                geom = feature.geometry()
-                if not geom.intersects(buffer):
+        """Geometria mais próxima dentro da tolerância, respeitando a ordem
+        de prioridade das camadas de referência. Dentro de uma camada, a
+        menor distância vence."""
+        rect = pointGeometry.boundingBox()
+        rect.grow(distance)
+        for layer, transform in self.referenceLayers:
+            searchRect = rect
+            if transform is not None:
+                searchRect = transform.transformBoundingBox(
+                    rect, Qgis.TransformDirection.Reverse
+                )
+            nearestGeometry = None
+            shortestDistance = None
+            request = QgsFeatureRequest().setFilterRect(searchRect)
+            for feature in layer.getFeatures(request):
+                geom = QgsGeometry(feature.geometry())
+                if geom is None or geom.isEmpty():
                     continue
+                if transform is not None:
+                    geom.transform(transform)
                 distanceFound = pointGeometry.distance(geom)
                 if distanceFound > distance:
                     continue
-                elif shortestDistance is None or distanceFound < shortestDistance:
+                if shortestDistance is None or distanceFound < shortestDistance:
                     nearestGeometry = geom
                     shortestDistance = distanceFound
-            if shortestDistance is not None:
-                break
-        return nearestGeometry
+            if nearestGeometry is not None:
+                return nearestGeometry
+        return None
 
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
