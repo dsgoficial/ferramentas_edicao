@@ -64,7 +64,6 @@ from .setSobrepositionLegalBoundary import SetSobrepositionLegalBoundary
 from .placePointOfChange import PlacePointOfChange
 from .verifySymbolOverlap import VerifySymbolOverlap
 from .fixLabelPositionCRS import FixLabelPositionCRS
-from .sizeLabelLarge import SizeLabelLarge
 from .runRemoteProductExportAlgorithm import RunRemoteProductExportAlgorithm
 from .placeMasterContourLabels import PlaceMasterContourLabels
 from .reprojectAttributes import ReprojectAttributesAlgorithm
@@ -119,7 +118,6 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(IdentifyLabelOverlap())
         self.addAlgorithm(IdentifyLabelsIntersectingGrid())
         self.addAlgorithm(FixLabelPositionCRS())
-        self.addAlgorithm(SizeLabelLarge())
         self.addAlgorithm(IdentifyLabelsOutsideGeographicBoundary())
         self.addAlgorithm(RunRemoteProductExportAlgorithm())
         self.addAlgorithm(PlaceMasterContourLabels())
