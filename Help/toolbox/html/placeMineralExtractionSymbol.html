@@ -12,7 +12,7 @@
     <hr />
     <h2 class="western">Descrição</h2>
     <h4 class="western" align="center" style="border: none; padding: 0cm">
-        O algoritmo insere na camada de edição as simbologias previstas na RDG para cada feição de extração mineral com geometria do tipo área.
+        O algoritmo insere na camada de edição as simbologias previstas na RDG para cada feição de extração mineral com geometria do tipo área. O símbolo é posicionado no ponto mais interior do polígono e só é inserido quando cabe dentro da feição na escala de edição. Símbolos de extração mineral de execuções anteriores dentro das feições processadas são removidos antes da inserção (a rotina pode ser reexecutada sem duplicar símbolos; ajustes manuais de posição nesses símbolos são refeitos).
     </h4>
     <hr />
     <h2>Parâmetros</h2>
@@ -25,6 +25,9 @@
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar o atributo de "visibilidade" da camada de entrada &rarr; Indicar o atributo da camada de entrada que contém a informação sobre a visibilidade.
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Selecione a escala de edição &rarr; Escala usada para verificar se o símbolo cabe dentro da feição.
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar camada de edição &rarr; Selecionar a camada que contém as simbologias de representação.
@@ -42,6 +45,9 @@
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar o atributo de "visibilidade" da camada de entrada &rarr; visivel
+        </span>
+        <span style="margin-bottom: 10px;">
+            &#8226; Selecione a escala de edição &rarr; 1:25.000
         </span>
         <span style="margin-bottom: 10px;">
             &#8226; Selecionar camada de edição &rarr; edicao_simb_area_p
