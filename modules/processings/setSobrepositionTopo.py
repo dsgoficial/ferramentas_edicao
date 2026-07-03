@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from qgis.core import (
     QgsProcessing,
-    QgsFeature,
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingOutputNumber,
     QgsProcessingParameterVectorLayer,
 )
 
@@ -15,6 +16,8 @@ class SetSobrepositionTopo(BaseSobreposition):
     INPUT_LAYER_TO_CHECK_DRE = "INPUT_LAYER_TO_CHECK_DRE"
     INPUT_LAYER_TO_CHECK_VIA = "INPUT_LAYER_TO_CHECK_VIA"
     INPUT_LAYER_TO_CHECK_FER = "INPUT_LAYER_TO_CHECK_FER"
+    SOBREPOSTOS = "SOBREPOSTOS"
+    NAO_SOBREPOSTOS = "NAO_SOBREPOSTOS"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -65,6 +68,16 @@ class SetSobrepositionTopo(BaseSobreposition):
                 defaultValue="infra_ferrovia_l",
             )
         )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.SOBREPOSTOS, self.tr("Trechos sobrepostos (1)")
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.NAO_SOBREPOSTOS, self.tr("Trechos não sobrepostos (2)")
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(
@@ -84,26 +97,62 @@ class SetSobrepositionTopo(BaseSobreposition):
             parameters, self.INPUT_LAYER_TO_CHECK_FER, context
         )
 
-        merged = self.filterAndMergeLayers(layer_dre, layer_via, layer_fer)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(4, feedback)
+        multiStepFeedback.setCurrentStep(0)
+        multiStepFeedback.pushInfo(self.tr("Preparando referências"))
+        merged = self.filterAndMergeLayers(
+            layer_dre, layer_via, layer_fer, context, multiStepFeedback
+        )
+        # moldura dissolvida TOTALMENTE: bordas internas entre folhas nao
+        # devem apagar limites
+        moldura_merged = self.runDissolve(
+            moldura, fields=[], context=context, feedback=multiStepFeedback
+        )
+        moldura_linha = self.runPolyToLine(moldura_merged, context, multiStepFeedback)
 
-        moldura_merged = self.runDissolve(moldura)
-        polygon_layer = self.runDissolve(polygon_layer)
-        polygon_cliped = self.runClip(polygon_layer, moldura_merged)
+        multiStepFeedback.setCurrentStep(1)
+        multiStepFeedback.pushInfo(self.tr("Derivando contorno dos limites"))
+        polygon_layer = self.runDissolve(
+            polygon_layer, context=context, feedback=multiStepFeedback
+        )
+        polygon_cliped = self.runClip(
+            polygon_layer, moldura_merged, context, multiStepFeedback
+        )
+        line_layer = self.runDifference(
+            self.runPolyToLine(polygon_cliped, context, multiStepFeedback),
+            moldura_linha,
+            context,
+            multiStepFeedback,
+        )
 
-        moldura_linha = self.runPolyToLine(moldura_merged)
-        line_layer = self.runDifference(self.runPolyToLine(polygon_cliped), moldura_linha)
+        multiStepFeedback.setCurrentStep(2)
+        multiStepFeedback.pushInfo(self.tr("Classificando sobreposição"))
+        intersect = self.runIntersect(line_layer, merged, context, multiStepFeedback)
+        difference = self.runDifference(line_layer, merged, context, multiStepFeedback)
+        if multiStepFeedback.isCanceled():
+            return {self.SOBREPOSTOS: 0, self.NAO_SOBREPOSTOS: 0}
 
-        layer.startEditing()
-        layer.beginEditCommand("Iniciando edição.")
-        intersect = self.runIntersect(line_layer, merged)
-        difference = self.runDifference(line_layer, merged)
+        newFeats = self.buildFeaturesFromSobreposition(
+            layer, intersect, sobreposto_value=1
+        )
+        nSobrepostos = len(newFeats)
+        newFeats += self.buildFeaturesFromSobreposition(
+            layer, difference, sobreposto_value=2
+        )
 
-        layer.deleteFeatures([feat.id() for feat in layer.getFeatures()])
-        self.populateLayerFromSobreposition(layer, intersect, sobreposto_value=1)
-        self.populateLayerFromSobreposition(layer, difference, sobreposto_value=2)
+        multiStepFeedback.setCurrentStep(3)
+        multiStepFeedback.pushInfo(self.tr("Gravando saída"))
+        self.rewriteLayer(layer, newFeats, "Configurando sobreposição")
 
-        layer.endEditCommand()
-        return {}
+        multiStepFeedback.pushInfo(
+            self.tr("Trechos sobrepostos: {0} | não sobrepostos: {1}").format(
+                nSobrepostos, len(newFeats) - nSobrepostos
+            )
+        )
+        return {
+            self.SOBREPOSTOS: nSobrepostos,
+            self.NAO_SOBREPOSTOS: len(newFeats) - nSobrepostos,
+        }
 
     def createInstance(self):
         return SetSobrepositionTopo()

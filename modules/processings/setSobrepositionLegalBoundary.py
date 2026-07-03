@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from qgis.core import (
     QgsProcessing,
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingOutputNumber,
     QgsProcessingParameterVectorLayer,
 )
 
@@ -13,6 +15,8 @@ class SetSobrepositionLegalBoundary(BaseSobreposition):
     INPUT_LAYER_TO_CHECK_DRE = "INPUT_LAYER_TO_CHECK_DRE"
     INPUT_LAYER_TO_CHECK_VIA = "INPUT_LAYER_TO_CHECK_VIA"
     INPUT_LAYER_TO_CHECK_FER = "INPUT_LAYER_TO_CHECK_FER"
+    SOBREPOSTOS = "SOBREPOSTOS"
+    NAO_SOBREPOSTOS = "NAO_SOBREPOSTOS"
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -26,7 +30,9 @@ class SetSobrepositionLegalBoundary(BaseSobreposition):
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_LAYER_SOBREPOSITION_LIM,
-                self.tr("Selecionar de edicao_limite_legal"),
+                self.tr(
+                    "Selecionar camada de limite legal (transformada in-place)"
+                ),
                 [QgsProcessing.TypeVectorLine],
                 defaultValue="llp_limite_legal_l",
             )
@@ -55,6 +61,16 @@ class SetSobrepositionLegalBoundary(BaseSobreposition):
                 defaultValue="infra_ferrovia_l",
             )
         )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.SOBREPOSTOS, self.tr("Trechos sobrepostos (1)")
+            )
+        )
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.NAO_SOBREPOSTOS, self.tr("Trechos não sobrepostos (2)")
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         layer_moldura = self.parameterAsVectorLayer(
@@ -73,24 +89,57 @@ class SetSobrepositionLegalBoundary(BaseSobreposition):
             parameters, self.INPUT_LAYER_TO_CHECK_FER, context
         )
 
-        merged = self.filterAndMergeLayers(layer_dre, layer_via, layer_fer)
-        self.runCreateSpatialIndex(merged)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(4, feedback)
+        multiStepFeedback.setCurrentStep(0)
+        multiStepFeedback.pushInfo(self.tr("Preparando referências"))
+        merged = self.filterAndMergeLayers(
+            layer_dre, layer_via, layer_fer, context, multiStepFeedback
+        )
+        self.runCreateSpatialIndex(merged, context, multiStepFeedback)
+        moldura_linha = self.prepareMolduraLine(
+            layer_moldura, context, multiStepFeedback
+        )
 
-        moldura_linha = self.prepareMolduraLine(layer_moldura)
+        multiStepFeedback.setCurrentStep(1)
+        multiStepFeedback.pushInfo(self.tr("Removendo trechos na moldura"))
+        line_layer_diff = self.runDifference(
+            layer_lim, moldura_linha, context, multiStepFeedback
+        )
 
-        line_layer_diff = self.runDifference(layer_lim, moldura_linha)
-        layer_lim.startEditing()
-        layer_lim.beginEditCommand("Iniciando edição.")
+        multiStepFeedback.setCurrentStep(2)
+        multiStepFeedback.pushInfo(self.tr("Classificando sobreposição"))
+        intersect = self.runIntersect(
+            line_layer_diff, merged, context, multiStepFeedback
+        )
+        difference = self.runDifference(
+            line_layer_diff, merged, context, multiStepFeedback
+        )
+        if multiStepFeedback.isCanceled():
+            return {self.SOBREPOSTOS: 0, self.NAO_SOBREPOSTOS: 0}
 
-        intersect = self.runIntersect(line_layer_diff, merged)
-        difference = self.runDifference(line_layer_diff, merged)
+        # As novas feições ficam prontas ANTES de apagar as antigas — um erro
+        # no meio não deixa a camada de limite legal (fonte!) pela metade.
+        newFeats = self.buildFeaturesFromSobreposition(
+            layer_lim, intersect, sobreposto_value=1
+        )
+        nSobrepostos = len(newFeats)
+        newFeats += self.buildFeaturesFromSobreposition(
+            layer_lim, difference, sobreposto_value=2
+        )
 
-        layer_lim.deleteFeatures([feat.id() for feat in layer_lim.getFeatures()])
-        self.populateLayerFromSobreposition(layer_lim, intersect, sobreposto_value=1)
-        self.populateLayerFromSobreposition(layer_lim, difference, sobreposto_value=2)
+        multiStepFeedback.setCurrentStep(3)
+        multiStepFeedback.pushInfo(self.tr("Gravando saída"))
+        self.rewriteLayer(layer_lim, newFeats, "Configurando sobreposição")
 
-        layer_lim.endEditCommand()
-        return {}
+        multiStepFeedback.pushInfo(
+            self.tr("Trechos sobrepostos: {0} | não sobrepostos: {1}").format(
+                nSobrepostos, len(newFeats) - nSobrepostos
+            )
+        )
+        return {
+            self.SOBREPOSTOS: nSobrepostos,
+            self.NAO_SOBREPOSTOS: len(newFeats) - nSobrepostos,
+        }
 
     def createInstance(self):
         return SetSobrepositionLegalBoundary()

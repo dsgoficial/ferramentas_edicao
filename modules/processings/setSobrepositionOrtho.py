@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from qgis.core import (
-    QgsProcessing,
     QgsFeature,
+    QgsProcessing,
+    QgsProcessingException,
+    QgsProcessingMultiStepFeedback,
     QgsProcessingParameterVectorLayer,
 )
 
@@ -136,8 +138,15 @@ class SetSobrepositionOrtho(BaseSobreposition):
             parameters, self.INPUT_LAYER_TO_CHECK_FER, context
         )
 
-        merged = self.filterAndMergeLayers(layer_dre, layer_via, layer_fer)
-        self.runCreateSpatialIndex(merged)
+        multiStepFeedback = QgsProcessingMultiStepFeedback(
+            1 + len(polygons_layers), feedback
+        )
+        multiStepFeedback.setCurrentStep(0)
+        multiStepFeedback.pushInfo(self.tr("Preparando referências"))
+        merged = self.filterAndMergeLayers(
+            layer_dre, layer_via, layer_fer, context, multiStepFeedback
+        )
+        self.runCreateSpatialIndex(merged, context, multiStepFeedback)
 
         layer_map_dict = {
             "llp_area_pub_militar_a": "edicao_area_pub_militar_l",
@@ -146,40 +155,71 @@ class SetSobrepositionOrtho(BaseSobreposition):
         }
         edit_layer_dict = {lyr.name(): lyr for lyr in layers_sobreposition_list}
 
-        moldura_linha = self.prepareMolduraLine(layer_moldura)
+        moldura_linha = self.prepareMolduraLine(
+            layer_moldura, context, multiStepFeedback
+        )
 
-        for polygon_layer in polygons_layers:
-            dissolved_polygon_layer = self.runDissolve(polygon_layer)
-            line_layer = self.runPolyToLine(dissolved_polygon_layer)
-            line_layer_diff = self.runDifference(line_layer, moldura_linha)
-            polygon_boundary_layer = edit_layer_dict[
-                layer_map_dict[polygon_layer.name()]
-            ]
-            polygon_boundary_layer.startEditing()
-            polygon_boundary_layer.beginEditCommand("Iniciando edição.")
+        for step, polygon_layer in enumerate(polygons_layers, start=1):
+            if multiStepFeedback.isCanceled():
+                return {}
+            multiStepFeedback.setCurrentStep(step)
+            multiStepFeedback.pushInfo(
+                self.tr("Processando {0}").format(polygon_layer.name())
+            )
+            editName = layer_map_dict.get(polygon_layer.name())
+            if editName is None or editName not in edit_layer_dict:
+                raise QgsProcessingException(
+                    self.tr(
+                        "Sem correspondência entre a camada de polígonos '{0}' e "
+                        "uma camada de edição (esperado: {1})."
+                    ).format(polygon_layer.name(), layer_map_dict)
+                )
+            dissolved_polygon_layer = self.runDissolve(
+                polygon_layer, context=context, feedback=multiStepFeedback
+            )
+            line_layer = self.runPolyToLine(
+                dissolved_polygon_layer, context, multiStepFeedback
+            )
+            line_layer_diff = self.runDifference(
+                line_layer, moldura_linha, context, multiStepFeedback
+            )
+            polygon_boundary_layer = edit_layer_dict[editName]
 
-            intersect = self.runIntersect(line_layer_diff, merged)
-            self.createNewFeaturesFromLayer(
+            intersect = self.runIntersect(
+                line_layer_diff, merged, context, multiStepFeedback
+            )
+            difference = self.runDifference(
+                line_layer_diff, merged, context, multiStepFeedback
+            )
+            newFeats = self.buildNewFeaturesFromLayer(
                 polygon_boundary_layer, intersect, polygon_layer.name(), sobreposto=1
             )
-            difference = self.runDifference(line_layer_diff, merged)
-            self.createNewFeaturesFromLayer(
+            nSobrepostos = len(newFeats)
+            newFeats += self.buildNewFeaturesFromLayer(
                 polygon_boundary_layer, difference, polygon_layer.name(), sobreposto=2
             )
-            polygon_boundary_layer.endEditCommand()
+            # Reescreve a camada de edição (antes o processing so ADICIONAVA —
+            # reexecutar duplicava todas as linhas)
+            self.rewriteLayer(
+                polygon_boundary_layer, newFeats, "Configurando sobreposição"
+            )
+            multiStepFeedback.pushInfo(
+                self.tr(
+                    "{0}: sobrepostos {1} | não sobrepostos {2}"
+                ).format(editName, nSobrepostos, len(newFeats) - nSobrepostos)
+            )
 
         return {}
 
-    def createNewFeaturesFromLayer(
+    def buildNewFeaturesFromLayer(
         self, polygon_boundary_layer, layer, layer_name, sobreposto
     ):
-        featList = [
+        return [
             self.createNewFeat(
                 polygon_boundary_layer, feature, layer_name, sobreposto=sobreposto
             )
             for feature in layer.getFeatures()
         ]
-        polygon_boundary_layer.addFeatures(featList)
 
     def createNewFeat(self, polygon_boundary_layer, feature, layer_name, sobreposto=1):
         feat = QgsFeature(polygon_boundary_layer.fields())
