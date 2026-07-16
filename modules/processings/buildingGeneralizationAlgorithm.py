@@ -75,6 +75,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
     MAX_ITERATIONS = "MAX_ITERATIONS"
     ENABLE_DISPLACEMENT = "ENABLE_DISPLACEMENT"
     GENERIC_EXPRESSION = "GENERIC_EXPRESSION"
+    COMMIT_CHANGES = "COMMIT_CHANGES"
     FLAGS = "FLAGS"
 
     # Force system constants
@@ -83,6 +84,9 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
     ORIGIN_ATTRACTION_STRENGTH = 0.1
     INITIAL_DAMPING = 0.8
     CONVERGENCE_FRACTION = 0.01
+    # Fração do símbolo somada à repulsão para o par ultrapassar o limiar de conflito
+    # em vez de estacionar sobre ele.
+    SEPARATION_MARGIN_FRACTION = 0.05
 
     def name(self):
         return "buildinggeneralizationalgorithm"
@@ -219,6 +223,16 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.COMMIT_CHANGES,
+                self.tr(
+                    "Salvar as alterações na camada "
+                    "(desmarcado, ficam pendentes na edição para revisão e desfazer)"
+                ),
+                defaultValue=False,
+            )
+        )
+        self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.FLAGS,
                 self.tr("Edificações não genéricas com conflitos irresolvíveis (flags)"),
@@ -256,6 +270,9 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
         maxIterations = self.parameterAsInt(parameters, self.MAX_ITERATIONS, context)
         genericExpression = self.parameterAsExpression(
             parameters, self.GENERIC_EXPRESSION, context
+        )
+        commitChanges = self.parameterAsBoolean(
+            parameters, self.COMMIT_CHANGES, context
         )
 
         visFieldIdx = buildingLayer.fields().indexOf(visibilityField)
@@ -422,6 +439,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             buildingLayer, buildings, idsToHide, idsToFlag,
             visFieldIdx, flagSink, multiFeedback,
             inverseTransform=inverseTransform if enableDisplacement else None,
+            commitChanges=commitChanges,
         )
 
         # Stats
@@ -761,7 +779,10 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             return
 
         convergenceThreshold = fullSize * self.CONVERGENCE_FRACTION
-        random.seed(42)
+        separationMargin = fullSize * self.SEPARATION_MARGIN_FRACTION
+        # gerador próprio, com semente fixa: o resultado tem que ser reproduzível sem
+        # mexer no estado global do random, compartilhado com o resto da sessão QGIS
+        rng = random.Random(42)
 
         # Pre-compute block centroids
         blockCentroids = {}
@@ -784,10 +805,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
                 fx, fy = 0.0, 0.0
                 myConflicts = conflicts.get(i, set())
                 hasForbidden = buildings[i]["conflictsWithForbidden"]
-
-                if not myConflicts and not hasForbidden:
-                    forces.append((0.0, 0.0))
-                    continue
+                inConflict = bool(myConflicts) or hasForbidden
 
                 pt = buildings[i]["curPoint"]
 
@@ -800,13 +818,24 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
                     overlapY = fullSize - abs(dy)
                     if overlapX <= 0 or overlapY <= 0:
                         continue
-                    # Push along axis of minimum penetration (each building absorbs half)
+                    # Push along axis of minimum penetration (each building absorbs half).
+                    # A margem faz o par se separar de fato: repelir só pelo overlap
+                    # deixa a força ir a zero exatamente sobre o limiar de conflito, e
+                    # os dois descansam colados.
                     if overlapX < overlapY:
                         pushDir = 1.0 if dx >= 0 else -1.0
-                        fx += pushDir * overlapX * self.NEIGHBOR_REPULSION_FACTOR
+                        fx += (
+                            pushDir
+                            * (overlapX + separationMargin)
+                            * self.NEIGHBOR_REPULSION_FACTOR
+                        )
                     else:
                         pushDir = 1.0 if dy >= 0 else -1.0
-                        fy += pushDir * overlapY * self.NEIGHBOR_REPULSION_FACTOR
+                        fy += (
+                            pushDir
+                            * (overlapY + separationMargin)
+                            * self.NEIGHBOR_REPULSION_FACTOR
+                        )
 
                 if hasForbidden and forbiddenEngine is not None:
                     aabb = self._makeAABB(pt, halfSize)
@@ -823,14 +852,28 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
                                 fx += (dx / dist) * pushMag
                                 fy += (dy / dist) * pushMag
                             else:
-                                fx += random.uniform(-1, 1) * pushMag
-                                fy += random.uniform(-1, 1) * pushMag
+                                # centro exatamente sobre o centro da interseção: sem
+                                # direção a seguir, sorteia uma. O ângulo é sorteado, e
+                                # não o par (x, y), para o empurrão ter a mesma
+                                # magnitude em qualquer direção.
+                                angle = rng.uniform(0.0, 2.0 * math.pi)
+                                fx += math.cos(angle) * pushMag
+                                fy += math.sin(angle) * pushMag
 
-                origPt = buildings[i]["origPoint"]
-                dx = origPt.x() - pt.x()
-                dy = origPt.y() - pt.y()
-                fx += dx * self.ORIGIN_ATTRACTION_STRENGTH
-                fy += dy * self.ORIGIN_ATTRACTION_STRENGTH
+                if not inConflict:
+                    # Sem conflito, a edificação relaxa de volta para a origem. Essa
+                    # atração fica fora enquanto há conflito: ela é proporcional ao
+                    # deslocamento e não some quando o overlap some, então equilibrava
+                    # a repulsão antes da separação necessária e o par estacionava
+                    # ainda em conflito.
+                    origPt = buildings[i]["origPoint"]
+                    dx = origPt.x() - pt.x()
+                    dy = origPt.y() - pt.y()
+                    if abs(dx) < 1e-9 and abs(dy) < 1e-9:
+                        forces.append((0.0, 0.0))
+                        continue
+                    fx += dx * self.ORIGIN_ATTRACTION_STRENGTH
+                    fy += dy * self.ORIGIN_ATTRACTION_STRENGTH
 
                 fx *= damping
                 fy *= damping
@@ -918,7 +961,8 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             if maxMovement < convergenceThreshold and iteration > 5:
                 feedback.pushInfo(
                     self.tr(
-                        f"  Convergiu na iteração {iteration} "
+                        f"  Estabilizou na iteração {iteration} com "
+                        f"{currentConflictCount} conflitos restantes "
                         f"(movimento máximo: {maxMovement:.6f})"
                     )
                 )
@@ -1078,7 +1122,11 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
             ]
             stillConflictsWithForbidden = buildings[i]["conflictsWithForbidden"]
 
-            if not activeConflicts and not stillConflictsWithForbidden and not buildings[i]["noSpace"]:
+            # noSpace não entra aqui de propósito: ele diz que a busca não achou
+            # posição livre lá atrás, quando ainda havia todas as vizinhas em volta.
+            # Se ocultar as genéricas esvaziou os conflitos desta, ela está boa onde
+            # está — considerar o noSpace velho sinalizaria um problema já resolvido.
+            if not activeConflicts and not stillConflictsWithForbidden:
                 continue
 
             if buildings[i]["isGeneric"]:
@@ -1095,6 +1143,7 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
     def applyResults(
         self, buildingLayer, buildings, idsToHide, idsToFlag,
         visFieldIdx, flagSink, feedback, inverseTransform=None,
+        commitChanges=False,
     ):
         # Write flagged features to FLAGS sink (re-read from layer)
         flagFeatIds = {buildings[idx]["featId"] for idx in idsToFlag}
@@ -1137,9 +1186,23 @@ class BuildingGeneralizationAlgorithm(QgsProcessingAlgorithm):
 
         buildingLayer.endEditCommand()
 
+        if commitChanges:
+            if not buildingLayer.commitChanges():
+                errors = "; ".join(buildingLayer.commitErrors())
+                raise QgsProcessingException(
+                    self.tr(f"Não foi possível salvar as alterações: {errors}")
+                )
+            estado = self.tr("salvas na camada")
+        else:
+            # As alterações ficam pendentes de propósito, para poderem ser revistas e
+            # desfeitas antes de virarem definitivas. Marque COMMIT_CHANGES para salvar.
+            estado = self.tr(
+                "pendentes na edição da camada (marque a opção de salvar para gravá-las)"
+            )
+
         feedback.pushInfo(
             self.tr(
-                f"Aplicadas {len(displacements)} alterações de geometria "
-                f"e {len(hideIds)} alterações de visibilidade in-place"
+                f"{len(displacements)} alterações de geometria e "
+                f"{len(hideIds)} de visibilidade {estado}"
             )
         )
