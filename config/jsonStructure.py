@@ -624,7 +624,33 @@ data_structure = {
                     "required": True,
                 },
             ],
-            "required": True,
+            "required": False,
+        },
+        {
+            "key": "atualidade_proveniencia",
+            "type": list,
+            "children": [
+                {"key": "tema", "type": str, "children": None, "required": True},
+                {
+                    "key": "ano_predominante",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+                {
+                    "key": "confiabilidade",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+                {
+                    "key": "fonte_principal",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+            ],
+            "required": False,
         },
         {
             "key": "sensores",
@@ -801,7 +827,33 @@ data_structure = {
                     "required": True,
                 },
             ],
-            "required": True,
+            "required": False,
+        },
+        {
+            "key": "atualidade_proveniencia",
+            "type": list,
+            "children": [
+                {"key": "tema", "type": str, "children": None, "required": True},
+                {
+                    "key": "ano_predominante",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+                {
+                    "key": "confiabilidade",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+                {
+                    "key": "fonte_principal",
+                    "type": str,
+                    "children": None,
+                    "required": True,
+                },
+            ],
+            "required": False,
         },
         {
             "key": "info_tecnica",

@@ -58,7 +58,15 @@ class Table(IComponent, ComponentUtils):
         composition = context.composition
         data = context.data
         mapAreaFeature = context.mapAreaFeature
-        self.customEtapa(composition, data.get("fases", ()))
+        # Na carta militar (produto expedito, recortado da base contínua) o quadro
+        # de fases não descreve o produto: não há uma passada de produção, e sim um
+        # recorte instantâneo de feições de datas e fontes heterogêneas. O mesmo
+        # espaço passa a exibir o quadro de atualidade e proveniência. Sem o dado
+        # no JSON, mantém-se o quadro de fases.
+        if self.isMilitaryProduct(data) and data.get("atualidade_proveniencia"):
+            self.customAtualidadeProveniencia(composition, data)
+        else:
+            self.customEtapa(composition, data.get("fases", ()))
         self.customSensores(composition, data.get("sensores", ()))
         self.customTecnicalInfo(composition, data, mapAreaFeature)
         self.omInfoTable(composition, data, mapAreaFeature)
@@ -141,6 +149,91 @@ class Table(IComponent, ComponentUtils):
 
         manualTable.setTableContents(rows)
         manualTable.setColumnWidths([45.1, 52.8, 12.1])
+        manualTable.setIncludeTableHeader(False)
+        manualTable.setShowGrid(True)
+        manualTable.setGridStrokeWidth(0.1)
+        manualTable.setCellMargin(0.5)
+        manualTable.setWrapBehavior(QgsLayoutTable.WrapBehavior.WrapText)
+        manualTable.refresh()
+
+    @staticmethod
+    def isMilitaryProduct(data: dict) -> bool:
+        return data.get("tipo_produto") in (
+            "Carta Topográfica Militar",
+            "Carta Ortoimagem Militar",
+        )
+
+    def customAtualidadeProveniencia(self, composition: QgsPrintLayout, data: dict):
+        """Preenche, no espaço do quadro de fases, o quadro de atualidade e
+        proveniência da carta militar: uma linha por tema, com o ano predominante,
+        a confiabilidade predominante e a fonte principal das feições daquele
+        recorte. Alimentado pela chave "atualidade_proveniencia" do JSON; a
+        situação da base que encabeça o quadro é a data do dado, ou seja, a
+        "info_tecnica.data_criacao".
+        Args:
+            composition: QgsPrintLayout
+            data: dict holding the map info
+        """
+        frame = composition.itemById("label_tabela_etapas")
+        if frame is None:
+            return
+        manualTable = frame.multiFrame()
+        if not isinstance(manualTable, QgsLayoutItemManualTable):
+            return
+
+        main_title_fmt = QgsTextFormat()
+        main_title_fmt.setFont(QFont("Noto Sans"))
+        main_title_fmt.setSize(10)
+        main_title_fmt.setForcedBold(True)
+
+        title_fmt = QgsTextFormat()
+        title_fmt.setFont(QFont("Noto Sans"))
+        title_fmt.setSize(7)
+        title_fmt.setForcedBold(True)
+
+        data_fmt = QgsTextFormat()
+        data_fmt.setFont(QFont("Noto Sans"))
+        data_fmt.setSize(7)
+
+        def mc(text, fmt, align=Qt.AlignmentFlag.AlignLeft, col_span=1, row_span=1):
+            c = QgsTableCell(str(text) if text is not None else "")
+            c.setTextFormat(fmt)
+            c.setHorizontalAlignment(align)
+            if col_span != 1 or row_span != 1:
+                c.setSpan(row_span, col_span)
+            return c
+
+        def spanRow(text, fmt):
+            return [
+                mc(text, fmt, Qt.AlignmentFlag.AlignCenter, col_span=4),
+                mc("", fmt),
+                mc("", fmt),
+                mc("", fmt),
+            ]
+
+        rows = [spanRow("ATUALIDADE E PROVENIÊNCIA", main_title_fmt)]
+
+        situacaoBase = (data.get("info_tecnica") or {}).get("data_criacao")
+        if situacaoBase:
+            rows.append(spanRow(f"Situação da base em {situacaoBase}", title_fmt))
+
+        rows.append([
+            mc("TEMA", title_fmt, Qt.AlignmentFlag.AlignCenter),
+            mc("ANO PREDOM.", title_fmt, Qt.AlignmentFlag.AlignCenter),
+            mc("CONFIAB.", title_fmt, Qt.AlignmentFlag.AlignCenter),
+            mc("FONTE PRINCIPAL", title_fmt, Qt.AlignmentFlag.AlignCenter),
+        ])
+
+        for tema in data.get("atualidade_proveniencia", ()):
+            rows.append([
+                mc(tema.get("tema", ""), data_fmt),
+                mc(tema.get("ano_predominante", ""), data_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc(tema.get("confiabilidade", ""), data_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc(tema.get("fonte_principal", ""), data_fmt),
+            ])
+
+        manualTable.setTableContents(rows)
+        manualTable.setColumnWidths([28.0, 20.0, 20.0, 42.0])
         manualTable.setIncludeTableHeader(False)
         manualTable.setShowGrid(True)
         manualTable.setGridStrokeWidth(0.1)

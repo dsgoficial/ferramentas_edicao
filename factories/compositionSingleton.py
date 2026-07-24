@@ -159,6 +159,7 @@ class CompositionSingleton:
         projectQptPath = (
             self.setupPath(jsonData.get("projeto"))
             or productParams.get("qpt", {}).get(scale, {}).get("projectPath", None)
+            or productParams.get("projectPath", None)
             or self.config.project
         )
         repRightsQptPath = (

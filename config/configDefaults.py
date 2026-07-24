@@ -572,13 +572,16 @@ class ConfigDefaults:
     militaryTopoMap: dict = field(
         default_factory=lambda: {
             "name": "Carta Topográfica Militar",
+            # A carta militar é o estado expedito da carta topográfica: a área de
+            # projetos dá lugar ao aviso de maturidade e de completude. A chave
+            # "projeto" do JSON continua tendo precedência sobre este default.
             "projectPath": Path(__file__).parent.parent
             / "modules"
             / "mapBuilder"
             / "resources"
             / "products"
             / "common"
-            / "creditsDSG.qpt",
+            / "usoMilitarExpedito.qpt",
             "grid": {
                 "crossX": 4,
                 "crossY": 4,
