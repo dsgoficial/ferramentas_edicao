@@ -325,7 +325,13 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                 for pos, (siglaNum, jurisdicao) in zip(positions, siglas):
                     accepted.append((pos, groupId))
                     markersOut.append(
-                        (pos, siglaNum, jurisdicao, feat.attribute("tipo"))
+                        (
+                            pos,
+                            siglaNum,
+                            jurisdicao,
+                            feat.attribute("tipo"),
+                            feat.attribute("fontes"),
+                        )
                     )
                 if offsetApplied != 0:
                     nDisplaced += len(siglas)
@@ -354,7 +360,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
 
         fields = layer_marker.fields()
         newFeats = []
-        for pos, siglaNum, jurisdicao, tipo in markersOut:
+        for pos, siglaNum, jurisdicao, tipo, fontes in markersOut:
             pointGeom = QgsGeometry.fromPointXY(pos)
             if markerTransform is not None:
                 pointGeom.transform(markerTransform)
@@ -363,7 +369,13 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             feat.setAttribute("sigla", siglaNum)
             feat.setAttribute("jurisdicao", jurisdicao)
             feat.setAttribute("tipo", tipo)
+            feat.setAttribute("fontes", fontes)
             feat.setAttribute("visivel", 1)
+            feat.setAttribute("status_ciclo_vida", 1)
+            feat.setAttribute("validacao", 1)
+            feat.setAttribute("confirmacao_geometria", 1)
+            feat.setAttribute("confirmacao_atributos", 1)
+            feat.setAttribute("confiabilidade", 5)
             newFeats.append(feat)
 
         layer_marker.startEditing()
@@ -408,7 +420,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
         """'BR-101;SC-401' -> [('101', 1), ('401', 2)].
 
         Jurisdicao: para sigla unica usa o atributo da via quando valido
-        (fonte autoritativa — cobre Municipal/Particular); para multiplas
+        (fontes autoritativas — cobre Municipal/Particular); para multiplas
         siglas (ou atributo invalido) deriva do prefixo (BR=federal(1),
         demais=estadual(2))."""
         raw = feat.attribute("sigla")

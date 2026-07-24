@@ -358,7 +358,7 @@ class InsertBorderLabel(QgsProcessingAlgorithm):
         return "insertborderlabel"
 
     def displayName(self):
-        return self.tr("Insere Rótulo de Fronteira")
+        return self.tr("Insere rótulo de fronteira")
 
     def group(self):
         return self.tr("Edição")

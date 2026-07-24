@@ -243,6 +243,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             if geom is None or geom.isEmpty():
                 continue
             lineGeoms.append(geom)
+            fontes = feat.attribute("fontes")
             parts = (
                 geom.asGeometryCollection() if geom.isMultipart() else [geom]
             )
@@ -273,7 +274,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                         nSkipped += 1
                         continue
                     point, angle, offset = placed
-                    accepted.append((point, angle))
+                    accepted.append((point, angle, fontes))
                     if offset != 0:
                         nDisplaced += 1
             multiStepFeedback.setProgress(current * stepSize)
@@ -298,14 +299,20 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
         fields = tower.fields()
         newFeats = []
-        for point, angle in accepted:
+        for point, angle, fontes in accepted:
             pointGeom = QgsGeometry.fromPointXY(point)
             if towerTransform is not None:
                 pointGeom.transform(towerTransform)
             feat = QgsFeature(fields)
             feat.setGeometry(pointGeom)
             feat.setAttribute("simb_rot", angle)
+            feat.setAttribute("fontes", fontes)
             feat.setAttribute("visivel", 1)
+            feat.setAttribute("status_ciclo_vida", 1)
+            feat.setAttribute("validacao", 1)
+            feat.setAttribute("confirmacao_geometria", 1)
+            feat.setAttribute("confirmacao_atributos", 1)
+            feat.setAttribute("confiabilidade", 5)
             newFeats.append(feat)
 
         tower.startEditing()
@@ -370,7 +377,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
                 continue
             if any(
                 math.hypot(p.x() - point.x(), p.y() - point.y()) < sepDist
-                for p, _a in accepted
+                for p, _a, _f in accepted
             ):
                 continue
             angle = self._towerAngle(part, d)
