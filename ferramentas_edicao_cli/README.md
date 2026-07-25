@@ -1,18 +1,22 @@
-# Ferramentas de Edição — execução de Processings por linha de comando (headless)
+# Ferramentas de Edição, linha de comando (headless)
 
-Esta pasta permite **rodar algoritmos de Processing do Ferramentas de Edição fora do
-QGIS**, por linha de comando, de forma headless — para uso manual ou em
-automações/scripts. Mesmo modelo do `dsgtools_cli` do DSGTools.
+Esta pasta é a interface de linha de comando do plugin, para uso manual ou em
+automações/agentes. Cobre duas coisas:
 
-Tudo é construído sobre o utilitário **oficial `qgis_process`** que vem com o QGIS.
-O `ferramentas_edicao_cli.py` é uma camada fina que: localiza o `qgis_process`,
-configura o ambiente headless (incluindo o redirecionamento do perfil — ver nota
-abaixo), e descobre/executa os algoritmos **consultando o `qgis_process` ao vivo**.
-Não há catálogo pré-gerado: a lista e os parâmetros vêm sempre da fonte da verdade.
+1. **rodar algoritmos de Processing** fora do QGIS (mesmo modelo do `dsgtools_cli`);
+2. **validar e exportar cartas** (PDF/GeoTIFF) a partir dos json de configuração por
+   folha, encapsulando o `standalone.py`/`setup_env.bat`.
+
+Regra que vale para as duas: **nada de contrato copiado**. A lista de algoritmos e seus
+parâmetros vêm do `qgis_process` consultado ao vivo; os produtos, os argumentos do
+headless, as chaves do json de carta e o nome do arquivo de saída são lidos do
+código-fonte do plugin instalado em tempo de execução. Não há catálogo pré-gerado nem
+tabela mantida à mão (que apodrece em silêncio quando o upstream muda). O único texto
+curado é o **porquê** que o código não diz: `notas-carta.md`.
 
 ---
 
-## Comandos
+## Comandos de Processing
 
 ```
 python ferramentas_edicao_cli.py list                                   # todos os algoritmos
@@ -46,6 +50,56 @@ type params.json | python ferramentas_edicao_cli.py run identifylabeloverlap --p
 **`--project` é obrigatório para os algoritmos de rótulo** (`identifylabeloverlap`,
 `identifylabelsintersectinggrid`, `identifylabelsoutsidegeographicboundary`): eles
 renderizam o mapa off-screen e dependem das camadas/simbologia/labeling do projeto.
+
+---
+
+## Comandos de exportação de carta
+
+```
+python ferramentas_edicao_cli.py contract                          # o contrato vivo
+python ferramentas_edicao_cli.py contract --produto "Carta Topográfica"
+python ferramentas_edicao_cli.py validate cartas/ --saida C:\saida  # sem abrir o QGIS
+python ferramentas_edicao_cli.py export cartas/2965-2-NE.json --saida C:\saida --dry-run
+```
+
+| Comando | O que faz |
+|---|---|
+| `contract [--produto TIPO] [--json]` | Produtos aceitos, argumentos do `standalone.py`, valores de licença, regra de território internacional e as chaves do json por produto. Tudo lido do código do plugin na hora. |
+| `validate CARTA.json... [--tipo T] [--saida DIR] [--json]` | Valida os json contra o contrato vivo em milissegundos, sem QGIS e sem banco. Cada achado sai com a linha de contrato do campo culpado. `erro` = o plugin pularia a folha; `aviso` = exporta assim mesmo, mas provavelmente errado. |
+| `export CARTA.json... --saida DIR [...]` | Valida, mostra o plano e exporta pelo `setup_env.bat`. Aceita pasta no lugar de arquivo. |
+
+Do `export`:
+
+- **`--dry-run`** mostra o plano (folhas, arquivos previstos, comando com a senha
+  mascarada) sem exportar nada.
+- **Nada de sobrescrita silenciosa**: se um arquivo previsto já existe na pasta de saída,
+  a exportação é bloqueada até vir `--sobrescrever`. Dois json que gerariam o mesmo
+  arquivo também bloqueiam.
+- **Validação antes da operação cara**: json inválido barra o lote (use
+  `--ignorar-invalidos` para exportar só as folhas válidas).
+- **`--tipo` é opcional**: sem ele, o `-t` é deduzido do próprio json (e o lote misturado
+  é recusado, porque o `standalone.py` leva um `-t` por execução).
+- **Credenciais** por `--login`/`--senha` ou, de preferência, pelas variáveis
+  `FERRAMENTAS_EDICAO_DB_USER` e `FERRAMENTAS_EDICAO_DB_PASSWORD`.
+- **Verificação folha a folha** ao final: a mensagem final do plugin só reflete o último
+  json do lote, então quem confere é o disco.
+- Flags de saída: `--tiff` (`-et`), `--tiff-sem-grid` (`-etwg`), `--sem-mascaras`
+  (`-dam`). Para algo que o wrapper não cobre (proxy, por exemplo), o `--dry-run`
+  imprime o comando do `setup_env.bat` para ajustar à mão.
+
+A pasta do QGIS sai de `--qgis`, de `FERRAMENTAS_EDICAO_QGIS_DIR` ou da instalação mais
+nova em `C:\Program Files`. Para apontar outra instalação do plugin (comparar versões),
+defina `FERRAMENTAS_EDICAO_PLUGIN_ROOT`.
+
+### Testes
+
+```
+python -m unittest discover -s tests -v
+```
+
+Rodam sem QGIS e sem banco. Parte deles lê o contrato do plugin instalado de verdade: se
+o upstream mudar a forma do código (renomear `data_structure`, tirar os `choices` do
+`--tipo`), a quebra aparece no teste, não depois de horas de exportação.
 
 ---
 

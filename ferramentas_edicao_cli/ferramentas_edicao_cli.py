@@ -17,10 +17,16 @@ automaticamente do `qgis_process`.
 
 Comandos
 --------
+Processing (via qgis_process):
   list                      Lista os algoritmos do Ferramentas de Edição.
   describe <alg>            Mostra os parametros de um algoritmo (resumo + anotacoes).
   run <alg> [KEY=VALUE ...] Executa um algoritmo.
   doctor                    Diagnostica o ambiente (acha o qgis_process, etc).
+
+Exportacao de carta (via standalone.py/setup_env.bat):
+  contract                  Mostra o contrato vivo (produtos, argumentos, schema do json).
+  validate <carta.json ...> Valida os json de carta SEM abrir o QGIS.
+  export <carta.json ...>   Valida e exporta (PDF/GeoTIFF); tem --dry-run.
 
 Exemplos
 --------
@@ -28,10 +34,15 @@ Exemplos
   python ferramentas_edicao_cli.py describe ferramentasedicao:identifylabeloverlap
   python ferramentas_edicao_cli.py run ferramentasedicao:identifylabelsintersectinggrid \\
       --params params.json
+  python ferramentas_edicao_cli.py contract --produto "Carta Topográfica"
+  python ferramentas_edicao_cli.py validate cartas/ --saida C:\\saida
+  python ferramentas_edicao_cli.py export cartas/2965-2-NE.json --saida C:\\saida --dry-run
 
 O id do algoritmo pode ser passado com ou sem o prefixo "ferramentasedicao:".
 Requer o plugin Ferramentas de Edição instalado/habilitado no perfil do QGIS,
 com hasProcessingProvider=yes no metadata.txt.
+
+O porque das regras de dominio (o que o codigo nao diz) esta em notas-carta.md.
 """
 import argparse
 import glob
@@ -41,7 +52,11 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
+
+import carta
+import plugin_contract
 
 PROVIDER = "ferramentasedicao"
 HERE = Path(__file__).resolve().parent
@@ -383,6 +398,349 @@ def cmd_run(args):
     return code
 
 
+# ---------------------------------------------------------------------------
+# Exportacao de carta (standalone.py / setup_env.bat)
+# ---------------------------------------------------------------------------
+def _load_contract():
+    try:
+        return plugin_contract.load_contract()
+    except plugin_contract.ContractError as exc:
+        raise SystemExit(f"ERRO ao ler o contrato do plugin: {exc}")
+
+
+def _collect_carta_jsons(paths):
+    """Aceita arquivos e pastas; pasta vira os .json dela, em ordem estavel."""
+    found = []
+    for raw in paths:
+        path = Path(raw)
+        if path.is_dir():
+            found += sorted(path.glob("*.json"))
+        elif path.exists():
+            found.append(path)
+        else:
+            raise SystemExit(f"ERRO: nao encontrei {path}")
+    if not found:
+        raise SystemExit("ERRO: nenhum json de carta encontrado nos caminhos informados.")
+    return found
+
+
+def find_qgis_dir(explicit=None):
+    """Pasta de instalacao do QGIS (vira OSGEO4W_ROOT e pathQgis)."""
+    if explicit:
+        return Path(explicit)
+    env = os.environ.get("FERRAMENTAS_EDICAO_QGIS_DIR")
+    if env:
+        return Path(env)
+    # Se o usuario ja apontou o qgis_process, a raiz do QGIS e o avo dele (bin/..).
+    qp = os.environ.get("FERRAMENTAS_EDICAO_QGIS_PROCESS")
+    if qp and Path(qp).exists():
+        return Path(qp).resolve().parents[1]
+    # Mesma busca do standalone.getInstallationFolder.
+    matches = sorted(Path("C:/Program Files").glob("QGIS*")) if sys.platform == "win32" else []
+    return matches[-1] if matches else None
+
+
+def _check_tipo(contract, tipo):
+    """--tipo tem que ser um dos produtos que o standalone.py aceita, senao o run
+    morreria no argparse dele depois de montar o ambiente inteiro."""
+    if tipo and tipo not in contract["produtos"]:
+        raise SystemExit(
+            f"ERRO: --tipo '{tipo}' nao e aceito pelo standalone.py. Validos: "
+            + "; ".join(contract["produtos"])
+        )
+
+
+def _validate_paths(json_paths, contract, tipo, saida, tiff, tiff_sem_grid):
+    results = []
+    for path in json_paths:
+        try:
+            data = carta.read_carta_json(path)
+        except (OSError, json.JSONDecodeError) as exc:
+            results.append(
+                {
+                    "arquivo": str(path),
+                    "tipo_produto": None,
+                    "tipo": None,
+                    "basename": None,
+                    "saidas": [],
+                    "existentes": [],
+                    "achados": [carta.Finding("erro", f"json ilegivel: {exc}", None)],
+                }
+            )
+            continue
+        results.append(
+            carta.validate_carta(
+                path, data, contract, tipo=tipo, saida=saida,
+                tiff=tiff, tiff_sem_grid=tiff_sem_grid,
+            )
+        )
+    return results
+
+
+def _print_result(result):
+    name = Path(result["arquivo"]).name
+    status = "ERRO" if carta.has_errors(result) else "ok"
+    saidas = ", ".join(result["saidas"]) or "-"
+    print(f"{name}  {status}  {result['tipo'] or '?'} -> {saidas}")
+    for finding in result["achados"]:
+        print(f"  [{finding.level}] {finding.message}")
+        if finding.contract:
+            print(f"          contrato: {finding.contract}")
+    for existente in result["existentes"]:
+        print(f"  [aviso] {existente} JA EXISTE na pasta de saida (use --sobrescrever)")
+
+
+def _results_as_json(results):
+    return [
+        {
+            **{k: v for k, v in r.items() if k != "achados"},
+            "ok": not carta.has_errors(r),
+            "achados": [f._asdict() for f in r["achados"]],
+        }
+        for r in results
+    ]
+
+
+def cmd_contract(args):
+    contract = _load_contract()
+    if args.produto:
+        produto = args.produto
+        if produto not in contract["schema"]:
+            raise SystemExit(
+                f"ERRO: produto '{produto}' desconhecido. Validos: "
+                + ", ".join(contract["schema"])
+            )
+        fields = contract["schema"][produto]
+        if args.json:
+            print(json.dumps({produto: fields}, indent=2, ensure_ascii=False))
+            return 0
+        print(f"{produto} (schema vivo de config/jsonStructure.py)")
+        for line in carta.contract_lines(fields):
+            print(f"  {line}")
+        print("\n  inom e dispensado quando ha 'center' (carta fora do recorte sistematico).")
+        return 0
+
+    if args.json:
+        print(json.dumps(contract, indent=2, ensure_ascii=False))
+        return 0
+
+    print(f"contrato vivo do plugin {contract['versao_plugin']} ({contract['raiz']})")
+    print("\nprodutos aceitos em -t/--tipo (padrao marcado com *):")
+    for produto in contract["produtos"]:
+        tipo, versao = carta.split_choice(produto)
+        interno = contract["internos"].get(tipo, ("?", "?"))[0]
+        prefixo = contract["prefixos"].get(interno, "?")
+        marca = "*" if produto == contract["produto_padrao"] else " "
+        print(f"  {marca} {produto:<30} json: tipo_produto={tipo!r} versao_produto={versao!r}")
+        print(f"    {'':<30} saida: {prefixo}_<MI, INOM ou nome>.pdf")
+    print("\nargumentos do standalone.py:")
+    for spec in contract["argumentos"]:
+        flags = "/".join(spec["flags"])
+        extra = []
+        if spec.get("required"):
+            extra.append("obrigatorio")
+        if spec.get("action") == "store_true":
+            extra.append("flag")
+        if spec.get("nargs"):
+            extra.append(f"nargs={spec['nargs']}")
+        if "default" in spec and spec["default"] not in (None, []):
+            extra.append(f"default={spec['default']!r}")
+        if spec.get("dest"):
+            extra.append(f"dest={spec['dest']}")
+        print(f"  {flags:<22} {', '.join(extra)}")
+    print(f"\nlicenca_produto: {' | '.join(contract['licencas'])}")
+    print(
+        "territorio_internacional = true so nos produtos Militares (nacionais: "
+        + ", ".join(contract["somente_nacionais"])
+        + ")"
+    )
+    print("\nchaves do json por produto: contract --produto \"<tipo_produto>\"")
+    print("porque das regras (o que o codigo nao diz): notas-carta.md")
+    return 0
+
+
+def cmd_validate(args):
+    contract = _load_contract()
+    _check_tipo(contract, args.tipo)
+    json_paths = _collect_carta_jsons(args.jsons)
+    results = _validate_paths(
+        json_paths, contract, args.tipo, args.saida, args.tiff, args.tiff_sem_grid
+    )
+    if args.json:
+        print(json.dumps(_results_as_json(results), indent=2, ensure_ascii=False))
+    else:
+        for result in results:
+            _print_result(result)
+        com_erro = sum(1 for r in results if carta.has_errors(r))
+        print(f"{len(results)} json: {len(results) - com_erro} ok, {com_erro} com erro")
+    return 1 if any(carta.has_errors(r) for r in results) else 0
+
+
+def cmd_export(args):
+    contract = _load_contract()
+    _check_tipo(contract, args.tipo)
+    json_paths = _collect_carta_jsons(args.jsons)
+    problemas = []
+
+    # O .env na raiz do plugin liga o debugMode: o run gera QPT e NAO escreve PDF nem
+    # GeoTIFF. Sem esta checagem, o lote roda por horas e nao entrega nada.
+    if (Path(contract["raiz"]) / ".env").exists():
+        problemas.append(
+            f"ha um .env em {contract['raiz']}: o plugin entra em debugMode e NAO exporta "
+            "PDF/GeoTIFF (so QPT). Remova o arquivo antes de exportar."
+        )
+
+    login = args.login or os.environ.get("FERRAMENTAS_EDICAO_DB_USER")
+    senha = args.senha or os.environ.get("FERRAMENTAS_EDICAO_DB_PASSWORD")
+    if not login or not senha:
+        problemas.append(
+            "faltam credenciais do banco de edicao: use --login/--senha ou as variaveis "
+            "FERRAMENTAS_EDICAO_DB_USER e FERRAMENTAS_EDICAO_DB_PASSWORD (preferivel, "
+            "a senha nao fica no historico do shell)."
+        )
+
+    qgis_dir = find_qgis_dir(args.qgis)
+    if qgis_dir is None or not Path(qgis_dir).exists():
+        problemas.append(
+            "nao achei a pasta de instalacao do QGIS: passe --qgis \"C:\\Program Files\\QGIS 4.0.0\" "
+            "ou defina FERRAMENTAS_EDICAO_QGIS_DIR."
+        )
+    setup_env = Path(contract["raiz"]) / "setup_env.bat"
+    if not setup_env.exists():
+        problemas.append(f"nao achei {setup_env} (entrada headless do plugin).")
+    if os.name != "nt":
+        problemas.append("o setup_env.bat so roda no Windows; fora dele, monte o ambiente a mao.")
+
+    saida = Path(args.saida)
+    results = _validate_paths(
+        json_paths, contract, args.tipo, saida, args.tiff, args.tiff_sem_grid
+    )
+
+    # O standalone leva UM -t por execucao: lote misturado exportaria so um dos tipos.
+    tipos = sorted({r["tipo"] for r in results if r["tipo"]})
+    if args.tipo is None and len(tipos) > 1:
+        problemas.append(
+            "o lote mistura produtos (" + "; ".join(tipos) + "): rode uma vez por -t/--tipo."
+        )
+    tipo = args.tipo or (tipos[0] if tipos else None)
+
+    invalidos = [r for r in results if carta.has_errors(r)]
+    validos = [r for r in results if not carta.has_errors(r)]
+    if invalidos and not args.ignorar_invalidos:
+        problemas.append(
+            f"{len(invalidos)} de {len(results)} json com erro de validacao "
+            "(use --ignorar-invalidos para exportar so os validos)."
+        )
+    if not validos:
+        problemas.append("nenhum json valido para exportar.")
+
+    # Duas folhas com o mesmo basename escrevem por cima uma da outra em silencio.
+    vistos = {}
+    for r in validos:
+        vistos.setdefault(r["basename"], []).append(Path(r["arquivo"]).name)
+    for basename, arquivos in vistos.items():
+        if len(arquivos) > 1:
+            problemas.append(
+                f"{len(arquivos)} json geram o mesmo arquivo {basename}: " + ", ".join(arquivos)
+            )
+
+    existentes = [(Path(r["arquivo"]).name, nome) for r in validos for nome in r["existentes"]]
+    if existentes and not args.sobrescrever:
+        problemas.append(
+            "ja existem na pasta de saida: "
+            + ", ".join(nome for _, nome in existentes)
+            + " (passe --sobrescrever para escrever por cima)."
+        )
+
+    avisos = []
+    # Conhecimento de dominio, nao deduzivel do codigo: ver notas-carta.md. O id interno
+    # vem do contrato vivo (topoMap/militaryTopoMap), sem comparar nome de produto a mao.
+    interno = contract["internos"].get(carta.split_choice(tipo)[0], ("", ""))[0] if tipo else ""
+    if args.tiff and interno in ("topoMap", "militaryTopoMap"):
+        avisos.append(
+            "--tiff na carta topografica: o exportToImage re-renderiza a folha A1 inteira e "
+            "arrasta horas. Exporte so o PDF e derive o GeoTIFF dele por GDAL (notas-carta.md)."
+        )
+
+    plano = {
+        "tipo": tipo,
+        "saida": str(saida),
+        "qgis": str(qgis_dir) if qgis_dir else None,
+        "folhas": _results_as_json(results),
+        "problemas": problemas,
+        "avisos": avisos,
+    }
+
+    if problemas:
+        if args.json:
+            print(json.dumps({**plano, "executado": False}, indent=2, ensure_ascii=False))
+        else:
+            for result in results:
+                _print_result(result)
+            print("\nexportacao BLOQUEADA:")
+            for problema in problemas:
+                print(f"  - {problema}")
+        return 1
+
+    cmd = carta.build_export_command(
+        setup_env, qgis_dir, tipo, saida, [r["arquivo"] for r in validos], login, senha,
+        tiff=args.tiff, tiff_sem_grid=args.tiff_sem_grid, sem_mascaras=args.sem_mascaras,
+    )
+    plano["comando"] = subprocess.list2cmdline(carta.mask_command(cmd))
+
+    if args.dry_run:
+        if args.json:
+            print(json.dumps({**plano, "executado": False}, indent=2, ensure_ascii=False))
+            return 0
+        print(f"plano de exportacao (plugin {contract['versao_plugin']})")
+        print(f"  tipo  : {tipo}")
+        print(f"  saida : {saida}")
+        print(f"  qgis  : {qgis_dir}")
+        print(f"  folhas: {len(validos)} de {len(results)}")
+        for r in validos:
+            print(f"    {Path(r['arquivo']).name} -> {', '.join(r['saidas'])}")
+        for aviso in avisos:
+            print(f"  [aviso] {aviso}")
+        print(f"  comando:\n    {plano['comando']}")
+        print("dry-run: nada foi exportado.")
+        return 0
+
+    saida.mkdir(parents=True, exist_ok=True)
+    for aviso in avisos:
+        print(f"[aviso] {aviso}", file=sys.stderr)
+    print(f"[export] {len(validos)} folha(s), tipo {tipo} -> {saida}", file=sys.stderr)
+    started = time.time()
+    # Sem capture: o log do plugin (stderr) sai ao vivo, que e o unico jeito de
+    # acompanhar um lote de horas.
+    code = subprocess.run(cmd).returncode
+
+    # A mensagem final do plugin reflete so o ULTIMO json do lote, entao quem diz o que
+    # saiu e o disco, folha a folha.
+    entregues = []
+    for r in validos:
+        faltando = [
+            nome
+            for nome in r["saidas"]
+            if not (saida / nome).exists() or (saida / nome).stat().st_mtime < started - 2
+        ]
+        r["faltando"] = faltando
+        entregues.append(not faltando)
+    plano["executado"] = True
+    plano["exit_code"] = code
+    plano["folhas"] = _results_as_json(validos)
+    if args.json:
+        print(json.dumps(plano, indent=2, ensure_ascii=False))
+    else:
+        for r, ok in zip(validos, entregues):
+            nome = Path(r["arquivo"]).name
+            if ok:
+                print(f"[ok]     {nome} -> {', '.join(r['saidas'])}")
+            else:
+                print(f"[falhou] {nome} nao gerou: {', '.join(r['faltando'])}")
+        print(f"{sum(entregues)}/{len(validos)} folha(s) exportada(s) (exit {code})")
+    return code if code != 0 else (0 if all(entregues) else 1)
+
+
 def build_parser():
     parser = argparse.ArgumentParser(
         prog="ferramentas_edicao_cli.py",
@@ -413,6 +771,53 @@ def build_parser():
 
     p_doc = sub.add_parser("doctor", help="Diagnostica o ambiente.")
     p_doc.set_defaults(func=cmd_doctor)
+
+    p_contract = sub.add_parser(
+        "contract",
+        help="Mostra o contrato vivo da exportacao de carta (lido do codigo do plugin).",
+    )
+    p_contract.add_argument("--produto", metavar="TIPO_PRODUTO",
+                            help="Mostra as chaves do json desse produto (ex.: \"Carta Topográfica\").")
+    p_contract.add_argument("--json", action="store_true", help="Saida em JSON.")
+    p_contract.set_defaults(func=cmd_contract)
+
+    def add_carta_args(p, saida_required):
+        p.add_argument("jsons", nargs="+", metavar="CARTA.json",
+                       help="Arquivos json de carta ou pastas com eles.")
+        p.add_argument("--tipo", help="Produto (-t do standalone). Sem isso, deduz do proprio json.")
+        p.add_argument("--saida", required=saida_required, metavar="PASTA",
+                       help="Pasta de saida (-ef do standalone).")
+        p.add_argument("--tiff", action="store_true", help="Tambem gera o GeoTIFF (-et).")
+        p.add_argument("--tiff-sem-grid", action="store_true",
+                       dest="tiff_sem_grid", help="Tambem gera o GeoTIFF sem grid (-etwg).")
+        p.add_argument("--json", action="store_true", help="Saida em JSON.")
+
+    p_val = sub.add_parser(
+        "validate",
+        help="Valida json de carta contra o contrato vivo, sem abrir o QGIS.",
+    )
+    add_carta_args(p_val, saida_required=False)
+    p_val.set_defaults(func=cmd_validate)
+
+    p_exp = sub.add_parser(
+        "export",
+        help="Valida e exporta a carta (PDF/GeoTIFF) via setup_env.bat.",
+    )
+    add_carta_args(p_exp, saida_required=True)
+    p_exp.add_argument("--qgis", metavar="PASTA",
+                       help="Pasta de instalacao do QGIS (default: FERRAMENTAS_EDICAO_QGIS_DIR "
+                            "ou a mais nova em C:\\Program Files).")
+    p_exp.add_argument("--login", help="Usuario do banco (default: FERRAMENTAS_EDICAO_DB_USER).")
+    p_exp.add_argument("--senha", help="Senha do banco (default: FERRAMENTAS_EDICAO_DB_PASSWORD).")
+    p_exp.add_argument("--sem-mascaras", action="store_true", dest="sem_mascaras",
+                       help="Desliga as mascaras adicionais (-dam).")
+    p_exp.add_argument("--dry-run", action="store_true", dest="dry_run",
+                       help="Valida e mostra o plano e o comando, sem exportar.")
+    p_exp.add_argument("--sobrescrever", action="store_true",
+                       help="Autoriza escrever por cima de arquivo ja existente na saida.")
+    p_exp.add_argument("--ignorar-invalidos", action="store_true", dest="ignorar_invalidos",
+                       help="Exporta as folhas validas mesmo havendo json com erro.")
+    p_exp.set_defaults(func=cmd_export)
 
     return parser
 
