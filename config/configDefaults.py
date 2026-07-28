@@ -603,7 +603,7 @@ class ConfigDefaults:
                 25: {
                     "project": {
                         "x_0": 7,
-                        "y_0": 487,
+                        "y_0": 508,
                         "width": 110,
                         "height": 70,
                     },
@@ -624,7 +624,7 @@ class ConfigDefaults:
                 50: {
                     "project": {
                         "x_0": 7,
-                        "y_0": 487,
+                        "y_0": 508,
                         "width": 110,
                         "height": 70,
                     },
@@ -645,7 +645,7 @@ class ConfigDefaults:
                 100: {
                     "project": {
                         "x_0": 7,
-                        "y_0": 487,
+                        "y_0": 508,
                         "width": 110,
                         "height": 70,
                     },

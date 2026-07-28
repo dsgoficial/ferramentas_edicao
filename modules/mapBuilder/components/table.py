@@ -213,10 +213,6 @@ class Table(IComponent, ComponentUtils):
 
         rows = [spanRow("ATUALIDADE E PROVENIÊNCIA", main_title_fmt)]
 
-        situacaoBase = (data.get("info_tecnica") or {}).get("data_criacao")
-        if situacaoBase:
-            rows.append(spanRow(f"Situação da base em {situacaoBase}", title_fmt))
-
         rows.append([
             mc("TEMA", title_fmt, Qt.AlignmentFlag.AlignCenter),
             mc("ANO PREDOM.", title_fmt, Qt.AlignmentFlag.AlignCenter),
