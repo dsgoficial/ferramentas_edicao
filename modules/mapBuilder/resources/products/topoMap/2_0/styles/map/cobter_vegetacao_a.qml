@@ -10,7 +10,7 @@
       <rule description="Mangue" filter=" &quot;tipo&quot; in (201,202)" key="{c5ac3099-b6d0-4ddb-8598-e845530ce000}" label="A11407A" symbol="5"/>
       <rule description="Arroz" filter=" &quot;tipo&quot; in (150)" key="{931067a6-d7c9-4cc7-b7fd-92d1a7c95a6a}" label="A11411A" symbol="6"/>
       <rule description="Vegetação perene" filter=" &quot;tipo&quot; in (194)" key="{d34348cf-1659-40a6-b4b4-950831b77e36}" label="A11411D" symbol="7"/>
-      <rule description="Vegetação irrigada (anual)" filter=" &quot;tipo&quot; in (196, 195)" key="{0dfda1a4-4196-4706-8de5-4fac28e05185}" label="A11411E" symbol="8"/>
+      <rule description="Vegetação irrigada (anual)" filter=" &quot;tipo&quot; in (198, 196, 195)" key="{0dfda1a4-4196-4706-8de5-4fac28e05185}" label="A11411E" symbol="8"/>
       <rule description="Vegetação não irrigada (anual)" filter=" &quot;tipo&quot; in (197)" key="{2259b3af-b0ca-4608-b21b-02c751091424}" label="A11411E" symbol="9"/>
       <rule description="Terreno exposto" filter=" &quot;tipo&quot; in (1000)" key="{09b3d2c3-af50-464d-a9d2-4501bdf95c41}" label="A10618A" symbol="10"/>
       <rule description="Terreno exposto" filter=" &quot;tipo&quot; in (1001)" key="{60ed1f30-5545-4828-980d-98928a7c549e}" label="A10618A - Cascalho" symbol="11"/>
