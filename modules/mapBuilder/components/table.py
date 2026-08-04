@@ -39,6 +39,12 @@ from qgis.core import (
     QgsTextFormat,
 )
 
+from ....config.configDefaults import (
+    SEM_DADO,
+    TEMAS_CARTA_ORTO_MILITAR,
+    TEMAS_CARTA_TOPO_MILITAR,
+)
+from ....config.logging_setup import get_logger
 from ....interfaces.iComponent import IComponent
 from .buildContext import BuildContext
 from .componentUtils import ComponentUtils
@@ -61,10 +67,10 @@ class Table(IComponent, ComponentUtils):
         # Na carta militar (produto expedito, recortado da base contínua) o quadro
         # de fases não descreve o produto: não há uma passada de produção, e sim um
         # recorte instantâneo de feições de datas e fontes heterogêneas. O mesmo
-        # espaço passa a exibir o quadro de atualidade e proveniência. Sem o dado
-        # no JSON, mantém-se o quadro de fases.
-        if self.isMilitaryProduct(data) and data.get("atualidade_proveniencia"):
-            self.customAtualidadeProveniencia(composition, data)
+        # espaço passa a exibir o quadro de atualidade e confiabilidade. Sem o
+        # dado no JSON, mantém-se o quadro de fases.
+        if self.isMilitaryProduct(data) and data.get("atualidade_confiabilidade"):
+            self.customAtualidadeConfiabilidade(composition, data)
         else:
             self.customEtapa(composition, data.get("fases", ()))
         self.customSensores(composition, data.get("sensores", ()))
@@ -163,13 +169,27 @@ class Table(IComponent, ComponentUtils):
             "Carta Ortoimagem Militar",
         )
 
-    def customAtualidadeProveniencia(self, composition: QgsPrintLayout, data: dict):
+    def customAtualidadeConfiabilidade(self, composition: QgsPrintLayout, data: dict):
         """Preenche, no espaço do quadro de fases, o quadro de atualidade e
-        proveniência da carta militar: uma linha por tema, com o ano predominante,
-        a confiabilidade predominante e a fonte principal das feições daquele
-        recorte. Alimentado pela chave "atualidade_proveniencia" do JSON; a
-        situação da base que encabeça o quadro é a data do dado, ou seja, a
-        "info_tecnica.data_criacao".
+        confiabilidade da carta militar: por tema, o ano predominante e a
+        confiabilidade predominante das feições daquele recorte. Alimentado pela
+        chave "atualidade_confiabilidade" do JSON; a situação da base que encabeça
+        o quadro é a data do dado, ou seja, a "info_tecnica.data_criacao".
+
+        A lista de temas é FIXA por produto e sempre sai por inteiro, em duas
+        colunas: 16 temas na Topográfica Militar (TEMAS_CARTA_TOPO_MILITAR) e 10
+        na Ortoimagem Militar (TEMAS_CARTA_ORTO_MILITAR), que tem menos classes
+        no modelo. Tema previsto e ausente do JSON sai com SEM_DADO, o que
+        declara "não apurado". Tema do JSON fora da lista vai para o log.
+
+        As medidas saem de cálculo de pior hipótese, medido por render headless
+        (QGIS 4.2, Noto Sans): tema mais longo "Energia e Comunicações" (28,6 mm
+        a 7 pt) e rótulo de confiabilidade mais longo "Indeterminada" (17,5 mm).
+        O frame label_tabela_etapas mais apertado é o da 250k, 110 x 41 mm, e o
+        quadro de 16 temas fecha em 109,5 x 39,7 mm. Coluna estreita demais NÃO
+        quebra a linha, CORTA o texto: mexer em largura, corpo ou margem exige
+        refazer a medida.
+
         Args:
             composition: QgsPrintLayout
             data: dict holding the map info
@@ -203,39 +223,87 @@ class Table(IComponent, ComponentUtils):
                 c.setSpan(row_span, col_span)
             return c
 
-        def spanRow(text, fmt):
+        def spanRow(text, fmt, nCols):
             return [
-                mc(text, fmt, Qt.AlignmentFlag.AlignCenter, col_span=4),
-                mc("", fmt),
-                mc("", fmt),
-                mc("", fmt),
+                mc(text, fmt, Qt.AlignmentFlag.AlignCenter, col_span=nCols)
+            ] + [mc("", fmt) for _ in range(nCols - 1)]
+
+        def cabecalho(nBlocos):
+            row = []
+            for _ in range(nBlocos):
+                row += [
+                    mc("TEMA", title_fmt, Qt.AlignmentFlag.AlignCenter),
+                    mc("ANO", title_fmt, Qt.AlignmentFlag.AlignCenter),
+                    mc("CONFIAB.", title_fmt, Qt.AlignmentFlag.AlignCenter),
+                ]
+            return row
+
+        def celulas(tema, ano, confiab):
+            return [
+                mc(tema, data_fmt),
+                mc(ano, data_fmt, Qt.AlignmentFlag.AlignCenter),
+                mc(confiab, data_fmt, Qt.AlignmentFlag.AlignCenter),
             ]
 
-        rows = [spanRow("ATUALIDADE E PROVENIÊNCIA", main_title_fmt)]
+        informado = self.indexarTemas(data.get("atualidade_confiabilidade", ()))
+        temasFixos = (
+            TEMAS_CARTA_ORTO_MILITAR
+            if data.get("tipo_produto") == "Carta Ortoimagem Militar"
+            else TEMAS_CARTA_TOPO_MILITAR
+        )
+        metade = len(temasFixos) // 2
 
-        rows.append([
-            mc("TEMA", title_fmt, Qt.AlignmentFlag.AlignCenter),
-            mc("ANO PREDOM.", title_fmt, Qt.AlignmentFlag.AlignCenter),
-            mc("CONFIAB.", title_fmt, Qt.AlignmentFlag.AlignCenter),
-            mc("FONTE PRINCIPAL", title_fmt, Qt.AlignmentFlag.AlignCenter),
-        ])
-
-        for tema in data.get("atualidade_proveniencia", ()):
-            rows.append([
-                mc(tema.get("tema", ""), data_fmt),
-                mc(tema.get("ano_predominante", ""), data_fmt, Qt.AlignmentFlag.AlignCenter),
-                mc(tema.get("confiabilidade", ""), data_fmt, Qt.AlignmentFlag.AlignCenter),
-                mc(tema.get("fonte_principal", ""), data_fmt),
-            ])
+        rows = [
+            spanRow("ATUALIDADE E CONFIABILIDADE", main_title_fmt, 6),
+            cabecalho(2),
+        ]
+        for i in range(metade):
+            row = []
+            for tema in (temasFixos[i], temasFixos[i + metade]):
+                dados = informado.get(tema.strip().casefold(), {})
+                row += celulas(
+                    tema,
+                    dados.get("ano_predominante") or SEM_DADO,
+                    dados.get("confiabilidade") or SEM_DADO,
+                )
+            rows.append(row)
+        self.avisarTemasForaDaLista(informado, temasFixos, data.get("tipo_produto", ""))
 
         manualTable.setTableContents(rows)
-        manualTable.setColumnWidths([28.0, 20.0, 20.0, 42.0])
+        manualTable.setColumnWidths([28.8, 6.2, 17.6] * 2)
         manualTable.setIncludeTableHeader(False)
         manualTable.setShowGrid(True)
         manualTable.setGridStrokeWidth(0.1)
-        manualTable.setCellMargin(0.5)
+        manualTable.setCellMargin(0.3)
         manualTable.setWrapBehavior(QgsLayoutTable.WrapBehavior.WrapText)
         manualTable.refresh()
+
+    @staticmethod
+    def indexarTemas(temas) -> dict:
+        """Indexa as entradas de atualidade do JSON pelo nome do tema, para
+        casar com a lista fixa sem depender de caixa alta nem de espaço sobrando.
+        """
+        return {
+            str(t.get("tema", "")).strip().casefold(): t
+            for t in temas
+            if t.get("tema")
+        }
+
+    @staticmethod
+    def avisarTemasForaDaLista(informado: dict, temasFixos, tipoProduto: str) -> None:
+        """Tema que o JSON traz e a lista fixa não prevê não cabe na folha. Ele
+        é descartado, e descarte em silêncio é o que não se admite: registra-se
+        no log do QGIS para quem gerou o JSON ver.
+        """
+        previstos = {t.strip().casefold() for t in temasFixos}
+        sobra = sorted(set(informado) - previstos)
+        if not sobra:
+            return
+        nomes = ", ".join(informado[chave].get("tema", "") for chave in sobra)
+        get_logger(__name__).warning(
+            f"atualidade_confiabilidade: tema fora da lista fixa da {tipoProduto}, "
+            f"não impresso na folha: {nomes}"
+        )
 
     def customSensores(self, composition: QgsPrintLayout, sensors: dict):
         frame = composition.itemById("label_tabela_info_ortoimagem")

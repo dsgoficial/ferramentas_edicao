@@ -183,7 +183,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="true" frameJoinStyle="miter" groupUuid="" halign="4" htmlState="0" id="labelUsoMilitarExpeditoAviso" itemRotation="0" labelText="As informações desta carta não têm valor legal. Cada categoria de informação tem origem, data e confiabilidade próprias. A qualidade dos dados não é garantida. A ausência de feição na carta não indica no terreno." marginX="2" marginY="2" opacity="1" outlineWidthM="1,mm" position="0,0,mm" positionLock="false" positionOnPage="0,0,mm" referencePoint="0" size="110,25,mm" templateUuid="{3ef8d986-d98c-406d-b4de-601ff0ba2102}" type="65641" uuid="{3ef8d986-d98c-406d-b4de-601ff0ba2102}" valign="128" visibility="1" zValue="6">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="true" frameJoinStyle="miter" groupUuid="" halign="4" htmlState="0" id="labelUsoMilitarExpeditoAviso" itemRotation="0" labelText="As informações desta carta não têm valor legal. Cada categoria de informação tem origem, data e confiabilidade próprias. A qualidade dos dados não é garantida. A ausência de feição na carta não indica ausência no terreno." marginX="2" marginY="2" opacity="1" outlineWidthM="1,mm" position="0,0,mm" positionLock="false" positionOnPage="0,0,mm" referencePoint="0" size="110,25,mm" templateUuid="{3ef8d986-d98c-406d-b4de-601ff0ba2102}" type="65641" uuid="{3ef8d986-d98c-406d-b4de-601ff0ba2102}" valign="128" visibility="1" zValue="6">
   <FrameColor alpha="255" blue="0" green="0" red="255"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>

@@ -19,6 +19,55 @@ from qgis.PyQt.QtGui import QFont, QColor
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Os temas do quadro ATUALIDADE E CONFIABILIDADE da carta militar, um por
+# produto. A lista é FIXA e sempre impressa por inteiro, para que duas folhas se
+# comparem: tema que o JSON não traz sai com o marcador SEM_DADO, o que declara
+# "não apurado" em vez de sumir da folha. A folha imprime em duas colunas, a
+# primeira metade à esquerda e a segunda à direita, então a lista tem número par
+# de temas.
+TEMAS_CARTA_TOPO_MILITAR = (
+    "Hidrografia",
+    "Relevo",
+    "Vegetação",
+    "Sistema Rodoviário",
+    "Sistema Ferroviário",
+    "Sistema Aeroportuário",
+    "Sistema Hidroviário",
+    "Sistema Dutoviário",
+    "Energia e Comunicações",
+    "Estrutura Econômica",
+    "Cultura e Lazer",
+    "Edificações Públicas",
+    "Edificações Privadas",
+    "Elemento Fisiográfico",
+    "Localidades",
+    "Limites",
+)
+
+# A Carta Ortoimagem Militar tem 10 temas, não os 16 da topográfica, porque a
+# EDGV Orto 3.0 tem 25 classes contra as 39 da Topo 2.0. Caem os temas cuja
+# classe não existe no modelo da ortoimagem: Vegetação (cobter_vegetacao),
+# Edificações Públicas e Privadas (constr_edificacao), Cultura e Lazer
+# (constr_area_uso_especifico) e Sistema Dutoviário (infra_trecho_duto). Caem
+# também, por decisão do chefe da DGEO em 2026-08-04, Obstáculo Vertical e
+# Estrutura Econômica, que existem no modelo. Elemento Fisiográfico, na
+# ortoimagem, sai só do elemnat_toponimo_fisiografico_natural: o nome se manteve
+# igual ao da topográfica para que as duas cartas se comparem.
+TEMAS_CARTA_ORTO_MILITAR = (
+    "Hidrografia",
+    "Relevo",
+    "Sistema Rodoviário",
+    "Sistema Ferroviário",
+    "Sistema Aeroportuário",
+    "Sistema Hidroviário",
+    "Energia e Comunicações",
+    "Elemento Fisiográfico",
+    "Localidades",
+    "Limites",
+)
+
+SEM_DADO = "-"
+
 
 @dataclass
 class ConfigDefaults:

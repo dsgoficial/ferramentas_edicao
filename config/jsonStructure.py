@@ -627,7 +627,7 @@ data_structure = {
             "required": False,
         },
         {
-            "key": "atualidade_proveniencia",
+            "key": "atualidade_confiabilidade",
             "type": list,
             "children": [
                 {"key": "tema", "type": str, "children": None, "required": True},
@@ -639,12 +639,6 @@ data_structure = {
                 },
                 {
                     "key": "confiabilidade",
-                    "type": str,
-                    "children": None,
-                    "required": True,
-                },
-                {
-                    "key": "fonte_principal",
                     "type": str,
                     "children": None,
                     "required": True,
@@ -830,7 +824,7 @@ data_structure = {
             "required": False,
         },
         {
-            "key": "atualidade_proveniencia",
+            "key": "atualidade_confiabilidade",
             "type": list,
             "children": [
                 {"key": "tema", "type": str, "children": None, "required": True},
@@ -842,12 +836,6 @@ data_structure = {
                 },
                 {
                     "key": "confiabilidade",
-                    "type": str,
-                    "children": None,
-                    "required": True,
-                },
-                {
-                    "key": "fonte_principal",
                     "type": str,
                     "children": None,
                     "required": True,
