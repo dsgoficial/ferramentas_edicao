@@ -196,6 +196,14 @@ class MapBuilderUtils:
     ) -> Path:
         """Returns the style path of some layer. The style path depends on its "productType", "scale". Variables such as
         "stylesFolder" and "layerName" are also necessary to define the path.
+
+        A carta militar reusa o estilo do produto civil, menos onde existe
+        variante própria: o arquivo com sufixo `_mil` VENCE quando existe, e a
+        falta dele cai no estilo civil sem erro. A regra vale para qualquer
+        camada e para qualquer conjunto de estilos (`map`, `mapEdition` e os
+        demais), porque a pasta chega por parâmetro. Hoje só o
+        `edicao_grid_edicao_l` tem variante militar, e só no topoMap 2.0.
+
         Args:
             layerName: layer's name string
             defaults: Dataclass holding default plugin info
@@ -211,13 +219,17 @@ class MapBuilderUtils:
             basedOnScale = defaults.scaleBasedStyleTopo
         elif productType == "omMap":
             basedOnScale = set()
+        candidates = []
+        if productType in ("militaryOrthoMap", "militaryTopoMap"):
+            if layerName in basedOnScale:
+                candidates.append(stylesFolder / f"{layerName}_{scale}_mil.qml")
+            candidates.append(stylesFolder / f"{layerName}_mil.qml")
         if layerName in basedOnScale:
-            p = stylesFolder / f"{layerName}_{scale}.qml"
-            p = p if p.exists() else stylesFolder / f"{layerName}.qml"
-        else:
-            p = stylesFolder / f"{layerName}.qml"
-        if p.exists():
-            return p
+            candidates.append(stylesFolder / f"{layerName}_{scale}.qml")
+        candidates.append(stylesFolder / f"{layerName}.qml")
+        for p in candidates:
+            if p.exists():
+                return p
 
     def createRasterLayers(
         self, listDictImages: List[Dict]
