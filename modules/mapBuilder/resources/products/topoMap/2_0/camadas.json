@@ -165,10 +165,6 @@
             "schema": "edgv"
         },
         {
-            "table": "llp_limite_legal_a",
-            "schema": "edgv"
-        },
-        {
             "table": "infra_elemento_viario_l",
             "schema": "edgv"
         },

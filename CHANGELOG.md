@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.1.2
+
+Melhorias:
+- Remoção do llp_limite_legal_a da simbologia da exportação da carta.
+
 ## 2.1.0
 
 Melhorias:
@@ -15,7 +20,6 @@ Melhorias:
 
 Remoções:
 - Processing "Definir tamanho da fonte pela largura" (inoperante; função coberta pelo Configura Atributos de Edição).
-
 
 ## 2.0.12
 
