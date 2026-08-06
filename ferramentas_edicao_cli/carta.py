@@ -15,6 +15,7 @@ Cada achado carrega a linha de contrato do campo culpado, tirada do schema vivo.
 """
 import json
 import os
+import re
 import time
 from collections import namedtuple
 from pathlib import Path
@@ -28,6 +29,28 @@ Finding = namedtuple("Finding", "level message contract")
 # O plugin espera ate 5 s pelo caminho do MDE (rede lenta); usar o mesmo tempo aqui
 # evita reprovar um json que la passaria.
 PATH_WAIT_SECONDS = 5
+
+# caminho_imagem nem sempre e um arquivo. O getRasterLayerByType do plugin
+# (factories/mapBuilderUtils.py) aceita tres formas, e so a terceira vai ao disco:
+#   type=xyz&url=...  -> QgsRasterLayer(..., "wms"), tile servido pela rede
+#   ...GetCapabilities -> QgsRasterLayer(..., "wms"), servico WMS
+#   qualquer outra    -> Path(rasterUri), arquivo local ou UNC
+# Cobrar existencia em disco das duas primeiras reprova json que o plugin exporta.
+# A regex abaixo e COPIA da que o plugin usa para extrair o nome da camada xyz: se
+# a uri nao casar, o getRasterLayerByType cai fora do if e devolve None, e o
+# validate_rasters_against_extents quebra em None.isValid(). Dai ser erro, nao aviso.
+XYZ_RE = re.compile(r"type=xyz&url=https?:\/\/(.+?)&zmax=\d{1,2}&zmin=\d{1,2}")
+
+
+def remote_source(caminho):
+    """Devolve 'xyz', 'wms' ou None (arquivo), espelhando getRasterLayerByType."""
+    if not isinstance(caminho, str):
+        return None
+    if "type=xyz" in caminho:
+        return "xyz"
+    if "GetCapabilities" in caminho:
+        return "wms"
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -342,6 +365,22 @@ def validate_carta(path, data, contract, tipo=None, saida=None, tiff=False, tiff
     for i, item in enumerate(data.get("imagens") or []):
         caminho = item.get("caminho_imagem") if isinstance(item, dict) else None
         if not isinstance(caminho, str) or not caminho:
+            continue
+        origem = remote_source(caminho)
+        if origem == "xyz":
+            # Nao ha o que checar em disco. Checa-se a FORMA da uri, que o plugin exige.
+            if not XYZ_RE.search(caminho):
+                add(
+                    Finding(
+                        "erro",
+                        f"imagens[{i}].caminho_imagem tem type=xyz mas nao casa o padrao "
+                        "'type=xyz&url=http(s)://...&zmax=NN&zmin=NN' que o plugin exige; "
+                        "a camada nao e criada e a exportacao quebra",
+                        contract_of("imagens/caminho_imagem"),
+                    )
+                )
+            continue
+        if origem == "wms":
             continue
         if not file_exists(caminho):
             add(

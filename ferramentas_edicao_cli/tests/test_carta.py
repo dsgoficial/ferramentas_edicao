@@ -275,6 +275,43 @@ class TestValidacaoCompleta(unittest.TestCase):
         data["mde_diagrama_elevacao"]["caminho_mde"] = str(Path(self.tmp.name) / "com espaco.tif")
         self.assertTrue(any("espaco" in m for m in self.mensagens(self.validar(data))))
 
+    def test_imagem_xyz_nao_e_cobrada_em_disco(self):
+        # O getRasterLayerByType do plugin trata type=xyz como camada wms, sem tocar
+        # o disco. Cobrar os.path.exists dela reprovava json que o plugin exporta.
+        data = self.carta_valida()
+        data["imagens"] = [
+            {
+                "caminho_imagem": (
+                    "type=xyz&url=http://ecn.t3.tiles.virtualearth.net/tiles/"
+                    "a%7Bq%7D.jpeg?g%3D0%26dir%3Ddir_n&zmax=18&zmin=0"
+                ),
+                "epsg": "3857",
+            }
+        ]
+        resultado = self.validar(data)
+        self.assertFalse(carta.has_errors(resultado), self.mensagens(resultado))
+
+    def test_imagem_wms_nao_e_cobrada_em_disco(self):
+        data = self.carta_valida()
+        data["imagens"] = [
+            {"caminho_imagem": "http://servidor/wms?request=GetCapabilities", "epsg": "4326"}
+        ]
+        self.assertFalse(carta.has_errors(self.validar(data)))
+
+    def test_xyz_fora_do_padrao_do_plugin_e_erro(self):
+        # Sem zmax/zmin a regex do plugin nao casa, getRasterLayerByType devolve None
+        # e validate_rasters_against_extents quebra em None.isValid().
+        data = self.carta_valida()
+        data["imagens"] = [
+            {"caminho_imagem": "type=xyz&url=http://servidor/{z}/{x}/{y}.png", "epsg": "3857"}
+        ]
+        self.assertTrue(any("nao casa o padrao" in m for m in self.mensagens(self.validar(data))))
+
+    def test_imagem_em_arquivo_continua_cobrada(self):
+        data = self.carta_valida()
+        data["imagens"] = [{"caminho_imagem": str(self.mde) + "_nao_existe", "epsg": "4326"}]
+        self.assertTrue(any("caminho_imagem" in m for m in self.mensagens(self.validar(data))))
+
     def test_tipo_incompativel_com_o_t(self):
         resultado = self.validar(self.carta_valida(), tipo="Carta Ortoimagem 3.0")
         self.assertTrue(any("nao casa" in m for m in self.mensagens(resultado)))
