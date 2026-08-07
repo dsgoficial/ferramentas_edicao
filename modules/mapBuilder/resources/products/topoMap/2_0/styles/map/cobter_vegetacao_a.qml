@@ -4,7 +4,7 @@
     <rules key="{c85992b9-fab1-4947-93e8-77f04c9f4753}">
       <rule description="Brejo / Pântano" filter=" &quot;tipo&quot; in (301,302)" key="{99c188bb-37bf-4124-9d59-a533577b6b22}" label="A11401A" symbol="0"/>
       <rule description="Caatinga" filter=" &quot;tipo&quot; in (701,702,801)" key="{32e6b147-cddc-401a-909e-768b2f0dfae9}" label="A11402A" symbol="1"/>
-      <rule description="Campo" filter=" &quot;tipo&quot; in (401, 901, 902)" key="{9f4c4668-7a7f-4414-8718-043e73be2861}" label="A11404A" symbol="2"/>
+      <rule description="Campo" filter=" &quot;tipo&quot; in (401, 901, 902, 1200)" key="{9f4c4668-7a7f-4414-8718-043e73be2861}" label="A11404A" symbol="2"/>
       <rule description="Floresta / Campinarana" filter="&quot;tipo&quot; in (501,601,1296)" key="{abb52408-446c-4beb-8673-ba66991d9183}" label="A11406A" symbol="3"/>
       <rule description="Floresta esparsa" filter="&quot;tipo&quot; in (602)" key="{20673adf-7341-46df-88ea-ca60401e3acf}" label="A11406B" symbol="4"/>
       <rule description="Mangue" filter=" &quot;tipo&quot; in (201,202)" key="{c5ac3099-b6d0-4ddb-8598-e845530ce000}" label="A11407A" symbol="5"/>

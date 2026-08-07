@@ -17,6 +17,7 @@
 """
 import os
 import webbrowser
+import configparser
 from pathlib import Path
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import (
@@ -49,6 +50,8 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         super().__init__(parent)
         self.setupUi(self)
 
+        self.setWindowTitle(f"{self.windowTitle()}. v {self._get_plugin_version()}")
+
         # Inicializa o atributo `current_page` com uma página padrão
         self.current_page = (
             "buttonTools.html"  # Define uma página padrão apropriada para o seu caso
@@ -61,6 +64,13 @@ class EditionPluginDialog(QtWidgets.QDialog, FORM_CLASS):
         # Conectando o botão de ajuda ao método que exibe a caixa de diálogo
         self.helpButton.clicked.connect(self.show_help_dialog)
         self.helpJson.clicked.connect(self.open_json_form)
+
+    def _get_plugin_version(self):
+        """Lê a versão do plugin a partir do metadata.txt."""
+        metadata_path = Path(__file__).parent.parent.parent / "metadata.txt"
+        parser = configparser.ConfigParser()
+        parser.read(metadata_path, encoding="utf-8")
+        return parser.get("general", "version", fallback="")
 
     def show_help_dialog(self):
         """Exibe a caixa de diálogo de ajuda com navegação e botão de voltar."""

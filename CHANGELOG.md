@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.1.3
+
+Melhorias:
+- Correção do estilo de grid para Carta Ortoimagem Militar
+- Ajuste de estilo de cobter_vegetacao_a
+- Versão do Plugin agora vem de metadata.txt, sem necessidade de edição manual da tela inicial
+
 ## 2.1.2
 
 Melhorias:
