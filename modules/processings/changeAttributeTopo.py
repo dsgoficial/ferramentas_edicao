@@ -122,6 +122,27 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         return value == NULL or str(value).strip() == ""
 
     @staticmethod
+    def _wrapLabelText(texto, maxLen=15):
+        """Quebra o texto em linhas de ate maxLen caracteres, so no ESPACO
+        (nunca corta palavra no meio), unindo as linhas com '|' (o
+        wrapChar do QGIS que a QML da camada consome para virar quebra de
+        linha de verdade, ver styles/*/constr_area_uso_especifico_a.qml).
+        Palavra sozinha maior que maxLen fica inteira, numa linha so."""
+        palavras = texto.split(" ")
+        linhas = []
+        atual = ""
+        for palavra in palavras:
+            candidata = (atual + " " + palavra).strip() if atual else palavra
+            if not atual or len(candidata) <= maxLen:
+                atual = candidata
+            else:
+                linhas.append(atual)
+                atual = palavra
+        if atual:
+            linhas.append(atual)
+        return "|".join(linhas)
+
+    @staticmethod
     def _abreviar(nome, abreviacoes):
         """Aplica abreviações preservando o restante do nome. A busca é
         case-insensitive; a substituição usa índices recalculados a cada
@@ -459,7 +480,11 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         feature["justificativa_txt"] = 1
         if self._hasManualText(feature):
             return feature
-        feature["texto_edicao"] = feature["nome"]
+        nome = feature["nome"]
+        if self._isBlank(nome):
+            feature["texto_edicao"] = nome
+        else:
+            feature["texto_edicao"] = self._wrapLabelText(str(nome))
         return feature
 
     def defaultMassaDagua(self, feature, lyrCrs):
@@ -518,7 +543,11 @@ class ChangeAttributeTopo(QgsProcessingAlgorithm):
         feature["tamanho_txt"] = size
         if self._hasManualText(feature):
             return feature
-        feature["texto_edicao"] = feature["nome"]
+        nome = feature["nome"]
+        if self._isBlank(nome):
+            feature["texto_edicao"] = nome
+        else:
+            feature["texto_edicao"] = self._wrapLabelText(str(nome))
         return feature
 
     def defaultAreaSemDados(self, feature, lyrCrs):

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.1.4
+
+Melhorias:
+- Correção de estilo para llp_limite_especial_a
+- Novo processing para simplificação de nomes nas camadas: llp_limite_especial_a e constr_area_uso_especifico_a
+- Novo método para quebra de linhas em texto quando número de caracteres é superior ao teto
+
 ## 2.1.3
 
 Melhorias:
