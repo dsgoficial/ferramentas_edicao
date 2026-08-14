@@ -45,6 +45,7 @@ from .buttons.alternateBuildingFlag import AlternateBuildingFlag
 from .buttons.cycleSideVisibility import CycleSideVisibility
 from .buttons.cycleTipVisibility import CycleTipVisibility
 from .buttons.toggleVisibility import ToggleVisibility
+from .buttons.showFeatureSources import ShowFeatureSources
 from .radialMenu.radialMenu import RadialMenuTrigger
 
 
@@ -177,6 +178,9 @@ class SetupButtons:
         createToogleVisibility = ToggleVisibility(self.iface, self.toolBar)
         createToogleVisibility.setupUi()
 
+        showFeatureSourcesButton = ShowFeatureSources(self.toolBar, self.iface)
+        showFeatureSourcesButton.setupUi()
+
         # Add tools to the appropriate lists
         self.mapTools.extend(
             [
@@ -232,6 +236,7 @@ class SetupButtons:
                 cycleSideVisibilityButton,
                 cycleTipVisibilityButton,
                 createToogleVisibility,
+                showFeatureSourcesButton,
             ]
         )
 
@@ -248,6 +253,7 @@ class SetupButtons:
             cycleSideVisibilityButton._action,
             cycleTipVisibilityButton._action,
             createToogleVisibility._action,
+            showFeatureSourcesButton._action,
             createVegetationSymbol._action,
             createRoadIdentifierSymbol._action,
             createLakeLabel._action,

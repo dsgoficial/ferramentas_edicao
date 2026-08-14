@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.1.5
+
+Melhorias:
+- Novo botão genérico "Mostrar Fontes" (toolbar e menu radial, disponível em todas as classes): exibe o conteúdo do atributo "fontes" das feições selecionadas em um diálogo formatado.
+
 ## 2.1.4
 
 Melhorias:
