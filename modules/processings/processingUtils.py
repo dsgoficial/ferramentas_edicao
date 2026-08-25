@@ -47,6 +47,38 @@ SCALE_VALUES = {
 }
 
 
+def optional_attribute(feature, fieldName, default=None):
+    """Le um atributo que pode NAO existir na modelagem da camada.
+
+    Os campos da extensao de qualidade (fontes, status_ciclo_vida, validacao,
+    confirmacao_*, confiabilidade) so existem na EDGV Orto 3.0 / Topo 2.0.
+    Num banco Orto 2.5 eles nao estao no schema, e `feature.attribute(nome)`
+    levanta KeyError, derrubando o algoritmo inteiro. Aqui a ausencia devolve
+    o default, e o algoritmo segue.
+    """
+    if feature.fields().lookupField(fieldName) == -1:
+        return default
+    return feature.attribute(fieldName)
+
+
+def set_optional_attributes(feature, values):
+    """Seta so os atributos que EXISTEM nos campos da feicao.
+
+    `QgsFeature.setAttribute` por nome devolve False quando o campo nao existe,
+    e o valor se perde sem aviso. Esta funcao devolve a lista dos nomes que a
+    modelagem nao tem, para o chamador avisar no feedback em vez de ignorar em
+    silencio.
+    """
+    fields = feature.fields()
+    ignored = []
+    for name, value in values.items():
+        if fields.lookupField(name) == -1:
+            ignored.append(name)
+            continue
+        feature.setAttribute(name, value)
+    return ignored
+
+
 def safe_process_algorithm(func):
     """Decorator that wraps processAlgorithm with error handling and feedback reporting."""
 

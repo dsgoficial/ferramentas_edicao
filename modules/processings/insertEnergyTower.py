@@ -38,6 +38,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+from .processingUtils import optional_attribute, set_optional_attributes
 
 # Somente linha de transmissao de energia (303) leva torre; linhas invisiveis
 # nao recebem simbolo.
@@ -243,7 +244,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             if geom is None or geom.isEmpty():
                 continue
             lineGeoms.append(geom)
-            fontes = feat.attribute("fontes")
+            fontes = optional_attribute(feat, "fontes")
             parts = (
                 geom.asGeometryCollection() if geom.isMultipart() else [geom]
             )
@@ -299,6 +300,7 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
 
         fields = tower.fields()
         newFeats = []
+        ignoredFields = []
         for point, angle, fontes in accepted:
             pointGeom = QgsGeometry.fromPointXY(point)
             if towerTransform is not None:
@@ -306,14 +308,26 @@ class InsertEnergyTower(QgsProcessingAlgorithm):
             feat = QgsFeature(fields)
             feat.setGeometry(pointGeom)
             feat.setAttribute("simb_rot", angle)
-            feat.setAttribute("fontes", fontes)
             feat.setAttribute("visivel", 1)
-            feat.setAttribute("status_ciclo_vida", 1)
-            feat.setAttribute("validacao", 1)
-            feat.setAttribute("confirmacao_geometria", 1)
-            feat.setAttribute("confirmacao_atributos", 1)
-            feat.setAttribute("confiabilidade", 5)
+            # Campos da extensao de qualidade: so existem na Orto 3.0 / Topo 2.0.
+            ignoredFields = set_optional_attributes(
+                feat,
+                {
+                    "fontes": fontes,
+                    "status_ciclo_vida": 1,
+                    "validacao": 1,
+                    "confirmacao_geometria": 1,
+                    "confirmacao_atributos": 1,
+                    "confiabilidade": 5,
+                },
+            )
             newFeats.append(feat)
+        if ignoredFields:
+            multiStepFeedback.pushInfo(
+                self.tr(
+                    "Campos ausentes na modelagem da camada de torres, nao preenchidos: {0}"
+                ).format(", ".join(sorted(ignoredFields)))
+            )
 
         tower.startEditing()
         tower.beginEditCommand("Posicionando torres de energia")

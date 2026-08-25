@@ -38,6 +38,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
+from .processingUtils import optional_attribute, set_optional_attributes
 
 
 class InsertRoadMarker(QgsProcessingAlgorithm):
@@ -330,7 +331,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
                             siglaNum,
                             jurisdicao,
                             feat.attribute("tipo"),
-                            feat.attribute("fontes"),
+                            optional_attribute(feat, "fontes"),
                         )
                     )
                 if offsetApplied != 0:
@@ -360,6 +361,7 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
 
         fields = layer_marker.fields()
         newFeats = []
+        ignoredFields = []
         for pos, siglaNum, jurisdicao, tipo, fontes in markersOut:
             pointGeom = QgsGeometry.fromPointXY(pos)
             if markerTransform is not None:
@@ -369,14 +371,26 @@ class InsertRoadMarker(QgsProcessingAlgorithm):
             feat.setAttribute("sigla", siglaNum)
             feat.setAttribute("jurisdicao", jurisdicao)
             feat.setAttribute("tipo", tipo)
-            feat.setAttribute("fontes", fontes)
             feat.setAttribute("visivel", 1)
-            feat.setAttribute("status_ciclo_vida", 1)
-            feat.setAttribute("validacao", 1)
-            feat.setAttribute("confirmacao_geometria", 1)
-            feat.setAttribute("confirmacao_atributos", 1)
-            feat.setAttribute("confiabilidade", 5)
+            # Campos da extensao de qualidade: so existem na Orto 3.0 / Topo 2.0.
+            ignoredFields = set_optional_attributes(
+                feat,
+                {
+                    "fontes": fontes,
+                    "status_ciclo_vida": 1,
+                    "validacao": 1,
+                    "confirmacao_geometria": 1,
+                    "confirmacao_atributos": 1,
+                    "confiabilidade": 5,
+                },
+            )
             newFeats.append(feat)
+        if ignoredFields:
+            multiStepFeedback.pushInfo(
+                self.tr(
+                    "Campos ausentes na modelagem da camada de identificadores, nao preenchidos: {0}"
+                ).format(", ".join(sorted(ignoredFields)))
+            )
 
         layer_marker.startEditing()
         layer_marker.beginEditCommand("Criando identificadores de trecho rodoviário")
