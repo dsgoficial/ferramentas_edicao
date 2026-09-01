@@ -300,10 +300,17 @@ class SetupButtons:
         QTimer.singleShot(100, self.finishInitialization)
 
     def finishInitialization(self):
-        """Complete initialization after a short delay"""
-        # Apply the initial state
-        self.collapseButton.loadStateFromProject()
-        # Mark initialization as complete
+        """Complete initialization after a short delay."""
+
+        if self.collapseButton is None:
+            return
+
+        try:
+            self.collapseButton.loadStateFromProject()
+        except RuntimeError:
+            # O plugin pode ter sido descarregado antes do QTimer disparar.
+            return
+
         self.initializing = False
 
     def setupActionGroup(self, *tools):

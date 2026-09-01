@@ -1,4 +1,4 @@
-<Layout units="mm" printResolution="300" worldFileMap="{874fc211-921a-4bc7-92a6-e01c54422f73}" name="Layout Carta Ortoimagem OM 2">
+<Layout units="mm" printResolution="300" worldFileMap="{874fc211-921a-4bc7-92a6-e01c54422f73}" name="Layout Carta Ortoimagem SARP 2">
  <Snapper tolerance="5" snapToGrid="0" snapToItems="1" snapToGuides="1"/>
  <Grid offsetY="0" offsetUnits="mm" resolution="10" resUnits="mm" offsetX="0"/>
  <PageCollection>
@@ -104,7 +104,7 @@
   </LayoutItem>
   <GuideCollection visible="1"/>
  </PageCollection>
- <LayoutItem position="36.174,190,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="50,5,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="36.174,190,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="bdgex.eb.mil.br" marginY="0" htmlState="0" templateUuid="{b612975a-4fc8-40a9-bf0b-5be1dfb21724}" id="label_bdgexWeb" type="65641" uuid="{b612975a-4fc8-40a9-bf0b-5be1dfb21724}" excludeFromExports="0" referencePoint="0" zValue="237" marginX="0" groupUuid="">
+ <LayoutItem position="36.174,190,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="50,5,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="36.174,190,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="https://ebgeo.dsg.eb.mil.br/" marginY="0" htmlState="0" templateUuid="{b612975a-4fc8-40a9-bf0b-5be1dfb21724}" id="label_bdgexWeb" type="65641" uuid="{b612975a-4fc8-40a9-bf0b-5be1dfb21724}" excludeFromExports="0" referencePoint="0" zValue="237" marginX="0" groupUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -177,7 +177,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="36.174,186.728,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="50,5,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="36.174,186.728,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="BDGEx" marginY="0" htmlState="0" templateUuid="{34d6e28a-c486-4982-8efc-efb6f08d38db}" id="label_bdgexQR" type="65641" uuid="{34d6e28a-c486-4982-8efc-efb6f08d38db}" excludeFromExports="0" referencePoint="0" zValue="236" marginX="0" groupUuid="">
+ <LayoutItem position="36.174,186.728,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="50,5,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="36.174,186.728,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="EBGeo" marginY="0" htmlState="0" templateUuid="{34d6e28a-c486-4982-8efc-efb6f08d38db}" id="label_bdgexQR" type="65641" uuid="{34d6e28a-c486-4982-8efc-efb6f08d38db}" excludeFromExports="0" referencePoint="0" zValue="236" marginX="0" groupUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -845,7 +845,7 @@
   <ComposerItemGroupElement uuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}"/>
   <ComposerItemGroupElement uuid="{cc399959-89b4-44ff-95c3-f59b9917032e}"/>
  </LayoutItem>
- <LayoutItem position="92.6736,162.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="14,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="92.6736,162.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="2000 m" marginY="0" htmlState="0" templateUuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" id="scaleBarLabel5" type="65641" uuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" excludeFromExports="0" referencePoint="0" zValue="28" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="92.6736,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="14,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="92.6736,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="2000 m" marginY="0" htmlState="0" templateUuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" id="scaleBarLabel5" type="65641" uuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" excludeFromExports="0" referencePoint="0" zValue="28" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -918,7 +918,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="73.1736,162.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="73.1736,162.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1500" marginY="0" htmlState="0" templateUuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" id="scaleBarLabel4" type="65641" uuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" excludeFromExports="0" referencePoint="0" zValue="27" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="73.1736,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="73.1736,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1500" marginY="0" htmlState="0" templateUuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" id="scaleBarLabel4" type="65641" uuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" excludeFromExports="0" referencePoint="0" zValue="27" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -991,7 +991,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="53.1735,162.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="53.1735,162.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1000" marginY="0" htmlState="0" templateUuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" id="scaleBarLabel3" type="65641" uuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" excludeFromExports="0" referencePoint="0" zValue="26" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="53.1735,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="53.1735,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1000" marginY="0" htmlState="0" templateUuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" id="scaleBarLabel3" type="65641" uuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" excludeFromExports="0" referencePoint="0" zValue="26" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1064,7 +1064,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="33.1735,162.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="33.1735,162.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="500" marginY="0" htmlState="0" templateUuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" id="scaleBarLabel2" type="65641" uuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" excludeFromExports="0" referencePoint="0" zValue="25" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="33.1735,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="33.1735,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="500" marginY="0" htmlState="0" templateUuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" id="scaleBarLabel2" type="65641" uuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" excludeFromExports="0" referencePoint="0" zValue="25" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1137,7 +1137,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="23.4236,162.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="10.5,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="23.4236,162.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="250" marginY="0" htmlState="0" templateUuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" id="scaleBarLabel1" type="65641" uuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" excludeFromExports="0" referencePoint="0" zValue="24" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="23.4236,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="10.5,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="23.4236,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="250" marginY="0" htmlState="0" templateUuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" id="scaleBarLabel1" type="65641" uuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" excludeFromExports="0" referencePoint="0" zValue="24" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1210,7 +1210,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="17.4736,162.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="2.4,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="17.4736,162.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="0" marginY="0" htmlState="0" templateUuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" id="scaleBarLabel0" type="65641" uuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" excludeFromExports="0" referencePoint="0" zValue="23" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="17.4736,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="2.4,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="17.4736,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="0" marginY="0" htmlState="0" templateUuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" id="scaleBarLabel0" type="65641" uuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" excludeFromExports="0" referencePoint="0" zValue="23" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1283,7 +1283,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="18.6736,164.586,mm" frame="false" opacity="1" svgBorderWidth="0.2" itemRotation="0" pictureHeight="1.4" resizeMode="2" anchorPoint="4" size="80,1.4,mm" frameJoinStyle="miter" blendMode="0" pictureWidth="80" pictureRotation="0" background="false" visibility="1" positionOnPage="18.6736,164.586,mm" svgBorderColor="0,0,0,255" outlineWidthM="0.3,mm" positionLock="false" northOffset="0" templateUuid="{78fc9589-5f4a-46fb-881d-13a688615275}" id="picture_escala_direita" type="65640" mode="0" uuid="{78fc9589-5f4a-46fb-881d-13a688615275}" excludeFromExports="0" svgFillColor="255,255,255,255" northMode="0" referencePoint="0" zValue="22" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}" file="" mapUuid="">
+ <LayoutItem position="18.6736,170.586,mm" frame="false" opacity="1" svgBorderWidth="0.2" itemRotation="0" pictureHeight="1.4" resizeMode="2" anchorPoint="4" size="80,1.4,mm" frameJoinStyle="miter" blendMode="0" pictureWidth="80" pictureRotation="0" background="false" visibility="1" positionOnPage="18.6736,170.586,mm" svgBorderColor="0,0,0,255" outlineWidthM="0.3,mm" positionLock="false" northOffset="0" templateUuid="{78fc9589-5f4a-46fb-881d-13a688615275}" id="picture_escala_direita" type="65640" mode="0" uuid="{78fc9589-5f4a-46fb-881d-13a688615275}" excludeFromExports="0" svgFillColor="255,255,255,255" northMode="0" referencePoint="0" zValue="22" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}" file="" mapUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1378,7 +1378,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" id="omInfoTable" itemRotation="0" multiFrame="{c9d0e1f2-a3b4-5678-c9d0-e1f2a3b45678}" multiFrameTemplateUuid="{c9d0e1f2-a3b4-5678-c9d0-e1f2a3b45678}" opacity="1" outlineWidthM="0.3,mm" position="730,60,mm" positionLock="false" positionOnPage="730,60,mm" referencePoint="1" sectionHeight="0" sectionWidth="0" sectionX="0" sectionY="0" size="104,55,mm" templateUuid="{acaf2513-ee2e-45e7-9203-720ed87296c6}" type="65647" uuid="{acaf2513-ee2e-45e7-9203-720ed87296c6}" visibility="1" zValue="18">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" id="omInfoTable" itemRotation="0" multiFrame="{c9d0e1f2-a3b4-5678-c9d0-e1f2a3b45678}" multiFrameTemplateUuid="{c9d0e1f2-a3b4-5678-c9d0-e1f2a3b45678}" opacity="1" outlineWidthM="0.3,mm" position="730,58.5,mm" positionLock="false" positionOnPage="730,58.5,mm" referencePoint="1" sectionHeight="0" sectionWidth="0" sectionX="0" sectionY="0" size="104,55,mm" templateUuid="{acaf2513-ee2e-45e7-9203-720ed87296c6}" type="65647" uuid="{acaf2513-ee2e-45e7-9203-720ed87296c6}" visibility="1" zValue="18">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -1426,7 +1426,7 @@
    </customproperties>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem position="37,156,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="50,5,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="37,156,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="ESCALA 1:25.000" marginY="0" htmlState="0" templateUuid="{d629a7a8-3484-48fe-b261-507ab0df67c8}" id="scaleLabel" type="65641" uuid="{d629a7a8-3484-48fe-b261-507ab0df67c8}" excludeFromExports="0" referencePoint="0" zValue="9" marginX="0" groupUuid="">
+ <LayoutItem position="37,162,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="50,5,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="37,162,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="ESCALA 1:25.000" marginY="0" htmlState="0" templateUuid="{d629a7a8-3484-48fe-b261-507ab0df67c8}" id="scaleLabel" type="65641" uuid="{d629a7a8-3484-48fe-b261-507ab0df67c8}" excludeFromExports="0" referencePoint="0" zValue="9" marginX="0" groupUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1499,7 +1499,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="62.5,136,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="115,25,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="62.5,136,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="NOME DA OM" marginY="0" htmlState="0" templateUuid="{872ad9c2-0160-42e3-abd3-e98a4721b4e1}" id="label_nomeCarta" type="65641" uuid="{872ad9c2-0160-42e3-abd3-e98a4721b4e1}" excludeFromExports="0" referencePoint="4" zValue="8" marginX="0" groupUuid="">
+ <LayoutItem position="62.5,141,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="115,25,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="62.5,141,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="NOME DA OM" marginY="0" htmlState="0" templateUuid="{872ad9c2-0160-42e3-abd3-e98a4721b4e1}" id="label_nomeCarta" type="65641" uuid="{872ad9c2-0160-42e3-abd3-e98a4721b4e1}" excludeFromExports="0" referencePoint="4" zValue="8" marginX="0" groupUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1572,7 +1572,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="30.0736,35,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="64,10,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="30.0736,35,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="CARTA ESPECIAL" marginY="0" htmlState="0" templateUuid="{fa38fecd-4092-4f9d-8e68-0a3d5a9ba993}" id="label_nome_produto" type="65641" uuid="{fa38fecd-4092-4f9d-8e68-0a3d5a9ba993}" excludeFromExports="0" referencePoint="0" zValue="7" marginX="0" groupUuid="">
+ <LayoutItem position="7,35,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="110,10,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="7,35,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="CARTA ORTOIMAGEM SARP" marginY="0" htmlState="0" templateUuid="{fa38fecd-4092-4f9d-8e68-0a3d5a9ba993}" id="label_nome_produto" type="65641" uuid="{fa38fecd-4092-4f9d-8e68-0a3d5a9ba993}" excludeFromExports="0" referencePoint="0" zValue="7" marginX="0" groupUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>

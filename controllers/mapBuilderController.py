@@ -248,7 +248,7 @@ class MapBuildController(MapBuildControllerUtils):
             return "orthoMap", productType, productVersion, versionFolder
         if productType == "Carta Topográfica":
             return "topoMap", productType, productVersion, versionFolder
-        if productType == "Carta Ortoimagem OM":
+        if productType == "Carta Ortoimagem SARP":
             return "omMap", "Carta Especial", productVersion, versionFolder
         if productType == "Carta Ortoimagem Militar":
             return (
@@ -387,7 +387,7 @@ class MapBuildController(MapBuildControllerUtils):
                     f"Não foi inserida uma pasta de saída para o produto solicitado.",
                 )
             return
-        if not is_headless and "Carta Ortoimagem OM" in dlgCfg.productType:
+        if not is_headless and "Carta Ortoimagem SARP" in dlgCfg.productType:
             self.qptDlg()
         exportResult, exportMessage = False, ""
         successCount = 0
@@ -566,10 +566,10 @@ class MapBuildController(MapBuildControllerUtils):
                 self.conn.getConnection(
                     jsonData.get("banco"), dlgCfg.username, dlgCfg.password
                 )
-                if jsonData["tipo_produto"] != "Carta Ortoimagem OM"
+                if jsonData["tipo_produto"] != "Carta Ortoimagem SARP"
                 else None
             )
-            if jsonData["tipo_produto"] != "Carta Ortoimagem OM" and not self.validate_numeric_grid(connection):
+            if jsonData["tipo_produto"] != "Carta Ortoimagem SARP" and not self.validate_numeric_grid(connection):
                 if is_headless:
                     logger.error(
                         "A camada edicao_grid_numerico_p está vazia. Gere o grid numérico e tente novamente."
@@ -627,7 +627,7 @@ class MapBuildController(MapBuildControllerUtils):
         QMessageBox.warning(self.dlg, messageType, msg)
 
     def validateProductTypeAgainstDatabaseMetadata(self, abstractDb, jsonData):
-        if jsonData["tipo_produto"] == "Carta Ortoimagem OM":
+        if jsonData["tipo_produto"] == "Carta Ortoimagem SARP":
             return True
         version = abstractDb.getDatabaseVersion()
         if "orto" in jsonData["tipo_produto"].lower() and "orto" not in version.lower():

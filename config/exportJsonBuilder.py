@@ -17,18 +17,18 @@ Os tres pontos que este modulo garante (e que o codigo antigo errava):
 """
 
 # Versoes ativas de cada produto (devem acompanhar as ofertadas em standalone.py
-# e no combo de exportacao; hoje topo 2.0 / orto 3.0 / OM 1.0).
+# e no combo de exportacao; hoje topo 2.0 / orto 3.0 / SARP 1.0).
 PRODUCT_VERSIONS = {
     "Carta Topográfica": "2.0",
     "Carta Ortoimagem": "3.0",
-    "Carta Ortoimagem OM": "1.0",
+    "Carta Ortoimagem SARP": "1.0",
     "Carta Ortoimagem Militar": "3.0",
     "Carta Topográfica Militar": "2.0",
 }
 
 ORTHO_LIKE = {"Carta Ortoimagem", "Carta Ortoimagem Militar"}
 TOPO_LIKE = {"Carta Topográfica", "Carta Topográfica Militar"}
-OM_TYPE = "Carta Ortoimagem OM"
+OM_TYPE = "Carta Ortoimagem SARP"
 
 VALID_PRODUCTS = set(PRODUCT_VERSIONS.keys())
 
@@ -200,18 +200,87 @@ def _build_scn(js, fields, ortho):
 
 
 def _build_om(js, fields):
-    _add(js, "poligono", _clean(fields.get("poligono")))
-    _add(js, "nome", _clean(fields.get("nome")))
-    _add(js, "imagemOM", _clean(fields.get("imagemOM")))
-    _add(js, "imagemSubordinacao", _clean(fields.get("imagemSubordinacao")))
-    _add(js, "subordinacao1", _clean(fields.get("subordinacao1")))
-    _add(js, "subordinacao2", _clean(fields.get("subordinacao2")))
-    _add(js, "endereco", _clean(fields.get("endereco")))
-    _add(js, "altitude", _clean(fields.get("altitude")))
+    configuracao_carta = (
+        _clean(fields.get("configuracao_carta"))
+        or "default"
+    ).lower()
+
+    configuracao_carta = (
+        "om"
+        if configuracao_carta == "om"
+        else "default"
+    )
+
+    _add(
+        js,
+        "configuracao_carta",
+        configuracao_carta,
+    )
+
+    _add(
+        js,
+        "poligono",
+        _clean(fields.get("poligono")),
+    )
+
+    _add(
+        js,
+        "nome",
+        _clean(fields.get("nome")),
+    )
+
+    # Dados exclusivos da configuração de OM
+    if configuracao_carta == "om":
+        _add(
+            js,
+            "imagemOM",
+            _clean(fields.get("imagemOM")),
+        )
+
+        _add(
+            js,
+            "imagemSubordinacao",
+            _clean(fields.get("imagemSubordinacao")),
+        )
+
+        _add(
+            js,
+            "subordinacao1",
+            _clean(fields.get("subordinacao1")),
+        )
+
+        _add(
+            js,
+            "subordinacao2",
+            _clean(fields.get("subordinacao2")),
+        )
+
+    _add(
+        js,
+        "endereco",
+        _clean(fields.get("endereco")),
+    )
+
+    _add(
+        js,
+        "altitude",
+        _clean(fields.get("altitude")),
+    )
+
     js["fases"] = _build_fases(fields)
-    _add(js, "imagens", _build_imagens(fields))
+
+    _add(
+        js,
+        "imagens",
+        _build_imagens(fields),
+    )
+
     js["sensores"] = _build_sensores(fields)
-    js["info_tecnica"] = _build_info_tecnica(fields, dados_terceiros_required=False)
+
+    js["info_tecnica"] = _build_info_tecnica(
+        fields,
+        dados_terceiros_required=False,
+    )
 
 
 def build_export_json(fields):
@@ -250,15 +319,36 @@ def validate_fields(fields):
     need("Nome", _clean(fields.get("nome")))
 
     if tipo == OM_TYPE:
+        configuracao_carta = (
+            _clean(fields.get("configuracao_carta")) or "default"
+        ).lower()
+
+        configuracao_carta = (
+            "om"
+            if configuracao_carta == "om"
+            else "default"
+        )
+
+        if configuracao_carta not in {"om", "default"}:
+            missing.append("Configuração da Carta")
+
         need("Polígono (WKT)", _clean(fields.get("poligono")))
-        need("Imagem da OM", _clean(fields.get("imagemOM")))
-        need("Imagem de Subordinação", _clean(fields.get("imagemSubordinacao")))
+
+        # Os brasões só são obrigatórios para a configuração de OM
+        if configuracao_carta == "om":
+            need("Imagem da OM", _clean(fields.get("imagemOM")))
+            need(
+                "Imagem de Subordinação",
+                _clean(fields.get("imagemSubordinacao")),
+            )
+
         need("Endereço", _clean(fields.get("endereco")))
         need("Altitude", _clean(fields.get("altitude")))
         need("Imagens", _build_imagens(fields))
         need("Sensores", _build_sensores(fields))
         need("Fases", _build_fases(fields))
         need("Data de Criação", _clean(fields.get("data_criacao")))
+
         return (len(missing) == 0), missing
 
     # Produtos SCN (topo/orto e militares)
@@ -313,6 +403,7 @@ _SCN_ONLY = [
     "bancoTable", "label_banco_configuracao",
 ]
 _OM_ONLY = [
+    "input_configuracao_carta", "label_configuracao_carta",
     "input_poligono", "label_poligono",
     "input_imagemOM", "label_imagemOM",
     "input_imagemSubordinacao", "label_imagemSubordinacao",
@@ -320,6 +411,13 @@ _OM_ONLY = [
     "input_subordinacao2", "label_subordinacao2",
     "input_endereco", "label_endereco",
     "input_altitude", "label_altitude",
+]
+
+_SARP_OM_CONFIG_ONLY = [
+    "input_imagemOM", "label_imagemOM",
+    "input_imagemSubordinacao", "label_imagemSubordinacao",
+    "input_subordinacao1", "label_subordinacao1",
+    "input_subordinacao2", "label_subordinacao2",
 ]
 
 
@@ -362,6 +460,11 @@ def collect_export_form_fields(form):
     fields = {
         "tipo_produto": _widget_text(form, "input_produto").strip(),
         "versao_produto": _widget_text(form, "input_versao").strip(),
+        "configuracao_carta": (
+            "default"
+            if _widget_text(form, "input_configuracao_carta").strip() == "Default"
+            else "om"
+        ),
         "nome": _widget_text(form, "input_nome").strip(),
         "inom": _widget_text(form, "input_inom").strip(),
         "escala": _widget_text(form, "input_escala").strip(),
@@ -440,19 +543,38 @@ def collect_export_form_fields(form):
 
 
 def apply_product_visibility(form, tipo_produto):
-    """Mostra/oculta os grupos de widgets conforme o tipo de produto."""
+    """Mostra/oculta os widgets conforme o produto e a configuração da SARP."""
+
     def set_visible(names, visible):
         for name in names:
-            w = getattr(form, name, None)
-            if w is not None and hasattr(w, "setVisible"):
-                w.setVisible(visible)
+            widget = getattr(form, name, None)
+
+            if widget is not None and hasattr(widget, "setVisible"):
+                widget.setVisible(visible)
 
     is_om = tipo_produto == OM_TYPE
     is_ortho = tipo_produto in ORTHO_LIKE
+
+    # Regras gerais de cada produto
     set_visible(_SCN_ONLY, not is_om)
     set_visible(_IMAGE_SENSOR, is_ortho or is_om)
     set_visible(_CLASSES_ONLY, is_ortho)
     set_visible(_OM_ONLY, is_om)
+
+    # Regras específicas da Carta Ortoimagem SARP
+    if is_om:
+        configuracao = _widget_text(
+            form,
+            "input_configuracao_carta",
+        ).strip().lower()
+
+        is_default = configuracao == "default"
+
+        # Estes campos só aparecem na configuração de OM
+        set_visible(
+            _SARP_OM_CONFIG_ONLY,
+            not is_default,
+        )
 
 
 def wire_export_form(form, on_browse_file, on_add_row, on_remove_row, on_generate):
@@ -498,3 +620,20 @@ def wire_export_form(form, on_browse_file, on_add_row, on_remove_row, on_generat
             lambda *_: apply_product_visibility(form, combo.currentText())
         )
         apply_product_visibility(form, combo.currentText())
+
+    config_combo = getattr(
+        form,
+        "input_configuracao_carta",
+        None,
+    )
+
+    if (
+        config_combo is not None
+        and hasattr(config_combo, "currentTextChanged")
+    ):
+        config_combo.currentTextChanged.connect(
+            lambda *_: apply_product_visibility(
+                form,
+                combo.currentText() if combo is not None else "",
+            )
+        )

@@ -489,7 +489,8 @@ class GenerateOmMapJson(QgsProcessingAlgorithm):
                 )
 
         result = {
-            "tipo_produto": "Carta Ortoimagem OM",
+            "tipo_produto": "Carta Ortoimagem SARP",
+            "configuracao_carta": "om",
             "poligono": wkt,
             "nome": nome,
             "imagemOM": imagem_om,
@@ -533,7 +534,7 @@ class GenerateOmMapJson(QgsProcessingAlgorithm):
         if dados_terceiros:
             result["info_tecnica"]["dados_terceiros"] = dados_terceiros
 
-        missing = find_missing_required_keys_on_dict(result, "Carta Ortoimagem OM")
+        missing = find_missing_required_keys_on_dict(result, "Carta Ortoimagem SARP")
         if missing:
             raise QgsProcessingException(
                 self.tr(
@@ -559,7 +560,7 @@ class GenerateOmMapJson(QgsProcessingAlgorithm):
         return self.tr("Gerar JSON")
 
     def group(self):
-        return self.tr("Ortoimagem de OM")
+        return self.tr("Ortoimagem SARP")
 
     def groupId(self):
         return "ortoimagem_om"

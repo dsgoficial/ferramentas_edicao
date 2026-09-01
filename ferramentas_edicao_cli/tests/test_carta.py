@@ -93,7 +93,7 @@ class TestContratoVivo(unittest.TestCase):
 
 class TestSchemaHelpers(unittest.TestCase):
     def test_split_choice(self):
-        self.assertEqual(carta.split_choice("Carta Ortoimagem OM 1.0"), ("Carta Ortoimagem OM", "1.0"))
+        self.assertEqual(carta.split_choice("Carta Ortoimagem SARP 1.0"), ("Carta Ortoimagem SARP", "1.0"))
 
     def test_contract_index_e_linha(self):
         index = carta.contract_index(FAKE_FIELDS)
@@ -140,7 +140,7 @@ class TestPlaceholders(unittest.TestCase):
 class TestNomeDeSaida(unittest.TestCase):
     CONTRATO = {
         "internos": {"Carta Topográfica": ("topoMap", "Carta Topográfica"),
-                     "Carta Ortoimagem OM": ("omMap", "Carta Especial")},
+                     "Carta Ortoimagem SARP": ("omMap", "Carta Especial")},
         "prefixos": {"topoMap": "Carta_Topografica", "omMap": "Carta_Especial"},
     }
 
@@ -169,7 +169,7 @@ class TestNomeDeSaida(unittest.TestCase):
 
     def test_poligono_usa_o_nome_e_sanitiza(self):
         base, _ = carta.predicted_basename(
-            {"tipo_produto": "Carta Ortoimagem OM", "poligono": "POLYGON(...)", "nome": "1o/CGEO"},
+            {"tipo_produto": "Carta Ortoimagem SARP", "poligono": "POLYGON(...)", "nome": "1o/CGEO"},
             self.CONTRATO,
         )
         self.assertEqual(base, "Carta_Especial_1o_CGEO")

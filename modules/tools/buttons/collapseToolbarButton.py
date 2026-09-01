@@ -59,14 +59,23 @@ class CollapseToolbarButton(BaseTools):
             ]  # First two actions will always be visible
 
     def toggleToolbar(self, checked=None):
-        """Toggle the visibility of non-essential toolbar actions and widgets"""
+        """Toggle the visibility of non-essential toolbar actions and widgets."""
 
-        # Handle QActions in the toolbar
-        for action in self.toolBar.actions():
-            # Skip if this action is essential (first 2 buttons or collapse button)
+        try:
+            actions = self.toolBar.actions()
+        except RuntimeError:
+            # A QToolBar já foi destruída pelo QGIS.
+            return
+
+        for action in actions:
             if (action in self.essential_actions) or (action == self._action):
                 continue
-            action.setVisible(checked)
+
+            try:
+                action.setVisible(checked)
+            except RuntimeError:
+                # A QAction também pode ter sido destruída durante reload/unload.
+                continue
 
     def saveStateToProject(self):
         """Save collapse state to project variables WITHOUT triggering a project save"""
@@ -82,26 +91,33 @@ class CollapseToolbarButton(BaseTools):
         )
 
     def loadStateFromProject(self):
-        """Load collapse state from project variables"""
-        self.initializing = True  # Set flag to prevent saving during initialization
-
-        state_json = (
-            QgsExpressionContextUtils.projectScope(QgsProject.instance()).variable(
-                "ferramentas_edicao_collapse_state"
-            )
-            or "{}"
-        )
+        """Load collapse state from project variables."""
+        self.initializing = True
 
         try:
+            state_json = (
+                QgsExpressionContextUtils.projectScope(
+                    QgsProject.instance()
+                ).variable(
+                    "ferramentas_edicao_collapse_state"
+                )
+                or "{}"
+            )
+
             state = json.loads(state_json)
+
             if "collapsed" in state:
-                # Apply the saved collapsed state
                 self.toggleToolbar(state["collapsed"])
             else:
-                # If no saved state, apply the default (collapsed)
                 self.toggleToolbar(False)
-        except:
-            # If there's any error loading state, apply the default (collapsed)
+
+        except (json.JSONDecodeError, TypeError, ValueError):
+            # Estado salvo inválido: aplica o padrão.
             self.toggleToolbar(False)
 
-        self.initializing = False  # Clear the initialization flag
+        except RuntimeError:
+            # A toolbar já foi destruída. Não há nada para restaurar.
+            return
+
+        finally:
+            self.initializing = False

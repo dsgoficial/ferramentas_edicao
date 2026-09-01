@@ -72,8 +72,8 @@ class Table(IComponent, ComponentUtils):
         if self.isMilitaryProduct(data) and data.get("atualidade_confiabilidade"):
             self.customAtualidadeConfiabilidade(composition, data)
         else:
-            self.customEtapa(composition, data.get("fases", ()))
-        self.customSensores(composition, data.get("sensores", ()))
+            self.customEtapa(composition, data.get("fases", ()), data.get("tipo_produto", None))
+        self.customSensores(composition, data.get("sensores", ()), data.get("tipo_produto", None))
         self.customTecnicalInfo(composition, data, mapAreaFeature)
         self.omInfoTable(composition, data, mapAreaFeature)
         return []
@@ -93,7 +93,7 @@ class Table(IComponent, ComponentUtils):
             element.text = text
         return element
 
-    def customEtapa(self, composition, etapas=[]):
+    def customEtapa(self, composition, etapas=[], tipo_produto = None):
         frame = composition.itemById("label_tabela_etapas")
         if frame is None:
             return
@@ -155,6 +155,9 @@ class Table(IComponent, ComponentUtils):
 
         manualTable.setTableContents(rows)
         manualTable.setColumnWidths([45.1, 52.8, 12.1])
+        if tipo_produto == "Carta Ortoimagem SARP":
+            manualTable.setColumnWidths([42.189, 49.392, 11.319])
+            manualTable.setRowHeights([12.0] + [0.0] * (len(rows) - 1))
         manualTable.setIncludeTableHeader(False)
         manualTable.setShowGrid(True)
         manualTable.setGridStrokeWidth(0.1)
@@ -168,6 +171,7 @@ class Table(IComponent, ComponentUtils):
             "Carta Topográfica Militar",
             "Carta Ortoimagem Militar",
         )
+
 
     def customAtualidadeConfiabilidade(self, composition: QgsPrintLayout, data: dict):
         """Preenche, no espaço do quadro de fases, o quadro de atualidade e
@@ -305,7 +309,7 @@ class Table(IComponent, ComponentUtils):
             f"não impresso na folha: {nomes}"
         )
 
-    def customSensores(self, composition: QgsPrintLayout, sensors: dict):
+    def customSensores(self, composition: QgsPrintLayout, sensors: dict, tipo_produto=None):
         frame = composition.itemById("label_tabela_info_ortoimagem")
         if frame is None:
             return
@@ -358,6 +362,8 @@ class Table(IComponent, ComponentUtils):
             rows.append([mc("", data_fmt), mc(f"Bandas utilizadas: {sensor['bandas']}", data_fmt)])
             rows.append([mc("", data_fmt), mc(f"Nível do produto: {sensor['nivel_produto']}", data_fmt)])
             manualTable.setColumnWidths([44.0, 66.0])
+            if tipo_produto == "Carta Ortoimagem SARP":
+                manualTable.setColumnWidths([41.6, 62.4])
         else:
             n_cols = 6
             rows.append(
@@ -388,9 +394,13 @@ class Table(IComponent, ComponentUtils):
                     mc(sensor["nivel_produto"], data_fmt, Qt.AlignmentFlag.AlignCenter),
                 ])
             col_w = round(110.0 / n_cols, 2)
+            if tipo_produto == "Carta Ortoimagem SARP":
+                col_w = 99.6 / n_cols
             manualTable.setColumnWidths([col_w] * n_cols)
 
         manualTable.setTableContents(rows)
+        if tipo_produto == "Carta Ortoimagem SARP":
+            manualTable.setRowHeights([12.0] + [0.0] * (len(rows) - 1))
         manualTable.setIncludeTableHeader(False)
         manualTable.setShowGrid(True)
         manualTable.setGridStrokeWidth(0.1)
@@ -588,25 +598,105 @@ class Table(IComponent, ComponentUtils):
                 c.setSpan(row_span, col_span)
             return c
 
+        is_default_sarp = (
+            str(data.get("configuracao_carta", "om"))
+            .strip()
+            .lower()
+            == "default"
+        )
+
         rows = [
-            [mc("INFORMAÇÕES DO PRODUTO", main_title_fmt, Qt.AlignmentFlag.AlignCenter, col_span=2), mc("", main_title_fmt)],
-            [mc("Endereço da Organização Militar", data_fmt), mc(data.get("endereco", ""), data_fmt)],
-            [mc("Coordenadas geográficas da Organização Militar", data_fmt, row_span=3), mc("Sistema de Referência: SIRGAS 2000 (Época 2000.4)", data_fmt)],
-            [mc("", data_fmt), mc(f"Latitude: {omPoint.y():.3f}º", data_fmt)],
-            [mc("", data_fmt), mc(f"Longitude: {omPoint.x():.3f}º", data_fmt)],
-            [mc("Coordenadas UTM da Organização Militar", data_fmt, row_span=3), mc(f"Zona: {tz} {hemi}, Meridiano Central: {centralMeridian}, Gr.: + 500 km, Equador: {falseNorth} km", data_fmt)],
-            [mc("", data_fmt), mc(f"X: {omUTMPoint.x():.3f} m", data_fmt)],
-            [mc("", data_fmt), mc(f"Y: {omUTMPoint.y():.3f} m", data_fmt)],
-            [mc("Subordinação da Organização Militar", data_fmt), mc(data.get("subordinacao2") or data.get("subordinacao1", ""), data_fmt)],
-            [mc("Altitude aproximada da Organização Militar", data_fmt), mc(str(data.get("altitude", 0)), data_fmt)],
-            [mc("Área aproximada da Organização Militar", data_fmt), mc(f"{omUTMGeom.area():.3f} m²", data_fmt)],
-            [mc("Perímetro aproximado da Organização Militar", data_fmt), mc(f"{omUTMGeom.length():.3f} m", data_fmt)],
-            [mc("Data de Criação", data_fmt), mc(data.get("info_tecnica", {}).get("data_criacao", ""), data_fmt)],
-            [mc("Data de Edição", data_fmt), mc(self.getDataEdicao(), data_fmt)],
+            [
+                mc(
+                    "INFORMAÇÕES DO PRODUTO",
+                    main_title_fmt,
+                    Qt.AlignmentFlag.AlignCenter,
+                    col_span=2,
+                ),
+                mc("", main_title_fmt),
+            ],
+            [
+                mc("Endereço", data_fmt),
+                mc(data.get("endereco", ""), data_fmt),
+            ],
+            [
+                mc("Coordenadas geográficas", data_fmt, row_span=3),
+                mc(
+                    "Sistema de Referência: SIRGAS 2000 (Época 2000.4)",
+                    data_fmt,
+                ),
+            ],
+            [
+                mc("", data_fmt),
+                mc(f"Latitude: {omPoint.y():.3f}º", data_fmt),
+            ],
+            [
+                mc("", data_fmt),
+                mc(f"Longitude: {omPoint.x():.3f}º", data_fmt),
+            ],
+            [
+                mc("Coordenadas UTM", data_fmt, row_span=3),
+                mc(
+                    f"Zona: {tz} {hemi}, Meridiano Central: {centralMeridian}, "
+                    f"Gr.: + 500 km, Equador: {falseNorth} km",
+                    data_fmt,
+                ),
+            ],
+            [
+                mc("", data_fmt),
+                mc(f"X: {omUTMPoint.x():.3f} m", data_fmt),
+            ],
+            [
+                mc("", data_fmt),
+                mc(f"Y: {omUTMPoint.y():.3f} m", data_fmt),
+            ],
         ]
+
+        # A linha de Subordinação só aparece na configuração de OM
+        if not is_default_sarp:
+            rows.append(
+                [
+                    mc("Subordinação", data_fmt),
+                    mc(
+                        data.get("subordinacao2")
+                        or data.get("subordinacao1", ""),
+                        data_fmt,
+                    ),
+                ]
+            )
+
+        rows.extend(
+            [
+                [
+                    mc("Altitude aproximada", data_fmt),
+                    mc(str(data.get("altitude", 0)), data_fmt),
+                ],
+                [
+                    mc("Área aproximada", data_fmt),
+                    mc(f"{omUTMGeom.area():.3f} m²", data_fmt),
+                ],
+                [
+                    mc("Perímetro aproximado", data_fmt),
+                    mc(f"{omUTMGeom.length():.3f} m", data_fmt),
+                ],
+                [
+                    mc("Data de Criação", data_fmt),
+                    mc(
+                        data.get("info_tecnica", {}).get("data_criacao", ""),
+                        data_fmt,
+                    ),
+                ],
+                [
+                    mc("Data de Edição", data_fmt),
+                    mc(self.getDataEdicao(), data_fmt),
+                ],
+            ]
+        )
 
         manualTable.setTableContents(rows)
         manualTable.setColumnWidths([41.6, 62.4])
+        if data.get("tipo_produto") == "Carta Ortoimagem SARP":
+            manualTable.setRowHeights([12.0] + [0.0] * (len(rows) - 1))
         manualTable.setIncludeTableHeader(False)
         manualTable.setShowGrid(True)
         manualTable.setGridStrokeWidth(0.1)

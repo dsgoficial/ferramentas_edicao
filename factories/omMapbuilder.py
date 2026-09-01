@@ -17,7 +17,7 @@
 """
 from pathlib import Path
 
-from qgis.core import QgsPrintLayout, QgsProperty
+from qgis.core import QgsPrintLayout, QgsProperty, QgsLayoutPoint
 from typing import Dict
 from ..config.configDefaults import ConfigDefaults
 from ..factories.mapBuilderUtils import MapBuilderUtils
@@ -75,41 +75,108 @@ class OmMapBuilder(IMapBuilder, MapBuilderUtils):
         if item := composition.itemById("quadriculaRotationLabel"):
             item.setText(f"ROTAÇÃO DE {rotationAngle:.2f}°")
 
+    def isDefaultSarp(self, data: Dict) -> bool:
+        configuracao_carta = str(
+            data.get("configuracao_carta", "dafault")
+        ).strip().lower()
+
+        return configuracao_carta != "om"
+
     def handleOmInfo(self, data: Dict, composition: QgsPrintLayout):
-        """Sets the correct OM info in the composition: OM name / symbol and subordination's name / symbol
-        Args:
-            data: dict holding the map info
-            composition: a QgsPrintLayout for the mapOm product
-        """
-        if item := composition.itemById("labelSubordination1"):
-            if text := data.get("subordinacao1"):
-                item.setText(str(text).upper())
+        """Configura as informações específicas da Carta Ortoimagem SARP."""
+
+        isDefault = self.isDefaultSarp(data)
+
+        if isDefault:
+
+            if item := composition.itemById("labelSubordination1"):
+                item.setText("DIRETORIA DE SERVIÇO GEOGRÁFICO")
                 item.setVisibility(True)
-            else:
+
+            # No modo default não existe uma segunda subordinação
+            if item := composition.itemById("labelSubordination2"):
                 item.setVisibility(False)
-        if item := composition.itemById("labelSubordination2"):
-            if text := data.get("subordinacao2"):
-                item.setText(str(text).upper())
+
+            if item := composition.itemById("label_nomeCarta"):
+                item.setText(str(data.get("nome", "")).upper())
+
+                # Centraliza verticalmente no espaço anteriormente ocupado pelo brasão da OM
+                item.attemptMove(QgsLayoutPoint(62.5, 103.0))
+
+            if item := composition.itemById("symbolOM"):
+                item.setVisibility(False)
+
+            if item := composition.itemById("symbolSubordination"):
+
+                # Remove eventual caminho controlado por expressão
+                propertyKeys = item.dataDefinedProperties().propertyKeys()
+
+                if isinstance(propertyKeys, list) and len(propertyKeys) > 0:
+                    propertyKey = propertyKeys[0]
+                    item.dataDefinedProperties().setProperty(
+                        propertyKey,
+                        QgsProperty(),
+                    )
+
+                dsgSymbolPath = (
+                    self.productPath.parent.parent
+                    / "common"
+                    / "dsgSymbol.png"
+                )
+
+                item.setPicturePath(str(dsgSymbolPath))
                 item.setVisibility(True)
-            else:
-                item.setVisibility(False)
-        if item := composition.itemById("label_nomeCarta"):
-            item.setText(str(data.get("nome")).upper())
-        if item := composition.itemById("symbolOM"):
-            imgPath = data.get("imagemOM")
-            if imgPath:
-                imgPath = Path(imgPath)
-                item.setPicturePath(str(imgPath))
-        if item := composition.itemById("symbolSubordination"):
-            imgPath = data.get("imagemSubordinacao")
-            propertyKey = item.dataDefinedProperties().propertyKeys()
-            if isinstance(propertyKey, list) and len(propertyKey) > 0:
-                propertyKey = propertyKey[0]
-                item.dataDefinedProperties().setProperty(propertyKey, QgsProperty())
                 item.refresh()
-            if imgPath:
-                imgPath = Path(imgPath)
-                item.setPicturePath(str(imgPath))
+
+        else:
+
+            if item := composition.itemById("labelSubordination1"):
+                if text := data.get("subordinacao1"):
+                    item.setText(str(text).upper())
+                    item.setVisibility(True)
+                else:
+                    item.setVisibility(False)
+
+            if item := composition.itemById("labelSubordination2"):
+                if text := data.get("subordinacao2"):
+                    item.setText(str(text).upper())
+                    item.setVisibility(True)
+                else:
+                    item.setVisibility(False)
+
+            if item := composition.itemById("label_nomeCarta"):
+                item.setText(str(data.get("nome", "")).upper())
+
+                # Posição normal da carta de OM
+                item.attemptMove(QgsLayoutPoint(62.5, 141.0))
+
+            if item := composition.itemById("symbolOM"):
+                item.setVisibility(True)
+
+                imgPath = data.get("imagemOM")
+
+                if imgPath:
+                    item.setPicturePath(str(Path(imgPath)))
+
+            if item := composition.itemById("symbolSubordination"):
+
+                propertyKeys = item.dataDefinedProperties().propertyKeys()
+
+                if isinstance(propertyKeys, list) and len(propertyKeys) > 0:
+                    propertyKey = propertyKeys[0]
+                    item.dataDefinedProperties().setProperty(
+                        propertyKey,
+                        QgsProperty(),
+                    )
+
+                imgPath = data.get("imagemSubordinacao")
+
+                if imgPath:
+                    item.setPicturePath(str(Path(imgPath)))
+
+                item.setVisibility(True)
+                item.refresh()
+
         composition.refresh()
 
     def run(self, debugMode: bool = False):
@@ -132,7 +199,7 @@ class OmMapBuilder(IMapBuilder, MapBuilderUtils):
             manager = self.instance.layoutManager()
             manager.addLayout(self.composition)
             self.composition.setName(
-                f"Carta Ortoimagem OM {self.data.get('omTemplateType')}"
+                f"Carta Ortoimagem SARP {self.data.get('omTemplateType')}"
             )
 
         layersByGroup = {"map": mapLayers}
@@ -145,6 +212,16 @@ class OmMapBuilder(IMapBuilder, MapBuilderUtils):
             showLayers=debugMode,
         )
         allLayerIds = self.buildAllComponents(context, layersByGroup)
+
+        for itemId in (
+            "symbol_QRCODE",
+            "geoportal_qrcode",
+            "label_bdgexQR",
+            "label_bdgexWeb",
+            "geoportalEB_label",
+        ):
+            if item := self.composition.itemById(itemId):
+                item.setVisibility(False)
 
         self.handleMapRotation(self.data, self.composition)
         self.handleOmInfo(self.data, self.composition)

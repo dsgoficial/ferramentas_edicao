@@ -1,4 +1,4 @@
-<Layout name="Layout Carta Ortoimagem OM" printResolution="300" units="mm" worldFileMap="{83ba36e6-85e0-4bd7-bac9-d8b4ceab231d}">
+<Layout name="Layout Carta Ortoimagem SARP" printResolution="300" units="mm" worldFileMap="{83ba36e6-85e0-4bd7-bac9-d8b4ceab231d}">
  <Snapper snapToGrid="0" snapToGuides="1" snapToItems="1" tolerance="5"/>
  <Grid offsetUnits="mm" offsetX="0" offsetY="0" resUnits="mm" resolution="10"/>
  <PageCollection>
@@ -82,7 +82,7 @@
   </LayoutItem>
   <GuideCollection visible="1"/>
  </PageCollection>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="label_bdgexWeb" itemRotation="0" labelText="bdgex.eb.mil.br" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="36.174,190,mm" positionLock="false" positionOnPage="36.174,190,mm" referencePoint="0" size="50,5,mm" templateUuid="{bf37c627-4377-455f-a150-1ac7e14fbe47}" type="65641" uuid="{bf37c627-4377-455f-a150-1ac7e14fbe47}" valign="32" visibility="1" zValue="235">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="label_bdgexWeb" itemRotation="0" labelText="https://ebgeo.dsg.eb.mil.br/" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="36.174,190,mm" positionLock="false" positionOnPage="36.174,190,mm" referencePoint="0" size="50,5,mm" templateUuid="{bf37c627-4377-455f-a150-1ac7e14fbe47}" type="65641" uuid="{bf37c627-4377-455f-a150-1ac7e14fbe47}" valign="32" visibility="1" zValue="235">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -144,7 +144,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="label_bdgexQR" itemRotation="0" labelText="BDGEx" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="36.1741,186.619,mm" positionLock="false" positionOnPage="36.1741,186.619,mm" referencePoint="0" size="50,5,mm" templateUuid="{af12007e-f44c-491d-9708-de3fa365fb9c}" type="65641" uuid="{af12007e-f44c-491d-9708-de3fa365fb9c}" valign="32" visibility="1" zValue="234">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="label_bdgexQR" itemRotation="0" labelText="EBGeo" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="36.1741,186.619,mm" positionLock="false" positionOnPage="36.1741,186.619,mm" referencePoint="0" size="50,5,mm" templateUuid="{af12007e-f44c-491d-9708-de3fa365fb9c}" type="65641" uuid="{af12007e-f44c-491d-9708-de3fa365fb9c}" valign="32" visibility="1" zValue="234">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -265,7 +265,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="12" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="400" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Regular" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="12" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
@@ -351,7 +351,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel5" itemRotation="0" labelText="2080 m" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="93.2741,162.742,mm" positionLock="false" positionOnPage="93.2741,162.742,mm" referencePoint="0" size="14,2.4,mm" templateUuid="{adf14f74-b938-4b2e-82b5-55fe0610eae5}" type="65641" uuid="{adf14f74-b938-4b2e-82b5-55fe0610eae5}" valign="32" visibility="1" zValue="47">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel5" itemRotation="0" labelText="2080 m" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="93.2741,168.742,mm" positionLock="false" positionOnPage="93.2741,168.742,mm" referencePoint="0" size="14,2.4,mm" templateUuid="{adf14f74-b938-4b2e-82b5-55fe0610eae5}" type="65641" uuid="{adf14f74-b938-4b2e-82b5-55fe0610eae5}" valign="32" visibility="1" zValue="47">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -436,7 +436,7 @@
   <ComposerItemGroupElement uuid="{93bb7338-2427-4ee6-b785-b64deee3cbd8}"/>
   <ComposerItemGroupElement uuid="{494f817f-82fa-4511-a9fa-1688922bcc54}"/>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel4" itemRotation="0" labelText="1560" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="73.7741,162.742,mm" positionLock="false" positionOnPage="73.7741,162.742,mm" referencePoint="0" size="11,2.4,mm" templateUuid="{ff358813-fe44-439e-ada0-12c0d420fa7e}" type="65641" uuid="{ff358813-fe44-439e-ada0-12c0d420fa7e}" valign="32" visibility="1" zValue="46">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel4" itemRotation="0" labelText="1560" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="73.7741,168.742,mm" positionLock="false" positionOnPage="73.7741,168.742,mm" referencePoint="0" size="11,2.4,mm" templateUuid="{ff358813-fe44-439e-ada0-12c0d420fa7e}" type="65641" uuid="{ff358813-fe44-439e-ada0-12c0d420fa7e}" valign="32" visibility="1" zValue="46">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -498,7 +498,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel3" itemRotation="0" labelText="1040" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="53.774,162.742,mm" positionLock="false" positionOnPage="53.774,162.742,mm" referencePoint="0" size="11,2.4,mm" templateUuid="{494f817f-82fa-4511-a9fa-1688922bcc54}" type="65641" uuid="{494f817f-82fa-4511-a9fa-1688922bcc54}" valign="32" visibility="1" zValue="45">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel3" itemRotation="0" labelText="1040" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="53.774,168.742,mm" positionLock="false" positionOnPage="53.774,168.742,mm" referencePoint="0" size="11,2.4,mm" templateUuid="{494f817f-82fa-4511-a9fa-1688922bcc54}" type="65641" uuid="{494f817f-82fa-4511-a9fa-1688922bcc54}" valign="32" visibility="1" zValue="45">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -560,7 +560,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel2" itemRotation="0" labelText="520" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="33.774,162.742,mm" positionLock="false" positionOnPage="33.774,162.742,mm" referencePoint="0" size="11,2.4,mm" templateUuid="{93bb7338-2427-4ee6-b785-b64deee3cbd8}" type="65641" uuid="{93bb7338-2427-4ee6-b785-b64deee3cbd8}" valign="32" visibility="1" zValue="44">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel2" itemRotation="0" labelText="520" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="33.774,168.742,mm" positionLock="false" positionOnPage="33.774,168.742,mm" referencePoint="0" size="11,2.4,mm" templateUuid="{93bb7338-2427-4ee6-b785-b64deee3cbd8}" type="65641" uuid="{93bb7338-2427-4ee6-b785-b64deee3cbd8}" valign="32" visibility="1" zValue="44">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -622,7 +622,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel1" itemRotation="0" labelText="260" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="24.0241,162.742,mm" positionLock="false" positionOnPage="24.0241,162.742,mm" referencePoint="0" size="10.5,2.4,mm" templateUuid="{e522b6c2-28ed-4fed-9ccf-8166497c31ea}" type="65641" uuid="{e522b6c2-28ed-4fed-9ccf-8166497c31ea}" valign="32" visibility="1" zValue="43">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel1" itemRotation="0" labelText="260" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="24.0241,168.742,mm" positionLock="false" positionOnPage="24.0241,168.742,mm" referencePoint="0" size="10.5,2.4,mm" templateUuid="{e522b6c2-28ed-4fed-9ccf-8166497c31ea}" type="65641" uuid="{e522b6c2-28ed-4fed-9ccf-8166497c31ea}" valign="32" visibility="1" zValue="43">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -684,7 +684,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel0" itemRotation="0" labelText="0" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="18.0741,162.742,mm" positionLock="false" positionOnPage="18.0741,162.742,mm" referencePoint="0" size="2.4,2.4,mm" templateUuid="{1199864d-3dc0-4fbd-b453-18f061606422}" type="65641" uuid="{1199864d-3dc0-4fbd-b453-18f061606422}" valign="32" visibility="1" zValue="42">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" halign="132" htmlState="0" id="scaleBarLabel0" itemRotation="0" labelText="0" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="18.0741,168.742,mm" positionLock="false" positionOnPage="18.0741,168.742,mm" referencePoint="0" size="2.4,2.4,mm" templateUuid="{1199864d-3dc0-4fbd-b453-18f061606422}" type="65641" uuid="{1199864d-3dc0-4fbd-b453-18f061606422}" valign="32" visibility="1" zValue="42">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -746,7 +746,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" id="omInfoTable" itemRotation="0" multiFrame="{f6a7b8c9-d0e1-2345-f6a7-b8c9d0e12345}" multiFrameTemplateUuid="{f6a7b8c9-d0e1-2345-f6a7-b8c9d0e12345}" opacity="1" outlineWidthM="0.3,mm" position="62.5,495.298,mm" positionLock="false" positionOnPage="62.5,495.298,mm" referencePoint="1" sectionHeight="84.5589" sectionWidth="0.5" sectionX="0" sectionY="0" size="0.5,84.5589,mm" templateUuid="{8e05c5c4-9446-4903-bf97-fddb796a5155}" type="65647" uuid="{8e05c5c4-9446-4903-bf97-fddb796a5155}" visibility="1" zValue="42">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" id="omInfoTable" itemRotation="0" multiFrame="{f6a7b8c9-d0e1-2345-f6a7-b8c9d0e12345}" multiFrameTemplateUuid="{f6a7b8c9-d0e1-2345-f6a7-b8c9d0e12345}" opacity="1" outlineWidthM="0.3,mm" position="62.5,493.5,mm" positionLock="false" positionOnPage="62.5,493.5,mm" referencePoint="1" sectionHeight="84.5589" sectionWidth="0.5" sectionX="0" sectionY="0" size="0.5,84.5589,mm" templateUuid="{8e05c5c4-9446-4903-bf97-fddb796a5155}" type="65647" uuid="{8e05c5c4-9446-4903-bf97-fddb796a5155}" visibility="1" zValue="42">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -778,7 +778,7 @@
    </customproperties>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem anchorPoint="4" background="false" blendMode="0" excludeFromExports="0" file="" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" id="picture_escala_direita" itemRotation="0" mapUuid="" mode="0" northMode="0" northOffset="0" opacity="1" outlineWidthM="0.3,mm" pictureHeight="1.4" pictureRotation="0" pictureWidth="80" position="19.2741,165.242,mm" positionLock="false" positionOnPage="19.2741,165.242,mm" referencePoint="0" resizeMode="2" size="80,1.4,mm" svgBorderColor="0,0,0,255,rgb:0,0,0,1" svgBorderWidth="0.2" svgFillColor="255,255,255,255,rgb:1,1,1,1" templateUuid="{dc4c7d3b-0df7-4347-a4cf-8ac27f478cbf}" type="65640" uuid="{dc4c7d3b-0df7-4347-a4cf-8ac27f478cbf}" visibility="1" zValue="41">
+ <LayoutItem anchorPoint="4" background="false" blendMode="0" excludeFromExports="0" file="" frame="false" frameJoinStyle="miter" groupUuid="{f172670e-8811-4665-a6d0-c11510b9e44f}" id="picture_escala_direita" itemRotation="0" mapUuid="" mode="0" northMode="0" northOffset="0" opacity="1" outlineWidthM="0.3,mm" pictureHeight="1.4" pictureRotation="0" pictureWidth="80" position="19.2741,171.242,mm" positionLock="false" positionOnPage="19.2741,171.242,mm" referencePoint="0" resizeMode="2" size="80,1.4,mm" svgBorderColor="0,0,0,255,rgb:0,0,0,1" svgBorderWidth="0.2" svgFillColor="255,255,255,255,rgb:1,1,1,1" templateUuid="{dc4c7d3b-0df7-4347-a4cf-8ac27f478cbf}" type="65640" uuid="{dc4c7d3b-0df7-4347-a4cf-8ac27f478cbf}" visibility="1" zValue="41">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -889,7 +889,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Arial" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="10" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="75" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="10" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
@@ -973,7 +973,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Arial" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="8" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="50" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="8" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
@@ -1051,7 +1051,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Arial" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="10" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="75" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="10" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
@@ -1113,7 +1113,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Arial" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="10" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="75" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="10" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
@@ -1160,7 +1160,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="scaleLabel" itemRotation="0" labelText="ESCALA 1:25.000" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="37,156,mm" positionLock="false" positionOnPage="37,156,mm" referencePoint="0" size="50,5,mm" templateUuid="{85911212-4d3e-47a6-8e97-93ff7620746b}" type="65641" uuid="{85911212-4d3e-47a6-8e97-93ff7620746b}" valign="32" visibility="1" zValue="9">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="scaleLabel" itemRotation="0" labelText="ESCALA 1:25.000" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="37,162,mm" positionLock="false" positionOnPage="37,162,mm" referencePoint="0" size="50,5,mm" templateUuid="{85911212-4d3e-47a6-8e97-93ff7620746b}" type="65641" uuid="{85911212-4d3e-47a6-8e97-93ff7620746b}" valign="32" visibility="1" zValue="9">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -1175,7 +1175,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Arial" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="12" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="75" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="8" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
@@ -1222,7 +1222,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="4" htmlState="0" id="label_nomeCarta" itemRotation="0" labelText="NOME DA OM" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="62.5,136,mm" positionLock="false" positionOnPage="62.5,136,mm" referencePoint="4" size="115,25,mm" templateUuid="{f6f27da2-c9cc-4f88-93a8-77f3f7678030}" type="65641" uuid="{f6f27da2-c9cc-4f88-93a8-77f3f7678030}" valign="128" visibility="1" zValue="8">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="4" htmlState="0" id="label_nomeCarta" itemRotation="0" labelText="NOME DA OM" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="62.5,141,mm" positionLock="false" positionOnPage="62.5,141,mm" referencePoint="4" size="115,25,mm" templateUuid="{f6f27da2-c9cc-4f88-93a8-77f3f7678030}" type="65641" uuid="{f6f27da2-c9cc-4f88-93a8-77f3f7678030}" valign="128" visibility="1" zValue="8">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -1237,7 +1237,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="20" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="400" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Regular" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="20" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
@@ -1323,7 +1323,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="label_nome_produto" itemRotation="0" labelText="CARTA ESPECIAL" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="40.2731,35,mm" positionLock="false" positionOnPage="40.2731,35,mm" referencePoint="0" size="43.1036,9.9408,mm" templateUuid="{01df2f25-9bbe-468e-9e04-1baf1e184470}" type="65641" uuid="{01df2f25-9bbe-468e-9e04-1baf1e184470}" valign="128" visibility="1" zValue="7">
+ <LayoutItem background="false" blendMode="0" excludeFromExports="0" frame="false" frameJoinStyle="miter" groupUuid="" halign="132" htmlState="0" id="label_nome_produto" itemRotation="0" labelText="CARTA ORTOIMAGEM DE SARP" marginX="0" marginY="0" opacity="1" outlineWidthM="0.3,mm" position="7.6741,35,mm" positionLock="false" positionOnPage="7.6741,35,mm" referencePoint="0" size="110,9.9408,mm" templateUuid="{01df2f25-9bbe-468e-9e04-1baf1e184470}" type="65641" uuid="{01df2f25-9bbe-468e-9e04-1baf1e184470}" valign="128" visibility="1" zValue="7">
   <FrameColor alpha="255" blue="0" green="0" red="0"/>
   <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
   <LayoutObject>
@@ -1338,7 +1338,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="12" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="400" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Regular" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="255,255,255,255,rgb:1,1,1,1" textOpacity="1" textOrientation="horizontal">
+  <text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="12" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="700" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Bold" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="255,255,255,255,rgb:1,1,1,1" textOpacity="1" textOrientation="horizontal">
    <families/>
    <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
    <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
