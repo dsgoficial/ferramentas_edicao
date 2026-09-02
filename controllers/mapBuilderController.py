@@ -566,10 +566,10 @@ class MapBuildController(MapBuildControllerUtils):
                 self.conn.getConnection(
                     jsonData.get("banco"), dlgCfg.username, dlgCfg.password
                 )
-                if jsonData["tipo_produto"] != "Carta Ortoimagem SARP"
+                if productType != "omMap"
                 else None
             )
-            if jsonData["tipo_produto"] != "Carta Ortoimagem SARP" and not self.validate_numeric_grid(connection):
+            if productType != "omMap" and not self.validate_numeric_grid(connection):
                 if is_headless:
                     logger.error(
                         "A camada edicao_grid_numerico_p está vazia. Gere o grid numérico e tente novamente."
