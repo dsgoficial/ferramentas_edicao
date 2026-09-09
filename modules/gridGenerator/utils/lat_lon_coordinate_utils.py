@@ -76,37 +76,59 @@ class DMS:
         self.degrees = degrees_in_seconds
         self.minutes = minutes_in_seconds
         self.seconds = final_seconds
-        
+
         if is_negative:
-            self.degrees = -self.degrees
+            self._apply_negative_sign()
         self._normalize()
+
+    def _apply_negative_sign(self):
+        """Marca o valor como negativo na PRIMEIRA componente nao nula.
+
+        O sinal e do valor inteiro, e nao ha `-0`: em `-0° 30' 00"` quem carrega
+        o sinal e o minuto. Marcar so o grau perde o sinal de todo valor entre
+        -1° e 0°, que e onde ficam as folhas proximas ao equador.
+        """
+        if self.degrees != 0:
+            self.degrees = -self.degrees
+        elif self.minutes != 0:
+            self.minutes = -self.minutes
+        else:
+            self.seconds = -self.seconds
     
     def _normalize(self):
-        """Normalize the DMS values (e.g., 61 seconds becomes 1 minute 1 second)"""
-        # Handle negative seconds
-        if self.seconds < 0:
-            minutes_to_subtract = int(abs(self.seconds) // 60) + 1
-            self.minutes -= minutes_to_subtract
-            self.seconds += minutes_to_subtract * 60
-        
-        # Convert excess seconds to minutes
-        if self.seconds >= 60:
-            extra_minutes = int(self.seconds // 60)
-            self.minutes += extra_minutes
-            self.seconds -= extra_minutes * 60
-        
-        # Handle negative minutes
-        if self.minutes < 0:
-            degrees_to_subtract = int(abs(self.minutes) // 60) + 1
-            self.degrees -= degrees_to_subtract
-            self.minutes += degrees_to_subtract * 60
-        
-        # Convert excess minutes to degrees
-        if self.minutes >= 60:
-            extra_degrees = int(self.minutes // 60)
-            self.degrees += extra_degrees
-            self.minutes -= extra_degrees * 60
-    
+        """Normaliza as componentes (61" viram 1' 01") SEM trocar o hemisferio.
+
+        O sinal e do valor inteiro, nao de cada componente, e minuto e segundo
+        sao deslocamentos dentro da magnitude do grau (o que `to_decimal_degrees`
+        ja pressupoe). Logo o carry tem de andar na direcao da MAGNITUDE:
+        `-25° 59' 60"` e -26°, nunca -24°.
+
+        A versao anterior fazia `self.degrees += extra_degrees` e somava rumo ao
+        zero num grau negativo. Bastava o bbox reprojetado de uma folha cair um
+        fio ao norte do grau inteiro (`-25.999999999999996`) para o gerador de
+        ticks de 1' receber -24° como fim do intervalo e marchar DOIS GRAUS para
+        fora da folha: 135 ticks por borda em vez de 15, e cruzetas a ate 166 km
+        da moldura. Regressao coberta em `tests/test_dms.py`.
+        """
+        sign = -1 if self.degrees < 0 else 1
+        # Magnitude do grau mais os deslocamentos, tudo em segundos.
+        total_seconds = abs(self.degrees) * 3600 + self.minutes * 60 + self.seconds
+        if total_seconds < 0:
+            # Os deslocamentos passaram do grau e o valor cruzou o zero.
+            sign = -sign
+            total_seconds = -total_seconds
+
+        degrees = int(total_seconds // 3600)
+        remaining_seconds = total_seconds - degrees * 3600
+        minutes = int(remaining_seconds // 60)
+        seconds = remaining_seconds - minutes * 60
+
+        self.degrees = degrees
+        self.minutes = minutes
+        self.seconds = seconds
+        if sign < 0:
+            self._apply_negative_sign()
+
     def _validate_coordinate(self):
         """Validate coordinate ranges for latitude and longitude"""
         decimal_degrees = self.to_decimal_degrees()
@@ -430,7 +452,12 @@ class DMS:
         return grid_points
     
     def to_decimal_degrees(self):
-        """Convert DMS to decimal degrees"""
+        """Convert DMS to decimal degrees.
+
+        Minuto e segundo sao deslocamentos dentro da magnitude do grau, e o
+        sinal do grau vale para o conjunto. Com grau zero nao ha sinal a ler
+        ali, e quem o carrega e o proprio minuto (ou o segundo), ja negativo.
+        """
         decimal = abs(self.degrees) + self.minutes/60 + self.seconds/3600
         return decimal if self.degrees >= 0 else -decimal
     
@@ -444,10 +471,16 @@ class DMS:
         minutes_decimal = (decimal_degrees - degrees) * 60
         minutes = int(minutes_decimal)
         seconds = (minutes_decimal - minutes) * 60
-        
+
         if is_negative:
-            degrees = -degrees
-        
+            # O sinal vai na primeira componente nao nula: nao existe `-0°`.
+            if degrees != 0:
+                degrees = -degrees
+            elif minutes != 0:
+                minutes = -minutes
+            else:
+                seconds = -seconds
+
         return cls(degrees, minutes, seconds, coordinate_type)
     
     def __str__(self):
