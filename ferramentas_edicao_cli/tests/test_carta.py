@@ -414,5 +414,52 @@ class TestCliExport(unittest.TestCase):
         self.assertEqual(len(json.loads(saida)), 2)
 
 
+class TestReferenciaDeFrescor(unittest.TestCase):
+    """O portao que decide se a folha saiu compara o mtime do arquivo com o
+    instante de inicio. O mtime vem do relogio do DESTINO, e num share de rede
+    ele pode estar minutos atras do relogio local (204,5 s medidos no share de
+    producao da DGEO). O pior caso e esse, e e ele que estes testes constroem."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self.tmp.name)
+        self.addCleanup(self.tmp.cleanup)
+        self.time_real = cli.time.time
+
+    def tearDown(self):
+        cli.time.time = self.time_real
+
+    def test_relogio_local_adiantado_nao_reprova_arquivo_novo(self):
+        # O pior caso: o relogio DESTA maquina adiantado 205 s em relacao ao do
+        # destino, que e a defasagem medida no share de producao.
+        DEFASAGEM = 205.0
+        cli.time.time = lambda: self.time_real() + DEFASAGEM
+
+        started = cli.referencia_de_frescor(self.dir)
+        alvo = self.dir / "Carta_Topografica_2854-2.pdf"
+        alvo.write_bytes(b"pdf")
+        mtime = alvo.stat().st_mtime
+
+        # A regra do portao, tal como cmd_export a aplica.
+        self.assertGreaterEqual(mtime, started - 2, "arquivo recem-escrito reprovado")
+
+        # E o controle: a referencia ANTIGA (o relogio local) reprova o mesmo
+        # arquivo. Sem isto o teste passaria mesmo com o defeito de volta.
+        self.assertLess(mtime, cli.time.time() - 2)
+
+    def test_referencia_nao_sai_do_relogio_local(self):
+        cli.time.time = lambda: 0.0
+        self.assertGreater(cli.referencia_de_frescor(self.dir), 0.0)
+
+    def test_pasta_que_recusa_o_marcador_cai_no_relogio_local(self):
+        cli.time.time = lambda: 12345.0
+        inexistente = self.dir / "nao" / "existe"
+        self.assertEqual(cli.referencia_de_frescor(inexistente), 12345.0)
+
+    def test_o_marcador_nao_fica_para_tras(self):
+        cli.referencia_de_frescor(self.dir)
+        self.assertEqual(list(self.dir.iterdir()), [])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -576,6 +576,32 @@ def cmd_validate(args):
     return 1 if any(carta.has_errors(r) for r in results) else 0
 
 
+def referencia_de_frescor(saida):
+    """Instante de inicio MEDIDO NO RELOGIO DO DESTINO, para comparar com o mtime.
+
+    O portao que decide se a folha saiu compara o `st_mtime` do arquivo com o
+    instante em que a exportacao comecou. O `st_mtime` vem do relogio de quem
+    HOSPEDA o arquivo, e num share de rede ele pode estar minutos atras do
+    relogio desta maquina: no share de producao da DGEO a defasagem medida foi de
+    204,5 s. Com `time.time()` como referencia, todo arquivo recem-escrito la
+    nasce mais velho que o inicio e o lote inteiro e reprovado com o PDF pronto
+    no disco.
+
+    Um marcador escrito e lido NA PROPRIA PASTA DE SAIDA poe as duas medidas na
+    mesma base de tempo, seja o destino local ou remoto. Se a pasta nao aceitar o
+    marcador, cai no relogio local, que e o comportamento antigo.
+    """
+    marcador = saida / f".ferramentas_edicao_inicio_{os.getpid()}"
+    try:
+        marcador.touch()
+        try:
+            return marcador.stat().st_mtime
+        finally:
+            marcador.unlink()
+    except OSError:
+        return time.time()
+
+
 def cmd_export(args):
     contract = _load_contract()
     _check_tipo(contract, args.tipo)
@@ -709,7 +735,7 @@ def cmd_export(args):
     for aviso in avisos:
         print(f"[aviso] {aviso}", file=sys.stderr)
     print(f"[export] {len(validos)} folha(s), tipo {tipo} -> {saida}", file=sys.stderr)
-    started = time.time()
+    started = referencia_de_frescor(saida)
     # Sem capture: o log do plugin (stderr) sai ao vivo, que e o unico jeito de
     # acompanhar um lote de horas.
     code = subprocess.run(cmd).returncode
