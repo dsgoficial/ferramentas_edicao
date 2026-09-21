@@ -119,7 +119,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="7" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="7" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -192,7 +192,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="7" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="7" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -287,7 +287,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -434,7 +434,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -545,7 +545,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -618,7 +618,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -691,7 +691,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -764,7 +764,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="10" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -845,7 +845,7 @@
   <ComposerItemGroupElement uuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}"/>
   <ComposerItemGroupElement uuid="{cc399959-89b4-44ff-95c3-f59b9917032e}"/>
  </LayoutItem>
- <LayoutItem position="92.6736,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="14,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="92.6736,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="2000 m" marginY="0" htmlState="0" templateUuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" id="scaleBarLabel5" type="65641" uuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" excludeFromExports="0" referencePoint="0" zValue="28" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="92.6736,167.3,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="14,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="92.6736,167.3,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="2000 m" marginY="0" htmlState="0" templateUuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" id="scaleBarLabel5" type="65641" uuid="{ace5a713-6d2b-4a0e-a00a-047b47eb067a}" excludeFromExports="0" referencePoint="0" zValue="28" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -860,7 +860,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="400" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -918,7 +918,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="73.1736,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="73.1736,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1500" marginY="0" htmlState="0" templateUuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" id="scaleBarLabel4" type="65641" uuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" excludeFromExports="0" referencePoint="0" zValue="27" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="73.1736,167.3,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="73.1736,167.3,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1500" marginY="0" htmlState="0" templateUuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" id="scaleBarLabel4" type="65641" uuid="{513a2064-dccb-46fb-9b6f-f06f4342f18d}" excludeFromExports="0" referencePoint="0" zValue="27" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -933,7 +933,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="400" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -991,7 +991,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="53.1735,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="53.1735,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1000" marginY="0" htmlState="0" templateUuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" id="scaleBarLabel3" type="65641" uuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" excludeFromExports="0" referencePoint="0" zValue="26" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="53.1735,167.3,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="53.1735,167.3,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="1000" marginY="0" htmlState="0" templateUuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" id="scaleBarLabel3" type="65641" uuid="{cc399959-89b4-44ff-95c3-f59b9917032e}" excludeFromExports="0" referencePoint="0" zValue="26" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1006,7 +1006,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="400" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -1064,7 +1064,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="33.1735,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="33.1735,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="500" marginY="0" htmlState="0" templateUuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" id="scaleBarLabel2" type="65641" uuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" excludeFromExports="0" referencePoint="0" zValue="25" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="33.1735,167.3,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="11,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="33.1735,167.3,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="500" marginY="0" htmlState="0" templateUuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" id="scaleBarLabel2" type="65641" uuid="{3ec0efd6-2829-469d-9278-257a68b2ca70}" excludeFromExports="0" referencePoint="0" zValue="25" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1079,7 +1079,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="400" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -1137,7 +1137,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="23.4236,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="10.5,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="23.4236,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="250" marginY="0" htmlState="0" templateUuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" id="scaleBarLabel1" type="65641" uuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" excludeFromExports="0" referencePoint="0" zValue="24" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="23.4236,167.3,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="10.5,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="23.4236,167.3,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="250" marginY="0" htmlState="0" templateUuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" id="scaleBarLabel1" type="65641" uuid="{3ea55f8a-37d4-4e5b-a7e6-7d8f97682c8e}" excludeFromExports="0" referencePoint="0" zValue="24" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1152,7 +1152,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="400" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -1210,7 +1210,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="17.4736,168.086,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="2.4,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="17.4736,168.086,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="0" marginY="0" htmlState="0" templateUuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" id="scaleBarLabel0" type="65641" uuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" excludeFromExports="0" referencePoint="0" zValue="23" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
+ <LayoutItem position="17.4736,167.3,mm" frame="false" valign="32" opacity="1" itemRotation="0" size="2.4,2.4,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="17.4736,167.3,mm" outlineWidthM="0.3,mm" halign="132" positionLock="false" labelText="0" marginY="0" htmlState="0" templateUuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" id="scaleBarLabel0" type="65641" uuid="{3bec69b1-1fd1-4aaa-bc98-0592ade4d938}" excludeFromExports="0" referencePoint="0" zValue="23" marginX="0" groupUuid="{45ba5a45-b264-4a31-9bde-2ad1ac952f73}">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -1225,7 +1225,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="400" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="6" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -1320,7 +1320,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="50" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="8" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="400" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="8" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -1441,7 +1441,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -1514,7 +1514,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="20" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="0,0,0,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="20" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
@@ -1587,7 +1587,7 @@
     <Option/>
    </customproperties>
   </LayoutObject>
-  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="255,255,255,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Arial" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
+  <text-style fontItalic="0" fontUnderline="0" textOrientation="horizontal" blendMode="0" previewBkgrdColor="255,255,255,255" multilineHeight="1" namedStyle="" allowHtml="0" textColor="255,255,255,255" fontKerning="1" fontLetterSpacing="0" fontWeight="75" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSize="12" fontFamily="Noto Sans" textOpacity="1" capitalization="0" fontWordSpacing="0" fontStrikeout="0" fontSizeUnit="Point">
    <families/>
    <text-buffer bufferSize="1" bufferBlendMode="0" bufferSizeUnits="MM" bufferDraw="0" bufferOpacity="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferColor="255,255,255,255" bufferNoFill="1" bufferJoinStyle="128"/>
    <text-mask maskJoinStyle="128" maskOpacity="1" maskType="0" maskEnabled="0" maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskedSymbolLayers="" maskSizeUnits="MM"/>
