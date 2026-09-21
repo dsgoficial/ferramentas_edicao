@@ -530,7 +530,7 @@
    </customproperties>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem position="24.4,290.1,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="75.2,6,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="24.4,290.1,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="LOCALIZAÇÃO DA OM NO MUNICÍPIO" marginY="0" htmlState="0" templateUuid="{078df209-d2f5-45a1-8840-b29ce6daef9c}" id="label_divisao" type="65641" uuid="{078df209-d2f5-45a1-8840-b29ce6daef9c}" excludeFromExports="0" referencePoint="0" zValue="41" marginX="0" groupUuid="">
+ <LayoutItem position="24.4,290.1,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="75.2,6,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="24.4,290.1,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="LOCALIZAÇÃO NO MUNICÍPIO" marginY="0" htmlState="0" templateUuid="{078df209-d2f5-45a1-8840-b29ce6daef9c}" id="label_divisao" type="65641" uuid="{078df209-d2f5-45a1-8840-b29ce6daef9c}" excludeFromExports="0" referencePoint="0" zValue="41" marginX="0" groupUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>
@@ -603,7 +603,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem position="24.4,200,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="75.2,6,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="24.4,200,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="LOCALIZAÇÃO DA OM NO ESTADO" marginY="0" htmlState="0" templateUuid="{ffc370f7-d305-42f3-8b67-351ea68065d8}" id="label_localizacao" type="65641" uuid="{ffc370f7-d305-42f3-8b67-351ea68065d8}" excludeFromExports="0" referencePoint="0" zValue="38" marginX="0" groupUuid="">
+ <LayoutItem position="24.4,200,mm" frame="false" valign="128" opacity="1" itemRotation="0" size="75.2,6,mm" frameJoinStyle="miter" blendMode="0" background="false" visibility="1" positionOnPage="24.4,200,mm" outlineWidthM="0.3,mm" halign="4" positionLock="false" labelText="LOCALIZAÇÃO NO ESTADO" marginY="0" htmlState="0" templateUuid="{ffc370f7-d305-42f3-8b67-351ea68065d8}" id="label_localizacao" type="65641" uuid="{ffc370f7-d305-42f3-8b67-351ea68065d8}" excludeFromExports="0" referencePoint="0" zValue="38" marginX="0" groupUuid="">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>

@@ -672,14 +672,6 @@ class Table(IComponent, ComponentUtils):
                     mc(str(data.get("altitude", 0)), data_fmt),
                 ],
                 [
-                    mc("Área aproximada", data_fmt),
-                    mc(f"{omUTMGeom.area():.3f} m²", data_fmt),
-                ],
-                [
-                    mc("Perímetro aproximado", data_fmt),
-                    mc(f"{omUTMGeom.length():.3f} m", data_fmt),
-                ],
-                [
                     mc("Data de Criação", data_fmt),
                     mc(
                         data.get("info_tecnica", {}).get("data_criacao", ""),

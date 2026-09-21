@@ -50,7 +50,14 @@ class AnglesHandler:
 
         convergencia = self.auxiliar.calculateConvergence(wgsPoint)
         file = os.path.join(os.path.dirname(__file__), "angles", "geomag", "WMM.cof")
-
+        if not os.path.exists(file):
+            file = os.path.join(
+                os.path.dirname(__file__),
+                "angles",
+                "geomag",
+                "WMM.COF"
+            )
+            
         gm = GeoMag(file)
         height = 0
         currYear = datetime.datetime.now().year

@@ -649,7 +649,7 @@
    </dd_properties>
   </text-style>
  </LayoutItem>
- <LayoutItem templateUuid="{5fc50ab2-7581-4a6d-8313-588981a31d75}" itemRotation="0" zValue="202" resizeMode="1" pictureRotation="0" groupUuid="" pictureHeight="18" referencePoint="0" visibility="1" northMode="0" file="" svgBorderWidth="0.2" type="65640" frame="false" outlineWidthM="0.3,mm" position="0.5,10.5,mm" opacity="1" svgBorderColor="0,0,0,255" positionOnPage="0.5,10.5,mm" pictureWidth="104" uuid="{5fc50ab2-7581-4a6d-8313-588981a31d75}" excludeFromExports="0" mode="0" id="geoportal_image" positionLock="false" mapUuid="" size="104,16,mm" northOffset="0" svgFillColor="255,255,255,255" background="false" blendMode="0" frameJoinStyle="miter" anchorPoint="4">
+ <LayoutItem templateUuid="{5fc50ab2-7581-4a6d-8313-588981a31d75}" itemRotation="0" zValue="202" resizeMode="1" pictureRotation="0" groupUuid="" pictureHeight="18" referencePoint="0" visibility="1" northMode="0" file="" svgBorderWidth="0.2" type="65640" frame="false" outlineWidthM="0.3,mm" position="-0.65,10.5,mm" opacity="1" svgBorderColor="0,0,0,255" positionOnPage="-0.65,10.5,mm" pictureWidth="106.3" uuid="{5fc50ab2-7581-4a6d-8313-588981a31d75}" excludeFromExports="0" mode="0" id="geoportal_image" positionLock="false" mapUuid="" size="106.3,16,mm" northOffset="0" svgFillColor="255,255,255,255" background="false" blendMode="0" frameJoinStyle="miter" anchorPoint="4">
   <FrameColor alpha="255" red="0" green="0" blue="0"/>
   <BackgroundColor alpha="255" red="255" green="255" blue="255"/>
   <LayoutObject>
@@ -671,7 +671,7 @@
    </customproperties>
   </LayoutObject>
  </LayoutItem>
- <LayoutItem templateUuid="{ef556055-a4bf-43b5-99f2-983da858b2ef}" valign="32" itemRotation="0" zValue="201" groupUuid="" referencePoint="0" visibility="1" marginY="0" type="65641" frame="false" outlineWidthM="0.3,mm" position="0.5,2.22045e-16,mm" opacity="1" labelText="ACESSO LIVRE À GEOINFORMAÇÃO" marginX="0" positionOnPage="0.5,2.22045e-16,mm" uuid="{ef556055-a4bf-43b5-99f2-983da858b2ef}" excludeFromExports="0" id="geoInfoAcess_label" positionLock="false" halign="132" size="104,9,mm" background="false" blendMode="0" frameJoinStyle="miter" htmlState="0">
+ <LayoutItem templateUuid="{ef556055-a4bf-43b5-99f2-983da858b2ef}" valign="32" itemRotation="0" zValue="201" groupUuid="" referencePoint="0" visibility="1" marginY="0" type="65641" frame="false" outlineWidthM="0.3,mm" position="0.5,2.22045e-16,mm" opacity="1" labelText="ACESSO À GEOINFORMAÇÃO" marginX="0" positionOnPage="0.5,2.22045e-16,mm" uuid="{ef556055-a4bf-43b5-99f2-983da858b2ef}" excludeFromExports="0" id="geoInfoAcess_label" positionLock="false" halign="132" size="104,9,mm" background="false" blendMode="0" frameJoinStyle="miter" htmlState="0">
   <FrameColor alpha="255" red="0" green="0" blue="0"/>
   <BackgroundColor alpha="255" red="255" green="255" blue="255"/>
   <LayoutObject>

@@ -421,7 +421,7 @@ class ConfigDefaults:
                     },
                     "classified": {"x_0": 7, "y_0": 440, "width": 120, "height": 20},
                     "bdgexAcessInfo": {
-                        "x_0": 8,
+                        "x_0": 10,
                         "y_0": 640,
                         "width": 105,
                         "height": 100,
