@@ -1,10 +1,14 @@
 # CHANGELOG
 
+## 1.3.34
+
+Correção de bug:
+- Corrige estilo de Foz Maritima e de Quebramar de acordo com a ET-RDG
+
 ## 1.3.33
 
 Correção de bug:
 - Corrige pista de pouso ponto nas legendas
-
 
 ## 1.3.32
 
