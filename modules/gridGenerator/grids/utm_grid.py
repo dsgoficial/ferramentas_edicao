@@ -58,7 +58,7 @@ class UTMGrid(AbstractGrid):
         return super().__post_init__()
 
     def build_spacing_dict(self):
-        return {s: 40*s for s in [5, 10, 25, 50, 100, 250]}
+        return {s: 40*s for s in [2, 5, 10, 25, 50, 100, 250]}
     
     def build_coordinate_grid_dict(self) -> Dict[GridTypes, List[Tuple[Union[UTM], Union[UTM]]]]:
         top_grid = UTM.generate_range(

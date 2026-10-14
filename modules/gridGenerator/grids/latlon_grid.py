@@ -40,6 +40,7 @@ class LatLonGrid(AbstractGrid):
     
     def build_spacing_dict(self):
         return {
+            2: DMS(seconds=10),  # 10'' para 1:2.000 (37,5''/10'' = 3,75 divisões, como 7,5'/2' no 1:25.000)
             5: DMS(minutes=1),  # Assumindo 30'' para 1:5.000 (não especificado na tabela)
             10: DMS(minutes=1),  # Assumindo 1' para 1:10.000 (não especificado na tabela)
             25: DMS(minutes=2),  # 2' para 1:25.000

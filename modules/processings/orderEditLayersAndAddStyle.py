@@ -50,6 +50,20 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
     INPUT_SCALE = "INPUT_SCALE"
     GROUP = "GROUP"
     EQUIDISTANCIA = "EQUIDISTANCIA"
+
+    # (rótulo, denominador em milhares, equidistância padrão em metros).
+    # O denominador também é o sufixo do estilo específico da escala
+    # (<camada>_<denominador>.qml); sem ele vale o estilo padrão da camada.
+    SCALE_TABLE = [
+        ("1:2.000", 2, 1),
+        ("1:5.000", 5, 1),
+        ("1:10.000", 10, 5),
+        ("1:25.000", 25, 10),
+        ("1:50.000", 50, 20),
+        ("1:100.000", 100, 40),
+        ("1:250.000", 250, 100),
+    ]
+    DEFAULT_SCALE_INDEX = 3
     OUTPUT = "OUTPUT"
     EXIBIR_AUXILIAR = "EXIBIR_AUXILIAR"
     PRINT_STYLE = "PRINT_STYLE"
@@ -77,21 +91,14 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
             )
         )
 
-        self.scales = [
-            self.tr("1:5.000"),
-            self.tr("1:10.000"),
-            self.tr("1:25.000"),
-            self.tr("1:50.000"),
-            self.tr("1:100.000"),
-            self.tr("1:250.000"),
-        ]
+        self.scales = [self.tr(label) for label, _, _ in self.SCALE_TABLE]
 
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.INPUT_SCALE,
                 self.tr("Selecione a escala de edição:"),
                 options=self.scales,
-                defaultValue=2,
+                defaultValue=self.DEFAULT_SCALE_INDEX,
             )
         )
 
@@ -173,27 +180,10 @@ class OrderEditLayersAndAddStyle(QgsProcessingAlgorithm):
         exibirAuxiliar = self.parameterAsEnum(parameters, self.EXIBIR_AUXILIAR, context)
         usePrintStyle = self.parameterAsBool(parameters, self.PRINT_STYLE, context)
 
-        if gridScaleParam == 0:
-            gridScale = 5
-            equidistancia = 1
-        elif gridScaleParam == 1:
-            gridScale = 10
-            equidistancia = 5
-        elif gridScaleParam == 2:
-            gridScale = 25
-            equidistancia = 10
-        elif gridScaleParam == 3:
-            gridScale = 50
-            equidistancia = 20
-        elif gridScaleParam == 4:
-            gridScale = 100
-            equidistancia = 40
-        elif gridScaleParam == 5:
-            gridScale = 250
-            equidistancia = 100
-        else:
+        if not 0 <= gridScaleParam < len(self.SCALE_TABLE):
             feedback.pushWarning("Valor para escala inválido")
             return {}
+        _, gridScale, equidistancia = self.SCALE_TABLE[gridScaleParam]
 
         if equidistanciaCustom:
             equidistancia = equidistanciaCustom

@@ -34,16 +34,20 @@ logger = get_logger(__name__)
 
 # Centralized scale definitions used across processing algorithms
 SCALE_OPTIONS = [
+    "1:2.000",
+    "1:10.000",
     "1:25.000",
     "1:50.000",
     "1:100.000",
     "1:250.000",
 ]
 SCALE_VALUES = {
-    0: 25000,
-    1: 50000,
-    2: 100000,
-    3: 250000,
+    0: 2000,
+    1: 10000,
+    2: 25000,
+    3: 50000,
+    4: 100000,
+    5: 250000,
 }
 
 

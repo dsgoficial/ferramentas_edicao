@@ -16,6 +16,7 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtGui import QFont, QColor
+import copy
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -67,6 +68,17 @@ TEMAS_CARTA_ORTO_MILITAR = (
 )
 
 SEM_DADO = "-"
+
+# Escalas (denominador em milhares) sem configuração própria, que reaproveitam
+# a de uma escala de referência: 1:10.000 segue a 1:250.000 e 1:2.000 segue a
+# 1:25.000 (QPT "normal"). Trocar o valor aqui desacopla a escala quando ela
+# ganhar configuração própria.
+REFERENCE_SCALE = {10: 250, 2: 25}
+
+
+def referenceScale(scale):
+    """Escala cuja configuração vale para `scale` (ela mesma, se for própria)."""
+    return REFERENCE_SCALE.get(scale, scale)
 
 
 @dataclass
@@ -157,7 +169,17 @@ class ConfigDefaults:
             ]
         )
     )
-    scaleBasedStyleTopo: set = field(default_factory=lambda: set(["llp_localidade_p"]))
+    scaleBasedStyleTopo: set = field(
+        default_factory=lambda: set(
+            [
+                "llp_localidade_p",
+                "cobter_area_edificada_a",
+                "constr_area_uso_especifico_a",
+                "constr_edificacao_a",
+                "constr_edificacao_p",
+            ]
+        )
+    )
     scaleBasedStyleOrtho: set = field(default_factory=lambda: set(["llp_localidade_p"]))
 
     topoMap: dict = field(
@@ -736,3 +758,11 @@ class ConfigDefaults:
             },
         }
     )
+
+    def __post_init__(self):
+        """Replica a configuração de QPT das escalas de referência para as
+        escalas que ainda não têm a sua (ver REFERENCE_SCALE), apenas no topoMap."""
+        qptConfig = self.topoMap["qpt"]
+        for scale, reference in REFERENCE_SCALE.items():
+            if scale not in qptConfig and reference in qptConfig:
+                qptConfig[scale] = copy.deepcopy(qptConfig[reference])

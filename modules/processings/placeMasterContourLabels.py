@@ -113,6 +113,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
             )
         )
         self.scales = [
+            "1:2.000",
             "1:5.000",
             "1:10.000",
             "1:25.000",
@@ -125,10 +126,11 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Escala"),
                 options=self.scales,
-                defaultValue=2,
+                defaultValue=3,
             )
         )
         self.scaleDict = {
+            "1:2.000": 2000,
             "1:5.000": 5000,
             "1:10.000": 10000,
             "1:25.000": 25000,
@@ -137,6 +139,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
             "1:250.000": 250000,
         }
         self.masterIndexDict = {
+            2_000: 5,
             5_000: 10,
             10_000: 25,
             25_000: 50,
@@ -145,6 +148,7 @@ class PlaceMasterContourLabels(QgsProcessingAlgorithm):
             250_000: 500,
         }
         self.masterLengthDictInDegrees = {
+            2_000: 0.015625 * 2 / 25,
             5_000: 0.015625 / 4,
             10_000: 0.015625 / 2,
             25_000: 0.015625,

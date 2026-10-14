@@ -153,7 +153,7 @@ class MapBuildController(MapBuildControllerUtils):
                 templateType, scale, angle = self.getInfoOmMap(polygonWkt, epsg)
             jsonData.update({"omTemplateType": templateType, "rotationAngle": angle})
 
-        equidistanciaDefault = {"25": 10, "50": 20, "100": 40, "250": 100}
+        equidistanciaDefault = {"2": 1, "10": 5, "25": 10, "50": 20, "100": 40, "250": 100}
         info_tecnica = jsonData.get("info_tecnica")
         equidistancia = info_tecnica.get(
             "equidistancia_personalizada", equidistanciaDefault.get(str(scale), 0)

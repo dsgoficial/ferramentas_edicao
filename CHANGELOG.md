@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 2.2.0
+
+Melhorias:
+- Exportação de Carta Topográfica 2.0 nas escalas 1:2.000 e 1:10.000. A 10k reaproveita a configuração e o QPT da 250k (moldura retangular, `topoMap_10.qpt`) e a 2k reaproveita os da escala normal (moldura quadrada, `topoMap_2.qpt`), conforme a divisão do SCN. A regra fica em `REFERENCE_SCALE` e `referenceScale()` (`config/configDefaults.py`). Ortoimagem não foi incluída.
+- QPT da 2k com a seção ESTRUTURAS da legenda (título e imagem) e os blocos abaixo da legenda reposicionados (escala gráfica, diagrama de convergência e declinação, tabelas de fases, informações técnicas e observação).
+- Seleção de QPT por escala (`_250`, `_10`, `_2`) com erro claro quando o template não existe.
+- Estilos `_10` e `_2` para cobter_area_edificada_a, constr_area_uso_especifico_a, constr_edificacao_a e constr_edificacao_p (pastas `styles/map` e `styles/mapEdition`); as camadas entram em `scaleBasedStyleTopo` para a exportação. Sem estilo da escala, vale o estilo padrão.
+- Configurar Estilo de Edição (orderEditLayersAndAddStyle): tabela única de escalas com 1:2.000, 1:5.000, 1:10.000, 1:25.000, 1:50.000, 1:100.000 e 1:250.000 (equidistância 2k = 1 m, 10k = 5 m).
+- Enum de escala com 1:2.000 como primeira opção, em ordem crescente, nos processings makeGrid, validateGrid, changeAttributeTopo/Ortho, insertBorderLabel/EnergyTower/RoadMarker, fixLabelPositionOnLayers, identifyLabelOverlap/GridIntersection/OutsideGeographicBoundary, placeMasterContourLabels, placeBuildingSymbol/MineralExtractionSymbol/PointOfChange/PointSymbolInsideArea/PowerPlantSymbol/VegetationSymbol, sizeTextRiverLine e verifySymbolOverlap. O padrão continua 1:25.000.
+- 1:2.000 e 1:10.000 em elevationPointGeneralization, elevationDiagramPointGeneralization, createCustomPolygons (lado de 0,01° e 0,05°) e processingUtils.
+- Valores por escala, proporcionais às existentes: grade UTM 2k = 80 m, grade geográfica 2k = 10'', fator de rótulo 0,6 x escala, espaçamento do diagrama de elevação (2k = 400 m, 10k = 2.000 m), cota mestra 2k a cada 5 m e equidistância padrão do controller (2k = 1 m, 10k = 5 m).
+- Moldura do mapa (720 x 490 mm para 10k e 588 x 588 mm para 2k) e zoom do QR code com entradas para 2k e 10k.
+- Combo de escala da barra de ferramentas com 1:2.000 e 1:10.000 (ordem crescente; "Escala" segue como não configurado).
+- Validação CLI: testes de MI e de nome de arquivo previsto para as escalas 10k e 2k (`ferramentas_edicao_cli/tests/test_carta.py`).
+
+Atenção:
+- Os índices do enum de escala mudaram (1:2.000 passou a ser o índice 0): modelos e valores salvos de processings podem apontar para outra escala e devem ser revisados.
+- QR code das novas escalas segue em aberto: a camada e o zoom do BDGEx não foram definidos para 2k e 10k.
+
 ## 2.1.5
 
 Melhorias:

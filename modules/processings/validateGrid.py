@@ -62,6 +62,7 @@ class ValidateGrid(QgsProcessingAlgorithm):
                 self.INPUT_SCALE,
                 self.tr("Selecione a escala de edição:"),
                 options=[
+                    self.tr("1:2.000"),
                     self.tr("1:5.000"),
                     self.tr("1:10.000"),
                     self.tr("1:25.000"),
@@ -116,12 +117,13 @@ class ValidateGrid(QgsProcessingAlgorithm):
         )
 
         self.gridScaleDict = {
-            0: 5000,
-            1: 10000,
-            2: 25000,
-            3: 50000,
-            4: 100000,
-            5: 250000,
+            0: 2000,
+            1: 5000,
+            2: 10000,
+            3: 25000,
+            4: 50000,
+            5: 100000,
+            6: 250000,
         }
 
     def processAlgorithm(self, parameters, context, feedback):

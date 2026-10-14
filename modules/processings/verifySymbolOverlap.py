@@ -358,6 +358,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
             )
         )
         self.scales = [
+            "1:2.000",
             "1:5.000",
             "1:10.000",
             "1:25.000",
@@ -370,7 +371,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
                 self.SCALE,
                 self.tr("Escala"),
                 options=self.scales,
-                defaultValue=2,
+                defaultValue=3,
             )
         )
         self.addParameter(
@@ -397,6 +398,7 @@ class VerifySymbolOverlap(QgsProcessingAlgorithm):
         scaleIdx = self.parameterAsEnum(parameters, self.SCALE, context)
         min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)
         scaleDict = {
+            "1:2.000": 2000,
             "1:5.000": 5000,
             "1:10.000": 10000,
             "1:25.000": 25000,

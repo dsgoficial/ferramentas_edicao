@@ -90,6 +90,10 @@ class TestContratoVivo(unittest.TestCase):
         self.assertIsNone(pc.mi_from_inom("nao-e-inom"))
         self.assertIsNone(pc.mi_from_inom(None))
 
+    def test_mi_das_escalas_10k_e_2k(self):
+        self.assertEqual(pc.mi_from_inom("SH-22-Y-B-III-2-NO-C"), "2987-2-NO-C")
+        self.assertEqual(pc.mi_from_inom("SH-22-Y-B-III-2-NO-C-III-2"), "2987-2-NO-C-III-2")
+
 
 class TestSchemaHelpers(unittest.TestCase):
     def test_split_choice(self):
@@ -155,6 +159,15 @@ class TestNomeDeSaida(unittest.TestCase):
             {"tipo_produto": "Carta Topográfica", "inom": "NA-19-X-C-VI-3-NE"}, self.CONTRATO
         )
         self.assertEqual(base, "Carta_Topografica_NA-19-X-C-VI-3-NE")
+
+    def test_center_aceita_escalas_10k_e_2k(self):
+        data = {"tipo_produto": "Carta Topográfica", "center": {"latitude": -30.0, "longitude": -51.2}, "nome": "AREA"}
+        for escala, sufixo in ((10000, "10k"), (2000, "2k")):
+            data["escala"] = escala
+            self.assertEqual(
+                carta.predicted_basename(data, self.CONTRATO)[0],
+                f"Carta_Topografica_Especial_{sufixo}_AREA",
+            )
 
     def test_center_precisa_de_escala_numerica(self):
         data = {"tipo_produto": "Carta Topográfica", "center": {"latitude": -30.0, "longitude": -53.0},

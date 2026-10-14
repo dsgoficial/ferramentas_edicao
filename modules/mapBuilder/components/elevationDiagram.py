@@ -62,16 +62,20 @@ class ElevationDiagram(ComponentUtils, IComponent):
             Path(__file__).parent.parent / "resources" / "products" / "common"
         )
         self.gridSpacingDict = {
+            2: 400,
+            10: 2000,
             25: 5000,
             50: 10000,
             100: 20000,
             250: 40000,
         }
         self.scalesDict = {
-            25: 0,
-            50: 1,
-            100: 2,
-            250: 3,
+            2: 0,
+            10: 1,
+            25: 2,
+            50: 3,
+            100: 4,
+            250: 5,
         }
 
     def build(self, context: BuildContext):

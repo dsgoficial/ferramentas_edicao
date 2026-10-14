@@ -43,12 +43,14 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
     ROUNDING_FACTOR = "ROUNDING_FACTOR"
     OUTPUT_LAYER = "OUTPUT_LAYER"
 
-    SCALE_OPTIONS = ["25.000", "50.000", "100.000", "250.000"]
+    SCALE_OPTIONS = ["2.000", "10.000", "25.000", "50.000", "100.000", "250.000"]
     SIDE_LENGTH_MAP = {
-        0: 0.125,  # 25.000
-        1: 0.250,  # 50.000
-        2: 0.500,  # 100.000
-        3: 1.250,  # 250.000
+        0: 0.010,  # 2.000
+        1: 0.050,  # 10.000
+        2: 0.125,  # 25.000
+        3: 0.250,  # 50.000
+        4: 0.500,  # 100.000
+        5: 1.250,  # 250.000
     }
 
     def initAlgorithm(self, config=None):
@@ -65,7 +67,7 @@ class CreateCustomPolygons(QgsProcessingAlgorithm):
                 self.SCALE,
                 "Escala do produto desejada",
                 options=self.SCALE_OPTIONS,
-                defaultValue=0,  # Default to 25.000
+                defaultValue=2,  # Default to 25.000
             )
         )
 

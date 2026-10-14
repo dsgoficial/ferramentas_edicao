@@ -60,6 +60,8 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
                 "INPUT_SCALE",
                 self.tr("Selecione a escala para gerar as quadriculas:"),
                 options=[
+                    self.tr("1:2.000"),
+                    self.tr("1:10.000"),
                     self.tr("1:25.000"),
                     self.tr("1:50.000"),
                     self.tr("1:100.000"),
@@ -117,7 +119,14 @@ class ElevationPointsGeneralization(QgsProcessingAlgorithm):
             )
         )
 
-        self.gridScaleDict = {0: 25000, 1: 50000, 2: 100000, 3: 250000}
+        self.gridScaleDict = {
+            0: 2000,
+            1: 10000,
+            2: 25000,
+            3: 50000,
+            4: 100000,
+            5: 250000,
+        }
 
     def processAlgorithm(self, parameters, context, feedback):
         feedback.setProgressText("Iniciando...")

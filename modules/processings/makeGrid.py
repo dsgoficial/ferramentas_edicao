@@ -72,6 +72,7 @@ class MakeGrid(QgsProcessingAlgorithm):
                 self.INPUT_SCALE,
                 self.tr("Selecione a escala de edição:"),
                 options=[
+                    self.tr("1:2.000"),
                     self.tr("1:5.000"),
                     self.tr("1:10.000"),
                     self.tr("1:25.000"),
@@ -113,12 +114,13 @@ class MakeGrid(QgsProcessingAlgorithm):
         )
 
         self.gridScaleDict = {
-            0: 5000,
-            1: 10000,
-            2: 25000,
-            3: 50000,
-            4: 100000,
-            5: 250000,
+            0: 2000,
+            1: 5000,
+            2: 10000,
+            3: 25000,
+            4: 50000,
+            5: 100000,
+            6: 250000,
         }
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -412,6 +414,7 @@ class MakeGrid(QgsProcessingAlgorithm):
     def getLatLonTicks(self, frameLayer, utm, scale, context, feedback):
         # Dicionário que mapeia as escalas para intervalos em minutos
         minute_intervals = {
+            2000: DMS(seconds=10),  # 10'' para 1:2.000 (37,5''/10'' = 3,75 divisões, como 7,5'/2' no 1:25.000)
             5000: DMS(minutes=1),  # Assumindo 30'' para 1:5.000 (não especificado na tabela)
             10000: DMS(minutes=1),  # Assumindo 1' para 1:10.000 (não especificado na tabela)
             25000: DMS(minutes=2),  # 2' para 1:25.000

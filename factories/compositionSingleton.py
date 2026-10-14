@@ -109,9 +109,13 @@ class CompositionSingleton:
             )
         else:
             qptNameText = f"{productType}"
-        if scale == 250:
-            qptNameText += "_250"
+        if productType != "omMap" and scale in (250, 10, 2):
+            qptNameText += f"_{scale}"
         compositionPath = compositionRootPath / f"{qptNameText}.qpt"
+        if not compositionPath.is_file():
+            raise FileNotFoundError(
+                f"Template QPT inexistente para o produto {productType} na escala 1:{scale}.000: {compositionPath}"
+            )
         printLayout = self.createPrintLayoutFromPath(compositionPath)
         self.updatePrintLayoutFromConfig(printLayout, jsonData)
         return printLayout

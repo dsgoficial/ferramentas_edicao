@@ -104,7 +104,11 @@ class LabelingEngine:
         return pointList
     
     def get_render_context(self) -> QgsRenderContext:
+        # 0.6 x denominador (em milhares), como nas escalas 25/50/100/250
         scale_factor_dict = {
+            2: 1.2,
+            5: 3,
+            10: 6,
             25: 15,
             50: 2*15,
             100: 4*15,

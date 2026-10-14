@@ -34,7 +34,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
-from ....config.configDefaults import ConfigDefaults
+from ....config.configDefaults import ConfigDefaults, referenceScale
 from ....interfaces.iComponent import IComponent
 from ....modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from ....modules.gridGenerator.core.config import FontConfig
@@ -249,7 +249,7 @@ class Map(ComponentUtils, IComponent):
             mapItem.setCrs(QgsCoordinateReferenceSystem(f"EPSG:{epsg}"))
             mapItem.setExtent(mapExtentsTransformed)
             mapItem.setScale(scale)
-            if scale == 250000:
+            if referenceScale(int(scale / 1000)) == 250:
                 mapWidth, mapHeight = self.defaultMapSize[1]
             else:
                 mapWidth, mapHeight = self.defaultMapSize[0]
