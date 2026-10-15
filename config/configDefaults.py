@@ -16,7 +16,6 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtGui import QFont, QColor
-import copy
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -68,18 +67,6 @@ TEMAS_CARTA_ORTO_MILITAR = (
 )
 
 SEM_DADO = "-"
-
-# Escalas (denominador em milhares) sem configuração própria, que reaproveitam
-# a de uma escala de referência: 1:10.000 segue a 1:250.000 e 1:2.000 segue a
-# 1:25.000 (QPT "normal"). Trocar o valor aqui desacopla a escala quando ela
-# ganhar configuração própria.
-REFERENCE_SCALE = {10: 250, 2: 25}
-
-
-def referenceScale(scale):
-    """Escala cuja configuração vale para `scale` (ela mesma, se for própria)."""
-    return REFERENCE_SCALE.get(scale, scale)
-
 
 @dataclass
 class ConfigDefaults:
@@ -283,6 +270,46 @@ class ConfigDefaults:
                     "reproductionRights": {
                         "x_0": 721,
                         "y_0": 550,
+                        "width": 110,
+                        "height": 20,
+                    },
+                },
+                # 1:10.000: folha 690 x 524 mm, sem bloco de créditos (project); os
+                # direitos de reprodução descem com a base da folha (555 + (524 - 594)).
+                10: {
+                    "header": {
+                        "x_0": 7,
+                        "y_0": 7,
+                        "width": 110,
+                        "height": 22,
+                    },
+                    "classified": {"x_0": 7, "y_0": 175, "width": 110, "height": 20},
+                    "reproductionRights": {
+                        "x_0": 7,
+                        "y_0": 485,
+                        "width": 110,
+                        "height": 20,
+                    },
+                },
+                # 1:2.000: folha 841 x 618 mm (24 mm mais alta que a A1); créditos e
+                # direitos de reprodução descem com a base da folha.
+                2: {
+                    "project": {
+                        "x_0": 7,
+                        "y_0": 511,
+                        "width": 110,
+                        "height": 70,
+                    },
+                    "header": {
+                        "x_0": 7,
+                        "y_0": 7,
+                        "width": 110,
+                        "height": 22,
+                    },
+                    "classified": {"x_0": 7, "y_0": 175, "width": 110, "height": 20},
+                    "reproductionRights": {
+                        "x_0": 7,
+                        "y_0": 579,
                         "width": 110,
                         "height": 20,
                     },
@@ -758,11 +785,3 @@ class ConfigDefaults:
             },
         }
     )
-
-    def __post_init__(self):
-        """Replica a configuração de QPT das escalas de referência para as
-        escalas que ainda não têm a sua (ver REFERENCE_SCALE), apenas no topoMap."""
-        qptConfig = self.topoMap["qpt"]
-        for scale, reference in REFERENCE_SCALE.items():
-            if scale not in qptConfig and reference in qptConfig:
-                qptConfig[scale] = copy.deepcopy(qptConfig[reference])

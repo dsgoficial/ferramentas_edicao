@@ -35,6 +35,12 @@ from ..modules.mapBuilder.components.componentUtils import OBB
 from ..modules.mapBuilder.factories.gridFactory.gridFactory import GridFactory
 
 
+# Escalas (em milhares) cujo enquadramento especial (centro + escala) é quadrado
+# em graus, como o da 1:2.000 (37,5" x 37,5"), em vez do recorte retangular do SCN.
+# O lado é a altura SCN da escala: 1:10.000 -> 2,5' x 2,5' (SCN: 3,75' x 2,5').
+SQUARE_CENTER_FRAME_SCALES = (10,)
+
+
 class MapBuildControllerUtils:
     """Utilities for mapBuilderController, specially when
     handling the mapGrid
@@ -44,7 +50,8 @@ class MapBuildControllerUtils:
         self, grid: GridFactory, lon: int, lat: int, scale: int
     ) -> tuple[QgsVectorLayer, QgsFeature]:
         """Creates a feature centered at lat/lon with size compatible with scale,
-        and a vector layer containing this feature.
+        and a vector layer containing this feature. Scales in
+        SQUARE_CENTER_FRAME_SCALES get a square (in degrees) frame.
         Args:
             grid: Grid factory
             lat: Latitude
@@ -53,10 +60,14 @@ class MapBuildControllerUtils:
         Returns:
             A tuple containing the layer and the feature that corresponds to informed lat/lon/scale
         """
-        spacingX = grid.getSpacingX(scale)
+        spacingY = grid.getSpacingY(scale)
+        spacingX = (
+            spacingY
+            if scale in SQUARE_CENTER_FRAME_SCALES
+            else grid.getSpacingX(scale)
+        )
         xMin = lon - spacingX / 2
         xMax = lon + spacingX / 2
-        spacingY = grid.getSpacingY(scale)
         yMin = lat - spacingY / 2
         yMax = lat + spacingY / 2
         rect = QgsRectangle(xMin, yMin, xMax, yMax)

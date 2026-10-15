@@ -30,6 +30,15 @@ from qgis.core import (
 from .componentUtils import ComponentUtils
 
 
+# Estilo da articulação por escala em milhares; as demais usam o estilo 25k.
+# 1:2.000 e 1:10.000: fonte do texto das folhas 1 pt menor (5 em vez de 6).
+ARTICULATION_STYLE_BY_SCALE = {
+    250: "articulacao_especial_25k_v6_250.qml",
+    10: "articulacao_especial_25k_v6_2_10.qml",
+    2: "articulacao_especial_25k_v6_2_10.qml",
+}
+
+
 class Articulation(ComponentUtils, IComponent):
     def __init__(self, *args, **kwargs):
         self.stylesFolder = (
@@ -74,10 +83,11 @@ class Articulation(ComponentUtils, IComponent):
         return mapIDsToBeDisplayed
 
     def loadStyleToGridLayer(self, layer: QgsVectorLayer, scale: int) -> QgsVectorLayer:
-        if scale == 250:
-            styleFile = self.stylesFolder / "articulacao_especial_25k_v6_250.qml"
-        else:
-            styleFile = self.stylesFolder / "articulacao_especial_25k_v6.qml"
+        styleFile = self.stylesFolder / ARTICULATION_STYLE_BY_SCALE.get(
+            scale, "articulacao_especial_25k_v6.qml"
+        )
+        if not styleFile.is_file():
+            raise FileNotFoundError(f"Estilo da articulação inexistente: {styleFile}")
         layer.loadNamedStyle(str(styleFile))
         layer.triggerRepaint()
         return layer

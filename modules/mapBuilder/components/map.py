@@ -34,7 +34,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
-from ....config.configDefaults import ConfigDefaults, referenceScale
+from ....config.configDefaults import ConfigDefaults
 from ....interfaces.iComponent import IComponent
 from ....modules.gridGenerator.gridAndLabelCreator import GridAndLabelCreator
 from ....modules.gridGenerator.core.config import FontConfig
@@ -53,6 +53,10 @@ class Map(ComponentUtils, IComponent):
             Path(__file__).parent.parent / "resources" / "styles" / "grid"
         )
         self.defaultMapSize = [(588, 588), (720, 490)]
+        # Moldura (mm) por escala em milhares, quando difere do padrão: 1:2.000 e
+        # 1:10.000 têm folha própria, dimensionada pelo aux_moldura_a do banco
+        # (2k = 503,2 x 578,2 mm; 10k = 402,5 x 462,5 mm) mais ~17 mm de margem.
+        self.mapSizeByScale = {2: (588, 612), 10: (437, 497)}
 
     def build(self, context: BuildContext):
         """Builds the Map component Topo and Ortho maps. The building process follows the sequence:
@@ -249,7 +253,10 @@ class Map(ComponentUtils, IComponent):
             mapItem.setCrs(QgsCoordinateReferenceSystem(f"EPSG:{epsg}"))
             mapItem.setExtent(mapExtentsTransformed)
             mapItem.setScale(scale)
-            if referenceScale(int(scale / 1000)) == 250:
+            scaleK = int(scale / 1000)
+            if scaleK in self.mapSizeByScale:
+                mapWidth, mapHeight = self.mapSizeByScale[scaleK]
+            elif scale == 250000:
                 mapWidth, mapHeight = self.defaultMapSize[1]
             else:
                 mapWidth, mapHeight = self.defaultMapSize[0]

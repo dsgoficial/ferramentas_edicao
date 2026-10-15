@@ -57,6 +57,8 @@ class GridLabelItem:
     render_context: QgsRenderContext
     is_first_item: bool = False
     dpi: float = 96.0
+    # scaleFactor mínimo para medir o texto sem erro de arredondamento (ver get_text_size_in_terrain_units)
+    MIN_MEASURE_SCALE_FACTOR = 15.0
     
     def __post_init__(self):
         self.transform = QgsCoordinateTransform(
@@ -111,8 +113,23 @@ class GridLabelItem:
         text_format.setSizeUnit(Qgis.RenderUnit.Points)
         
         # 3. Let QGIS do the conversion (this is what actually renders)
-        width_render_units = QgsTextRenderer.textWidth(self.render_context, text_format, [self.text])
-        height_render_units = QgsTextRenderer.textHeight(self.render_context, text_format, [self.text])
+        # O QGIS mede o texto em pixels inteiros: com scaleFactor baixo (1:2.000 usa
+        # 1,2 e 1:10.000 usa 6) a fonte vira poucos pixels, a métrica arredonda e a
+        # largura sai até 12% menor (o "m" do rótulo UTM ficava sobre os dígitos).
+        # Mede-se com scaleFactor >= MIN_MEASURE_SCALE_FACTOR e divide-se pelo reforço;
+        # escalas com scaleFactor maior (1:25.000 em diante) não mudam.
+        scaleFactor = self.render_context.scaleFactor()
+        boost = (
+            max(1.0, self.MIN_MEASURE_SCALE_FACTOR / scaleFactor) if scaleFactor > 0 else 1.0
+        )
+        measure_context = QgsRenderContext(self.render_context)
+        measure_context.setScaleFactor(scaleFactor * boost)
+        width_render_units = (
+            QgsTextRenderer.textWidth(measure_context, text_format, [self.text]) / boost
+        )
+        height_render_units = (
+            QgsTextRenderer.textHeight(measure_context, text_format, [self.text]) / boost
+        )
         
         # 4. Convert from render units to map units using QGIS's converter
         width_map_units = self.render_context.convertToMapUnits(

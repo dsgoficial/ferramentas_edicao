@@ -34,6 +34,8 @@ from ..config.configDefaults import ConfigDefaults
 
 class CompositionSingleton:
     _instance = None
+    # Sufixo do QPT por escala (em milhares); escalas sem entrada usam o QPT normal.
+    QPT_SUFFIX_BY_SCALE = {250: "_250", 10: "_10", 2: "_2"}
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -109,8 +111,8 @@ class CompositionSingleton:
             )
         else:
             qptNameText = f"{productType}"
-        if productType != "omMap" and scale in (250, 10, 2):
-            qptNameText += f"_{scale}"
+        if productType != "omMap" and scale in self.QPT_SUFFIX_BY_SCALE:
+            qptNameText += self.QPT_SUFFIX_BY_SCALE[scale]
         compositionPath = compositionRootPath / f"{qptNameText}.qpt"
         if not compositionPath.is_file():
             raise FileNotFoundError(
@@ -186,9 +188,11 @@ class CompositionSingleton:
         headerConfig.update({"path": headerQptPath})
         qptsToInsert.append(headerConfig)
 
-        projectConfig = productParams["qpt"][scale]["project"].copy()
-        projectConfig.update({"path": projectQptPath})
-        qptsToInsert.append(projectConfig)
+        # Escalas sem bloco de créditos (ex.: 1:10.000) não têm a chave "project".
+        if "project" in productParams["qpt"][scale]:
+            projectConfig = productParams["qpt"][scale]["project"].copy()
+            projectConfig.update({"path": projectQptPath})
+            qptsToInsert.append(projectConfig)
 
         repRightsConfig = productParams["qpt"][scale]["reproductionRights"].copy()
         repRightsConfig.update({"path": repRightsQptPath})
