@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.2.1
+
+Correção de bug:
+- Corrige estilo de passarela que saiu da classe infra_elemento_viario_l para infra_elemento_infraestrutura_l
+
 ## 2.2.0
 
 Melhorias:
