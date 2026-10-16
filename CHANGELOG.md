@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.3.35
+
+Correção de bug:
+- Corrige estilo de passarela que saiu da classe infra_elemento_viario_l para infra_elemento_infraestrutura_l
+
 ## 1.3.34
 
 Correção de bug:
