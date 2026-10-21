@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.3.1
+
+Correção de bug:
+- Ajuste dos estilos 1:10.000 e 1:2.000 para respeitar a diferença entre map e mapEdition
+
+
 ## 2.3.0
 
 Melhorias:

@@ -1017,7 +1017,7 @@
   </selection>
   <labeling type="rule-based">
     <rules key="{2236ff4f-ea1f-4d9d-86fa-74ce758b5ae6}">
-      <rule active="0" description="Área de uso específico" filter="&quot;visivel&quot; = 1" key="{bfb34504-151f-465d-96ba-806181f512ed}">
+      <rule description="Área de uso específico" filter="&quot;visivel&quot; = 1" key="{bfb34504-151f-465d-96ba-806181f512ed}">
         <rule description="Área de: comércio e serviço" filter="&quot;tipo&quot; = 5" key="{764c47a7-3241-4e1d-82a2-474a381393dd}">
           <settings calloutType="simple">
             <text-style allowHtml="0" blendMode="0" capitalization="0" fieldName="texto_edicao" fontFamily="Noto Sans" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="6" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="400" fontWordSpacing="0" forcedBold="0" forcedItalic="0" isExpression="0" legendString="Aa" multilineHeight="0.80000000000000004" multilineHeightUnit="Percentage" namedStyle="Condensed" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="80" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Point" textColor="172,158,145,255,rgb:0.6745098,0.6196079,0.5686275,1" textOpacity="1" textOrientation="horizontal" useSubstitutions="0">
