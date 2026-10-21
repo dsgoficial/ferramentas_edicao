@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.3.0
+
+Melhorias:
+- Configurações de estilos para cartas nas escalas 1:10.000 e 1:2.000
+
 ## 2.2.1
 
 Correção de bug:
