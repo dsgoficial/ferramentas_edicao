@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.3.2
+
+Correção de bug:
+- Grade de edição: nas escalas 1:10.000 e 1:5.000 só a linha do km cheio recebe número, porque o espaçamento de 4 cm fica abaixo de 1 km e os dois dígitos se repetiam em linhas vizinhas
+- Grade de edição: na escala 1:2.000 não há número de grade, e a exportação deixa de exigir a camada edicao_grid_numerico_p preenchida nessa escala
+
 ## 2.3.1
 
 Correção de bug:

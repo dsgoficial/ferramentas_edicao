@@ -60,7 +60,8 @@ mascarado).
 
 Não dá para checar sem banco nem QGIS, mas custam a folha inteira quando falham:
 
-- **grid numérico gerado** (a camada `edicao_grid_numerico_p` não pode estar vazia);
+- **grid numérico gerado** (a camada `edicao_grid_numerico_p` não pode estar vazia, salvo na
+  1:2.000, que não tem número de grade);
 - **geometrias válidas** (`ST_IsValid`) nas classes do diagrama de elevação
   (`cobter_massa_dagua_a`, `elemnat_*`): uma inválida aborta a folha;
 - **MDE e imagens intersectando a moldura** (o plugin só compara os extents depois de

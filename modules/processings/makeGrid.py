@@ -272,8 +272,13 @@ class MakeGrid(QgsProcessingAlgorithm):
         )
 
         if generateGridNumbers:
-            gridNumberPoints = self.generateGridNumberPoints(
-                frameLayerReprojected, utm, gridSize, context, multiStepFeedback
+            # Na 1:2.000 a folha tem cerca de 1 km, então os dois dígitos do km não identificam linha
+            gridNumberPoints = (
+                []
+                if gridScale == 2000
+                else self.generateGridNumberPoints(
+                    frameLayerReprojected, utm, gridSize, context, multiStepFeedback
+                )
             )
 
             (numbers_sink, numbers_sink_id) = self.parameterAsSink(
@@ -577,6 +582,10 @@ class MakeGrid(QgsProcessingAlgorithm):
                 y_end = math.floor(bbox.yMaximum() / gridSize) * gridSize
 
                 for grid_y in range(int(y_start), int(y_end + gridSize), int(gridSize)):
+                    # Só a linha do km cheio leva número: abaixo de 1:25.000 o espaçamento é menor que 1 km
+                    if grid_y % 1000:
+                        continue
+
                     point_geom = QgsGeometry.fromPointXY(QgsPointXY(center_x, grid_y))
 
                     # Verifica se o ponto está dentro da moldura e dentro da área buffer
@@ -598,6 +607,10 @@ class MakeGrid(QgsProcessingAlgorithm):
                 x_end = math.floor(bbox.xMaximum() / gridSize) * gridSize
 
                 for grid_x in range(int(x_start), int(x_end + gridSize), int(gridSize)):
+                    # Só a linha do km cheio leva número: abaixo de 1:25.000 o espaçamento é menor que 1 km
+                    if grid_x % 1000:
+                        continue
+
                     point_geom = QgsGeometry.fromPointXY(QgsPointXY(grid_x, center_y))
 
                     # Verifica se o ponto está dentro da moldura e dentro da área buffer
