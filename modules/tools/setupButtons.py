@@ -38,6 +38,7 @@ from .buttons.createRiverLabel import CreateRiverLabel
 from .buttons.drawFlowDirection import DrawFlowDirection
 from .buttons.createBorderLabel import CreateBorderLabel
 from .buttons.addNewLineCharToAttribute import AddNewLineCharToAttribute
+from .buttons.clearTextoEdicao import ClearTextoEdicao
 from .buttons.createMasterElevationTextValue import CreateMasterElevationTextValue
 from .buttons.createRoadLabel import CreateRoadLabel
 from .buttons.createApproximateLabel import CreateAproximateLabel
@@ -119,6 +120,9 @@ class SetupButtons:
 
         addNewLineButton = AddNewLineCharToAttribute(self.toolBar, self.iface)
         addNewLineButton.setupUi()
+
+        clearTextoEdicaoButton = ClearTextoEdicao(self.toolBar, self.iface)
+        clearTextoEdicaoButton.setupUi()
 
         createVegetationSymbol = CreateVegetationSymbol(
             self.iface, self.toolBar, scaleSelector, productTypeSelector
@@ -230,6 +234,7 @@ class SetupButtons:
                 drawFlowDirection,
                 createBorderLabel,
                 addNewLineButton,
+                clearTextoEdicaoButton,
                 createRoadLabel,
                 createAproximateLabel,
                 alternateBuildingFlag,
@@ -249,6 +254,7 @@ class SetupButtons:
             cycleLabelPositionButton._action,
             alternateTextVisibilityButton._action,
             addNewLineButton._action,
+            clearTextoEdicaoButton._action,
             alternateBuildingFlag._action,
             cycleSideVisibilityButton._action,
             cycleTipVisibilityButton._action,

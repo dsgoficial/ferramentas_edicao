@@ -57,7 +57,7 @@
             <Option name="joinstyle" type="QString" value="miter"/>
             <Option name="line_color" type="QString" value="172,158,145,255,rgb:0.6745098,0.6196079,0.5686275,1"/>
             <Option name="line_style" type="QString" value="solid"/>
-            <Option name="line_width" type="QString" value="3.9"/>
+            <Option name="line_width" type="QString" value="1.5"/>
             <Option name="line_width_unit" type="QString" value="MM"/>
             <Option name="offset" type="QString" value="0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -204,7 +204,7 @@
             <Option name="joinstyle" type="QString" value="miter"/>
             <Option name="line_color" type="QString" value="234,217,149,255,rgb:0.9176471,0.8509804,0.5843138,1"/>
             <Option name="line_style" type="QString" value="solid"/>
-            <Option name="line_width" type="QString" value="3.9"/>
+            <Option name="line_width" type="QString" value="1.5"/>
             <Option name="line_width_unit" type="QString" value="MM"/>
             <Option name="offset" type="QString" value="0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -351,7 +351,7 @@
             <Option name="joinstyle" type="QString" value="miter"/>
             <Option name="line_color" type="QString" value="222,101,87,255,rgb:0.8705882,0.3960784,0.3411765,1"/>
             <Option name="line_style" type="QString" value="solid"/>
-            <Option name="line_width" type="QString" value="3.9"/>
+            <Option name="line_width" type="QString" value="1.5"/>
             <Option name="line_width_unit" type="QString" value="MM"/>
             <Option name="offset" type="QString" value="0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -498,7 +498,7 @@
             <Option name="joinstyle" type="QString" value="miter"/>
             <Option name="line_color" type="QString" value="228,173,116,255,rgb:0.8941177,0.6784314,0.454902,1"/>
             <Option name="line_style" type="QString" value="solid"/>
-            <Option name="line_width" type="QString" value="3.9"/>
+            <Option name="line_width" type="QString" value="1.5"/>
             <Option name="line_width_unit" type="QString" value="MM"/>
             <Option name="offset" type="QString" value="0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -645,7 +645,7 @@
             <Option name="joinstyle" type="QString" value="miter"/>
             <Option name="line_color" type="QString" value="253,221,5,255,rgb:0.9921569,0.8666667,0.0196078,1"/>
             <Option name="line_style" type="QString" value="solid"/>
-            <Option name="line_width" type="QString" value="3.9"/>
+            <Option name="line_width" type="QString" value="1.5"/>
             <Option name="line_width_unit" type="QString" value="MM"/>
             <Option name="offset" type="QString" value="0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -792,7 +792,7 @@
             <Option name="joinstyle" type="QString" value="miter"/>
             <Option name="line_color" type="QString" value="233,244,231,255,rgb:0.9137255,0.9568627,0.9058824,1"/>
             <Option name="line_style" type="QString" value="solid"/>
-            <Option name="line_width" type="QString" value="3.9"/>
+            <Option name="line_width" type="QString" value="1.5"/>
             <Option name="line_width_unit" type="QString" value="MM"/>
             <Option name="offset" type="QString" value="0"/>
             <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>

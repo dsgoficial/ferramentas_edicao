@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.3.3
+
+Melhorias:
+- Redução da faixa de preenchimento nos estilos de constr_area_uso_especifico para as escalas 1:10.000 e 1:2.000;
+- Novo botão para tornar texto_edicao com valor NULL;
+- Nova correlação do menu radial para a ferramenta de tornar texto de edição nulo.
+
 ## 2.3.2
 
 Correção de bug:

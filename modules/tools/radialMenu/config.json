@@ -13,7 +13,9 @@
   ],
 
   "constr_area_uso_especifico_a": [
-    "Alternar justificativa"
+    "Alternar justificativa",
+    "Quebra Linha",
+    "Eliminar texto_edicao"
   ],
   "constr_deposito_a": [
     "Alternar justificativa"
@@ -22,12 +24,15 @@
     "Alternar justificativa"
   ],
   "constr_edificacao_a": [
-    "Alternar justificativa"
+    "Alternar justificativa",
+    "Quebra Linha",
+    "Eliminar texto_edicao"
   ],
   "constr_edificacao_p": [
     "Suprimir Bandeira",
     "Alternar justificativa",
-    "Quebra Linha"
+    "Quebra Linha",
+    "Eliminar texto_edicao"
   ],
   "constr_extracao_mineral_a": [
     "Alternar justificativa"
@@ -162,7 +167,8 @@
   "infra_via_deslocamento_l": [
     "Número de Faixas",
     "Símbolo Idt.Tr.Rod.",
-    "Quebra Linha"
+    "Quebra Linha",
+    "Eliminar texto_edicao"
   ],
 
   "llp_limite_especial_a": [
