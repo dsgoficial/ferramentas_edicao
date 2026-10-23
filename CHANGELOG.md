@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.3.5
+
+Correção de bug:
+- O MDE do diagrama de elevação em UTM deixa de reprovar a folha com "A imagem do diagrama de elevação não intersecta a região de moldura": a extensão do MDE passa a ser reprojetada para o CRS da moldura antes da comparação, como já se fazia com as imagens, e o epsg do json vale quando o raster não traz CRS;
+- Na validação das imagens, o CRS ausente passa a ser detectado por isValid(), porque crs() nunca é None e o epsg do json nunca era aplicado.
+
 ## 2.3.4
 
 Correção de bug:

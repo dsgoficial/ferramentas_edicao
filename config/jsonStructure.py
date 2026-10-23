@@ -1040,17 +1040,26 @@ def validate_rasters_against_extents(frameLyr: QgsVectorLayer, input_dict: dict)
     frameExtent = frameLyr.extent()
     if elevationDiagramImage is not None and not elevationDiagramImage.isValid():
         return f'A imagem do diagrama de elevação não existe ou não está acessível no caminho {input_dict["mde_diagrama_elevacao"]["caminho_mde"]}.\n'
-    if elevationDiagramImage is not None and not frameExtent.intersects(
-        elevationDiagramImage.extent()
-    ):
-        return f"A imagem do diagrama de elevação não intersecta a região de moldura informada. Verifique a moldura e o arquivo do diagrama.\n"
+    if elevationDiagramImage is not None:
+        # O MDE pode vir em UTM (31982) e a moldura em coordenada geográfica:
+        # a extensão se compara no CRS da moldura, como já se faz com as imagens.
+        mdeEpsg = input_dict["mde_diagrama_elevacao"].get("epsg", None)
+        if not elevationDiagramImage.crs().isValid() and mdeEpsg is not None:
+            elevationDiagramImage.setCrs(QgsCoordinateReferenceSystem(f"EPSG:{mdeEpsg}"))
+        mdeExtent = elevationDiagramImage.extent()
+        if elevationDiagramImage.crs() != frameLyr.crs():
+            mdeExtent = reproject_extent(
+                mdeExtent, elevationDiagramImage.crs(), frameLyr.crs()
+            )
+        if not frameExtent.intersects(mdeExtent):
+            return f"A imagem do diagrama de elevação não intersecta a região de moldura informada. Verifique a moldura e o arquivo do diagrama.\n"
     for image_item in input_dict.get("imagens", []):
         file_path = image_item.get("caminho_imagem", None)
         if file_path is None:
             continue
         rasterLyr: QgsRasterLayer = mbUtils.getRasterLayerByType(file_path)
         epsg = image_item.get("epsg", None)
-        if rasterLyr.crs() is None and epsg is not None:
+        if not rasterLyr.crs().isValid() and epsg is not None:
             epsgId = QgsCoordinateReferenceSystem(f"EPSG:{epsg}")
             rasterLyr.setCrs(epsgId)
         if not rasterLyr.isValid():
