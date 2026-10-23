@@ -786,6 +786,53 @@ class ConfigDefaults:
                         "height": 20,
                     },
                 },
+                # 1:10.000: mesmos QPTs e posições da civil; sem bloco de créditos, o
+                # aviso de uso militar expedito (110 x 25 mm) ocupa a faixa livre entre
+                # o diagrama de elevação (termina em ~453,4) e os direitos de reprodução (485).
+                10: {
+                    "project": {
+                        "x_0": 7,
+                        "y_0": 458,
+                        "width": 110,
+                        "height": 70,
+                    },
+                    "header": {
+                        "x_0": 7,
+                        "y_0": 7,
+                        "width": 110,
+                        "height": 22,
+                    },
+                    "classified": {"x_0": 7, "y_0": 175, "width": 110, "height": 20},
+                    "reproductionRights": {
+                        "x_0": 7,
+                        "y_0": 485,
+                        "width": 110,
+                        "height": 20,
+                    },
+                },
+                # 1:2.000: folha 24 mm mais alta que a A1; o aviso desce junto com os
+                # direitos de reprodução (579 - 47).
+                2: {
+                    "project": {
+                        "x_0": 7,
+                        "y_0": 532,
+                        "width": 110,
+                        "height": 70,
+                    },
+                    "header": {
+                        "x_0": 7,
+                        "y_0": 7,
+                        "width": 110,
+                        "height": 22,
+                    },
+                    "classified": {"x_0": 7, "y_0": 175, "width": 110, "height": 20},
+                    "reproductionRights": {
+                        "x_0": 7,
+                        "y_0": 579,
+                        "width": 110,
+                        "height": 20,
+                    },
+                },
             },
         }
     )

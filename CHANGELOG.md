@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.3.6
+
+Melhorias:
+- A Carta Topográfica Militar passa a ser exportada nas escalas 1:10.000 e 1:2.000 com os mesmos QPTs da civil (topoMap_10 e topoMap_2); antes faltavam essas escalas em militaryTopoMap e a exportação parava com KeyError;
+- O aviso de uso militar expedito fica em y=458 mm na 1:10.000 (entre o diagrama de elevação e os direitos de reprodução, já que essa escala não tem bloco de créditos) e em y=532 mm na 1:2.000.
+
 ## 2.3.5
 
 Correção de bug:
