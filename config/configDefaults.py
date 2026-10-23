@@ -164,6 +164,10 @@ class ConfigDefaults:
                 "constr_area_uso_especifico_a",
                 "constr_edificacao_a",
                 "constr_edificacao_p",
+                "constr_ocupacao_solo_a",
+                "infra_via_deslocamento_l",
+                "elemnat_curva_nivel_l",
+                "elemnat_ponto_cotado_p",
             ]
         )
     )

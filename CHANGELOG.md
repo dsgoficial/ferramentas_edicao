@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.3.4
+
+Correção de bug:
+- A exportação passa a usar os estilos 1:10.000 e 1:2.000 de infra_via_deslocamento_l e constr_ocupacao_solo_a, que existiam mas ficavam fora da lista de estilos por escala (scaleBasedStyleTopo): a via saía com o estilo genérico e sem o nome da rua;
+- llp_localidadE_p_10.qml renomeado para llp_localidade_p_10.qml, que só era achado em sistema de arquivos sem distinção de caixa.
+
+Melhorias:
+- Buffer de rótulo de 0,2 mm nos estilos de edificação 1:10.000 e 1:2.000 (era 0,3 mm);
+- Estilos 1:10.000 e 1:2.000 para elemnat_curva_nivel_l e elemnat_ponto_cotado_p, com buffer branco de 0,2 mm no rótulo; na curva, o rótulo da mestra segue a mesma regra do traço (cota e @equidistancia); no ponto cotado, a cota decimal sai com vírgula.
+
 ## 2.3.3
 
 Melhorias:
