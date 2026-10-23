@@ -786,16 +786,10 @@ class ConfigDefaults:
                         "height": 20,
                     },
                 },
-                # 1:10.000: mesmos QPTs e posições da civil; sem bloco de créditos, o
-                # aviso de uso militar expedito (110 x 25 mm) ocupa a faixa livre entre
-                # o diagrama de elevação (termina em ~453,4) e os direitos de reprodução (485).
+                # 1:10.000 e 1:2.000: iguais à civil, só com o card "SOMENTE PARA USO
+                # MILITAR" do próprio QPT; o aviso de uso militar provisório
+                # (usoMilitarExpedito) não entra nessas escalas.
                 10: {
-                    "project": {
-                        "x_0": 7,
-                        "y_0": 458,
-                        "width": 110,
-                        "height": 70,
-                    },
                     "header": {
                         "x_0": 7,
                         "y_0": 7,
@@ -810,12 +804,17 @@ class ConfigDefaults:
                         "height": 20,
                     },
                 },
-                # 1:2.000: folha 24 mm mais alta que a A1; o aviso desce junto com os
-                # direitos de reprodução (579 - 47).
                 2: {
+                    "projectPath": Path(__file__).parent.parent
+                    / "modules"
+                    / "mapBuilder"
+                    / "resources"
+                    / "products"
+                    / "common"
+                    / "creditsDSG.qpt",
                     "project": {
                         "x_0": 7,
-                        "y_0": 532,
+                        "y_0": 511,
                         "width": 110,
                         "height": 70,
                     },
