@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.3.7
+
+Melhorias:
+- O quadro vermelho da Carta Topográfica Militar (usoMilitarExpedito.qpt) passa a se chamar "LIMITAÇÕES DA INFORMAÇÃO" no lugar de "USO MILITAR PROVISÓRIO", que repetia o quadro "SOMENTE PARA USO MILITAR" e não nomeava o que o texto declara; as quatro declarações não mudam.
+
 ## 2.3.6
 
 Melhorias:
