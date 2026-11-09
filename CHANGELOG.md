@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2.3.9
+
+Correção de bug:
+- A caixa d'água (constr_deposito_p, tipo 202) do estilo de impressão da Carta Topográfica 2.0 tinha escala de referência 1:25.000, a única entre os estilos do mapa, e saía 2,5 vezes maior a 1:10.000 (e 12,5 vezes a 1:2.000); a escala de referência passa a -1, como nos demais;
+- O símbolo da caixa d'água abre as hastes no topo de 0,4 para 0,5 mm, como na especificação, nos estilos de impressão e de edição;
+- O diagrama de elevação deixa de usar ponto cotado suprimido (visivel = 2): antes ele entrava no cálculo da cota máxima e mínima e era forçado a visível no diagrama.
+
+Melhorias:
+- A grade de edição a 1:2.000 volta a numerar o km cheio, como nas outras escalas abaixo de 1:25.000: com a linha a 80 m isso acontece a cada 2 km, e a folha pode não ter nenhum número;
+- Rótulo de edificação (constr_edificacao_a e constr_edificacao_p) a 1:10.000 e 1:2.000 passa de 6 para 7 pt, com halo de 0,1 mm no lugar de 0,2 mm, nos estilos de impressão e de edição.
+
 ## 2.3.8
 
 Melhorias:

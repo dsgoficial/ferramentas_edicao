@@ -569,7 +569,7 @@ class MapBuildController(MapBuildControllerUtils):
                 if jsonData["tipo_produto"] != "Carta Ortoimagem OM"
                 else None
             )
-            # Na 1:2.000 o grid numérico fica vazio por regra, então não há o que validar
+            # Na 1:2.000 só o km cheio múltiplo de 2 km leva número, e a folha pode não ter nenhum
             if (
                 jsonData["tipo_produto"] != "Carta Ortoimagem OM"
                 and jsonData["scale"] != 2

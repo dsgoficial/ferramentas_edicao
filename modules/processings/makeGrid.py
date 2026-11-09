@@ -272,13 +272,10 @@ class MakeGrid(QgsProcessingAlgorithm):
         )
 
         if generateGridNumbers:
-            # Na 1:2.000 a folha tem cerca de 1 km, então os dois dígitos do km não identificam linha
-            gridNumberPoints = (
-                []
-                if gridScale == 2000
-                else self.generateGridNumberPoints(
-                    frameLayerReprojected, utm, gridSize, context, multiStepFeedback
-                )
+            # Em toda escala só a linha do km cheio leva número. A 1:2.000 (linha a 80 m) isso
+            # acontece a cada 2 km, e a folha de cerca de 1 km pode não ter nenhuma
+            gridNumberPoints = self.generateGridNumberPoints(
+                frameLayerReprojected, utm, gridSize, context, multiStepFeedback
             )
 
             (numbers_sink, numbers_sink_id) = self.parameterAsSink(

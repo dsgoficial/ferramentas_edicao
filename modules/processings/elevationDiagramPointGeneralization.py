@@ -213,6 +213,20 @@ class ElevationDiagramPointGeneralization(QgsProcessingAlgorithm):
             return
         multiStepFeedback = QgsProcessingMultiStepFeedback(5, feedback)
         multiStepFeedback.setCurrentStep(0)
+        if inputPointsLyr.fields().indexOf("visivel") >= 0:
+            # Ponto suprimido na carta (visivel = 2) também não entra no diagrama, nem como cota máxima
+            inputPointsLyr = processing.run(
+                "native:extractbyexpression",
+                {
+                    "INPUT": inputPointsLyr,
+                    "EXPRESSION": '"visivel" IS NULL OR "visivel" <> 2',
+                    "OUTPUT": "TEMPORARY_OUTPUT",
+                },
+                context=context,
+                feedback=multiStepFeedback,
+            )["OUTPUT"]
+            if inputPointsLyr.featureCount() == 0:
+                return
         cachedPoints = self.reprojectLayer(
             inputPointsLyr,
             QgsCoordinateReferenceSystem("EPSG:4326"),
