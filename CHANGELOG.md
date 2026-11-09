@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.3.36
+
+Correção de bug:
+- Oito estilos de impressão tinham escala de referência fixa e o símbolo mudava de tamanho com a escala da carta: na Carta Ortoimagem 2.5, edicao_texto_generico_l (1:25.000), elemnat_elemento_hidrografico_a, elemnat_ilha_a, infra_elemento_energia_a, infra_elemento_infraestrutura_a e infra_pista_pouso_a (1:50.000); na Carta Topográfica 1.4, constr_deposito_p (1:25.000) e edicao_limite_especial_l (1:100.000). Passam a -1, como os demais, e nenhum QML do plugin fica com escala de referência fixa.
+
 ## 1.3.35
 
 Correção de bug:

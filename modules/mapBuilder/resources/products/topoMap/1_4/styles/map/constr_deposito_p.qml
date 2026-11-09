@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="3.24.3-Tisler" labelsEnabled="1" styleCategories="Symbology|Labeling">
-  <renderer-v2 referencescale="25000" symbollevels="0" type="RuleRenderer" enableorderby="0" forceraster="0">
+  <renderer-v2 referencescale="-1" symbollevels="0" type="RuleRenderer" enableorderby="0" forceraster="0">
     <rules key="{15e09ec0-9841-4520-b07a-26e1ce1469e9}">
       <rule filter=" &quot;visivel&quot; = 1" label="Visível" key="{dd502e66-043d-4cdc-b98a-e7b7d0ffe2eb}">
         <rule filter="&quot;tipo&quot; in (101, 110, 108, 111, 112, 132, 198)" label="P20214E" symbol="0" key="{7cd9d25e-c353-460b-9708-b4f3f0dcd74f}" description="Galpão, armazém"/>

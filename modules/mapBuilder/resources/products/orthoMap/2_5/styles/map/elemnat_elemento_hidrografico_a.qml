@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis styleCategories="Symbology|Labeling" labelsEnabled="1" version="3.24.3-Tisler">
-  <renderer-v2 enableorderby="0" type="singleSymbol" referencescale="50000" forceraster="0" symbollevels="0">
+  <renderer-v2 enableorderby="0" type="singleSymbol" referencescale="-1" forceraster="0" symbollevels="0">
     <symbols>
       <symbol force_rhr="0" name="0" type="fill" clip_to_extent="1" alpha="1">
         <data_defined_properties>

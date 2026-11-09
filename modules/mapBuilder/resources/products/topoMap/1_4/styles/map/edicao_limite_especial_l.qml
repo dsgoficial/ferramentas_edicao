@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis labelsEnabled="0" version="3.24.3-Tisler" styleCategories="Symbology|Labeling">
-  <renderer-v2 type="mergedFeatureRenderer" referencescale="100000" forceraster="0" enableorderby="0" symbollevels="0">
+  <renderer-v2 type="mergedFeatureRenderer" referencescale="-1" forceraster="0" enableorderby="0" symbollevels="0">
     <renderer-v2 type="RuleRenderer" referencescale="-1" forceraster="0" enableorderby="0" symbollevels="0">
       <rules key="{ff3995e7-5994-44a3-800a-da9a9d3e9d9f}">
         <rule description="Terra Indigena" filter="tipo = 2 and sobreposto = 2" label="A10418A" key="{1e2d5c72-25d9-463c-98b6-25688afbcd8e}" symbol="0"/>
