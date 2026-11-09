@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.3.8
+
+Melhorias:
+- A Carta Topográfica Militar e a Carta Ortoimagem Militar deixam de declarar PEC: a tabela de informações técnicas sai sem as linhas de PEC Planimétrico e Altimétrico, e pec_planimetrico e pec_altimetrico passam a opcionais no json das duas militares (no esquema e no construtor de json). As cartas civis não mudam.
+
 ## 2.3.7
 
 Melhorias:

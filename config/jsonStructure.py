@@ -678,13 +678,13 @@ data_structure = {
                     "key": "pec_planimetrico",
                     "type": str,
                     "children": None,
-                    "required": True,
+                    "required": False,
                 },
                 {
                     "key": "pec_altimetrico",
                     "type": str,
                     "children": None,
-                    "required": True,
+                    "required": False,
                 },
                 {
                     "key": "datum_vertical",
@@ -857,13 +857,13 @@ data_structure = {
                     "key": "pec_planimetrico",
                     "type": str,
                     "children": None,
-                    "required": True,
+                    "required": False,
                 },
                 {
                     "key": "pec_altimetrico",
                     "type": str,
                     "children": None,
-                    "required": True,
+                    "required": False,
                 },
                 {
                     "key": "datum_vertical",

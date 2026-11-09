@@ -28,6 +28,7 @@ PRODUCT_VERSIONS = {
 
 ORTHO_LIKE = {"Carta Ortoimagem", "Carta Ortoimagem Militar"}
 TOPO_LIKE = {"Carta Topográfica", "Carta Topográfica Militar"}
+MILITARY_TYPES = {"Carta Topográfica Militar", "Carta Ortoimagem Militar"}
 OM_TYPE = "Carta Ortoimagem OM"
 
 VALID_PRODUCTS = set(PRODUCT_VERSIONS.keys())
@@ -277,13 +278,16 @@ def validate_fields(fields):
     need("Banco: porta", _clean(fields.get("banco_porta")))
     need("Banco: nome", _clean(fields.get("banco_nome")))
     need("Fases", _build_fases(fields))
-    for label, key in (
+    obrigatorios = [
         ("Data de Criação", "data_criacao"),
         ("PEC Planimétrico", "pec_planimetrico"),
         ("PEC Altimétrico", "pec_altimetrico"),
         ("Datum Vertical", "datum_vertical"),
         ("Origem dos Dados Altimétricos", "origem_dados_altimetricos"),
-    ):
+    ]
+    if tipo in MILITARY_TYPES:  # a carta militar não declara PEC
+        obrigatorios = [(l, k) for l, k in obrigatorios if not k.startswith("pec_")]
+    for label, key in obrigatorios:
         need(label, _clean(fields.get(key)))
     if tipo in ORTHO_LIKE:
         need("Imagens", _build_imagens(fields))

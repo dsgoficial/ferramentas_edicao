@@ -482,8 +482,10 @@ class Table(IComponent, ComponentUtils):
         rows.append([mc("Data de Edição", main_fmt), mc(self.getDataEdicao(), main_fmt)])
         rows.append([mc("Erro gráfico", main_fmt), mc("0,2 mm na escala", main_fmt)])
 
-        rows.append([mc("Padrão de Exatidão Cartográfica (PEC)", main_fmt, row_span=2), mc(f'PEC Planimétrico: {tecnicalInfo.get("pec_planimetrico")}', main_fmt)])
-        rows.append([ec(), mc(f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}', main_fmt)])
+        # A carta militar é expedita, recortada da base contínua, e não declara PEC.
+        if not self.isMilitaryProduct(data):
+            rows.append([mc("Padrão de Exatidão Cartográfica (PEC)", main_fmt, row_span=2), mc(f'PEC Planimétrico: {tecnicalInfo.get("pec_planimetrico")}', main_fmt)])
+            rows.append([ec(), mc(f'PEC Altimétrico: {tecnicalInfo.get("pec_altimetrico")}', main_fmt)])
 
         rows.append([mc("Especificação técnica de representação", main_fmt), mc(tecnicalInfo.get("especificacao_representacao", "Norma da Especificação Técnica para Representação de Dados Geoespaciais versão 1.0 (EB80-N-72.006)"), main_fmt)])
         rows.append([mc("Origem dos dados altimétricos", main_fmt), mc(tecnicalInfo.get("origem_dados_altimetricos"), main_fmt)])
