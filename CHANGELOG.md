@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2.3.12
+
+Correção de bug (Carta Topográfica 2.0 e Topográfica Militar 2.0, estilos de impressão e de edição, conforme a ET-RDG rev. E e os SVG oficiais dela, embutidos no QML):
+- llp_ponto_controle_p saía com o símbolo vermelho de erro; passa a ter um símbolo por tipo: P10504A no ponto de controle (9), P10502A no marco de limite (14, 15, 16), P10505A na referência SAT e RN (2, 8) e P10505B nas demais (1, 3 a 7). O rótulo de `texto_edicao` fica à direita do símbolo, em 6 pt no controle e no marco e em 8 pt na referência. Ganha estilo de edição, que não existia;
+- elemnat_sumidouro_vertedouro_p: o tipo 3 (canalização, gruta ou fenda) saía em vermelho e passa ao P10317A; o tipo 4 troca o símbolo pelo P10317B oficial; o vertedouro (5) deixa de ser desenhado, como na norma. Os dois símbolos giram por simb_rot;
+- elemnat_elemento_fisiografico_a: a duna (16) saía em vermelho e passa ao padrão PAD-21, sem borda, com rótulo itálico de 8 pt e halo branco de 0,2 mm; o ponto de duna (elemnat_elemento_fisiografico_p) não é desenhado;
+- constr_ocupacao_solo_p: os obstáculos de navegação artificial (1202) e natural (1201) saíam em vermelho e passam ao P11205A e ao P11205B, sem rótulo;
+- constr_ocupacao_solo_a (e variantes de 1:10.000 e 1:2.000): o largo (1402) e o jardim público (1403) saíam em vermelho; o jardim passa ao padrão PAD-20, e a praça (1401) e o largo ficam só com o texto, sem preenchimento. O parque urbano (1404) não muda.
+
 ## 2.3.11
 
 Melhorias:
