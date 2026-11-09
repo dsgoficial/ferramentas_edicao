@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.3.11
+
+Melhorias:
+- Halo do rótulo de constr_edificacao_a, constr_edificacao_p e constr_area_uso_especifico_a a 1:10.000 e 1:2.000 passa de 0,1 para 0,15 mm, nos estilos de impressão e de edição.
+
 ## 2.3.10
 
 Correção de bug:
