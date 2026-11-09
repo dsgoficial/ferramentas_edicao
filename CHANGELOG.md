@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2.3.10
+
+Correção de bug:
+- Seis estilos de impressão da Carta Ortoimagem 3.0 tinham escala de referência fixa (edicao_texto_generico_l em 1:25.000; elemnat_elemento_hidrografico_a, elemnat_ilha_a, infra_elemento_energia_a, infra_elemento_infraestrutura_a e infra_pista_pouso_a em 1:50.000), e o símbolo mudava de tamanho com a escala da carta; passam a -1, como os demais. Nenhum QML do plugin fica com escala de referência fixa.
+
+Melhorias:
+- Rótulo de constr_area_uso_especifico_a a 1:10.000 e 1:2.000 passa de 6 para 7 pt, com halo de 0,1 mm no lugar de 0,2 mm, nos estilos de impressão e de edição, como o de edificação.
+
 ## 2.3.9
 
 Correção de bug:

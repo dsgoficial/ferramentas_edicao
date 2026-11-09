@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis styleCategories="Symbology|Labeling" labelsEnabled="1" version="3.24.3-Tisler">
-  <renderer-v2 enableorderby="0" type="RuleRenderer" referencescale="50000" forceraster="0" symbollevels="0">
+  <renderer-v2 enableorderby="0" type="RuleRenderer" referencescale="-1" forceraster="0" symbollevels="0">
     <rules key="{bd3558ba-79a7-4726-9cbd-57566d0e5bc4}">
       <rule key="{12327c1f-25f4-47e0-9534-896e589f8350}" symbol="0" filter="visivel = 1 and tipo in (1801, 1802)"/>
       <rule key="{909842a6-f2de-435b-9ca0-021ebfd8afd0}" symbol="1" label="Estação" filter="visivel = 1 and tipo in (405,406,407,408,409,498)"/>

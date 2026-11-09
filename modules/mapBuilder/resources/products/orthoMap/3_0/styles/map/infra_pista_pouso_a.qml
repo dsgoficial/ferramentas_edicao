@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="3.24.3-Tisler" styleCategories="Symbology|Labeling" labelsEnabled="1">
-  <renderer-v2 symbollevels="0" referencescale="50000" forceraster="0" type="RuleRenderer" enableorderby="0">
+  <renderer-v2 symbollevels="0" referencescale="-1" forceraster="0" type="RuleRenderer" enableorderby="0">
     <rules key="{83393c81-14ae-42eb-9f9e-52db0cf52949}">
       <rule filter="tipo = 9 and  &quot;visivel&quot; = 1 and situacao_fisica in (0,1,2,3,4)" symbol="0" key="{75b64d91-f355-4565-8ec5-26848ca9aa99}" label="Pista de pouso"/>
     </rules>
