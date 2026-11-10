@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.3.13
+
+Correção de bug (Carta Topográfica 2.0 e Topográfica Militar 2.0, estilo de impressão):
+- infra_obstaculo_vertical_p e infra_trecho_hidroviario_l estão no camadas.json e não tinham QML de impressão: saíam na carta com o marcador padrão do QGIS, um círculo laranja de 2 mm e uma linha laranja. Passam a ter estilo de renderizador nulo e deixam de ser desenhadas, até a definição do símbolo de cada classe na carta topográfica. O estilo de edição não muda.
+
 ## 2.3.12
 
 Correção de bug (Carta Topográfica 2.0 e Topográfica Militar 2.0, estilos de impressão e de edição, conforme a ET-RDG rev. E e os SVG oficiais dela, embutidos no QML):
