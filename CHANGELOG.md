@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.3.14
+
+Correção de bug:
+- Tamanho do texto de massa d'água e de ilha em área (rotinas "Prepara Carta Topográfica" e "Prepara Carta Ortoimagem" e a ferramenta de rótulo de lago): a função getWaterPolyLabelFontSize só convertia a área e o diâmetro para mm de carta quando o CRS era geográfico. Em banco UTM comparava m² e metros com os limiares em mm² e mm, e todo lago saía com o tamanho máximo (16 pt). Passa a converter também em CRS projetado. Banco já preparado guarda o tamanho antigo em tamanho_txt: rode a rotina de novo ou corrija o atributo.
+- "Insere símbolo de edificação" com "Executar somente nas feições selecionadas": o filtro de seleção substituía o filtro de tipo, e toda edificação selecionada recebia o símbolo de saúde. Passa a filtrar o tipo e depois a seleção.
+
 ## 2.3.13
 
 Correção de bug (Carta Topográfica 2.0 e Topográfica Militar 2.0, estilo de impressão):

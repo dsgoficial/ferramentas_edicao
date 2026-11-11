@@ -195,6 +195,11 @@ class ProcessingUtils:
                 )
                 / (scale)
             )
+        else:
+            # CRS projetado: os limiares abaixo sao mm2 e mm de carta, entao metros de
+            # terreno tambem tem de virar papel (sem isto todo lago em UTM saia com 16 pt)
+            areaPolygon = 1e6 * areaPolygon / (scale**2)
+            diamCircle = 1e3 * diamCircle / scale
         if areaPolygon < 770 or diamCircle <= 14:
             return 6
         elif areaPolygon < 2300 or diamCircle <= 28:

@@ -263,9 +263,12 @@ class PlaceBuildingSymbol(QgsProcessingAlgorithm):
         request = QgsFeatureRequest().setFilterExpression(
             '("tipo" - "tipo"%100)/100 in (20)'
         )
-        if onlySelected:
-            request.setFilterFids([feat.id() for feat in inputLyr.selectedFeatures()])
         feats = list(inputLyr.getFeatures(request))
+        if onlySelected:
+            # setFilterFids trocava o tipo do filtro e apagava a expressao de tipo acima:
+            # todo predio selecionado ganhava o simbolo de saude
+            selectedIds = set(inputLyr.selectedFeatureIds())
+            feats = [feat for feat in feats if feat.id() in selectedIds]
         nFeats = len(feats)
         if nFeats == 0:
             return False
