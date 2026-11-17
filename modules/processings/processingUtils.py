@@ -28,6 +28,8 @@ from qgis.core import (
 from qgis import processing
 import functools
 
+from . import riverLabelSize
+
 from ...config.logging_setup import get_logger
 
 logger = get_logger(__name__)
@@ -225,29 +227,25 @@ class ProcessingUtils:
         feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem
     ) -> int:
         """return label font size based on feature length and type (outside water polygon, 'situacao_em_poligono' == 1) according to MTM"""
-        if lyrCrs.isGeographic():
-            convertLength = QgsDistanceArea()
-            convertLength.setEllipsoid(lyrCrs.ellipsoidAcronym())
-            measure = convertLength.measureLength(feat.geometry())
-            length = convertLength.convertLengthMeasurement(
-                measure, Qgis.DistanceUnit.Meters
-            )
-        else:
-            length = feat.geometry().length()
-        scaleComparator = scale / 1000
-        if length < 80 * scaleComparator:
-            return 6
-        elif length < 120 * scaleComparator:
-            return 7
-        elif length < 160 * scaleComparator:
-            return 8
-        else:
-            return 9
+        lengthMm = ProcessingUtils.getPaperLengthMm(feat, scale, lyrCrs)
+        return riverLabelSize.outPolySize(lengthMm)
 
     def getRiverInPolyLabelFontSize(
-        feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem
+        feat: QgsFeature,
+        scale: int,
+        lyrCrs: QgsCoordinateReferenceSystem,
+        widthMm: float = None,
     ) -> int:
-        """return label font size based on feature length and type (inside water polygon, 'situacao_em_poligono' == 2,3) according to MTM"""
+        """return label font size based on feature length and type (inside water polygon, 'situacao_em_poligono' == 2,3) according to MTM.
+        widthMm (largura do rio no papel, opcional): rio fino de nome grande
+        desce ao tamanho que cabe nele (riverLabelSize.inPolySize)"""
+        lengthMm = ProcessingUtils.getPaperLengthMm(feat, scale, lyrCrs)
+        return riverLabelSize.inPolySize(lengthMm, widthMm)
+
+    def getPaperLengthMm(
+        feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem
+    ) -> float:
+        """comprimento da feicao em mm de papel na escala"""
         if lyrCrs.isGeographic():
             convertLength = QgsDistanceArea()
             convertLength.setEllipsoid(lyrCrs.ellipsoidAcronym())
@@ -257,21 +255,7 @@ class ProcessingUtils:
             )
         else:
             length = feat.geometry().length()
-        scaleComparator = scale / 1000
-        if length < 65 * scaleComparator:
-            return 7
-        elif length < 80 * scaleComparator:
-            return 8
-        elif length < 100 * scaleComparator:
-            return 9
-        elif length < 120 * scaleComparator:
-            return 10
-        elif length < 160 * scaleComparator:
-            return 12
-        elif length < 200 * scaleComparator:
-            return 14
-        else:
-            return 16
+        return 1000 * length / scale
 
     def getEditPolyLabelFontSize(
         feat: QgsFeature, scale: int, lyrCrs: QgsCoordinateReferenceSystem

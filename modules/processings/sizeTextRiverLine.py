@@ -15,8 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+import statistics
+
 from qgis.core import (
     NULL,
+    QgsCoordinateTransform,
+    QgsDistanceArea,
     QgsGeometry,
     QgsProcessing,
     QgsProcessingAlgorithm,
@@ -24,6 +28,8 @@ from qgis.core import (
     QgsProcessingOutputNumber,
     QgsProcessingParameterEnum,
     QgsProcessingParameterVectorLayer,
+    QgsProject,
+    QgsSpatialIndex,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis import processing
@@ -34,12 +40,15 @@ from ...Help.algorithmHelpCreator import HTMLHelpCreator as help
 # situacao_em_poligono: 2/3/4 = dentro de poligono; 1 (fora), NULL e 9999
 # caem na tabela "fora" (mais conservadora)
 IN_POLYGON_VALUES = (2, 3, 4)
+IN_POLYGON_EXPRESSION = 'coalesce("situacao_em_poligono", 0) IN (2, 3, 4)'
+WATER_LAYER_NAME = "cobter_massa_dagua_a"
 
 
 class SizeTextRiverLine(QgsProcessingAlgorithm):
 
     INPUT_LAYER_L = "INPUT_LAYER_L"
     INPUT_FRAME_A = "INPUT_FRAME_A"
+    INPUT_WATER_A = "INPUT_WATER_A"
     SCALE = "SCALE"
     PRODUCT = "PRODUCT"
     UPDATED = "UPDATED"
@@ -60,6 +69,16 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
                 self.tr("Selecionar camada de moldura"),
                 [QgsProcessing.TypeVectorPolygon],
                 defaultValue="aux_moldura_a",
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(
+                self.INPUT_WATER_A,
+                self.tr(
+                    "Selecionar camada de massa d'água (largura do rio dentro de polígono)"
+                ),
+                [QgsProcessing.TypeVectorPolygon],
+                optional=True,
             )
         )
         self.addParameter(
@@ -104,6 +123,14 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         frameLayer = self.parameterAsVectorLayer(
             parameters, self.INPUT_FRAME_A, context
         )
+        waterLayer = self.parameterAsVectorLayer(
+            parameters, self.INPUT_WATER_A, context
+        )
+        if waterLayer is None:
+            # sem a camada informada, usa a massa d'agua do projeto, se houver;
+            # sem nenhuma, o tamanho dentro de poligono fica so pelo comprimento
+            candidates = QgsProject.instance().mapLayersByName(WATER_LAYER_NAME)
+            waterLayer = candidates[0] if candidates else None
         gridScaleParam = self.parameterAsInt(parameters, self.SCALE, context)
         self.productParam = self.parameterAsInt(parameters, self.PRODUCT, context)
         self.scaleDict = {
@@ -121,18 +148,35 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         currentStep = 0
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Mesclando rios"))
-        merged = self.getMergedRiver(
-            drainageLayer, frameLayer, context, feedback=multiStepFeedback
-        )
+        # Funde separado o que esta dentro e o que esta fora de poligono: o
+        # rio fundido herda os atributos do menor trecho, e a linha simples
+        # que encostava num rio largo herdava o tamanho dele (ate 16 pt).
+        mergedByRule = {
+            inPolygon: self.getMergedRiver(
+                self.extractByRule(drainageLayer, inPolygon, context),
+                frameLayer,
+                context,
+                feedback=multiStepFeedback,
+            )
+            for inPolygon in (True, False)
+        }
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
         multiStepFeedback.pushInfo(self.tr("Calculando tamanhos"))
-        # nome -> lista de (engine preparado, geometria, tamanho); um rio
-        # fundido por componente conexa — homonimos desconexos ficam separados
-        sizesByName = self.sizeText(merged, feedback=multiStepFeedback)
-        if sizesByName is None:
-            return {self.UPDATED: 0, self.UNMATCHED: 0}
+        waterIndex = self.buildWaterIndex(waterLayer, drainageLayer)
+        # (dentro de poligono?, nome) -> lista de (engine preparado,
+        # geometria, tamanho); um rio fundido por componente conexa de mesma
+        # regra; homonimos desconexos ficam separados
+        sizesByName = {}
+        for inPolygon, merged in mergedByRule.items():
+            sizes = self.sizeText(
+                merged, inPolygon, waterIndex, feedback=multiStepFeedback
+            )
+            if sizes is None:
+                return {self.UPDATED: 0, self.UNMATCHED: 0}
+            for nome, items in sizes.items():
+                sizesByName[(inPolygon, nome)] = items
 
         currentStep += 1
         multiStepFeedback.setCurrentStep(currentStep)
@@ -153,13 +197,15 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
             geom = feature.geometry()
             if geom is None or geom.isEmpty():
                 continue
-            # Propaga o tamanho do rio fundido para TODOS os trechos que o
-            # compoem (mesmo nome + intersecao geometrica). Trecho que cruza
-            # a moldura casa pela parte interna; trecho totalmente fora da
-            # moldura nao casa e fica intocado (contado).
+            # Propaga o tamanho do rio fundido para os trechos que o compoem
+            # (mesmo nome, mesma regra dentro/fora de poligono e intersecao
+            # geometrica). Trecho que cruza a moldura casa pela parte
+            # interna; trecho totalmente fora da moldura nao casa e fica
+            # intocado (contado).
             size = None
             constGeom = geom.constGet()
-            for engine, _g, componentSize in sizesByName.get(str(feature["nome"]), []):
+            key = (self.isInPolygon(feature), str(feature["nome"]))
+            for engine, _g, componentSize in sizesByName.get(key, []):
                 if engine.intersects(constGeom):
                     size = componentSize if size is None else max(size, componentSize)
             if size is None:
@@ -182,6 +228,90 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         )
         return {self.UPDATED: len(updates), self.UNMATCHED: nUnmatched}
 
+    def isInPolygon(self, feature):
+        try:
+            return int(feature["situacao_em_poligono"]) in IN_POLYGON_VALUES
+        except (TypeError, ValueError):
+            return False
+
+    def extractByRule(self, layer, inPolygon, context):
+        expression = (
+            IN_POLYGON_EXPRESSION
+            if inPolygon
+            else "NOT ({0})".format(IN_POLYGON_EXPRESSION)
+        )
+        return processing.run(
+            "native:extractbyexpression",
+            {"INPUT": layer, "EXPRESSION": expression, "OUTPUT": "TEMPORARY_OUTPUT"},
+            context=context,
+        )["OUTPUT"]
+
+    def buildWaterIndex(self, waterLayer, drainageLayer):
+        """(indice espacial, {fid: poligono}) da massa d'agua no SRC da
+        drenagem, ou None sem a camada."""
+        if waterLayer is None:
+            return None
+        transform = None
+        if waterLayer.crs() != drainageLayer.crs():
+            transform = QgsCoordinateTransform(
+                waterLayer.crs(), drainageLayer.crs(), QgsProject.instance()
+            )
+        index = QgsSpatialIndex()
+        geoms = {}
+        for feat in waterLayer.getFeatures():
+            geom = QgsGeometry(feat.geometry())
+            if geom is None or geom.isEmpty():
+                continue
+            if transform is not None:
+                geom.transform(transform)
+            geoms[feat.id()] = geom
+            index.addFeature(feat.id(), geom.boundingBox())
+        return index, geoms
+
+    def riverWidthMm(self, geom, waterIndex, lyrCrs):
+        """Largura mediana do rio no papel: 2 x distancia do eixo a margem do
+        poligono de agua que o contem, num ponto a cada 10 mm de papel (5 no
+        minimo). None se nenhum ponto cai em agua."""
+        if waterIndex is None:
+            return None
+        index, geoms = waterIndex
+        total = geom.length()
+        if total <= 0:
+            return None
+        lengthMm = 1000 * self.measureLength(geom, lyrCrs) / self.scale
+        nPoints = min(200, max(5, int(lengthMm / 10)))
+        distanceArea = None
+        if lyrCrs.isGeographic():
+            distanceArea = QgsDistanceArea()
+            distanceArea.setEllipsoid(lyrCrs.ellipsoidAcronym())
+        widths = []
+        for i in range(nPoints):
+            point = geom.interpolate(total * (i + 0.5) / nPoints)
+            if point is None or point.isEmpty():
+                continue
+            for fid in index.intersects(point.boundingBox()):
+                polygon = geoms[fid]
+                if not polygon.intersects(point):
+                    continue
+                boundary = QgsGeometry(polygon.constGet().boundary())
+                if distanceArea is None:
+                    distance = boundary.distance(point)
+                else:
+                    distance = distanceArea.measureLine(
+                        point.asPoint(), boundary.nearestPoint(point).asPoint()
+                    )
+                widths.append(2 * distance)
+        if not widths:
+            return None
+        return 1000 * statistics.median(widths) / self.scale
+
+    def measureLength(self, geom, lyrCrs):
+        if lyrCrs.isGeographic():
+            distanceArea = QgsDistanceArea()
+            distanceArea.setEllipsoid(lyrCrs.ellipsoidAcronym())
+            return distanceArea.measureLength(geom)
+        return geom.length()
+
     def getMergedRiver(self, layer, frame, context, feedback):
         merged = processing.run(
             "ferramentasedicao:mergerivers",
@@ -195,8 +325,10 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         )
         return merged["OUTPUT_LAYER_L"]
 
-    def sizeText(self, layer, feedback):
+    def sizeText(self, layer, inPolygon, waterIndex, feedback):
         """Tamanho da fonte por rio fundido (tabelas MTM), agrupado por nome.
+        A camada tem so trechos de uma regra (inPolygon). Dentro de poligono,
+        a largura do rio no papel limita o tamanho do rio fino.
         Retorna {nome: [(engine, geometria, tamanho), ...]} ou None se
         cancelado."""
         lyrCrs = layer.dataProvider().crs()
@@ -208,13 +340,12 @@ class SizeTextRiverLine(QgsProcessingAlgorithm):
         for current, feature in enumerate(layer.getFeatures()):
             if feedback.isCanceled():
                 return None
-            try:
-                situacao = int(feature["situacao_em_poligono"])
-            except (TypeError, ValueError):
-                situacao = None
-            if situacao in IN_POLYGON_VALUES:
+            if inPolygon:
                 size = ProcessingUtils.getRiverInPolyLabelFontSize(
-                    feature, self.scale, lyrCrs
+                    feature,
+                    self.scale,
+                    lyrCrs,
+                    self.riverWidthMm(feature.geometry(), waterIndex, lyrCrs),
                 )
             else:
                 # fora de poligono (1) e NULL/9999: tabela "fora"

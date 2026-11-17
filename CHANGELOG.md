@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2.3.15
+
+Correção de bug:
+- "Definir tamanho do texto de drenagem" (sizetextriverline): o rio fundido herdava os atributos do MENOR trecho do mesmo nome, e o tamanho saía da tabela errada para o rio inteiro. A linha simples que encostava num trecho dentro de polígono levava o tamanho dele (até 16 pt), e o rio largo cujo menor trecho era linha simples caía para 9 pt. Passa a fundir e medir separado o que está dentro de polígono (situacao_em_poligono 2, 3 e 4) e o que está fora (1, nulo e 9999), e cada trecho recebe o tamanho do rio da própria regra.
+- Dentro de polígono o tamanho saía só pelo comprimento, e rio fino e comprido recebia 16 pt maior que o próprio rio. Com a camada de massa d'água (parâmetro novo e opcional; sem ele, usa a cobter_massa_dagua_a do projeto), o rio acima de 9 pt cuja largura no papel não comporta mais que 9 pt desce ao maior entre a tabela de fora de polígono e o tamanho cuja altura cabe na largura (pt x 0,3528 mm). Rio largo que comporta o tamanho do comprimento não muda. Sem camada de água, fica o comportamento antigo dentro de polígono. Banco já preparado guarda o tamanho antigo em tamanho_txt: rode o algoritmo de novo.
+
+Correção de bug (Carta Topográfica 2.0 e Topográfica Militar 2.0, estilos de impressão e de edição):
+- edicao_identificador_trecho_rod_p: o número do escudo de rodovia tinha prioridade 5 e não era obrigatório, e o QGIS o descartava em silêncio quando outro rótulo encostava, deixando o escudo vazio na carta. Passa a prioridade 10 e "mostrar todos os rótulos" (como já era na Carta Ortoimagem 3.0): o símbolo do escudo é desenhado pelo renderizador, e o número tem de sair sempre com ele.
+
 ## 2.3.14
 
 Correção de bug:
