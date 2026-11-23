@@ -248,7 +248,7 @@ class MapBuildController(MapBuildControllerUtils):
             return "orthoMap", productType, productVersion, versionFolder
         if productType == "Carta Topográfica":
             return "topoMap", productType, productVersion, versionFolder
-        if productType == "Carta Ortoimagem OM":
+        if productType == "Carta Ortoimagem SARP":
             return "omMap", "Carta Especial", productVersion, versionFolder
         if productType == "Carta Ortoimagem Militar":
             return (
@@ -387,7 +387,7 @@ class MapBuildController(MapBuildControllerUtils):
                     f"Não foi inserida uma pasta de saída para o produto solicitado.",
                 )
             return
-        if not is_headless and "Carta Ortoimagem OM" in dlgCfg.productType:
+        if not is_headless and "Carta Ortoimagem SARP" in dlgCfg.productType:
             self.qptDlg()
         exportResult, exportMessage = False, ""
         successCount = 0
@@ -566,12 +566,12 @@ class MapBuildController(MapBuildControllerUtils):
                 self.conn.getConnection(
                     jsonData.get("banco"), dlgCfg.username, dlgCfg.password
                 )
-                if jsonData["tipo_produto"] != "Carta Ortoimagem OM"
+                if productType != "omMap"
                 else None
             )
             # Na 1:2.000 só o km cheio múltiplo de 2 km leva número, e a folha pode não ter nenhum
             if (
-                jsonData["tipo_produto"] != "Carta Ortoimagem OM"
+                productType != "omMap"
                 and jsonData["scale"] != 2
                 and not self.validate_numeric_grid(connection)
             ):
@@ -632,7 +632,7 @@ class MapBuildController(MapBuildControllerUtils):
         QMessageBox.warning(self.dlg, messageType, msg)
 
     def validateProductTypeAgainstDatabaseMetadata(self, abstractDb, jsonData):
-        if jsonData["tipo_produto"] == "Carta Ortoimagem OM":
+        if jsonData["tipo_produto"] == "Carta Ortoimagem SARP":
             return True
         version = abstractDb.getDatabaseVersion()
         if "orto" in jsonData["tipo_produto"].lower() and "orto" not in version.lower():

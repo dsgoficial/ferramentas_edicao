@@ -393,13 +393,14 @@ data_structure = {
             "required": True,
         },
     ],
-    "Carta Ortoimagem OM": [
+    "Carta Ortoimagem SARP": [
         {"key": "tipo_produto", "type": str, "children": None, "required": True},
         {"key": "versao_produto", "type": str, "children": None, "required": False},
+        {"key": "configuracao_carta", "type": str, "children": None, "required": False},
         {"key": "poligono", "type": str, "children": None, "required": True},
         {"key": "nome", "type": str, "children": None, "required": True},
-        {"key": "imagemOM", "type": str, "children": None, "required": True},
-        {"key": "imagemSubordinacao", "type": str, "children": None, "required": True},
+        {"key": "imagemOM", "type": str, "children": None, "required": False},
+        {"key": "imagemSubordinacao", "type": str, "children": None, "required": False},
         {"key": "subordinacao1", "type": str, "children": None, "required": False},
         {"key": "subordinacao2", "type": str, "children": None, "required": False},
         {"key": "endereco", "type": str, "children": None, "required": True},
@@ -901,20 +902,62 @@ data_structure = {
     ],
 }
 
+SARP_PRODUCT_TYPE = "Carta Ortoimagem SARP"
+#SARP_CONFIGURATIONS = {"om", "default"}
+
+def get_sarp_configuration(input_dict: dict) -> str:
+
+    value = str(input_dict.get("configuracao_carta", "default")).strip().lower()
+    return "om" if value == "om" else "default"
+
+def find_missing_sarp_configuration_keys(input_dict: dict) -> set:
+    """Valida campos condicionais específicos da Carta Ortoimagem SARP."""
+    missing = set()
+
+    configuration = get_sarp_configuration(input_dict)
+
+    #if configuration not in SARP_CONFIGURATIONS:
+     #   missing.add("configuracao_carta")
+      #  return missing
+
+    if configuration == "om":
+        if not input_dict.get("imagemOM"):
+            missing.add("imagemOM")
+
+        if not input_dict.get("imagemSubordinacao"):
+            missing.add("imagemSubordinacao")
+
+    return missing
 
 def validate_dict(input_dict: dict, product_type: str) -> bool:
-    # fizemos somente a validação das chaves obrigatórias, as opcionais ficarão para outro momento
-    return validate_keys(
+    # Validação das chaves obrigatórias gerais
+    if not validate_keys(
         input_dict=input_dict,
         required=True,
         reference_schema=data_structure[product_type],
-    )
+    ):
+        return False
+
+    # Regras condicionais específicas da Carta Ortoimagem SARP
+    if product_type == SARP_PRODUCT_TYPE:
+        if find_missing_sarp_configuration_keys(input_dict):
+            return False
+
+    return True
 
 
 def find_missing_required_keys_on_dict(input_dict: dict, product_type: str):
-    return find_missing_required_keys(
-        input_dict=input_dict, reference_schema=data_structure[product_type]
+    missing = find_missing_required_keys(
+        input_dict=input_dict,
+        reference_schema=data_structure[product_type],
     )
+
+    if product_type == SARP_PRODUCT_TYPE:
+        missing.update(
+            find_missing_sarp_configuration_keys(input_dict)
+        )
+
+    return missing
 
 
 def find_missing_required_keys(

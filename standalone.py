@@ -49,7 +49,7 @@ def setupArgparser():
         choices=(
             "Carta Topográfica 2.0",
             "Carta Ortoimagem 3.0",
-            "Carta Ortoimagem OM 1.0",
+            "Carta Ortoimagem SARP 1.0",
             "Carta Ortoimagem Militar 3.0",
             "Carta Topográfica Militar 2.0",
         ),

@@ -231,7 +231,7 @@ class DivisionOM(ComponentUtils, IComponent):
         """
         if (mapItem := composition.itemById("map_divisao")) is not None:
             mapItem.setFixedSize(mapItem.sizeWithUnits())
-            mapItem.setExtent(mapExtent)
+            mapItem.zoomToExtent(mapExtent)
             mapItem.setLayers(layersToShow)
             mapItem.setCrs(QgsCoordinateReferenceSystem("EPSG:4674"))
             mapItem.refresh()

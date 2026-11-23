@@ -135,7 +135,10 @@ class Subtitle(ComponentUtils, IComponent):
             regionLabel.setText(labelText)
             regionLabel.refresh()
         if productTypeLabel := composition.itemById("label_nome_produto"):
-            productTypeLabel.setText(productName)
+            if data.get("tipo_produto") == "Carta Ortoimagem SARP":
+                productTypeLabel.setText("CARTA ORTOIMAGEM SARP")
+            else:
+                productTypeLabel.setText(productName)
             productTypeLabel.refresh()
         if mapNameLabel := composition.itemById("label_nomeCarta"):
             mapText = name.upper() if name else "ESPECIAL"

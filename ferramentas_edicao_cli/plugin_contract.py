@@ -220,7 +220,7 @@ def export_name_prefixes():
 def product_internal_names():
     """{tipo_produto: (id interno, productName)} lido do getProductType do controller.
 
-    O productName importa por causa da Carta Ortoimagem OM, que vira "Carta Especial" e
+    O productName importa por causa da Carta Ortoimagem SARP, que vira "Carta Especial" e
     por isso escapa da comparacao entre o -t escolhido e o tipo_produto do json.
     """
     where = "controllers/mapBuilderController.py:getProductType"

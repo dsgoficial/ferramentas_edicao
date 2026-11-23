@@ -462,7 +462,8 @@ class BatchGenerateOmMapJson(QgsProcessingAlgorithm):
             wkt = geom.asWkt()
 
             result = {
-                "tipo_produto": "Carta Ortoimagem OM",
+                "tipo_produto": "Carta Ortoimagem SARP",
+                "configuracao_carta": "om",
                 "poligono": wkt,
                 "nome": nome,
                 "imagemOM": imagem_om,
@@ -483,7 +484,7 @@ class BatchGenerateOmMapJson(QgsProcessingAlgorithm):
             if subordinacao2:
                 result["subordinacao2"] = subordinacao2
 
-            missing = find_missing_required_keys_on_dict(result, "Carta Ortoimagem OM")
+            missing = find_missing_required_keys_on_dict(result, "Carta Ortoimagem SARP")
             if missing:
                 msg = self.tr(
                     f"Feição {feat.id()} ({nome}): JSON inválido — campos obrigatórios ausentes: "
@@ -521,7 +522,7 @@ class BatchGenerateOmMapJson(QgsProcessingAlgorithm):
         return self.tr("Gerar JSONs em Lote")
 
     def group(self):
-        return self.tr("Ortoimagem de OM")
+        return self.tr("Ortoimagem SARP")
 
     def groupId(self):
         return "ortoimagem_om"

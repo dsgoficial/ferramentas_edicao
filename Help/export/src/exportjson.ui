@@ -35,7 +35,7 @@
      </item>
      <item>
       <property name="text">
-       <string>Carta Ortoimagem OM</string>
+       <string>Carta Ortoimagem SARP</string>
       </property>
      </item>
      <item>
@@ -53,12 +53,33 @@
    <item>
     <widget class="QLabel" name="label_versao">
      <property name="text">
-      <string>Versão do Produto (Opcional) - se vazio, usa a versão ativa do produto (topo 2.0 / orto 3.0 / OM 1.0). Deve casar a versão escolhida na exportação.</string>
+      <string>Versão do Produto (Opcional) - se vazio, usa a versão ativa do produto (topo 2.0 / orto 3.0 / SARP 1.0). Deve casar a versão escolhida na exportação.</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLineEdit" name="input_versao"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_configuracao_carta">
+     <property name="text">
+      <string>Configuração da Carta SARP</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="input_configuracao_carta">
+     <item>
+      <property name="text">
+       <string>Carta de OM</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Default</string>
+      </property>
+     </item>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_edicao">
@@ -200,7 +221,7 @@
    <item>
     <widget class="QLabel" name="label_poligono">
      <property name="text">
-      <string>Polígono em WKT (Obrigatório p/ Carta Ortoimagem OM)</string>
+      <string>Polígono em WKT (Obrigatório p/ Carta Ortoimagem SARP)</string>
      </property>
     </widget>
    </item>

@@ -418,7 +418,7 @@ def validate_carta(path, data, contract, tipo=None, saida=None, tiff=False, tiff
     else:
         esperado_tipo, esperado_versao = split_choice(tipo)
         product_name = contract["internos"].get(esperado_tipo, (None, esperado_tipo))[1]
-        # "Carta Especial" e o apelido interno da Carta Ortoimagem OM: para ela o
+        # "Carta Especial" e o apelido interno da Carta Ortoimagem SARP: para ela o
         # controller nao compara o tipo_produto.
         if product_name != "Carta Especial" and produto != esperado_tipo:
             add(
