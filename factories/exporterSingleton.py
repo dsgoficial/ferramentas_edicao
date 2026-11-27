@@ -34,6 +34,9 @@ from qgis import utils
 class ExporterSingleton:
 
     _instance = None
+    # Resolução do PDF rasterizado: fixa, igual à do GeoTIFF entregue ao BDGEx.
+    # O "dpi" do JSON continua valendo para o GeoTIFF exportado pelo plugin.
+    PDF_DPI = 300
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -91,7 +94,7 @@ class ExporterSingleton:
         now = self.get_datetime()
         metadata.setCreationDateTime(now)
         metadata.setAbstract(
-            f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; Produto: {self.productName} {self.productVersion}; {self.dpi} dpi; horário da exportação: {now:%A, %B %d, %Y} at {now:%I:%M %p}"
+            f"DSGTools: {dsgToolsVersion}; ferramentas_edicao: {FEVersion}; Produto: {self.productName} {self.productVersion}; {self.PDF_DPI} dpi; horário da exportação: {now:%A, %B %d, %Y} at {now:%I:%M %p}"
         )
         metadata.setAuthor("Diretoria de Serviço Geográfico")
         metadata.setTitle(f"{self.basename}")
@@ -122,11 +125,15 @@ class ExporterSingleton:
         if not self.debugMode:
             pdfFilePath = Path(self.exportFolder, f"{self.basename}.pdf")
             pdfExportSettings = QgsLayoutExporter.PdfExportSettings()
-            pdfExportSettings.rasterizeWholeImage = False
+            # A folha inteira vai rasterizada a 300 dpi. No PDF vetorial cada leitor
+            # desenha o traço fino do seu jeito: o PDFium (Chrome, Edge) não desce de
+            # 1 pixel de tela, e a curva de nível de 0,1 mm saía com 0,3 a 0,4 mm,
+            # igual à mestra. Em imagem, a carta é a mesma em qualquer leitor.
+            pdfExportSettings.rasterizeWholeImage = True
             pdfExportSettings.simplifyGeometries = False
             pdfExportSettings.appendGeoreference = True
             pdfExportSettings.exportMetadata = True
-            pdfExportSettings.dpi = self.dpi
+            pdfExportSettings.dpi = self.PDF_DPI
             statusPdf = exporter.exportToPdf(str(pdfFilePath), pdfExportSettings)
             if statusPdf != QgsLayoutExporter.ExportResult.Success:
                 hasError = True

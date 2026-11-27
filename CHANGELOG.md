@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2.3.16
+
+Mudança de comportamento (todos os produtos, exportação do PDF):
+- O PDF da carta passa a sair rasterizado, a folha inteira a 300 dpi fixos (rasterizeWholeImage), com a georreferência mantida. No PDF vetorial cada leitor desenhava o traço fino do seu jeito: o PDFium (Chrome e Edge) não desenha traço mais fino que 1 pixel de tela, e na Pacaraima (0013-2-NO) a curva de nível normal de 0,1 mm saía com 0,32 mm a 96 dpi e 0,42 mm a 72 dpi, igual à mestra, enquanto o MuPDF e a impressão a mantinham em 0,1 mm. Em imagem, a carta é a mesma em qualquer leitor. O "dpi" do JSON segue valendo para o GeoTIFF exportado pelo plugin.
+
 ## 2.3.15
 
 Correção de bug:
